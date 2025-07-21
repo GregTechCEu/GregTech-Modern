@@ -361,7 +361,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             }));
 
     /**
-     * Create an energy bar widget.
+     * Create a battery slot widget.
      */
     protected static EditableUI<SlotWidget, SimpleTieredMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
@@ -378,7 +378,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     }
 
     /**
-     * Create an energy bar widget.
+     * Create a ghost circuit slot widget.
      */
     protected static EditableUI<GhostCircuitSlotWidget, SimpleTieredMachine> createCircuitConfigurator() {
         return new EditableUI<>("circuit_configurator", GhostCircuitSlotWidget.class, () -> {
