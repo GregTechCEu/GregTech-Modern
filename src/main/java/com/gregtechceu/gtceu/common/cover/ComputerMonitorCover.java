@@ -58,152 +58,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = new HashMap<>(
-            Map.ofEntries(
-                    entry("energy", (cover, args) -> {
-                        IEnergyContainer energy = cover.getEnergyContainer();
-                        return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
-                    }),
-                    entry("energyCapacity", (cover, args) -> {
-                        IEnergyContainer energy = cover.getEnergyContainer();
-                        return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
-                    }),
-                    entry("calc", (cover, args) -> {
-                        List<String> stringArgs = new ArrayList<>();
-                        args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
-                        return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
-                    }),
-                    entry("itemCount", (cover, args) -> {
-                        IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
-                        if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
-                        if (args.size() == 1) return GTStringUtils
-                                .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
-                        if (GTStringUtils.equals(args.get(0), "filter")) {
-                            try {
-                                int slot = GTStringUtils.toInt(args.get(1));
-                                if (slot > 8 || slot < 1)
-                                    return GTStringUtils.literal("Expected slot index between 1 and 8");
-                                return GTStringUtils.literal(
-                                        countItems(
-                                                ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)),
-                                                itemHandler));
-                            } catch (NumberFormatException e) {
-                                return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
-                            } catch (NullPointerException e) {
-                                return GTStringUtils.literal("Invalid filter!");
-                            }
-                        }
-                        return GTStringUtils.literal("Invalid args!");
-                    }),
-                    entry("fluidCount", (cover, args) -> {
-                        IFluidHandler fluidHandler = cover.coverHolder.getFluidHandlerCap(cover.attachedSide, false);
-                        if (args.isEmpty()) return GTStringUtils.literal(countFluids(null, fluidHandler));
-                        if (args.size() == 1) return GTStringUtils
-                                .literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
-                        return GTStringUtils.literal("Expected not more than 1 argument!");
-                    }),
-                    entry("if", (cover, args) -> {
-                        if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
-                        try {
-                            if (GTStringUtils.toDouble(args.get(0)) != 0) {
-                                return args.get(1);
-                            } else if (args.size() > 2) return args.get(2);
-                            else return GTStringUtils.literal("");
-                        } catch (NumberFormatException e) {
-                            return args.get(1);
-                        }
-                    }),
-                    entry("color", (cover, args) -> {
-                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 args!");
-                        ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
-                        if (color == null)
-                            return GTStringUtils.literal(
-                                    "Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
-                        return args.get(1).stream().map(c -> c.withStyle(color)).toList();
-                    }),
-                    entry("underline", (cover, args) -> {
-                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList();
-                    }),
-                    entry("strike", (cover, args) -> {
-                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList();
-                    }),
-                    entry("obf", (cover, args) -> {
-                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList();
-                    }),
-                    entry("random", (cover, args) -> {
-                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
-                        try {
-                            return GTStringUtils.literal(GTValues.RNG.nextIntBetweenInclusive(
-                                    GTStringUtils.toInt(args.get(0)), GTStringUtils.toInt(args.get(1))));
-                        } catch (NumberFormatException e) {
-                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                        }
-                    }),
-                    entry("repeat", (cover, args) -> {
-                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
-                        try {
-                            int count = GTStringUtils.toInt(args.get(0));
-                            List<MutableComponent> out = GTStringUtils.literal("");
-                            for (int i = 0; i < count; i++) GTStringUtils.append(out, args.get(1));
-                            return out;
-                        } catch (NumberFormatException e) {
-                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                        }
-                    }),
-                    entry("block", (cover, args) -> {
-                        if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
-                        return GTStringUtils.literal("█");
-                    }),
-                    entry("tick", (cover, args) -> {
-                        if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
-                        return GTStringUtils.literal(cover.getTicksSincePlaced());
-                    }),
-                    entry("select", (cover, args) -> {
-                        if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
-                        try {
-                            int i = GTStringUtils.toInt(args.get(0));
-                            if (args.size() <= i + 1) return GTStringUtils.literal(
-                                    "Expected at least %d arguments, got %d instead".formatted(i + 2, args.size()));
-                            return args.get(i + 1);
-                        } catch (NumberFormatException e) {
-                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                        }
-                    }),
-                    entry("redstone", (cover, args) -> {
-                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments");
-                        if (GTStringUtils.equals(args.get(0), "get")) {
-                            Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
-                            if (direction == null) return GTStringUtils
-                                    .literal("2nd argument must be a valid direction (up,down,north,south,east,west)");
-                            return GTStringUtils.literal(cover.coverHolder.getLevel()
-                                    .getSignal(cover.coverHolder.getPos().relative(direction), direction));
-                        } else if (GTStringUtils.equals(args.get(1), "set")) {
-                            try {
-                                int power = GTStringUtils.toInt(args.get(1));
-                                if (power < 0 || power > 15)
-                                    return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
-                                cover.setRedstoneSignalOutput(power);
-                                return GTStringUtils.literal("");
-                            } catch (NumberFormatException e) {
-                                return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                            }
-                        } else return GTStringUtils.literal("First argument must be either 'set' or 'get'");
-                    }),
-                    entry("previousText", (cover, args) -> {
-                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
-                        try {
-                            int i = GTStringUtils.toInt(args.get(0));
-                            if (i < 1 || i > cover.text.size())
-                                return GTStringUtils.literal("Expected index between 1 and %d (inclusive), got %d"
-                                        .formatted(cover.text.size(), i));
-                            return new ArrayList<>(List.of(cover.text.get(i - 1)));
-                        } catch (NumberFormatException e) {
-                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                        }
-                    })));
+    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = new HashMap<>();
 
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
@@ -526,5 +381,153 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     @Override
     public boolean canConnectRedstone() {
         return true;
+    }
+
+    public static void initPlaceholders() {
+        PLACEHOLDERS.putAll(Map.ofEntries(
+                entry("energy", (cover, args) -> {
+                    IEnergyContainer energy = cover.getEnergyContainer();
+                    return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
+                }),
+                entry("energyCapacity", (cover, args) -> {
+                    IEnergyContainer energy = cover.getEnergyContainer();
+                    return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
+                }),
+                entry("calc", (cover, args) -> {
+                    List<String> stringArgs = new ArrayList<>();
+                    args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
+                    return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
+                }),
+                entry("itemCount", (cover, args) -> {
+                    IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
+                    if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
+                    if (args.size() == 1) return GTStringUtils
+                            .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                    if (GTStringUtils.equals(args.get(0), "filter")) {
+                        try {
+                            int slot = GTStringUtils.toInt(args.get(1));
+                            if (slot > 8 || slot < 1)
+                                return GTStringUtils.literal("Expected slot index between 1 and 8");
+                            return GTStringUtils.literal(
+                                    countItems(
+                                            ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)),
+                                            itemHandler));
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
+                        } catch (NullPointerException e) {
+                            return GTStringUtils.literal("Invalid filter!");
+                        }
+                    }
+                    return GTStringUtils.literal("Invalid args!");
+                }),
+                entry("fluidCount", (cover, args) -> {
+                    IFluidHandler fluidHandler = cover.coverHolder.getFluidHandlerCap(cover.attachedSide, false);
+                    if (args.isEmpty()) return GTStringUtils.literal(countFluids(null, fluidHandler));
+                    if (args.size() == 1) return GTStringUtils
+                            .literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
+                    return GTStringUtils.literal("Expected not more than 1 argument!");
+                }),
+                entry("if", (cover, args) -> {
+                    if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
+                    try {
+                        if (GTStringUtils.toDouble(args.get(0)) != 0) {
+                            return args.get(1);
+                        } else if (args.size() > 2) return args.get(2);
+                        else return GTStringUtils.literal("");
+                    } catch (NumberFormatException e) {
+                        return args.get(1);
+                    }
+                }),
+                entry("color", (cover, args) -> {
+                    if (args.size() != 2) return GTStringUtils.literal("Expected 2 args!");
+                    ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
+                    if (color == null)
+                        return GTStringUtils.literal(
+                                "Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
+                    return args.get(1).stream().map(c -> c.withStyle(color)).toList();
+                }),
+                entry("underline", (cover, args) -> {
+                    if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                    return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList();
+                }),
+                entry("strike", (cover, args) -> {
+                    if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                    return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList();
+                }),
+                entry("obf", (cover, args) -> {
+                    if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                    return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList();
+                }),
+                entry("random", (cover, args) -> {
+                    if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                    try {
+                        return GTStringUtils.literal(GTValues.RNG.nextIntBetweenInclusive(
+                                GTStringUtils.toInt(args.get(0)), GTStringUtils.toInt(args.get(1))));
+                    } catch (NumberFormatException e) {
+                        return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    }
+                }),
+                entry("repeat", (cover, args) -> {
+                    if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                    try {
+                        int count = GTStringUtils.toInt(args.get(0));
+                        List<MutableComponent> out = GTStringUtils.literal("");
+                        for (int i = 0; i < count; i++) GTStringUtils.append(out, args.get(1));
+                        return out;
+                    } catch (NumberFormatException e) {
+                        return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    }
+                }),
+                entry("block", (cover, args) -> {
+                    if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                    return GTStringUtils.literal("█");
+                }),
+                entry("tick", (cover, args) -> {
+                    if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                    return GTStringUtils.literal(cover.getTicksSincePlaced());
+                }),
+                entry("select", (cover, args) -> {
+                    if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
+                    try {
+                        int i = GTStringUtils.toInt(args.get(0));
+                        if (args.size() <= i + 1) return GTStringUtils.literal(
+                                "Expected at least %d arguments, got %d instead".formatted(i + 2, args.size()));
+                        return args.get(i + 1);
+                    } catch (NumberFormatException e) {
+                        return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    }
+                }),
+                entry("redstone", (cover, args) -> {
+                    if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments");
+                    if (GTStringUtils.equals(args.get(0), "get")) {
+                        Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
+                        if (direction == null) return GTStringUtils
+                                .literal("2nd argument must be a valid direction (up,down,north,south,east,west)");
+                        return GTStringUtils.literal(cover.coverHolder.getLevel()
+                                .getSignal(cover.coverHolder.getPos().relative(direction), direction));
+                    } else if (GTStringUtils.equals(args.get(1), "set")) {
+                        try {
+                            int power = GTStringUtils.toInt(args.get(1));
+                            if (power < 0 || power > 15)
+                                return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
+                            cover.setRedstoneSignalOutput(power);
+                            return GTStringUtils.literal("");
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                        }
+                    } else return GTStringUtils.literal("First argument must be either 'set' or 'get'");
+                }),
+                entry("previousText", (cover, args) -> {
+                    if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
+                    try {
+                        int i = GTStringUtils.toInt(args.get(0));
+                        if (i < 1 || i > cover.text.size())
+                            return GTStringUtils.literal("Expected index between 1 and %d (inclusive), got %d"
+                                    .formatted(cover.text.size(), i));
+                        return new ArrayList<>(List.of(cover.text.get(i - 1)));
+                    } catch (NumberFormatException e) {
+                        return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    }
+                })));
     }
 }
