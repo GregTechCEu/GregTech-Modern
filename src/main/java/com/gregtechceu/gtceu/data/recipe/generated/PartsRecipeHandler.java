@@ -392,7 +392,7 @@ public final class PartsRecipeHandler {
         if (!material.hasFlag(NO_SMASHING)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material.getName()),
                     ChemicalHelper.get(ring, material),
-                    "h ", " X",
+                    "h ", "fX",
                     'X', new MaterialEntry(rod, material));
         } else {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_ring")

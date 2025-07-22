@@ -109,7 +109,7 @@ public class SeparationRecipes {
                 .outputFluids(Glue.getFluid(100))
                 .save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(20)
+        CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(5)
                 .inputItems(GTBlocks.RUBBER_LOG.asStack())
                 .chancedOutput(STICKY_RESIN.asStack(), 6400, 0)
                 .chancedOutput(PLANT_BALL.asStack(), 4000, 0)

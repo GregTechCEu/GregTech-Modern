@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -19,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import java.util.stream.IntStream;
 
@@ -42,6 +46,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     @Getter
     @Persisted
     private final CustomItemStackHandler inventory;
+
+    private TickableSubscription snowSubscription;
 
     public MufflerPartMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
@@ -84,6 +90,36 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                     recipeLogicMachine.getRecipeLogic().isWorking()) {
                 emitPollutionParticles();
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void addedToController(IMultiController controller) {
+        super.addedToController(controller);
+        if (snowSubscription == null) {
+            this.snowSubscription = subscribeServerTick(null, this::tryBreakSnow);
+        }
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        if (controllers.isEmpty()) {
+            unsubscribe(snowSubscription);
+            snowSubscription = null;
+        }
+    }
+
+    private void tryBreakSnow() {
+        if (getOffsetTimer() % 10 == 0) {
+            for (IMultiController controller : getControllers()) {
+                if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
+                        recipeLogicMachine.getRecipeLogic().isWorking()) {
+                    BlockPos mufflerPos = getPos().relative(getFrontFacing());
+                    GTUtil.tryBreakSnow(getLevel(), mufflerPos, getLevel().getBlockState(mufflerPos), true);
+                }
             }
         }
     }

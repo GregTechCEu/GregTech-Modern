@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,16 +22,7 @@ import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
-class RecipeRunner {
-
-    record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
-
-        public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(ActionResult.SUCCESS, null);
-
-        public boolean isSuccess() {
-            return result.isSuccess();
-        }
-    }
+public class RecipeRunner {
 
     private final GTRecipe recipe;
     private final IO io;
@@ -57,11 +47,11 @@ class RecipeRunner {
     }
 
     @NotNull
-    public RecipeHandlingResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
+    public ActionResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty()) {
-            return new RecipeHandlingResult(ActionResult.PASS_NO_CONTENTS, null);
+            return ActionResult.PASS_NO_CONTENTS;
         }
 
         return this.handleContents();
@@ -114,15 +104,15 @@ class RecipeRunner {
         }
     }
 
-    private RecipeHandlingResult handleContents() {
+    private ActionResult handleContents() {
         var result = handleContentsInternal(io);
         return result;
     }
 
-    private RecipeHandlingResult handleContentsInternal(IO capIO) {
-        if (recipeContents.isEmpty()) return RecipeHandlingResult.SUCCESS;
+    private ActionResult handleContentsInternal(IO capIO) {
+        if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(capIO)) {
-            return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
+            return ActionResult.FAIL_NO_CAPABILITIES;
         }
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
@@ -144,7 +134,7 @@ class RecipeRunner {
                     handler.handleRecipe(io, recipe, recipeContents, false);
                 }
                 recipeContents.clear();
-                return RecipeHandlingResult.SUCCESS;
+                return ActionResult.SUCCESS;
             }
         }
 
@@ -163,24 +153,24 @@ class RecipeRunner {
                 }
             }
             if (!found) continue;
-            if (simulated) return RecipeHandlingResult.SUCCESS;
+            if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items, keep track of the remaining items for this RecipeHandlerGroup
             copiedRecipeContents = recipeContents;
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, false);
                 if (copiedRecipeContents.isEmpty()) {
                     recipeContents.clear();
-                    return RecipeHandlingResult.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             }
         }
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, entry.getKey());
+                return ActionResult.fail(null, entry.getKey(), capIO);
             }
         }
 
-        return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, null);
+        return ActionResult.FAIL_NO_REASON;
     }
 }
