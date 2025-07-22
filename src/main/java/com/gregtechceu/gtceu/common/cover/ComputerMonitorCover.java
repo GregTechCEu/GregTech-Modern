@@ -25,6 +25,7 @@ import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.Container;
@@ -143,33 +144,6 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
                 }
             })
-    );
-
-    private static final Map<String, String> PLACEHOLDER_INFO = Map.ofEntries(
-            entry("energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored"),
-            entry("energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity"),
-            entry("itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
-                    "{itemCount} -> total item amount",
-                    "{itemCount <item_id>} -> amount of items with ids equal to item_id",
-                    "{itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover"
-            )),
-            entry("calc", "Returns the result of a math function or operation.\nUsage:\n  %s\n  %s\n  %s".formatted(
-                    "{calc <any_string>} -> any_string",
-                    "{calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
-                    "{calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation"
-            )),
-            entry("if", "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  %s".formatted(
-                    "{if <condition> <returned_if_true> [returned_if_false]}"
-            )),
-            entry("obf", "Returns the text from the first argument, obfuscated.\nUsage:\n  {obf <text>} -> obfuscated text"),
-            entry("underline", "Returns the text from the first argument, underlined\nUsage:\n  {underline <text>} -> underlined text"),
-            entry("strike", "Returns the text from the first text, displaying it as if it was crossed out\nUsage:\n  {strike <text>} -> crossed-out text"),
-            entry("color", "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.\nUsage:\n  {color <color> <text>} -> colored text"),
-            entry("tick", "Returns the amount of ticks passed from when this cover was placed.\nUsage:\n  {tick} -> the amount of ticks"),
-            entry("block", "Returns the block symbol (█).\nUsage:\n  {block} -> '█'"),
-            entry("repeat", "Returns the text from the second arguments, repeated the amount of times specified in the first argument.\nUsage:\n  {repeat <amount> <text>} -> text repeated the specified amount of times"),
-            entry("random", "Returns a random number in the specified interval (inclusive).\nUsage:\n  {random <min> <max>} -> a random number between min and max (inclusive)"),
-            entry("select", "Returns the argument at the specified index (starting from 0)\nUsage:\n  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index")
     );
 
     private TickableSubscription subscription;
@@ -382,7 +356,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             for (String placeholder : placeholders) {
                 TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
                 placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
-                placeholderName.setHoverTooltips(PLACEHOLDER_INFO.getOrDefault(placeholder, "No info."));
+                placeholderName.setHoverTooltips(Component.translatableWithFallback("gtceu.placeholder_info." + placeholder, "No info."));
                 placeholderReference.addWidget(placeholderName);
                 y += 15;
             }
@@ -390,7 +364,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         TextTextureWidget placeholderReferenceLabel = new TextTextureWidget(
                 280, 0,
                 160, 15,
-                "All placeholders:\n(hover for more info)"
+                Component.translatable("gtceu.gui.computer_monitor_cover.placeholder_reference").getString()
         );
         placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
         mainPage.addWidget(placeholderReferenceLabel);
@@ -399,12 +373,12 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         //mainPage.addWidget(searchBox);
         onSearch.accept("");
         IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval, this::setUpdateInterval);
-        updateIntervalInput.setHoverTooltips("Update interval (in ticks)");
+        updateIntervalInput.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
         updateIntervalInput.setMin(1);
         updateIntervalInput.setMax(60*20);
         mainPage.addWidget(updateIntervalInput);
-        switchToFormatStringArgsPageButton.setHoverTooltips("Edit blank placeholders");
-        switchBack.setHoverTooltips("Edit displayed text");
+        switchToFormatStringArgsPageButton.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
+        switchBack.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_displayed_text"));
         mainPage.addWidget(switchToFormatStringArgsPageButton);
         mainPage.addWidget(placeholderReference);
         formatStringArgsPage.addWidget(switchBack);

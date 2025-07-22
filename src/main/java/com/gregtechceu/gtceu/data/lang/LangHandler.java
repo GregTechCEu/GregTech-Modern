@@ -1412,6 +1412,36 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.false", "False");
         provider.add("gtceu.tooltip.status.trinary.true", "True");
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
+
+        provider.add("gtceu.display_source.computer_monitor_cover", "Computer Monitor Cover");
+        provider.add("gtceu.placeholder_info.energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored");
+        provider.add("gtceu.placeholder_info.energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity");
+        provider.add("gtceu.placeholder_info.itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
+                "{itemCount} -> total item amount",
+                "{itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "{itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover"
+        ));
+        provider.add("gtceu.placeholder_info.calc", "Returns the result of a math function or operation.\nUsage:\n  %s\n  %s\n  %s".formatted(
+                "{calc <any_string>} -> any_string",
+                "{calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
+                "{calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation"
+        ));
+        provider.add("gtceu.placeholder_info.if", "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  %s".formatted(
+                "{if <condition> <returned_if_true> [returned_if_false]}"
+        ));
+        provider.add("gtceu.placeholder_info.obf", "Returns the text from the first argument, obfuscated.\nUsage:\n  {obf <text>} -> obfuscated text");
+        provider.add("gtceu.placeholder_info.underline", "Returns the text from the first argument, underlined\nUsage:\n  {underline <text>} -> underlined text");
+        provider.add("gtceu.placeholder_info.strike", "Returns the text from the first text, displaying it as if it was crossed out\nUsage:\n  {strike <text>} -> crossed-out text");
+        provider.add("gtceu.placeholder_info.color", "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.\nUsage:\n  {color <color> <text>} -> colored text");
+        provider.add("gtceu.placeholder_info.tick", "Returns the amount of ticks passed from when this cover was placed.\nUsage:\n  {tick} -> the amount of ticks");
+        provider.add("gtceu.placeholder_info.block", "Returns the block symbol (█).\nUsage:\n  {block} -> '█'");
+        provider.add("gtceu.placeholder_info.repeat", "Returns the text from the second arguments, repeated the amount of times specified in the first argument.\nUsage:\n  {repeat <amount> <text>} -> text repeated the specified amount of times");
+        provider.add("gtceu.placeholder_info.random", "Returns a random number in the specified interval (inclusive).\nUsage:\n  {random <min> <max>} -> a random number between min and max (inclusive)");
+        provider.add("gtceu.placeholder_info.select", "Returns the argument at the specified index (starting from 0)\nUsage:\n  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index");
+        provider.add("gtceu.gui.computer_monitor_cover.placeholder_reference", "All placeholders:\n(hover for more info)");
+        provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
     }
 
     /**
