@@ -104,14 +104,15 @@ public abstract class LevelRendererMixin {
         UseOnContext context = new UseOnContext(minecraft.player, InteractionHand.MAIN_HAND, hitResult);
         var positions = ToolHelper.getHarvestableBlocks(aoeDefinition, context);
 
-        Vec3 vec3 = camera.getPosition();
-        double camX = vec3.x();
-        double camY = vec3.y();
-        double camZ = vec3.z();
+        Vec3 camPos = camera.getPosition();
+
+        poseStack.pushPose();
+        poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
         for (BlockPos pos : positions) {
             poseStack.pushPose();
-            poseStack.translate(pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ);
+            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+
             PoseStack.Pose last = poseStack.last();
             VertexConsumer breakProgressDecal = new SheetedDecalTextureGenerator(
                     this.renderBuffers.crumblingBufferSource()
@@ -122,6 +123,8 @@ public abstract class LevelRendererMixin {
                     level, poseStack, breakProgressDecal, modelData != null ? modelData : ModelData.EMPTY);
             poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 
     @Shadow

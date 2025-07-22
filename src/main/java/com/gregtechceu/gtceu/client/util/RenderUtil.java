@@ -192,10 +192,14 @@ public class RenderUtil {
         return fluid;
     }
 
-    public static void moveToFace(PoseStack poseStack, double x, double y, double z, Direction face) {
-        poseStack.translate(x + 0.5d + face.getStepX() * 0.5d,
-                y + 0.5d + face.getStepY() * 0.5d,
-                z + 0.5d + face.getStepZ() * 0.5d);
+    public static void moveToFace(PoseStack poseStack, Vector3fc pos, Direction face) {
+        moveToFace(poseStack, pos.x(), pos.y(), pos.z(), face);
+    }
+
+    public static void moveToFace(PoseStack poseStack, float x, float y, float z, Direction face) {
+        poseStack.translate(Math.fma(face.getStepX(), 0.5f, x),
+                Math.fma(face.getStepY(), 0.5f, y),
+                Math.fma(face.getStepZ(), 0.5f, z));
     }
 
     /**

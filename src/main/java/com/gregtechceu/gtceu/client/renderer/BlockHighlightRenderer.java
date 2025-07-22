@@ -102,11 +102,9 @@ public class BlockHighlightRenderer {
                         RenderSystem.defaultBlendFunc();
                         poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f,
                                 facing.getStepZ() * 0.01f);
-                        RenderUtil.moveToFace(poseStack,
-                                blockPos.getX() - cameraPos.x(),
-                                blockPos.getY() - cameraPos.y(),
-                                blockPos.getZ() - cameraPos.z(),
-                                facing);
+                        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+
+                        RenderUtil.moveToFace(poseStack, blockCenter, facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
                             RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
                         } else {
@@ -211,7 +209,10 @@ public class BlockHighlightRenderer {
         bottomLeft.add(cubeCenter);
         topLeft.add(cubeCenter);
 
-        var buffer = bufferSource.getBuffer(RenderType.lines());
+        poseStack.pushPose();
+        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.lines());
         RenderSystem.lineWidth(3);
         var mat = poseStack.last().pose();
         // straight top bottom lines
@@ -227,17 +228,15 @@ public class BlockHighlightRenderer {
         drawLine(mat, buffer, new Vector3f(bottomLeft).add(shiftVert),
                 new Vector3f(bottomRight).add(shiftVert));
 
-        poseStack.pushPose();
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f, facing.getStepZ() * 0.01f);
-        RenderUtil.moveToFace(poseStack,
-                blockPos.getX() - cameraPos.x(),
-                blockPos.getY() - cameraPos.y(),
-                blockPos.getZ() - cameraPos.z(),
-                facing);
-        RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
+
+        poseStack.pushPose();
+        poseStack.translate(front.getStepX() * 0.01f, front.getStepY() * 0.01f, front.getStepZ() * 0.01f);
+
+        RenderUtil.moveToFace(poseStack, cubeCenter, front);
+        RenderUtil.rotateToFace(poseStack, front, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
         poseStack.scale(0.9f, 0.9f, 1);
@@ -271,6 +270,8 @@ public class BlockHighlightRenderer {
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
+
+        poseStack.popPose();
         poseStack.popPose();
     }
 

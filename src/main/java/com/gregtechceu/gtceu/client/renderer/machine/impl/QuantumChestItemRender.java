@@ -125,7 +125,7 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f,
                 frontFacing.getStepZ() * -1 / 16f);
 
-        RenderUtil.moveToFace(poseStack, 0, 0, 0, frontFacing);
+        RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, frontFacing);
         RenderUtil.rotateToFace(poseStack, frontFacing, Direction.NORTH);
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
