@@ -55,15 +55,23 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
                     if (machine instanceof SteamMachine) {
-                        text = Component.literal(formatted + " mB/t").withStyle(ChatFormatting.GREEN);
+                        text = Component.translatable("gtceu.jade.fluid_use", formatted)
+                                .withStyle(ChatFormatting.GREEN);
                     }
                 }
 
                 if (text == null) {
-                    text = Component.literal(formatted + " EU/t ").withStyle(ChatFormatting.RED)
-                            .append(Component.literal("(").withStyle(ChatFormatting.GREEN))
+                    var tier = GTUtil.getTierByVoltage(EUt.voltage());
+                    String minAmperage = FormattingUtil
+                            .formatNumber2Places((float) (EUt.getTotalEU()) / GTValues.V[tier]) + TextStyleClass.INFO;
+
+                    text = Component.translatable("gtceu.jade.amperage_use", minAmperage).withStyle(ChatFormatting.RED)
+                            .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN))
                             .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
-                            .append(Component.literal(")").withStyle(ChatFormatting.GREEN));
+                            .append(Component.translatable("gtceu.universal.padded_parentheses",
+                                    (Component.translatable("gtceu.recipe.eu.total",
+                                            formatted)))
+                                    .withStyle(ChatFormatting.WHITE));
                 }
 
                 if (EUt.isInput()) {

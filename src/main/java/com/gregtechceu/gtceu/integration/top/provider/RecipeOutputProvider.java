@@ -109,8 +109,9 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 String spacer = " ";
                 if (itemOutput instanceof IntProviderIngredient provider) {
-                    spacer += provider.getCountProvider().getMinValue() + "-" +
-                            provider.getCountProvider().getMaxValue() + " ";
+                    spacer += (Component.translatable("gtceu.gui.content.range",
+                            String.valueOf(provider.getCountProvider().getMinValue()),
+                            String.valueOf(provider.getCountProvider().getMaxValue()))) + " ";
                     provider.setItemStacks(null); // no roll
                     provider.setSampledCount(1);
                 }
@@ -130,8 +131,9 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 String spacer = " ";
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
-                    spacer += provider.getCountProvider().getMinValue() + "-" +
-                            provider.getCountProvider().getMaxValue() + " ";
+                    spacer += (Component.translatable("gtceu.gui.content.range",
+                            String.valueOf(provider.getCountProvider().getMinValue()),
+                            String.valueOf(provider.getCountProvider().getMaxValue()))) + " ";
                     fluidOutput.setAmount(provider.getCountProvider().getMaxValue()); // no roll
                 }
                 horizontalPane.element(new FluidStackElement(fluidOutput.getStacks()[0],

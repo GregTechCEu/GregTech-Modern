@@ -25,7 +25,7 @@ public class ItemLang {
         }
 
         // Recipe Categories
-        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Plasma Scrapping");
+        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Arc Scrapping");
         provider.add("gtceu.recipe.category.macerator_recycling", "Part Grinding");
         provider.add("gtceu.recipe.category.extractor_recycling", "Scrap Remelting");
         provider.add("gtceu.recipe.category.ore_crushing", "Ore Grinding");
