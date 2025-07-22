@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -36,27 +38,28 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import static java.util.Map.entry;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ComputerMonitorCover extends CoverBehavior implements IUICover, Container {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = Map.of(
-            "energy", (cover, args) -> {
+    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = Map.ofEntries(
+            entry("energy", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
                 return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
-            },
-            "energyCapacity", (cover, args) -> {
+            }),
+            entry("energyCapacity", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
                 return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
-            },
-            "calc", (cover, args) -> {
+            }),
+            entry("calc", (cover, args) -> {
                 List<String> stringArgs = new ArrayList<>();
                 args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
                 return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
-            },
-            "itemCount", (cover, args) -> {
+            }),
+            entry("itemCount", (cover, args) -> {
                 IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
                 if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
                 if (args.size() == 1) return GTStringUtils.literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
@@ -72,8 +75,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     }
                 }
                 return GTStringUtils.literal("Invalid args!");
-            },
-            "if", (cover, args) -> {
+            }),
+            entry("if", (cover, args) -> {
                 if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
                 try {
                     if (GTStringUtils.toDouble(args.get(0)) != 0) {
@@ -83,41 +86,97 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                 } catch (NumberFormatException e) {
                     return args.get(1);
                 }
-            },
-            "color", (cover, args) -> {
-                if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
+            }),
+            entry("color", (cover, args) -> {
+                if (args.size() != 2) return GTStringUtils.literal("Expected 2 args!");
                 ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
                 if (color == null)
                     return GTStringUtils.literal("Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
                 return args.get(1).stream().map(c -> c.withStyle(color)).toList();
-            }
+            }),
+            entry("underline", (cover, args) -> {
+                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList();
+            }),
+            entry("strike", (cover, args) -> {
+                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList();
+            }),
+            entry("obf", (cover, args) -> {
+                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList();
+            }),
+            entry("random", (cover, args) -> {
+                if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                try {
+                    return GTStringUtils.literal(GTValues.RNG.nextIntBetweenInclusive(GTStringUtils.toInt(args.get(0)), GTStringUtils.toInt(args.get(1))));
+                } catch (NumberFormatException e) {
+                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                }
+            }),
+            entry("repeat", (cover, args) -> {
+                if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                try {
+                    int count = GTStringUtils.toInt(args.get(0));
+                    List<MutableComponent> out = GTStringUtils.literal("");
+                    for (int i = 0; i < count; i++) GTStringUtils.append(out, args.get(1));
+                    return out;
+                } catch (NumberFormatException e) {
+                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                }
+            }),
+            entry("block", (cover, args) -> {
+                if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                return GTStringUtils.literal("█");
+            }),
+            entry("tick", (cover, args) -> {
+                if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                return GTStringUtils.literal(cover.getTicksSincePlaced());
+            }),
+            entry("select", (cover, args) -> {
+                if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
+                try {
+                    int i = GTStringUtils.toInt(args.get(0));
+                    if (args.size() <= i + 1) return GTStringUtils.literal("Expected at least %d arguments, got %d instead".formatted(i + 2, args.size()));
+                    return args.get(i + 1);
+                } catch (NumberFormatException e) {
+                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                }
+            })
     );
 
-    private static final Map<String, String> PLACEHOLDER_INFO = Map.of(
-            "energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored",
-            "energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity",
-            "itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
+    private static final Map<String, String> PLACEHOLDER_INFO = Map.ofEntries(
+            entry("energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored"),
+            entry("energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity"),
+            entry("itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
                     "{itemCount} -> total item amount",
                     "{itemCount <item_id>} -> amount of items with ids equal to item_id",
                     "{itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover"
-            ),
-            "calc", "Returns the result of a math function or operation.\nUsage:\n  %s\n  %s\n  %s".formatted(
+            )),
+            entry("calc", "Returns the result of a math function or operation.\nUsage:\n  %s\n  %s\n  %s".formatted(
                     "{calc <any_string>} -> any_string",
                     "{calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
                     "{calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation"
-            ),
-            "if", "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  %s".formatted(
+            )),
+            entry("if", "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  %s".formatted(
                     "{if <condition> <returned_if_true> [returned_if_false]}"
-            )
+            )),
+            entry("obf", "Returns the text from the first argument, obfuscated.\nUsage:\n  {obf <text>} -> obfuscated text"),
+            entry("underline", "Returns the text from the first argument, underlined\nUsage:\n  {underline <text>} -> underlined text"),
+            entry("strike", "Returns the text from the first text, displaying it as if it was crossed out\nUsage:\n  {strike <text>} -> crossed-out text"),
+            entry("color", "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.\nUsage:\n  {color <color> <text>} -> colored text"),
+            entry("tick", "Returns the amount of ticks passed from when this cover was placed.\nUsage:\n  {tick} -> the amount of ticks"),
+            entry("block", "Returns the block symbol (█).\nUsage:\n  {block} -> '█'"),
+            entry("repeat", "Returns the text from the second arguments, repeated the amount of times specified in the first argument.\nUsage:\n  {repeat <amount> <text>} -> text repeated the specified amount of times"),
+            entry("random", "Returns a random number in the specified interval (inclusive).\nUsage:\n  {random <min> <max>} -> a random number between min and max (inclusive)"),
+            entry("select", "Returns the argument at the specified index (starting from 0)\nUsage:\n  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index")
     );
 
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
     @Persisted
-    @DescSynced
     private final List<String> formatStringArgs = new ArrayList<>(8);
     @Persisted
-    @DescSynced
     private final List<String> formatStringLines = new ArrayList<>(8);
     @Persisted
     @DescSynced
@@ -126,8 +185,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Persisted
     private final List<ItemStack> slots = new ArrayList<>();
     @Setter
-    @DescSynced
     private String placeholderSearch = "";
+    @Setter
+    @Getter
+    @Persisted
+    private int updateInterval = 100;
+    private int tick = 0;
+    @Getter
+    @Persisted
+    private long ticksSincePlaced = 0;
+
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -331,6 +398,11 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         //searchBox.setHoverTooltips("Search");
         //mainPage.addWidget(searchBox);
         onSearch.accept("");
+        IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval, this::setUpdateInterval);
+        updateIntervalInput.setHoverTooltips("Update interval (in ticks)");
+        updateIntervalInput.setMin(1);
+        updateIntervalInput.setMax(60*20);
+        mainPage.addWidget(updateIntervalInput);
         switchToFormatStringArgsPageButton.setHoverTooltips("Edit blank placeholders");
         switchBack.setHoverTooltips("Edit displayed text");
         mainPage.addWidget(switchToFormatStringArgsPageButton);
@@ -347,10 +419,15 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     }
 
     private void update() {
-        try {
-            text = getRenderedText();
-        } catch (RuntimeException e) {
-            text = GTStringUtils.literal("An unexpected error has occurred: " + e);
+        tick++;
+        ticksSincePlaced++;
+        if (tick >= updateInterval) {
+            tick = 0;
+            try {
+                text = getRenderedText();
+            } catch (RuntimeException e) {
+                text = GTStringUtils.literal("An unexpected error has occurred: " + e);
+            }
         }
     }
 

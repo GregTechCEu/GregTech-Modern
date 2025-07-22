@@ -12,14 +12,22 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.List;
 
 public class ComputerMonitorCoverDisplaySource extends DisplaySource {
+    private int refreshTicks = 100;
+
     @Override
     public List<MutableComponent> provideText(DisplayLinkContext context, DisplayTargetStats stats) {
         ICoverable coverable = GTCapabilityHelper.getCoverable(context.level(), context.getSourcePos(), context.blockEntity().getDirection().getOpposite());
         if (coverable != null) {
             if (coverable.getCoverAtSide(context.blockEntity().getDirection().getOpposite()) instanceof ComputerMonitorCover cover) {
+                refreshTicks = cover.getUpdateInterval();
                 return cover.getText();
             }
         }
         return GTStringUtils.literal("No cover!");
+    }
+
+    @Override
+    public int getPassiveRefreshTicks() {
+        return refreshTicks;
     }
 }
