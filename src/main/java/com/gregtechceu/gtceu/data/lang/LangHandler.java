@@ -1414,6 +1414,7 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
 
         provider.add("gtceu.display_source.computer_monitor_cover", "Computer Monitor Cover");
+        provider.add("gtceu.display_target.computer_monitor_cover", "Computer Monitor Cover");
         provider.add("gtceu.placeholder_info.energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored");
         provider.add("gtceu.placeholder_info.energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity");
         provider.add("gtceu.placeholder_info.itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
@@ -1445,6 +1446,7 @@ public class LangHandler {
                 "{redstone set link <slot_index> <freq_slot_index> <power>} -> empty string, broadcasts the specified redstone power on the specified Create redstone link frequency"
         ));
         provider.add("gtceu.placeholder_info.fluidCount", "Returns the amount of fluids (can be filtered).\nUsage:\n  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        provider.add("gtceu.placeholder_info.displayTarget", "Returns the specified line that was transmitted to this cover using a display link.\nUsage:\n  {displayTarget <line_number>} -> the text on the specified line (line number is 1-100)");
         provider.add("gtceu.gui.computer_monitor_cover.placeholder_reference", "All placeholders:\n(hover for more info)");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");

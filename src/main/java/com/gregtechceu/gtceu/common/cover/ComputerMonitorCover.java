@@ -162,7 +162,18 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
                 }
             }),
-            entry("redstone", ComputerMonitorCover::processRedstonePlaceholder)
+            entry("redstone", ComputerMonitorCover::processRedstonePlaceholder),
+            entry("displayTarget", (cover, args) -> {
+                if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
+                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
+                try {
+                    int i = GTStringUtils.toInt(args.get(0));
+                    if (i <= 0 || i > 100) GTStringUtils.literal("Line number must be from 1 to 100 (inclusive)");
+                    return new ArrayList<>(List.of(cover.createDisplayTargetBuffer.get(i - 1)));
+                } catch (NumberFormatException e) {
+                    return GTStringUtils.literal("Invalid line number '%s'".formatted(e.getMessage()));
+                }
+            })
     );
 
     private TickableSubscription subscription;
@@ -187,6 +198,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Getter
     @Persisted
     private long ticksSincePlaced = 0;
+    @Persisted
+    private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
 
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -195,6 +208,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         for (int i = 0; i < 8; i++) {
             slots.add(ItemStack.EMPTY);
         }
+        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
     }
 
     public boolean placeholderExists(List<MutableComponent> placeholder) {
@@ -277,6 +291,10 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         if (incompletePlaceholders.isEmpty())
             return out;
         return GTStringUtils.literal("Unclosed bracket!");
+    }
+
+    public void setDisplayTargetBufferLine(int line, MutableComponent component) {
+        createDisplayTargetBuffer.set(line, component);
     }
 
     @Override
