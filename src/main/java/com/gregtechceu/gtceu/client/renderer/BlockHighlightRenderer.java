@@ -38,8 +38,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
+import org.joml.Quaternionfc;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -58,6 +59,7 @@ public class BlockHighlightRenderer {
         if (level != null && player != null) {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
+            Vector3fc blockCenter = blockPos.getCenter().toVector3f();
 
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
@@ -100,6 +102,7 @@ public class BlockHighlightRenderer {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();
                         RenderSystem.defaultBlendFunc();
+
                         poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f,
                                 facing.getStepZ() * 0.01f);
                         poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
@@ -214,19 +217,15 @@ public class BlockHighlightRenderer {
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.lines());
         RenderSystem.lineWidth(3);
-        var mat = poseStack.last().pose();
+        PoseStack.Pose pose = poseStack.last();
         // straight top bottom lines
-        drawLine(mat, buffer, new Vector3f(topRight).add(new Vector3f(shift).mul(-1)),
-                new Vector3f(bottomRight).add(new Vector3f(shift).mul(-1)));
+        drawLine(pose, buffer, new Vector3f(topRight).sub(shiftX), new Vector3f(bottomRight).sub(shiftX));
 
-        drawLine(mat, buffer, new Vector3f(bottomLeft).add(shift), new Vector3f(topLeft).add(shift));
-
+        drawLine(pose, buffer, new Vector3f(bottomLeft).add(shiftX), new Vector3f(topLeft).add(shiftX));
         // straight side to side lines
-        drawLine(mat, buffer, new Vector3f(topLeft).add(new Vector3f(shiftVert).mul(-1)),
-                new Vector3f(topRight).add(new Vector3f(shiftVert).mul(-1)));
+        drawLine(pose, buffer, new Vector3f(topLeft).sub(shiftY), new Vector3f(topRight).sub(shiftY));
 
-        drawLine(mat, buffer, new Vector3f(bottomLeft).add(shiftVert),
-                new Vector3f(bottomRight).add(shiftVert));
+        drawLine(pose, buffer, new Vector3f(bottomLeft).add(shiftY), new Vector3f(bottomRight).add(shiftY));
 
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
@@ -275,16 +274,16 @@ public class BlockHighlightRenderer {
         poseStack.popPose();
     }
 
-    private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
-        var normal = new Vector3f(from).sub(to);
+    private static void drawLine(PoseStack.Pose pose, VertexConsumer buffer, Vector3fc from, Vector3fc to) {
+        Vector3f normal = from.sub(to, new Vector3f());
 
-        buffer.vertex(mat, from.x, from.y, from.z)
+        buffer.vertex(pose.pose(), from.x(), from.y(), from.z())
                 .color(rColour, gColour, bColour, 1f)
-                .normal(normal.x, normal.y, normal.z)
+                .normal(pose.normal(), normal.x(), normal.y(), normal.z())
                 .endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z)
+        buffer.vertex(pose.pose(), to.x(), to.y(), to.z())
                 .color(rColour, gColour, bColour, 1f)
-                .normal(normal.x, normal.y, normal.z)
+                .normal(pose.normal(), normal.x(), normal.y(), normal.z())
                 .endVertex();
     }
 
