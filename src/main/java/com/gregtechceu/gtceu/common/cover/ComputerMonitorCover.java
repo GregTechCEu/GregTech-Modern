@@ -171,6 +171,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                         return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
                     }
                 } else return GTStringUtils.literal("First argument must be either 'set' or 'get'");
+            }),
+            entry("previousText", (cover, args) -> {
+                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
+                try {
+                    int i = GTStringUtils.toInt(args.get(0));
+                    if (i < 1 || i > cover.text.size()) return GTStringUtils.literal("Expected index between 1 and %d (inclusive), got %d".formatted(cover.text.size(), i));
+                    return new ArrayList<>(List.of(cover.text.get(i - 1)));
+                } catch (NumberFormatException e) {
+                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                }
             })
     ));
 

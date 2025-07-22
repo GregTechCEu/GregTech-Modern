@@ -1454,6 +1454,7 @@ public class LangHandler {
         ));
         provider.add("gtceu.placeholder_info.fluidCount", "Returns the amount of fluids (can be filtered).\nUsage:\n  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
         provider.add("gtceu.placeholder_info.displayTarget", "Returns the specified line that was transmitted to this cover using a display link.\nUsage:\n  {displayTarget <line_number>} -> the text on the specified line (line number is 1-100)");
+        provider.add("gtceu.placeholder_info.previousText", "Returns the text that was previously displayed by this cover at the specified line (before line-wrapping).\nUsage:\n  {previousText <line>} -> the text previously displayed on the specified line (index starts at 1)");
         provider.add("gtceu.gui.computer_monitor_cover.placeholder_reference", "All placeholders:\n(hover for more info)");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
