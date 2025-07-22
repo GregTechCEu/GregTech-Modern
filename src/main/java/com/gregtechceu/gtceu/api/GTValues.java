@@ -115,7 +115,7 @@ public class GTValues {
             MODID_SODIUM = "sodium",
             MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
-            MODID_CREATE = "create",
+            MODID_CREATE = "create", // this already was here? lol
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",

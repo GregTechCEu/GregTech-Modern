@@ -46,6 +46,7 @@ import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateDisplaySources;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -131,6 +132,8 @@ public class CommonProxy {
         TagPrefix.init();
         GTSoundEntries.init();
         GTDamageTypes.init();
+        if (GTCEu.Mods.isCreateLoaded())
+            GTCreateDisplaySources.init();
         GTCovers.init();
         GTFluids.init();
         GTCreativeModeTabs.init();

@@ -17,6 +17,10 @@ repositories {
         url = "https://maven.firstdarkdev.xyz/snapshots"
     }
 
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
         filter { includeGroup("dev.latvian.mods")}

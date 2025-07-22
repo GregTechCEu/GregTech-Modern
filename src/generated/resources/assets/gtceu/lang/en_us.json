@@ -2227,6 +2227,7 @@
   "gtceu.direction.tooltip.left": "Left",
   "gtceu.direction.tooltip.right": "Right",
   "gtceu.direction.tooltip.up": "Up",
+  "gtceu.display_source.computer_monitor_cover": "Computer Monitor Cover",
   "gtceu.distillation_tower": "Distillation Tower",
   "gtceu.distillery": "Distillery",
   "gtceu.duct_pipe.transfer_rate": "§bAir transfer rate: %s",

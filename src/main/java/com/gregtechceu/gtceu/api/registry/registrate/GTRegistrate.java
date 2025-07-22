@@ -14,6 +14,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.registry.CreateRegistries;
+import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -225,5 +228,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
+    }
+
+    public <T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(String name, Supplier<T> supplier) {
+        return this.entry(name, callback -> new SimpleBuilder<>(
+                this, this, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier
+        ).byBlock(DisplaySource.BY_BLOCK).byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
     }
 }

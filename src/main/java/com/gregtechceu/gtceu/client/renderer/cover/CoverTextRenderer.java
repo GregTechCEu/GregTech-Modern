@@ -8,16 +8,19 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class CoverTextRenderer implements IDynamicCoverRenderer {
     @Setter
-    private Supplier<String> text;
+    private Supplier<List<? extends Component>> text;
 
-    public CoverTextRenderer(Supplier<String> text) {
+    public CoverTextRenderer(Supplier<List<? extends Component>> text) {
         this.text = text;
     }
     @Override
@@ -26,9 +29,9 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
         poseStack.translate(3/16f, 3/16f, 0);
         poseStack.scale(textScale, textScale, textScale);
         int y = 0;
-        for (String s : text.get().split("\\n")) {
-            if (s.isEmpty()) y += Minecraft.getInstance().font.lineHeight;
-            for (FormattedCharSequence line : Minecraft.getInstance().font.split(FormattedText.of(s), 90)) {
+        for (Component s : text.get()) {
+            boolean didAnything = false;
+            for (FormattedCharSequence line : Minecraft.getInstance().font.split(s, 90)) {
                 if (y >= 90) return;
                 Minecraft.getInstance().font.drawInBatch(
                         line,
@@ -42,7 +45,9 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
                         LightTexture.FULL_BRIGHT
                 );
                 y += Minecraft.getInstance().font.lineHeight;
+                didAnything = true;
             }
+            if (!didAnything) y += Minecraft.getInstance().font.lineHeight;
         }
 
     }

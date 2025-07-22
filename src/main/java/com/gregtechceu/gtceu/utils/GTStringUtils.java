@@ -1,13 +1,19 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GTStringUtils {
 
@@ -71,71 +77,113 @@ public class GTStringUtils {
             try {
                 long a = Long.parseLong(args.get(0));
                 long b = Long.parseLong(args.get(2));
-                switch (args.get(1)) {
-                    case "+":
-                        return String.valueOf(a + b);
-                    case "-":
-                        return String.valueOf(a - b);
-                    case "*":
-                        return String.valueOf(a * b);
-                    case "/":
-                        return String.valueOf(((double) a) / b);
-                    case "//":
-                        return String.valueOf(a / b);
-                    case "%":
-                        return String.valueOf(a % b);
-                    case "<<":
-                        return String.valueOf(a << b);
-                    case ">>":
-                        return String.valueOf(a >> b);
-                }
+                return switch (args.get(1)) {
+                    case "+" -> String.valueOf(a + b);
+                    case "-" -> String.valueOf(a - b);
+                    case "*" -> String.valueOf(a * b);
+                    case "/" -> String.valueOf(((double) a) / b);
+                    case "//" -> String.valueOf(a / b);
+                    case "%" -> String.valueOf(a % b);
+                    case "<<" -> String.valueOf(a << b);
+                    case ">>" -> String.valueOf(a >> b);
+                    default -> "No such operation: '%s'".formatted(args.get(1));
+                };
             } catch (NumberFormatException e) {
                 try {
                     double a = Double.parseDouble(args.get(0));
                     double b = Double.parseDouble(args.get(2));
-                    switch (args.get(1)) {
-                        case "/":
-                            return String.valueOf(a / b);
-                        case "//":
-                            return String.valueOf(((long) a) / b);
-                        case "+":
-                            return String.valueOf(a + b);
-                        case "-":
-                            return String.valueOf(a - b);
-                        case "*":
-                            return String.valueOf(a * b);
-                    }
+                    return switch (args.get(1)) {
+                        case "/" -> String.valueOf(a / b);
+                        case "//" -> String.valueOf(((long) a) / b);
+                        case "+" -> String.valueOf(a + b);
+                        case "-" -> String.valueOf(a - b);
+                        case "*" -> String.valueOf(a * b);
+                        default -> "Invalid number: '%s' or operation '%s'".formatted(e.getMessage(), args.get(1));
+                    };
                 } catch (NumberFormatException ex) {
-                    return "Invalid number!";
+                    return "Invalid number '%s'!".formatted(ex.getMessage());
                 }
             }
         } else if (args.size() == 2) {
             try {
                 long a = Long.parseLong(args.get(1));
-                switch (args.get(0)) {
-                    case "~":
-                        return String.valueOf(~a);
-                    case "sqrt":
-                        return String.valueOf(Math.sqrt(a));
-                }
+                return switch (args.get(0)) {
+                    case "~" -> String.valueOf(~a);
+                    case "sqrt" -> String.valueOf(Math.sqrt(a));
+                    default -> "No such operation: '%s'".formatted(args.get(0));
+                };
             } catch (NumberFormatException e) {
                 try {
                     double a = Double.parseDouble(args.get(1));
-                    switch (args.get(0)) {
-                        case "round":
-                            return String.valueOf(Math.round(a));
-                        case "ceil":
-                            return String.valueOf(Math.ceil(a));
-                        case "floor":
-                            return String.valueOf(Math.floor(a));
-                        case "sqrt":
-                            return String.valueOf(Math.sqrt(a));
-                    }
+                    return switch (args.get(0)) {
+                        case "round" -> String.valueOf(Math.round(a));
+                        case "ceil" -> String.valueOf(Math.ceil(a));
+                        case "floor" -> String.valueOf(Math.floor(a));
+                        case "sqrt" -> String.valueOf(Math.sqrt(a));
+                        default -> "Invalid number '%s' or operation '%s'!".formatted(e.getMessage(), args.get(0));
+                    };
                 } catch (NumberFormatException e2) {
-                    return "Invalid number!";
+                    return "Invalid number '%s'!".formatted(e2.getMessage());
                 }
             }
         } else if (args.size() == 1) return args.get(0);
         return "Invalid expression!";
+    }
+
+    public static List<MutableComponent> literal(String s) {
+        return new ArrayList<>(List.of(Component.literal(s)));
+    }
+
+    public static List<MutableComponent> literal(long n) {
+        return literal(String.valueOf(n));
+    }
+
+    public static boolean equals(List<MutableComponent> components, String s) {
+        return Objects.equals(componentsToString(components), s);
+    }
+
+    public static double toDouble(List<MutableComponent> components) throws NumberFormatException {
+        if (components.isEmpty()) return 0;
+        if (components.size() > 1) throw new NumberFormatException(componentsToString(components));
+        return Double.parseDouble(components.get(0).getString());
+    }
+
+    public static int toInt(List<MutableComponent> components) throws NumberFormatException {
+        if (components.isEmpty()) return 0;
+        if (components.size() > 1) throw new NumberFormatException(componentsToString(components));
+        return Integer.parseInt(components.get(0).getString());
+    }
+
+    public static String componentsToString(List<MutableComponent> components) {
+        StringBuilder out = new StringBuilder();
+        if (components.isEmpty()) return out.toString();
+        for (MutableComponent component : components) {
+            out.append(component.getString());
+            out.append('\n');
+        }
+        return out.substring(0, out.length() - 1);
+    }
+
+    public static <T> T getLast(List<T> list) {
+        return list.get(list.size() - 1);
+    }
+
+    public static void append(List<MutableComponent> components, @Nullable String s) {
+        if (s != null)
+            getLast(components).append(s);
+    }
+
+    public static void append(List<MutableComponent> components, char c) {
+        append(components, String.valueOf(c));
+    }
+
+    public static void append(List<MutableComponent> components, @Nullable List<MutableComponent> lines) {
+        if (lines == null) return;
+        if (lines.isEmpty()) return;
+        for (MutableComponent line : lines) {
+            getLast(components).append(line);
+            components.add(MutableComponent.create(ComponentContents.EMPTY));
+        }
+        components.remove(components.size() - 1);
     }
 }

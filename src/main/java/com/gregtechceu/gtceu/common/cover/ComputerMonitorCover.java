@@ -20,8 +20,11 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,39 +42,54 @@ import java.util.function.Consumer;
 public class ComputerMonitorCover extends CoverBehavior implements IUICover, Container {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final Map<String, BiFunction<ComputerMonitorCover, List<String>, String>> PLACEHOLDERS = Map.of(
+    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = Map.of(
             "energy", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
-                return energy != null ? String.valueOf(energy.getEnergyStored()) : "0";
+                return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
             },
             "energyCapacity", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
-                return energy != null ? String.valueOf(energy.getEnergyCapacity()) : "0";
+                return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
             },
-            "calc", (cover, args) -> GTStringUtils.calc(args),
+            "calc", (cover, args) -> {
+                List<String> stringArgs = new ArrayList<>();
+                args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
+                return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
+            },
             "itemCount", (cover, args) -> {
                 IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
-                if (args.isEmpty()) return String.valueOf(countItems((ItemFilter) null, itemHandler));
-                if (args.size() == 1) return String.valueOf(countItems(args.get(0), itemHandler));
-                if (Objects.equals(args.get(0), "filter")) {
+                if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
+                if (args.size() == 1) return GTStringUtils.literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                if (GTStringUtils.equals(args.get(0), "filter")) {
                     try {
-                        int slot = Integer.parseInt(args.get(1));
-                        if (slot > 8 || slot < 1) return "Expected slot index between 1 and 8";
-                        return String.valueOf(countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
+                        int slot = GTStringUtils.toInt(args.get(1));
+                        if (slot > 8 || slot < 1) return GTStringUtils.literal("Expected slot index between 1 and 8");
+                        return GTStringUtils.literal(countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
                     } catch (NumberFormatException e) {
-                        return "Invalid slot!";
+                        return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
                     } catch (NullPointerException e) {
-                        return "Invalid filter!";
+                        return GTStringUtils.literal("Invalid filter!");
                     }
                 }
-                return "Invalid args!";
+                return GTStringUtils.literal("Invalid args!");
             },
             "if", (cover, args) -> {
-                if (args.size() < 2) return "Expected at least 2 args!";
-                if (!args.get(0).isEmpty() && !args.get(0).equals("0") && !args.get(0).equals("0.0")) {
+                if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
+                try {
+                    if (GTStringUtils.toDouble(args.get(0)) != 0) {
+                        return args.get(1);
+                    } else if (args.size() > 2) return args.get(2);
+                    else return GTStringUtils.literal("");
+                } catch (NumberFormatException e) {
                     return args.get(1);
-                } else if (args.size() > 2) return args.get(2);
-                else return "";
+                }
+            },
+            "color", (cover, args) -> {
+                if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
+                ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
+                if (color == null)
+                    return GTStringUtils.literal("Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
+                return args.get(1).stream().map(c -> c.withStyle(color)).toList();
             }
     );
 
@@ -104,7 +122,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Persisted
     @DescSynced
     @Getter
-    private String text = "";
+    private List<MutableComponent> text = new ArrayList<>();
     @Persisted
     private final List<ItemStack> slots = new ArrayList<>();
     @Setter
@@ -119,67 +137,86 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         }
     }
 
-    public boolean placeholderExists(String placeholder) {
-        String[] tmp = placeholder.split("\\s+");
-        if (tmp.length < 1) return false;
-        return PLACEHOLDERS.containsKey(tmp[0]);
+    public boolean placeholderExists(List<MutableComponent> placeholder) {
+        return PLACEHOLDERS.containsKey(GTStringUtils.componentsToString(placeholder));
     }
 
-    public @Nullable String processPlaceholder(String placeholder) {
-        String[] tmp = placeholder.split("\\s+");
-        if (tmp.length < 1 || !placeholderExists(placeholder)) return null;
-        return PLACEHOLDERS.get(tmp[0]).apply(this, Arrays.asList(tmp).subList(1, tmp.length));
+    public @Nullable List<MutableComponent> processPlaceholder(List<List<MutableComponent>> placeholder) {
+        if (!placeholderExists(placeholder.get(0))) return null;
+        return PLACEHOLDERS.get(GTStringUtils.componentsToString(placeholder.get(0))).apply(this, placeholder.subList(1, placeholder.size()));
     }
 
-    public String getRenderedText() {
-        StringBuilder out = new StringBuilder();
-        Stack<StringBuilder> incompletePlaceholders = new Stack<>();
+    public List<MutableComponent> getRenderedText() {
+        List<MutableComponent> out = new ArrayList<>(GTStringUtils.literal(""));
+        Stack<List<List<MutableComponent>>> incompletePlaceholders = new Stack<>();
         int formatStringArgsIndex = 0;
         StringBuilder formatString = new StringBuilder();
         formatStringLines.forEach((line) -> formatString.append(line).append("\n"));
+        StringBuilder tmp = new StringBuilder();
+        boolean left_bracket = false;
         boolean escaped = false;
         for (char c : formatString.toString().toCharArray()) {
+            if (escaped) {
+                tmp.append(c);
+                escaped = false;
+                left_bracket = false;
+            } else if (left_bracket && c == '}') {
+                if (formatStringArgsIndex >= formatStringArgs.size()) continue;
+                tmp.append('{').append(formatStringArgs.get(formatStringArgsIndex)).append('}');
+                formatStringArgsIndex++;
+                left_bracket = false;
+            } else if (left_bracket && c == '{') tmp.append(c);
+            else if (c == '{') left_bracket = true;
+            else if (c == '\\') escaped = true;
+            else {
+                if (left_bracket) tmp.append('{');
+                tmp.append(c);
+                left_bracket = false;
+            }
+        }
+        if (left_bracket) tmp.append('{');
+        escaped = false;
+        for (char c : tmp.toString().toCharArray()) {
             if (c == '\\') {
                 if (escaped) {
-                    if (incompletePlaceholders.isEmpty()) out.append(c);
-                    else incompletePlaceholders.peek().append(c);
+                    if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
+                    else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
                     escaped = false;
                 } else escaped = true;
             } else if (escaped) {
-                if (c == 'n') c = '\n';
-                if (incompletePlaceholders.isEmpty()) out.append(c);
-                else incompletePlaceholders.peek().append(c);
-                escaped = false;
-            } else if (c == '{') incompletePlaceholders.push(new StringBuilder());
-            else if (c == '}') {
-                if (incompletePlaceholders.isEmpty()) return "Unexpected closing bracket!";
-                if (incompletePlaceholders.peek().isEmpty()) {
-                    if (formatStringArgsIndex < formatStringArgs.size()) {
-                        if (placeholderExists(formatStringArgs.get(formatStringArgsIndex))) {
-                            incompletePlaceholders.pop();
-                            String placeholderString = processPlaceholder(formatStringArgs.get(formatStringArgsIndex));
-                            formatStringArgsIndex++;
-                            if (incompletePlaceholders.isEmpty()) out.append(placeholderString);
-                            else incompletePlaceholders.peek().append(placeholderString);
-                        } else return "No such placeholder: '%s'".formatted(formatStringArgs.get(formatStringArgsIndex));
-                    } else {
-                        return "There's more empty placeholders than arguments!";
-                    }
-                } else if (placeholderExists(incompletePlaceholders.peek().toString())) {
-                    String placeholderString = processPlaceholder(incompletePlaceholders.pop().toString());
-                    if (incompletePlaceholders.isEmpty()) out.append(placeholderString);
-                    else incompletePlaceholders.peek().append(placeholderString);
-                } else {
-                    return "No such placeholder: '%s'".formatted(incompletePlaceholders.peek());
+                if (c == 'n') {
+                    if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
+                    else GTStringUtils.getLast(incompletePlaceholders.peek()).add(MutableComponent.create(ComponentContents.EMPTY));
                 }
+                else if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
+                else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
+                escaped = false;
+            } else if (c == ' ') {
+                if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
+                else incompletePlaceholders.peek().add(GTStringUtils.literal(""));
+            } else if (c == '{') incompletePlaceholders.push(new ArrayList<>(List.of(GTStringUtils.literal(""))));
+            else if (c == '}') {
+                if (incompletePlaceholders.isEmpty()) return GTStringUtils.literal("Unexpected closing bracket!");
+                if (incompletePlaceholders.peek().isEmpty()) {
+                    incompletePlaceholders.pop();
+                } else if (placeholderExists(incompletePlaceholders.peek().get(0))) {
+                    List<MutableComponent> placeholderString = processPlaceholder(incompletePlaceholders.pop());
+                    if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, placeholderString);
+                    else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), placeholderString);
+                } else {
+                    return GTStringUtils.literal("No such placeholder: '%s'".formatted(GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
+                }
+            } else if (c == '\n') {
+                if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
+                else GTStringUtils.getLast(incompletePlaceholders.peek()).add(MutableComponent.create(ComponentContents.EMPTY));
             } else {
-                if (incompletePlaceholders.isEmpty()) out.append(c);
-                else incompletePlaceholders.peek().append(c);
+                if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
+                else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
             }
         }
         if (incompletePlaceholders.isEmpty())
-            return out.toString();
-        return "Unclosed bracket!";
+            return out;
+        return GTStringUtils.literal("Unclosed bracket!");
     }
 
     @Override
@@ -240,6 +277,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     "Input placeholder to be used in place of %s '{}' here.".formatted(GTStringUtils.getIntOrderingSuffix(i + 1)),
                     "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes."
             );
+
             int finalI = i;
             if (i >= formatStringArgs.size()) formatStringArgs.add("");
             formatStringArgsInput.setCurrentString(formatStringArgs.get(i));
@@ -309,7 +347,11 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     }
 
     private void update() {
-        text = getRenderedText();
+        try {
+            text = getRenderedText();
+        } catch (RuntimeException e) {
+            text = GTStringUtils.literal("An unexpected error has occurred: " + e);
+        }
     }
 
     @Override

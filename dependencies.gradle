@@ -33,6 +33,15 @@ dependencies {
     modCompileOnly(forge.ae2)
     modCompileOnly(forge.ae2wtlib)
 
+    // Create
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    //modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    //compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    //implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+
     // KJS
     modCompileOnly(forge.kubejs)
     modCompileOnly(forge.architectury)
@@ -69,7 +78,7 @@ dependencies {
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.ae2)
-    modLocalRuntime(forge.spark)
+    //modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
@@ -88,7 +97,7 @@ dependencies {
     modExtraLocalRuntime(forge.trenzalore)
     modExtraLocalRuntime(forge.curios)
 //    modExtraLocalRuntime(forge.worldstripper)
-    modExtraLocalRuntime(forge.cc.tweaked.forge.impl)
+//    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
     modExtraLocalRuntime(forge.bundles.kjs)
 
