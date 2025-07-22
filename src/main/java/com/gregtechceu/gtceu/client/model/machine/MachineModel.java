@@ -403,7 +403,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void render(MetaMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer, packedLight, packedOverlay);
+        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer, packedLight,
+                packedOverlay);
         if (dynamicRenders.isEmpty()) return;
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {

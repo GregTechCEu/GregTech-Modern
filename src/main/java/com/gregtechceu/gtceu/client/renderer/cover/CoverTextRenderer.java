@@ -1,32 +1,35 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class CoverTextRenderer implements IDynamicCoverRenderer {
+
     @Setter
     private Supplier<List<? extends Component>> text;
 
     public CoverTextRenderer(Supplier<List<? extends Component>> text) {
         this.text = text;
     }
+
     @Override
-    public void render(MetaMachine machine, Direction face, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        float textScale = 1/144f;
-        poseStack.translate(3/16f, 3/16f, 0);
+    public void render(MetaMachine machine, Direction face, float partialTick, PoseStack poseStack,
+                       MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        float textScale = 1 / 144f;
+        poseStack.translate(3 / 16f, 3 / 16f, 0);
         poseStack.scale(textScale, textScale, textScale);
         int y = 0;
         for (Component s : text.get()) {
@@ -42,13 +45,11 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
                         buffer,
                         Font.DisplayMode.NORMAL,
                         0,
-                        LightTexture.FULL_BRIGHT
-                );
+                        LightTexture.FULL_BRIGHT);
                 y += Minecraft.getInstance().font.lineHeight;
                 didAnything = true;
             }
             if (!didAnything) y += Minecraft.getInstance().font.lineHeight;
         }
-
     }
 }

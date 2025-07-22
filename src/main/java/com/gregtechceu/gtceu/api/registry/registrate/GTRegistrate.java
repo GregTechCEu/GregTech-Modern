@@ -14,10 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
-import com.simibubi.create.api.behaviour.display.DisplaySource;
-import com.simibubi.create.api.behaviour.display.DisplayTarget;
-import com.simibubi.create.api.registry.CreateRegistries;
-import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -40,6 +36,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.behaviour.display.DisplayTarget;
+import com.simibubi.create.api.registry.CreateRegistries;
+import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
@@ -231,15 +231,17 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return createCreativeModeTab(parent, name, config);
     }
 
-    public <T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(String name, Supplier<T> supplier) {
+    public <T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(String name,
+                                                                                                 Supplier<T> supplier) {
         return this.entry(name, callback -> new SimpleBuilder<>(
-                this, this, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier
-        ).byBlock(DisplaySource.BY_BLOCK).byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
+                this, this, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier).byBlock(DisplaySource.BY_BLOCK)
+                .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
     }
 
-    public <T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(String name, Supplier<T> supplier) {
+    public <T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(String name,
+                                                                                                 Supplier<T> supplier) {
         return this.entry(name, callback -> new SimpleBuilder<>(
-                this, this, name, callback, CreateRegistries.DISPLAY_TARGET, supplier
-        ).byBlock(DisplayTarget.BY_BLOCK).byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
+                this, this, name, callback, CreateRegistries.DISPLAY_TARGET, supplier).byBlock(DisplayTarget.BY_BLOCK)
+                .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
     }
 }

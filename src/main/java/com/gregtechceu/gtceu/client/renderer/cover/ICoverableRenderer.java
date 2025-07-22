@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -24,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface ICoverableRenderer {
+
     Logger LOGGER = LogManager.getLogger();
 
     @OnlyIn(Dist.CLIENT)
@@ -77,7 +78,8 @@ public interface ICoverableRenderer {
         }
     }
 
-    default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack,
+                                     MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ICoverable coverable = machine.getCoverContainer();
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);

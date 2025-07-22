@@ -39,11 +39,11 @@ public class GTStringUtils {
     /**
      * This function does this:
      * <ul>
-     *     <li>{@code 1} -> {@code "1st"}</li>
-     *     <li>{@code 2} -> {@code "2nd"}</li>
-     *     <li>{@code 3} -> {@code "3rd"}</li>
-     *     <li>{@code 4} -> {@code "4th"}</li>
-     *     <li>...</li>
+     * <li>{@code 1} -> {@code "1st"}</li>
+     * <li>{@code 2} -> {@code "2nd"}</li>
+     * <li>{@code 3} -> {@code "3rd"}</li>
+     * <li>{@code 4} -> {@code "4th"}</li>
+     * <li>...</li>
      * </ul>
      */
     @NotNull
@@ -59,13 +59,15 @@ public class GTStringUtils {
      * This function is intended for use with user input.
      * For example:
      * <ul>
-     *     <li>{@code {"12", "+", "34"}} -> {@code "46"}</li>
-     *     <li>{@code {"sqrt", "16"}} -> {@code "4"}</li>
-     *     <li>{@code {"round", "4.5"}} -> {@code "5"}</li>
-     *     <li>{@code {"literally any string"}} -> {@code "literally any string"}</li>
-     *     <li>{@code {"~", "0"}} -> {@code "-1"} // signed bitwise inversion</li>
+     * <li>{@code {"12", "+", "34"}} -> {@code "46"}</li>
+     * <li>{@code {"sqrt", "16"}} -> {@code "4"}</li>
+     * <li>{@code {"round", "4.5"}} -> {@code "5"}</li>
+     * <li>{@code {"literally any string"}} -> {@code "literally any string"}</li>
+     * <li>{@code {"~", "0"}} -> {@code "-1"} // signed bitwise inversion</li>
      * </ul>
-     * Currently the operations are: {@code {"+", "-", "*", "/", "//", "%", ">>", "<<", "~", "round", "ceil", "floor", "sqrt"}}
+     * Currently the operations are: {@code {"+", "-", "*", "/", "//", "%", ">>", "<<", "~", "round", "ceil", "floor",
+     * "sqrt"}}
+     * 
      * @param args the arguments, including operands and operation to calculate
      * @return the result of the calculation, {@code "Invalid number!"} or {@code "Invalid expression!"}
      */

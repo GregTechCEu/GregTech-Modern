@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -16,14 +15,14 @@ import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.integration.create.CreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -37,152 +36,171 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static java.util.Map.entry;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ComputerMonitorCover extends CoverBehavior implements IUICover, Container {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = new HashMap<>(Map.ofEntries(
-            entry("energy", (cover, args) -> {
-                IEnergyContainer energy = cover.getEnergyContainer();
-                return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
-            }),
-            entry("energyCapacity", (cover, args) -> {
-                IEnergyContainer energy = cover.getEnergyContainer();
-                return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
-            }),
-            entry("calc", (cover, args) -> {
-                List<String> stringArgs = new ArrayList<>();
-                args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
-                return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
-            }),
-            entry("itemCount", (cover, args) -> {
-                IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
-                if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
-                if (args.size() == 1) return GTStringUtils.literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
-                if (GTStringUtils.equals(args.get(0), "filter")) {
-                    try {
-                        int slot = GTStringUtils.toInt(args.get(1));
-                        if (slot > 8 || slot < 1) return GTStringUtils.literal("Expected slot index between 1 and 8");
-                        return GTStringUtils.literal(countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
-                    } catch (NumberFormatException e) {
-                        return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
-                    } catch (NullPointerException e) {
-                        return GTStringUtils.literal("Invalid filter!");
-                    }
-                }
-                return GTStringUtils.literal("Invalid args!");
-            }),
-            entry("fluidCount", (cover, args) -> {
-                IFluidHandler fluidHandler = cover.coverHolder.getFluidHandlerCap(cover.attachedSide, false);
-                if (args.isEmpty()) return GTStringUtils.literal(countFluids(null, fluidHandler));
-                if (args.size() == 1) return GTStringUtils.literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
-                return GTStringUtils.literal("Expected not more than 1 argument!");
-            }),
-            entry("if", (cover, args) -> {
-                if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
-                try {
-                    if (GTStringUtils.toDouble(args.get(0)) != 0) {
-                        return args.get(1);
-                    } else if (args.size() > 2) return args.get(2);
-                    else return GTStringUtils.literal("");
-                } catch (NumberFormatException e) {
-                    return args.get(1);
-                }
-            }),
-            entry("color", (cover, args) -> {
-                if (args.size() != 2) return GTStringUtils.literal("Expected 2 args!");
-                ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
-                if (color == null)
-                    return GTStringUtils.literal("Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
-                return args.get(1).stream().map(c -> c.withStyle(color)).toList();
-            }),
-            entry("underline", (cover, args) -> {
-                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList();
-            }),
-            entry("strike", (cover, args) -> {
-                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList();
-            }),
-            entry("obf", (cover, args) -> {
-                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
-                return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList();
-            }),
-            entry("random", (cover, args) -> {
-                if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
-                try {
-                    return GTStringUtils.literal(GTValues.RNG.nextIntBetweenInclusive(GTStringUtils.toInt(args.get(0)), GTStringUtils.toInt(args.get(1))));
-                } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                }
-            }),
-            entry("repeat", (cover, args) -> {
-                if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
-                try {
-                    int count = GTStringUtils.toInt(args.get(0));
-                    List<MutableComponent> out = GTStringUtils.literal("");
-                    for (int i = 0; i < count; i++) GTStringUtils.append(out, args.get(1));
-                    return out;
-                } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                }
-            }),
-            entry("block", (cover, args) -> {
-                if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
-                return GTStringUtils.literal("█");
-            }),
-            entry("tick", (cover, args) -> {
-                if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
-                return GTStringUtils.literal(cover.getTicksSincePlaced());
-            }),
-            entry("select", (cover, args) -> {
-                if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
-                try {
-                    int i = GTStringUtils.toInt(args.get(0));
-                    if (args.size() <= i + 1) return GTStringUtils.literal("Expected at least %d arguments, got %d instead".formatted(i + 2, args.size()));
-                    return args.get(i + 1);
-                } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                }
-            }),
-            entry("redstone", (cover, args) -> {
-                if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments");
-                if (GTStringUtils.equals(args.get(0), "get")) {
-                    Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
-                    if (direction == null) return GTStringUtils.literal("2nd argument must be a valid direction (up,down,north,south,east,west)");
-                    return GTStringUtils.literal(cover.coverHolder.getLevel().getSignal(cover.coverHolder.getPos().relative(direction), direction));
-                } else if (GTStringUtils.equals(args.get(1), "set")) {
-                    try {
-                        int power = GTStringUtils.toInt(args.get(1));
-                        if (power < 0 || power > 15) return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
-                        cover.setRedstoneSignalOutput(power);
-                        return GTStringUtils.literal("");
-                    } catch (NumberFormatException e) {
-                        return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                    }
-                } else return GTStringUtils.literal("First argument must be either 'set' or 'get'");
-            }),
-            entry("previousText", (cover, args) -> {
-                if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
-                try {
-                    int i = GTStringUtils.toInt(args.get(0));
-                    if (i < 1 || i > cover.text.size()) return GTStringUtils.literal("Expected index between 1 and %d (inclusive), got %d".formatted(cover.text.size(), i));
-                    return new ArrayList<>(List.of(cover.text.get(i - 1)));
-                } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
-                }
-            })
-    ));
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
+            CoverBehavior.MANAGED_FIELD_HOLDER);
+
+    private static final Map<String, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>>> PLACEHOLDERS = new HashMap<>(
+            Map.ofEntries(
+                    entry("energy", (cover, args) -> {
+                        IEnergyContainer energy = cover.getEnergyContainer();
+                        return GTStringUtils.literal(energy != null ? energy.getEnergyStored() : 0);
+                    }),
+                    entry("energyCapacity", (cover, args) -> {
+                        IEnergyContainer energy = cover.getEnergyContainer();
+                        return GTStringUtils.literal(energy != null ? energy.getEnergyCapacity() : 0);
+                    }),
+                    entry("calc", (cover, args) -> {
+                        List<String> stringArgs = new ArrayList<>();
+                        args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
+                        return GTStringUtils.literal(GTStringUtils.calc(stringArgs));
+                    }),
+                    entry("itemCount", (cover, args) -> {
+                        IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
+                        if (args.isEmpty()) return GTStringUtils.literal(countItems((ItemFilter) null, itemHandler));
+                        if (args.size() == 1) return GTStringUtils
+                                .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                        if (GTStringUtils.equals(args.get(0), "filter")) {
+                            try {
+                                int slot = GTStringUtils.toInt(args.get(1));
+                                if (slot > 8 || slot < 1)
+                                    return GTStringUtils.literal("Expected slot index between 1 and 8");
+                                return GTStringUtils.literal(
+                                        countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
+                            } catch (NumberFormatException e) {
+                                return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
+                            } catch (NullPointerException e) {
+                                return GTStringUtils.literal("Invalid filter!");
+                            }
+                        }
+                        return GTStringUtils.literal("Invalid args!");
+                    }),
+                    entry("fluidCount", (cover, args) -> {
+                        IFluidHandler fluidHandler = cover.coverHolder.getFluidHandlerCap(cover.attachedSide, false);
+                        if (args.isEmpty()) return GTStringUtils.literal(countFluids(null, fluidHandler));
+                        if (args.size() == 1) return GTStringUtils
+                                .literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
+                        return GTStringUtils.literal("Expected not more than 1 argument!");
+                    }),
+                    entry("if", (cover, args) -> {
+                        if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
+                        try {
+                            if (GTStringUtils.toDouble(args.get(0)) != 0) {
+                                return args.get(1);
+                            } else if (args.size() > 2) return args.get(2);
+                            else return GTStringUtils.literal("");
+                        } catch (NumberFormatException e) {
+                            return args.get(1);
+                        }
+                    }),
+                    entry("color", (cover, args) -> {
+                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 args!");
+                        ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
+                        if (color == null)
+                            return GTStringUtils.literal(
+                                    "Unknown color '%s'".formatted(GTStringUtils.componentsToString(args.get(0))));
+                        return args.get(1).stream().map(c -> c.withStyle(color)).toList();
+                    }),
+                    entry("underline", (cover, args) -> {
+                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList();
+                    }),
+                    entry("strike", (cover, args) -> {
+                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList();
+                    }),
+                    entry("obf", (cover, args) -> {
+                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument!");
+                        return args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList();
+                    }),
+                    entry("random", (cover, args) -> {
+                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                        try {
+                            return GTStringUtils.literal(GTValues.RNG.nextIntBetweenInclusive(
+                                    GTStringUtils.toInt(args.get(0)), GTStringUtils.toInt(args.get(1))));
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                        }
+                    }),
+                    entry("repeat", (cover, args) -> {
+                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments!");
+                        try {
+                            int count = GTStringUtils.toInt(args.get(0));
+                            List<MutableComponent> out = GTStringUtils.literal("");
+                            for (int i = 0; i < count; i++) GTStringUtils.append(out, args.get(1));
+                            return out;
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                        }
+                    }),
+                    entry("block", (cover, args) -> {
+                        if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                        return GTStringUtils.literal("█");
+                    }),
+                    entry("tick", (cover, args) -> {
+                        if (!args.isEmpty()) return GTStringUtils.literal("Expected no arguments!");
+                        return GTStringUtils.literal(cover.getTicksSincePlaced());
+                    }),
+                    entry("select", (cover, args) -> {
+                        if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
+                        try {
+                            int i = GTStringUtils.toInt(args.get(0));
+                            if (args.size() <= i + 1) return GTStringUtils.literal(
+                                    "Expected at least %d arguments, got %d instead".formatted(i + 2, args.size()));
+                            return args.get(i + 1);
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                        }
+                    }),
+                    entry("redstone", (cover, args) -> {
+                        if (args.size() != 2) return GTStringUtils.literal("Expected 2 arguments");
+                        if (GTStringUtils.equals(args.get(0), "get")) {
+                            Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
+                            if (direction == null) return GTStringUtils
+                                    .literal("2nd argument must be a valid direction (up,down,north,south,east,west)");
+                            return GTStringUtils.literal(cover.coverHolder.getLevel()
+                                    .getSignal(cover.coverHolder.getPos().relative(direction), direction));
+                        } else if (GTStringUtils.equals(args.get(1), "set")) {
+                            try {
+                                int power = GTStringUtils.toInt(args.get(1));
+                                if (power < 0 || power > 15)
+                                    return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
+                                cover.setRedstoneSignalOutput(power);
+                                return GTStringUtils.literal("");
+                            } catch (NumberFormatException e) {
+                                return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                            }
+                        } else return GTStringUtils.literal("First argument must be either 'set' or 'get'");
+                    }),
+                    entry("previousText", (cover, args) -> {
+                        if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
+                        try {
+                            int i = GTStringUtils.toInt(args.get(0));
+                            if (i < 1 || i > cover.text.size())
+                                return GTStringUtils.literal("Expected index between 1 and %d (inclusive), got %d"
+                                        .formatted(cover.text.size(), i));
+                            return new ArrayList<>(List.of(cover.text.get(i - 1)));
+                        } catch (NumberFormatException e) {
+                            return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                        }
+                    })));
 
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
@@ -210,7 +228,6 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
 
-
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText);
@@ -226,7 +243,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
 
     public @Nullable List<MutableComponent> processPlaceholder(List<List<MutableComponent>> placeholder) {
         if (!placeholderExists(placeholder.get(0))) return null;
-        return PLACEHOLDERS.get(GTStringUtils.componentsToString(placeholder.get(0))).apply(this, placeholder.subList(1, placeholder.size()));
+        return PLACEHOLDERS.get(GTStringUtils.componentsToString(placeholder.get(0))).apply(this,
+                placeholder.subList(1, placeholder.size()));
     }
 
     public List<MutableComponent> getRenderedText() {
@@ -269,9 +287,9 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             } else if (escaped) {
                 if (c == 'n') {
                     if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
-                    else GTStringUtils.getLast(incompletePlaceholders.peek()).add(MutableComponent.create(ComponentContents.EMPTY));
-                }
-                else if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
+                    else GTStringUtils.getLast(incompletePlaceholders.peek())
+                            .add(MutableComponent.create(ComponentContents.EMPTY));
+                } else if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
                 else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
                 escaped = false;
             } else if (c == ' ') {
@@ -287,11 +305,13 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, placeholderString);
                     else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), placeholderString);
                 } else {
-                    return GTStringUtils.literal("No such placeholder: '%s'".formatted(GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
+                    return GTStringUtils.literal("No such placeholder: '%s'"
+                            .formatted(GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
                 }
             } else if (c == '\n') {
                 if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
-                else GTStringUtils.getLast(incompletePlaceholders.peek()).add(MutableComponent.create(ComponentContents.EMPTY));
+                else GTStringUtils.getLast(incompletePlaceholders.peek())
+                        .add(MutableComponent.create(ComponentContents.EMPTY));
             } else {
                 if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
                 else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
@@ -324,18 +344,18 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Override
     public Widget createUIWidget() {
         int textFieldWidth = 160, horizontalPadding = 10, verticalPadding = 2;
-        final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
-        final WidgetGroup mainPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
-        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
+        final WidgetGroup group = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
+        final WidgetGroup mainPage = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
+        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringInput = new TextFieldWidget();
             formatStringInput.setSize(textFieldWidth, 15);
-            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth/2, 10 + verticalPadding + i*(15 + verticalPadding));
+            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth / 2,
+                    10 + verticalPadding + i * (15 + verticalPadding));
             formatStringInput.setHoverTooltips(
                     "Input string to display on line %d here.".formatted(i + 1),
                     "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
-                    "Placeholders can also be inside other placeholders."
-            );
+                    "Placeholders can also be inside other placeholders.");
             int finalI = i;
             if (i >= formatStringLines.size()) formatStringLines.add("");
             formatStringInput.setCurrentString(formatStringLines.get(i));
@@ -345,25 +365,24 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     this,
                     i,
                     horizontalPadding + 50,
-                    20*i,
-                    true, true
-            );
+                    20 * i,
+                    true, true);
             slot.setItem(slots.get(i));
             slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
             slot.setHoverTooltips(
                     "A slot for items that some placeholders can reference",
-                    "Slot number: %d".formatted(i + 1)
-            );
+                    "Slot number: %d".formatted(i + 1));
             mainPage.addWidget(slot);
         }
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringArgsInput = new TextFieldWidget();
             formatStringArgsInput.setSize(textFieldWidth, 15);
-            formatStringArgsInput.setSelfPosition(textFieldWidth/2 + horizontalPadding, 10 + verticalPadding + i*(15 + verticalPadding));
+            formatStringArgsInput.setSelfPosition(textFieldWidth / 2 + horizontalPadding,
+                    10 + verticalPadding + i * (15 + verticalPadding));
             formatStringArgsInput.setHoverTooltips(
-                    "Input placeholder to be used in place of %s '{}' here.".formatted(GTStringUtils.getIntOrderingSuffix(i + 1)),
-                    "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes."
-            );
+                    "Input placeholder to be used in place of %s '{}' here."
+                            .formatted(GTStringUtils.getIntOrderingSuffix(i + 1)),
+                    "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
 
             int finalI = i;
             if (i >= formatStringArgs.size()) formatStringArgs.add("");
@@ -373,24 +392,22 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         }
         ButtonWidget switchToFormatStringArgsPageButton = new ButtonWidget(
                 horizontalPadding + 50,
-                10*(15 + verticalPadding) + verticalPadding,
+                10 * (15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
                 clickData -> {
                     group.clearAllWidgets();
                     group.addWidget(formatStringArgsPage);
-                }
-        );
+                });
         ButtonWidget switchBack = new ButtonWidget(
                 horizontalPadding + 50,
-                10*(15 + verticalPadding) + verticalPadding,
+                10 * (15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
                 clickData -> {
                     group.clearAllWidgets();
                     group.addWidget(mainPage);
-                }
-        );
+                });
         WidgetGroup placeholderReference = new WidgetGroup(280, 0, 100, 0);
         Consumer<String> onSearch = (newSearch) -> {
             setPlaceholderSearch(newSearch);
@@ -402,7 +419,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             for (String placeholder : placeholders) {
                 TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
                 placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
-                placeholderName.setHoverTooltips(Component.translatableWithFallback("gtceu.placeholder_info." + placeholder, "No info."));
+                placeholderName.setHoverTooltips(
+                        Component.translatableWithFallback("gtceu.placeholder_info." + placeholder, "No info."));
                 placeholderReference.addWidget(placeholderName);
                 y += 15;
             }
@@ -410,20 +428,22 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         TextTextureWidget placeholderReferenceLabel = new TextTextureWidget(
                 280, 0,
                 160, 15,
-                Component.translatable("gtceu.gui.computer_monitor_cover.placeholder_reference").getString()
-        );
+                Component.translatable("gtceu.gui.computer_monitor_cover.placeholder_reference").getString());
         placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
         mainPage.addWidget(placeholderReferenceLabel);
-        //TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
-        //searchBox.setHoverTooltips("Search");
-        //mainPage.addWidget(searchBox);
+        // TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
+        // searchBox.setHoverTooltips("Search");
+        // mainPage.addWidget(searchBox);
         onSearch.accept("");
-        IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval, this::setUpdateInterval);
+        IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval,
+                this::setUpdateInterval);
         updateIntervalInput.setMin(1);
-        updateIntervalInput.setMax(60*20);
-        updateIntervalInput.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
+        updateIntervalInput.setMax(60 * 20);
+        updateIntervalInput
+                .setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
         mainPage.addWidget(updateIntervalInput);
-        switchToFormatStringArgsPageButton.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
+        switchToFormatStringArgsPageButton
+                .setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
         switchBack.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_displayed_text"));
         mainPage.addWidget(switchToFormatStringArgsPageButton);
         mainPage.addWidget(placeholderReference);
@@ -471,7 +491,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         int cnt = 0;
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             ItemStack itemStack = itemHandler.getStackInSlot(i);
-            String itemId = "%s:%s".formatted(itemStack.getItem().getCreatorModId(itemStack), itemStack.getItem().toString());
+            String itemId = "%s:%s".formatted(itemStack.getItem().getCreatorModId(itemStack),
+                    itemStack.getItem().toString());
             if (itemId.equals(id)) cnt += itemStack.getCount();
         }
         return cnt;
@@ -499,7 +520,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         return cnt;
     }
 
-    public static void addPlaceholder(String placeholderName, BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>> args) {
+    public static void addPlaceholder(String placeholderName,
+                                      BiFunction<ComputerMonitorCover, List<List<MutableComponent>>, List<MutableComponent>> args) {
         PLACEHOLDERS.put(placeholderName, args);
     }
 
