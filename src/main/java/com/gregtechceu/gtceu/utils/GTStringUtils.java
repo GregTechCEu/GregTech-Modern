@@ -48,9 +48,10 @@ public class GTStringUtils {
      */
     @NotNull
     public static String getIntOrderingSuffix(int x) {
-        if (x == 1) return "1st";
-        if (x == 2) return "2nd";
-        if (x == 3) return "3rd";
+        if ((x % 100) / 10 == 1) return x + "th";
+        if (x % 10 == 1) return "1st";
+        if (x % 10 == 2) return "2nd";
+        if (x % 10 == 3) return "3rd";
         return x + "th";
     }
 
@@ -140,50 +141,46 @@ public class GTStringUtils {
         return literal(String.valueOf(n));
     }
 
-    public static boolean equals(List<MutableComponent> components, String s) {
+    public static boolean equals(List<? extends Component> components, String s) {
         return Objects.equals(componentsToString(components), s);
     }
 
-    public static double toDouble(List<MutableComponent> components) throws NumberFormatException {
+    public static double toDouble(List<? extends Component> components) throws NumberFormatException {
         if (components.isEmpty()) return 0;
         if (components.size() > 1) throw new NumberFormatException(componentsToString(components));
         return Double.parseDouble(components.get(0).getString());
     }
 
-    public static int toInt(List<MutableComponent> components) throws NumberFormatException {
+    public static int toInt(List<? extends Component> components) throws NumberFormatException {
         if (components.isEmpty()) return 0;
         if (components.size() > 1) throw new NumberFormatException(componentsToString(components));
         return Integer.parseInt(components.get(0).getString());
     }
 
-    public static String componentsToString(List<MutableComponent> components) {
+    public static String componentsToString(List<? extends Component> components) {
         StringBuilder out = new StringBuilder();
         if (components.isEmpty()) return out.toString();
-        for (MutableComponent component : components) {
+        for (Component component : components) {
             out.append(component.getString());
             out.append('\n');
         }
         return out.substring(0, out.length() - 1);
     }
 
-    public static <T> T getLast(List<T> list) {
-        return list.get(list.size() - 1);
-    }
-
     public static void append(List<MutableComponent> components, @Nullable String s) {
         if (s != null)
-            getLast(components).append(s);
+            GTUtil.getLast(components).append(s);
     }
 
     public static void append(List<MutableComponent> components, char c) {
         append(components, String.valueOf(c));
     }
 
-    public static void append(List<MutableComponent> components, @Nullable List<MutableComponent> lines) {
+    public static void append(List<MutableComponent> components, @Nullable List<? extends Component> lines) {
         if (lines == null) return;
         if (lines.isEmpty()) return;
-        for (MutableComponent line : lines) {
-            getLast(components).append(line);
+        for (Component line : lines) {
+            GTUtil.getLast(components).append(line);
             components.add(MutableComponent.create(ComponentContents.EMPTY));
         }
         components.remove(components.size() - 1);

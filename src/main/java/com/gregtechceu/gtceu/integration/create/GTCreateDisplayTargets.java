@@ -14,15 +14,12 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import java.util.function.Supplier;
 
 public class GTCreateDisplayTargets {
-
-    private static final GTRegistrate REGISTRATE = GTRegistration.REGISTRATE;
-
     public static final RegistryEntry<ComputerMonitorCoverDisplayTarget> COMPUTER_MONITOR_COVER = registerToAllMachines(
             "computer_monitor_cover", ComputerMonitorCoverDisplayTarget::new);
 
     @SuppressWarnings("SameParameterValue")
     private static <T extends DisplayTarget> RegistryEntry<T> registerToAllMachines(String name, Supplier<T> supplier) {
-        SimpleBuilder<DisplayTarget, T, GTRegistrate> builder = REGISTRATE.displayTarget(name, supplier);
+        SimpleBuilder<DisplayTarget, T, GTRegistrate> builder = GTRegistration.REGISTRATE.displayTarget(name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
                 target -> GTRegistries.MACHINES.entries().forEach(

@@ -15,15 +15,12 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class GTCreateDisplaySources {
-
-    private static final GTRegistrate REGISTRATE = GTRegistration.REGISTRATE;
-
     public static final RegistryEntry<ComputerMonitorCoverDisplaySource> COMPUTER_MONITOR_COVER = registerToAllMachines(
             "computer_monitor_cover", ComputerMonitorCoverDisplaySource::new);
 
     @SuppressWarnings("SameParameterValue")
     private static <T extends DisplaySource> RegistryEntry<T> registerToAllMachines(String name, Supplier<T> supplier) {
-        SimpleBuilder<DisplaySource, T, GTRegistrate> builder = REGISTRATE.displaySource(name, supplier);
+        SimpleBuilder<DisplaySource, T, GTRegistrate> builder = GTRegistration.REGISTRATE.displaySource(name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
                 source -> GTRegistries.MACHINES.entries().forEach(

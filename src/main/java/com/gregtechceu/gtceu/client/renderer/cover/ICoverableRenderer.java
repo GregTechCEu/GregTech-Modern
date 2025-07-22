@@ -78,12 +78,13 @@ public interface ICoverableRenderer {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack,
                                      MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ICoverable coverable = machine.getCoverContainer();
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
-            IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer() : null;
+            IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRendererSupplier().get() : null;
             if (renderer != null) {
                 poseStack.pushPose();
                 RenderUtil.moveToFace(poseStack, 0, 0, 0, face);

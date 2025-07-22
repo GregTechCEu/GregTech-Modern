@@ -105,7 +105,7 @@ public class CreateIntegration {
                     int slot = GTStringUtils.toInt(args.get(2));
                     int freq_slot = GTStringUtils.toInt(args.get(3));
                     if (slot < 1 || slot > 8) return GTStringUtils.literal("Expected slot index between 1 and 8");
-                    ItemStack item = cover.slots.get(slot - 1);
+                    ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
                     if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
                     if (item.is(AllItems.LINKED_CONTROLLER.get())) {
                         Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
@@ -134,7 +134,7 @@ public class CreateIntegration {
                     if (power < 0 || power > 15)
                         return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
                     if (slot < 1 || slot > 8) return GTStringUtils.literal("Expected slot index between 1 and 8");
-                    ItemStack item = cover.slots.get(slot - 1);
+                    ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
                     if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
                     if (item.is(AllItems.LINKED_CONTROLLER.get())) {
                         Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,

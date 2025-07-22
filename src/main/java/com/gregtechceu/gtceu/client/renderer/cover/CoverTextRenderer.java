@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class CoverTextRenderer implements IDynamicCoverRenderer {
+    private static final float TEXT_SCALE = 1 / 144f;
 
     @Setter
     private Supplier<List<? extends Component>> text;
@@ -28,9 +29,8 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
     @Override
     public void render(MetaMachine machine, Direction face, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        float textScale = 1 / 144f;
         poseStack.translate(3 / 16f, 3 / 16f, 0);
-        poseStack.scale(textScale, textScale, textScale);
+        poseStack.scale(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE);
         int y = 0;
         for (Component s : text.get()) {
             boolean didAnything = false;

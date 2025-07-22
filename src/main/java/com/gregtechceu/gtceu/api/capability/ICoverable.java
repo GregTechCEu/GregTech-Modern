@@ -215,7 +215,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     default boolean hasDynamicCovers() {
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = this.getCoverAtSide(face);
-            if (cover != null && cover.getDynamicRenderer() != null) return true;
+            if (cover != null && cover.getDynamicRendererSupplier().get() != null) return true;
         }
         return false;
     }

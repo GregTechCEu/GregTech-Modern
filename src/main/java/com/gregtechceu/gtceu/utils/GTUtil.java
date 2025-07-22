@@ -580,4 +580,8 @@ public class GTUtil {
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
     }
+
+    public static <T> T getLast(List<T> list) {
+        return list.get(list.size() - 1);
+    }
 }

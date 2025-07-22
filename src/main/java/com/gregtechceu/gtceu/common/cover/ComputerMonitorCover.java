@@ -11,11 +11,13 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.integration.create.CreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -29,8 +31,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -52,7 +53,7 @@ import static java.util.Map.entry;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ComputerMonitorCover extends CoverBehavior implements IUICover, Container {
+public class ComputerMonitorCover extends CoverBehavior implements IUICover {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
@@ -83,7 +84,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                                 if (slot > 8 || slot < 1)
                                     return GTStringUtils.literal("Expected slot index between 1 and 8");
                                 return GTStringUtils.literal(
-                                        countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
+                                        countItems(ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)), itemHandler));
                             } catch (NumberFormatException e) {
                                 return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
                             } catch (NullPointerException e) {
@@ -213,7 +214,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Getter
     private List<MutableComponent> text = new ArrayList<>();
     @Persisted
-    public final List<ItemStack> slots = new ArrayList<>();
+    public final CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
     @Setter
     private String placeholderSearch = "";
     @Setter
@@ -231,9 +232,6 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText);
-        for (int i = 0; i < 8; i++) {
-            slots.add(ItemStack.EMPTY);
-        }
         for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
     }
 
@@ -281,16 +279,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             if (c == '\\') {
                 if (escaped) {
                     if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
-                    else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
+                    else GTStringUtils.append(GTUtil.getLast(incompletePlaceholders.peek()), c);
                     escaped = false;
                 } else escaped = true;
             } else if (escaped) {
                 if (c == 'n') {
                     if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
-                    else GTStringUtils.getLast(incompletePlaceholders.peek())
+                    else GTUtil.getLast(incompletePlaceholders.peek())
                             .add(MutableComponent.create(ComponentContents.EMPTY));
                 } else if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
-                else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
+                else GTStringUtils.append(GTUtil.getLast(incompletePlaceholders.peek()), c);
                 escaped = false;
             } else if (c == ' ') {
                 if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
@@ -303,18 +301,18 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                 } else if (placeholderExists(incompletePlaceholders.peek().get(0))) {
                     List<MutableComponent> placeholderString = processPlaceholder(incompletePlaceholders.pop());
                     if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, placeholderString);
-                    else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), placeholderString);
+                    else GTStringUtils.append(GTUtil.getLast(incompletePlaceholders.peek()), placeholderString);
                 } else {
                     return GTStringUtils.literal("No such placeholder: '%s'"
                             .formatted(GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
                 }
             } else if (c == '\n') {
                 if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
-                else GTStringUtils.getLast(incompletePlaceholders.peek())
+                else GTUtil.getLast(incompletePlaceholders.peek())
                         .add(MutableComponent.create(ComponentContents.EMPTY));
             } else {
                 if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, c);
-                else GTStringUtils.append(GTStringUtils.getLast(incompletePlaceholders.peek()), c);
+                else GTStringUtils.append(GTUtil.getLast(incompletePlaceholders.peek()), c);
             }
         }
         if (incompletePlaceholders.isEmpty())
@@ -332,8 +330,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     }
 
     @Override
-    public @Nullable IDynamicCoverRenderer getDynamicRenderer() {
-        return renderer;
+    public Supplier<IDynamicCoverRenderer> getDynamicRendererSupplier() {
+        return () -> renderer;
     }
 
     @Override
@@ -361,13 +359,11 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             formatStringInput.setCurrentString(formatStringLines.get(i));
             formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
             mainPage.addWidget(formatStringInput);
-            SlotWidget slot = new SlotWidget(
-                    this,
+            SlotWidget slot = new com.gregtechceu.gtceu.api.gui.widget.SlotWidget(
+                    itemStackHandler,
                     i,
                     horizontalPadding + 50,
-                    20 * i,
-                    true, true);
-            slot.setItem(slots.get(i));
+                    20 * i);
             slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
             slot.setHoverTooltips(
                     "A slot for items that some placeholders can reference",
@@ -528,50 +524,5 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     @Override
     public boolean canConnectRedstone() {
         return true;
-    }
-
-    // ============= Container stuff ============= //
-
-    @Override
-    public int getContainerSize() {
-        return 8;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public ItemStack getItem(int i) {
-        return slots.get(i);
-    }
-
-    @Override
-    public ItemStack removeItem(int i, int i1) {
-        return slots.set(i, ItemStack.EMPTY);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int i) {
-        return slots.set(i, ItemStack.EMPTY);
-    }
-
-    @Override
-    public void setItem(int i, ItemStack itemStack) {
-        slots.set(i, itemStack);
-    }
-
-    @Override
-    public void setChanged() {}
-
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
-    }
-
-    @Override
-    public void clearContent() {
-        slots.replaceAll((itemStack -> ItemStack.EMPTY));
     }
 }

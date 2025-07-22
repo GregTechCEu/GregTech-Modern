@@ -220,9 +220,8 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return null;
     }
 
-    @Nullable
-    public IDynamicCoverRenderer getDynamicRenderer() {
-        return null;
+    public Supplier<IDynamicCoverRenderer> getDynamicRendererSupplier() {
+        return () -> null;
     }
 
     //////////////////////////////////////
