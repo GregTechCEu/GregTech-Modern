@@ -1438,6 +1438,12 @@ public class LangHandler {
         provider.add("gtceu.placeholder_info.repeat", "Returns the text from the second arguments, repeated the amount of times specified in the first argument.\nUsage:\n  {repeat <amount> <text>} -> text repeated the specified amount of times");
         provider.add("gtceu.placeholder_info.random", "Returns a random number in the specified interval (inclusive).\nUsage:\n  {random <min> <max>} -> a random number between min and max (inclusive)");
         provider.add("gtceu.placeholder_info.select", "Returns the argument at the specified index (starting from 0)\nUsage:\n  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index");
+        provider.add("gtceu.placeholder_info.redstone", "Returns the redstone signal strength or sets the redstone output strength\nUsage:\n  %s\n  %s\n  %s\n  %s".formatted(
+                "{redstone get <up|down|north|south|east|west>} -> redstone signal strength (0-15) at the specified side",
+                "{redstone get link <slot_index> <freq_slot_index>} -> redstone signal strength of a Create redstone link frequency specified by a linked controller in slot #slot_index. freq_slot_index is the index of the frequency inside the controller (from left to right, 0-6)",
+                "{redstone set <power>} -> empty string, sets the redstone output strength from this cover's side",
+                "{redstone set link <slot_index> <freq_slot_index> <power>} -> empty string, broadcasts the specified redstone power on the specified Create redstone link frequency"
+        ));
         provider.add("gtceu.gui.computer_monitor_cover.placeholder_reference", "All placeholders:\n(hover for more info)");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
