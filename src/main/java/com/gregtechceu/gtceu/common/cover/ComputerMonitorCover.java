@@ -40,7 +40,10 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,6 +88,12 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     }
                 }
                 return GTStringUtils.literal("Invalid args!");
+            }),
+            entry("fluidCount", (cover, args) -> {
+                IFluidHandler fluidHandler = cover.coverHolder.getFluidHandlerCap(cover.attachedSide, false);
+                if (args.isEmpty()) return GTStringUtils.literal(countFluids(null, fluidHandler));
+                if (args.size() == 1) return GTStringUtils.literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
+                return GTStringUtils.literal("Expected not more than 1 argument!");
             }),
             entry("if", (cover, args) -> {
                 if (args.size() < 2) return GTStringUtils.literal("Expected at least 2 args!");
@@ -437,6 +446,17 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             ItemStack itemStack = itemHandler.getStackInSlot(i);
             String itemId = "%s:%s".formatted(itemStack.getItem().getCreatorModId(itemStack), itemStack.getItem().toString());
             if (itemId.equals(id)) cnt += itemStack.getCount();
+        }
+        return cnt;
+    }
+
+    private static int countFluids(@Nullable String id, @Nullable IFluidHandler fluidHandler) {
+        if (fluidHandler == null) return 0;
+        int cnt = 0;
+        for (int i = 0; i < fluidHandler.getTanks(); i++) {
+            FluidStack fluidStack = fluidHandler.getFluidInTank(i);
+            String fluidId = Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid())).toString();
+            if (id == null || fluidId.equals(id)) cnt += fluidStack.getAmount();
         }
         return cnt;
     }

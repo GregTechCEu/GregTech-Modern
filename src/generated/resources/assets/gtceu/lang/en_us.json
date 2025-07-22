@@ -3402,6 +3402,7 @@
   "gtceu.placeholder_info.color": "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.\nUsage:\n  {color <color> <text>} -> colored text",
   "gtceu.placeholder_info.energy": "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored",
   "gtceu.placeholder_info.energyCapacity": "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity",
+  "gtceu.placeholder_info.fluidCount": "Returns the amount of fluids (can be filtered).\nUsage:\n  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified",
   "gtceu.placeholder_info.if": "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  {if <condition> <returned_if_true> [returned_if_false]}",
   "gtceu.placeholder_info.itemCount": "Returns the amount of items (can be filtered).\nUsage:\n  {itemCount} -> total item amount\n  {itemCount <item_id>} -> amount of items with ids equal to item_id\n  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover",
   "gtceu.placeholder_info.obf": "Returns the text from the first argument, obfuscated.\nUsage:\n  {obf <text>} -> obfuscated text",
