@@ -133,11 +133,10 @@ legacyForge {
                 systemProperty("neoforge.rendernurse.renderdoc.library", renderDocPath)
                 if(OperatingSystem.current().isLinux()) {
                     environment("LD_PRELOAD", renderDocPath)
-                } else {
-                    // parses out the render nurse jar path and adds as `-javaagent:${path}`
-                    jvmArguments.addAll(project.configurations.renderNurseCfg.incoming.files.elements.map { it.collect { "-javaagent:${it.asFile.absolutePath}" }})
-                    jvmArguments.addAll("--enable-preview", "--enable-native-access=ALL-UNNAMED")
                 }
+                // parses out the render nurse jar path and adds as `-javaagent:${path}`
+                jvmArguments.addAll(project.configurations.renderNurseCfg.incoming.files.elements.map { it.collect { "-javaagent:${it.asFile.absolutePath}" }})
+                jvmArguments.addAll("--enable-preview", "--enable-native-access=ALL-UNNAMED")
             }
         }
 

@@ -219,11 +219,9 @@ public class BlockHighlightRenderer {
         PoseStack.Pose pose = poseStack.last();
         // straight top bottom lines
         drawLine(pose, buffer, new Vector3f(topRight).sub(shiftX), new Vector3f(bottomRight).sub(shiftX));
-
         drawLine(pose, buffer, new Vector3f(bottomLeft).add(shiftX), new Vector3f(topLeft).add(shiftX));
         // straight side to side lines
         drawLine(pose, buffer, new Vector3f(topLeft).sub(shiftY), new Vector3f(topRight).sub(shiftY));
-
         drawLine(pose, buffer, new Vector3f(bottomLeft).add(shiftY), new Vector3f(bottomRight).add(shiftY));
 
         RenderSystem.disableDepthTest();

@@ -71,9 +71,7 @@ public class GTMatrixUtils {
      */
     @Contract(pure = true)
     public static Quaternionf getRotation(final Vector3fc from, final Vector3fc to) {
-        float angle = getRotationAngle(from, to);
-        Vector3f axis = getRotationAxis(from, to, new Vector3f());
-        return new Quaternionf().fromAxisAngleRad(axis, angle);
+        return from.rotationTo(to, new Quaternionf());
     }
 
     /**
