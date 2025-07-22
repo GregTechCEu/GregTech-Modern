@@ -89,14 +89,14 @@ public class BlockHighlightRenderer {
                 if (gridHighlight == null) {
                     return;
                 }
-                var state = level.getBlockState(blockPos);
+                BlockState state = level.getBlockState(blockPos);
                 poseStack.pushPose();
                 if (gridHighlight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     final IToolGridHighlight finalGridHighlight = gridHighlight;
                     drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
                             side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, side));
                 } else {
-                    var facing = target.getDirection();
+                    Direction facing = target.getDirection();
                     var texture = gridHighlight.sideTips(player, blockPos, state, toolType, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
@@ -163,42 +163,41 @@ public class BlockHighlightRenderer {
                                          BlockHitResult blockHitResult, Function<Direction, ResourceTexture> texture) {
         rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
-        var blockPos = blockHitResult.getBlockPos();
-        var facing = blockHitResult.getDirection();
+        BlockPos blockPos = blockHitResult.getBlockPos();
         float minX = blockPos.getX();
         float maxX = blockPos.getX() + 1;
         float minY = blockPos.getY();
         float maxY = blockPos.getY() + 1;
         float maxZ = blockPos.getZ() + 1.01f;
-        var attachSide = ICoverable.traceCoverSide(blockHitResult);
-        var topRight = new Vector3f(maxX, maxY, maxZ);
-        var bottomRight = new Vector3f(maxX, minY, maxZ);
-        var bottomLeft = new Vector3f(minX, minY, maxZ);
-        var topLeft = new Vector3f(minX, maxY, maxZ);
-        var shift = new Vector3f(0.25f, 0, 0);
-        var shiftVert = new Vector3f(0, 0.25f, 0);
+        Direction attachSide = ICoverable.traceCoverSide(blockHitResult);
+        Vector3f topRight = new Vector3f(maxX, maxY, maxZ);
+        Vector3f bottomRight = new Vector3f(maxX, minY, maxZ);
+        Vector3f bottomLeft = new Vector3f(minX, minY, maxZ);
+        Vector3f topLeft = new Vector3f(minX, maxY, maxZ);
+        Vector3f shiftX = new Vector3f(0.25f, 0, 0);
+        Vector3f shiftY = new Vector3f(0, 0.25f, 0);
 
-        var cubeCenter = blockPos.getCenter().toVector3f();
+        Vector3f cubeCenter = blockPos.getCenter().toVector3f();
 
         topRight.sub(cubeCenter);
         bottomRight.sub(cubeCenter);
         bottomLeft.sub(cubeCenter);
         topLeft.sub(cubeCenter);
 
-        Quaternionfc rotation = getRotation(Direction.SOUTH, facing);
+        Direction front = blockHitResult.getDirection();
+        Direction back = front.getOpposite();
+        Direction left = RelativeDirection.LEFT.getActualDirection(front);
+        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
+        Direction top = RelativeDirection.UP.getActualDirection(front);
+        Direction bottom = RelativeDirection.DOWN.getActualDirection(front);
+
+        Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);
         bottomRight.rotate(rotation);
         bottomLeft.rotate(rotation);
         topLeft.rotate(rotation);
         shiftX.rotate(rotation);
         shiftY.rotate(rotation);
-
-        Direction front = facing;
-        Direction back = facing.getOpposite();
-        Direction left = RelativeDirection.LEFT.getActualDirection(facing);
-        Direction right = RelativeDirection.RIGHT.getActualDirection(facing);
-        Direction top = RelativeDirection.UP.getActualDirection(facing);
-        Direction bottom = RelativeDirection.DOWN.getActualDirection(facing);
 
         ResourceTexture leftBlocked = texture.apply(left);
         ResourceTexture rightBlocked = texture.apply(right);
