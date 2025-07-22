@@ -373,9 +373,9 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
         //mainPage.addWidget(searchBox);
         onSearch.accept("");
         IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval, this::setUpdateInterval);
-        updateIntervalInput.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
         updateIntervalInput.setMin(1);
         updateIntervalInput.setMax(60*20);
+        updateIntervalInput.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
         mainPage.addWidget(updateIntervalInput);
         switchToFormatStringArgsPageButton.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
         switchBack.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_displayed_text"));
