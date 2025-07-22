@@ -261,11 +261,11 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                     group.clearAllWidgets();
                     group.addWidget(mainPage);
                 });
-        WidgetGroup placeholderReference = new WidgetGroup(280, 0, 100, 0);
+        DraggableScrollableWidgetGroup placeholderReference = new DraggableScrollableWidgetGroup(280, 15, 100, 200);
         Consumer<String> onSearch = (newSearch) -> {
             setPlaceholderSearch(newSearch);
             placeholderReference.clearAllWidgets();
-            int y = 15 + verticalPadding;
+            int y = verticalPadding;
             ArrayList<String> placeholders = new ArrayList<>(PLACEHOLDERS.keySet().stream().toList());
             placeholders.removeIf(s -> s == null || !s.contains(placeholderSearch));
             placeholders.sort(String::compareTo);
