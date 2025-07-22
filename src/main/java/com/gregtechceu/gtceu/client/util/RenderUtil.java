@@ -213,12 +213,12 @@ public class RenderUtil {
         Quaternionf rotation = new Quaternionf();
         if (face.getAxis() == Direction.Axis.Y) {
             poseStack.scale(1.0f, -1.0f, 1.0f);
-            rotation.rotateAxis(rotationAngle, new Vector3f(1, 0, 0));
+            rotation.rotateX(rotationAngle);
         } else {
             poseStack.scale(-1.0f, -1.0f, -1.0f);
-            rotation.rotateAxis(rotationAngle, new Vector3f(0, 1, 0));
+            rotation.rotateY(rotationAngle);
         }
-        rotation.rotateAxis(getSpinAngle(spin, face), new Vector3f(0, 0, 1));
+        rotation.rotateZ(getSpinAngle(spin, face));
 
         poseStack.mulPose(rotation);
     }
