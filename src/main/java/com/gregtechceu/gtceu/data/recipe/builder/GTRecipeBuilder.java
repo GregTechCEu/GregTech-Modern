@@ -689,14 +689,6 @@ public class GTRecipeBuilder {
         return notConsumable(IntCircuitIngredient.of(configuration));
     }
 
-    public GTRecipeBuilder chancedInput(ItemStack stack, int chance) {
-        return chancedInput(stack, chance, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
@@ -711,14 +703,6 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(FluidStack stack, int chance) {
-        return chancedInput(stack, chance, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
@@ -733,14 +717,6 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance) {
-        return chancedOutput(stack, chance, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
@@ -755,14 +731,6 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance) {
-        return chancedOutput(stack, chance, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
@@ -777,31 +745,14 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance) {
-        return chancedOutput(ChemicalHelper.get(tag, mat), chance, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
         return chancedOutput(ChemicalHelper.get(tag, mat), chance, tierChanceBoost);
     }
 
-    // Overload without tierChanceBoost would conflict
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction) {
-        return chancedOutput(stack, fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction, int tierChanceBoost) {
         if (stack.isEmpty()) {
             return this;
@@ -854,63 +805,23 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction) {
-        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                          int tierChanceBoost) {
         return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction) {
-        return chancedOutput(prefix, material, 1, fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
         return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput(Item item, int count, String fraction) {
-        return chancedOutput(new ItemStack(item, count), fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(Item item, int count, String fraction, int tierChanceBoost) {
         return chancedOutput(new ItemStack(item, count), fraction, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput(Item item, String fraction) {
-        return chancedOutput(item, 1, fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(Item item, String fraction, int tierChanceBoost) {
         return chancedOutput(item, 1, fraction, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction) {
-        return chancedFluidOutput(stack, fraction, 0);
-    }
-
-    /**
-     * @deprecated overclock chance boosting will be removed in a future update
-     */
-    @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction, int tierChanceBoost) {
         if (stack.isEmpty()) {
             return this;

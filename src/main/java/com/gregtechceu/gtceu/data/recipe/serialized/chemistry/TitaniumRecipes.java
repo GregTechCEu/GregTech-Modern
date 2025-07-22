@@ -167,9 +167,9 @@ public class TitaniumRecipes {
         // Byproduct separation for Ilmenite
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("ilmenite_separation")
                 .inputItems(dust, IlmeniteSlag)
-                .chancedOutput(dust, Iron, 8000)
-                .chancedOutput(dust, Tantalum, 2000)
-                .chancedOutput(dust, Niobium, 500)
+                .chancedOutput(dust, Iron, 8000, 0)
+                .chancedOutput(dust, Tantalum, 2000, 0)
+                .chancedOutput(dust, Niobium, 500, 0)
                 .duration(50).EUt(VA[MV]).save(provider);
     }
 }

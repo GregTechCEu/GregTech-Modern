@@ -23,8 +23,8 @@ public class GrowthMediumRecipes {
                 .inputItems(PLANT_BALL, 2)
                 .outputItems(BIO_CHAFF)
                 .outputItems(BIO_CHAFF)
-                .chancedOutput(BIO_CHAFF.asStack(), 5000)
-                .chancedOutput(BIO_CHAFF.asStack(), 2500)
+                .chancedOutput(BIO_CHAFF.asStack(), 5000, 0)
+                .chancedOutput(BIO_CHAFF.asStack(), 2500, 0)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("dirt_from_bio_chaff").EUt(4).duration(300)

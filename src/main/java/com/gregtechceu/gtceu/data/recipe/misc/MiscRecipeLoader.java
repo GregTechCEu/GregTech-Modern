@@ -70,11 +70,11 @@ public class MiscRecipeLoader {
         SIFTER_RECIPES.recipeBuilder("gravel_sifting").duration(100).EUt(16)
                 .inputItems(new ItemStack(Blocks.GRAVEL))
                 .outputItems(gem, Flint)
-                .chancedOutput(gem, Flint, 9000)
-                .chancedOutput(gem, Flint, 8000)
-                .chancedOutput(gem, Flint, 6000)
-                .chancedOutput(gem, Flint, "1/3")
-                .chancedOutput(gem, Flint, 2500)
+                .chancedOutput(gem, Flint, 9000, 0)
+                .chancedOutput(gem, Flint, 8000, 0)
+                .chancedOutput(gem, Flint, 6000, 0)
+                .chancedOutput(gem, Flint, "1/3", 0)
+                .chancedOutput(gem, Flint, 2500, 0)
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("matchbox")

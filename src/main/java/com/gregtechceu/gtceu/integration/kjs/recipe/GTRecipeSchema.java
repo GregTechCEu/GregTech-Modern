@@ -426,14 +426,6 @@ public interface GTRecipeSchema {
             return notConsumable(InputItem.of(IntCircuitIngredient.of(configuration), 1));
         }
 
-        public GTRecipeJS chancedInput(InputItem stack, int chance) {
-            return chancedInput(stack, chance, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
@@ -450,14 +442,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance) {
-            return chancedFluidInput(stack, chance, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -475,14 +459,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance) {
-            return chancedOutput(stack, chance, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
@@ -499,35 +475,15 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance) {
-            return chancedOutput(new ExtendedOutputItem(ChemicalHelper.get(tag, mat), null), chance, tierChanceBoost);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
             return chancedOutput(new ExtendedOutputItem(ChemicalHelper.get(tag, mat), null), chance, tierChanceBoost);
         }
 
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
             return chancedOutput(new ExtendedOutputItem(ChemicalHelper.get(tag, mat, count), null), chance,
                     tierChanceBoost);
         }
 
-        public GTRecipeJS chancedOutput(ExtendedOutputItem stack, String fraction) {
-            return chancedOutput(stack, fraction, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, String fraction, int tierChanceBoost) {
             if (stack.isEmpty()) {
                 return this;
@@ -591,40 +547,16 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction) {
-            return chancedOutput(prefix, material, count, fraction, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
                                         int tierChanceBoost) {
             return chancedOutput(new ExtendedOutputItem(ChemicalHelper.get(prefix, material, count), null),
                     fraction, tierChanceBoost);
         }
 
-        public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, String fraction) {
-            return chancedOutput(prefix, material, 1, fraction, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
             return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
         }
 
-        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance) {
-            return chancedFluidOutput(stack, chance, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
@@ -641,14 +573,6 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction) {
-            return chancedFluidOutput(stack, fraction, 0);
-        }
-
-        /**
-         * @deprecated overclock chance boosting will be removed in a future update
-         */
-        @Deprecated(since = "7.0.0")
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
             if (stack.getAmount() == 0) {
                 return this;

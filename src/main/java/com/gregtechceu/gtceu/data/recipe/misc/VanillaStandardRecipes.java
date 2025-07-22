@@ -278,7 +278,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("gravel_to_flint")
                 .inputItems(new ItemStack(Blocks.GRAVEL, 1))
                 .outputItems(dust, Stone)
-                .chancedOutput(new ItemStack(Items.FLINT), 3300)
+                .chancedOutput(new ItemStack(Items.FLINT), 3300, 0)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -345,7 +345,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_block")
                 .inputItems(new ItemStack(Blocks.MELON))
                 .outputItems(new ItemStack(Items.MELON_SLICE, 8))
-                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8500)
+                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8500, 0)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -364,9 +364,9 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_wool")
                 .inputItems(ItemTags.WOOL)
                 .outputItems(new ItemStack(Items.STRING))
-                .chancedOutput(new ItemStack(Items.STRING), 9000)
-                .chancedOutput(new ItemStack(Items.STRING), 5000)
-                .chancedOutput(new ItemStack(Items.STRING), 2000)
+                .chancedOutput(new ItemStack(Items.STRING), 9000, 0)
+                .chancedOutput(new ItemStack(Items.STRING), 5000, 0)
+                .chancedOutput(new ItemStack(Items.STRING), 2000, 0)
                 .duration(200).EUt(2)
                 .save(provider);
     }
@@ -378,7 +378,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
-                .chancedOutput(dust, Wood, 8500)
+                .chancedOutput(dust, Wood, 8500, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
