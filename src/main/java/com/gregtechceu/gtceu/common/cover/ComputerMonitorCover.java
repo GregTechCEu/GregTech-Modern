@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.integration.create.CreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -84,7 +84,9 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                                 if (slot > 8 || slot < 1)
                                     return GTStringUtils.literal("Expected slot index between 1 and 8");
                                 return GTStringUtils.literal(
-                                        countItems(ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)), itemHandler));
+                                        countItems(
+                                                ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)),
+                                                itemHandler));
                             } catch (NumberFormatException e) {
                                 return GTStringUtils.literal("Invalid slot '%s'!".formatted(e));
                             } catch (NullPointerException e) {

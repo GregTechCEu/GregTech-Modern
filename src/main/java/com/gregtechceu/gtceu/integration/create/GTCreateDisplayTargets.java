@@ -14,6 +14,7 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import java.util.function.Supplier;
 
 public class GTCreateDisplayTargets {
+
     public static final RegistryEntry<ComputerMonitorCoverDisplayTarget> COMPUTER_MONITOR_COVER = registerToAllMachines(
             "computer_monitor_cover", ComputerMonitorCoverDisplayTarget::new);
 

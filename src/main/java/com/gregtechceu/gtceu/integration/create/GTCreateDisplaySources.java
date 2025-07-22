@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class GTCreateDisplaySources {
+
     public static final RegistryEntry<ComputerMonitorCoverDisplaySource> COMPUTER_MONITOR_COVER = registerToAllMachines(
             "computer_monitor_cover", ComputerMonitorCoverDisplaySource::new);
 

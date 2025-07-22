@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class CoverTextRenderer implements IDynamicCoverRenderer {
+
     private static final float TEXT_SCALE = 1 / 144f;
 
     @Setter
