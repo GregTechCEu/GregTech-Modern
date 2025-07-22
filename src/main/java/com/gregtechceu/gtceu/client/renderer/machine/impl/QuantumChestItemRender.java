@@ -92,10 +92,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
         if (frontFacing.getAxis() == Direction.Axis.Y) {
-            var north = Direction.NORTH.step();
-            var front = frontFacing.step();
-            var rotationAngle = getRotationAngle(north, front);
-            poseStack.mulPose(new Quaternionf().fromAxisAngleRad(getRotationAxis(north, front), rotationAngle));
+            Quaternionf rotation = getRotation(Direction.NORTH, frontFacing);
+            poseStack.mulPose(rotation);
         }
         poseStack.mulPose(new Quaternionf().rotateAxis(totalTick * Mth.TWO_PI / 80, 0, 1, 0));
         poseStack.scale(0.6f, 0.6f, 0.6f);

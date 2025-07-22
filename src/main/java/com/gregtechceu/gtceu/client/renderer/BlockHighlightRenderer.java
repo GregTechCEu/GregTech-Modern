@@ -184,14 +184,13 @@ public class BlockHighlightRenderer {
         bottomLeft.sub(cubeCenter);
         topLeft.sub(cubeCenter);
 
-        var south = Direction.SOUTH.step();
-        var frontVec = getDirectionAxis(facing);
-        var rotationAngle = getRotationAngle(south, frontVec);
-        var rotationAxis = getRotationAxis(south, frontVec);
-        topRight.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-        bottomRight.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-        bottomLeft.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-        topLeft.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        Quaternionfc rotation = getRotation(Direction.SOUTH, facing);
+        topRight.rotate(rotation);
+        bottomRight.rotate(rotation);
+        bottomLeft.rotate(rotation);
+        topLeft.rotate(rotation);
+        shiftX.rotate(rotation);
+        shiftY.rotate(rotation);
 
         Direction front = facing;
         Direction back = facing.getOpposite();
