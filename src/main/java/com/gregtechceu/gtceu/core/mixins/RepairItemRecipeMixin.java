@@ -69,8 +69,9 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
             cancellable = true)
     public void gtceu$assemble(CraftingInput input, HolderLookup.Provider registries,
                                CallbackInfoReturnable<ItemStack> cir,
-                               @Local(ordinal = 0) ItemStack itemstack,
-                               @Local(ordinal = 3) int calculatedDamage) {
+                               @Local(name = "itemstack") ItemStack itemstack,
+                               @Local(name = "i") int maxItemDamage,
+                               @Local(name = "l") int calculatedDamage) {
         if (itemstack.getItem() instanceof IGTTool tool) {
             ItemStack ret = cir.getReturnValue();
             ItemEnchantments doneEnchants = EnchantmentHelper.getEnchantmentsForCrafting(ret);
@@ -84,7 +85,7 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
                             .forEach(enchant -> {
                                 itemEnchants.upgrade(enchant, doneEnchants.getLevel(enchant));
                             }));
-            ret.setDamageValue(calculatedDamage);
+            ret.setDamageValue(Math.max(maxItemDamage - calculatedDamage, 0));
 
             cir.setReturnValue(ret);
         }
