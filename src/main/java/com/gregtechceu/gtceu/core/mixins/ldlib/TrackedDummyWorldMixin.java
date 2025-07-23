@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins.ldlib;
 
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.core.BlockPos;
@@ -18,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.function.Predicate;
 
 @Mixin(value = TrackedDummyWorld.class, remap = false)
-public abstract class TrackedDummyWorldMixin extends DummyWorld implements ILevelExtension, IBlockGetterExtension {
+public abstract class TrackedDummyWorldMixin extends DummyWorldMixin implements ILevelExtension, IBlockGetterExtension {
 
     @Shadow
     private Predicate<BlockPos> renderFilter;
@@ -26,10 +25,6 @@ public abstract class TrackedDummyWorldMixin extends DummyWorld implements ILeve
     @Shadow
     @Final
     public WeakReference<Level> proxyWorld;
-
-    public TrackedDummyWorldMixin(Level level) {
-        super(level);
-    }
 
     @Override
     public @NotNull ModelData getModelData(@NotNull BlockPos pos) {

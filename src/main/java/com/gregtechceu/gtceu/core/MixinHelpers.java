@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinKubeEvent;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinKubeEvent;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinKubeEvent;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -41,6 +42,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
@@ -415,6 +417,13 @@ public class MixinHelpers {
 
         private static void postBedrockOreEvent() {
             GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent());
+        }
+    }
+
+    public static final class ClientCallWrapper {
+
+        public static Level getClientLevel() {
+            return Minecraft.getInstance().level;
         }
     }
 }
