@@ -116,7 +116,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean allowExtendedFacing = false;
     @Setter
-    private boolean hasBER = true;
+    private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
     @Setter
     private boolean renderMultiblockWorldPreview = true;
     @Setter

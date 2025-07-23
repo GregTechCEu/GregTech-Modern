@@ -708,6 +708,11 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
         @Configurable
+        @Configurable.Comment({
+                "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",
+                "Disable if experiencing performance issues.", "Default: true" })
+        public boolean machinesHaveBERsByDefault = true;
+        @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })
         public boolean toolUseSounds = true;
