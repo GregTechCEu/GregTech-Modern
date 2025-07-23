@@ -8,12 +8,14 @@ spotless = "7.0.2"
 modDevGradle = "2.0.86"
 lombok = "8.14"
 jetbrains-annotations = "26.0.1"
+renderNurse = "0.0.12"
 mixin = "0.8.7"
 
 [libraries]
 minecraft               = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 minecraftForge          = { module = "net.minecraftforge:forge", version.ref = "minecraftForge" }
 jetbrains-annotations   = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+renderNurse             = { module = "net.neoforged:render-nurse", version.ref = "renderNurse" }
 mixin                   = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 
 [plugins]
