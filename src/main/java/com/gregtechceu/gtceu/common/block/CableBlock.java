@@ -72,7 +72,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     @Override
     public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
         if (pipeType.isCable && index == 0) {
-            return 0x404040;
+            return 0xFF404040;
         }
         return super.tinted(state, level, pos, index);
     }
