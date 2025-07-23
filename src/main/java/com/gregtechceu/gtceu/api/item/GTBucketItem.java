@@ -4,9 +4,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -101,7 +100,8 @@ public class GTBucketItem extends BucketItem {
         Block block = blockstate.getBlock();
         boolean canReplace = blockstate.canBeReplaced(this.getFluid());
         boolean canPlace = blockstate.isAir() || canReplace ||
-                block instanceof LiquidBlockContainer lbc && lbc.canPlaceLiquid(level, pos, blockstate, this.getFluid());
+                block instanceof LiquidBlockContainer lbc &&
+                        lbc.canPlaceLiquid(level, pos, blockstate, this.getFluid());
 
         if (!canPlace) {
             return result != null && this.emptyContents(player, level,
@@ -110,7 +110,8 @@ public class GTBucketItem extends BucketItem {
 
         var fluidType = this.getFluid().getFluidType();
         Optional<FluidStack> containedFluidStack = Optional.ofNullable(container).flatMap(FluidUtil::getFluidContained);
-        if (containedFluidStack.isPresent() && fluidType.isVaporizedOnPlacement(level, pos, containedFluidStack.get())) {
+        if (containedFluidStack.isPresent() &&
+                fluidType.isVaporizedOnPlacement(level, pos, containedFluidStack.get())) {
             fluidType.onVaporize(player, level, pos, containedFluidStack.get());
             return true;
         }
@@ -136,7 +137,7 @@ public class GTBucketItem extends BucketItem {
             var flowingFluid = ((FlowingFluid) this.getFluid());
             blockContainer.placeLiquid(level, pos, blockstate, flowingFluid.getSource(false));
         } else {
-            if(!level.isClientSide && canReplace && !blockstate.liquid()) {
+            if (!level.isClientSide && canReplace && !blockstate.liquid()) {
                 level.destroyBlock(pos, true);
             }
 
