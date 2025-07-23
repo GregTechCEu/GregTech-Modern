@@ -28,7 +28,7 @@ public class ComputerMonitorCoverDisplaySource extends DisplaySource {
                 return cover.getText();
             }
         }
-        return GTStringUtils.literal("No cover!");
+        return GTStringUtils.literalLine("No cover!");
     }
 
     @Override

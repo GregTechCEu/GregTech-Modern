@@ -24,16 +24,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface ICoverableRenderer {
-
-    Logger LOGGER = LogManager.getLogger();
 
     @OnlyIn(Dist.CLIENT)
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
@@ -84,7 +80,7 @@ public interface ICoverableRenderer {
         ICoverable coverable = machine.getCoverContainer();
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
-            IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRendererSupplier().get() : null;
+            IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;
             if (renderer != null) {
                 poseStack.pushPose();
                 RenderUtil.moveToFace(poseStack, 0, 0, 0, face);

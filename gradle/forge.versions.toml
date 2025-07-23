@@ -71,7 +71,7 @@ emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
 create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create"}
 ponder              = { module = "net.createmod.ponder:Ponder-Forge-1.20.1", version.ref = "ponder"}
-flywheel-forge-api        = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
+flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
 flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-forge-1.20.1", version.ref = "flywheel"}
 kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = "kubejs" }
 rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }

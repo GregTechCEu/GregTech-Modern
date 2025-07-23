@@ -20,7 +20,8 @@ public class GTCreateDisplayTargets {
 
     @SuppressWarnings("SameParameterValue")
     private static <T extends DisplayTarget> RegistryEntry<T> registerToAllMachines(String name, Supplier<T> supplier) {
-        SimpleBuilder<DisplayTarget, T, GTRegistrate> builder = GTRegistration.REGISTRATE.displayTarget(name, supplier);
+        SimpleBuilder<DisplayTarget, T, GTRegistrate> builder = GTRegistrate.Create
+                .displayTarget(GTRegistration.REGISTRATE, name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
                 target -> GTRegistries.MACHINES.entries().forEach(

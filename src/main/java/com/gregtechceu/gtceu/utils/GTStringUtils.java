@@ -49,9 +49,9 @@ public class GTStringUtils {
     @NotNull
     public static String getIntOrderingSuffix(int x) {
         if ((x % 100) / 10 == 1) return x + "th";
-        if (x % 10 == 1) return "1st";
-        if (x % 10 == 2) return "2nd";
-        if (x % 10 == 3) return "3rd";
+        if (x % 10 == 1) return x + "st";
+        if (x % 10 == 2) return x + "nd";
+        if (x % 10 == 3) return x + "rd";
         return x + "th";
     }
 
@@ -84,8 +84,7 @@ public class GTStringUtils {
                     case "+" -> String.valueOf(a + b);
                     case "-" -> String.valueOf(a - b);
                     case "*" -> String.valueOf(a * b);
-                    case "/" -> String.valueOf(((double) a) / b);
-                    case "//" -> String.valueOf(a / b);
+                    case "/" -> String.valueOf(a / b);
                     case "%" -> String.valueOf(a % b);
                     case "<<" -> String.valueOf(a << b);
                     case ">>" -> String.valueOf(a >> b);
@@ -97,7 +96,6 @@ public class GTStringUtils {
                     double b = Double.parseDouble(args.get(2));
                     return switch (args.get(1)) {
                         case "/" -> String.valueOf(a / b);
-                        case "//" -> String.valueOf(((long) a) / b);
                         case "+" -> String.valueOf(a + b);
                         case "-" -> String.valueOf(a - b);
                         case "*" -> String.valueOf(a * b);
@@ -133,12 +131,12 @@ public class GTStringUtils {
         return "Invalid expression!";
     }
 
-    public static List<MutableComponent> literal(String s) {
+    public static List<MutableComponent> literalLine(String s) {
         return new ArrayList<>(List.of(Component.literal(s)));
     }
 
-    public static List<MutableComponent> literal(long n) {
-        return literal(String.valueOf(n));
+    public static List<MutableComponent> literalLine(long n) {
+        return literalLine(String.valueOf(n));
     }
 
     public static boolean equals(List<? extends Component> components, String s) {
@@ -184,5 +182,9 @@ public class GTStringUtils {
             components.add(MutableComponent.create(ComponentContents.EMPTY));
         }
         components.remove(components.size() - 1);
+    }
+
+    public static List<Component> toImmutable(List<MutableComponent> singleOrMultiLang) {
+        return singleOrMultiLang.stream().map((c) -> (Component) c).toList();
     }
 }

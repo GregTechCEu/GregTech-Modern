@@ -231,17 +231,26 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return createCreativeModeTab(parent, name, config);
     }
 
-    public <T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(String name,
-                                                                                                 Supplier<T> supplier) {
-        return this.entry(name, callback -> new SimpleBuilder<>(
-                this, this, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier).byBlock(DisplaySource.BY_BLOCK)
-                .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
-    }
+    public static class Create {
 
-    public <T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(String name,
-                                                                                                 Supplier<T> supplier) {
-        return this.entry(name, callback -> new SimpleBuilder<>(
-                this, this, name, callback, CreateRegistries.DISPLAY_TARGET, supplier).byBlock(DisplayTarget.BY_BLOCK)
-                .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
+        public static <
+                T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(GTRegistrate registrate,
+                                                                                                     String name,
+                                                                                                     Supplier<T> supplier) {
+            return registrate.entry(name, callback -> new SimpleBuilder<>(
+                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier)
+                    .byBlock(DisplaySource.BY_BLOCK)
+                    .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
+        }
+
+        public static <
+                T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(GTRegistrate registrate,
+                                                                                                     String name,
+                                                                                                     Supplier<T> supplier) {
+            return registrate.entry(name, callback -> new SimpleBuilder<>(
+                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_TARGET, supplier)
+                    .byBlock(DisplayTarget.BY_BLOCK)
+                    .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
+        }
     }
 }

@@ -350,13 +350,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * @Override
      * public void addBarHoverText(List<Component> hoverList, int index) {
      * if (index == 0) {
-     * Component cwutInfo = Component.literal(
+     * Component cwutInfo = Component.literalLine(
      * hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t").withStyle(ChatFormatting.AQUA);
      * hoverList.add(Component.translatable(
      * "gtceu.multiblock.hpca.computation",
      * cwutInfo).withStyle(ChatFormatting.GRAY));
      * } else {
-     * Component tempInfo = Component.literal(,
+     * Component tempInfo = Component.literalLine(,
      * Math.round(temperature / 10.0D) + "°C").withStyle(getDisplayTemperatureColor());
      * hoverList.add(TextComponentUtil.translationWithColor(
      * TextFormatting.GRAY,

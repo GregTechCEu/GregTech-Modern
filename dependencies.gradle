@@ -35,7 +35,7 @@ dependencies {
 
     // Create
     modCompileOnly(forge.ponder)
-    modCompileOnly("${forge.create.get()}:slim")
+    modCompileOnly(variantOf(forge.create) { classifier("slim") })
     modCompileOnly(forge.flywheel.forge.api)
 
     // KJS
@@ -115,7 +115,7 @@ dependencies {
     modExtraLocalRuntime(forge.kotlinforforge)
     modExtraLocalRuntime(forge.observable)
     modExtraLocalRuntime(forge.ponder)
-    modExtraLocalRuntime("${forge.create.get()}:slim")
+    modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
     //////////////////////////
 

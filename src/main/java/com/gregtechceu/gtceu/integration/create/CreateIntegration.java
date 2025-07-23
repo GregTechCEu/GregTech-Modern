@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.create;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.createmod.catnip.data.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,14 +32,16 @@ public class CreateIntegration {
 
         ComputerMonitorCover.addPlaceholder("redstone", CreateIntegration::processRedstonePlaceholder);
         ComputerMonitorCover.addPlaceholder("displayTarget", (cover, args) -> {
-            if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
-            if (args.size() != 1) return GTStringUtils.literal("Expected 1 argument");
+            if (args.size() != 1) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
             try {
                 int i = GTStringUtils.toInt(args.get(0));
-                if (i <= 0 || i > 100) GTStringUtils.literal("Line number must be from 1 to 100 (inclusive)");
+                if (i <= 0 || i > 100) GTUtil.list(Component
+                        .translatable("gtceu.computer_monitor_cover.error.not_in_range", "line number", 1, 100, i));
                 return new ArrayList<>(List.of(cover.getCreateDisplayTargetBuffer().get(i - 1)));
             } catch (NumberFormatException e) {
-                return GTStringUtils.literal("Invalid line number '%s'".formatted(e.getMessage()));
+                return GTUtil.list(
+                        Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));
             }
         });
     }
@@ -95,69 +98,81 @@ public class CreateIntegration {
 
     private static List<MutableComponent> processRedstonePlaceholder(ComputerMonitorCover cover,
                                                                      List<List<MutableComponent>> args) {
-        if (args.isEmpty()) return GTStringUtils.literal("Expected at least 1 argument!");
+        if (args.isEmpty())
+            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 1, 0));
         else if (GTStringUtils.equals(args.get(0), "get")) {
-            if (args.size() < 2) return GTStringUtils.literal("Expected an argument after 'get'!");
+            if (args.size() < 2)
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 2, 1));
             if (GTStringUtils.equals(args.get(1), "link")) {
                 if (args.size() < 4)
-                    return GTStringUtils.literal("Expected slot number and frequency slot number after 'link'!");
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 4,
+                            args.size()));
                 try {
                     int slot = GTStringUtils.toInt(args.get(2));
                     int freq_slot = GTStringUtils.toInt(args.get(3));
-                    if (slot < 1 || slot > 8) return GTStringUtils.literal("Expected slot index between 1 and 8");
+                    if (slot < 1 || slot > 8) return GTUtil.list(Component
+                            .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
                     ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
-                    if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
                     if (item.is(AllItems.LINKED_CONTROLLER.get())) {
                         Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
                                 freq_slot);
-                        return GTStringUtils.literal(getRedstoneLinkPower(cover, freq));
-                    } else return GTStringUtils.literal("Invalid redstone link controller!");
+                        return GTStringUtils.literalLine(getRedstoneLinkPower(cover, freq));
+                    } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
+                            "redstone link", slot));
                 } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid slot number '%s'".formatted(e.getMessage()));
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
+                            e.getMessage()));
                 }
             } else {
                 Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
-                if (direction == null) return GTStringUtils.literal(
-                        "2nd argument must be either 'link' or a valid direction (up,down,north,south,east,west)");
-                return GTStringUtils.literal(cover.coverHolder.getLevel()
+                if (direction == null)
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+                return GTStringUtils.literalLine(cover.coverHolder.getLevel()
                         .getSignal(cover.coverHolder.getPos().relative(direction), direction));
             }
         } else if (GTStringUtils.equals(args.get(0), "set")) {
-            if (args.size() < 2) return GTStringUtils.literal("Expected an argument after 'set'!");
+            if (args.size() < 2)
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 2, 1));
             if (GTStringUtils.equals(args.get(1), "link")) {
                 if (args.size() < 5)
-                    return GTStringUtils.literal("Expected slot number, frequency slot number and power after 'link'!");
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 5,
+                            args.size()));
                 try {
                     int slot = GTStringUtils.toInt(args.get(2));
                     int freq_slot = GTStringUtils.toInt(args.get(3));
                     int power = GTStringUtils.toInt(args.get(4));
                     if (power < 0 || power > 15)
-                        return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
-                    if (slot < 1 || slot > 8) return GTStringUtils.literal("Expected slot index between 1 and 8");
+                        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
+                                "redstone power", 1, 15, power));
+                    if (slot < 1 || slot > 8) return GTUtil.list(Component
+                            .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
                     ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
-                    if (!GTCEu.Mods.isCreateLoaded()) return GTStringUtils.literal("Create is not loaded!");
                     if (item.is(AllItems.LINKED_CONTROLLER.get())) {
                         Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
                                 freq_slot);
                         setRedstoneLinkPower(cover, freq, power);
-                        return GTStringUtils.literal("");
-                    } else return GTStringUtils.literal("Invalid redstone link controller!");
+                        return GTStringUtils.literalLine("");
+                    } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
+                            "redstone link", slot));
                 } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
+                            e.getMessage()));
                 }
             } else {
                 try {
                     int power = GTStringUtils.toInt(args.get(1));
                     if (power < 0 || power > 15)
-                        return GTStringUtils.literal("Expected redstone power to be from 0 to 15");
+                        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
+                                "redstone power", 1, 15, power));
                     cover.setRedstoneSignalOutput(power);
-                    return GTStringUtils.literal("");
+                    return GTStringUtils.literalLine("");
                 } catch (NumberFormatException e) {
-                    return GTStringUtils.literal("Invalid number '%s'".formatted(e.getMessage()));
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
+                            e.getMessage()));
                 }
             }
         } else {
-            return GTStringUtils.literal("1st argument must be either 'set' or 'get'");
+            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
         }
     }
 
