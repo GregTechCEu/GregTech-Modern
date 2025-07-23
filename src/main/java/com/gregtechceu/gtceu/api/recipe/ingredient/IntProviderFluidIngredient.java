@@ -19,6 +19,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
+ * recipe completion.
+ * Only valid as a recipe fluid {@code output}.
+ * Instantiated using {@link IntProviderFluidIngredient#of()}, with a {@link FluidIngredient}
+ * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
+ * Functions similarly to {@link IntProviderIngredient}.
+ */
 public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
@@ -26,8 +34,22 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     @Getter
     private final IntProvider countProvider;
+    /**
+     * A {@link IntProviderFluidIngredient} is a {@link FluidIngredient} with a randomly rolled {@code amount}.
+     * The result of that roll is stored in {@code sampledCount}.
+     * A value of -1 indicates that this has not been rolled.
+     * {@link IntProviderFluidIngredient#getSampledCount()} will roll {@code sampledCount} if it has not been.
+     * Run {@code setSampledCount(-1)} to reset the roll.
+     */
     @Setter
     protected int sampledCount = -1;
+    /**
+     * An {@link IntProviderFluidIngredient} {@code extends} {@link FluidIngredient} but also contains a
+     * {@link FluidIngredient}.
+     * The contained {@link FluidIngredient}, {@code inner}, holds a {@link FluidStack} of the maximum size this
+     * {@link IntProviderFluidIngredient} can randomly output, to define what {@code Fluid} this holds.
+     * That {@link FluidStack} can be accessed through {@link IntProviderFluidIngredient#getMaxSizeStack()}.
+     */
     @Getter
     private final FluidIngredient inner;
     @Setter
@@ -46,26 +68,67 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return ipfi;
     }
 
+    /**
+     * An {@link IntProviderFluidIngredient} does not have an amount.
+     * You probably want to be using either {@link IntProviderFluidIngredient#getStacks()} or
+     * {@link IntProviderFluidIngredient#getMaxSizeStack()}.
+     * 
+     * @return -1
+     */
     @Override
     public int getAmount() {
         return -1;
     }
 
+    /**
+     * Gets a usable {@link FluidStack}[] from this {@link IntProviderFluidIngredient}.
+     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it.
+     * 
+     * @return a {@link FluidStack}[] with amount {@link IntProviderFluidIngredient#sampledCount}
+     */
     @Override
     public FluidStack[] getStacks() {
         if (fluidStacks == null) {
-            inner.setAmount(getSampledCount(GTValues.RNG));
+            inner.setAmount(getSampledCount());
             fluidStacks = inner.getStacks();
         }
         return fluidStacks;
     }
 
+    /**
+     * Gets a {@link FluidStack} containing the maximum possible output from this {@link IntProviderFluidIngredient}.
+     * Mainly used for things like Recipe provider simulations to see if there is enough tank space to handle
+     * the recipe output.
+     * 
+     * @return a {@link FluidStack} with amount {@link IntProvider#getMaxValue()}
+     */
     public @NotNull FluidStack getMaxSizeStack() {
         FluidStack[] in = inner.getStacks();
         if (in.length == 0) return FluidStack.EMPTY;
         return new FluidStack(in[0], countProvider.getMaxValue());
     }
 
+    /**
+     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and returns
+     * the amount of the roll.
+     * If it has, returns the existing roll.
+     * Passthrough method, invokes {@link IntProviderFluidIngredient#getSampledCount(RandomSource)} using the threadsafe
+     * {@link GTValues#RNG}.
+     * 
+     * @return the amount rolled
+     */
+    public int getSampledCount() {
+        return getSampledCount(GTValues.RNG);
+    }
+
+    /**
+     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and returns
+     * the amount of the roll.
+     * If it has, returns the existing roll.
+     * 
+     * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
+     * @return the amount rolled
+     */
     public int getSampledCount(@NotNull RandomSource random) {
         if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
@@ -78,6 +141,10 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return inner.isEmpty();
     }
 
+    /**
+     * @param inner    {@link FluidIngredient}
+     * @param provider usually as {@link UniformInt#of(int, int)}
+     */
     public static IntProviderFluidIngredient of(FluidIngredient inner, IntProvider provider) {
         return new IntProviderFluidIngredient(inner, provider);
     }
@@ -86,6 +153,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
     }
 
+    /**
+     * Properties:
+     * <ul>
+     * <li>{@code count_provider}</li>
+     * <li>{@code inner}</li>
+     * </ul>
+     */
     @Override
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
@@ -95,6 +169,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return json;
     }
 
+    /**
+     * @param json containing
+     *             <ul>
+     *             <li>{@code count_provider}</li>
+     *             <li>{@code inner}</li>
+     *             </ul>
+     */
     public static IntProviderFluidIngredient fromJson(JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
