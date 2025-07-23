@@ -49,7 +49,7 @@ public abstract class MaterialPipeBlock<
     }
 
     public int tinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
-        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
+        return index == 0 || index == 1 ? material.getMaterialARGB() : -1;
     }
 
     @Override
