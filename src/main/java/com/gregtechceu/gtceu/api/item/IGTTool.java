@@ -220,7 +220,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default float getTotalAttackSpeed() {
-        return getMaterialAttackSpeed() + getToolStats().getTool().defaultMiningSpeed();
+        return getMaterialAttackSpeed() + getToolStats().getAttackSpeed();
     }
 
     @SuppressWarnings("DataFlowIssue")
