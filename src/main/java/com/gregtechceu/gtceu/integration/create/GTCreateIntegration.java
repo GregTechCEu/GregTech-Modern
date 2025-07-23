@@ -182,6 +182,26 @@ public class GTCreateIntegration {
         }
     }
 
+    public static <
+            T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(GTRegistrate registrate,
+                                                                                                 String name,
+                                                                                                 Supplier<T> supplier) {
+        return registrate.entry(name, callback -> new SimpleBuilder<>(
+                registrate, registrate, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier)
+                .byBlock(DisplaySource.BY_BLOCK)
+                .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
+    }
+
+    public static <
+            T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(GTRegistrate registrate,
+                                                                                                 String name,
+                                                                                                 Supplier<T> supplier) {
+        return registrate.entry(name, callback -> new SimpleBuilder<>(
+                registrate, registrate, name, callback, CreateRegistries.DISPLAY_TARGET, supplier)
+                .byBlock(DisplayTarget.BY_BLOCK)
+                .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
+    }
+
     public static class TemporaryRedstoneLinkTransmitter implements IRedstoneLinkable {
 
         private static final ArrayList<TemporaryRedstoneLinkTransmitter> transmitters = new ArrayList<>();
@@ -239,29 +259,6 @@ public class GTCreateIntegration {
                 transmitters.get(transmitters.size() - 1).destroy();
                 transmitters.remove(transmitters.size() - 1);
             }
-        }
-    }
-
-    public static class CreateRegistrate {
-
-        public static <
-                T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(GTRegistrate registrate,
-                                                                                                     String name,
-                                                                                                     Supplier<T> supplier) {
-            return registrate.entry(name, callback -> new SimpleBuilder<>(
-                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier)
-                    .byBlock(DisplaySource.BY_BLOCK)
-                    .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
-        }
-
-        public static <
-                T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(GTRegistrate registrate,
-                                                                                                     String name,
-                                                                                                     Supplier<T> supplier) {
-            return registrate.entry(name, callback -> new SimpleBuilder<>(
-                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_TARGET, supplier)
-                    .byBlock(DisplayTarget.BY_BLOCK)
-                    .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
         }
     }
 }

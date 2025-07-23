@@ -21,7 +21,7 @@ public class GTCreateDisplaySources {
 
     @SuppressWarnings("SameParameterValue")
     private static <T extends DisplaySource> RegistryEntry<T> registerToAllMachines(String name, Supplier<T> supplier) {
-        SimpleBuilder<DisplaySource, T, GTRegistrate> builder = GTCreateIntegration.CreateRegistrate
+        SimpleBuilder<DisplaySource, T, GTRegistrate> builder = GTCreateIntegration
                 .displaySource(GTRegistration.REGISTRATE, name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
