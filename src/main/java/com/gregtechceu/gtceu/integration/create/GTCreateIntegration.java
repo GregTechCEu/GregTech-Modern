@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.create;
 
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -14,6 +15,10 @@ import net.minecraft.world.level.Level;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.behaviour.display.DisplayTarget;
+import com.simibubi.create.api.registry.CreateRegistries;
+import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import com.simibubi.create.content.redstone.link.IRedstoneLinkable;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
 import com.simibubi.create.content.redstone.link.controller.LinkedControllerItem;
@@ -21,16 +26,17 @@ import com.simibubi.create.content.redstone.link.controller.LinkedControllerItem
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
-public class CreateIntegration {
+public class GTCreateIntegration {
 
-    private CreateIntegration() {}
+    private GTCreateIntegration() {}
 
     public static void init() {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
 
-        ComputerMonitorCover.addPlaceholder("redstone", CreateIntegration::processRedstonePlaceholder);
+        ComputerMonitorCover.addPlaceholder("redstone", GTCreateIntegration::processRedstonePlaceholder);
         ComputerMonitorCover.addPlaceholder("displayTarget", (cover, args) -> {
             if (args.size() != 1) return GTUtil.list(
                     Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
@@ -233,6 +239,29 @@ public class CreateIntegration {
                 transmitters.get(transmitters.size() - 1).destroy();
                 transmitters.remove(transmitters.size() - 1);
             }
+        }
+    }
+
+    public static class CreateRegistrate {
+
+        public static <
+                T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(GTRegistrate registrate,
+                                                                                                     String name,
+                                                                                                     Supplier<T> supplier) {
+            return registrate.entry(name, callback -> new SimpleBuilder<>(
+                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier)
+                    .byBlock(DisplaySource.BY_BLOCK)
+                    .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
+        }
+
+        public static <
+                T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(GTRegistrate registrate,
+                                                                                                     String name,
+                                                                                                     Supplier<T> supplier) {
+            return registrate.entry(name, callback -> new SimpleBuilder<>(
+                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_TARGET, supplier)
+                    .byBlock(DisplayTarget.BY_BLOCK)
+                    .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
         }
     }
 }

@@ -47,7 +47,7 @@ import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
-import com.gregtechceu.gtceu.integration.create.CreateIntegration;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -135,7 +135,7 @@ public class CommonProxy {
         GTDamageTypes.init();
         ComputerMonitorCover.initPlaceholders();
         if (GTCEu.Mods.isCreateLoaded()) {
-            CreateIntegration.init();
+            GTCreateIntegration.init();
         }
         GTCovers.init();
         GTFluids.init();

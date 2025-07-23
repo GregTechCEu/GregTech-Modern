@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.integration.create.CreateIntegration;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -102,7 +102,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     }
 
     public List<MutableComponent> getRenderedText() {
-        List<MutableComponent> out = new ArrayList<>(GTStringUtils.literalLine(""));
+        List<MutableComponent> out = GTStringUtils.literalLine("");
         Stack<List<List<MutableComponent>>> incompletePlaceholders = new Stack<>();
         int formatStringArgsIndex = 0;
         StringBuilder formatString = new StringBuilder();
@@ -151,7 +151,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                 else incompletePlaceholders.peek().add(GTStringUtils.literalLine(""));
             } else if (c == '{') incompletePlaceholders.push(new ArrayList<>(List.of(GTStringUtils.literalLine(""))));
             else if (c == '}') {
-                if (incompletePlaceholders.isEmpty()) return GTStringUtils.literalLine("Unexpected closing bracket!");
+                if (incompletePlaceholders.isEmpty())
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.unexpected_bracket"));
                 if (incompletePlaceholders.peek().isEmpty()) {
                     incompletePlaceholders.pop();
                 } else if (placeholderExists(incompletePlaceholders.peek().get(0))) {
@@ -159,8 +160,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                     if (incompletePlaceholders.isEmpty()) GTStringUtils.append(out, placeholderString);
                     else GTStringUtils.append(GTUtil.getLast(incompletePlaceholders.peek()), placeholderString);
                 } else {
-                    return GTStringUtils.literalLine("No such placeholder: '%s'"
-                            .formatted(GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
+                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_placeholder",
+                            GTStringUtils.componentsToString(incompletePlaceholders.peek().get(0))));
                 }
             } else if (c == '\n') {
                 if (incompletePlaceholders.isEmpty()) out.add(MutableComponent.create(ComponentContents.EMPTY));
@@ -173,7 +174,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         }
         if (incompletePlaceholders.isEmpty())
             return out;
-        return GTStringUtils.literalLine("Unclosed bracket!");
+        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.unclosed_bracket"));
     }
 
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {
@@ -314,7 +315,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             tick = 0;
             try {
                 if (GTCEu.Mods.isCreateLoaded())
-                    CreateIntegration.TemporaryRedstoneLinkTransmitter.destroyAll();
+                    GTCreateIntegration.TemporaryRedstoneLinkTransmitter.destroyAll();
                 setRedstoneSignalOutput(0);
                 text = getRenderedText();
             } catch (RuntimeException e) {

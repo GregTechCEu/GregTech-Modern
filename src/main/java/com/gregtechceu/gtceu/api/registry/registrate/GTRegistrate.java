@@ -36,10 +36,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.simibubi.create.api.behaviour.display.DisplaySource;
-import com.simibubi.create.api.behaviour.display.DisplayTarget;
-import com.simibubi.create.api.registry.CreateRegistries;
-import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
@@ -229,28 +225,5 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
-    }
-
-    public static class Create {
-
-        public static <
-                T extends DisplaySource> SimpleBuilder<DisplaySource, T, GTRegistrate> displaySource(GTRegistrate registrate,
-                                                                                                     String name,
-                                                                                                     Supplier<T> supplier) {
-            return registrate.entry(name, callback -> new SimpleBuilder<>(
-                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_SOURCE, supplier)
-                    .byBlock(DisplaySource.BY_BLOCK)
-                    .byBlockEntity(DisplaySource.BY_BLOCK_ENTITY));
-        }
-
-        public static <
-                T extends DisplayTarget> SimpleBuilder<DisplayTarget, T, GTRegistrate> displayTarget(GTRegistrate registrate,
-                                                                                                     String name,
-                                                                                                     Supplier<T> supplier) {
-            return registrate.entry(name, callback -> new SimpleBuilder<>(
-                    registrate, registrate, name, callback, CreateRegistries.DISPLAY_TARGET, supplier)
-                    .byBlock(DisplayTarget.BY_BLOCK)
-                    .byBlockEntity(DisplayTarget.BY_BLOCK_ENTITY));
-        }
     }
 }

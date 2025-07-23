@@ -1525,6 +1525,9 @@ public class LangHandler {
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+        provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
+        provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
     }
 
     /**
