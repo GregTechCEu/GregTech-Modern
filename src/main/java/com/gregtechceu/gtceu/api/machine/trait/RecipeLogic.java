@@ -468,7 +468,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     setStatus(Status.SUSPEND);
                 } else {
                     setStatus(Status.IDLE);
-                    waitingReason = recipeCheck.reason();
+                    if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
+                        waitingReason = recipeCheck.reason();
+                    }
                 }
                 consecutiveRecipes = 0;
                 progress = 0;

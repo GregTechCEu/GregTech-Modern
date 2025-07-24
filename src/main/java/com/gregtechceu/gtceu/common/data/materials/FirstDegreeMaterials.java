@@ -1611,7 +1611,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
-                .gas()
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xa6a6a6)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CHEMICAL_BURNS)
