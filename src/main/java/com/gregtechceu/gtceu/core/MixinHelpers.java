@@ -154,8 +154,17 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
-                        tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
-                                .addAll(entries);
+                        // Wood blocks with this tag require an Axe without the config enabled, or a Wrench with it
+                        if (ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks &&
+                                entry.tagPrefix().miningToolTag()
+                                        .contains(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
+                            tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(),
+                                    path -> new ArrayList<>())
+                                    .addAll(entries);
+                        } else {
+                            tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
+                                    .addAll(entries);
+                        }
                     } else {
                         for (var tag : entry.tagPrefix().miningToolTag()) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).addAll(entries);
