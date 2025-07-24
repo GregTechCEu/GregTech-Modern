@@ -131,14 +131,17 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                 left_bracket = false;
             } else if (left_bracket && c == '{') tmp.append(c);
             else if (c == '{') left_bracket = true;
-            else if (c == '\\') escaped = true;
-            else {
+            else if (c == '\\') {
+                tmp.append(c);
+                escaped = true;
+            } else {
                 if (left_bracket) tmp.append('{');
                 tmp.append(c);
                 left_bracket = false;
             }
         }
         if (left_bracket) tmp.append('{');
+        if (escaped) tmp.append('\\');
         escaped = false;
         for (char c : tmp.toString().toCharArray()) {
             if (c == '\\') {
