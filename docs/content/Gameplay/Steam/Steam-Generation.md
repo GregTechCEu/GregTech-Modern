@@ -14,8 +14,8 @@ For early game steam generation you have two options:
 ### Solar Boilers
  * generate steam from solar boilers _doesn't work at night_.
 
-For water you can use a **primitive pump**
-![Primitive water pump](./assets/p_water_pump.png)
+For water, you can use a **primitive pump**
+![Primitive water pump](./assets/primitive_water_pump.png)
 
 or use a water connection from any other mod.
 
@@ -32,8 +32,8 @@ Large boilers allow you to create massive amount of steam in the blink of an eye
 ### Single Block
 
 | Boiler type | Low pressure | High pressure |
-| ----------- | ------------ | ------------- |
-| Solar       | 6 mB/        | 18 mB/t       |
+| ----------- |--------------| ------------- |
+| Solar       | 6 mB/t       | 18 mB/t       |
 | Liquid      | 12 mB/t      | 30 mB/t       |
 | Solid       | 6 mB/t       | 15 mB/t       |
 
