@@ -4,9 +4,9 @@ title: "Crafting Components"
 
 # Crafting Components
 
-Crafting Components are a way to organize and simplify the various similar recipes that GregTech generates. For example, writing out the recipes for all tiers of an alloy smelter can be done iteratively rather than hand written.
+Crafting Components are a way to organize and simplify the various similar recipes that GregTech generates. For example: writing out the recipes for all tiers of an alloy smelter can be done iteratively rather than one by one.
 
-Crafting Components are a map, pairing a `Voltage Tier` (the tier number) to a value. The valid value can either be a `MaterialEntry`, `ItemStack`, or a `TagPrefix<Item>`.
+Crafting Components are a map pairing a Voltage tier (the tier number) to a value. The value can be a `MaterialEntry`, `ItemStack`, or `TagPrefix<Item>`.
 
 ## Changing a single entry
 
@@ -14,12 +14,12 @@ With KubeJS it is possible to modify the predefined components of existing GTCEu
 You can replace singular entries, or do bulk modification of components.
 -1 is defined as a fallback value if no other entries exist.
 
-```js title="modification.js"
+```js title="startup/modification.js"
 const Map = Java.loadClass("java.util.Map")
 
-GTCEuServerEvents.craftingComponents(event => {
-    event.modifyItem(GTCraftingComponent.CIRCUIT, GTValues.MV, Item.of('minecraft:dirt')) // (1)
-    event.modifyItem(GTCraftingComponent.PUMP, Map.of(
+GTCEuStartupEvents.craftingComponents(event => {
+    event.modifyItem(GTCraftingComponents.CIRCUIT, GTValues.MV, Item.of('minecraft:dirt')) // (1)
+    event.modifyItem(GTCraftingComponents.PUMP, Map.of(
         GTValues.FALLBACK, Item.of('gtceu:lv_robot_arm'),
         GTValues.LV, Item.of('gtceu:lv_robot_arm'),
         GTValues.MV, Item.of('gtceu:mv_robot_arm'),
@@ -30,8 +30,8 @@ GTCEuServerEvents.craftingComponents(event => {
         GTValues.ZPM, Item.of('gtceu:zpm_robot_arm'),
         GTValues.UV, Item.of('gtceu:uv_robot_arm'),
     )) // (2)
-    event.modifyTag(CraftingComponent.CASING, GTValues.EV, 'minecraft:logs') // (3)
-    event.modifyMaterialEntry(CraftingComponent.PLATE, GTValues.UEV, new UnificationEntry('plate', 'gtceu:infinity')) // (4)
+    event.modifyTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
+    event.modifyMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new UnificationEntry('plate', 'gtceu:infinity')) // (4)
     event.removeTier("sensor", 3) // (5)
 })
 ```
@@ -58,7 +58,7 @@ GTCEuServerEvents.craftingComponents(event => {
     ITEM_CRAFTING_COMPONENT = event.createItem("item_component", Item.of('minecraft:cyan_stained_glass'), Map.of(
         GTValues.LV: Item.of('minecraft:cyan_stained_glass'),
         GTValues.MV: Item.of('minecraft:cyan_stained_glass'),
-        GTValues.HV: Item.of('minecraft:cyan_stained_glass'),
+0        GTValues.HV: Item.of('minecraft:cyan_stained_glass'),
         GTValues.EV: Item.of('minecraft:lime_stained_glass'),
         GTValues.IV: Item.of('minecraft:lime_stained_glass'),
         GTValues.LuV: Item.of('minecraft:lime_stained_glass'),
