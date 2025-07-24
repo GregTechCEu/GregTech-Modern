@@ -529,6 +529,7 @@ public class LangHandler {
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
                                                                                      // 1.19...
+        replace(provider, GTMaterials.Limonite.getUnlocalizedName(), "Limonite");
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
@@ -753,7 +754,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
+        provider.add("behaviour.soft_hammer.disabled_cycle", "Working Disabled after current cycle");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
@@ -926,6 +927,10 @@ public class LangHandler {
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
         provider.add("gtceu.universal.liters", "%s mB");
         provider.add("gtceu.universal.kiloliters", "%s B");
+        provider.add("gtceu.universal.parentheses", "(%s)");
+        provider.add("gtceu.universal.spaced_parentheses", "( %s )");
+        provider.add("gtceu.universal.padded_parentheses", " (%s) ");
+        provider.add("gtceu.universal.padded_spaced_parentheses", " ( %s ) ");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -1325,6 +1330,8 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
         provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.content.range", "%s-%s");
+        provider.add("gtceu.gui.content.times_item", "x %s");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

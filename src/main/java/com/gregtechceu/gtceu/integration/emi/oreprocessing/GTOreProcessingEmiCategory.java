@@ -44,13 +44,11 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
         for (MachineDefinition machine : GTRegistries.MACHINES) {
-            if (machine.getRecipeTypes() != null) {
-                for (GTRecipeType type : machine.getRecipeTypes()) {
-                    for (GTRecipeType validType : validTypes) {
-                        if (type == validType && !registeredMachines.contains(machine)) {
-                            registry.addWorkstation(CATEGORY, EmiStack.of(machine.asStack()));
-                            registeredMachines.add(machine);
-                        }
+            for (GTRecipeType type : machine.getRecipeTypes()) {
+                for (GTRecipeType validType : validTypes) {
+                    if (type == validType && !registeredMachines.contains(machine)) {
+                        registry.addWorkstation(CATEGORY, EmiStack.of(machine.asStack()));
+                        registeredMachines.add(machine);
                     }
                 }
             }

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -69,13 +68,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     public BoilerMultiPartRender(BlockState fireboxIdle, BlockState fireboxActive, BlockState casing) {
         this.fireboxIdle = fireboxIdle;
         this.fireboxActive = fireboxActive;
-
         this.casing = casing;
-        ModelUtils.registerBakeEventListener(true, event -> {
-            this.fireboxIdleModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxIdle));
-            this.fireboxActiveModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxActive));
-            this.casingModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.casing));
-        });
     }
 
     @Override
@@ -103,6 +96,16 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     public void renderPartModel(List<BakedQuad> quads, IMultiController controller, IMultiPart part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        if (this.fireboxIdleModel == null) {
+            this.fireboxIdleModel = ModelUtils.getModelForState(fireboxIdle);
+        }
+        if (this.fireboxActiveModel == null) {
+            this.fireboxActiveModel = ModelUtils.getModelForState(fireboxActive);
+        }
+        if (this.casingModel == null) {
+            this.casingModel = ModelUtils.getModelForState(casing);
+        }
+
         BlockPos partPos = part.self().getPos();
 
         MultiblockControllerMachine machine = controller.self();

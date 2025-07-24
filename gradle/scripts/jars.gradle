@@ -16,14 +16,6 @@ java {
     withSourcesJar()
 }
 
-// Use delombok'd files for sources
-sourcesJar {
-    exclude {
-        sourceSets.main.allSource.contains it.file
-    }
-    from delombok
-}
-
 jar.archiveClassifier = "dev"
 
 base {
