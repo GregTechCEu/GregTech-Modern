@@ -83,7 +83,7 @@ public interface ICoverableRenderer {
             IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;
             if (renderer != null) {
                 poseStack.pushPose();
-                RenderUtil.moveToFace(poseStack, 0, 0, 0, face);
+                RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, face);
                 RenderUtil.rotateToFace(poseStack, face, Direction.NORTH);
                 poseStack.translate(-.5f, -.5f, .01f);
                 renderer.render(machine, face, partialTick, poseStack, buffer, packedLight, packedOverlay);

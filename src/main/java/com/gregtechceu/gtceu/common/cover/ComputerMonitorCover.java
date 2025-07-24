@@ -5,15 +5,21 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IDataItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -29,6 +35,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
@@ -415,7 +424,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                             e.getMessage()));
                 } catch (NullPointerException e) {
                     return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
-                            "filter", args.get(1)));
+                            "filter", GTStringUtils.componentsToString(args.get(1))));
                 }
             }
             return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
@@ -542,6 +551,159 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                     return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
                             "index", 1, cover.text.size(), i));
                 return new ArrayList<>(List.of(cover.text.get(i - 1)));
+            } catch (NumberFormatException e) {
+                return GTUtil.list(
+                        Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));
+            }
+        });
+        addPlaceholder("progress", (cover, args) -> {
+            if (!args.isEmpty()) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
+            IWorkable workable = GTCapabilityHelper.getWorkable(cover.coverHolder.getLevel(),
+                    cover.coverHolder.getPos(), cover.attachedSide);
+            if (workable == null) return GTStringUtils.literalLine(-1);
+            return GTStringUtils.literalLine(workable.getProgress());
+        });
+        addPlaceholder("maxProgress", (cover, args) -> {
+            if (!args.isEmpty()) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
+            IWorkable workable = GTCapabilityHelper.getWorkable(cover.coverHolder.getLevel(),
+                    cover.coverHolder.getPos(), cover.attachedSide);
+            if (workable == null) return GTStringUtils.literalLine(-1);
+            return GTStringUtils.literalLine(workable.getMaxProgress());
+        });
+        addPlaceholder("maintenance", (cover, args) -> {
+            if (!args.isEmpty())
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args"));
+            IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(cover.coverHolder.getLevel(),
+                    cover.coverHolder.getPos(), cover.attachedSide);
+            if (maintenance == null) return GTStringUtils.literalLine(0);
+            return GTStringUtils.literalLine(maintenance.hasMaintenanceProblems() ? 1 : 0);
+        });
+        addPlaceholder("active", (cover, args) -> {
+            if (!args.isEmpty()) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
+            IWorkable workable = GTCapabilityHelper.getWorkable(cover.coverHolder.getLevel(),
+                    cover.coverHolder.getPos(), cover.attachedSide);
+            if (workable == null) return GTStringUtils.literalLine(0);
+            return GTStringUtils.literalLine(workable.isActive() ? 1 : 0);
+        });
+        addPlaceholder("voltage", (cover, args) -> {
+            if (!args.isEmpty()) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
+            if (cover.coverHolder.getLevel()
+                    .getBlockEntity(cover.coverHolder.getPos()) instanceof CableBlockEntity cable) {
+                return GTStringUtils.literalLine(cable.getAverageVoltage());
+            } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_cable"));
+        });
+        addPlaceholder("amperage", (cover, args) -> {
+            if (!args.isEmpty()) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
+            if (cover.coverHolder.getLevel()
+                    .getBlockEntity(cover.coverHolder.getPos()) instanceof CableBlockEntity cable) {
+                return GTStringUtils.literalLine(cable.getAverageAmperage());
+            } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_cable"));
+        });
+        addPlaceholder("count", (cover, args) -> {
+            if (args.isEmpty())
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 1, 0));
+            String arg1 = GTStringUtils.componentsToString(args.get(0));
+            int cnt = -1;
+            for (List<MutableComponent> arg : args) {
+                if (GTStringUtils.equals(arg, arg1)) cnt++;
+            }
+            return GTStringUtils.literalLine(cnt);
+        });
+        addPlaceholder("data", (cover, args) -> {
+            if (args.size() < 2) return GTUtil
+                    .list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 2, args.size()));
+            try {
+                int slot = GTStringUtils.toInt(args.get(1));
+                if (slot < 1 || slot > 8) return GTUtil.list(Component
+                        .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
+                ItemStack stack = cover.itemStackHandler.getStackInSlot(slot - 1);
+                int capacity = -1;
+                if (stack.getItem() instanceof ComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof IDataItem dataComponent) {
+                            capacity = dataComponent.getCapacity();
+                            break;
+                        }
+                    }
+                }
+                if (capacity == -1) return GTUtil.list(Component
+                        .translatable("gtceu.computer_monitor_cover.error.missing_item", "any data item", slot));
+                ListTag data = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
+                int p = stack.getOrCreateTag().getInt("computer_monitor_cover_p");
+                if (GTStringUtils.equals(args.get(2), "")) args.set(2, GTStringUtils.literalLine(p));
+                if (GTStringUtils.equals(args.get(0), "get"))
+                    return GTStringUtils.literalLine(data.getString(GTStringUtils.toInt(args.get(2)) % capacity));
+                else if (GTStringUtils.equals(args.get(0), "set")) {
+                    data.set(GTStringUtils.toInt(args.get(2)) % capacity,
+                            StringTag.valueOf(GTStringUtils.componentsToString(args.get(3))));
+                    stack.getOrCreateTag().put("computer_monitor_cover_data", data);
+                    return GTStringUtils.literalLine("");
+                } else if (GTStringUtils.equals(args.get(0), "setp")) {
+                    stack.getOrCreateTag().putInt("computer_monitor_cover_p",
+                            GTStringUtils.toInt(args.get(3)) % capacity);
+                    return GTStringUtils.literalLine("");
+                } else if (GTStringUtils.equals(args.get(0), "inc")) {
+                    stack.getOrCreateTag().putInt("computer_monitor_cover_p", (p + 1) % capacity);
+                    return GTStringUtils.literalLine("");
+                } else if (GTStringUtils.equals(args.get(0), "dec")) {
+                    stack.getOrCreateTag().putInt("computer_monitor_cover_p", p == 0 ? capacity - 1 : p - 1);
+                    return GTStringUtils.literalLine("");
+                } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+            } catch (NumberFormatException e) {
+                return GTUtil.list(
+                        Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));
+            } catch (IndexOutOfBoundsException e) {
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+            }
+        });
+        addPlaceholder("combine", (cover, args) -> {
+            List<MutableComponent> out = GTStringUtils.literalLine("");
+            for (int i = 0; i < args.size(); i++) {
+                GTStringUtils.append(out, args.get(i));
+                if (i != args.size() - 1) GTStringUtils.append(out, "\\ ");
+            }
+            return out;
+        });
+        addPlaceholder("nbt", (cover, args) -> {
+            if (args.size() != 1) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
+            try {
+                int slot = GTStringUtils.toInt(args.get(0));
+                if (slot < 1 || slot > 8) GTUtil.list(Component
+                        .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
+                return GTStringUtils
+                        .literalLine(cover.itemStackHandler.getStackInSlot(slot - 1).getOrCreateTag().toString());
+            } catch (NumberFormatException e) {
+                return GTUtil.list(
+                        Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));
+            }
+        });
+        addPlaceholder("toChars", (cover, args) -> {
+            if (args.size() != 1) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
+            if (args.get(0).isEmpty()) return GTStringUtils.literalLine("");
+            StringBuilder out = new StringBuilder();
+            for (char c : GTStringUtils.componentsToString(args.get(0)).toCharArray()) out.append(c).append(' ');
+            return GTStringUtils.literalLine(out.substring(0, out.length() - 2));
+        });
+        addPlaceholder("toAscii", (cover, args) -> {
+            if (args.size() != 1) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
+            String arg = GTStringUtils.componentsToString(args.get(0));
+            if (arg.length() != 1)
+                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+            return GTStringUtils.literalLine((int) arg.toCharArray()[0]);
+        });
+        addPlaceholder("fromAscii", (cover, args) -> {
+            if (args.size() != 1) return GTUtil.list(
+                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
+            try {
+                return GTStringUtils.literalLine((char) GTStringUtils.toInt(args.get(0)));
             } catch (NumberFormatException e) {
                 return GTUtil.list(
                         Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));

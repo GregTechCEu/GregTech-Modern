@@ -1423,13 +1423,13 @@ public class GTItems {
             .register() : null;
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::create)
-            .lang("Data Stick").onRegister(attach(new DataItemBehavior()))
+            .lang("Data Stick").onRegister(attach(new DataItemBehavior(false, 8)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::create)
-            .lang("Data Orb").onRegister(attach(new DataItemBehavior()))
+            .lang("Data Orb").onRegister(attach(new DataItemBehavior(false, 64)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::create)
-            .lang("Data Module").onRegister(attach(new DataItemBehavior(true)))
+            .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();

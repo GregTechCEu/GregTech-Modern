@@ -1500,6 +1500,111 @@ public class LangHandler {
                 "Returns the text that was previously displayed by this cover at the specified line (before line-wrapping).",
                 "Usage:",
                 "  {previousText <line>} -> the text previously displayed on the specified line (index starts at 1)");
+        multiLang(provider, "gtceu.placeholder_info.ae2itemCount",
+                "Same as itemCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting by filter or all items may cause lag!",
+                "Usage:",
+                "  {itemCount} -> total item amount",
+                "  {itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover");
+        multiLang(provider, "gtceu.placeholder_info.ae2fluidCount",
+                "Same as fluidCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting all fluids may cause lag!",
+                "Usage:",
+                "  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        multiLang(provider, "gtceu.placeholder_info.progress",
+                "Returns the progress of the currently running recipe of the block this cover is attached to.",
+                "Note that progress is an integer between 0 and {maxProgress}",
+                "Usage:",
+                "  {progress} -> the progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maxProgress",
+                "Returns the maximum progress of the currently running recipe of the block this cover is attached to.",
+                "Example: 'Progress: {calc {calc {progress} / {maxProgress}} * 100}%'",
+                "Usage:",
+                "  {maxProgress} -> the max progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maintenance",
+                "Returns a 1 if there are maintenance problems in the block the cover is attached to, 0 otherwise.",
+                "Example: 'Maintenance status: {if {maintenance} FIXING\\ REQUIRED OK}'",
+                "Usage:",
+                "  {maintenance} -> whether there are maintenance problems");
+        multiLang(provider, "gtceu.placeholder_info.active",
+                "Returns a 1 if the block the cover is attached to is currently running a recipe, 0 otherwise.",
+                "Usage:",
+                "  {active} -> whether there's a currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.voltage",
+                "Returns the voltage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {voltage} -> the voltage in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.amperage",
+                "Returns the amperage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {amperage} -> the amperate in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.ae2energy",
+                "Returns the energy currently stored in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2energy} -> the energy in the ME network (in AE units)");
+        multiLang(provider, "gtceu.placeholder_info.ae2maxPower",
+                "Returns the energy capacity of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2maxPower} -> the energy capacity of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2powerUsage",
+                "Returns the energy consumption of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2powerUsage} -> the energy consumption of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2spatial",
+                "Returns information about spatial I/O in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2spatial power} -> the amount of power required to initiate spatial I/O",
+                "  {ae2spatial efficiency} -> the efficiency of the Spatial Containment Structure (SPS)",
+                "  {ae2spatial size<X|Y|Z>} -> the size of the SPS along the specified axis (example: 'Size: {sizeX}x{sizeY}x{sizeZ}')");
+        multiLang(provider, "gtceu.placeholder_info.ae2crafting",
+                "Returns information about auto-crafting in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2crafting get amount} -> the amount of crafting CPUs in the ME network",
+                "  {ae2crafting get <index> storage} -> the amount of crafting storage the specified CPU has",
+                "  {ae2crafting get <index> threads} -> the amount of co-processors the specified CPU has",
+                "  {ae2crafting get <index> name} -> the name of the specified crafting CPU",
+                "  {ae2crafting get <index> selectionMode} -> the selection mode of the specified crafting CPU (used for manual, automatic or both requests)",
+                "  {ae2crafting get <index> amount} -> the amount of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> item} -> the display name of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> progress} -> the crafting job progress, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> time} -> the amount of time elapsed from the start of the craft (in nanoseconds), or 0 if the CPU is idle");
+        multiLang(provider, "gtceu.placeholder_info.count",
+                "Returns how many of the provided arguments are equal to the first (compared as strings, so \"0\" != \"0.0\")",
+                "Usage:",
+                "  {count <arg1> [arg2] [arg3] [arg4] ...} -> the amount of arguments that are equal to the first");
+        multiLang(provider, "gtceu.placeholder_info.data",
+                "Stores or retrieves some data from a data item (data stick/orb/module) in one of the slots.",
+                "If you leave the <index> argument empty, it will be replaced with the value p (p is an integer from 0 to (capacity - 1) that is stored in the data item nbt).",
+                "Usage:",
+                "  {data get <slot> <index>} -> the data stored in the item in the specified slot",
+                "  {data set <slot> <index> <value>} -> sets the data stored in the item in the specified slot, returns an empty string",
+                "  {data getp <slot>} -> p",
+                "  {data setp <slot> <value>} -> sets p, returns an empty string",
+                "  {data inc <slot>} -> increments p by 1, if p becomes more than or equal to capacity, sets p to 0",
+                "  {data dec <slot>} -> decrements p by 1, if p becomes less than 0, sets p to (capacity - 1)");
+        multiLang(provider, "gtceu.placeholder_info.combine",
+                "Combines all of it's arguments into a single string (by escaping all spaces between the arguments)",
+                "Example: {combine abc def ghi jkl mno} -> \"abc\\ def\\ ghi\\ jkl\\ mno\"",
+                "Usage:",
+                "  {combine [arg1] [arg2] [arg3] ...} -> a string that will be treated as a single argument in further placeholders");
+        multiLang(provider, "gtceu.placeholder_info.nbt",
+                "Returns the nbt data of the item in the specified slot",
+                "Usage:",
+                "  {nbt <slot>} -> nbt data");
+        multiLang(provider, "gtceu.placeholder_info.toChars",
+                "Returns the characters of the provided string with spaces between them",
+                "Example: {toChars example} -> 'e x a m p l e'",
+                "Usage:",
+                "  {toChars <arg>} -> characters");
+        multiLang(provider, "gtceu.placeholder_info.toAscii",
+                "Returns the ASCII code of the provided character",
+                "Usage:",
+                "  {toAscii <character>} -> ASCII code of the character");
+        multiLang(provider, "gtceu.placeholder_info.fromAscii",
+                "Returns the character represented by the provided ASCII code",
+                "Usage:",
+                "  {fromAscii <char_code>} -> a character");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.placeholder_reference",
                 "All placeholders:",
                 "(hover for more info)");
@@ -1528,6 +1633,8 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
+        provider.add("gtceu.computer_monitor_cover.error.not_cable", "Cover must be on a cable or wire!");
     }
 
     /**

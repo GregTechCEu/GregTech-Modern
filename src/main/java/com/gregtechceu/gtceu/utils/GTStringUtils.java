@@ -187,4 +187,8 @@ public class GTStringUtils {
     public static List<Component> toImmutable(List<MutableComponent> singleOrMultiLang) {
         return singleOrMultiLang.stream().map((c) -> (Component) c).toList();
     }
+
+    public static List<MutableComponent> literalLine(double d) {
+        return literalLine(String.valueOf(d));
+    }
 }

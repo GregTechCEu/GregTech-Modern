@@ -28,13 +28,11 @@ import java.util.List;
 public class DataItemBehavior implements IInteractionItem, IAddInformation, IDataItem {
 
     private final boolean requireDataBank;
+    private final int capacity;
 
-    public DataItemBehavior() {
-        this.requireDataBank = false;
-    }
-
-    public DataItemBehavior(boolean requireDataBank) {
+    public DataItemBehavior(boolean requireDataBank, int capacity) {
         this.requireDataBank = requireDataBank;
+        this.capacity = capacity;
     }
 
     @Override
@@ -97,5 +95,10 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             }
         }
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+    }
+
+    @Override
+    public int getCapacity() {
+        return capacity;
     }
 }
