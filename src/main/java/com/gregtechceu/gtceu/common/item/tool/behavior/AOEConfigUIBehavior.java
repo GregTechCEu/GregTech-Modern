@@ -24,7 +24,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
 
     @Override
     public boolean openUI(@NotNull Player player, @NotNull InteractionHand hand) {
-        return player.isShiftKeyDown() && getMaxAoEDefinition(player.getItemInHand(hand)) != AoESymmetrical.none();
+        return player.isShiftKeyDown() && !getMaxAoEDefinition(player.getItemInHand(hand)).isZero();
     }
 
     @Override

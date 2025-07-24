@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/zpm_transformer_16a",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/zpm_transformer_16a",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/zpm_transformer_16a"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/zpm_transformer_16a",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/zpm_transformer_16a",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/zpm_transformer_16a",
+      "y": 270
+    }
+  }
+}

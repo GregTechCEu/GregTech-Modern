@@ -19,9 +19,6 @@ import java.util.function.Supplier;
 
 /**
  * Simple {@link IEdibleItem} implementation.
- *
- * @author GateGuardian
- * @date : 2024/7/22
  */
 public class FoodStats implements IEdibleItem, IInteractionItem, IAddInformation {
 

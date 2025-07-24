@@ -35,6 +35,24 @@ public class EnergyInfoProviderList implements IEnergyInfoProvider {
     }
 
     @Override
+    public long getInputPerSec() {
+        long sum = 0;
+        for (IEnergyInfoProvider eip : list) {
+            sum += eip.getInputPerSec();
+        }
+        return sum;
+    }
+
+    @Override
+    public long getOutputPerSec() {
+        long sum = 0;
+        for (IEnergyInfoProvider eip : list) {
+            sum += eip.getOutputPerSec();
+        }
+        return sum;
+    }
+
+    @Override
     public boolean supportsBigIntEnergyValues() {
         return list.size() > 1;
     }

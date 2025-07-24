@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -256,8 +257,8 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1099))
                 .color(0x20FFFF).secondaryColor(0x429393).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL,
-                        GENERATE_FRAME)
+                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_SPRING_SMALL,
+                        GENERATE_FOIL, GENERATE_FRAME)
                 .element(GTElements.Eu)
                 .cableProperties(V[UHV], 2, 32)
                 .fluidPipeProperties(7750, 300, true)
@@ -861,6 +862,8 @@ public class ElementMaterials {
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(48, new int[] { 4, 9, 7, 4 })
+                        .enchantability(18).toughness(5.0f).knockbackResistance(0.4f).build())
                 .rotorStats(130, 115, 3.0f, 1600)
                 .fluidPipeProperties(2426, 150, true)
                 .blast(b -> b.temp(1941, GasTier.MID)

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -31,7 +31,7 @@ public class CoilBlockBuilder extends BlockBuilder {
 
     public CoilBlockBuilder(ResourceLocation i) {
         super(i);
-        property(ActiveBlock.ACTIVE);
+        property(GTBlockStateProperties.ACTIVE);
         renderType("cutout_mipped");
         noValidSpawns(true);
     }

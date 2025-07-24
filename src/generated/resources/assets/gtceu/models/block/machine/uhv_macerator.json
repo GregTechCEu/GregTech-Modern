@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uhv_macerator",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/macerator/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/macerator/overlay_front_emissive",
+          "overlay_top": "gtceu:block/machines/macerator/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/macerator/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/macerator/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/macerator/overlay_front_emissive",
+          "overlay_top": "gtceu:block/machines/macerator/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/macerator/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/macerator/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/macerator/overlay_front_active_emissive",
+          "overlay_top": "gtceu:block/machines/macerator/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/macerator/overlay_top_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/macerator/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/macerator/overlay_front_active_emissive",
+          "overlay_top": "gtceu:block/machines/macerator/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/macerator/overlay_top_active_emissive"
+        }
+      }
+    }
+  }
+}

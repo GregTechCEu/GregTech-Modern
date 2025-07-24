@@ -22,18 +22,13 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote TurbineRotorBehaviour
- */
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (!material.shouldGenerateRecipesFor(turbineBlade) || !material.hasProperty(PropertyKey.INGOT)) {
-                return;
+                continue;
             }
 
             var rotorStack = new ItemStack(item);

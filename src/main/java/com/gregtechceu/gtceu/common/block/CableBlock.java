@@ -43,11 +43,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableBlock
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, LevelEnergyNet> {
@@ -57,12 +52,11 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
-                      @Nullable BlockPos blockPos, int index) {
+    public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
         if (pipeType.isCable && index == 0) {
             return 0x404040;
         }
-        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
+        return super.tinted(state, level, pos, index);
     }
 
     @Override

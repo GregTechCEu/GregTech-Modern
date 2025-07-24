@@ -6,6 +6,10 @@ import net.minecraft.world.item.ItemStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,10 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class GTMath {
 
     public static long clamp(long value, long min, long max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    public static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }
 
@@ -49,5 +49,17 @@ public class GTMath {
         } else {
             return value < -2147483648L ? Integer.MIN_VALUE : (int) value;
         }
+    }
+
+    public static int hashInts(int... vals) {
+        return Arrays.hashCode(vals);
+    }
+
+    public static int hashLongs(long... vals) {
+        return Arrays.hashCode(vals);
+    }
+
+    public static float ratio(BigInteger a, BigInteger b) {
+        return new BigDecimal(a).divide(new BigDecimal(b), MathContext.DECIMAL32).floatValue();
     }
 }

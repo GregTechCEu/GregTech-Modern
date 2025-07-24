@@ -332,6 +332,13 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addBatchModeLine(boolean batchEnabled, int batchAmount) {
+            if (batchEnabled && batchAmount > 0) {
+                textList.add(Component.translatable("gtceu.multiblock.batch_enabled", batchAmount));
+            }
+            return this;
+        }
+
         public Builder addOutputLines(GTRecipe recipe) {
             if (!isStructureFormed || !isActive)
                 return this;
@@ -350,7 +357,7 @@ public class MultiblockDisplayText {
                     int count = stack.getCount();
                     double countD = count;
                     if (item.chance < item.maxChance) {
-                        countD = countD * recipe.parallels *
+                        countD = countD * recipe.parallels * recipe.batchParallels *
                                 function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                     }
@@ -371,7 +378,7 @@ public class MultiblockDisplayText {
                     int amount = stack.getAmount();
                     double amountD = amount;
                     if (fluid.chance < fluid.maxChance) {
-                        amountD = amountD * recipe.parallels *
+                        amountD = amountD * recipe.parallels * recipe.batchParallels *
                                 function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                     }

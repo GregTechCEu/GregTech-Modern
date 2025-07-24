@@ -392,7 +392,7 @@ public final class PartsRecipeHandler {
         if (!material.hasFlag(NO_SMASHING)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material.getName()),
                     ChemicalHelper.get(ring, material),
-                    "h ", " X",
+                    "h ", "fX",
                     'X', new MaterialEntry(rod, material));
         } else {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_ring")
@@ -569,26 +569,6 @@ public final class PartsRecipeHandler {
                 .duration((int) Math.max(material.getMass(), 1L))
                 .EUt(16)
                 .save(provider);
-
-        if (material.hasProperty(PropertyKey.INGOT)) {
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_long_rod")
-                    .inputItems(ingot, material)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_ROD_LONG)
-                    .outputItems(stack)
-                    .duration((int) Math.max(material.getMass(), 1L))
-                    .EUt(64)
-                    .save(provider);
-
-            if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_long_rod")
-                        .inputItems(dust, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_ROD_LONG)
-                        .outputItems(stack)
-                        .duration((int) Math.max(material.getMass(), 1L))
-                        .EUt(64)
-                        .save(provider);
-            }
-        }
     }
 
     private static void processTurbine(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {

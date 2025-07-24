@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/hp_steam_solid_boiler",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/hp_steam_solid_boiler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/hp_steam_solid_boiler"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/hp_steam_solid_boiler",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/hp_steam_solid_boiler",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/hp_steam_solid_boiler",
+      "y": 270
+    }
+  }
+}

@@ -1,53 +1,10 @@
 {
-  "parent": "block/block",
-  "render_type": "cutout_mipped",
-  "textures": {
-    "particle": "gtceu:block/casings/hpca/advanced_computer_casing/side",
-    "down": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
-    "up": "gtceu:block/casings/hpca/advanced_computer_casing/top",
-    "north": "gtceu:block/casings/hpca/advanced_computer_casing/front",
-    "east": "gtceu:block/casings/hpca/advanced_computer_casing/side",
-    "south": "gtceu:block/casings/hpca/advanced_computer_casing/back",
-    "west": "gtceu:block/casings/hpca/advanced_computer_casing/side"
-  },
-  "elements": [
-    {
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#down",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#up",
-          "cullface": "up"
-        },
-        "north": {
-          "texture": "#north",
-          "cullface": "north"
-        },
-        "south": {
-          "texture": "#south",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#west",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#east",
-          "cullface": "east"
-        }
-      }
+    "parent": "gtceu:block/computer_casing",
+    "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top",
+        "front": "gtceu:block/casings/hpca/advanced_computer_casing/front",
+        "back": "gtceu:block/casings/hpca/advanced_computer_casing/back",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side"
     }
-  ]
 }

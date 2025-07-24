@@ -83,6 +83,13 @@ public class Material implements Comparable<Material> {
      */
     private String chemicalFormula;
 
+    /**
+     * Material specific tags
+     */
+    @Setter
+    @Getter
+    private List<TagKey<Item>> itemTags = new ArrayList<>();
+
     private String calculateChemicalFormula() {
         if (chemicalFormula != null) return this.chemicalFormula;
         if (materialInfo.element != null) {
@@ -360,9 +367,9 @@ public class Material implements Comparable<Material> {
     }
 
     public int getLayerARGB(int layerIndex) {
-        // get 2nd digit as positive if emissive layer
+        // parse emissive layer value as -(layer + 101)
         if (layerIndex < -100) {
-            layerIndex = (Math.abs(layerIndex) % 100) / 10;
+            layerIndex = -layerIndex - 101;
         }
         if (layerIndex > materialInfo.colors.size() - 1 || layerIndex < 0) return -1;
         int layerColor = getMaterialARGB(layerIndex);
@@ -433,9 +440,11 @@ public class Material implements Comparable<Material> {
             return Math.max(1, 43);
         long totalProtons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalProtons += material.amount() * material.material().getProtons();
         }
+        if (totalAmount == 0) return 0;
         return totalProtons / totalAmount;
     }
 
@@ -446,22 +455,26 @@ public class Material implements Comparable<Material> {
             return 55;
         long totalNeutrons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalNeutrons += material.amount() * material.material().getNeutrons();
         }
+        if (totalAmount == 0) return 0;
         return totalNeutrons / totalAmount;
     }
 
     public long getMass() {
         if (materialInfo.element != null)
             return materialInfo.element.mass();
-        if (materialInfo.componentList.size() == 0)
+        if (materialInfo.componentList.isEmpty())
             return 98;
         long totalMass = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalMass += material.amount() * material.material().getMass();
         }
+        if (totalAmount == 0) return 0;
         return totalMass / totalAmount;
     }
 
@@ -497,7 +510,7 @@ public class Material implements Comparable<Material> {
         return materialInfo.resourceLocation.toString();
     }
 
-    // must be named multiply for GroovyScript to allow `mat * quantity -> MaterialStack`
+    // must be named multiply for GroovyScript to allow `material * quantity -> MaterialStack`
     public MaterialStack multiply(long amount) {
         return new MaterialStack(this, amount);
     }
@@ -545,6 +558,8 @@ public class Material implements Comparable<Material> {
         private final MaterialFlags flags;
         private Set<TagPrefix> ignoredTagPrefixes = null;
 
+        private final List<TagKey<Item>> itemTags = new ArrayList<>();
+
         private String formula = null;
 
         /*
@@ -574,6 +589,11 @@ public class Material implements Comparable<Material> {
             materialInfo = new MaterialInfo(resourceLocation);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        public Builder customTags(TagKey<Item> key) {
+            this.itemTags.add(key);
+            return this;
         }
 
         /*
@@ -1055,6 +1075,14 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        /**
+         * Use {@link ArmorProperty.Builder} to create an Armor Property.
+         */
+        public Builder armorStats(ArmorProperty armorProperty) {
+            properties.setProperty(PropertyKey.ARMOR, armorProperty);
+            return this;
+        }
+
         public Builder rotorStats(int power, int efficiency, float damage, int durability) {
             properties.setProperty(PropertyKey.ROTOR, new RotorProperty(power, efficiency, damage, durability));
             return this;
@@ -1268,6 +1296,9 @@ public class Material implements Comparable<Material> {
             }
 
             var mat = new Material(materialInfo, properties, flags);
+            if (!itemTags.isEmpty()) {
+                mat.setItemTags(itemTags);
+            }
             if (formula != null) {
                 mat.setFormula(formula);
             }
@@ -1307,7 +1338,7 @@ public class Material implements Comparable<Material> {
          */
         @Getter
         @Setter
-        private IntList colors = new IntArrayList(List.of(-1, -1));
+        private IntList colors = IntArrayList.of(-1, -1);
 
         /**
          * The color of this Material.

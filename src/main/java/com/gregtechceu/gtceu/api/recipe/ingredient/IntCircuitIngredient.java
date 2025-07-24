@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +26,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
 
     private static final IntCircuitIngredient[] INGREDIENTS = new IntCircuitIngredient[CIRCUIT_MAX + 1];
 
-    public static IntCircuitIngredient circuitInput(int configuration) {
+    public static IntCircuitIngredient of(int configuration) {
         if (configuration < CIRCUIT_MIN || configuration > CIRCUIT_MAX) {
             throw new IndexOutOfBoundsException("Circuit configuration " + configuration + " is out of range");
         }
@@ -40,7 +40,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     private final int configuration;
     private ItemStack[] stacks;
 
-    protected IntCircuitIngredient(int configuration) {
+    private IntCircuitIngredient(int configuration) {
         super(IntCircuitBehaviour.stack(configuration));
         this.configuration = configuration;
     }
@@ -53,19 +53,15 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     }
 
     @Override
-    public ItemStack[] getItems() {
+    public ItemStack @NotNull [] getItems() {
         if (stacks == null) {
             stacks = new ItemStack[] { ((StrictNBTIngredientAccessor) this).getStack() };
         }
         return stacks;
     }
 
-    public IntCircuitIngredient copy() {
-        return new IntCircuitIngredient(this.configuration);
-    }
-
     @Override
-    public JsonElement toJson() {
+    public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
         json.addProperty("configuration", configuration);
@@ -87,13 +83,13 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
         @Override
         public @NotNull IntCircuitIngredient parse(FriendlyByteBuf buffer) {
             int configuration = buffer.readVarInt();
-            return new IntCircuitIngredient(configuration);
+            return of(configuration);
         }
 
         @Override
         public @NotNull IntCircuitIngredient parse(JsonObject json) {
             int configuration = json.get("configuration").getAsInt();
-            return new IntCircuitIngredient(configuration);
+            return of(configuration);
         }
 
         @Override

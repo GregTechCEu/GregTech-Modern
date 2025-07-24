@@ -82,8 +82,7 @@ public class FluidStorageImpl implements FluidStorage {
                                 material);
                         return;
                     }
-                    Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material,
-                            entry.getKey(), registrate);
+                    Supplier<? extends Fluid> fluid = entry.getValue().build(material, entry.getKey(), registrate);
                     if (!storeNoOverwrites(entry.getKey(), fluid, entry.getValue())) {
                         GTCEu.LOGGER.error("{} already has an associated fluid for material {}", material, material);
                     }

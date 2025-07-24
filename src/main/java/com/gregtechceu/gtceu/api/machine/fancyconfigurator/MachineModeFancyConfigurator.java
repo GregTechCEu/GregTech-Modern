@@ -19,10 +19,6 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Rundas/Screret
- * @implNote MachineModeFancyConfigurator
- */
 public class MachineModeFancyConfigurator implements IFancyUIProvider {
 
     protected IRecipeLogicMachine machine;

@@ -23,11 +23,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote WorkableTieredMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
@@ -110,19 +105,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         long tierVoltage = GTValues.V[getTier()];
         if (isEnergyEmitter()) {
-            return NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+            return RecipeAmperageEnergyContainer.makeEmitterContainer(this, tierVoltage * 64L,
+                    tierVoltage, getMaxInputOutputAmperage());
         } else {
-            return new NotifiableEnergyContainer(this, tierVoltage * 64L, tierVoltage, 2, 0L, 0L) {
-
-                @Override
-                public long getInputAmperage() {
-                    if (getEnergyCapacity() / 2 > getEnergyStored() && recipeLogic.isActive()) {
-                        return 2;
-                    }
-                    return 1;
-                }
-            };
+            return RecipeAmperageEnergyContainer.makeReceiverContainer(this, tierVoltage * 64L,
+                    tierVoltage, getMaxInputOutputAmperage());
         }
     }
 
@@ -136,12 +123,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                this.tankScalingFunction.apply(this.getTier()), IO.IN);
+                this.tankScalingFunction.applyAsInt(this.getTier()), IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                this.tankScalingFunction.apply(this.getTier()), IO.OUT);
+                this.tankScalingFunction.applyAsInt(this.getTier()), IO.OUT);
     }
 
     protected NotifiableComputationContainer createImportComputationContainer(Object... args) {
@@ -192,11 +179,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
     // ********** MISC ***********//
     //////////////////////////////////////
-
-    @Override
-    protected long getMaxInputOutputAmperage() {
-        return 2L;
-    }
 
     @Override
     public void onMachineRemoved() {

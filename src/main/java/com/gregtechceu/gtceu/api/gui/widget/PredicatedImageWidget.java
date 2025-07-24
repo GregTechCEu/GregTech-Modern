@@ -14,11 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote PredicatedImageWidget
- */
 @Accessors(chain = true)
 public class PredicatedImageWidget extends ImageWidget {
 

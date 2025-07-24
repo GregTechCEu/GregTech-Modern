@@ -51,6 +51,11 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     }
 
     @Override
+    public Class<FluidIngredient> contentClass() {
+        return FluidIngredient.class;
+    }
+
+    @Override
     public Codec<FluidIngredient> codec() {
         return FluidIngredient.CODEC;
     }

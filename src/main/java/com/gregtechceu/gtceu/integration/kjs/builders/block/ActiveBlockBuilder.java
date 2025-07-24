@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +24,7 @@ public class ActiveBlockBuilder extends BlockBuilder {
 
     public ActiveBlockBuilder(ResourceLocation id) {
         super(id);
-        property(ActiveBlock.ACTIVE);
+        property(GTBlockStateProperties.ACTIVE);
         renderType("cutout_mipped");
     }
 

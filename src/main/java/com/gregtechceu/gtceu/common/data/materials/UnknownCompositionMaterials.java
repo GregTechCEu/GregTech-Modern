@@ -358,7 +358,7 @@ public class UnknownCompositionMaterials {
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
-                .toolStats(ToolProperty.Builder.of(10.0F, 14.0F, 900, 4)
+                .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
                 .buildAndRegister();
 
@@ -443,7 +443,7 @@ public class UnknownCompositionMaterials {
 
         Paper = new Material.Builder(GTCEu.id("paper"))
                 .dust(0)
-                .color(0xFAFAFA).secondaryColor(0x878787).iconSet(FINE)
+                .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
                 .buildAndRegister();
@@ -572,6 +572,32 @@ public class UnknownCompositionMaterials {
                 .ingot().fluid()
                 .color(0xfabf29)
                 .flags(NO_SMELTING)
+                .buildAndRegister();
+
+        BauxiteSlurry = new Material.Builder(GTCEu.id("bauxite_slurry"))
+                .fluid()
+                .color(0x051650)
+                .buildAndRegister();
+
+        CrackedBauxiteSlurry = new Material.Builder(GTCEu.id("cracked_bauxite_slurry"))
+                .liquid(new FluidBuilder()
+                        .temperature(775))
+                .color(0x052C50)
+                .buildAndRegister();
+
+        BauxiteSludge = new Material.Builder(GTCEu.id("bauxite_sludge"))
+                .fluid()
+                .color(0x563D2D)
+                .buildAndRegister();
+
+        DecalcifiedBauxiteSludge = new Material.Builder(GTCEu.id("decalcified_bauxite_sludge"))
+                .fluid()
+                .color(0x6F2DA8)
+                .buildAndRegister();
+
+        BauxiteSlag = new Material.Builder(GTCEu.id("bauxite_slag"))
+                .dust()
+                .color(0x6F2DA8).iconSet(SAND)
                 .buildAndRegister();
     }
 }

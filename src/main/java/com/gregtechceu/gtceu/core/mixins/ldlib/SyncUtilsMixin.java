@@ -21,11 +21,4 @@ public class SyncUtilsMixin {
             cir.setReturnValue(!fluidStack.isFluidStackIdentical((FluidStack) newValue));
         }
     }
-
-    @Inject(method = "copyWhenNecessary", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void gtceu$copyWhenNecessary(Object value, CallbackInfoReturnable<Object> cir) {
-        if (value instanceof FluidStack fluidStack) {
-            cir.setReturnValue(fluidStack.copy());
-        }
-    }
 }

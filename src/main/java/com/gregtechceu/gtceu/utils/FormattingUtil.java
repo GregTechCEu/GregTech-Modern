@@ -4,11 +4,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 
-import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -17,11 +18,6 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.ChatFormatting.YELLOW;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote FormattingUtil
- */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
 public class FormattingUtil {
 
@@ -30,6 +26,7 @@ public class FormattingUtil {
     public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#,##0.#");
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
     public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E00");
+    public static final DecimalFormat DECIMAL_FORMAT_SIC_2F = new DecimalFormat("0.00E00");
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
     private static final int SMALL_UP_NUMBER_BASE = '\u2070';
@@ -39,20 +36,21 @@ public class FormattingUtil {
     private static final int NUMBER_BASE = '0';
 
     public static String toSmallUpNumbers(String string) {
-        return checkNumbers(string, SMALL_UP_NUMBER_BASE, true);
+        return checkNumbers(string, SMALL_UP_NUMBER_BASE);
     }
 
     public static String toSmallDownNumbers(String string) {
-        return checkNumbers(string, SMALL_DOWN_NUMBER_BASE, false);
+        return checkNumbers(string, SMALL_DOWN_NUMBER_BASE);
     }
 
     @NotNull
-    private static String checkNumbers(String string, int smallUpNumberBase, boolean isUp) {
+    private static String checkNumbers(String string, int startIndex) {
         char[] charArray = string.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             int relativeIndex = charArray[i] - NUMBER_BASE;
             if (relativeIndex >= 0 && relativeIndex <= 9) {
-                if (isUp) {
+                // is superscript
+                if (startIndex == SMALL_UP_NUMBER_BASE) {
                     if (relativeIndex == 1) {
                         charArray[i] = SMALL_UP_NUMBER_ONE;
                         continue;
@@ -64,7 +62,7 @@ public class FormattingUtil {
                         continue;
                     }
                 }
-                int newChar = smallUpNumberBase + relativeIndex;
+                int newChar = startIndex + relativeIndex;
                 charArray[i] = (char) newChar;
             }
         }
@@ -72,34 +70,57 @@ public class FormattingUtil {
     }
 
     /**
-     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and
-     * numbers.
+     * Does almost the same thing as {@code UPPER_CAMEL.to(LOWER_UNDERSCORE, string)},
+     * but it also inserts underscores between words and numbers.
      *
      * @param string Any string with ASCII characters.
      * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maragingSteel300" -> "maraging_steel_300"
+     * 
+     *         <pre>
+     *         <br>{@code "maragingSteel300" -> "maraging_steel_300"}
+     *         <br>{@code "gtceu:maraging_steel_300" -> "gtceu:maraging_steel_300"}
+     *         <br>{@code "maragingSteel_300" -> "maraging_steel_300"}
+     *         <br>{@code "maragingSTEEL_300" -> "maraging_steel_300"}
+     *         <br>{@code "MARAGING_STEEL_300" -> "maraging_steel_300"}
+     * </pre>
      */
     public static String toLowerCaseUnderscore(String string) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
-            if (i != 0 && (Character.isUpperCase(string.charAt(i)) ||
-                    (Character.isDigit(string.charAt(i - 1)) ^ Character.isDigit(string.charAt(i)))))
-                result.append("_");
-            result.append(Character.toLowerCase(string.charAt(i)));
+            char curChar = string.charAt(i);
+            result.append(Character.toLowerCase(curChar));
+            if (i == string.length() - 1) break;
+
+            char nextChar = string.charAt(i + 1);
+            if (curChar == '_' || nextChar == '_') continue;
+            boolean nextIsUpper = Character.isUpperCase(nextChar);
+            if (Character.isUpperCase(curChar) && nextIsUpper) continue;
+            if (nextIsUpper || Character.isDigit(curChar) ^ Character.isDigit(nextChar)) result.append('_');
         }
         return result.toString();
     }
 
     /**
-     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and
-     * numbers.
-     *
-     * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maragingSteel300" -> "maraging_steel_300"
+     * @deprecated use {@link FormattingUtil#toLowerCaseUnderscore(String) toLowerCaseUnderscore} instead.
      */
+    @ApiStatus.Obsolete(since = "7.0.0")
+    @Deprecated(since = "7.0.0")
     public static String toLowerCaseUnder(String string) {
-        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
+        return toLowerCaseUnderscore(string);
+    }
+
+    /**
+     * Check if {@code string} has any uppercase characters.
+     *
+     * @param string the string to check
+     * @return if the string has any uppercase characters.
+     */
+    public static boolean hasUpperCase(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            if (Character.isUpperCase(ch)) return true;
+        }
+        return false;
     }
 
     /**
@@ -221,6 +242,10 @@ public class FormattingUtil {
 
         if (unit != null) sb.append(unit);
         return sb.toString();
+    }
+
+    public static String formatNumberOrSic(BigInteger number, BigInteger threshold) {
+        return number.compareTo(threshold) > 0 ? DECIMAL_FORMAT_SIC_2F.format(number) : formatNumbers(number);
     }
 
     public static String formatBuckets(long mB) {

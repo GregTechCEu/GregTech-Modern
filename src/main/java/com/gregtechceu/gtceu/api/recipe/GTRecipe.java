@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -24,11 +25,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipe
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
@@ -55,8 +51,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public CompoundTag data;
     public int duration;
     public int parallels = 1;
+    public int batchParallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
+    // Lazy fields, since we need the recipe EUt very often
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -133,6 +135,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
         return copied;
     }
 
@@ -208,6 +211,19 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
         }
         return ChanceLogic.OR;
+    }
+
+    // Technically should account for overflow but realistically not an issue.
+    protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
+        var outputs = contents.get(EURecipeCapability.CAP);
+        if (outputs == null) return EnergyStack.EMPTY;
+        long v = 0, a = 0;
+        for (var content : outputs) {
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content);
+            v += stack.voltage();
+            a += stack.amperage();
+        }
+        return new EnergyStack(v, a);
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.

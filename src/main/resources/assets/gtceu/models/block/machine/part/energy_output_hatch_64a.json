@@ -1,0 +1,45 @@
+{
+    "parent": "gtceu:block/overlay/2_layer/tinted/front",
+    "textures": {
+        "overlay_tint": "gtceu:block/overlay/machine/overlay_energy_64a_tinted",
+        "overlay_in": "gtceu:block/overlay/machine/overlay_energy_64a_in",
+        "overlay_out_emissive": "gtceu:block/overlay/machine/overlay_energy_64a_out_emissive"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
+            }
+        },
+        {
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_tint",  "cullface": "north", "tintindex": 2 }
+            }
+        },
+        {
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in",  "cullface": "north" }
+            }
+        },
+        {
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_emissive",  "cullface": "north" }
+            }
+        }
+    ]
+}

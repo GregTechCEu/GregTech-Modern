@@ -558,19 +558,25 @@ public class MetaTileEntityLoader {
                 'R', new MaterialEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
                 'F', Items.FLINT_AND_STEEL);
+
         if (!ConfigHolder.INSTANCE.recipes.hardMultiRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', Blocks.BLAST_FURNACE.asItem(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         }
+
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMultiMachines.VACUUM_FREEZER.asStack(),
                 "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV,
                 'C', CustomTags.EV_CIRCUITS, 'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
@@ -793,19 +799,19 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.PACKER, "BCB", "RMV", "WCW", 'M', HULL, 'R', ROBOT_ARM, 'V',
                 CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'B', Tags.Items.CHESTS_WOODEN);
         registerMachineRecipe(provider, GTMachines.BREWERY, "GPG", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'B',
-                STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+                ROD_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.FERMENTER, "WPW", "GMG", "WCW", 'M', HULL, 'P', PUMP, 'C', CIRCUIT,
                 'W', CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.DISTILLERY, "GBG", "CMC", "WPW", 'M', HULL, 'P', PUMP, 'B',
-                STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+                ROD_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.FLUID_SOLIDIFIER, "PGP", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'C',
                 CIRCUIT, 'W', CABLE, 'G', GLASS, 'B', Tags.Items.CHESTS_WOODEN);
         registerMachineRecipe(provider, GTMachines.CHEMICAL_BATH, "VGW", "PGV", "CMC", 'M', HULL, 'P', PUMP, 'V',
                 CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.POLARIZER, "ZSZ", "WMW", "ZSZ", 'M', HULL, 'S',
-                STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'W', CABLE);
+                ROD_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'W', CABLE);
         registerMachineRecipe(provider, GTMachines.ELECTROMAGNETIC_SEPARATOR, "VWZ", "WMS", "CWZ", 'M', HULL, 'S',
-                STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE);
+                ROD_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE);
         registerMachineRecipe(provider, GTMachines.AUTOCLAVE, "IGI", "IMI", "CPC", 'M', HULL, 'P', PUMP, 'C', CIRCUIT,
                 'I', PLATE, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.MIXER, "GRG", "GEG", "CMC", 'M', HULL, 'E', MOTOR, 'R', ROTOR, 'C',
@@ -863,26 +869,11 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.LuV, GTMachines.DIODE.length),
                 "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.ADVANCED_SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
 
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV), " CC",
-                "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.UHV), "WCC",
-                "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC",
-                'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC",
-                'W', POWER_COMPONENT, 'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC",
-                'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC",
-                'W', POWER_COMPONENT, 'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.ULV, GTValues.MV),
-                " CC", "TH ", " CC", 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.MV, GTValues.UHV),
-                "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
+        // Decomposition info handled by the assembler recipe
+        registerMachineRecipe(provider, false, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV),
+                " CC", "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
+        registerMachineRecipe(provider, false, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.IV),
+                "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
 
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_4, "WTW", "WMW", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN);

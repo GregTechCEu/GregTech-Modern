@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -11,25 +13,16 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Used to handle recipes, only valid for a single RecipeCapability's entries
- */
-class RecipeRunner {
+import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
-    record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
-
-        public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(ActionResult.SUCCESS, null);
-
-        public boolean isSuccess() {
-            return result.isSuccess();
-        }
-    }
+public class RecipeRunner {
 
     private final GTRecipe recipe;
     private final IO io;
@@ -54,11 +47,11 @@ class RecipeRunner {
     }
 
     @NotNull
-    public RecipeHandlingResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
+    public ActionResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty()) {
-            return new RecipeHandlingResult(ActionResult.PASS_NO_CONTENTS, null);
+            return ActionResult.PASS_NO_CONTENTS;
         }
 
         return this.handleContents();
@@ -100,7 +93,7 @@ class RecipeRunner {
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
                 chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
-                        recipe.parallels);
+                        recipe.parallels * recipe.batchParallels);
 
                 for (Content cont : chancedContents) {
                     contentList.add(cont.content);
@@ -111,63 +104,73 @@ class RecipeRunner {
         }
     }
 
-    private RecipeHandlingResult handleContents() {
+    private ActionResult handleContents() {
         var result = handleContentsInternal(io);
-        if (result.isSuccess()) return result;
-        return handleContentsInternal(IO.BOTH);
+        return result;
     }
 
-    private RecipeHandlingResult handleContentsInternal(IO capIO) {
-        if (recipeContents.isEmpty()) return RecipeHandlingResult.SUCCESS;
+    private ActionResult handleContentsInternal(IO capIO) {
+        if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(capIO)) {
-            return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
+            return ActionResult.FAIL_NO_CAPABILITIES;
         }
 
-        var handlers = capabilityProxies.get(capIO);
+        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && capIO == IO.OUT) {
+        if (!isTick && capIO.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
-        List<RecipeHandlerList> distinct = new ArrayList<>();
-        List<RecipeHandlerList> indistinct = new ArrayList<>();
-        for (var handler : handlers) {
-            if (handler.isDistinct()) distinct.add(handler);
-            else indistinct.add(handler);
-        }
 
-        // handle distinct first
-        for (var handler : distinct) {
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
+        for (var handler : handlers) {
+            addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
+        }
+        // Specifically check distinct handlers first
+        for (RecipeHandlerList handler : handlerGroups.getOrDefault(RecipeHandlerGroupDistinctness.BUS_DISTINCT,
+                Collections.emptyList())) {
             var res = handler.handleRecipe(io, recipe, searchRecipeContents, true);
             if (res.isEmpty()) {
                 if (!simulated) {
                     handler.handleRecipe(io, recipe, recipeContents, false);
                 }
                 recipeContents.clear();
-                return RecipeHandlingResult.SUCCESS;
+                return ActionResult.SUCCESS;
             }
         }
 
-        for (var handler : indistinct) {
-            recipeContents = handler.handleRecipe(io, recipe, recipeContents, simulated);
-            if (recipeContents.isEmpty()) {
-                return RecipeHandlingResult.SUCCESS;
-            }
-        }
+        // Check the others
+        for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
+            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
 
-        for (var handler : distinct) {
-            var res = handler.handleRecipe(io, recipe, recipeContents, simulated);
-            if (res.isEmpty()) {
-                recipeContents.clear();
-                return RecipeHandlingResult.SUCCESS;
+            // List to keep track of the remaining items for this RecipeHandlerGroup
+            Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
+            boolean found = false;
+            for (RecipeHandlerList handler : handlerListEntry.getValue()) {
+                copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
+                if (copiedRecipeContents.isEmpty()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) continue;
+            if (simulated) return ActionResult.SUCCESS;
+            // Start actually removing items, keep track of the remaining items for this RecipeHandlerGroup
+            copiedRecipeContents = recipeContents;
+            for (RecipeHandlerList handler : handlerListEntry.getValue()) {
+                copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, false);
+                if (copiedRecipeContents.isEmpty()) {
+                    recipeContents.clear();
+                    return ActionResult.SUCCESS;
+                }
             }
         }
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, entry.getKey());
+                return ActionResult.fail(null, entry.getKey(), capIO);
             }
         }
 
-        return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, null);
+        return ActionResult.FAIL_NO_REASON;
     }
 }

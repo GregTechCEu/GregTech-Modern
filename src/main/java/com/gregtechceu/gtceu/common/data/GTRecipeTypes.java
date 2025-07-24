@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -20,10 +19,10 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
-import com.gregtechceu.gtceu.data.recipe.RecipeUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -45,11 +44,6 @@ import java.util.List;
 
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeTypes
- */
 public class GTRecipeTypes {
 
     public static final String STEAM = "steam";
@@ -189,7 +183,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, false, GuiTextures.VIAL_OVERLAY_1)
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
+            .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
                     .save(provider));
@@ -215,27 +209,23 @@ public class GTRecipeTypes {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() &&
                         recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList())
                                 .isEmpty()) {
-                    recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
-                            .inputFluids(GTMaterials.Water.getFluid((int) Math.max(4,
-                                    Math.min(1000, recipeBuilder.duration * recipeBuilder.EUt() / 320))))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
+                            .inputFluids(GTMaterials.Water.getFluid((int) GTMath.clamp(
+                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 320, 4, 1000)))
                             .duration(recipeBuilder.duration * 2)
                             .save(provider);
 
-                    recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
-                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.max(3,
-                                    Math.min(750, recipeBuilder.duration * recipeBuilder.EUt() / 426))))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
+                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) GTMath.clamp(
+                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 426, 3, 750)))
                             .duration((int) (recipeBuilder.duration * 1.5))
                             .save(provider);
 
                     // Don't call buildAndRegister as we are mutating the original recipe and already in the middle of a
                     // buildAndRegister call.
                     // Adding a second call will result in duplicate recipe generation attempts
-                    recipeBuilder
-                            .inputFluids(GTMaterials.Lubricant.getFluid((int) Math.max(1,
-                                    Math.min(250, recipeBuilder.duration * recipeBuilder.EUt() / 1280))))
-                            .duration(Math.max(1, recipeBuilder.duration));
+                    recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) GTMath.clamp(
+                            recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 1280, 1, 250)));
                 }
             });
 
@@ -418,7 +408,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
             .setScanner(true)
             .setMaxTooltips(4)
-            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
+            .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
 
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
@@ -535,8 +525,6 @@ public class GTRecipeTypes {
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
-                    long EUt = EURecipeCapability.CAP
-                            .of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
                     Content inputContent = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
                     FluidIngredient input = FluidRecipeCapability.CAP.of(inputContent.getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ?
@@ -554,14 +542,15 @@ public class GTRecipeTypes {
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
                                         BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath())
-                                .EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                                .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4), recipeBuilder.EUt().amperage())
+                                .circuitMeta(i + 1);
 
-                        int ratio = RecipeUtil.getRatioForDistillery(input, output, outputItem);
+                        int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR_INV);
                         boolean shouldDivide = ratio != 1;
 
-                        boolean fluidsDivisible = RecipeUtil.isFluidStackDivisibleForDistillery(input, ratio) &&
-                                RecipeUtil.isFluidStackDivisibleForDistillery(output, ratio);
+                        boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
+                                RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
                         FluidIngredient dividedInputFluid = input.copy();
                         dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
@@ -649,8 +638,9 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, true, true, GuiTextures.MOLECULAR_OVERLAY_4)
             .setSlotOverlay(true, false, GuiTextures.VIAL_OVERLAY_1)
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
-            .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
+            .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .setMaxTooltips(4)
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 
     public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1)
@@ -695,6 +685,6 @@ public class GTRecipeTypes {
     }
 
     public static GTRecipeType get(String name) {
-        return GTRegistries.RECIPE_TYPES.get(GTCEu.appendId(name));
+        return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
     }
 }

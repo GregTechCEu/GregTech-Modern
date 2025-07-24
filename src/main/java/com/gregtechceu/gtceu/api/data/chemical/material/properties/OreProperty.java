@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.util.Mth;
 
-import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -116,8 +116,8 @@ public class OreProperty implements IMaterialProperty {
         this.washedAmount = washedAmount;
     }
 
-    public Pair<Material, Integer> getWashedIn() {
-        return Pair.of(this.washedIn, this.washedAmount);
+    public @NotNull ObjectIntPair<Material> getWashedIn() {
+        return ObjectIntPair.of(this.washedIn, this.washedAmount);
     }
 
     public void setSeparatedInto(Material... materials) {

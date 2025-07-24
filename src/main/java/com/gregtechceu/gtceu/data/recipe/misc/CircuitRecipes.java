@@ -690,14 +690,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_emerald")
                 .inputItems(gemExquisite, Emerald)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 1000, 2000)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_olivine")
                 .inputItems(gemExquisite, Olivine)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 1000, 2000)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
@@ -716,14 +716,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_mutagen")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(Mutagen.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8000, 250)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_bacterial_sludge")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(BacterialSludge.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8000, 250)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 
@@ -1029,7 +1029,7 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_mv").EUt(VA[LV]).duration(300)
                 .inputItems(GOOD_CIRCUIT_BOARD)
-                .inputItems(CustomTags.LV_CIRCUITS, 2)
+                .inputItems(ELECTRONIC_CIRCUIT_LV, 2)
                 .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireGtSingle, Copper, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_MV)

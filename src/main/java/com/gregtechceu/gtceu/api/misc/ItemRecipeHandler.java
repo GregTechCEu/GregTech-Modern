@@ -17,11 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/13
- * @implNote ItemRecipeHandler
- */
 public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
 
     @Getter
