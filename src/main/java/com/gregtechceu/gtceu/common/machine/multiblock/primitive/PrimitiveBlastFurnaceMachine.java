@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -93,15 +94,23 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     public void onStructureFormed() {
         super.onStructureFormed();
         IFluidRenderMulti.super.onStructureFormed();
-        this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
     }
 
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
         IFluidRenderMulti.super.onStructureInvalid();
-        unsubscribe(hurtSubscription);
-        hurtSubscription = null;
+    }
+
+    @Override
+    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.notifyStatusChanged(oldStatus, newStatus);
+        if (newStatus == RecipeLogic.Status.WORKING) {
+            this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
+        } else if (oldStatus == RecipeLogic.Status.WORKING && hurtSubscription != null) {
+            unsubscribe(hurtSubscription);
+            hurtSubscription = null;
+        }
     }
 
     @Override

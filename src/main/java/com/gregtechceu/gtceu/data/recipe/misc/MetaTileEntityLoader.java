@@ -558,19 +558,25 @@ public class MetaTileEntityLoader {
                 'R', new MaterialEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
                 'F', Items.FLINT_AND_STEEL);
+
         if (!ConfigHolder.INSTANCE.recipes.hardMultiRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', Blocks.BLAST_FURNACE.asItem(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         }
+
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMultiMachines.VACUUM_FREEZER.asStack(),
                 "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV,
                 'C', CustomTags.EV_CIRCUITS, 'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -268,12 +269,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 totalContinuousRunningTime++;
             } else {
                 setWaiting(handleTick.reason());
-                runAttempt++;
-                if (runAttempt > 5) {
-                    runAttempt = 0;
-                    setStatus(Status.SUSPEND);
+
+                // Machine isn't getting enough power, suspend after 5 attempts.
+                if (conditionResult.io() == IO.IN && conditionResult.capability() == EURecipeCapability.CAP) {
+                    runAttempt++;
+                    if (runAttempt > 5) {
+                        runAttempt = 0;
+                        setStatus(Status.SUSPEND);
+                    }
+                    runDelay = runAttempt * 10;
                 }
-                runDelay = runAttempt * 10;
             }
         } else {
             setWaiting(conditionResult.reason());
@@ -463,7 +468,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     setStatus(Status.SUSPEND);
                 } else {
                     setStatus(Status.IDLE);
-                    waitingReason = recipeCheck.reason();
+                    if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
+                        waitingReason = recipeCheck.reason();
+                    }
                 }
                 consecutiveRecipes = 0;
                 progress = 0;

@@ -280,6 +280,10 @@ public class GTValues {
             RED.getColor()
     };
 
+    // Main color for steam machines
+    public static final int VC_LP_STEAM = 0xBB8E53;
+    public static final int VC_HP_STEAM = 0x79756F;
+
     /**
      * The long names for the voltages
      */

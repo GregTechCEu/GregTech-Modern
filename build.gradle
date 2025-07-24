@@ -60,6 +60,10 @@ configurations {
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
     extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
+
+    renderNurseCfg {
+        canBeConsumed = false
+    }
 }
 
 afterEvaluate {

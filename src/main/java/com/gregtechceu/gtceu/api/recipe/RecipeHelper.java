@@ -228,7 +228,7 @@ public class RecipeHelper {
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()), result.capability());
+                .append(": ").append(result.capability().getName()), result.capability(), io);
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -254,7 +254,7 @@ public class RecipeHelper {
             } else if (!condition.check(recipe, recipeLogic)) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
                         .append(": ")
-                        .append(condition.getTooltips()), null);
+                        .append(condition.getTooltips()), null, null);
             }
         }
 
@@ -269,7 +269,7 @@ public class RecipeHelper {
             }
 
             if (!passed) {
-                return ActionResult.fail(component, null);
+                return ActionResult.fail(component, null, null);
             }
         }
         return ActionResult.SUCCESS;
