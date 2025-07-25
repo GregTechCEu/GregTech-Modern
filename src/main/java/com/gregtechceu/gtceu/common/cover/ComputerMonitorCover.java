@@ -668,7 +668,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             List<MutableComponent> out = GTStringUtils.literalLine("");
             for (int i = 0; i < args.size(); i++) {
                 GTStringUtils.append(out, args.get(i));
-                if (i != args.size() - 1) GTStringUtils.append(out, "\\ ");
+                if (i != args.size() - 1) GTStringUtils.append(out, " ");
             }
             return out;
         });

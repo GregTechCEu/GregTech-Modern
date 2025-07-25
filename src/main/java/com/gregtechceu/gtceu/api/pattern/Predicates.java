@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
@@ -281,5 +282,11 @@ public class Predicates {
                         .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                         .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                         .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
+    }
+
+    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
+        IMachineBlock[] machineBlocks = new IMachineBlock[definitions.length];
+        for (int i = 0; i < machineBlocks.length; i++) machineBlocks[i] = definitions[i].get();
+        return blocks(machineBlocks);
     }
 }

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -1124,6 +1125,25 @@ public class GTMultiMachines {
             null,
             (builder, overlay) -> builder.workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));
+    public static final MultiblockMachineDefinition CENTRAL_MONITOR = REGISTRATE
+            .multiblock("central_monitor", CentralMonitorMachine::new)
+            .rotationState(RotationState.ALL)
+            .recipeType(DUMMY_RECIPES)
+            .appearanceBlock(CASING_STAINLESS_CLEAN)
+            .pattern((def) -> FactoryBlockPattern
+                    .start(RelativeDirection.LEFT, RelativeDirection.FRONT, RelativeDirection.UP)
+                    .aisle("BBBB")
+                    .aisle("BBBC")
+                    .aisle("BBBB")
+                    .where('B', CentralMonitorMachine.BLOCK_PREDICATE)
+                    .where('C', Predicates.controller(Predicates.blocks(def.get())))
+                    .build())
+            .workableCasingModel(
+                    GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+                    GTCEu.id("block/multiblock/network_switch") // temporary because I don't want to work with
+                                                                // black/purple squares
+            )
+            .register();
 
     public static void init() {}
 }
