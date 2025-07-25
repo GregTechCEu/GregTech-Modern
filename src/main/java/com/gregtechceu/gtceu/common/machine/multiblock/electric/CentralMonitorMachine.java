@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -13,8 +13,9 @@ import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -25,21 +26,25 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Rotation;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CentralMonitorMachine extends WorkableElectricMultiblockMachine implements IMonitorComponent {
+public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
+                                   implements IMonitorComponent, IDataInfoProvider {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -47,17 +52,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
     private static final Block[] VALID_BLOCKS = new Block[] {
             GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get(),
     };
-    private static final Set<MachineDefinition[]> VALID_MACHINES = Set.of(
-            GTMachines.HULL,
-            GTMachines.ENERGY_INPUT_HATCH,
-            GTMachines.ENERGY_INPUT_HATCH_4A,
-            GTMachines.ENERGY_INPUT_HATCH_16A,
-            new MachineDefinition[] {
-                    GTResearchMachines.DATA_ACCESS_HATCH,
-                    GTResearchMachines.ADVANCED_DATA_ACCESS_HATCH,
-                    GTResearchMachines.CREATIVE_DATA_ACCESS_HATCH,
-                    GTMachines.MONITOR
-            });
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
             .setExactLimit(1)
             .or(Predicates.abilities(PartAbility.DATA_ACCESS).setMaxGlobalLimited(1))
@@ -115,6 +109,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
         if (!getPatternFindingState().update(pos, BLOCK_PREDICATE)) {
             return false;
         }
+        if (Predicates.abilities(PartAbility.INPUT_ENERGY, PartAbility.DATA_ACCESS).test(getPatternFindingState()))
+            return true; // workaround because it doesn't work for blocks that have amount limits for some reason
         return BLOCK_PREDICATE.test(getPatternFindingState());
     }
 
@@ -201,18 +197,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
     }
 
     public BlockPos toRelative(BlockPos pos) {
-        BlockPos.MutableBlockPos tmp = pos.mutable();
-        BlockPos c = this.getPos();
-        tmp.move(-c.getX(), -c.getY(), -c.getZ());
-        switch (this.getFrontFacing()) {
-            case NORTH -> tmp.rotate(Rotation.NONE);
-            case SOUTH -> tmp.rotate(Rotation.CLOCKWISE_180);
-            case EAST -> tmp.rotate(Rotation.CLOCKWISE_90);
-            case WEST -> tmp.rotate(Rotation.COUNTERCLOCKWISE_90);
-            case UP -> tmp.set(tmp.getX(), tmp.getY(), -tmp.getZ());
-            case DOWN -> tmp.set(tmp.getX(), -tmp.getY(), tmp.getZ());
-        }
-        return tmp.immutable();
+        BlockPos tmp = getPos()
+                .relative(RelativeDirection.RIGHT.getActualDirection(getFrontFacing()), rightDist)
+                .relative(RelativeDirection.UP.getActualDirection(getFrontFacing()), upDist);
+        Direction.Axis x = RelativeDirection.LEFT.getActualDirection(getFrontFacing()).getAxis();
+        Direction.Axis y = RelativeDirection.UP.getActualDirection(getFrontFacing()).getAxis();
+        return new BlockPos(Math.abs(tmp.get(x) - pos.get(x)), Math.abs(tmp.get(y) - pos.get(y)), 0);
     }
 
     private @Nullable IMonitorComponent getComponent(int row, int col) {
@@ -251,40 +241,46 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
         WidgetGroup builder = (WidgetGroup) super.createUIWidget();
         WidgetGroup options = new WidgetGroup(-120, 20, 80, 20);
         DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-120, 50, 80, 80);
-        for (MonitorGroup group : monitorGroups) {
-            TextTextureWidget label = new TextTextureWidget(0, groupList.widgets.size() * 15 + 5, 80, 10,
-                    group.getName());
-            label.getTextTexture().setType(TextTexture.TextType.LEFT);
+        ArrayList<ArrayList<Runnable>> imageButtons = new ArrayList<>();
+        Consumer<MonitorGroup> addGroupToList = group -> {
+            ButtonWidget label = new ButtonWidget(0, groupList.widgets.size() * 15 + 5, 80, 10, null);
+            TextTexture text = new TextTexture(group.getName());
+            text.setType(TextTexture.TextType.LEFT);
+            label.setButtonTexture(text);
+            label.setOnPressCallback(click -> group.getRelativePositions().forEach(pos -> {
+                BlockPos rel = toRelative(pos);
+                // GTCEu.LOGGER.info("pos = {}, rel = {}, leftDist = {}, upDist = {}", pos, rel, leftDist, upDist);
+                imageButtons.get(rel.getY()).get(rel.getX()).run();
+            }));
             groupList.addWidget(label);
-        }
+        };
+        monitorGroups.forEach(addGroupToList);
         builder.addWidget(groupList);
         builder.addWidget(options);
-        ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 80, 20, click -> {
-            for (MonitorGroup group : monitorGroups) {
-                for (IMonitorComponent component : selectedComponents) group.remove(component.getPos());
-            }
-            monitorGroups.removeIf(MonitorGroup::isEmpty);
-            groupList.clearAllWidgets();
-            for (MonitorGroup group : monitorGroups) {
-                TextTextureWidget label = new TextTextureWidget(0, groupList.widgets.size() * 15 + 5, 80, 10,
-                        group.getName());
-                label.getTextTexture().setType(TextTexture.TextType.LEFT);
-                groupList.addWidget(label);
-            }
-        });
+        ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 80, 20, null);
         removeFromGroupButton.setButtonTexture(new TextTexture("Remove from group"));
         removeFromGroupButton.setVisible(false);
-        ButtonWidget createGroupButton = new ButtonWidget(0, 0, 80, 20, click -> {
+        ButtonWidget createGroupButton = new ButtonWidget(0, 0, 80, 20, null);
+        createGroupButton.setOnPressCallback(click -> {
             MonitorGroup group = new MonitorGroup("Group #" + (monitorGroups.size() + 1));
             for (IMonitorComponent component : selectedComponents) {
                 if (isInAnyGroup(component)) return;
                 group.add(component.getPos());
             }
             monitorGroups.add(group);
-            TextTextureWidget label = new TextTextureWidget(0, groupList.widgets.size() * 15 + 5, 80, 10,
-                    group.getName());
-            label.getTextTexture().setType(TextTexture.TextType.LEFT);
-            groupList.addWidget(label);
+            addGroupToList.accept(group);
+            createGroupButton.setVisible(false);
+            removeFromGroupButton.setVisible(true);
+        });
+        removeFromGroupButton.setOnPressCallback(click -> {
+            for (MonitorGroup group : monitorGroups) {
+                for (IMonitorComponent component : selectedComponents) group.remove(component.getPos());
+            }
+            monitorGroups.removeIf(MonitorGroup::isEmpty);
+            groupList.clearAllWidgets();
+            monitorGroups.forEach(addGroupToList);
+            removeFromGroupButton.setVisible(false);
+            createGroupButton.setVisible(true);
         });
         createGroupButton.setButtonTexture(new TextTexture("Create group"));
         createGroupButton.setVisible(false);
@@ -293,35 +289,48 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
         int startX = 20;
         int startY = 59;
         for (int row = 0; row <= downDist + upDist; row++) {
+            imageButtons.add(new ArrayList<>());
             for (int col = 0; col <= leftDist + rightDist; col++) {
                 ResourceTexture texture = getComponentTexture(row, col);
                 GuiTextureGroup textures = new GuiTextureGroup(texture, new ColorBorderTexture(2, 0xFFFFFF));
                 IMonitorComponent component = getComponent(row, col);
                 if (component == null) continue;
-                ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures,
-                        click -> {
-                            if (selectedComponents.contains(component)) {
-                                selectedComponents.remove(component);
-                                textures.setTextures(texture);
-                                createGroupButton.setVisible(selectedComponents.stream().noneMatch(this::isInAnyGroup));
-                                removeFromGroupButton
-                                        .setVisible(selectedComponents.stream().allMatch(this::isInAnyGroup));
-                                if (selectedComponents.isEmpty()) {
-                                    createGroupButton.setVisible(false);
-                                    removeFromGroupButton.setVisible(false);
-                                }
-                            } else {
-                                boolean inAnyGroup = isInAnyGroup(component);
-                                if (selectedComponents.isEmpty() && !inAnyGroup) createGroupButton.setVisible(true);
-                                if (inAnyGroup) createGroupButton.setVisible(false);
-                                if (selectedComponents.isEmpty() && inAnyGroup) removeFromGroupButton.setVisible(true);
-                                if (!inAnyGroup) removeFromGroupButton.setVisible(false);
-                                selectedComponents.add(component);
-                                ColorRectTexture rect = new ColorRectTexture(Color.RED);
-                                textures.setTextures(rect, texture);
-                            }
+                ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
+                Runnable callback = () -> {
+                    if (selectedComponents.contains(component)) {
+                        selectedComponents.remove(component);
+                        textures.setTextures(texture);
+                        createGroupButton.setVisible(selectedComponents.stream().noneMatch(this::isInAnyGroup));
+                        removeFromGroupButton
+                                .setVisible(selectedComponents.stream().allMatch(this::isInAnyGroup));
+                        if (selectedComponents.isEmpty()) {
+                            createGroupButton.setVisible(false);
+                            removeFromGroupButton.setVisible(false);
+                        }
+                    } else {
+                        boolean inAnyGroup = isInAnyGroup(component);
+                        if (selectedComponents.isEmpty() && !inAnyGroup) createGroupButton.setVisible(true);
+                        if (inAnyGroup) createGroupButton.setVisible(false);
+                        if (selectedComponents.isEmpty() && inAnyGroup) removeFromGroupButton.setVisible(true);
+                        if (!inAnyGroup) removeFromGroupButton.setVisible(false);
+                        selectedComponents.add(component);
+                        ColorRectTexture rect = new ColorRectTexture(Color.RED);
+                        textures.setTextures(rect, texture);
+                    }
+                    if (isInAnyGroup(component)) {
+                        monitorGroups.forEach(group -> {
+                            if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
                         });
+                    } else img.setHoverTooltips("Group: none");
+                };
+                if (isInAnyGroup(component)) {
+                    monitorGroups.forEach(group -> {
+                        if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
+                    });
+                } else img.setHoverTooltips("Group: none");
+                img.setOnPressCallback(click -> callback.run());
                 builder.addWidget(img);
+                GTUtil.getLast(imageButtons).add(callback);
             }
         }
         return builder;
@@ -335,5 +344,16 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
     @Override
     public ResourceTexture getComponentIcon() {
         return ResourceTexture.fromSpirit(GTCEu.id("block/multiblock/network_switch/overlay_front_active"));
+    }
+
+    @Override
+    public @NotNull List<Component> getDebugInfo(Player player, int logLevel,
+                                                 PortableScannerBehavior.DisplayMode mode) {
+        return List.of(Component.literal("Size: (%d+1+%d)x(%d+1+%d)".formatted(leftDist, rightDist, upDist, downDist)));
+    }
+
+    @Override
+    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        return List.of(Component.literal("Size: %dx%d".formatted(leftDist + rightDist + 1, upDist + downDist + 1)));
     }
 }

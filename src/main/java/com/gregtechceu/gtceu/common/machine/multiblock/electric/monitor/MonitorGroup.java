@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import net.minecraft.core.BlockPos;
 
 import lombok.Getter;
@@ -50,7 +48,6 @@ public class MonitorGroup {
     }
 
     public boolean contains(BlockPos pos) {
-        GTCEu.LOGGER.info(relativeMonitorPositions);
         return relativeMonitorPositions.contains(pos);
     }
 
