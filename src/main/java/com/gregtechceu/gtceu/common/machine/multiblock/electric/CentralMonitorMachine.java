@@ -87,14 +87,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
 
     public boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
-        BlockState state = level.getBlockState(pos);
-        if (Arrays.stream(VALID_BLOCKS).anyMatch(block -> state == block.defaultBlockState())) return true;
-        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
-            return VALID_MACHINES.stream().anyMatch(
-                    definitions -> Arrays.stream(definitions).anyMatch(
-                            definition -> definition == machineBlockEntity.getDefinition()));
+        if (!getPatternFindingState().update(pos, BLOCK_PREDICATE)) {
+            return false;
         }
-        return false;
+        return BLOCK_PREDICATE.test(getPatternFindingState());
     }
 
     public void updateStructureDimensions() {
