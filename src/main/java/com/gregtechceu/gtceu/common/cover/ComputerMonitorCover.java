@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
@@ -35,12 +36,15 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -61,7 +65,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ComputerMonitorCover extends CoverBehavior implements IUICover {
+public class ComputerMonitorCover extends CoverBehavior implements IUICover, IDataStickInteractable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
@@ -388,6 +392,47 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     @Override
     public boolean canConnectRedstone() {
         return true;
+    }
+
+    @Override
+    public List<ItemStack> getAdditionalDrops() {
+        List<ItemStack> drops = super.getAdditionalDrops();
+        for (int i = 0; i < 8; i++) {
+            if (!itemStackHandler.getStackInSlot(i).isEmpty())
+                drops.add(itemStackHandler.getStackInSlot(i));
+        }
+        return drops;
+    }
+
+    @Override
+    public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
+        CompoundTag tag = dataStick.getTagElement("computer_monitor_cover_config");
+        if (tag == null) return InteractionResult.FAIL;
+        List<String> stringLines = new ArrayList<>();
+        ListTag stringLinesTag = tag.getList("lines", Tag.TAG_STRING);
+        for (int i = 0; i < stringLinesTag.size(); i++) stringLines.add(stringLinesTag.getString(i));
+        formatStringLines.clear();
+        formatStringLines.addAll(stringLines);
+        List<String> stringArgs = new ArrayList<>();
+        ListTag stringArgsTag = tag.getList("args", Tag.TAG_STRING);
+        for (int i = 0; i < stringArgsTag.size(); i++) stringArgs.add(stringArgsTag.getString(i));
+        formatStringArgs.clear();
+        formatStringArgs.addAll(stringArgs);
+        updateInterval = tag.getInt("updateInterval");
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
+        CompoundTag tag = dataStick.getOrCreateTagElement("computer_monitor_cover_config");
+        ListTag stringLinesTag = new ListTag();
+        formatStringLines.forEach(line -> stringLinesTag.add(StringTag.valueOf(line)));
+        tag.put("lines", stringLinesTag);
+        ListTag stringArgsTag = new ListTag();
+        formatStringArgs.forEach(line -> stringArgsTag.add(StringTag.valueOf(line)));
+        tag.put("args", stringArgsTag);
+        tag.putInt("updateInterval", updateInterval);
+        return InteractionResult.SUCCESS;
     }
 
     public static void initPlaceholders() {

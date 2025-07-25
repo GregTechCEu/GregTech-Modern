@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -80,6 +82,18 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
+        ICoverable coverable = GTCapabilityHelper.getCoverable(context.getLevel(), context.getClickedPos(),
+                context.getClickedFace());
+        if (coverable != null &&
+                coverable.getCoverAtSide(context.getClickedFace()) instanceof IDataStickInteractable interactable) {
+            if (context.isSecondaryUseActive()) {
+                if (ResearchManager.readResearchId(itemStack) == null) {
+                    return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
+                }
+            } else {
+                return interactable.onDataStickUse(context.getPlayer(), itemStack);
+            }
+        }
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
             var machine = blockEntity.getMetaMachine();
             if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
