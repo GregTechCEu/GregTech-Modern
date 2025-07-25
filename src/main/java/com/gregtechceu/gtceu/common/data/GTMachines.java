@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
@@ -1039,6 +1040,11 @@ public class GTMachines {
             PartAbility.INPUT_LASER);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(OUT, 4096,
             PartAbility.OUTPUT_LASER);
+    public static final MachineDefinition MONITOR = REGISTRATE.machine("monitor", MonitorPartMachine::new)
+            .workableCasingModel(
+                    GTCEu.id("block/casings/voltage/mv/side"),
+                    GTCEu.id("block/cover/computer_monitor"))
+            .register();
 
     public static void init() {
         GTMultiMachines.init();
