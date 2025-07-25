@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -8,10 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -30,7 +28,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -76,6 +73,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
 
+    private MultiblockState patternFindingState;
+
     public CentralMonitorMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -83,6 +82,32 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        this.clearPatternFindingState();
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        this.clearPatternFindingState();
+    }
+
+    protected void clearPatternFindingState() {
+        if (this.patternFindingState != null)
+            this.patternFindingState.clean();
+        this.patternFindingState = null;
+    }
+
+    protected MultiblockState getPatternFindingState() {
+        if (this.patternFindingState == null) {
+            this.patternFindingState = new MultiblockState(getLevel(), getPos());
+            this.patternFindingState.clean();
+        }
+        return this.patternFindingState;
     }
 
     public boolean isValidMonitorBlock(Level level, BlockPos pos) {
@@ -98,18 +123,20 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
         if (level == null) return;
 
         Direction front = getFrontFacing();
-        Direction left = front.getCounterClockWise();
-        Direction right = left.getOpposite();
+        Direction spin = getUpwardsFacing();
 
+        Direction left = RelativeDirection.LEFT.getRelative(front, spin, false);
+        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, false);
+        Direction up = RelativeDirection.UP.getRelative(front, spin, false);
+        Direction down = RelativeDirection.DOWN.getRelative(front, spin, false);
         BlockPos.MutableBlockPos posLeft = getPos().mutable().move(left);
         BlockPos.MutableBlockPos posRight = getPos().mutable().move(right);
-        BlockPos.MutableBlockPos posUp = getPos().mutable().move(Direction.UP);
-        BlockPos.MutableBlockPos posDown = getPos().mutable().move(Direction.DOWN);
-
-        leftDist = 0;
-        rightDist = 0;
-        upDist = 0;
-        downDist = 0;
+        BlockPos.MutableBlockPos posUp = getPos().mutable().move(up);
+        BlockPos.MutableBlockPos posDown = getPos().mutable().move(down);
+        this.leftDist = 0;
+        this.rightDist = 0;
+        this.upDist = 0;
+        this.downDist = 0;
 
         while (isValidMonitorBlock(level, posLeft)) {
             posLeft.move(left);
@@ -120,11 +147,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
             rightDist++;
         }
         while (isValidMonitorBlockRow(level, posUp, leftDist, rightDist, left, right)) {
-            posUp.move(Direction.UP);
+            posUp.move(up);
             upDist++;
         }
         while (isValidMonitorBlockRow(level, posDown, leftDist, rightDist, left, right)) {
-            posDown.move(Direction.DOWN);
+            posDown.move(down);
             downDist++;
         }
     }
@@ -170,7 +197,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine imp
 
     @Override
     public int getTier() {
-        return 2;
+        return GTValues.MV;
     }
 
     public BlockPos toRelative(BlockPos pos) {

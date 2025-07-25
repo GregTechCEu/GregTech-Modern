@@ -86,7 +86,6 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     @Getter
     @Persisted
     private int updateInterval = 100;
-    private int tick = 0;
     @Getter
     @Persisted
     private long ticksSincePlaced = 0;
@@ -321,10 +320,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     }
 
     private void update() {
-        tick++;
         ticksSincePlaced++;
-        if (tick >= updateInterval) {
-            tick = 0;
+        if (coverHolder.getOffsetTimer() % updateInterval == 0) {
             try {
                 if (GTCEu.Mods.isCreateLoaded())
                     GTCreateIntegration.TemporaryRedstoneLinkTransmitter.destroyAll();

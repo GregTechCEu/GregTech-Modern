@@ -66,7 +66,7 @@ public class GTStringUtils {
      * <li>{@code {"literally any string"}} -> {@code "literally any string"}</li>
      * <li>{@code {"~", "0"}} -> {@code "-1"} // signed bitwise inversion</li>
      * </ul>
-     * Currently the operations are: {@code {"+", "-", "*", "/", "//", "%", ">>", "<<", "~", "round", "ceil", "floor",
+     * Currently the operations are: {@code {"+", "-", "*", "/", "%", ">>", "<<", "~", "round", "ceil", "floor",
      * "sqrt"}}
      * 
      * @param args the arguments, including operands and operation to calculate

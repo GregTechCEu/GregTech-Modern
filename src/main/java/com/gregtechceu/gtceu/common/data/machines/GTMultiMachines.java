@@ -23,7 +23,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.BedrockOreMinerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;

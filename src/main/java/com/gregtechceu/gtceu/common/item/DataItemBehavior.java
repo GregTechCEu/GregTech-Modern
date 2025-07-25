@@ -20,14 +20,17 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class DataItemBehavior implements IInteractionItem, IAddInformation, IDataItem {
 
     private final boolean requireDataBank;
+    @Getter
     private final int capacity;
 
     public DataItemBehavior(boolean requireDataBank, int capacity) {
@@ -95,10 +98,5 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             }
         }
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-    }
-
-    @Override
-    public int getCapacity() {
-        return capacity;
     }
 }

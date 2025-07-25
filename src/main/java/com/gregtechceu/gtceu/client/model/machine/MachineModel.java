@@ -391,10 +391,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
+        if (machineBE.getDefinition() != getDefinition()) return;
         ICoverableRenderer.super.renderDynamicCovers(machineBE.getMetaMachine(), partialTick, poseStack, buffer,
                 packedLight,
                 packedOverlay);
-        if (machineBE.getDefinition() != getDefinition()) return;
         if (dynamicRenders.isEmpty()) return;
 
         MetaMachine machine = machineBE.getMetaMachine();
@@ -466,8 +466,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public int getViewDistance() {
-        int distance = 12;
-        if (dynamicRenders.isEmpty()) return distance;
+        int distance = 0;
         for (DynamicRender<?, ?> model : dynamicRenders) {
             distance = Math.max(distance, model.getViewDistance());
         }

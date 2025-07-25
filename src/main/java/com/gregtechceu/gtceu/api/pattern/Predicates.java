@@ -66,6 +66,12 @@ public class Predicates {
                 new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
     }
 
+    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
+        IMachineBlock[] machineBlocks = new IMachineBlock[definitions.length];
+        for (int i = 0; i < machineBlocks.length; i++) machineBlocks[i] = definitions[i].get();
+        return blocks(machineBlocks);
+    }
+
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {
         return new TraceabilityPredicate(new PredicateBlockTag(tag));
     }
@@ -282,11 +288,5 @@ public class Predicates {
                         .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                         .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                         .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
-    }
-
-    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
-        IMachineBlock[] machineBlocks = new IMachineBlock[definitions.length];
-        for (int i = 0; i < machineBlocks.length; i++) machineBlocks[i] = definitions[i].get();
-        return blocks(machineBlocks);
     }
 }

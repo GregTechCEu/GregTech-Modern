@@ -63,14 +63,14 @@ public class MultiblockState {
         this.matchContext = new PatternMatchContext();
     }
 
-    protected void clean() {
+    public void clean() {
         this.matchContext.reset();
         this.globalCount = new Object2IntOpenHashMap<>();
         this.layerCount = new Object2IntOpenHashMap<>();
         cache = new LongOpenHashSet();
     }
 
-    protected boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
+    public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
         this.pos = posIn;
         this.blockState = null;
         this.tileEntity = null;
