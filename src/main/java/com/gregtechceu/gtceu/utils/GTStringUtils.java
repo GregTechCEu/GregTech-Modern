@@ -191,4 +191,11 @@ public class GTStringUtils {
     public static List<MutableComponent> literalLine(double d) {
         return literalLine(String.valueOf(d));
     }
+
+    public static String replace(String s, String regex, List<String> replacements) {
+        List<String> out = new ArrayList<>();
+        out.add(s);
+        replacements.forEach(replacement -> out.set(0, out.get(0).replaceFirst(regex, replacement)));
+        return out.get(0);
+    }
 }

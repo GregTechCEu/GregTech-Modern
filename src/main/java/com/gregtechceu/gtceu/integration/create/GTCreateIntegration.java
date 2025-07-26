@@ -1,7 +1,16 @@
 package com.gregtechceu.gtceu.integration.create;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
+import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
+import com.gregtechceu.gtceu.common.placeholders.Placeholder;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderUtils;
+import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
+import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException;
+import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
+import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -9,7 +18,6 @@ import net.createmod.catnip.data.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -36,23 +44,30 @@ public class GTCreateIntegration {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
 
-        ComputerMonitorCover.addPlaceholder("redstone", GTCreateIntegration::processRedstonePlaceholder);
-        ComputerMonitorCover.addPlaceholder("displayTarget", (cover, args) -> {
-            if (args.size() != 1) return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
-            try {
-                int i = GTStringUtils.toInt(args.get(0));
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("redstone", 1) {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                return processRedstonePlaceholder(ctx, args);
+            }
+        });
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("displayTarget") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                if (!(ctx.cover() instanceof ComputerMonitorCover cover)) throw new NotSupportedException();
+                int i = PlaceholderUtils.toInt(args.get(0));
                 if (i <= 0 || i > 100) GTUtil.list(Component
                         .translatable("gtceu.computer_monitor_cover.error.not_in_range", "line number", 1, 100, i));
-                return new ArrayList<>(List.of(cover.getCreateDisplayTargetBuffer().get(i - 1)));
-            } catch (NumberFormatException e) {
-                return GTUtil.list(
-                        Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e.getMessage()));
+                return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
             }
         });
     }
 
-    private static int getRedstoneLinkPower(ComputerMonitorCover cover,
+    private static int getRedstoneLinkPower(PlaceholderContext ctx,
                                             Couple<RedstoneLinkNetworkHandler.Frequency> freq) {
         IRedstoneLinkable linkable = new IRedstoneLinkable() {
 
@@ -81,10 +96,10 @@ public class GTCreateIntegration {
 
             @Override
             public BlockPos getLocation() {
-                return cover.coverHolder.getPos();
+                return ctx.pos();
             }
         };
-        Set<IRedstoneLinkable> network = Create.REDSTONE_LINK_NETWORK_HANDLER.getNetworkOf(cover.coverHolder.getLevel(),
+        Set<IRedstoneLinkable> network = Create.REDSTONE_LINK_NETWORK_HANDLER.getNetworkOf(ctx.level(),
                 linkable);
         int power = 0;
         for (IRedstoneLinkable i : network) {
@@ -95,90 +110,62 @@ public class GTCreateIntegration {
         return power;
     }
 
-    private static void setRedstoneLinkPower(ComputerMonitorCover cover,
+    private static void setRedstoneLinkPower(PlaceholderContext ctx,
                                              Couple<RedstoneLinkNetworkHandler.Frequency> freq, int power) {
         TemporaryRedstoneLinkTransmitter linkable = new TemporaryRedstoneLinkTransmitter(freq, power,
-                cover.coverHolder.getPos(), cover.coverHolder.getLevel());
-        Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(cover.coverHolder.getLevel(), linkable);
+                ctx.pos(), ctx.level());
+        Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(ctx.level(), linkable);
     }
 
-    private static List<MutableComponent> processRedstonePlaceholder(ComputerMonitorCover cover,
-                                                                     List<List<MutableComponent>> args) {
-        if (args.isEmpty())
-            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 1, 0));
-        else if (GTStringUtils.equals(args.get(0), "get")) {
-            if (args.size() < 2)
-                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 2, 1));
+    private static MultiLineComponent processRedstonePlaceholder(PlaceholderContext ctx,
+                                                                 List<MultiLineComponent> args) throws PlaceholderException {
+        PlaceholderUtils.checkArgs(args, 1, true);
+        if (GTStringUtils.equals(args.get(0), "get")) {
+            PlaceholderUtils.checkArgs(args, 2, true);
             if (GTStringUtils.equals(args.get(1), "link")) {
-                if (args.size() < 4)
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 4,
-                            args.size()));
-                try {
-                    int slot = GTStringUtils.toInt(args.get(2));
-                    int freq_slot = GTStringUtils.toInt(args.get(3));
-                    if (slot < 1 || slot > 8) return GTUtil.list(Component
-                            .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
-                    ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
-                    if (item.is(AllItems.LINKED_CONTROLLER.get())) {
-                        Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
-                                freq_slot);
-                        return GTStringUtils.literalLine(getRedstoneLinkPower(cover, freq));
-                    } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
-                            "redstone link", slot));
-                } catch (NumberFormatException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
-                            e.getMessage()));
-                }
+                PlaceholderUtils.checkArgs(args, 4);
+                int slot = PlaceholderUtils.toInt(args.get(2));
+                int freq_slot = PlaceholderUtils.toInt(args.get(3));
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                ItemStack item = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                if (item.is(AllItems.LINKED_CONTROLLER.get())) {
+                    Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
+                            freq_slot);
+                    return MultiLineComponent.literal(getRedstoneLinkPower(ctx, freq));
+                } else throw new MissingItemException("redstone link", slot);
             } else {
-                Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
+                Direction direction = Direction.byName(args.get(1).toString());
                 if (direction == null)
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
-                return GTStringUtils.literalLine(cover.coverHolder.getLevel()
-                        .getSignal(cover.coverHolder.getPos().relative(direction), direction));
+                    throw new InvalidArgsException();
+                return MultiLineComponent.literal(ctx.level().getSignal(ctx.pos().relative(direction), direction));
             }
         } else if (GTStringUtils.equals(args.get(0), "set")) {
-            if (args.size() < 2)
-                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 2, 1));
+            PlaceholderUtils.checkArgs(args, 2, true);
             if (GTStringUtils.equals(args.get(1), "link")) {
-                if (args.size() < 5)
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 5,
-                            args.size()));
-                try {
-                    int slot = GTStringUtils.toInt(args.get(2));
-                    int freq_slot = GTStringUtils.toInt(args.get(3));
-                    int power = GTStringUtils.toInt(args.get(4));
-                    if (power < 0 || power > 15)
-                        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
-                                "redstone power", 1, 15, power));
-                    if (slot < 1 || slot > 8) return GTUtil.list(Component
-                            .translatable("gtceu.computer_monitor_cover.error.not_in_range", "slot index", 1, 8, slot));
-                    ItemStack item = cover.itemStackHandler.getStackInSlot(slot - 1);
-                    if (item.is(AllItems.LINKED_CONTROLLER.get())) {
-                        Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
-                                freq_slot);
-                        setRedstoneLinkPower(cover, freq, power);
-                        return GTStringUtils.literalLine("");
-                    } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
-                            "redstone link", slot));
-                } catch (NumberFormatException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
-                            e.getMessage()));
-                }
+                PlaceholderUtils.checkArgs(args, 5);
+                int slot = PlaceholderUtils.toInt(args.get(2));
+                int freq_slot = PlaceholderUtils.toInt(args.get(3));
+                int power = PlaceholderUtils.toInt(args.get(4));
+                PlaceholderUtils.checkRange("redstone power", 0, 15, power);
+                PlaceholderUtils.checkRange("slot", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                ItemStack item = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                if (item.is(AllItems.LINKED_CONTROLLER.get())) {
+                    Couple<RedstoneLinkNetworkHandler.Frequency> freq = LinkedControllerItem.toFrequency(item,
+                            freq_slot);
+                    setRedstoneLinkPower(ctx, freq, power);
+                    return MultiLineComponent.empty();
+                } else throw new MissingItemException("redstone link", slot);
             } else {
-                try {
-                    int power = GTStringUtils.toInt(args.get(1));
-                    if (power < 0 || power > 15)
-                        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
-                                "redstone power", 1, 15, power));
-                    cover.setRedstoneSignalOutput(power);
-                    return GTStringUtils.literalLine("");
-                } catch (NumberFormatException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
-                            e.getMessage()));
-                }
+                int power = PlaceholderUtils.toInt(args.get(1));
+                PlaceholderUtils.checkRange("redstone power", 0, 15, power);
+                if (ctx.cover() == null) throw new NotSupportedException();
+                ctx.cover().setRedstoneSignalOutput(power);
+                return MultiLineComponent.empty();
             }
         } else {
-            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+            throw new InvalidArgsException();
         }
     }
 

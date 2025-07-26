@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.integration.ae2;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
+import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
+import com.gregtechceu.gtceu.common.placeholders.Placeholder;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderUtils;
+import com.gregtechceu.gtceu.common.placeholders.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -32,6 +36,8 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3i;
 
+import java.util.List;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -40,24 +46,25 @@ public class GTAEPlaceholders {
 
     private GTAEPlaceholders() {}
 
-    private static @Nullable IGrid getGrid(ComputerMonitorCover cover) {
-        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(cover.coverHolder.getLevel(),
-                cover.coverHolder.getPos());
+    private static IGrid getGrid(PlaceholderContext ctx) throws NoMENetworkException {
+        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(ctx.level(), ctx.pos());
         if (nodeHost != null) {
-            IGridNode node = nodeHost.getGridNode(cover.attachedSide);
+            IGridNode node = nodeHost.getGridNode(ctx.side());
             if (node != null) return node.getGrid();
         } ;
-        BlockEntity blockEntity = cover.coverHolder.getLevel().getBlockEntity(cover.coverHolder.getPos());
+        BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
             if (machineBlockEntity.getMetaMachine() instanceof IGridConnectedBlockEntity gridMachine) {
-                return gridMachine.getMainNode().getGrid();
+                IGrid nullable = gridMachine.getMainNode().getGrid();
+                if (nullable == null) throw new NoMENetworkException();
+                return nullable;
             }
         }
         if (blockEntity instanceof IGridConnectedBlockEntity gridBlockEntity) {
             IGridNode node = gridBlockEntity.getGridNode();
             if (node != null) return gridBlockEntity.getGridNode().getGrid();
         }
-        return null;
+        throw new NoMENetworkException();
     }
 
     private static long countItems(String id, IGrid grid) {
@@ -103,122 +110,134 @@ public class GTAEPlaceholders {
     }
 
     public static void init() {
-        ComputerMonitorCover.addPlaceholder("ae2itemCount", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (args.isEmpty()) return GTStringUtils.literalLine(countItems((ItemFilter) null, grid));
-            if (args.size() == 1)
-                return GTStringUtils.literalLine(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
-            if (GTStringUtils.equals(args.get(0), "filter")) {
-                try {
-                    int slot = GTStringUtils.toInt(args.get(1));
-                    if (slot > 8 || slot < 1)
-                        return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
-                                "slot index", 1, 8, slot));
-                    return GTStringUtils.literalLine(
-                            countItems(ItemFilter.loadFilter(cover.itemStackHandler.getStackInSlot(slot - 1)), grid));
-                } catch (NumberFormatException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number",
-                            e.getMessage()));
-                } catch (NullPointerException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.missing_item",
-                            "filter", args.get(1)));
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2itemCount") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, grid));
+                if (args.size() == 1)
+                    return MultiLineComponent.literal(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
+                if (GTStringUtils.equals(args.get(0), "filter")) {
+                    int slot = PlaceholderUtils.toInt(args.get(1));
+                    try {
+                        PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                        if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                        return MultiLineComponent.literal(countItems(
+                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), grid));
+                    } catch (NullPointerException e) {
+                        throw new MissingItemException("filter", slot);
+                    }
                 }
+                throw new InvalidArgsException();
             }
-            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
         });
-        ComputerMonitorCover.addPlaceholder("ae2fluidCount", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (args.isEmpty()) return GTStringUtils.literalLine(countFluids(null, grid));
-            if (args.size() == 1) return GTStringUtils
-                    .literalLine(countFluids(GTStringUtils.componentsToString(args.get(0)), grid));
-            return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2fluidCount") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, grid));
+                if (args.size() == 1)
+                    return MultiLineComponent.literal(countFluids(GTStringUtils.componentsToString(args.get(0)), grid));
+                throw new WrongNumberOfArgsException(1, args.size());
+            }
         });
-        ComputerMonitorCover.addPlaceholder("ae2power", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (!args.isEmpty()) return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
-            return GTStringUtils.literalLine(grid.getEnergyService().getStoredPower());
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2power") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                PlaceholderUtils.checkArgs(args, 0);
+                return MultiLineComponent.literal(grid.getEnergyService().getStoredPower());
+            }
         });
-        ComputerMonitorCover.addPlaceholder("ae2maxPower", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (!args.isEmpty()) return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
-            return GTStringUtils.literalLine(grid.getEnergyService().getMaxStoredPower());
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2maxPower") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                PlaceholderUtils.checkArgs(args, 0);
+                return MultiLineComponent.literal(grid.getEnergyService().getMaxStoredPower());
+            }
         });
-        ComputerMonitorCover.addPlaceholder("ae2powerUsage", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (!args.isEmpty()) return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 0, args.size()));
-            return GTStringUtils.literalLine(grid.getEnergyService().getAvgPowerUsage());
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2powerUsage") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                PlaceholderUtils.checkArgs(args, 0);
+                return MultiLineComponent.literal(grid.getEnergyService().getAvgPowerUsage());
+            }
         });
-        ComputerMonitorCover.addPlaceholder("ae2spatial", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (args.size() != 1) return GTUtil.list(
-                    Component.translatable("gtceu.computer_monitor_cover.error.wrong_number_of_args", 1, args.size()));
-            if (GTStringUtils.equals(args.get(0), "power")) {
-                return GTStringUtils.literalLine(grid.getSpatialService().requiredPower());
-            } else if (GTStringUtils.equals(args.get(0), "efficiency")) {
-                return GTStringUtils.literalLine(grid.getSpatialService().currentEfficiency());
-            } else if (GTStringUtils.equals(args.get(0), "sizeX")) {
-                return GTStringUtils.literalLine(getSpatialSize(grid).x);
-            } else if (GTStringUtils.equals(args.get(0), "sizeY")) {
-                return GTStringUtils.literalLine(getSpatialSize(grid).y);
-            } else if (GTStringUtils.equals(args.get(0), "sizeZ")) {
-                return GTStringUtils.literalLine(getSpatialSize(grid).z);
-            } else return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2spatial") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                PlaceholderUtils.checkArgs(args, 1);
+                if (GTStringUtils.equals(args.get(0), "power")) {
+                    return MultiLineComponent.literal(grid.getSpatialService().requiredPower());
+                } else if (GTStringUtils.equals(args.get(0), "efficiency")) {
+                    return MultiLineComponent.literal(grid.getSpatialService().currentEfficiency());
+                } else if (GTStringUtils.equals(args.get(0), "sizeX")) {
+                    return MultiLineComponent.literal(getSpatialSize(grid).x);
+                } else if (GTStringUtils.equals(args.get(0), "sizeY")) {
+                    return MultiLineComponent.literal(getSpatialSize(grid).y);
+                } else if (GTStringUtils.equals(args.get(0), "sizeZ")) {
+                    return MultiLineComponent.literal(getSpatialSize(grid).z);
+                } else throw new InvalidArgsException();
+            }
         });
-        ComputerMonitorCover.addPlaceholder("ae2crafting", (cover, args) -> {
-            IGrid grid = getGrid(cover);
-            if (grid == null) return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.no_ae"));
-            if (args.isEmpty())
-                return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_enough_args", 1, 0));
-            ICraftingService crafting = grid.getCraftingService();
-            if (GTStringUtils.equals(args.get(0), "get")) {
-                if (GTStringUtils.equals(args.get(1), "amount"))
-                    return GTStringUtils.literalLine(crafting.getCpus().size());
-                try {
-                    int index = GTStringUtils.toInt(args.get(1));
+        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("ae2crafting") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                IGrid grid = getGrid(ctx);
+                PlaceholderUtils.checkArgs(args, 1, true);
+                ICraftingService crafting = grid.getCraftingService();
+                if (GTStringUtils.equals(args.get(0), "get")) {
+                    if (GTStringUtils.equals(args.get(1), "amount"))
+                        return MultiLineComponent.literal(crafting.getCpus().size());
+                    int index = PlaceholderUtils.toInt(args.get(1));
                     int i = 0;
                     for (ICraftingCPU cpu : crafting.getCpus()) {
                         if (index - 1 == i) {
                             CraftingJobStatus job = cpu.getJobStatus();
                             if (GTStringUtils.equals(args.get(2), "storage"))
-                                return GTStringUtils.literalLine(cpu.getAvailableStorage());
+                                return MultiLineComponent.literal(cpu.getAvailableStorage());
                             else if (GTStringUtils.equals(args.get(2), "threads"))
-                                return GTStringUtils.literalLine(cpu.getCoProcessors());
+                                return MultiLineComponent.literal(cpu.getCoProcessors());
                             else if (GTStringUtils.equals(args.get(2), "name"))
-                                return GTUtil.list(cpu.getName() == null ? Component.literal("Crafting CPU " + i) :
-                                        cpu.getName().copy());
+                                return MultiLineComponent
+                                        .of(cpu.getName() == null ? Component.literal("Crafting CPU " + i) :
+                                                cpu.getName().copy());
                             else if (GTStringUtils.equals(args.get(2), "selectionMode"))
-                                return GTStringUtils.literalLine(cpu.getSelectionMode().name());
-                            else if (job == null) return GTStringUtils.literalLine(0);
+                                return MultiLineComponent.literal(cpu.getSelectionMode().name());
+                            else if (job == null) return MultiLineComponent.literal(0);
                             else if (GTStringUtils.equals(args.get(2), "amount"))
-                                return GTStringUtils.literalLine(job.crafting().amount());
+                                return MultiLineComponent.literal(job.crafting().amount());
                             else if (GTStringUtils.equals(args.get(2), "item"))
-                                return GTUtil.list(job.crafting().what().getDisplayName().copy());
+                                return MultiLineComponent.of(job.crafting().what().getDisplayName().copy());
                             else if (GTStringUtils.equals(args.get(2), "progress"))
-                                return GTStringUtils.literalLine(job.progress());
+                                return MultiLineComponent.literal(job.progress());
                             else if (GTStringUtils.equals(args.get(2), "time"))
-                                return GTStringUtils.literalLine(job.elapsedTimeNanos());
-                            else return GTUtil
-                                    .list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+                                return MultiLineComponent.literal(job.elapsedTimeNanos());
+                            else throw new InvalidArgsException();
                         }
                         i++;
                     }
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.not_in_range",
-                            "cpu number", 1, crafting.getCpus().size(), index));
-                } catch (NumberFormatException e) {
-                    return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", e));
-                }
-            } // else if (GTStringUtils.equals(args.get(0), "request")) {}
-            return GTUtil.list(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args"));
+                    throw new OutOfRangeException("cpu number", 1, crafting.getCpus().size(), index);
+                } // else if (GTStringUtils.equals(args.get(0), "request")) {} gonna implement that someday :)
+                throw new InvalidArgsException();
+            }
         });
     }
 }

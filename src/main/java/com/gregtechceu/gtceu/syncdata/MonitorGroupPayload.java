@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncdata;
 
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
@@ -26,13 +27,16 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
             list.add(pos.getZ());
         });
         tag.putIntArray("positions", list);
+        tag.put("items", payload.getItemStackHandler().serializeNBT());
         return tag;
     }
 
     @Override
     public void deserializeNBT(Tag tag) {
         if (tag instanceof CompoundTag compoundTag) {
-            payload = new MonitorGroup(compoundTag.getString("name"));
+            CustomItemStackHandler handler = new CustomItemStackHandler();
+            handler.deserializeNBT(compoundTag.getCompound("items"));
+            payload = new MonitorGroup(compoundTag.getString("name"), handler);
             int[] arr = compoundTag.getIntArray("positions");
             for (int i = 0; i < arr.length / 3; i++) {
                 payload.add(new BlockPos(arr[3 * i], arr[3 * i + 1], arr[3 * i + 2]));

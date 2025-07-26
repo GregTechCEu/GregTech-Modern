@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,9 +63,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     @Persisted
     @DescSynced
+    @Getter
     private int leftDist = 0, rightDist = 0, upDist = 0, downDist = 0;
     @Persisted
     @DescSynced
+    @Getter
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
 
@@ -237,30 +241,65 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public Widget createUIWidget() {
         selectedComponents.clear();
-        updateStructureDimensions();
         WidgetGroup builder = (WidgetGroup) super.createUIWidget();
-        WidgetGroup options = new WidgetGroup(-120, 20, 80, 20);
-        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-120, 50, 80, 80);
-        ArrayList<ArrayList<Runnable>> imageButtons = new ArrayList<>();
+        WidgetGroup main = new WidgetGroup();
+        WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
+        WidgetGroup groupConfig = new WidgetGroup(10, 60, 100, 100);
+        groupConfig.setVisible(false);
+        @Nullable
+        List<MonitorGroup> configGroup = new ArrayList<>();
+        configGroup.add(null);
+        Consumer<MonitorGroup> openGroupConfig = (group) -> {
+            configGroup.set(0, group);
+            if (group == null) {
+                main.setVisible(true);
+                groupConfig.setVisible(false);
+                return;
+            }
+            groupConfig.clearAllWidgets();
+            groupConfig.addWidget(new LabelWidget(0, 0, () -> {
+                if (configGroup.get(0) == null) return "Currently editing:";
+                return "Currently editing: %s".formatted(configGroup.get(0).getName());
+            }));
+            groupConfig.addWidget(new SlotWidget(
+                    group.getItemStackHandler(), 0,
+                    0, 20));
+            main.setVisible(false);
+            groupConfig.setVisible(true);
+        };
+        builder.addWidget(groupConfig);
+        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 80, 80);
+        ArrayList<ArrayList<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
         Consumer<MonitorGroup> addGroupToList = group -> {
-            ButtonWidget label = new ButtonWidget(0, groupList.widgets.size() * 15 + 5, 80, 10, null);
+            ButtonWidget label = new ButtonWidget(20, groupList.widgets.size() * 15 + 5, 80, 10, null);
             TextTexture text = new TextTexture(group.getName());
             text.setType(TextTexture.TextType.LEFT);
             label.setButtonTexture(text);
             label.setOnPressCallback(click -> group.getRelativePositions().forEach(pos -> {
                 BlockPos rel = toRelative(pos);
-                // GTCEu.LOGGER.info("pos = {}, rel = {}, leftDist = {}, upDist = {}", pos, rel, leftDist, upDist);
-                imageButtons.get(rel.getY()).get(rel.getX()).run();
+                imageButtons.get(rel.getY()).get(rel.getX()).accept(null);
             }));
             groupList.addWidget(label);
+            ButtonWidget configButton = new ButtonWidget(
+                    0, label.getSelfPositionY() - 3,
+                    16, 16,
+                    GuiTextures.IO_CONFIG_COVER_SETTINGS,
+                    click -> {
+                        if (configGroup.get(0) == null) {
+                            openGroupConfig.accept(group);
+                        } else {
+                            openGroupConfig.accept(null);
+                        }
+                    });
+            groupList.addWidget(configButton);
         };
         monitorGroups.forEach(addGroupToList);
         builder.addWidget(groupList);
-        builder.addWidget(options);
-        ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 80, 20, null);
+        main.addWidget(options);
+        ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 60, 20, null);
         removeFromGroupButton.setButtonTexture(new TextTexture("Remove from group"));
         removeFromGroupButton.setVisible(false);
-        ButtonWidget createGroupButton = new ButtonWidget(0, 0, 80, 20, null);
+        ButtonWidget createGroupButton = new ButtonWidget(0, 0, 60, 20, null);
         createGroupButton.setOnPressCallback(click -> {
             MonitorGroup group = new MonitorGroup("Group #" + (monitorGroups.size() + 1));
             for (IMonitorComponent component : selectedComponents) {
@@ -271,6 +310,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             addGroupToList.accept(group);
             createGroupButton.setVisible(false);
             removeFromGroupButton.setVisible(true);
+            Iterator<IMonitorComponent> it = selectedComponents.iterator();
+            while (it.hasNext()) {
+                IMonitorComponent c = it.next();
+                BlockPos rel = toRelative(c.getPos());
+                imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
+            }
         });
         removeFromGroupButton.setOnPressCallback(click -> {
             for (MonitorGroup group : monitorGroups) {
@@ -281,6 +326,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             monitorGroups.forEach(addGroupToList);
             removeFromGroupButton.setVisible(false);
             createGroupButton.setVisible(true);
+            Iterator<IMonitorComponent> it = selectedComponents.iterator();
+            while (it.hasNext()) {
+                IMonitorComponent c = it.next();
+                BlockPos rel = toRelative(c.getPos());
+                imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
+            }
         });
         createGroupButton.setButtonTexture(new TextTexture("Create group"));
         createGroupButton.setVisible(false);
@@ -296,9 +347,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 IMonitorComponent component = getComponent(row, col);
                 if (component == null) continue;
                 ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
-                Runnable callback = () -> {
+                Consumer<Iterator<IMonitorComponent>> callback = (it) -> {
                     if (selectedComponents.contains(component)) {
-                        selectedComponents.remove(component);
+                        if (it == null)
+                            selectedComponents.remove(component);
+                        else
+                            it.remove();
                         textures.setTextures(texture);
                         createGroupButton.setVisible(selectedComponents.stream().noneMatch(this::isInAnyGroup));
                         removeFromGroupButton
@@ -328,11 +382,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
                     });
                 } else img.setHoverTooltips("Group: none");
-                img.setOnPressCallback(click -> callback.run());
-                builder.addWidget(img);
+                img.setOnPressCallback(click -> callback.accept(null));
+                main.addWidget(img);
                 GTUtil.getLast(imageButtons).add(callback);
             }
         }
+        builder.addWidget(main);
         return builder;
     }
 

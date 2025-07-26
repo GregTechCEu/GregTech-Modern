@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+
 import net.minecraft.core.BlockPos;
 
 import lombok.Getter;
@@ -14,9 +16,16 @@ public class MonitorGroup {
     private final Set<BlockPos> relativeMonitorPositions = new HashSet<>();
     @Getter
     private final String name;
+    @Getter
+    private final CustomItemStackHandler itemStackHandler;
 
     public MonitorGroup(String name) {
+        this(name, new CustomItemStackHandler(1));
+    }
+
+    public MonitorGroup(String name, CustomItemStackHandler handler) {
         this.name = name;
+        this.itemStackHandler = handler;
     }
 
     public void add(BlockPos pos) {

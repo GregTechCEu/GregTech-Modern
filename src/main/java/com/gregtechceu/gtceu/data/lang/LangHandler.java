@@ -1634,7 +1634,8 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
         provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
-        provider.add("gtceu.computer_monitor_cover.error.not_cable", "Cover must be on a cable or wire!");
+        provider.add("gtceu.computer_monitor_cover.error.not_supported",
+                "This feature is not supported by this block/cover!");
     }
 
     /**
