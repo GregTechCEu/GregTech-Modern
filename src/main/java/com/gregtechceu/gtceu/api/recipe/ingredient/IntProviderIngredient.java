@@ -41,17 +41,12 @@ public class IntProviderIngredient extends Ingredient {
     @Getter
     protected final IntProvider countProvider;
     /**
-     * A {@link IntProviderIngredient} is an {@link Ingredient} with a randomly rolled {@code count}.
-     * The result of that roll is stored in {@code sampledCount}.
-     * A value of -1 indicates that this has not been rolled.
-     * {@link IntProviderIngredient#getSampledCount(RandomSource)} will roll {@code sampledCount} if it has not been.
-     * Run {@code setSampledCount(-1)} to reset the roll.
+     * The last result of {@link IntProviderIngredient#getSampledCount(RandomSource)}. -1 if not rolled.
      */
     @Setter
     protected int sampledCount = -1;
     /**
-     * An {@link IntProviderIngredient} {@code extends} {@link Ingredient} but also contains an {@link Ingredient}.
-     * The contained {@link Ingredient}, {@code inner}, holds an {@link ItemStack} of one item.
+     * The {@link Ingredient} to have a ranged amount.
      */
     @Getter
     protected final Ingredient inner;
@@ -89,10 +84,10 @@ public class IntProviderIngredient extends Ingredient {
     }
 
     /**
-     * Gets a usable {@link ItemStack}[] from this {@link IntProviderIngredient}.
-     * If {@code this} has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it.
+     * Gets a usable {@link ItemStack ItemStack[]} from this {@link IntProviderIngredient}.
+     * If this ingredient has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it.
      * 
-     * @return a {@link ItemStack}[] with amount {@link IntProviderIngredient#sampledCount}
+     * @return a {@link ItemStack ItemStack[]} with count {@link IntProviderIngredient#sampledCount}
      */
     @Override
     public ItemStack @NotNull [] getItems() {
@@ -118,8 +113,8 @@ public class IntProviderIngredient extends Ingredient {
     }
 
     /**
-     * If {@code this} has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it and returns the
-     * amount of the roll.
+     * If this ingredient has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it and returns
+     * the roll.
      * If it has, returns the existing roll.
      * 
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.

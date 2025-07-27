@@ -12,6 +12,7 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -35,20 +36,12 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     @Getter
     private final IntProvider countProvider;
     /**
-     * A {@link IntProviderFluidIngredient} is a {@link FluidIngredient} with a randomly rolled {@code amount}.
-     * The result of that roll is stored in {@code sampledCount}.
-     * A value of -1 indicates that this has not been rolled.
-     * {@link IntProviderFluidIngredient#getSampledCount()} will roll {@code sampledCount} if it has not been.
-     * Run {@code setSampledCount(-1)} to reset the roll.
+     * The last result of {@link IntProviderFluidIngredient#getSampledCount()}. -1 if not rolled.
      */
     @Setter
     protected int sampledCount = -1;
     /**
-     * An {@link IntProviderFluidIngredient} {@code extends} {@link FluidIngredient} but also contains a
-     * {@link FluidIngredient}.
-     * The contained {@link FluidIngredient}, {@code inner}, holds a {@link FluidStack} of the maximum size this
-     * {@link IntProviderFluidIngredient} can randomly output, to define what {@code Fluid} this holds.
-     * That {@link FluidStack} can be accessed through {@link IntProviderFluidIngredient#getMaxSizeStack()}.
+     * The {@link FluidIngredient} to have a ranged amount.
      */
     @Getter
     private final FluidIngredient inner;
@@ -70,21 +63,20 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     /**
      * An {@link IntProviderFluidIngredient} does not have an amount.
-     * You probably want to be using either {@link IntProviderFluidIngredient#getStacks()} or
+     * You probably want either {@link IntProviderFluidIngredient#getStacks()} or
      * {@link IntProviderFluidIngredient#getMaxSizeStack()}.
-     * 
-     * @return -1
      */
+    @DoNotCall
     @Override
     public int getAmount() {
         return -1;
     }
 
     /**
-     * Gets a usable {@link FluidStack}[] from this {@link IntProviderFluidIngredient}.
-     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it.
+     * Gets a usable {@link FluidStack FluidStack[]} from this {@link IntProviderFluidIngredient}.
+     * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it.
      * 
-     * @return a {@link FluidStack}[] with amount {@link IntProviderFluidIngredient#sampledCount}
+     * @return a {@link FluidStack FluidStack[]} with amount {@link IntProviderFluidIngredient#sampledCount}
      */
     @Override
     public FluidStack[] getStacks() {
@@ -109,8 +101,8 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     /**
-     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and returns
-     * the amount of the roll.
+     * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
+     * returns the roll.
      * If it has, returns the existing roll.
      * Passthrough method, invokes {@link IntProviderFluidIngredient#getSampledCount(RandomSource)} using the threadsafe
      * {@link GTValues#RNG}.
@@ -122,8 +114,8 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     /**
-     * If {@code this} has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and returns
-     * the amount of the roll.
+     * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
+     * returns the roll.
      * If it has, returns the existing roll.
      * 
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
