@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.placeholders;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.UnexpectedBracketException;
@@ -48,6 +49,8 @@ public class PlaceholderHandler {
     }
 
     public MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
+        if (ctx.level().isClientSide)
+            GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<PlaceholderException> exceptions = new ArrayList<>();
         boolean escape = false;
         boolean escapeNext = false;
@@ -58,7 +61,7 @@ public class PlaceholderHandler {
         stack.push(GTUtil.list(MultiLineComponent.empty()));
         for (char c : s.toCharArray()) {
             if (escape || (literalEscape && c != LITERAL_ESCAPE)) {
-                if (c == ESCAPED_NEWLINE) {
+                if (c == ESCAPED_NEWLINE && !literalEscape) {
                     GTUtil.getLast(stack.peek()).appendNewline();
                     line++;
                     symbol = 0;

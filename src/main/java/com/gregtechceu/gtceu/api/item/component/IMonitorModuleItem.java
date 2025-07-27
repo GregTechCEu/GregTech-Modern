@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 
 public interface IMonitorModuleItem extends IItemComponent {
 
+    default void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {}
+
     IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
     Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);

@@ -46,7 +46,8 @@ public class GTAEPlaceholders {
 
     private GTAEPlaceholders() {}
 
-    private static IGrid getGrid(PlaceholderContext ctx) throws NoMENetworkException {
+    private static IGrid getGrid(PlaceholderContext ctx) throws PlaceholderException {
+        if (ctx.pos() == null) throw new NotSupportedException();
         IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(ctx.level(), ctx.pos());
         if (nodeHost != null) {
             IGridNode node = nodeHost.getGridNode(ctx.side());

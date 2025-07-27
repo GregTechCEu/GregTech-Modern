@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.common.placeholders.IPlaceholderInfoProviderCover;
 import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
 import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -50,7 +51,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ComputerMonitorCover extends CoverBehavior implements IUICover, IDataStickInteractable {
+public class ComputerMonitorCover extends CoverBehavior
+                                  implements IUICover, IDataStickInteractable, IPlaceholderInfoProviderCover {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);

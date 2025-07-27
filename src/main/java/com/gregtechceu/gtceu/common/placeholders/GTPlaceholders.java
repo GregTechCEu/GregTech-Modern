@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
@@ -234,7 +233,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.cover() instanceof ComputerMonitorCover cover)
+                if (ctx.cover() instanceof IPlaceholderInfoProviderCover cover)
                     return MultiLineComponent.literal(cover.getTicksSincePlaced());
                 throw new NotSupportedException();
             }

@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.common.placeholders;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 
 import org.jetbrains.annotations.Nullable;
@@ -115,5 +118,22 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     public List<Component> toImmutable() {
         return new ArrayList<>(this);
+    }
+
+    public Tag toTag() {
+        ListTag tag = new ListTag();
+        for (MutableComponent component : this) {
+            tag.add(StringTag.valueOf(Component.Serializer.toJson(component)));
+        }
+        return tag;
+    }
+
+    public static MultiLineComponent fromTag(ListTag tag) {
+        MultiLineComponent out = MultiLineComponent.empty();
+        out.clear();
+        for (Tag i : tag) {
+            out.add(Component.Serializer.fromJson(i.getAsString()));
+        }
+        return out;
     }
 }

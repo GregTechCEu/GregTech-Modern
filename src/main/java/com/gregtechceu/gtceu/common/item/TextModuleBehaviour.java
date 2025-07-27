@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMa
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketMonitorGroupNBTChange;
+import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
 import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
@@ -27,24 +28,33 @@ import java.util.List;
 
 public class TextModuleBehaviour implements IMonitorModuleItem {
 
-    @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         StringBuilder formatStringLines = new StringBuilder();
         ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
         for (Tag value : tag) {
             formatStringLines.append(value.getAsString()).append('\n');
         }
+        MultiLineComponent text = GTCEu.PLACEHOLDER_HANDLER.processPlaceholders(
+                formatStringLines.toString(),
+                new PlaceholderContext(
+                        machine.getLevel(),
+                        group.getTarget(),
+                        group.getTargetCoverSide(),
+                        group.getItemStackHandler(),
+                        group.getTargetCover(machine.getLevel()),
+                        null));
+        stack.getOrCreateTag().put("text", text.toTag());
+    }
+
+    @Override
+    public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        this.updateText(stack, machine, group);
+    }
+
+    @Override
+    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
-                () -> GTCEu.PLACEHOLDER_HANDLER.processPlaceholders(
-                        formatStringLines.toString(),
-                        new PlaceholderContext(
-                                machine.getLevel(),
-                                group.getTarget() == null ? null : group.getTarget().coverHolder.getPos(),
-                                group.getTarget() == null ? null : group.getTarget().attachedSide,
-                                group.getItemStackHandler(),
-                                group.getTarget(),
-                                null))
-                        .toImmutable());
+                MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING)).toImmutable());
     }
 
     @Override

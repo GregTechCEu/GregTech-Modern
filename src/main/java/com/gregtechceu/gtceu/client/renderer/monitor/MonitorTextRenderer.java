@@ -14,32 +14,44 @@ import net.minecraft.util.FormattedCharSequence;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class MonitorTextRenderer implements IMonitorRenderer {
 
     private static final float TEXT_SCALE = 1 / 144f;
-    private final Supplier<List<Component>> text;
+    private final List<Component> text;
 
-    public MonitorTextRenderer(Supplier<List<Component>> text) {
+    public MonitorTextRenderer(List<Component> text) {
         this.text = text;
     }
 
     @Override
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        BlockPos rel = machine.toRelative(group.getRowLeft(0));
+        BlockPos rel = group.getRow(0, machine::toRelative).get(0);
+        int row = 0;
+        int columns = group.getRow(0, machine::toRelative).size();
         poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
-        poseStack.translate(1 / 16f, 1 / 16f, 0);
         poseStack.scale(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE);
-        int y = 0;
-        for (Component s : text.get()) {
+        int y = 9;
+        for (Component s : text) {
             boolean didAnything = false;
-            for (FormattedCharSequence line : Minecraft.getInstance().font.split(s, 140)) {
-                if (y >= 140) return;
+            for (FormattedCharSequence line : Minecraft.getInstance().font.split(s, columns * 135)) {
+                if (y >= 144) {
+                    try {
+                        row++;
+                        columns = group.getRow(row, machine::toRelative).size();
+                        y -= 144;
+                        poseStack.translate(-rel.getX() / TEXT_SCALE, -rel.getY() / TEXT_SCALE,
+                                -rel.getZ() / TEXT_SCALE);
+                        rel = group.getRow(row, machine::toRelative).get(0);
+                        poseStack.translate(rel.getX() / TEXT_SCALE, rel.getY() / TEXT_SCALE, rel.getZ() / TEXT_SCALE);
+                    } catch (IndexOutOfBoundsException e) {
+                        return;
+                    }
+                }
                 Minecraft.getInstance().font.drawInBatch(
                         line,
-                        0, y,
+                        9, y,
                         0xFFFFFF,
                         false,
                         poseStack.last().pose(),

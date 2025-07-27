@@ -1,25 +1,35 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.Level;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
-    private final Set<BlockPos> relativeMonitorPositions = new HashSet<>();
+    private final Set<BlockPos> monitorPositions = new HashSet<>();
     @Getter
     private final String name;
     @Getter
     private final CustomItemStackHandler itemStackHandler;
+    @Getter
+    @Setter
+    private @Nullable BlockPos target;
+    @Getter
+    @Setter
+    private @Nullable Direction targetCoverSide;
 
     public MonitorGroup(String name) {
         this(name, new CustomItemStackHandler(1));
@@ -31,46 +41,46 @@ public class MonitorGroup {
     }
 
     public void add(BlockPos pos) {
-        relativeMonitorPositions.add(pos);
+        monitorPositions.add(pos);
     }
 
     public void remove(BlockPos pos) {
-        relativeMonitorPositions.remove(pos);
+        monitorPositions.remove(pos);
     }
 
-    public BlockPos getRowLeft(int row) throws IndexOutOfBoundsException {
-        List<Integer> yLevels = new ArrayList<>();
+    public List<BlockPos> getRow(int row, UnaryOperator<BlockPos> toRelative) throws IndexOutOfBoundsException {
         Set<Integer> yLevelsSet = new HashSet<>();
-        for (BlockPos pos : relativeMonitorPositions) {
-            if (!yLevelsSet.contains(pos.getY())) {
-                yLevelsSet.add(pos.getY());
-                yLevels.add(pos.getY());
+        for (BlockPos pos : monitorPositions) {
+            yLevelsSet.add(toRelative.apply(pos).getY());
+        }
+        int y = yLevelsSet.stream().sorted().toList().get(row);
+        List<BlockPos> rowPositions = new ArrayList<>();
+        for (BlockPos pos : monitorPositions) {
+            if (toRelative.apply(pos).getY() == y) {
+                rowPositions.add(toRelative.apply(pos));
             }
         }
-        int y = yLevels.stream().sorted().toList().get(row);
-        BlockPos out = null;
-        for (BlockPos pos : relativeMonitorPositions) {
-            if (pos.getY() == y && (out == null || pos.getX() < out.getX())) {
-                out = pos;
-            }
-        }
-        if (out == null) throw new IndexOutOfBoundsException();
-        return out;
+        rowPositions.sort(Comparator.comparingInt(Vec3i::getX));
+        return rowPositions;
     }
 
     public boolean contains(BlockPos pos) {
-        return relativeMonitorPositions.contains(pos);
+        return monitorPositions.contains(pos);
     }
 
     public boolean isEmpty() {
-        return relativeMonitorPositions.isEmpty();
+        return monitorPositions.isEmpty();
     }
 
     public Set<BlockPos> getRelativePositions() {
-        return relativeMonitorPositions;
+        return monitorPositions;
     }
 
-    public @Nullable CoverBehavior getTarget() {
+    public @Nullable CoverBehavior getTargetCover(Level level) {
+        if (target != null && targetCoverSide != null) {
+            ICoverable coverable = GTCapabilityHelper.getCoverable(level, target, targetCoverSide);
+            if (coverable != null) return coverable.getCoverAtSide(targetCoverSide);
+        }
         return null;
     }
 }

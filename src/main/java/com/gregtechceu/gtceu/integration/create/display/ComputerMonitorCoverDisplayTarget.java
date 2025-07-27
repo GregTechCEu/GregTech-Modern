@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.create.display;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
+import com.gregtechceu.gtceu.common.placeholders.IPlaceholderInfoProviderCover;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ComponentContents;
@@ -23,7 +23,7 @@ public class ComputerMonitorCoverDisplayTarget extends DisplayTarget {
         text.forEach(component::append);
         if (coverable != null) {
             for (Direction face : Direction.values()) {
-                if (coverable.getCoverAtSide(face) instanceof ComputerMonitorCover cover) {
+                if (coverable.getCoverAtSide(face) instanceof IPlaceholderInfoProviderCover cover) {
                     cover.setDisplayTargetBufferLine(line, component);
                 }
             }

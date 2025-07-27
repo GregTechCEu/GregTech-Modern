@@ -2,11 +2,7 @@ package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
-import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
-import com.gregtechceu.gtceu.common.placeholders.Placeholder;
-import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
-import com.gregtechceu.gtceu.common.placeholders.PlaceholderUtils;
+import com.gregtechceu.gtceu.common.placeholders.*;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
@@ -58,7 +54,7 @@ public class GTCreateIntegration {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
-                if (!(ctx.cover() instanceof ComputerMonitorCover cover)) throw new NotSupportedException();
+                if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover)) throw new NotSupportedException();
                 int i = PlaceholderUtils.toInt(args.get(0));
                 if (i <= 0 || i > 100) GTUtil.list(Component
                         .translatable("gtceu.computer_monitor_cover.error.not_in_range", "line number", 1, 100, i));

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -26,6 +27,14 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
             list.add(pos.getY());
             list.add(pos.getZ());
         });
+        if (payload.getTarget() != null) {
+            tag.putInt("targetX", payload.getTarget().getX());
+            tag.putInt("targetY", payload.getTarget().getY());
+            tag.putInt("targetZ", payload.getTarget().getZ());
+            if (payload.getTargetCoverSide() != null) {
+                tag.putString("targetSide", payload.getTargetCoverSide().getName());
+            }
+        }
         tag.putIntArray("positions", list);
         tag.put("items", payload.getItemStackHandler().serializeNBT());
         return tag;
@@ -40,6 +49,14 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
             int[] arr = compoundTag.getIntArray("positions");
             for (int i = 0; i < arr.length / 3; i++) {
                 payload.add(new BlockPos(arr[3 * i], arr[3 * i + 1], arr[3 * i + 2]));
+            }
+            if (compoundTag.contains("targetX")) {
+                payload.setTarget(new BlockPos(
+                        compoundTag.getInt("targetX"),
+                        compoundTag.getInt("targetY"),
+                        compoundTag.getInt("targetZ")));
+                if (compoundTag.contains("targetSide"))
+                    payload.setTargetCoverSide(Direction.byName(compoundTag.getString("targetSide")));
             }
         }
     }
