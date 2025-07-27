@@ -136,18 +136,20 @@ public class GTBucketItem extends BucketItem {
                 blockContainer.canPlaceLiquid(level, pos, blockstate, getFluid())) {
             var flowingFluid = ((FlowingFluid) this.getFluid());
             blockContainer.placeLiquid(level, pos, blockstate, flowingFluid.getSource(false));
+            this.playEmptySound(player, level, pos);
+            return true;
         } else {
             if (!level.isClientSide && canReplace && !blockstate.liquid()) {
                 level.destroyBlock(pos, true);
             }
 
             var fluidBlockState = material.getFluid().defaultFluidState().createLegacyBlock();
-            if (!level.setBlock(pos, fluidBlockState, 11) && blockstate.getFluidState().isSource()) {
-                return false;
+            if (level.setBlock(pos, fluidBlockState, 11) && level.getBlockState(pos).getFluidState().isSource()) {
+                this.playEmptySound(player, level, pos);
+                return true;
             }
         }
-        this.playEmptySound(player, level, pos);
-        return true;
+        return false;
     }
 
     private boolean doesFluidVaporize(Material mat, Level level) {
