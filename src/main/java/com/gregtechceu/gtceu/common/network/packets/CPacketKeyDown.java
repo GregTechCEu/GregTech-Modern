@@ -40,7 +40,7 @@ public class CPacketKeyDown implements GTNetwork.INetPacket {
     public void execute(NetworkEvent.Context context) {
         if (context.getSender() != null) {
             for (var entry : updateKeys.int2BooleanEntrySet()) {
-                SyncedKeyMapping keyMapping = SyncedKeyMapping.VALUES[entry.getIntKey()];
+                SyncedKeyMapping keyMapping = SyncedKeyMapping.getFromSyncId(entry.getIntKey());
                 keyMapping.serverActivate(entry.getBooleanValue(), context.getSender());
             }
         }

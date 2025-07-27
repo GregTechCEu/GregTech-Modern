@@ -11,14 +11,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
@@ -26,13 +26,10 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public enum SyncedKeyMapping {
+public final class SyncedKeyMapping {
 
-    ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M)
-
-    ;
-
-    public static final SyncedKeyMapping[] VALUES = values();
+    private static final Int2ObjectMap<SyncedKeyMapping> KEYMAPPINGS = new Int2ObjectOpenHashMap<>();
+    private static int syncIndex = 0;
 
     @OnlyIn(Dist.CLIENT)
     private KeyMapping keyMapping;
@@ -47,10 +44,25 @@ public enum SyncedKeyMapping {
     private final WeakHashMap<ServerPlayer, Set<IKeyPressedListener>> playerListeners = new WeakHashMap<>();
     private final Set<IKeyPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
 
-    public static void init() {
+    private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         if (GTCEu.isClientSide()) {
-            MinecraftForge.EVENT_BUS.register(SyncedKeyMapping.class);
+            this.keyMapping = mcKeyMapping.get().get();
         }
+        KEYMAPPINGS.put(syncIndex++, this);
+    }
+
+    private SyncedKeyMapping(int keyCode) {
+        if (GTCEu.isClientSide()) {
+            this.keyCode = keyCode;
+        }
+        KEYMAPPINGS.put(syncIndex++, this);
+    }
+
+    private SyncedKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode) {
+        if (GTCEu.isClientSide()) {
+            this.keyMapping = (KeyMapping) createKeyMapping(nameKey, ctx, keyCode);
+        }
+        KEYMAPPINGS.put(syncIndex++, this);
     }
 
     /**
@@ -59,10 +71,8 @@ public enum SyncedKeyMapping {
      * @param mcKeyMapping Doubly-wrapped supplier around a keymapping from
      *                     {@link net.minecraft.client.Options Minecraft.getInstance().options}.
      */
-    SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
-        if (GTCEu.isClientSide()) {
-            this.keyMapping = mcKeyMapping.get().get();
-        }
+    public static SyncedKeyMapping createFromMC(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
+        return new SyncedKeyMapping(mcKeyMapping);
     }
 
     /**
@@ -70,10 +80,8 @@ public enum SyncedKeyMapping {
      *
      * @param keyCode The key code.
      */
-    SyncedKeyMapping(int keyCode) {
-        if (GTCEu.isClientSide()) {
-            this.keyCode = keyCode;
-        }
+    public static SyncedKeyMapping create(int keyCode) {
+        return new SyncedKeyMapping(keyCode);
     }
 
     /**
@@ -84,10 +92,8 @@ public enum SyncedKeyMapping {
      * @param ctx     Conflict context for the keymapping options category.
      * @param keyCode The key code, from {@link InputConstants}.
      */
-    SyncedKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode) {
-        if (GTCEu.isClientSide()) {
-            this.keyMapping = (KeyMapping) createKeyMapping(nameKey, ctx, keyCode);
-        }
+    public static SyncedKeyMapping createConfigurable(String nameKey, IKeyConflictContext ctx, int keyCode) {
+        return new SyncedKeyMapping(nameKey, ctx, keyCode);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -166,7 +172,8 @@ public enum SyncedKeyMapping {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             updatingKeyDown.clear();
-            for (var keyMapping : VALUES) {
+            for (var entry : KEYMAPPINGS.int2ObjectEntrySet()) {
+                SyncedKeyMapping keyMapping = entry.getValue();
                 boolean previousKeyDown = keyMapping.isKeyDown;
 
                 if (keyMapping.keyMapping != null) {
@@ -177,7 +184,7 @@ public enum SyncedKeyMapping {
                 }
 
                 if (previousKeyDown != keyMapping.isKeyDown) {
-                    updatingKeyDown.put(keyMapping.ordinal(), keyMapping.isKeyDown);
+                    updatingKeyDown.put(entry.getIntKey(), keyMapping.isKeyDown);
                 }
             }
             if (!updatingKeyDown.isEmpty()) {
@@ -201,5 +208,10 @@ public enum SyncedKeyMapping {
         for (IKeyPressedListener listener : globalListeners) {
             listener.onKeyPressed(player, this, keyDown);
         }
+    }
+
+    @ApiStatus.Internal
+    public static SyncedKeyMapping getFromSyncId(int id) {
+        return KEYMAPPINGS.get(id);
     }
 }

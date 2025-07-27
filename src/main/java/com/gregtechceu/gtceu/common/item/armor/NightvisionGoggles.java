@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.IKeyPressedListener;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,13 +35,13 @@ public class NightvisionGoggles extends ArmorLogicSuite implements IKeyPressedLi
     @Override
     public void onEquip(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-        SyncedKeyMapping.ARMOR_MODE_SWITCH.registerPlayerListener(serverPlayer, this);
+        SyncedKeyMappings.ARMOR_MODE_SWITCH.registerPlayerListener(serverPlayer, this);
     }
 
     @Override
     public void onUnequip(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-        SyncedKeyMapping.ARMOR_MODE_SWITCH.removePlayerListener(serverPlayer, this);
+        SyncedKeyMappings.ARMOR_MODE_SWITCH.removePlayerListener(serverPlayer, this);
     }
 
     @Override

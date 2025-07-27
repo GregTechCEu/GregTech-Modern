@@ -52,7 +52,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
@@ -187,7 +187,7 @@ public class CommonProxy {
         GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
-        SyncedKeyMapping.init();
+        SyncedKeyMappings.init();
         MachineOwner.init();
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
