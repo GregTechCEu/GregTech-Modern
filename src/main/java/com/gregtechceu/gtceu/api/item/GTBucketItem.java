@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import net.minecraft.core.BlockPos;
@@ -144,9 +145,25 @@ public class GTBucketItem extends BucketItem {
             }
 
             var fluidBlockState = material.getFluid().defaultFluidState().createLegacyBlock();
-            if (level.setBlock(pos, fluidBlockState, 11) && level.getBlockState(pos).getFluidState().isSource()) {
+            if (hasFluidBlock(material) && level.setBlock(pos, fluidBlockState, 11) &&
+                    level.getBlockState(pos).getFluidState().isSource()) {
                 this.playEmptySound(player, level, pos);
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasFluidBlock(Material mat) {
+        var fluidStorage = mat.getProperty(PropertyKey.FLUID).getStorage();
+
+        for (var key : FluidStorageKey.allKeys()) {
+            var fluidEntry = fluidStorage.getEntry(key);
+            if (fluidEntry != null) {
+                var fluidBuilder = fluidEntry.getBuilder();
+                if (fluidBuilder != null && fluidBuilder.hasFluidBlock()) {
+                    return true;
+                }
             }
         }
         return false;
