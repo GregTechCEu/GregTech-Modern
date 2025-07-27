@@ -445,6 +445,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 if (component == null) continue;
                 ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
                 Consumer<Iterator<IMonitorComponent>> callback = (it) -> {
+                    if (!component.isMonitor()) return;
                     if (selectedComponents.contains(component)) {
                         if (it == null)
                             selectedComponents.remove(component);
