@@ -18,9 +18,8 @@ You can replace singular entries, or do bulk modification of components.
 const Map = Java.loadClass("java.util.Map")
 
 GTCEuStartupEvents.craftingComponents(event => {
-    event.modifyItem(GTCraftingComponents.CIRCUIT, GTValues.MV, Item.of('minecraft:dirt')) // (1)
-    event.modifyItem(GTCraftingComponents.PUMP, Map.of(
-        GTValues.FALLBACK, Item.of('gtceu:lv_robot_arm'),
+    event.setItem(GTCraftingComponents.CIRCUIT, GTValues.MV, Item.of('minecraft:dirt')) // (1)
+    event.setItems(GTCraftingComponents.PUMP, Map.of(
         GTValues.LV, Item.of('gtceu:lv_robot_arm'),
         GTValues.MV, Item.of('gtceu:mv_robot_arm'),
         GTValues.HV, Item.of('gtceu:hv_robot_arm'),
@@ -30,16 +29,16 @@ GTCEuStartupEvents.craftingComponents(event => {
         GTValues.ZPM, Item.of('gtceu:zpm_robot_arm'),
         GTValues.UV, Item.of('gtceu:uv_robot_arm'),
     )) // (2)
-    event.modifyTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
-    event.modifyMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new UnificationEntry('plate', 'gtceu:infinity')) // (4)
+    event.setTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:infinity')) // (4)
     event.removeTier("sensor", 3) // (5)
 })
 ```
 1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of `minecraft:dirt`.
-2. Modifies all pumps in GT machine crafting recipes by replacing the pump with a robot arm, and reinserts the FALLBACK entry.
+2. Modifies all pumps in GT machine crafting recipes by replacing the pump with a robot arm.
 3. Replaces the EV casing with the `#minecraft:logs` tag. note the lack of `#` at the beginning of the tag!
 4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:infinity`.
-5. Removes the 3rd entry `(HV Tier)` of the sensor crafting component, will default to the fallback `(LV Sensor)`
+5. Removes the 3rd offset entry `(HV Tier)` of the sensor crafting component, will default to the fallback `(LV Sensor)`
 
 
 ## Creating new components
@@ -55,36 +54,36 @@ let TAG_CRAFTING_COMPONENT = null
 let UNIFICATION_CRAFTING_COMPONENT = null
 
 GTCEuServerEvents.craftingComponents(event => {
-    ITEM_CRAFTING_COMPONENT = event.createItem("item_component", Item.of('minecraft:cyan_stained_glass'), Map.of(
-        GTValues.LV: Item.of('minecraft:cyan_stained_glass'),
-        GTValues.MV: Item.of('minecraft:cyan_stained_glass'),
-0        GTValues.HV: Item.of('minecraft:cyan_stained_glass'),
-        GTValues.EV: Item.of('minecraft:lime_stained_glass'),
-        GTValues.IV: Item.of('minecraft:lime_stained_glass'),
-        GTValues.LuV: Item.of('minecraft:lime_stained_glass'),
-        GTValues.ZPM: Item.of('minecraft:magenta_stained_glass'),
-        GTValues.UV: Item.of('minecraft:magenta_stained_glass'),
-    )) // (1)
-    TAG_CRAFTING_COMPONENT = event.createTag("tag_component", 'forge:barrels/wooden', Map.of(
-        GTValues.LV: 'forge:chests/wooden',
-        GTValues.MV: 'forge:chests/trapped',
-        GTValues.HV: 'forge:chests/ender',
-        GTValues.EV: 'forge:cobblestone',
-        GTValues.IV: 'forge:cobblestone/normal',
-        GTValues.LuV: 'forge:cobblestone/infested',
-        GTValues.ZPM: 'forge:cobblestone/mossy',
-        GTValues.UV: 'forge:cobblestone/deepslate',
-    )) // (2)
-    UNIFICATION_CRAFTING_COMPONENT = event.createMaterialEntry("material_entry_component", new UnificationEntry('plate', 'gtceu:infinity'), Map.of(
-        GTValues.LV: new MaterialEntry('block', 'gtceu:infinity'),
-        GTValues.MV: new MaterialEntry('ingot', 'gtceu:infinity'),
-        GTValues.HV: new MaterialEntry('dust', 'gtceu:infinity'),
-        GTValues.EV: new MaterialEntry('round', 'gtceu:infinity'),
-        GTValues.IV: new MaterialEntry('foil', 'gtceu:infinity'),
-        GTValues.LuV: new MaterialEntry('longRod', 'gtceu:infinity'),
-        GTValues.ZPM: new MaterialEntry('rod', 'gtceu:infinity'),
-        GTValues.UV: new MaterialEntry('bolt', 'gtceu:infinity'),
-    )) // (3)
+    ITEM_CRAFTING_COMPONENT = event.createItem("item_component", 'minecraft:cyan_stained_glass')
+        .addItem(GTValues.LV, Item.of('minecraft:cyan_stained_glass'))
+        .addItem(GTValues.MV, Item.of('minecraft:cyan_stained_glass'))
+        .addItem(GTValues.HV, Item.of('minecraft:cyan_stained_glass'))
+        .addItem(GTValues.EV, Item.of('minecraft:lime_stained_glass'))
+        .addItem(GTValues.IV, Item.of('minecraft:lime_stained_glass'))
+        .addItem(GTValues.LuV, Item.of('minecraft:lime_stained_glass'))
+        .addItem(GTValues.ZPM, Item.of('minecraft:magenta_stained_glass'))
+        .addItem(GTValues.UV, Item.of('minecraft:magenta_stained_glass'))
+    // (1)
+    TAG_CRAFTING_COMPONENT = event.createTag("tag_component", 'forge:barrels/wooden')
+        .addTag(GTValues.LV, 'forge:chests/wooden')
+        .addTag(GTValues.MV, 'forge:chests/trapped')
+        .addTag(GTValues.HV, 'forge:chests/ender')
+        .addTag(GTValues.EV, 'forge:cobblestone')
+        .addTag(GTValues.IV, 'forge:cobblestone/normal')
+        .addTag(GTValues.LuV, 'forge:cobblestone/infested')
+        .addTag(GTValues.ZPM, 'forge:cobblestone/mossy')
+        .addTag(GTValues.UV, 'forge:cobblestone/deepslate')
+    // (2)
+    UNIFICATION_CRAFTING_COMPONENT = event.createMaterialEntry("material_entry_component", new MaterialEntry('plate', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.LV, new MaterialEntry('block', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.MV, 'ingot', 'gtceu:infinity')
+        .addMaterialEntry(GTValues.HV, new MaterialEntry('dust', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.EV, new MaterialEntry('round', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.IV, new MaterialEntry('foil', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.LuV, 'longRod', 'gtceu:infinity')
+        .addMaterialEntry(GTValues.ZPM, new MaterialEntry('rod', 'gtceu:infinity'))
+        .addMaterialEntry(GTValues.UV, new MaterialEntry('bolt', 'gtceu:infinity'))
+    // (3)
 })
 ```
 
@@ -99,11 +98,14 @@ All `remove`, `modify*`, and `setFallback*` methods use a Crafting Component as 
 ```js title="modify.js"
 
 GTCEuServerEvents.craftingComponents(event => {
-    event.remove('robot_arm', GTValues.EV) // (1)
+    event.removeTier('robot_arm', GTValues.EV) // (1)
+
+    event.removeTiers('pump', GTValues.EV, GTValues.IV, GTValues.LuV) // (2)
 })
 ```
 
 1. Finds the crafting component with id `robot_arm` and removes the entry for `EV` tier
+2. Finds the crafting component with id `pump` and removes the entry for `EV, IV & LuV` tiers
 
 ### Builtin Crafting Components
 
