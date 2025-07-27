@@ -112,4 +112,8 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         }
         return out;
     }
+
+    public List<Component> toImmutable() {
+        return new ArrayList<>(this);
+    }
 }

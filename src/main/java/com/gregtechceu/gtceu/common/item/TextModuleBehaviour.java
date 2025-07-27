@@ -1,29 +1,72 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketMonitorGroupNBTChange;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
 
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.codeeditor.CodeEditorWidget;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TextModuleBehaviour implements IMonitorModuleItem, IItemUIFactory {
+public class TextModuleBehaviour implements IMonitorModuleItem {
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack) {
-        return new MonitorTextRenderer(() -> List.of(stack.getDisplayName()));
+    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        StringBuilder formatStringLines = new StringBuilder();
+        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
+        for (Tag value : tag) {
+            formatStringLines.append(value.getAsString()).append('\n');
+        }
+        return new MonitorTextRenderer(
+                () -> GTCEu.PLACEHOLDER_HANDLER.processPlaceholders(
+                        formatStringLines.toString(),
+                        new PlaceholderContext(
+                                machine.getLevel(),
+                                group.getTarget() == null ? null : group.getTarget().coverHolder.getPos(),
+                                group.getTarget() == null ? null : group.getTarget().attachedSide,
+                                group.getItemStackHandler(),
+                                group.getTarget(),
+                                null))
+                        .toImmutable());
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        ModularUI ui = new ModularUI(holder, entityPlayer);
-        return ui.widget(new CodeEditorWidget(50, 50, 100, 200));
+    public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        WidgetGroup builder = new WidgetGroup();
+        CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 40);
+        ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
+            if (!click.isRemote) return;
+            ListTag listTag = new ListTag();
+            editor.getLines().forEach(line -> listTag.add(StringTag.valueOf(line)));
+            CompoundTag tag2 = stack.getOrCreateTag();
+            tag2.put("formatStringLines", listTag);
+            stack.setTag(tag2);
+            GTNetwork.sendToServer(new CPacketMonitorGroupNBTChange(stack, group, machine));
+        });
+        saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
+        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", Tag.TAG_STRING);
+        List<String> formatStringLines = new ArrayList<>();
+        for (Tag line : tag) formatStringLines.add(line.getAsString());
+        editor.setLines(formatStringLines);
+        builder.addWidget(editor);
+        builder.addWidget(saveButton);
+        return builder;
     }
 }

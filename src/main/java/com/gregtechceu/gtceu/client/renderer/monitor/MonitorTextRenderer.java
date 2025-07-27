@@ -40,7 +40,7 @@ public class MonitorTextRenderer implements IMonitorRenderer {
                 Minecraft.getInstance().font.drawInBatch(
                         line,
                         0, y,
-                        0x72e500,
+                        0xFFFFFF,
                         false,
                         poseStack.last().pose(),
                         buffer,

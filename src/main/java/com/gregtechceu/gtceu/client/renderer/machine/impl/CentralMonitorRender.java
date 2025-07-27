@@ -42,7 +42,8 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 for (IItemComponent component : item.getComponents()) {
                     if (component instanceof IMonitorModuleItem module) {
                         poseStack.pushPose();
-                        module.getRenderer(group.getItemStackHandler().getStackInSlot(0)).render(machine, group,
+                        module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group).render(
+                                machine, group,
                                 partialTick, poseStack, buffer, packedLight, packedOverlay);
                         poseStack.popPose();
                     }

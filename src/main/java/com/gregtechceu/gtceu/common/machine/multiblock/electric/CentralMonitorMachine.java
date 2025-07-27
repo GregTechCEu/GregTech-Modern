@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -261,9 +264,24 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 if (configGroup.get(0) == null) return "Currently editing:";
                 return "Currently editing: %s".formatted(configGroup.get(0).getName());
             }));
-            groupConfig.addWidget(new SlotWidget(
+            SlotWidget slot = new SlotWidget(
                     group.getItemStackHandler(), 0,
-                    0, 20));
+                    0, 20);
+            WidgetGroup itemUI = new WidgetGroup(40, 20, 100, 100);
+            Runnable changeListener = () -> {
+                itemUI.clearAllWidgets();
+                if (slot.getItem().getItem() instanceof IComponentItem item) {
+                    for (IItemComponent component : item.getComponents()) {
+                        if (component instanceof IMonitorModuleItem module) {
+                            itemUI.addWidget(module.createUIWidget(slot.getItem(), this, group));
+                        }
+                    }
+                }
+            };
+            slot.setChangeListener(changeListener);
+            changeListener.run();
+            groupConfig.addWidget(itemUI);
+            groupConfig.addWidget(slot);
             main.setVisible(false);
             groupConfig.setVisible(true);
         };

@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.core.BlockPos;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,5 +68,9 @@ public class MonitorGroup {
 
     public Set<BlockPos> getRelativePositions() {
         return relativeMonitorPositions;
+    }
+
+    public @Nullable CoverBehavior getTarget() {
+        return null;
     }
 }
