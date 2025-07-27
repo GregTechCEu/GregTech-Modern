@@ -21,7 +21,9 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -280,6 +282,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
         WidgetGroup groupConfig = new WidgetGroup(10, 60, 100, 100);
         groupConfig.setVisible(false);
+        ButtonWidget infoWidget = new ButtonWidget(160, 10, 20, 20, null);
+        infoWidget.setButtonTexture(GuiTextures.INFO_ICON);
+        infoWidget.setHoverTooltips(
+                GTStringUtils.toImmutable(LangHandler.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip")));
+        builder.addWidget(infoWidget);
         @Nullable
         List<MonitorGroup> configGroup = new ArrayList<>();
         configGroup.add(null);

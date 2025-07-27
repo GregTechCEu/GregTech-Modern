@@ -1636,6 +1636,16 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
         provider.add("gtceu.computer_monitor_cover.error.not_supported",
                 "This feature is not supported by this block/cover!");
+        multiLang(provider, "gtceu.central_monitor.info_tooltip",
+                "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
+                "Select them by left-clicking, then click 'Create group'.",
+                "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
+                "To delete a group, select all of it's components and click 'Remove from group'.",
+                "You can quickly select all components of a group by clicking on it's name. Click again to unselect.",
+                "Some modules may display things depending on the block they target, to set a target for a group select any component of that group and right-click on the target component.",
+                "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
+                "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
+                "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
     }
 
     /**
