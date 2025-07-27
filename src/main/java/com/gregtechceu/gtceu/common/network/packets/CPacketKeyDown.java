@@ -8,12 +8,10 @@ import net.minecraftforge.network.NetworkEvent;
 
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class CPacketKeyDown implements GTNetwork.INetPacket {
 
-    private Int2BooleanMap updateKeys;
+    private final Int2BooleanMap updateKeys;
 
     public CPacketKeyDown(Int2BooleanMap updateKeys) {
         this.updateKeys = updateKeys;
