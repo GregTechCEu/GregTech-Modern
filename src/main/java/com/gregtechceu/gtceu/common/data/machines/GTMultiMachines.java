@@ -114,15 +114,17 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
                     GTCEu.id("block/multiblock/primitive_blast_furnace"))
-                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createPBFLavaRender)))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createPBFLavaRender)))
             .hasBER(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
-                    .aisle("XXX", "X#X", "X#X", "X#X")
+                    .aisle("XXX", "X&X", "X#X", "X#X")
                     .aisle("XXX", "XYX", "XXX", "XXX")
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
                     .where('#', Predicates.air())
+                    .where('&', Predicates.air()
+                            .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.getBlockState()), null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
             .register();
@@ -577,8 +579,19 @@ public class GTMultiMachines {
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
-            .sidedWorkableCasingModel(GTCEu.id("block/casings/pump_deck"),
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createSidedWorkableCasingMachineModel(GTCEu.id("block/casings/pump_deck"),
                     GTCEu.id("block/multiblock/primitive_pump"))
+                    .andThen(builder -> {
+                        builder.replaceForAllStates((state, models) -> {
+                            for (int i = 0; i < models.length; i++) {
+                                models[i] = ConfiguredModel.builder()
+                                        .modelFile(models[i].model).uvLock(true)
+                                        .buildLast();
+                            }
+                            return models;
+                        });
+                    }))
             .register();
 
     public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE
@@ -627,7 +640,7 @@ public class GTMultiMachines {
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(
-                            () -> () -> DynamicRenderHelper.makeBoilerPartRender(
+                            () -> DynamicRenderHelper.makeBoilerPartRender(
                                     BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
             .register();
 
@@ -720,7 +733,7 @@ public class GTMultiMachines {
                     .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
-                            .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createFusionRingRender)))
+                            .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender)))
                     .hasBER(true)
                     .register(),
             LuV, ZPM, UV);

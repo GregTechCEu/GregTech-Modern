@@ -69,8 +69,8 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
     }
 
     @Override
-    public Resource getResource(ResourceLocation loc, PackType packType, String pathSuffix, String pathPrefix)
-                                                                                                               throws FileNotFoundException {
+    public Resource getResource(ResourceLocation loc, PackType packType,
+                                String pathSuffix, String pathPrefix) throws FileNotFoundException {
         return getResource(getLocation(loc, pathPrefix, pathSuffix), packType);
     }
 

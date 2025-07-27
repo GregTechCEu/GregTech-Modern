@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -310,6 +311,72 @@ public class MetaTileEntityMachineRecipeLoader {
                         .CWUt(128)
                         .EUt(VA[UV]))
                 .duration(1000).EUt(VA[UHV]).save(provider);
+
+        // Transformers
+        for (int tier = 0; tier < TRANSFORMER.length; tier++) {
+            var transformer = TRANSFORMER[tier];
+            if (transformer == null) continue;
+
+            GTRecipeBuilder b = ASSEMBLER_RECIPES.recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "_transformer")
+                    .inputItems(GTCraftingComponents.HULL.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE_TIER_UP.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE.get(tier), 4)
+                    .outputItems(transformer)
+                    // Lower-tier recipes faster because they have crafting table equivalents
+                    .duration(tier < IV ? 20 : 100)
+                    .EUt(tier < GTValues.IV ? VA[LV] : VA[tier])
+                    .addMaterialInfo(true);
+
+            if (tier >= MV) {
+                b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
+            }
+
+            b.save(provider);
+        }
+
+        // Hi-Amp (2x) Transformers
+        for (int tier = 0; tier < TRANSFORMER.length; tier++) {
+            var hiAmp = HI_AMP_TRANSFORMER_2A[tier];
+            var lowAmp = TRANSFORMER[tier];
+            if (hiAmp == null || lowAmp == null) continue;
+
+            GTRecipeBuilder b = ASSEMBLER_RECIPES
+                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "_hi_amp_2a_transformer")
+                    .inputItems(lowAmp)
+                    .inputItems(GTCraftingComponents.CABLE_TIER_UP_DOUBLE.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
+                    .outputItems(hiAmp)
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true);
+
+            if (tier >= MV) {
+                b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
+            }
+
+            b.save(provider);
+        }
+
+        // Hi-Amp (4x) Transformers
+        for (int tier = 0; tier < TRANSFORMER.length; tier++) {
+            var hiAmp = HI_AMP_TRANSFORMER_4A[tier];
+            var lowAmp = TRANSFORMER[tier];
+            if (hiAmp == null || lowAmp == null) continue;
+
+            GTRecipeBuilder b = ASSEMBLER_RECIPES
+                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "_hi_amp_4a_transformer")
+                    .inputItems(lowAmp)
+                    .inputItems(GTCraftingComponents.CABLE_TIER_UP_QUAD.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
+                    .outputItems(hiAmp)
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true);
+
+            if (tier >= MV) {
+                b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
+            }
+
+            b.save(provider);
+        }
 
         // Power Transformers
         for (int tier = 0; tier < POWER_TRANSFORMER.length; tier++) {

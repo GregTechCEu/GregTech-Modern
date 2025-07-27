@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -69,13 +68,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     public BoilerMultiPartRender(BlockState fireboxIdle, BlockState fireboxActive, BlockState casing) {
         this.fireboxIdle = fireboxIdle;
         this.fireboxActive = fireboxActive;
-
         this.casing = casing;
-        ModelUtils.registerBakeEventListener(event -> {
-            this.fireboxIdleModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxIdle));
-            this.fireboxActiveModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxActive));
-            this.casingModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.casing));
-        });
     }
 
     @Override
@@ -93,7 +86,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     }
 
     @Override
-    public boolean isCustomRenderer() {
+    public boolean isBlockEntityRenderer() {
         return false;
     }
 
@@ -103,6 +96,16 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     public void renderPartModel(List<BakedQuad> quads, IMultiController controller, IMultiPart part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        if (this.fireboxIdleModel == null) {
+            this.fireboxIdleModel = ModelUtils.getModelForState(fireboxIdle);
+        }
+        if (this.fireboxActiveModel == null) {
+            this.fireboxActiveModel = ModelUtils.getModelForState(fireboxActive);
+        }
+        if (this.casingModel == null) {
+            this.casingModel = ModelUtils.getModelForState(casing);
+        }
+
         BlockPos partPos = part.self().getPos();
 
         MultiblockControllerMachine machine = controller.self();
@@ -115,11 +118,8 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
         int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());
         if (belowControllerY == partY) {
-            // IDK why but the field isn't synced properly, so I have to check it manually
-            RecipeLogic.Status status = controller.self().getRenderState()
-                    .getOptionalValue(RecipeLogic.STATUS_PROPERTY).orElse(RecipeLogic.Status.IDLE);
             // firebox
-            if (status == RecipeLogic.Status.WORKING) {
+            if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
                 emitQuads(quads, fireboxActiveModel, machine.getLevel(), partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {

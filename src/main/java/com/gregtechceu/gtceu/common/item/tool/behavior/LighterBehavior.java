@@ -267,8 +267,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
      */
     private static boolean classImplementsOnCaughtFire(Class<? extends Block> clazz) {
         if (!defaultsCacheInit) {
-            initCacheDefaults();
             defaultsCacheInit = true;
+            initCacheDefaults();
         }
         // first, check if class is cached
         if (IMPLS_CACHE.containsKey(clazz)) {

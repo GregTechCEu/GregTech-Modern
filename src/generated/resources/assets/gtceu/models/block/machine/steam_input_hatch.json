@@ -13,7 +13,6 @@
         "parent": "gtceu:block/machine/part/steam_hatch",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/cover/pump",
           "side": "gtceu:block/casings/steam/bronze/side",
           "top": "gtceu:block/casings/steam/bronze/top"
         }

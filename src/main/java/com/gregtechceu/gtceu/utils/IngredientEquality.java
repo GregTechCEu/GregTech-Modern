@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.*;
+import com.gregtechceu.gtceu.core.mixins.forge.*;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;

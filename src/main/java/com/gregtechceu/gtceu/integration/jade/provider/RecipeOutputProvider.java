@@ -183,15 +183,15 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 iTooltip.add(helper.smallItem(item));
                 MutableComponent text = CommonComponents.space();
                 if (itemOutput instanceof IntProviderIngredient provider) {
-                    text.append(String.valueOf(provider.getCountProvider().getMinValue()))
-                            .append("-")
-                            .append(String.valueOf(provider.getCountProvider().getMaxValue()));
+                    text = text.append(Component.translatable("gtceu.gui.content.range",
+                            String.valueOf(provider.getCountProvider().getMinValue()),
+                            String.valueOf(provider.getCountProvider().getMaxValue())));
                 } else {
                     text.append(String.valueOf(count));
                 }
-                text.append("× ")
-                        .append(getItemName(item))
-                        .withStyle(ChatFormatting.WHITE);
+                text.append(Component.translatable("gtceu.gui.content.times_item",
+                        getItemName(item))
+                        .withStyle(ChatFormatting.WHITE));
                 iTooltip.append(text);
             }
         }
@@ -203,11 +203,9 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
                 MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
-                    text.append(FluidTextHelper.getUnicodeMillibuckets(
-                            provider.getCountProvider().getMinValue(), true))
-                            .append("-")
-                            .append(FluidTextHelper.getUnicodeMillibuckets(
-                                    provider.getCountProvider().getMaxValue(), true));
+                    text.append(Component.translatable("gtceu.gui.content.range",
+                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
+                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
                 } else {
                     text.append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
                 }

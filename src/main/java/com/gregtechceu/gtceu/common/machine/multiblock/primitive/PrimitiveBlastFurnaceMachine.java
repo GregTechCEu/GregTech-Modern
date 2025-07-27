@@ -11,8 +11,10 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -30,12 +32,16 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,9 +57,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     private TickableSubscription hurtSubscription;
 
     @Getter
+    @Setter
     @DescSynced
     @RequireRerender
-    private final Set<BlockPos> fluidBlockOffsets = new HashSet<>();
+    private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -80,25 +87,35 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     public void onUnload() {
         super.onUnload();
         unsubscribe(hurtSubscription);
+        hurtSubscription = null;
     }
 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
         IFluidRenderMulti.super.onStructureFormed();
-        this.hurtSubscription = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
         IFluidRenderMulti.super.onStructureInvalid();
-        unsubscribe(hurtSubscription);
     }
 
     @Override
-    public void saveOffsets() {
-        fluidBlockOffsets.add(getPos().relative(getFrontFacing().getOpposite()));
+    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.notifyStatusChanged(oldStatus, newStatus);
+        if (newStatus == RecipeLogic.Status.WORKING) {
+            this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
+        } else if (oldStatus == RecipeLogic.Status.WORKING && hurtSubscription != null) {
+            unsubscribe(hurtSubscription);
+            hurtSubscription = null;
+        }
+    }
+
+    @Override
+    public @NotNull Set<BlockPos> saveOffsets() {
+        return Collections.singleton(new BlockPos(getFrontFacing().getOpposite().getNormal()));
     }
 
     @Override
@@ -192,8 +209,13 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    private void hurtEntities() {
+    private void hurtEntitiesAndBreakSnow() {
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
+
+        if (getOffsetTimer() % 10 == 0) {
+            BlockState state = getLevel().getBlockState(middlePos);
+            GTUtil.tryBreakSnow(getLevel(), middlePos, state, true);
+        }
     }
 }

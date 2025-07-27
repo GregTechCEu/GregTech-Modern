@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
+import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -9,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -156,7 +158,7 @@ public class RenderBufferHelper {
                                       float x2, float y2, float z2, float u2, float v2,
                                       float x3, float y3, float z3, float u3, float v3,
                                       float x4, float y4, float z4, float u4, float v4) {
-        Vector3f normal = normalDir.step();
+        Vector3fc normal = GTMatrixUtils.getDirectionAxis(normalDir);
 
         vertex(buffer, pose, x1, y1, z1, color, u1, v1, combinedLight, normal.x(), normal.y(), normal.z());
         vertex(buffer, pose, x2, y2, z2, color, u2, v2, combinedLight, normal.x(), normal.y(), normal.z());

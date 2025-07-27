@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -19,7 +20,7 @@ public abstract class BuilderBase<T> implements Supplier<T> {
 
     public void generateDataJsons(DataJsonGenerator generator) {}
 
-    public void generateAssetJsons(AssetJsonGenerator generator) {}
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {}
 
     public void generateLang(LangEventJS lang) {}
 

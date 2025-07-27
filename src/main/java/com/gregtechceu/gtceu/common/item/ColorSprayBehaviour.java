@@ -186,10 +186,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
     private static boolean paintPaintable(IPaintable paintable, DyeColor color) {
         if (color == null) {
-            if (paintable.getPaintingColor() == -1) {
+            if (!paintable.isPainted()) {
                 return false;
             }
-            paintable.setPaintingColor(-1);
+            paintable.setPaintingColor(IPaintable.UNPAINTED_COLOR);
         } else if (paintable.getPaintingColor() != color.getMapColor().col) {
             paintable.setPaintingColor(color.getMapColor().col);
         } else {

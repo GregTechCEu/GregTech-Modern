@@ -35,7 +35,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
+import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
@@ -121,7 +121,6 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTToolTiers.init();
@@ -162,12 +161,12 @@ public class CommonProxy {
                 // noinspection UnstableApiUsage
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
                         .get(ProviderType.LANG);
-                if (providers.isEmpty()) {
-                    providers.add(
-                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
+                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                        .generate((RegistrateLangProvider) provider, registry);
+                if (providers == null) {
+                    accessor.getDatagens().put(ProviderType.LANG, generator);
                 } else {
-                    providers.add(0,
-                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
+                    providers.add(0, generator);
                 }
             }
 

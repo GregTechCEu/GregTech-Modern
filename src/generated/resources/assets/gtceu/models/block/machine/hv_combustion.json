@@ -5,11 +5,9 @@
   "variants": {
     "recipe_logic_status=idle": {
       "model": {
-        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/hv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
-          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "overlay_top": "gtceu:block/generators/combustion/overlay_top",
           "side": "gtceu:block/casings/voltage/hv/side",
           "top": "gtceu:block/casings/voltage/hv/top"
@@ -18,11 +16,9 @@
     },
     "recipe_logic_status=suspend": {
       "model": {
-        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/hv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
-          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "overlay_top": "gtceu:block/generators/combustion/overlay_top",
           "side": "gtceu:block/casings/voltage/hv/side",
           "top": "gtceu:block/casings/voltage/hv/top"
@@ -31,11 +27,9 @@
     },
     "recipe_logic_status=waiting": {
       "model": {
-        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/hv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
-          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "overlay_top": "gtceu:block/generators/combustion/overlay_top_active",
           "side": "gtceu:block/casings/voltage/hv/side",
           "top": "gtceu:block/casings/voltage/hv/top"
@@ -44,11 +38,9 @@
     },
     "recipe_logic_status=working": {
       "model": {
-        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/hv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
-          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "overlay_top": "gtceu:block/generators/combustion/overlay_top_active",
           "side": "gtceu:block/casings/voltage/hv/side",
           "top": "gtceu:block/casings/voltage/hv/top"

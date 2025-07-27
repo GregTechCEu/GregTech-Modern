@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -112,6 +113,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return this;
+    }
+
+    @Override
+    public MultiblockMachineBuilder machine(Function<IMachineBlockEntity, MetaMachine> metaMachine) {
+        return (MultiblockMachineBuilder) super.machine(metaMachine);
     }
 
     @Override
@@ -225,8 +231,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay, @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay,
+                                                                @Nullable String pipeOverlay,
+                                                                @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
@@ -236,8 +244,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
 
     @Override
     public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                @Nullable ResourceLocation pipeOverlay,
                                                                 @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
@@ -303,14 +312,17 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay, @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay,
+                                                               @Nullable ResourceLocation pipeOverlay,
+                                                               @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
     public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                               @Nullable ResourceLocation pipeOverlay,
                                                                @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override

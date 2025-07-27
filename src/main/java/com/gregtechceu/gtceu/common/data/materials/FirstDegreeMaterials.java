@@ -738,12 +738,13 @@ public class FirstDegreeMaterials {
                 .components(Lead, 1, Molybdenum, 1, Oxygen, 4)
                 .buildAndRegister();
 
-        YellowLimonite = new Material.Builder(GTCEu.id("yellow_limonite"))
+        Limonite = new Material.Builder(GTCEu.id("yellow_limonite"))
                 .dust().ore()
                 .color(0xf5e315).secondaryColor(0xc06f33).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_DOUBLE)
                 .components(Iron, 1, Hydrogen, 1, Oxygen, 2)
                 .buildAndRegister();
+        YellowLimonite = Limonite;
 
         YttriumBariumCuprate = new Material.Builder(GTCEu.id("yttrium_barium_cuprate"))
                 .ingot()
@@ -1610,7 +1611,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
-                .gas()
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xa6a6a6)
                 .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CHEMICAL_BURNS)

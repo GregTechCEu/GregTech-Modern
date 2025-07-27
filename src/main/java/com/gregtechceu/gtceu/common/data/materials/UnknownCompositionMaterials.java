@@ -443,7 +443,7 @@ public class UnknownCompositionMaterials {
 
         Paper = new Material.Builder(GTCEu.id("paper"))
                 .dust(0)
-                .color(0xFAFAFA).secondaryColor(0x878787).iconSet(FINE)
+                .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
                 .buildAndRegister();

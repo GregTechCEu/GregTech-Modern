@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -23,9 +24,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
@@ -69,11 +68,13 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (itemHandlers.size() < inputsSize) return false;
 
         var itemInventory = itemHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(ItemStack.class::isInstance)
                         .map(ItemStack.class::cast)
                         .filter(s -> !s.isEmpty())
                         .findFirst())
+
                 .dropWhile(Optional::isEmpty)
                 .limit(inputsSize)
                 .map(o -> o.orElse(ItemStack.EMPTY))
@@ -100,6 +101,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (fluidHandlers.size() < inputsSize) return false;
 
         var fluidInventory = fluidHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(FluidStack.class::isInstance)
                         .map(FluidStack.class::cast)

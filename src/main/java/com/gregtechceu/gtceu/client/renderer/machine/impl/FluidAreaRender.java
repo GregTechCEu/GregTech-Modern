@@ -77,6 +77,9 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
+        if (!machine.isFormed() || machine.getFluidOffsets() == null) {
+            return;
+        }
         if (!fixedFluid) {
             var lastRecipe = machine.getRecipeLogic().getLastRecipe();
             if (lastRecipe == null) {
@@ -106,7 +109,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
                     machine.self().isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
-            fluidBlockRenderer.drawPlane(dir, machine.getFluidBlockOffsets(), pose, consumer, cachedFluid,
+            fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
                     RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
         }
 

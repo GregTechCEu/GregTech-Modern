@@ -60,6 +60,7 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
@@ -79,8 +80,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER;
 
+@SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
 
@@ -91,7 +94,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
-    protected final Function<IMachineBlockEntity, MetaMachine> machine;
+    @Setter
+    protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Getter
     @Setter
@@ -130,14 +134,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
-    private @Nullable GTRecipeType @Nullable [] recipeTypes = null;
+    private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
     @Getter
     @Setter // getter for KJS
     private int tier;
     @Setter
     private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
     @Setter
-    private int paintingColor = Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue();
+    private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     @Setter
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
             GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
@@ -199,6 +203,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
+        // noinspection ConstantValue
+        if (type == null) {
+            GTCEu.LOGGER.error(
+                    "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
+                    this.id);
+            return this;
+        }
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         initRecipeMachineModelProperties(type);
         return this;
@@ -206,16 +217,29 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @Tolerate
     public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
-        for (GTRecipeType type : types) {
-            this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
+        List<GTRecipeType> typeList = new ArrayList<>();
+        Collections.addAll(typeList, this.recipeTypes);
+
+        for (int i = 0; i < types.length; i++) {
+            GTRecipeType type = types[i];
+            if (type != null) {
+                initRecipeMachineModelProperties(type);
+                typeList.add(type);
+            } else {
+                GTCEu.LOGGER.error(
+                        "Tried to set null recipe type on machine {} (index {}). Did you create the recipe type before this machine?",
+                        this.id, i);
+            }
         }
-        initRecipeMachineModelProperties(types);
+        this.recipeTypes = typeList.toArray(GTRecipeType[]::new);
         return this;
     }
 
-    protected void initRecipeMachineModelProperties(GTRecipeType... types) {
-        if (types.length > 0 &&
-                Arrays.stream(types).noneMatch(type -> type == GTRecipeTypes.DUMMY_RECIPES)) {
+    protected void initRecipeMachineModelProperties(GTRecipeType type) {
+        if (type == GTRecipeTypes.DUMMY_RECIPES) {
+            return;
+        }
+        if (!modelProperties.containsKey(RecipeLogic.STATUS_PROPERTY)) {
             modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         }
     }
@@ -225,7 +249,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> defaultModel() {
-        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
     }
 
     public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
@@ -241,25 +265,29 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay) {
-        return colorOverlayTieredHullModel(overlay, null);
+        return colorOverlayTieredHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay,
+                                                                  @Nullable String pipeOverlay,
                                                                   @Nullable String emissiveOverlay) {
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
-        return colorOverlayTieredHullModel(overlayTex, emissiveOverlayTex);
+        return colorOverlayTieredHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay) {
-        return colorOverlayTieredHullModel(overlay, null);
+        return colorOverlayTieredHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                   @Nullable ResourceLocation emissiveOverlay) {
         modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
-        return model(createColorOverlayTieredHullMachineModel(overlay, emissiveOverlay));
+        return model(createColorOverlayTieredHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
@@ -272,25 +300,29 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay) {
-        return colorOverlaySteamHullModel(overlay, null);
+        return colorOverlaySteamHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
+                                                                 @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable String emissiveOverlay) {
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
-        return colorOverlaySteamHullModel(overlayTex, emissiveOverlayTex);
+        return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay) {
-        return colorOverlaySteamHullModel(overlay, null);
+        return colorOverlaySteamHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                                 @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable ResourceLocation emissiveOverlay) {
         modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
-        return model(createColorOverlaySteamHullMachineModel(overlay, emissiveOverlay));
+        return model(createColorOverlaySteamHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
@@ -361,6 +393,22 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                                                                               @Nullable T defaultValue) {
         this.modelProperties.put(property, defaultValue);
         return this;
+    }
+
+    // KJS helpers for model property defaults
+    // These don't need to be copied to the multiblock builder because KJS doesn't care about the return type downgrade
+
+    public MachineBuilder<DEFINITION> kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
+        return modelProperty(property, defaultValue);
+    }
+
+    public MachineBuilder<DEFINITION> kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
+        return modelProperty(property, defaultValue);
+    }
+
+    public <T extends Enum<T> & Comparable<T>> MachineBuilder<DEFINITION> kjs$modelPropertyEnum(Property<T> property,
+                                                                                                T defaultValue) {
+        return modelProperty(property, defaultValue);
     }
 
     @Tolerate
@@ -436,7 +484,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         super.generateAssetJsons(generator);
         KJSCallWrapper.generateAssetJsons(generator, this, this.value);
     }
@@ -473,7 +521,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
         if (model == null && blockModel == null) {
-            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
         }
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
@@ -519,11 +567,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
         definition.setAllowCoverOnFront(this.allowCoverOnFront);
 
-        if (recipeTypes != null) {
-            for (GTRecipeType type : recipeTypes) {
-                if (type != null && type.getIconSupplier() == null) {
-                    type.setIconSupplier(definition::asStack);
-                }
+        for (GTRecipeType type : recipeTypes) {
+            if (type.getIconSupplier() == null) {
+                type.setIconSupplier(definition::asStack);
             }
         }
         if (appearance == null) {
@@ -539,7 +585,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
-        return definition;
+        return value = definition;
     }
 
     @FunctionalInterface
@@ -590,7 +636,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .color(() -> () -> IMachineBlock::colorTinted)
                     .initialProperties(() -> Blocks.DISPENSER)
                     .properties(BlockBehaviour.Properties::noLootTable)
-                    .addLayer(() -> RenderType::cutoutMipped)
+                    .addLayer(() -> RenderType::cutout)
                     .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
                     .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
@@ -625,20 +671,23 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     protected static final class KJSCallWrapper {
 
-        public static <D extends MachineDefinition> void generateAssetJsons(AssetJsonGenerator generator,
+        public static <D extends MachineDefinition> void generateAssetJsons(@Nullable AssetJsonGenerator generator,
                                                                             MachineBuilder<D> builder, D definition) {
             if (builder.model() == null && builder.blockModel() == null) return;
 
             final ResourceLocation id = definition.getId();
-            // Fake a data provider for the GT model builders
-            var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
-            if (builder.blockModel() != null) {
-                builder.blockModel().accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+            // if generator is null, we're making the block models through GT
+            if (generator == null) {
+                // Fake a data provider for the GT model builders
+                var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
+                if (builder.blockModel() != null) {
+                    builder.blockModel().accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+                } else {
+                    GTMachineModels.createMachineModel(builder.model()).accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+                }
             } else {
-                GTMachineModels.createMachineModel(builder.model()).accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+                generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
             }
-
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
         }
     }
 }

@@ -119,6 +119,7 @@ public class GTValues {
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
+            MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
@@ -278,6 +279,10 @@ public class GTValues {
             BLUE.getColor(),
             RED.getColor()
     };
+
+    // Main color for steam machines
+    public static final int VC_LP_STEAM = 0xBB8E53;
+    public static final int VC_HP_STEAM = 0x79756F;
 
     /**
      * The long names for the voltages

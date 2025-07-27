@@ -88,7 +88,7 @@ public class GTDynamicDataPack implements PackResources {
 
     /**
      * if subdir is null, no file ending is appended.
-     * 
+     *
      * @param id     the resource location of the file to be written.
      * @param subdir a nullable subdirectory for the data.
      * @param parent the parent folder where to write data to.

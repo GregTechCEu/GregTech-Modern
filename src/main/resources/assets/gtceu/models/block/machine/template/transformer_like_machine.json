@@ -8,8 +8,10 @@
         "side": "gtceu:block/casings/voltage/lv/side",
 
         "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+        "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_in_emissive",
         "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
-        "overlay_out_io": "gtceu:block/overlay/converter/converter_native_out",
+        "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+        "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_out_emissive",
         "overlay_out_tinted": "gtceu:block/void"
     },
     "elements": [
@@ -26,8 +28,8 @@
             }
         },
         {
-            "from": [ -0.002, -0.002, -0.002 ],
-            "to":   [ 16.002, 16.002, 16.002 ],
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "south" },
@@ -38,8 +40,22 @@
             }
         },
         {
-            "from": [ -0.004, -0.004, -0.004 ],
-            "to":   [ 16.004, 16.004, 16.004 ],
+            "from": [ -0.04, -0.04, -0.04 ],
+            "to":   [ 16.04, 16.04, 16.04 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io_emissive",  "cullface": "north" },
+                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "south" },
+                "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "up"    },
+                "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "down"  },
+                "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "west"  },
+                "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "east"  }
+            }
+        },
+        {
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_tinted",  "cullface": "north", "tintindex": 2 },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 3 },

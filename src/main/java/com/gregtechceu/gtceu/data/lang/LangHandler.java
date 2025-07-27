@@ -133,6 +133,7 @@ public class LangHandler {
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
         provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
+        provider.add("command.gtceu.cape.failure.does_not_exist", "Cape %s does not exist");
         provider.add("command.gtceu.cape.give.failed", "No new capes were unlocked");
         provider.add("command.gtceu.cape.give.success.multiple", "Unlocked %s capes for %s players");
         provider.add("command.gtceu.cape.give.success.single", "Unlocked %s capes for %s");
@@ -528,6 +529,7 @@ public class LangHandler {
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
                                                                                      // 1.19...
+        replace(provider, GTMaterials.Limonite.getUnlocalizedName(), "Limonite");
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
@@ -752,7 +754,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
+        provider.add("behaviour.soft_hammer.disabled_cycle", "Working Disabled after current cycle");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
@@ -925,6 +927,10 @@ public class LangHandler {
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
         provider.add("gtceu.universal.liters", "%s mB");
         provider.add("gtceu.universal.kiloliters", "%s B");
+        provider.add("gtceu.universal.parentheses", "(%s)");
+        provider.add("gtceu.universal.spaced_parentheses", "( %s )");
+        provider.add("gtceu.universal.padded_parentheses", " (%s) ");
+        provider.add("gtceu.universal.padded_spaced_parentheses", " ( %s ) ");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -972,10 +978,11 @@ public class LangHandler {
                 "§4§lWARNING:§r§4 DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r");
         provider.add("gtceu.recipe.total", "Total: %s EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
-        provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
+        provider.add("gtceu.recipe.eu", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
+        provider.add("gtceu.recipe.eu.total", "%s EU/t");
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.voltage", "Voltage: %s V @ %s A");
+        provider.add("gtceu.recipe.voltage", "Usage: %s A @ %s");
         provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
@@ -1210,35 +1217,6 @@ public class LangHandler {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        provider.add("gtceu.command.usage", "Usage: /gtceu <worldgen/hand/recipecheck>");
-        provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
-        provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
-        provider.add("gtceu.command.worldgen.reload.success", "Worldgen successfully reloaded from config.");
-        provider.add("gtceu.command.worldgen.reload.failed",
-                "Worldgen reload failed. Check console for errors.");
-        provider.add("gtceu.command.hand.groovy", "Consider using §6/gs hand");
-        provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
-        provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
-        provider.add("gtceu.command.hand.electric", "Electric Info: %d / %d EU - Tier: %d; Is Battery: %s");
-        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d mB; Can Fill: %s; Can Drain: %s");
-        provider.add("gtceu.command.hand.fluid2", "Fluid Id:");
-        provider.add("gtceu.command.hand.material", "Material Id:");
-        provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
-        provider.add("gtceu.command.hand.meta_item", "MetaItem Id:");
-        provider.add("gtceu.command.hand.tag_entries", "§3Tag entries:");
-        provider.add("gtceu.command.hand.tool_stats", "Tool Stats Class: %s");
-        provider.add("gtceu.command.hand.not_a_player", "This command is only usable by a player.");
-        provider.add("gtceu.command.hand.no_item",
-                "You must hold something in main hand or off hand before executing this command.");
-        provider.add("gtceu.command.recipecheck.usage", "Usage: /gtceu recipecheck");
-        provider.add("gtceu.command.recipecheck.begin", "Starting recipe conflict check...");
-        provider.add("gtceu.command.recipecheck.end",
-                "Recipe conflict check found %d possible conflicts. Check the server log for more info");
-        provider.add("gtceu.command.recipecheck.end_no_conflicts", "No recipe conflicts found!");
-        provider.add("gtceu.command.copy.copied_and_click", "copied to clipboard. Click to copy again");
-        provider.add("gtceu.command.copy.click_to_copy", "Click to copy");
-        provider.add("gtceu.command.copy.copied_start", "Copied [");
-        provider.add("gtceu.command.copy.copied_end", "] to the clipboard");
         provider.add("gtceu.chat.cape",
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
         provider.add("gtceu.universal.clear_nbt_recipe.tooltip", "§cThis will destroy all contents!");
@@ -1352,6 +1330,8 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
         provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.content.range", "%s-%s");
+        provider.add("gtceu.gui.content.times_item", "x %s");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

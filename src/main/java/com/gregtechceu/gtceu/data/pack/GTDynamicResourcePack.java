@@ -75,6 +75,18 @@ public class GTDynamicResourcePack implements PackResources {
         CONTENTS.clearData();
     }
 
+    public static void addResource(ResourceLocation location, JsonElement obj) {
+        addResource(location, obj.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static void addResource(ResourceLocation location, byte[] data) {
+        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
+            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            writeJson(location, null, parent, data);
+        }
+        CONTENTS.addToData(location, data);
+    }
+
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
         ResourceLocation l = getBlockModelLocation(loc);
         byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);

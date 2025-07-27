@@ -14,8 +14,10 @@
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
           "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_16a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_in_emissive",
           "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
           "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_16a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_out_emissive",
           "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
@@ -28,8 +30,10 @@
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
           "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_in_emissive",
           "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_out_emissive",
           "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
@@ -42,8 +46,10 @@
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
           "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_2a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_in_emissive",
           "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
           "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_2a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_out_emissive",
           "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
@@ -56,8 +62,10 @@
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
           "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_4a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_in_emissive",
           "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
           "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_4a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_out_emissive",
           "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
@@ -70,8 +78,10 @@
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uv/bottom",
           "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_8a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_in_emissive",
           "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
           "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_8a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_out_emissive",
           "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
           "side": "gtceu:block/casings/voltage/uv/side",
           "top": "gtceu:block/casings/voltage/uv/top"
