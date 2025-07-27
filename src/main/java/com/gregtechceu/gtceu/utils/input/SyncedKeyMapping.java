@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -132,6 +133,16 @@ public final class SyncedKeyMapping {
                 .computeIfAbsent(player, $ -> Collections.newSetFromMap(new WeakHashMap<>()));
         listenerSet.add(listener);
         return this;
+    }
+
+    public static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
+        for (SyncedKeyMapping value : KEYMAPPINGS.values()) {
+            if (value.keyMapping != null) {
+                event.register(value.keyMapping);
+            }
+            // no need to register keycode only keybinds?
+            // dont think they would show up in the binds menu
+        }
     }
 
     /**
