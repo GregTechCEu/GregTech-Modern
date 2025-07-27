@@ -12,11 +12,6 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote CustomSoundEntry
- */
 public class CustomSoundEntry extends SoundEntry {
 
     protected List<ResourceLocation> variants;

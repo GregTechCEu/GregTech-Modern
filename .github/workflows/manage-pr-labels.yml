@@ -22,13 +22,22 @@ jobs:
         with:
           mode: exactly
           count: 0
-          labels: 'do not merge'
+          labels: 'do not merge, admin merge'
           exit_type: failure
 
-      - name: Check for Required Labels # require at least one of these labels
+      - name: Check for Required Type Labels # require at least one of these labels
         uses: mheap/github-action-required-labels@v5
         with:
           mode: minimum
           count: 1
           labels: 'type: feature, type: bugfix, type: refactor, type: translation, ignore changelog'
           exit_type: failure
+
+      - name: Check for Required Release Label # require exactly one of these labels
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 1
+          labels: 'release: api - X.0.0, release: major - 0.X.0, release: Patch - 0.0.X, release: stale'
+          exit_type: failure
+          

@@ -21,10 +21,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
-/**
- * @author Rundas
- * @implNote Gregicality Multiblocks Recipe Types
- */
 public class GCYMRecipeTypes {
 
     //////////////////////////////////////
@@ -48,7 +44,7 @@ public class GCYMRecipeTypes {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-                if (requiredCoil != null && requiredCoil.getMaterial() != null) {
+                if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
                     return LocalizationUtils.format("gtceu.recipe.coil.tier",
                             I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
                 }

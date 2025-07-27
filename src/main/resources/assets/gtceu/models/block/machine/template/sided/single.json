@@ -1,0 +1,16 @@
+{
+    "parent": "gtceu:block/machine/template/sided/sided",
+    "textures": {
+        "overlay_front": "#overlay",
+        "overlay_back": "#overlay",
+        "overlay_top": "#overlay",
+        "overlay_bottom": "#overlay",
+        "overlay_side": "#overlay",
+
+        "overlay_front_emissive": "#overlay_emissive",
+        "overlay_back_emissive": "#overlay_emissive",
+        "overlay_top_emissive": "#overlay_emissive",
+        "overlay_bottom_emissive": "#overlay_emissive",
+        "overlay_side_emissive": "#overlay_emissive"
+    }
+}

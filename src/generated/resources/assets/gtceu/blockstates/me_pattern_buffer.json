@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/me_pattern_buffer",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/me_pattern_buffer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/me_pattern_buffer"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/me_pattern_buffer",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/me_pattern_buffer",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/me_pattern_buffer",
+      "y": 270
+    }
+  }
+}

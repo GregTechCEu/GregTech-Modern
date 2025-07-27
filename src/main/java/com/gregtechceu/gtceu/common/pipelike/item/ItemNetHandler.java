@@ -26,6 +26,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +40,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     private final Level world;
     @Getter
     private final Direction facing;
-    private final Map<FacingPos, Integer> simulatedTransfersGlobalRoundRobin = new HashMap<>();
+    private final Object2IntOpenHashMap<FacingPos> simulatedTransfersGlobalRoundRobin = new Object2IntOpenHashMap<>();
     private int simulatedTransfers = 0;
 
     private final ItemStackHandler testHandler = new ItemStackHandler(1);
@@ -456,33 +457,40 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     private void transferTo(ItemRoutePath handler, boolean simulate, int amount) {
-        if (simulate)
-            simulatedTransfersGlobalRoundRobin.merge(handler.toFacingPos(), amount, Integer::sum);
-        else
-            pipe.getTransferred().merge(handler.toFacingPos(), amount, Integer::sum);
+        if (simulate) {
+            simulatedTransfersGlobalRoundRobin.addTo(handler.toFacingPos(), amount);
+        } else {
+            pipe.getTransferred().mergeInt(handler.toFacingPos(), amount, Integer::sum);
+        }
     }
 
     private boolean contains(ItemRoutePath handler, boolean simulate) {
-        return simulate ? simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos()) :
-                pipe.getTransferred().containsKey(handler.toFacingPos());
+        if (simulate) {
+            return simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos());
+        } else {
+            return pipe.getTransferred().containsKey(handler.toFacingPos());
+        }
     }
 
     private int didTransferTo(ItemRoutePath handler, boolean simulate) {
-        if (simulate)
+        if (simulate) {
             return simulatedTransfersGlobalRoundRobin.getOrDefault(handler.toFacingPos(), 0);
-        return pipe.getTransferred().getOrDefault(handler.toFacingPos(), 0);
+        } else {
+            return pipe.getTransferred().getOrDefault(handler.toFacingPos(), 0);
+        }
     }
 
     private void resetTransferred(boolean simulated) {
-        if (simulated)
+        if (simulated) {
             simulatedTransfersGlobalRoundRobin.clear();
-        else
+        } else {
             pipe.resetTransferred();
+        }
     }
 
     private void decrementBy(int amount) {
-        for (Map.Entry<FacingPos, Integer> entry : pipe.getTransferred().entrySet()) {
-            entry.setValue(entry.getValue() - amount);
+        for (var entry : pipe.getTransferred().object2IntEntrySet()) {
+            entry.setValue(entry.getIntValue() - amount);
         }
     }
 

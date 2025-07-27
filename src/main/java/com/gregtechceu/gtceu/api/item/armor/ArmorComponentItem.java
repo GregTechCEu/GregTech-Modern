@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.client.model.HumanoidModel;
@@ -11,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,13 +20,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+@NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Getter
@@ -83,13 +81,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Override
     public void onArmorTick(ItemStack stack, Level level, Player player) {
-        super.onArmorTick(stack, level, player);
         this.armorLogic.onArmorTick(level, player, stack);
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return super.getMaxDamage(stack);
     }
 
     @Override
@@ -111,9 +103,28 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
-    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage,
-                            EquipmentSlot slot) {
-        armorLogic.damageArmor(entity, stack, source, damage, slot);
+    // Some trickery to always receive damage events without ever actually breaking the armor
+    @Override
+    public boolean canBeDepleted() {
+        return true;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {}
+
+    @Override
+    public boolean isDamaged(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        return armorLogic.damageArmor(entity, stack, entity.getLastDamageSource(), amount, this.getEquipmentSlot());
     }
 
     @Override
@@ -132,7 +143,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return armorLogic.getArmorTexture(stack, entity, slot, type).toString();
+        var textureId = armorLogic.getArmorTexture(stack, entity, slot, type);
+        return textureId == null ? null : textureId.toString();
     }
 
     ///////////////////////////////////////////
@@ -307,19 +319,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
             }
         }
         return super.hasCraftingRemainingItem(stack);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull final ItemStack itemStack, @NotNull final Capability<T> cap) {
-        for (IItemComponent component : components) {
-            if (component instanceof IComponentCapability componentCapability) {
-                var value = componentCapability.getCapability(itemStack, cap);
-                if (value.isPresent()) {
-                    return value;
-                }
-            }
-        }
-        return LazyOptional.empty();
     }
 
     @Override

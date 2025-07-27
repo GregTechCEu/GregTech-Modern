@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -89,7 +90,7 @@ public class SmartItemFilter implements ItemFilter {
 
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
-        var ingredients = ItemRecipeCapability.CAP.convertToMapIngredient(copy);
+        var ingredients = MapIngredientTypeManager.getFrom(copy, ItemRecipeCapability.CAP);
         var recipe = filterMode.lookup.recurseIngredientTreeFindRecipe(List.of(ingredients),
                 filterMode.lookup.getLookup(), r -> true);
         if (recipe == null) return 0;

@@ -33,11 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-/**
- * @author Screret
- * @date 2023/2/23
- * @implNote GTToolType
- */
 public class GTToolType {
 
     @Getter
@@ -74,7 +69,8 @@ public class GTToolType {
             .harvestTag(BlockTags.MINEABLE_WITH_AXE)
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
-                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE,
+                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE,
+                            LogStripBehavior.INSTANCE,
                             ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
             .constructor(GTAxeItem::create)
             .toolClassNames("axe")
@@ -95,7 +91,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .toolClasses(GTToolType.PICKAXE)
             .materialAmount(6 * GTValues.M)
             .build();
@@ -105,7 +101,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    .behaviors(GrassPathBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, GrassPathBehavior.INSTANCE))
             .toolClasses(GTToolType.SHOVEL)
             .materialAmount(3 * GTValues.M)
             .build();
@@ -115,7 +111,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().attacking()
                     .attackDamage(5.0F).attackSpeed(-3.0F).durabilityMultiplier(3.0F)
                     .aoe(2, 2, 2)
-                    .behaviors(HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
             .constructor(GTHoeItem::create)
             .toolClassNames("scythe")
@@ -260,7 +256,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(3.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .sound(GTSoundEntries.DRILL_TOOL, true)
             .electric(GTValues.LV)
             .toolClassNames("drill")
@@ -278,7 +274,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 2)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(4.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .sound(GTSoundEntries.DRILL_TOOL, true)
             .electric(GTValues.MV)
             .toolClassNames("drill")
@@ -296,7 +292,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(2, 2, 4)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(5.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .sound(GTSoundEntries.DRILL_TOOL, true)
             .electric(GTValues.HV)
             .toolClassNames("drill")
@@ -314,7 +310,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(3, 3, 6)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(6.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_EV)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .sound(GTSoundEntries.DRILL_TOOL, true)
             .electric(GTValues.EV)
             .toolClassNames("drill")
@@ -332,7 +328,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(4, 4, 8)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(7.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .sound(GTSoundEntries.DRILL_TOOL, true)
             .electric(GTValues.IV)
             .toolClassNames("drill")
@@ -475,13 +471,13 @@ public class GTToolType {
     @Nullable
     public final SoundEntry soundEntry;
     public final boolean playSoundOnBlockDestroy;
-    public final Character symbol;
+    public final char symbol;
     public final long materialAmount;
     public final IGTToolDefinition toolDefinition;
     public final ToolConstructor constructor;
     public final int electricTier;
 
-    public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses,
+    public GTToolType(String name, String idFormat, char symbol, Set<GTToolType> toolClasses,
                       IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags,
                       List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames,
                       @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier,
@@ -544,7 +540,7 @@ public class GTToolType {
         @Setter
         private int tier = -1;
         @Setter
-        private Character symbol = null;
+        private char symbol = ' ';
         @Setter
         private ToolConstructor constructor = GTToolItem::create;
         @Setter
@@ -624,7 +620,7 @@ public class GTToolType {
             if (toolClassNames.isEmpty()) {
                 toolClassNames.add(name);
             }
-            if (this.symbol == null) {
+            if (this.symbol == ' ') {
                 return get();
             }
             GTToolType existing = ToolHelper.getToolFromSymbol(this.symbol);

@@ -16,21 +16,20 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote IControllerComponent
- */
 public interface IMultiController extends IMachineFeature, IInteractedMachine {
+
+    BooleanProperty IS_FORMED_PROPERTY = BooleanProperty.create("is_formed");
 
     @Override
     default MultiblockControllerMachine self() {
@@ -155,6 +154,14 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     Optional<IParallelHatch> getParallelHatch();
 
     /**
+     *
+     * @return Whether batching is enabled on this multiblock
+     */
+    default boolean isBatchEnabled() {
+        return false;
+    }
+
+    /**
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
@@ -180,6 +187,10 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
             return self().getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
+    }
+
+    default Comparator<IMultiPart> getPartSorter() {
+        return self().getDefinition().getPartSorter().apply(self());
     }
 
     /**

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -32,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreativeEnergyContainerMachine extends MetaMachine implements ILaserContainer, IUIMachine {
+public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IUIMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -54,7 +55,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     private boolean doExplosion = false;
 
     public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
-        super(holder);
+        super(holder, GTValues.MAX);
     }
 
     //////////////////////////////////////

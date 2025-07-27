@@ -47,9 +47,8 @@ public interface ICoilType {
     int getTier();
 
     /**
-     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
+     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code GTMaterials.NULL}
      */
-    @Nullable
     Material getMaterial();
 
     /**
@@ -58,7 +57,7 @@ public interface ICoilType {
     ResourceLocation getTexture();
 
     Lazy<ICoilType[]> ALL_COILS_TEMPERATURE_SORTED = Lazy.of(() -> GTCEuAPI.HEATING_COILS.keySet().stream()
-            .sorted(Comparator.comparing(ICoilType::getCoilTemperature))
+            .sorted(Comparator.comparingInt(ICoilType::getCoilTemperature))
             .toArray(ICoilType[]::new));
 
     @Nullable

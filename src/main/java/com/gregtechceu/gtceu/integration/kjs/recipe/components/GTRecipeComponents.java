@@ -5,25 +5,33 @@ import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
-import dev.latvian.mods.kubejs.fluid.FluidLike;
-import dev.latvian.mods.kubejs.fluid.FluidStackJS;
-import dev.latvian.mods.kubejs.fluid.InputFluid;
-import dev.latvian.mods.kubejs.fluid.OutputFluid;
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.fluid.*;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.*;
@@ -31,7 +39,9 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -224,49 +234,17 @@ public class GTRecipeComponents {
 
         @Override
         public String componentType() {
-            return "input_fluid";
+            return "fluid_ingredient";
         }
 
         @Override
         public Class<?> componentClass() {
             return FluidIngredientJS.class;
-        }
-
-        @Override
-        public ComponentRole role() {
-            return ComponentRole.INPUT;
         }
 
         @Override
         public boolean isInput(RecipeJS recipe, FluidIngredientJS value, ReplacementMatch match) {
             return match instanceof FluidLike m && value.matches(m);
-        }
-
-        @Override
-        public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
-            return value.ingredient.toJson();
-        }
-
-        @Override
-        public FluidIngredientJS read(RecipeJS recipe, Object from) {
-            return FluidIngredientJS.of(from);
-        }
-    };
-    public static final RecipeComponent<FluidIngredientJS> FLUID_INGREDIENT_OUT = new RecipeComponent<>() {
-
-        @Override
-        public String componentType() {
-            return "output_fluid";
-        }
-
-        @Override
-        public Class<?> componentClass() {
-            return FluidIngredientJS.class;
-        }
-
-        @Override
-        public ComponentRole role() {
-            return ComponentRole.OUTPUT;
         }
 
         @Override
@@ -313,10 +291,7 @@ public class GTRecipeComponents {
 
         @Override
         public ExtendedOutputItem read(RecipeJS recipe, Object from) {
-            if (from instanceof IntProviderIngredient intProvider) {
-                return new ExtendedOutputItem(intProvider, 1);
-            }
-            return ExtendedOutputItem.fromOutputItem(recipe.readOutputItem(from));
+            return ExtendedOutputItem.of(from, recipe);
         }
 
         @Override
@@ -345,6 +320,28 @@ public class GTRecipeComponents {
             return componentType();
         }
     };
+    public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "energy_stack";
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return EnergyStack.class;
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, EnergyStack.WithIO value) {
+            return EnergyStack.WithIO.CODEC.encodeStart(JsonOps.INSTANCE, value).result().orElse(null);
+        }
+
+        @Override
+        public EnergyStack.WithIO read(RecipeJS recipe, Object from) {
+            return KJSHelpers.parseIOEnergyStack(from);
+        }
+    };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
@@ -352,15 +349,15 @@ public class GTRecipeComponents {
             GTRecipeCapabilities.ITEM, true);
     public static final ContentJS<FluidIngredientJS> FLUID_IN = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, false);
-    public static final ContentJS<FluidIngredientJS> FLUID_OUT = new ContentJS<>(FLUID_INGREDIENT_OUT,
+    public static final ContentJS<FluidIngredientJS> FLUID_OUT = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, true);
-    public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_IN = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             false);
-    public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_OUT = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             true);
-    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             false);
-    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             true);
 
     public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);
@@ -387,12 +384,18 @@ public class GTRecipeComponents {
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 
-    public static class FluidIngredientJS implements InputFluid, OutputFluid {
+    public record FluidIngredientJS(FluidIngredient ingredient) implements InputFluid, OutputFluid {
 
-        private final FluidIngredient ingredient;
+        public FluidIngredientJS(FluidStack stack) {
+            this(FluidIngredient.of(stack));
+        }
 
-        public FluidIngredientJS(FluidIngredient ingredient) {
-            this.ingredient = ingredient;
+        public FluidIngredientJS(TagKey<Fluid> tag, int amount, @Nullable CompoundTag nbt) {
+            this(FluidIngredient.of(tag, amount, nbt));
+        }
+
+        public FluidIngredientJS(Fluid fluid, int amount, @Nullable CompoundTag nbt) {
+            this(FluidIngredient.of(fluid, amount, nbt));
         }
 
         @Override
@@ -409,9 +412,11 @@ public class GTRecipeComponents {
 
         @Override
         public boolean matches(FluidLike other) {
-            if (other instanceof FluidStackJS fluidStack) {
-                return ingredient
-                        .test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getNbt()));
+            if (other instanceof FluidStackJS stackJS) {
+                FluidStack stack = new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
+                return ingredient.test(stack);
+            } else if (other instanceof FluidStack stack) {
+                return ingredient.test(stack);
             }
             return other.matches(this);
         }
@@ -419,14 +424,46 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
+            } else if (o instanceof IntProviderFluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient.copy());
             } else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));
-            } else if (o instanceof FluidStackJS fluidStackJS) {
-                return new FluidIngredientJS(FluidIngredient.of(
-                        new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(),
-                                fluidStackJS.getNbt())));
+            } else if (o instanceof Tag nbt) {
+                JsonElement json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt);
+                return new FluidIngredientJS(FluidIngredient.fromJson(json));
+            } else if (o instanceof FluidStack stack) {
+                return new FluidIngredientJS(stack);
+            } else if (o instanceof FluidStackJS stackJS) {
+                return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
+            } else if (o instanceof CharSequence || o instanceof ResourceLocation) {
+                var s = o.toString();
+
+                if (s.isEmpty() || s.equals("-") || s.equals("empty") || s.equals("minecraft:empty")) {
+                    return new FluidIngredientJS(FluidIngredient.EMPTY);
+                }
+
+                boolean isTag = false;
+                if (s.startsWith("#")) {
+                    s = s.substring(1);
+                    isTag = true;
+                }
+                var split = s.split(" ", 3);
+                ResourceLocation id = new ResourceLocation(split[0]);
+                int amount = UtilsJS.parseInt(split.length >= 2 ? split[1] : "", FluidType.BUCKET_VOLUME);
+                CompoundTag nbt = null;
+                if (split.length == 3) {
+                    try {
+                        nbt = TagParser.parseTag(split[2]);
+                    } catch (CommandSyntaxException ignored) {}
+                }
+
+                if (isTag) {
+                    return new FluidIngredientJS(TagKey.create(Registries.FLUID, id), amount, nbt);
+                } else {
+                    return new FluidIngredientJS(BuiltInRegistries.FLUID.get(id), amount, nbt);
+                }
             }
 
             var list = ListJS.of(o);
@@ -436,11 +473,10 @@ public class GTRecipeComponents {
                     FluidStackJS stackJS = FluidStackJS.of(object);
                     stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
                 }
-                return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
+                return new FluidIngredientJS(FluidIngredient.of(stacks));
             } else {
                 FluidStackJS stackJS = FluidStackJS.of(o);
-                return new FluidIngredientJS(FluidIngredient
-                        .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
+                return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
             }
         }
     }

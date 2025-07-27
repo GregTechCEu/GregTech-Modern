@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +16,6 @@ import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -25,13 +25,13 @@ public class CoilBlockBuilder extends BlockBuilder {
     @Setter
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
     @NotNull
-    public transient Supplier<@Nullable Material> material = () -> null;
+    public transient Supplier<Material> material = () -> GTMaterials.NULL;
     @Setter
     public transient String texture = "minecraft:missingno";
 
     public CoilBlockBuilder(ResourceLocation i) {
         super(i);
-        property(ActiveBlock.ACTIVE);
+        property(GTBlockStateProperties.ACTIVE);
         renderType("cutout_mipped");
         noValidSpawns(true);
     }
@@ -55,7 +55,7 @@ public class CoilBlockBuilder extends BlockBuilder {
         });
     }
 
-    public CoilBlockBuilder coilMaterial(@NotNull Supplier<@Nullable Material> material) {
+    public CoilBlockBuilder coilMaterial(@NotNull Supplier<Material> material) {
         this.material = material;
         return this;
     }

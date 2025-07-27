@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -37,6 +36,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
@@ -49,8 +49,8 @@ public class Predicates {
         var candidates = new ArrayList<BlockState>();
         for (BlockState state : allowedStates) {
             candidates.add(state);
-            if (state.getBlock() instanceof ActiveBlock block) {
-                candidates.add(block.changeActive(state, !block.isActive(state)));
+            if (state.hasProperty(ACTIVE)) {
+                candidates.add(state.setValue(ACTIVE, !state.getValue(ACTIVE)));
             }
         }
         return new TraceabilityPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));
@@ -264,9 +264,13 @@ public class Predicates {
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */
     public static TraceabilityPredicate frames(Material... frameMaterials) {
-        return blocks(Arrays.stream(frameMaterials).map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
-                .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
-                .toArray(Block[]::new))
+        var frameBlocks = Arrays.stream(frameMaterials)
+                .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
+                .filter(Objects::nonNull)
+                .filter(RegistryEntry::isPresent)
+                .map(RegistryEntry::get)
+                .toArray(Block[]::new);
+        return blocks(frameBlocks)
                 .or(new TraceabilityPredicate(blockWorldState -> {
                     BlockEntity tileEntity = blockWorldState.getTileEntity();
                     if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {

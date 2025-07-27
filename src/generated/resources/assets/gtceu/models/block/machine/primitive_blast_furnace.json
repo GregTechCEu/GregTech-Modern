@@ -1,0 +1,100 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtceu:fluid_area",
+      "block_light": 15,
+      "fixed_fluid": "minecraft:lava",
+      "offset_face": -0.125,
+      "overwrite_light": true,
+      "sky_light": 15
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:primitive_blast_furnace",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/solid/machine_primitive_bricks"
+  },
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active_emissive"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_primitive_bricks",
+          "overlay_front": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/primitive_blast_furnace/overlay_front_active_emissive"
+        }
+      }
+    }
+  }
+}

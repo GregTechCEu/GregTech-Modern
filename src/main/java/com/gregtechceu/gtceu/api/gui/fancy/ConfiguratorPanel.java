@@ -32,11 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/6/27
- * @implNote ConfiguratorPanel
- */
 public class ConfiguratorPanel extends WidgetGroup {
 
     @Getter

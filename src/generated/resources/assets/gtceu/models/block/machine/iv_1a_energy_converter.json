@@ -1,0 +1,37 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:iv_1a_energy_converter",
+  "variants": {
+    "fe_to_eu=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/converter/converter_native_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/converter/converter_native_out_emissive",
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
+        }
+      }
+    },
+    "fe_to_eu=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_out_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/converter/converter_native_in",
+          "overlay_out_io_emissive": "gtceu:block/overlay/converter/converter_native_in_emissive",
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
+        }
+      }
+    }
+  }
+}
