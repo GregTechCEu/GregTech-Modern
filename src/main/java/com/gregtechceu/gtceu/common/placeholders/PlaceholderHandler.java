@@ -51,7 +51,7 @@ public class PlaceholderHandler {
     public MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
-        List<PlaceholderException> exceptions = new ArrayList<>();
+        List<Exception> exceptions = new ArrayList<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
@@ -89,6 +89,8 @@ public class PlaceholderHandler {
                             GTUtil.getLast(stack.peek()).append(result);
                         } catch (PlaceholderException e) {
                             e.setLineInfo(line, symbol);
+                            exceptions.add(e);
+                        } catch (RuntimeException e) {
                             exceptions.add(e);
                         }
                     }

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -36,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -257,7 +260,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return null;
     }
 
-    private ResourceTexture getComponentTexture(int row, int col) {
+    private IGuiTexture getComponentTexture(int row, int col) {
         if (row < 0 || col < 0 || row > downDist + upDist + 1 || col > leftDist + rightDist + 1)
             return GuiTextures.BLANK_TRANSPARENT;
         IMonitorComponent component = getComponent(row, col);
@@ -317,6 +320,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 80, 80);
         ArrayList<ArrayList<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
         Map<BlockPos, Runnable> rightClickCallbacks = new HashMap<>();
+        List<Integer> dataSlot = new ArrayList<>(); // list to be able to modify it in lambdas
+        dataSlot.add(1); // the slot (index starts from 1)
+        dataSlot.add(9); // amount of slots
+        IntInputWidget dataSlotInput = new IntInputWidget(120, 20, 60, 20, () -> dataSlot.get(0),
+                n -> dataSlot.set(0, (int) GTMath.clamp(n, 1, dataSlot.get(1))));
+        dataSlotInput.setVisible(false);
+        builder.addWidget(dataSlotInput);
         Consumer<MonitorGroup> addGroupToList = group -> {
             ButtonWidget label = new ButtonWidget(20, groupList.widgets.size() * 15 + 5, 80, 10, null);
             TextTexture text = new TextTexture(group.getName());
@@ -327,8 +337,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     BlockPos rel = toRelative(pos);
                     imageButtons.get(rel.getY()).get(rel.getX()).accept(null);
                 });
-                if (group.getTarget() != null) {
-                    rightClickCallbacks.getOrDefault(group.getTarget(), () -> {}).run();
+                if (group.getTargetRaw() != null) {
+                    rightClickCallbacks.getOrDefault(group.getTargetRaw(), () -> {}).run();
                 }
             });
             groupList.addWidget(label);
@@ -388,7 +398,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
             if (group == null) return;
             if (selectedTarget.isEmpty()) group.setTarget(null);
-            else group.setTarget(selectedTarget.get(0).getPos());
+            else {
+                group.setTarget(selectedTarget.get(0).getPos());
+                group.setDataSlot(dataSlot.get(0) - 1);
+            }
         });
         removeFromGroupButton.setOnPressCallback(click -> {
             for (MonitorGroup group : monitorGroups) {
@@ -419,7 +432,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         for (int row = 0; row <= downDist + upDist; row++) {
             imageButtons.add(new ArrayList<>());
             for (int col = 0; col <= leftDist + rightDist; col++) {
-                ResourceTexture texture = getComponentTexture(row, col);
+                IGuiTexture texture = getComponentTexture(row, col);
                 GuiTextureGroup textures = new GuiTextureGroup(texture, new ColorBorderTexture(2, 0xFFFFFF));
                 IMonitorComponent component = getComponent(row, col);
                 if (component == null) continue;
@@ -475,6 +488,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
                                 textures.setTextures(rect, texture);
                             } else textures.setTextures(texture);
+                            dataSlotInput.setVisible(false);
                             return;
                         } else rightClickCallbacks.get(selectedTarget.get(0).getPos()).run();
                     }
@@ -486,6 +500,24 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         rect = new ColorRectTexture(Color.BLUE);
                     }
                     textures.setTextures(rect, texture);
+                    if (component.getDataItems() != null) {
+                        IItemHandler dataItems = component.getDataItems();
+                        MonitorGroup selectedGroup = null;
+                        for (MonitorGroup group : monitorGroups) {
+                            for (IMonitorComponent c : selectedComponents) {
+                                if (group.contains(c.getPos())) {
+                                    if (selectedGroup == null || selectedGroup == group) selectedGroup = group;
+                                    else {
+                                        selectedGroup = null;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (selectedGroup != null) dataSlot.set(0, selectedGroup.getDataSlot() + 1);
+                        dataSlot.set(1, dataItems.getSlots());
+                        dataSlotInput.setVisible(true);
+                    }
                 };
                 if (isInAnyGroup(component)) {
                     monitorGroups.forEach(group -> {
@@ -511,7 +543,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public ResourceTexture getComponentIcon() {
+    public IGuiTexture getComponentIcon() {
         return ResourceTexture.fromSpirit(GTCEu.id("block/multiblock/network_switch/overlay_front_active"));
     }
 

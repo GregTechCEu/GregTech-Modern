@@ -8,12 +8,10 @@ import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException
 import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.createmod.catnip.data.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -56,8 +54,7 @@ public class GTCreateIntegration {
                 PlaceholderUtils.checkArgs(args, 1);
                 if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover)) throw new NotSupportedException();
                 int i = PlaceholderUtils.toInt(args.get(0));
-                if (i <= 0 || i > 100) GTUtil.list(Component
-                        .translatable("gtceu.computer_monitor_cover.error.not_in_range", "line number", 1, 100, i));
+                PlaceholderUtils.checkRange("line number", 1, 100, i);
                 return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
             }
         });

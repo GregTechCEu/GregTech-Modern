@@ -27,15 +27,16 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
             list.add(pos.getY());
             list.add(pos.getZ());
         });
-        if (payload.getTarget() != null) {
-            tag.putInt("targetX", payload.getTarget().getX());
-            tag.putInt("targetY", payload.getTarget().getY());
-            tag.putInt("targetZ", payload.getTarget().getZ());
+        if (payload.getTargetRaw() != null) {
+            tag.putInt("targetX", payload.getTargetRaw().getX());
+            tag.putInt("targetY", payload.getTargetRaw().getY());
+            tag.putInt("targetZ", payload.getTargetRaw().getZ());
             if (payload.getTargetCoverSide() != null) {
                 tag.putString("targetSide", payload.getTargetCoverSide().getName());
             }
         }
         tag.putIntArray("positions", list);
+        tag.putInt("dataSlot", payload.getDataSlot());
         tag.put("items", payload.getItemStackHandler().serializeNBT());
         return tag;
     }
@@ -57,6 +58,8 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
                         compoundTag.getInt("targetZ")));
                 if (compoundTag.contains("targetSide"))
                     payload.setTargetCoverSide(Direction.byName(compoundTag.getString("targetSide")));
+                if (compoundTag.contains("dataSlot"))
+                    payload.setDataSlot(compoundTag.getInt("dataSlot"));
             }
         }
     }

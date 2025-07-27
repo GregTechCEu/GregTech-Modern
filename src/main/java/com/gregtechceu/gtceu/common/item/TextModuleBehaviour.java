@@ -38,7 +38,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
                 formatStringLines.toString(),
                 new PlaceholderContext(
                         machine.getLevel(),
-                        group.getTarget(),
+                        group.getTarget(machine.getLevel()),
                         group.getTargetCoverSide(),
                         group.getItemStackHandler(),
                         group.getTargetCover(machine.getLevel()),

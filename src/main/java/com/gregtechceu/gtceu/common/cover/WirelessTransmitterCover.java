@@ -36,6 +36,7 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     public WirelessTransmitterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
+        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
     }
 
     @Override
@@ -54,8 +55,6 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     @Override
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {
-        while (createDisplayTargetBuffer.size() <= line)
-            createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
         createDisplayTargetBuffer.set(line, component);
     }
 

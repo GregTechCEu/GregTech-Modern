@@ -2,12 +2,16 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
@@ -24,12 +28,14 @@ public class MonitorGroup {
     private final String name;
     @Getter
     private final CustomItemStackHandler itemStackHandler;
-    @Getter
     @Setter
     private @Nullable BlockPos target;
-    @Getter
     @Setter
+    @Getter
     private @Nullable Direction targetCoverSide;
+    @Setter
+    @Getter
+    private int dataSlot = 0;
 
     public MonitorGroup(String name) {
         this(name, new CustomItemStackHandler(1));
@@ -77,10 +83,39 @@ public class MonitorGroup {
     }
 
     public @Nullable CoverBehavior getTargetCover(Level level) {
-        if (target != null && targetCoverSide != null) {
-            ICoverable coverable = GTCapabilityHelper.getCoverable(level, target, targetCoverSide);
+        if (getTarget(level) != null && targetCoverSide != null) {
+            ICoverable coverable = GTCapabilityHelper.getCoverable(level, getTarget(level), targetCoverSide);
             if (coverable != null) return coverable.getCoverAtSide(targetCoverSide);
         }
         return null;
+    }
+
+    public @Nullable BlockPos getTargetRaw() {
+        return target;
+    }
+
+    public @Nullable BlockPos getTarget(Level level) {
+        if (target == null) return null;
+        if (level.getBlockEntity(target) instanceof IMachineBlockEntity machine) {
+            if (machine.getMetaMachine() instanceof IMonitorComponent component) {
+                if (component.getDataItems() != null) {
+                    ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
+                    CompoundTag tag = stack.getTag();
+                    if (tag == null) {
+                        return null;
+                    }
+                    int x = tag.getInt("targetX");
+                    int y = tag.getInt("targetY");
+                    int z = tag.getInt("targetZ");
+                    Direction face = Direction.byName(tag.getString("face"));
+                    if (face == null) {
+                        return null;
+                    }
+                    setTargetCoverSide(face);
+                    return new BlockPos(x, y, z);
+                }
+            }
+        }
+        return target;
     }
 }
