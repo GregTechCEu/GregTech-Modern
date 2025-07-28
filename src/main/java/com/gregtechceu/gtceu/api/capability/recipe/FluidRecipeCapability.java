@@ -443,4 +443,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
          */
         int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick);
     }
+
+    // Fluids should be respected for distinct checks
+    @Override
+    public boolean shouldBypassDistinct() {
+        return false;
+    }
 }

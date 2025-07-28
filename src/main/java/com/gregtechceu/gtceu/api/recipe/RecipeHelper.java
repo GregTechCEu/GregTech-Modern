@@ -347,6 +347,13 @@ public class RecipeHelper {
 
     public static void addToRecipeHandlerMap(RecipeHandlerGroup key, RecipeHandlerList handler,
                                              Map<RecipeHandlerGroup, List<RecipeHandlerList>> map) {
+        // If they should bypass this system, add them to every group regardless.
+        if (handler.doesCapabilityBypassDistinct()) {
+            for (var mapKey : map.keySet()) {
+                map.get(mapKey).add(handler);
+            }
+            return;
+        }
         // Add undyed RHL's to every group that's not distinct, and also the undyed group itself.
         if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
             for (var entry : map.entrySet()) {
