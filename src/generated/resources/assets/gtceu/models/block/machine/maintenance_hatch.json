@@ -8,7 +8,7 @@
     "side"
   ],
   "variants": {
-    "maintenance_taped=false": {
+    "taped=false": {
       "model": {
         "parent": "gtceu:block/machine/part/maintenance_hatch",
         "textures": {
@@ -18,7 +18,7 @@
         }
       }
     },
-    "maintenance_taped=true": {
+    "taped=true": {
       "model": {
         "parent": "gtceu:block/machine/part/maintenance_hatch",
         "textures": {

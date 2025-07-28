@@ -4,15 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -50,8 +49,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.capability.recipe.IO.IN;
-import static com.gregtechceu.gtceu.api.capability.recipe.IO.OUT;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
@@ -117,7 +116,7 @@ public class GTMachines {
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
-                    .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
+                    .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_COMPRESSOR = registerSimpleSteamMachines(
@@ -145,7 +144,7 @@ public class GTMachines {
                         int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
                     })
-                    .modelProperty(SteamMinerMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.UP)
+                    .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.UP)
                     .workableSteamHullModel(isHP, isHP ?
                             GTCEu.id("block/machines/high_pressure_steam_miner") :
                             GTCEu.id("block/machines/steam_miner"))
@@ -432,9 +431,9 @@ public class GTMachines {
                     .rotationState(RotationState.NONE)
                     .langValue("%s World Accelerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
-                    .modelProperty(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY, true)
-                    .modelProperty(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY, true)
-                    .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
+                    .modelProperty(GTMachineModelProperties.IS_RANDOM_TICK_MODE, true)
+                    .modelProperty(GTMachineModelProperties.IS_WORKING_ENABLED, true)
+                    .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                     .model(createWorldAcceleratorModel(GTCEu.id("block/machines/world_accelerator_te"),
                             GTCEu.id("block/machines/world_accelerator")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -461,8 +460,8 @@ public class GTMachines {
                     .rotationState(RotationState.NONE)
                     .langValue("%s Item Collector %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
-                    .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
-                    .modelProperty(IWorkable.WORKING_ENABLED_PROPERTY, false)
+                    .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
+                    .modelProperty(GTMachineModelProperties.IS_WORKING_ENABLED, false)
                     .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"),
                             ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
                     .model(createItemCollectorModel(GTCEu.id("block/machines/item_collector")))
@@ -866,7 +865,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
-            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .modelProperty(GTMachineModelProperties.IS_TAPED, false)
             .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance_hatch")))
             .tier(LV)
             .register();
@@ -877,7 +876,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
-            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .modelProperty(GTMachineModelProperties.IS_TAPED, false)
             .model(createMaintenanceModel(GTCEu.id("block/machine/part/configurable_maintenance_hatch")))
             .tier(HV)
             .register();
@@ -999,7 +998,7 @@ public class GTMachines {
                     .langValue("%s Diode".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .modelProperty(DiodePartMachine.AMP_MODE_PROPERTY, DiodePartMachine.AmpMode.MODE_1A)
+                    .modelProperty(GTMachineModelProperties.DIODE_AMP_MODE, DiodePartMachine.AmpMode.MODE_1A)
                     .model(createDiodeModel())
                     .tooltips(Component.translatable("gtceu.machine.diode.tooltip_general"),
                             Component.translatable("gtceu.machine.diode.tooltip_starts_at"),
@@ -1017,10 +1016,10 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
-                    .modelProperty(IMultiController.IS_FORMED_PROPERTY, false)
-                    .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
-                    .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
-                    .modelProperty(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY, false)
+                    .modelProperty(IS_FORMED, false)
+                    .modelProperty(HAS_ROTOR, false)
+                    .modelProperty(IS_ROTOR_SPINNING, false)
+                    .modelProperty(IS_EMISSIVE_ROTOR, false)
                     .model(createRotorHolderModel())
                     .tooltips(LangHandler.getMultiLang("gtceu.machine.rotor_holder.tooltip"))
                     .tooltips(Component.translatable("gtceu.part_sharing.disabled"))

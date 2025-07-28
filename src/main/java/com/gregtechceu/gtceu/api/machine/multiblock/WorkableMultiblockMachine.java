@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -235,8 +236,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
         for (IMultiPart part : getParts()) {
             MachineRenderState state = part.self().getRenderState();
-            if (state.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
-                part.self().setRenderState(state.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
+            if (state.hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+                part.self().setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
             }
         }
     }

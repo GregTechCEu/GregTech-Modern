@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -57,7 +57,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     // Hard-coded blacklist for blockentities
     private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
 
-    public static final BooleanProperty RANDOM_TICK_PROPERTY = BooleanProperty.create("random_tick_mode");
+    public static final BooleanProperty RANDOM_TICK_PROPERTY = GTMachineModelProperties.IS_RANDOM_TICK_MODE;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -107,12 +107,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
-            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, true));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
-            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, false));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, false));
         }
     }
 
@@ -217,7 +217,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
-        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, isWorkingEnabled));
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, isWorkingEnabled));
         updateSubscription();
     }
 
@@ -249,7 +249,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
-            setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, isRandomTickMode));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_RANDOM_TICK_MODE, isRandomTickMode));
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();
