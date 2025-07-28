@@ -291,6 +291,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         selectedComponents.clear();
         WidgetGroup builder = (WidgetGroup) super.createUIWidget();
         WidgetGroup main = new WidgetGroup();
+        DraggableScrollableWidgetGroup componentSelection = new DraggableScrollableWidgetGroup(0, 10, 200, 150);
+        main.addWidget(componentSelection);
         WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
         WidgetGroup groupConfig = new WidgetGroup(10, 60, 100, 100);
         groupConfig.setVisible(false);
@@ -494,7 +496,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             removeFromGroupButton.setVisible(false);
                             setTargetButton.setVisible(false);
                         }
-                        if (it == null) selectedComponents.add(component);
+                        selectedComponents.add(component);
                         ColorRectTexture rect = new ColorRectTexture(
                                 (selectedTarget.isEmpty() || selectedTarget.get(0) != component) ? Color.RED :
                                         Color.PINK);
@@ -554,7 +556,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     if (click.button == 0) callback.accept(null);
                     else if (click.button == 1) rightClickCallback.run();
                 });
-                main.addWidget(img);
+                componentSelection.addWidget(img);
                 GTUtil.getLast(imageButtons).add(callback);
                 rightClickCallbacks.put(component.getPos(), rightClickCallback);
             }
