@@ -251,12 +251,18 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public BlockPos toRelative(BlockPos pos) {
-        BlockPos tmp = getPos()
-                .relative(RelativeDirection.RIGHT.getActualDirection(getFrontFacing()), rightDist)
-                .relative(RelativeDirection.UP.getActualDirection(getFrontFacing()), upDist);
-        Direction.Axis x = RelativeDirection.LEFT.getActualDirection(getFrontFacing()).getAxis();
-        Direction.Axis y = RelativeDirection.UP.getActualDirection(getFrontFacing()).getAxis();
-        return new BlockPos(Math.abs(tmp.get(x) - pos.get(x)), Math.abs(tmp.get(y) - pos.get(y)), 0);
+        Direction front = getFrontFacing();
+        Direction spin = getUpwardsFacing();
+        boolean flipped = isFlipped();
+
+        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
+        Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
+
+        return getPos().mutable()
+                .move(right, rightDist - pos.get(right.getAxis()))
+                .move(up, upDist - pos.get(up.getAxis()))
+                .move(front.getOpposite(), -pos.get(front.getAxis()))
+                .immutable();
     }
 
     @Nullable
@@ -517,20 +523,18 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         }
                     } else {
                         boolean inAnyGroup = isInAnyGroup(component);
-                        if (selectedComponents.isEmpty() && !inAnyGroup) createGroupButton.setVisible(true);
-                        if (inAnyGroup) createGroupButton.setVisible(false);
-                        if (selectedComponents.isEmpty() && inAnyGroup) {
-                            removeFromGroupButton.setVisible(true);
-                            setTargetButton.setVisible(true);
+                        createGroupButton.setVisible(selectedComponents.isEmpty() && !inAnyGroup);
+                        removeFromGroupButton.setVisible(selectedComponents.isEmpty() && inAnyGroup);
+                        setTargetButton.setVisible(selectedComponents.isEmpty() && inAnyGroup);
+
+                        if (it == null) {
+                            selectedComponents.add(component);
                         }
-                        if (!inAnyGroup) {
-                            removeFromGroupButton.setVisible(false);
-                            setTargetButton.setVisible(false);
-                        }
-                        selectedComponents.add(component);
-                        ColorRectTexture rect = new ColorRectTexture(
-                                (selectedTarget.isEmpty() || selectedTarget.get(0) != component) ? Color.RED :
-                                        Color.PINK);
+                        int color = selectedTarget.isEmpty() || selectedTarget.get(0) != component ?
+                                0xFF0000 : 0xFFAFAF;
+
+                        if (it == null) selectedComponents.add(component);
+                        ColorRectTexture rect = new ColorRectTexture(color);
                         textures.setTextures(rect, texture);
                     }
                     if (isInAnyGroup(component)) {
