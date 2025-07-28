@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -45,7 +46,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
@@ -56,6 +56,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -67,10 +68,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    private static final Block[] VALID_BLOCKS = new Block[] {
-            GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get(),
-    };
-
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
             .setExactLimit(1)
             .or(Predicates.abilities(PartAbility.DATA_ACCESS).setMaxGlobalLimited(2))
@@ -79,7 +76,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_8))
             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
             .or(Predicates.machines(GTMachines.MONITOR))
-            .or(Predicates.blocks(VALID_BLOCKS));
+            .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
 
     @Persisted
     @DescSynced
@@ -169,12 +166,15 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
-        if (!getPatternFindingState().update(pos, BLOCK_PREDICATE)) {
+
+        MultiblockState state = getPatternFindingState();
+        if (!state.update(pos, BLOCK_PREDICATE)) {
             return false;
         }
-        if (Predicates.abilities(PartAbility.INPUT_ENERGY, PartAbility.DATA_ACCESS).test(getPatternFindingState()))
-            return true; // workaround because it doesn't work for blocks that have amount limits for some reason
-        return BLOCK_PREDICATE.test(getPatternFindingState());
+        state.io = IO.BOTH;
+
+        return Stream.concat(state.predicate.common.stream(), state.predicate.limited.stream())
+                .anyMatch(predicate -> predicate.test(state));
     }
 
     public void updateStructureDimensions() {
@@ -217,13 +217,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist, Direction left,
                                            Direction right) {
-        BlockPos.MutableBlockPos tmp = pos.mutable();
-        tmp.move(left, leftDist);
+        BlockPos.MutableBlockPos mutable = pos.mutable();
+        mutable.move(left, leftDist);
         for (int i = 0; i < leftDist + rightDist; i++) {
-            if (!isValidMonitorBlock(level, tmp)) return false;
-            tmp.move(right);
+            if (!isValidMonitorBlock(level, mutable)) return false;
+            mutable.move(right);
         }
-        return isValidMonitorBlock(level, tmp);
+        return isValidMonitorBlock(level, mutable);
     }
 
     @Override
@@ -316,12 +316,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         updateStructureDimensions();
         selectedComponents.clear();
         WidgetGroup builder = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+
         WidgetGroup main = new WidgetGroup();
         DraggableScrollableWidgetGroup componentSelection = new DraggableScrollableWidgetGroup(0, 10, 200, 110);
         main.addWidget(componentSelection);
         WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
         WidgetGroup groupConfig = new WidgetGroup(10, 10, 100, 100);
         groupConfig.setVisible(false);
+
         ButtonWidget infoWidget = new ButtonWidget(200, 10, 20, 20, null);
         infoWidget.setButtonTexture(GuiTextures.INFO_ICON);
         infoWidget.setHoverTooltips(
@@ -329,6 +331,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         builder.addWidget(infoWidget);
         List<MonitorGroup> configGroup = new ArrayList<>();
         configGroup.add(null);
+
         Consumer<MonitorGroup> openGroupConfig = (group) -> {
             configGroup.set(0, group);
             if (group == null) {

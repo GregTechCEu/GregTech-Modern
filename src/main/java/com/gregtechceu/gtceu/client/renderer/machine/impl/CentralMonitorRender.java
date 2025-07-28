@@ -38,23 +38,26 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
     public void render(CentralMonitorMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         if (!machine.isFormed()) return;
+
         poseStack.pushPose();
         RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, machine.getFrontFacing());
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
         poseStack.translate(-machine.getRightDist() - .5f, -machine.getUpDist() - .5f, .01f);
+
         if (machine.getRecipeLogic().isActive()) {
             for (MonitorGroup group : machine.getMonitorGroups()) {
                 ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
-                if (itemStack.getItem() instanceof ComponentItem item) {
-                    for (IItemComponent component : item.getComponents()) {
-                        if (component instanceof IMonitorModuleItem module) {
-                            poseStack.pushPose();
-                            module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group).render(
-                                    machine, group,
-                                    partialTick, poseStack, buffer, packedLight, packedOverlay);
-                            poseStack.popPose();
-                        }
+                if (!(itemStack.getItem() instanceof ComponentItem item)) {
+                    continue;
+                }
+                for (IItemComponent component : item.getComponents()) {
+                    if (!(component instanceof IMonitorModuleItem module)) {
+                        continue;
                     }
+                    poseStack.pushPose();
+                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group)
+                            .render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
+                    poseStack.popPose();
                 }
             }
         }
@@ -66,10 +69,10 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 if (component.isMonitor()) {
                     renderRect(
                             poseStack, buffer, packedLight, packedOverlay, 0,
-                            machine.isMonitor(i, j - 1) ? j : j + offset,
-                            machine.isMonitor(i - 1, j) ? i : i + offset,
-                            machine.isMonitor(i, j + 1) ? j + 1 : j + 1 - offset,
-                            machine.isMonitor(i + 1, j) ? i + 1 : i + 1 - offset,
+                            machine.isMonitor(i, j - 1) ? j : j + 1 / 16f,
+                            machine.isMonitor(i - 1, j) ? i : i + 1 / 16f,
+                            machine.isMonitor(i, j + 1) ? j + 1 : j + 1 - 1 / 16f,
+                            machine.isMonitor(i + 1, j) ? i + 1 : i + 1 - 1 / 16f,
                             -.005f);
                 }
             }

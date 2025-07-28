@@ -1127,25 +1127,22 @@ public class GTMultiMachines {
             null,
             (builder, overlay) -> builder.workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));
+
     public static final MultiblockMachineDefinition CENTRAL_MONITOR = REGISTRATE
             .multiblock("central_monitor", CentralMonitorMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(DUMMY_RECIPES)
-            .appearanceBlock(CASING_STAINLESS_CLEAN)
-            .pattern((def) -> FactoryBlockPattern
-                    .start(RelativeDirection.LEFT, RelativeDirection.FRONT, RelativeDirection.UP)
-                    .aisle("BBBB")
-                    .aisle("BBBC")
-                    .aisle("BBBB")
+            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("BCB", "BBB", "BBB", "BBB")
+                    .where('C', Predicates.controller(Predicates.blocks(definition.get())))
                     .where('B', CentralMonitorMachine.BLOCK_PREDICATE)
-                    .where('C', Predicates.controller(Predicates.blocks(def.get())))
                     .build())
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
-            .model(
-                    createWorkableCasingMachineModel(
-                            GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
-                            GTCEu.id("block/multiblock/network_switch"))
-                            .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
+            .model(createWorkableCasingMachineModel(
+                    GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+                    GTCEu.id("block/multiblock/central_monitor"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
             .hasBER(true)
             .register();
 

@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 public class ImageModuleBehaviour implements IMonitorModuleItem {
@@ -27,16 +28,13 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
-        TextFieldWidget textField = new TextFieldWidget(
-                0, 0,
-                100, 10,
-                () -> stack.getOrCreateTag().getString("url"), null);
-        textField.setTextSupplier(null);
+        TextFieldWidget textField = new TextFieldWidget(0, 0, 100, 10, null, null);
+        textField.setCurrentString(stack.getOrCreateTag().getString("url"));
+
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
 
-            CompoundTag tag = stack.getOrCreateTag();
-            tag.putString("url", textField.getCurrentString());
+            stack.getOrCreateTag().putString("url", textField.getCurrentString());
             GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);

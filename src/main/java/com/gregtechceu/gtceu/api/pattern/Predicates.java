@@ -68,7 +68,9 @@ public class Predicates {
 
     public static TraceabilityPredicate machines(MachineDefinition... definitions) {
         IMachineBlock[] machineBlocks = new IMachineBlock[definitions.length];
-        for (int i = 0; i < machineBlocks.length; i++) machineBlocks[i] = definitions[i].get();
+        for (int i = 0; i < machineBlocks.length; i++) {
+            machineBlocks[i] = definitions[i].get();
+        }
         return blocks(machineBlocks);
     }
 

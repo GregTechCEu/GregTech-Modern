@@ -2508,13 +2508,13 @@ public class GTItems {
             .lang("Treated Wood Boat with Chest")
             .register();
 
-    public static ItemEntry<ComponentItem> TEXT_MODULE = REGISTRATE
-            .item("text_module", ComponentItem::create)
-            .onRegister(attach(new TextModuleBehaviour())).register();
+    public static ItemEntry<ComponentItem> TEXT_MODULE = REGISTRATE.item("text_module", ComponentItem::create)
+            .onRegister(attach(new TextModuleBehaviour()))
+            .register();
 
-    public static ItemEntry<ComponentItem> IMAGE_MODULE = REGISTRATE
-            .item("image_module", ComponentItem::create)
-            .onRegister(attach(new ImageModuleBehaviour())).register();
+    public static ItemEntry<ComponentItem> IMAGE_MODULE = REGISTRATE.item("image_module", ComponentItem::create)
+            .onRegister(attach(new ImageModuleBehaviour()))
+            .register();
 
     public static void init() {
         GTMaterialItems.generateMaterialItems();
