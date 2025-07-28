@@ -22,6 +22,16 @@ import static com.gregtechceu.gtceu.common.data.machines.GTResearchMachines.*;
 public class ComputerRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        ASSEMBLER_RECIPES.recipeBuilder("basic_data_access_hatch")
+                .inputItems(ITEM_IMPORT_BUS[HV])
+                .inputItems(TOOL_DATA_STICK, 4)
+                .inputItems(CustomTags.HV_CIRCUITS, 4)
+                .outputItems(BASIC_DATA_ACCESS_HATCH)
+                .inputFluids(Polyethylene, L * 2)
+                .cleanroom(CleanroomType.CLEANROOM)
+                .duration(200).EUt(VA[HV])
+                .addMaterialInfo(true).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("data_access_hatch")
                 .inputItems(ITEM_IMPORT_BUS[EV])
                 .inputItems(TOOL_DATA_STICK, 4)

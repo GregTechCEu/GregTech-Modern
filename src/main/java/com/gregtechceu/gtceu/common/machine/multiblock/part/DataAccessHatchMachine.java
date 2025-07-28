@@ -112,7 +112,12 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     protected int getInventorySize() {
-        return getTier() == GTValues.LuV ? 16 : 9;
+        return switch (getTier()) {
+            case GTValues.LuV -> 16;
+            case GTValues.EV -> 9;
+            case GTValues.HV -> 4;
+            default -> 1;
+        };
     }
 
     @Override

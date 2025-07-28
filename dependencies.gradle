@@ -74,7 +74,7 @@ dependencies {
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.ae2)
-    modLocalRuntime(forge.spark)
+    //modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
