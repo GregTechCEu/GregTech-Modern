@@ -105,19 +105,14 @@ public class RecipeRunner {
     }
 
     private ActionResult handleContents() {
-        var result = handleContentsInternal(io);
-        return result;
-    }
-
-    private ActionResult handleContentsInternal(IO capIO) {
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
-        if (!capabilityProxies.containsKey(capIO)) {
+        if (!capabilityProxies.containsKey(io)) {
             return ActionResult.FAIL_NO_CAPABILITIES;
         }
 
-        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
+        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && capIO.support(IO.OUT)) {
+        if (!isTick && io.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
 
@@ -203,7 +198,7 @@ public class RecipeRunner {
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return ActionResult.fail(null, entry.getKey(), capIO);
+                return ActionResult.fail(null, entry.getKey(), io);
             }
         }
 
