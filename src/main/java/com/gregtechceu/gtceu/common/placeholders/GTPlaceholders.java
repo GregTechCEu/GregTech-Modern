@@ -390,7 +390,9 @@ public class GTPlaceholders {
                         }
                     }
                     if (capacity == -1) throw new MissingItemException("any data item", slot);
+                    PlaceholderUtils.checkRange("index", 0, capacity - 1, PlaceholderUtils.toInt(args.get(2)));
                     ListTag data = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
+                    while (data.size() <= PlaceholderUtils.toInt(args.get(2))) data.add(StringTag.valueOf(""));
                     int p = stack.getOrCreateTag().getInt("computer_monitor_cover_p");
                     if (GTStringUtils.equals(args.get(2), "")) args.set(2, MultiLineComponent.literal(p));
                     if (GTStringUtils.equals(args.get(0), "get"))

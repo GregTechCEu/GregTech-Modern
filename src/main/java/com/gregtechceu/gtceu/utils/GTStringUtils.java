@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
@@ -197,5 +199,27 @@ public class GTStringUtils {
         out.add(s);
         replacements.forEach(replacement -> out.set(0, out.get(0).replaceFirst(regex, replacement)));
         return out.get(0);
+    }
+
+    public static Component toComponent(ListTag arr) {
+        MutableComponent component = Component.literal("[");
+        if (arr.size() <= 5) {
+            for (int i = 0; i < arr.size(); i++) {
+                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                if (i != arr.size() - 1) component.append(", ");
+            }
+        } else {
+            for (int i = 0; i < 2; i++) {
+                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                component.append(", ");
+            }
+            component.append("..., ");
+            for (int i = arr.size() - 2; i < arr.size(); i++) {
+                component.append(Component.literal('"' + arr.getString(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
+                if (i != arr.size() - 1) component.append(", ");
+            }
+        }
+        component.append("]");
+        return component;
     }
 }

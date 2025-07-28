@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.ChatFormatting;
@@ -48,6 +49,23 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
+        if (stack.getOrCreateTag().contains("targetX")) {
+            tooltipComponents.add(Component.translatable(
+                    "gtceu.tooltip.wireless_transmitter_bind",
+                    Component.literal("" + stack.getOrCreateTag().getInt("targetX")).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + stack.getOrCreateTag().getInt("targetY")).withStyle(ChatFormatting.GOLD),
+                    Component.literal("" + stack.getOrCreateTag().getInt("targetZ")).withStyle(ChatFormatting.GOLD),
+                    Component.literal(stack.getOrCreateTag().getString("face")).withStyle(ChatFormatting.DARK_PURPLE)));
+        }
+        if (stack.getOrCreateTag().contains("computer_monitor_cover_config")) {
+            tooltipComponents.add(Component.translatable("gtceu.tooltip.computer_monitor_config"));
+        }
+        if (stack.getOrCreateTag().contains("computer_monitor_cover_data")) {
+            tooltipComponents.add(
+                    Component.translatable("gtceu.tooltip.computer_monitor_data",
+                            GTStringUtils.toComponent(
+                                    stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING))));
+        }
         ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) {
             if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
