@@ -350,13 +350,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         };
         builder.addWidget(groupConfig);
         DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 80, 80);
-        ArrayList<ArrayList<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
+
+        List<List<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
         Map<BlockPos, Runnable> rightClickCallbacks = new HashMap<>();
-        List<Integer> dataSlot = new ArrayList<>(); // list to be able to modify it in lambdas
-        dataSlot.add(1); // the slot (index starts from 1)
-        dataSlot.add(9); // amount of slots
-        IntInputWidget dataSlotInput = new IntInputWidget(120, 20, 60, 20, () -> dataSlot.get(0),
-                n -> dataSlot.set(0, (int) GTMath.clamp(n, 1, dataSlot.get(1))));
+        int[] dataSlot = new int[2]; // list to be able to modify it in lambdas
+        dataSlot[0] = 1; // the slot (index starts from 1)
+        dataSlot[1] = 9; // amount of slots
+        IntInputWidget dataSlotInput = new IntInputWidget(120, 20, 60, 20, () -> dataSlot[0],
+                n -> dataSlot[0] = Mth.clamp(n, 1, dataSlot[1]));
         dataSlotInput.setVisible(false);
         builder.addWidget(dataSlotInput);
         Consumer<MonitorGroup> addGroupToList = group -> {
@@ -434,7 +435,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             if (selectedTarget.isEmpty()) group.setTarget(null);
             else {
                 group.setTarget(selectedTarget.get(0).getPos());
-                group.setDataSlot(dataSlot.get(0) - 1);
+                group.setDataSlot(dataSlot[0] - 1);
             }
         });
         removeFromGroupButton.setOnPressCallback(click -> {
@@ -550,8 +551,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                                 }
                             }
                         }
-                        if (selectedGroup != null) dataSlot.set(0, selectedGroup.getDataSlot() + 1);
-                        dataSlot.set(1, dataItems.getSlots());
+                        if (selectedGroup != null) {
+                            dataSlot[0] = selectedGroup.getDataSlot() + 1;
+                        }
+                        dataSlot[1] = dataItems.getSlots();
                         dataSlotInput.setVisible(true);
                     }
                 };

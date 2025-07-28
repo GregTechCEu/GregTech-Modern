@@ -14,6 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -58,11 +60,11 @@ public class MonitorGroup {
     }
 
     public List<BlockPos> getRow(int row, UnaryOperator<BlockPos> toRelative) throws IndexOutOfBoundsException {
-        Set<Integer> yLevelsSet = new HashSet<>();
+        IntSet yLevelsSet = new IntOpenHashSet();
         for (BlockPos pos : monitorPositions) {
             yLevelsSet.add(toRelative.apply(pos).getY());
         }
-        int y = yLevelsSet.stream().sorted().toList().get(row);
+        int y = yLevelsSet.intStream().sorted().toArray()[row];
         List<BlockPos> rowPositions = new ArrayList<>();
         for (BlockPos pos : monitorPositions) {
             if (toRelative.apply(pos).getY() == y) {
