@@ -2,8 +2,9 @@ package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,22 +15,15 @@ import java.util.function.Consumer;
 
 public class ImageCache {
 
-    public static final long REFRESH_MILLIS = 10000;
+    public static final long REFRESH_SECS = 120;
     private static final byte[] NULL_MARKER = new byte[0];
 
-    private static final Cache<String, byte[]> imageDataCache = CacheBuilder.newBuilder()
-            .refreshAfterWrite(REFRESH_MILLIS, TimeUnit.MILLISECONDS)
-            .concurrencyLevel(3)
-            .build();
     private static boolean downloading = false;
 
-    public static void queryServerImage(String url, Consumer<byte[]> callback) {
-        try {
-            if (downloading) {
-                return;
-            }
-
-            byte[] image = imageDataCache.get(url, () -> {
+    private static final LoadingCache<String, byte[]> CACHE = CacheBuilder.newBuilder()
+            .refreshAfterWrite(REFRESH_SECS, TimeUnit.SECONDS)
+            .concurrencyLevel(3)
+            .build(CacheLoader.from(url -> {
                 if (downloading) return NULL_MARKER;
                 downloading = true;
 
@@ -39,16 +33,21 @@ public class ImageCache {
                     GTCEu.LOGGER.error("Could not load image {}", url, e);
                     return NULL_MARKER;
                 } finally {
+                    GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
                     downloading = false;
                 }
-            });
-            if (image == NULL_MARKER) {
-                imageDataCache.invalidate(url);
-                return;
-            }
+            }));
 
-            GTCEu.LOGGER.info("Downloaded image {}! Executing callback", url);
-            callback.accept(image);
+    public static void queryServerImage(String url, Consumer<byte[]> callback) {
+        try {
+            if (downloading) return;
+
+            byte[] image = CACHE.get(url);
+            if (image != NULL_MARKER) {
+                callback.accept(image);
+            } else {
+                CACHE.invalidate(url);
+            }
         } catch (ExecutionException e) {
             Throwable t = e;
             if (t.getCause() != null) {

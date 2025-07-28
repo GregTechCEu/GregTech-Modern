@@ -9,13 +9,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -33,12 +34,20 @@ public class ClientImageCache {
 
     private static final Map<String, byte[][]> imageParts = new HashMap<>();
 
+    private static boolean downloading = false;
     // TODO make some kind of loading icon for this
     private static final AbstractTexture LOADING_TEXTURE_MARKER = new SimpleTexture(
             GTCEu.id("textures/block/void.png"));
-    private static final Cache<String, AbstractTexture> CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, AbstractTexture> CACHE = CacheBuilder.newBuilder()
             .refreshAfterWrite(ImageCache.REFRESH_MILLIS, TimeUnit.MILLISECONDS)
-            .build();
+            .build(CacheLoader.from(url -> {
+                if (!downloading) {
+                    downloading = true;
+                    GTCEu.LOGGER.debug("Requesting image {}", url);
+                    GTNetwork.sendToServer(new CPacketImageRequest(url));
+                }
+                return LOADING_TEXTURE_MARKER;
+            }));
 
     private static @NotNull ResourceLocation getUrlTextureId(String url) {
         return GTCEu.id("textures/central_monitor/image_" + url.hashCode());
@@ -48,11 +57,7 @@ public class ClientImageCache {
         AbstractTexture texture = null;
 
         try {
-            texture = CACHE.get(url, () -> {
-                GTCEu.LOGGER.debug("Requesting image {}", url);
-                GTNetwork.sendToServer(new CPacketImageRequest(url));
-                return LOADING_TEXTURE_MARKER;
-            });
+            texture = CACHE.get(url);
         } catch (ExecutionException e) {
             Throwable t = e;
             if (t.getCause() != null) {
@@ -81,19 +86,18 @@ public class ClientImageCache {
                 currentIndex += part.length;
             }
 
-            saveTexture(url, NativeImage.read(imageBytes));
+            saveTexture(url, imageBytes);
             imageParts.remove(url);
+            downloading = false;
         }
     }
 
-    private static void saveTexture(String url, NativeImage rawImage) {
-        TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+    private static void saveTexture(String url, byte[] imageBytes) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocateDirect(imageBytes.length);
+        buffer.put(imageBytes).flip();
+        DynamicTexture texture = new DynamicTexture(NativeImage.read(buffer));
 
-        ResourceLocation id = getUrlTextureId(url);
-        textureManager.release(id);
-
-        DynamicTexture texture = new DynamicTexture(rawImage);
-        textureManager.register(id, texture);
+        Minecraft.getInstance().getTextureManager().register(getUrlTextureId(url), texture);
 
         CACHE.put(url, texture);
     }

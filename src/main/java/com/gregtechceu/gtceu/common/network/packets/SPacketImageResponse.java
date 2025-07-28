@@ -2,15 +2,18 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.client.util.ClientImageCache;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 
 public class SPacketImageResponse implements GTNetwork.INetPacket {
 
-    private static final int BYTES_PER_PACKET = 120000;
+    private static final int MAX_BYTES_PER_PACKET = 120000;
 
     private final byte[] imagePart;
     private final String url;
@@ -28,7 +31,7 @@ public class SPacketImageResponse implements GTNetwork.INetPacket {
         this.index = buf.readInt();
         this.totalSize = buf.readInt();
         this.url = buf.readUtf();
-        this.imagePart = buf.readByteArray(BYTES_PER_PACKET);
+        this.imagePart = buf.readByteArray();
     }
 
     @Override
@@ -49,7 +52,24 @@ public class SPacketImageResponse implements GTNetwork.INetPacket {
         } catch (IOException ignored) {}
     }
 
-    public static void sendImage(String url, byte[] imagePart, NetworkEvent.Context context) throws IOException {
-        GTNetwork.reply(context, new SPacketImageResponse(url, imagePart, 0, 1));
+    public static void sendImage(String url, byte[] imageBytes, NetworkEvent.Context context) throws IOException {
+        if (imageBytes.length < MAX_BYTES_PER_PACKET) {
+            GTNetwork.reply(context, new SPacketImageResponse(url, imageBytes, 0, 1));
+        } else {
+            int packetCount = GTMath.ceilDiv(imageBytes.length, MAX_BYTES_PER_PACKET);
+            int arrayIndex = 0;
+
+            for (int i = 0; i < packetCount; i++) {
+                int remaining = imageBytes.length - arrayIndex;
+                if (remaining <= 0) {
+                    break;
+                }
+
+                byte[] part = ArrayUtils.subarray(imageBytes, arrayIndex, arrayIndex + MAX_BYTES_PER_PACKET);
+                GTNetwork.reply(context, new SPacketImageResponse(url, part, i, packetCount));
+
+                arrayIndex += MAX_BYTES_PER_PACKET;
+            }
+        }
     }
 }
