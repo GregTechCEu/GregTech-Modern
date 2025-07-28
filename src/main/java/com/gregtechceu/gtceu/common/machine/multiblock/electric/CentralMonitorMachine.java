@@ -252,7 +252,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return new BlockPos(Math.abs(tmp.get(x) - pos.get(x)), Math.abs(tmp.get(y) - pos.get(y)), 0);
     }
 
-    private @Nullable IMonitorComponent getComponent(int row, int col) {
+    @Nullable
+    public IMonitorComponent getComponent(int row, int col) {
         col = leftDist + rightDist - col;
         BlockPos pos = getPos()
                 .relative(RelativeDirection.LEFT.getActualDirection(getFrontFacing()), leftDist - col)
@@ -267,6 +268,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 return component;
         }
         return null;
+    }
+
+    public boolean isMonitor(int row, int col) {
+        IMonitorComponent component = this.getComponent(row, col);
+        if (component == null) return false;
+        return component.isMonitor();
     }
 
     private IGuiTexture getComponentTexture(int row, int col) {
