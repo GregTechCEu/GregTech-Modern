@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.create;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.placeholders.*;
 import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
@@ -38,7 +37,7 @@ public class GTCreateIntegration {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
 
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("redstone", 1) {
+        PlaceholderHandler.addPlaceholder(new Placeholder("redstone", 1) {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -46,7 +45,7 @@ public class GTCreateIntegration {
                 return processRedstonePlaceholder(ctx, args);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("displayTarget") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("displayTarget") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

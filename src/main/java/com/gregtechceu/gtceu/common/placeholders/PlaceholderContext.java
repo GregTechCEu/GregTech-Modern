@@ -9,8 +9,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import org.jetbrains.annotations.Nullable;
 
-public record PlaceholderContext(
-                                 Level level,
+public record PlaceholderContext(Level level,
                                  BlockPos pos,
                                  Direction side,
                                  @Nullable ItemStackHandler itemStackHandler,

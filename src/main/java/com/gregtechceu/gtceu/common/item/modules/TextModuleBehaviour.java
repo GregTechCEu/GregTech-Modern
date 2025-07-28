@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
@@ -11,6 +10,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
 import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
+import com.gregtechceu.gtceu.common.placeholders.PlaceholderHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -34,7 +34,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         for (Tag value : tag) {
             formatStringLines.append(value.getAsString()).append('\n');
         }
-        MultiLineComponent text = GTCEu.PLACEHOLDER_HANDLER.processPlaceholders(
+        MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 formatStringLines.toString(),
                 new PlaceholderContext(
                         machine.getLevel(),

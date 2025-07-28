@@ -8,12 +8,13 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
-import com.gregtechceu.gtceu.common.placeholders.IPlaceholderInfoProviderCover;
-import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
-import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -90,7 +91,7 @@ public class ComputerMonitorCover extends CoverBehavior
         String s = formatStringLines.stream().reduce((a, b) -> a + "\n" + b).orElse("");
         List<String> tmp = new ArrayList<>(formatStringArgs);
         tmp = tmp.stream().map(str -> '{' + str + '}').toList();
-        return GTCEu.PLACEHOLDER_HANDLER.processPlaceholders(
+        return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
                 new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemStackHandler,
                         this, new MultiLineComponent(text)));
@@ -176,7 +177,7 @@ public class ComputerMonitorCover extends CoverBehavior
                     group.clearAllWidgets();
                     group.addWidget(mainPage);
                 });
-        mainPage.addWidget(GTCEu.PLACEHOLDER_HANDLER.getPlaceholderHandlerUI(""));
+        mainPage.addWidget(PlaceholderHandler.getPlaceholderHandlerUI(""));
         // TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
         // searchBox.setHoverTooltips("Search");
         // mainPage.addWidget(searchBox);

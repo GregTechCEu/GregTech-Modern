@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.placeholders;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -72,7 +71,7 @@ public class GTPlaceholders {
     }
 
     public static void initPlaceholders() {
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("energy") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -82,7 +81,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("energyCapacity") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("energyCapacity") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -92,7 +91,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("calc") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("calc") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
@@ -101,7 +100,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(GTStringUtils.calc(stringArgs));
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("itemCount") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("itemCount") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -125,7 +124,7 @@ public class GTPlaceholders {
                 throw new InvalidArgsException();
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("fluidCount") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("fluidCount") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -139,7 +138,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.empty(); // unreachable
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("if") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("if") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -155,7 +154,7 @@ public class GTPlaceholders {
                 }
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("color") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("color") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -166,7 +165,7 @@ public class GTPlaceholders {
                 return new MultiLineComponent(args.get(1).stream().map(c -> c.withStyle(color)).toList());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("underline") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("underline") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -176,7 +175,7 @@ public class GTPlaceholders {
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("strike") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("strike") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -186,7 +185,7 @@ public class GTPlaceholders {
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("obf") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("obf") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -196,7 +195,7 @@ public class GTPlaceholders {
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("random") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("random") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -206,7 +205,7 @@ public class GTPlaceholders {
                         PlaceholderUtils.toInt(args.get(0)), PlaceholderUtils.toInt(args.get(1))));
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("repeat") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("repeat") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -218,7 +217,7 @@ public class GTPlaceholders {
                 return out;
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("block") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("block") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -227,7 +226,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal("█");
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("tick") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("tick") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -238,7 +237,7 @@ public class GTPlaceholders {
                 throw new NotSupportedException();
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("select") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("select") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -249,7 +248,7 @@ public class GTPlaceholders {
                 return args.get(i + 1);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("redstone") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -271,7 +270,7 @@ public class GTPlaceholders {
                 throw new InvalidArgsException();
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("previousText") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("previousText") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -283,7 +282,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.of(ctx.previousText().get(i - 1));
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("progress") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("progress") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -295,7 +294,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(workable.getProgress());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("maxProgress") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("maxProgress") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -307,7 +306,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(workable.getMaxProgress());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("maintenance") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("maintenance") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -319,7 +318,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(maintenance.hasMaintenanceProblems() ? 1 : 0);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("active") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("active") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -331,7 +330,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(workable.isActive() ? 1 : 0);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("voltage") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("voltage") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -343,7 +342,7 @@ public class GTPlaceholders {
                 throw new NotSupportedException();
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("amperage") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("amperage") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -355,7 +354,7 @@ public class GTPlaceholders {
                 throw new NotSupportedException();
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("count") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("count") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -369,7 +368,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(cnt);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("data") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("data") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -419,7 +418,7 @@ public class GTPlaceholders {
                 }
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("combine") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("combine") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
@@ -431,7 +430,7 @@ public class GTPlaceholders {
                 return out;
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("nbt") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("nbt") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -444,7 +443,7 @@ public class GTPlaceholders {
                         .literal(ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag().toString());
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("toChars") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("toChars") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -456,7 +455,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(out.substring(0, out.length() - 2));
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("toAscii") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("toAscii") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -467,7 +466,7 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal((int) arg.toCharArray()[0]);
             }
         });
-        GTCEu.PLACEHOLDER_HANDLER.addPlaceholder(new Placeholder("fromAscii") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("fromAscii") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

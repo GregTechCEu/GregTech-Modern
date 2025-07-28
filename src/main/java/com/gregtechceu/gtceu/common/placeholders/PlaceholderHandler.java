@@ -35,9 +35,9 @@ public class PlaceholderHandler {
     private static final char NEWLINE = '\n';
     private static final char ESCAPED_NEWLINE = 'n';
 
-    private final Map<String, Placeholder> placeholders = new HashMap<>();
+    private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
-    public void addPlaceholder(Placeholder placeholder) {
+    public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
             if (placeholders.get(placeholder.getName()).getPriority() <= placeholder.getPriority()) {
                 placeholders.put(placeholder.getName(), placeholder);
@@ -45,19 +45,19 @@ public class PlaceholderHandler {
         } else placeholders.put(placeholder.getName(), placeholder);
     }
 
-    public boolean placeholderExists(MultiLineComponent placeholder) {
+    public static boolean placeholderExists(MultiLineComponent placeholder) {
         return placeholders.containsKey(placeholder.toString());
     }
 
-    public MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                 PlaceholderContext context) throws PlaceholderException {
+    public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
+                                                        PlaceholderContext context) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         return placeholders.get(placeholder.get(0).toString()).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
-    public MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
+    public static MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
@@ -125,7 +125,7 @@ public class PlaceholderHandler {
         return out.withStyle(ChatFormatting.DARK_RED);
     }
 
-    public Set<String> getAllPlaceholderNames() {
+    public static Set<String> getAllPlaceholderNames() {
         return placeholders.keySet();
     }
 
