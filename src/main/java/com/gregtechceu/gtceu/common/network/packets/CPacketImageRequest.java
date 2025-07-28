@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.misc.ImageCache;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,10 +27,10 @@ public class CPacketImageRequest implements GTNetwork.INetPacket {
 
     @Override
     public void execute(NetworkEvent.Context context) {
-        GTCEu.IMAGE_CACHE.getImage(url, image -> {
+        ImageCache.queryServerImage(url, image -> {
             try {
-                SPacketImageResponse.sendImage(url, image, context.getSender());
+                SPacketImageResponse.sendImage(url, image, context);
             } catch (IOException ignored) {}
-        }, false);
+        });
     }
 }

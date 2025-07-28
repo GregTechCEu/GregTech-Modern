@@ -8,9 +8,13 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.Optional;
 
 public class SCPacketMonitorGroupNBTChange implements GTNetwork.INetPacket {
 
@@ -26,25 +30,22 @@ public class SCPacketMonitorGroupNBTChange implements GTNetwork.INetPacket {
 
     public SCPacketMonitorGroupNBTChange(FriendlyByteBuf buf) {
         this.stack = buf.readItem();
-        this.monitorGroupId = buf.readInt();
+        this.monitorGroupId = buf.readVarInt();
         this.pos = buf.readBlockPos();
     }
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeItemStack(stack, false);
-        buffer.writeInt(monitorGroupId);
+        buffer.writeVarInt(monitorGroupId);
         buffer.writeBlockPos(pos);
     }
 
     @Override
     public void execute(NetworkEvent.Context context) {
-        Level level;
-        if (context.getSender() == null) {
-            level = ClientCallWrapper.getClientLevel();
-        } else {
-            level = context.getSender().level();
-        }
+        Level level = LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide())
+                .or(() -> Optional.ofNullable(context.getSender()).map(ServerPlayer::level))
+                .orElse(null);
         if (level == null) return;
 
         MetaMachine machine = MetaMachine.getMachine(level, pos);
