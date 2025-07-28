@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -40,13 +40,24 @@ public class SCPacketMonitorGroupNBTChange implements GTNetwork.INetPacket {
     @Override
     public void execute(NetworkEvent.Context context) {
         Level level;
-        if (context.getSender() == null) level = Minecraft.getInstance().level;
-        else level = context.getSender().level();
+        if (context.getSender() == null) {
+            level = ClientCallWrapper.getClientLevel();
+        } else {
+            level = context.getSender().level();
+        }
         if (level == null) return;
-        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machine) {
-            if (machine.getMetaMachine() instanceof CentralMonitorMachine centralMonitor) {
-                centralMonitor.getMonitorGroups().get(monitorGroupId).getItemStackHandler().setStackInSlot(0, stack);
-            }
+
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        if (machine instanceof CentralMonitorMachine centralMonitor) {
+            centralMonitor.getMonitorGroups().get(monitorGroupId)
+                    .getItemStackHandler().setStackInSlot(0, stack);
+        }
+    }
+
+    private static class ClientCallWrapper {
+
+        private static Level getClientLevel() {
+            return Minecraft.getInstance().level;
         }
     }
 }
