@@ -487,7 +487,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             removeFromGroupButton.setVisible(false);
                             setTargetButton.setVisible(false);
                         }
-                        selectedComponents.add(component);
+                        if (it == null) selectedComponents.add(component);
                         ColorRectTexture rect = new ColorRectTexture(
                                 (selectedTarget.isEmpty() || selectedTarget.get(0) != component) ? Color.RED :
                                         Color.PINK);
