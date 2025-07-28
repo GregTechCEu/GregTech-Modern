@@ -37,20 +37,23 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
     @Override
     public void render(CentralMonitorMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
+        if (!machine.isFormed()) return;
         poseStack.pushPose();
         RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, machine.getFrontFacing());
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
-        poseStack.translate(-machine.getLeftDist() - 1.5f, -machine.getUpDist() - .5f, .01f);
-        for (MonitorGroup group : machine.getMonitorGroups()) {
-            ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
-            if (itemStack.getItem() instanceof ComponentItem item) {
-                for (IItemComponent component : item.getComponents()) {
-                    if (component instanceof IMonitorModuleItem module) {
-                        poseStack.pushPose();
-                        module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group).render(
-                                machine, group,
-                                partialTick, poseStack, buffer, packedLight, packedOverlay);
-                        poseStack.popPose();
+        poseStack.translate(-machine.getRightDist() - .5f, -machine.getUpDist() - .5f, .01f);
+        if (machine.getRecipeLogic().isOn()) {
+            for (MonitorGroup group : machine.getMonitorGroups()) {
+                ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
+                if (itemStack.getItem() instanceof ComponentItem item) {
+                    for (IItemComponent component : item.getComponents()) {
+                        if (component instanceof IMonitorModuleItem module) {
+                            poseStack.pushPose();
+                            module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group).render(
+                                    machine, group,
+                                    partialTick, poseStack, buffer, packedLight, packedOverlay);
+                            poseStack.popPose();
+                        }
                     }
                 }
             }

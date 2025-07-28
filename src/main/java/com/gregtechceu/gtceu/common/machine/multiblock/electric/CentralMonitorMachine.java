@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -10,17 +9,18 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -70,7 +70,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
             .setExactLimit(1)
-            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setMaxGlobalLimited(1))
+            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setMaxGlobalLimited(2))
             .or(Predicates.machines(GTMachines.HULL))
             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_8))
@@ -91,7 +91,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     private final List<IMonitorComponent> selectedTarget = new ArrayList<>();
 
     private MultiblockState patternFindingState;
-    private TickableSubscription subscription;
 
     public CentralMonitorMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -109,12 +108,16 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        subscription = this.subscribeServerTick(subscription, this::tick);
+    public CentralMonitorLogic getRecipeLogic() {
+        return (CentralMonitorLogic) super.getRecipeLogic();
     }
 
-    private void tick() {
+    @Override
+    protected RecipeLogic createRecipeLogic(Object... args) {
+        return new CentralMonitorLogic(this);
+    }
+
+    public void tick() {
         for (MonitorGroup group : monitorGroups) {
             ItemStack stack = group.getItemStackHandler().getStackInSlot(0);
             if (!stack.isEmpty() && stack.getItem() instanceof IComponentItem componentItem) {
@@ -134,7 +137,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void onUnload() {
         super.onUnload();
         this.clearPatternFindingState();
-        if (subscription != null) subscription.unsubscribe();
     }
 
     protected void clearPatternFindingState() {
@@ -236,11 +238,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 .where('B', BLOCK_PREDICATE)
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
-    }
-
-    @Override
-    public int getTier() {
-        return GTValues.MV;
     }
 
     public BlockPos toRelative(BlockPos pos) {
