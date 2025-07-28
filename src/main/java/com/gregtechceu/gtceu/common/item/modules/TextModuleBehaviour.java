@@ -40,7 +40,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
                         machine.getLevel(),
                         group.getTarget(machine.getLevel()),
                         group.getTargetCoverSide(),
-                        group.getItemStackHandler(),
+                        group.getPlaceholderSlotsHandler(),
                         group.getTargetCover(machine.getLevel()),
                         null));
         stack.getOrCreateTag().put("text", text.toTag());

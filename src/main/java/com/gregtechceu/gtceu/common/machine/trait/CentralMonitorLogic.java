@@ -55,7 +55,7 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
 
     @Override
     public void serverTick() {
-        if (!getMachine().isFormed()) {
+        if (!getMachine().isFormed() || !isWorkingEnabled()) {
             setStatus(Status.IDLE);
             return;
         } else setStatus(Status.WORKING);

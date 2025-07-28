@@ -28,6 +28,8 @@ public class MonitorGroup {
     private final String name;
     @Getter
     private final CustomItemStackHandler itemStackHandler;
+    @Getter
+    private final CustomItemStackHandler placeholderSlotsHandler;
     @Setter
     private @Nullable BlockPos target;
     @Setter
@@ -38,12 +40,13 @@ public class MonitorGroup {
     private int dataSlot = 0;
 
     public MonitorGroup(String name) {
-        this(name, new CustomItemStackHandler(1));
+        this(name, new CustomItemStackHandler(1), new CustomItemStackHandler(8));
     }
 
-    public MonitorGroup(String name, CustomItemStackHandler handler) {
+    public MonitorGroup(String name, CustomItemStackHandler handler, CustomItemStackHandler placeholderSlotsHandler) {
         this.name = name;
         this.itemStackHandler = handler;
+        this.placeholderSlotsHandler = placeholderSlotsHandler;
     }
 
     public void add(BlockPos pos) {

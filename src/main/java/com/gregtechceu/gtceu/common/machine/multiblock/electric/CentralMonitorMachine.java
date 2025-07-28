@@ -312,18 +312,25 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 return;
             }
             groupConfig.clearAllWidgets();
-            groupConfig.addWidget(new LabelWidget(0, 0, () -> {
+            groupConfig.addWidget(new LabelWidget(0, 5, () -> {
                 if (configGroup.get(0) == null)
                     return Component.translatable("gtceu.central_monitor.gui.currently_editing", "").getString();
                 return Component
                         .translatable("gtceu.central_monitor.gui.currently_editing", configGroup.get(0).getName())
                         .getString();
             }));
+            for (int i = 0; i < 8; i++) {
+                SlotWidget slot = new SlotWidget(group.getPlaceholderSlotsHandler(), i, -38, 16 * i - 4);
+                slot.setHoverTooltips(GTStringUtils
+                        .toImmutable(LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1)));
+                groupConfig.addWidget(slot);
+            }
             SlotWidget slot = new SlotWidget(
                     group.getItemStackHandler(), 0,
                     0, 20);
             WidgetGroup itemUI = new WidgetGroup(40, 20, 100, 100);
             Runnable changeListener = () -> {
+                if (slot.getLastItem().is(slot.getItem().getItem())) return;
                 itemUI.clearAllWidgets();
                 if (slot.getItem().getItem() instanceof IComponentItem item) {
                     for (IItemComponent component : item.getComponents()) {

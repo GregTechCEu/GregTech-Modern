@@ -38,15 +38,18 @@ public class MonitorGroupPayload extends ObjectTypedPayload<MonitorGroup> {
         tag.putIntArray("positions", list);
         tag.putInt("dataSlot", payload.getDataSlot());
         tag.put("items", payload.getItemStackHandler().serializeNBT());
+        tag.put("placeholderSlots", payload.getPlaceholderSlotsHandler().serializeNBT());
         return tag;
     }
 
     @Override
     public void deserializeNBT(Tag tag) {
         if (tag instanceof CompoundTag compoundTag) {
-            CustomItemStackHandler handler = new CustomItemStackHandler();
+            CustomItemStackHandler handler = new CustomItemStackHandler(),
+                    placeholderSlotsHandler = new CustomItemStackHandler();
             handler.deserializeNBT(compoundTag.getCompound("items"));
-            payload = new MonitorGroup(compoundTag.getString("name"), handler);
+            placeholderSlotsHandler.deserializeNBT(compoundTag.getCompound("placeholderSlots"));
+            payload = new MonitorGroup(compoundTag.getString("name"), handler, placeholderSlotsHandler);
             int[] arr = compoundTag.getIntArray("positions");
             for (int i = 0; i < arr.length / 3; i++) {
                 payload.add(new BlockPos(arr[3 * i], arr[3 * i + 1], arr[3 * i + 2]));
