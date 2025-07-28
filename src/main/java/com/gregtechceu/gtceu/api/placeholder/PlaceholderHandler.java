@@ -129,7 +129,7 @@ public class PlaceholderHandler {
         return placeholders.keySet();
     }
 
-    public Widget getPlaceholderHandlerUI(String filter) {
+    public static Widget getPlaceholderHandlerUI(String filter) {
         DraggableScrollableWidgetGroup placeholderReference = new DraggableScrollableWidgetGroup(280, 15, 100, 200);
         Consumer<String> onSearch = (newSearch) -> {
             placeholderReference.clearAllWidgets();

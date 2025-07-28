@@ -39,7 +39,7 @@ public class ClientImageCache {
     private static final AbstractTexture LOADING_TEXTURE_MARKER = new SimpleTexture(
             GTCEu.id("textures/block/void.png"));
     private static final LoadingCache<String, AbstractTexture> CACHE = CacheBuilder.newBuilder()
-            .refreshAfterWrite(ImageCache.REFRESH_MILLIS, TimeUnit.MILLISECONDS)
+            .refreshAfterWrite(ImageCache.REFRESH_SECS, TimeUnit.SECONDS)
             .build(CacheLoader.from(url -> {
                 if (!downloading) {
                     downloading = true;

@@ -77,7 +77,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         editor.setLines(formatStringLines);
         builder.addWidget(editor);
         builder.addWidget(saveButton);
-        Widget placeholderReference = GTCEu.PLACEHOLDER_HANDLER.getPlaceholderHandlerUI("");
+        Widget placeholderReference = PlaceholderHandler.getPlaceholderHandlerUI("");
         placeholderReference.setSelfPosition(-100, -50);
         builder.addWidget(placeholderReference);
         return builder;
