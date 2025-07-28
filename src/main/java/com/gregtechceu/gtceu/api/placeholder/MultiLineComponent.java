@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -38,7 +38,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     }
 
     public static MultiLineComponent empty() {
-        return MultiLineComponent.literal("");
+        return MultiLineComponent.of(CommonComponents.EMPTY);
     }
 
     @Override

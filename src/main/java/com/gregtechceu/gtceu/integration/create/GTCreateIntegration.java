@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.common.placeholders.*;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.*;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.InvalidArgsException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.MissingItemException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.createmod.catnip.data.Couple;

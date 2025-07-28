@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 

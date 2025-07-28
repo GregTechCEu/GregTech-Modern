@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

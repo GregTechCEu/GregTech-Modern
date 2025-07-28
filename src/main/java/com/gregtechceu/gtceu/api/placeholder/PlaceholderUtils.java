@@ -1,9 +1,9 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
-import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidNumberException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.NotEnoughArgsException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.OutOfRangeException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.WrongNumberOfArgsException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.InvalidNumberException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.NotEnoughArgsException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.OutOfRangeException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.WrongNumberOfArgsException;
 
 import java.util.List;
 

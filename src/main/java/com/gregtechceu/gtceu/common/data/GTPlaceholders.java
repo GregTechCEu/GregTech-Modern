@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.InvalidArgsException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.MissingItemException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.NotSupportedException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.*;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.ChatFormatting;

@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMa
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
-import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
-import com.gregtechceu.gtceu.common.placeholders.PlaceholderHandler;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

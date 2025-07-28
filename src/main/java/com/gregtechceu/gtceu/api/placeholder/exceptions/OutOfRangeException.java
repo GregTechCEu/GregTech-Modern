@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.placeholders.exceptions;
+package com.gregtechceu.gtceu.api.placeholder.exceptions;
 
 import net.minecraft.network.chat.Component;
 

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.ae2;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.placeholders.*;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.*;
+import com.gregtechceu.gtceu.api.placeholder.*;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

@@ -1,6 +1,6 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
-import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 
 import lombok.Getter;
 

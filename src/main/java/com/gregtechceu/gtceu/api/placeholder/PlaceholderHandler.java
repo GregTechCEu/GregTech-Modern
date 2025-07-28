@@ -1,10 +1,10 @@
-package com.gregtechceu.gtceu.common.placeholders;
+package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.PlaceholderException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.UnclosedBracketException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.UnexpectedBracketException;
-import com.gregtechceu.gtceu.common.placeholders.exceptions.UnknownPlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.create.display;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.common.placeholders.IPlaceholderInfoProviderCover;
+import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ComponentContents;
