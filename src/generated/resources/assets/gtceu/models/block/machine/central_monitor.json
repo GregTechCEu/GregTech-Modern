@@ -15,9 +15,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -25,9 +23,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -35,9 +31,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -45,9 +39,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -55,9 +47,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -65,9 +55,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -75,9 +63,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     },
@@ -85,9 +71,7 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
-          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
         }
       }
     }

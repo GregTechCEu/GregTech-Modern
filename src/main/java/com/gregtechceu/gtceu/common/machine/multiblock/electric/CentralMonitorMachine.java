@@ -239,7 +239,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         for (int i = 0; i < upDist + downDist + 1; i++) {
             pattern[i] = new StringBuilder(leftDist + rightDist + 1);
             for (int j = 0; j < leftDist + rightDist + 1; j++) {
-                if (i == upDist && j == leftDist)
+                if (i == upDist && j == rightDist)
                     pattern[i].append('C'); // controller
                 else
                     pattern[i].append('B'); // any valid block
@@ -428,8 +428,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         setTargetButton.setVisible(false);
         ButtonWidget createGroupButton = new ButtonWidget(0, 0, 60, 20, null);
         createGroupButton.setOnPressCallback(click -> {
-            // TODO make translatable
-            MonitorGroup group = new MonitorGroup("Group #" + (monitorGroups.size() + 1));
+            MonitorGroup group = new MonitorGroup(
+                    Component.translatable("gtceu.gui.central_monitor.group_default_name", monitorGroups.size() + 1)
+                            .getString());
             for (IMonitorComponent component : selectedComponents) {
                 if (isInAnyGroup(component)) return;
                 group.add(component.getPos());
@@ -532,30 +533,33 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         }
                     } else {
                         boolean inAnyGroup = isInAnyGroup(component);
-                        createGroupButton.setVisible(selectedComponents.isEmpty() && !inAnyGroup);
-                        removeFromGroupButton.setVisible(selectedComponents.isEmpty() && inAnyGroup);
-                        setTargetButton.setVisible(selectedComponents.isEmpty() && inAnyGroup);
-
-                        if (it == null) {
-                            selectedComponents.add(component);
+                        // yes I know this is terrible but if it works don't touch it :)
+                        if (selectedComponents.isEmpty() && !inAnyGroup) createGroupButton.setVisible(true);
+                        if (inAnyGroup) createGroupButton.setVisible(false);
+                        if (selectedComponents.isEmpty() && inAnyGroup) {
+                            removeFromGroupButton.setVisible(true);
+                            setTargetButton.setVisible(true);
                         }
-                        int color = selectedTargets.isEmpty() || selectedTargets.get(0) != component ?
-                                0xFF0000 : 0xFFAFAF;
-
-                        if (it == null) selectedComponents.add(component);
-                        ColorRectTexture rect = new ColorRectTexture(color);
+                        if (!inAnyGroup) {
+                            removeFromGroupButton.setVisible(false);
+                            setTargetButton.setVisible(false);
+                        }
+                        selectedComponents.add(component);
+                        ColorRectTexture rect = new ColorRectTexture(
+                                (selectedTargets.isEmpty() || selectedTargets.get(0) != component) ? Color.RED :
+                                        Color.PINK);
                         textures.setTextures(rect, texture);
                     }
                     if (isInAnyGroup(component)) {
                         monitorGroups.forEach(group -> {
                             if (group.contains(component.getPos())) {
-                                // TODO make translatable
-                                img.setHoverTooltips("Group: " + group.getName());
+                                img.setHoverTooltips(
+                                        Component.translatable("gtceu.gui.central_monitor.group", group.getName()));
                             }
                         });
                     } else {
-                        // TODO make translatable
-                        img.setHoverTooltips("Group: none");
+                        img.setHoverTooltips(Component.translatable("gtceu.gui.central_monitor.group",
+                                Component.translatable("gtceu.gui.central_monitor.none")));
                     }
                 };
                 Runnable rightClickCallback = () -> {
@@ -606,12 +610,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 if (isInAnyGroup(component)) {
                     monitorGroups.forEach(group -> {
-                        // TODO make translatable
-                        if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
+                        if (group.contains(component.getPos())) img.setHoverTooltips(
+                                Component.translatable("gtceu.gui.central_monitor.group", group.getName()));
                     });
                 } else {
-                    // TODO make translatable
-                    img.setHoverTooltips("Group: none");
+                    img.setHoverTooltips(Component.translatable("gtceu.gui.central_monitor.group",
+                            Component.translatable("gtceu.gui.central_monitor.none")));
                 }
                 img.setOnPressCallback(click -> {
                     if (click.button == 0) callback.accept(null);
@@ -640,14 +644,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public @NotNull List<Component> getDebugInfo(Player player, int logLevel,
                                                  PortableScannerBehavior.DisplayMode mode) {
-        // TODO make translatable
-        return List.of(Component.literal("Size: (%d+1+%d)x(%d+1+%d)".formatted(leftDist, rightDist, upDist, downDist)));
+        return List.of(Component.translatable("gtceu.central_monitor.size", leftDist, rightDist, upDist, downDist));
     }
 
     @Override
     public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        // TODO make translatable
-        return List.of(Component.literal("Size: %dx%d".formatted(leftDist + rightDist + 1, upDist + downDist + 1)));
+        return List.of(Component.translatable("gtceu.central_monitor.size", leftDist, rightDist, upDist, downDist));
     }
 
     @Override

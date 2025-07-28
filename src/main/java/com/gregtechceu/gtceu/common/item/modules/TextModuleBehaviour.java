@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.codeeditor.CodeEditorWidget;
@@ -21,10 +22,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class TextModuleBehaviour implements IMonitorModuleItem {
 
@@ -54,7 +58,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
-                MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING)).toImmutable());
+                MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING)).toImmutable(),
+                Math.max(stack.getOrCreateTag().getDouble("scale"), .0001));
     }
 
     @Override
@@ -71,6 +76,29 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
             GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
+        TextFieldWidget scaleInput = new TextFieldWidget(
+                -50, 47,
+                40, 10,
+                null,
+                scale -> {
+                    try {
+                        stack.getOrCreateTag().putDouble("scale", Double.parseDouble(scale));
+                        GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+                    } catch (NumberFormatException ignored) {}
+                });
+        List<Boolean> tmp = new ArrayList<>();
+        Supplier<String> scaleInputSupplier = () -> {
+            if (tmp.isEmpty()) tmp.add(true);
+            else scaleInput.setTextSupplier(null);
+            if (!stack.getOrCreateTag().contains("scale")) {
+                stack.getOrCreateTag().putDouble("scale", 1);
+                GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
+                return "1";
+            }
+            return String.valueOf(Mth.clamp(stack.getOrCreateTag().getDouble("scale"), .0001, 1000));
+        };
+        scaleInput.setTextSupplier(scaleInputSupplier);
+        scaleInput.setHoverTooltips(Component.translatable("gtceu.gui.central_monitor.text_scale"));
         ListTag tag = stack.getOrCreateTag().getList("formatStringLines", Tag.TAG_STRING);
         List<String> formatStringLines = new ArrayList<>();
         for (Tag line : tag) formatStringLines.add(line.getAsString());
@@ -78,6 +106,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         builder.addWidget(editor);
         builder.addWidget(saveButton);
         Widget placeholderReference = PlaceholderHandler.getPlaceholderHandlerUI("");
+        builder.addWidget(scaleInput);
         placeholderReference.setSelfPosition(-100, -50);
         builder.addWidget(placeholderReference);
         return builder;
