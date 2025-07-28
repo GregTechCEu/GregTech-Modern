@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.CPacketMonitorGroupNBTChange;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.common.placeholders.MultiLineComponent;
 import com.gregtechceu.gtceu.common.placeholders.PlaceholderContext;
 
@@ -68,7 +68,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
             CompoundTag tag2 = stack.getOrCreateTag();
             tag2.put("formatStringLines", listTag);
             stack.setTag(tag2);
-            GTNetwork.sendToServer(new CPacketMonitorGroupNBTChange(stack, group, machine));
+            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         ListTag tag = stack.getOrCreateTag().getList("formatStringLines", Tag.TAG_STRING);

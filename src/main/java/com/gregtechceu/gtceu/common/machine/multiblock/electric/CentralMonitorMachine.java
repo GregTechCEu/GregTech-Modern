@@ -21,6 +21,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -30,6 +32,7 @@ import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -82,6 +85,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Persisted
     @DescSynced
     @Getter
+    @RequireRerender
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
     private final List<IMonitorComponent> selectedTarget = new ArrayList<>();
@@ -117,6 +121,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 for (IItemComponent component : componentItem.getComponents()) {
                     if (component instanceof IMonitorModuleItem module) {
                         module.tick(stack, this, group);
+                        Level level = getLevel();
+                        if (level != null) GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                                new SCPacketMonitorGroupNBTChange(stack, group, this));
                     }
                 }
             }

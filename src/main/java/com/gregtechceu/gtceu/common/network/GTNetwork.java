@@ -79,8 +79,7 @@ public class GTNetwork {
 
     public static void init() {
         register(CPacketKeysPressed.class, CPacketKeysPressed::new, NetworkDirection.PLAY_TO_SERVER);
-        register(CPacketMonitorGroupNBTChange.class, CPacketMonitorGroupNBTChange::new,
-                NetworkDirection.PLAY_TO_SERVER);
+        register(SCPacketMonitorGroupNBTChange.class, SCPacketMonitorGroupNBTChange::new, null);
         register(CPacketImageRequest.class, CPacketImageRequest::new, NetworkDirection.PLAY_TO_SERVER);
         register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);

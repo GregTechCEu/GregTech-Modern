@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.client.renderer.monitor.MonitorImageRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.CPacketMonitorGroupNBTChange;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
@@ -37,7 +37,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
             CompoundTag tag = stack.getOrCreateTag();
             tag.putString("url", textField.getCurrentString());
             stack.setTag(tag);
-            GTNetwork.sendToServer(new CPacketMonitorGroupNBTChange(stack, group, machine));
+            GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         builder.addWidget(textField);
