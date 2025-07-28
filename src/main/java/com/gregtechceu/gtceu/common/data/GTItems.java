@@ -26,6 +26,8 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.common.item.tool.behavior.MetaMachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -2509,6 +2511,10 @@ public class GTItems {
     public static ItemEntry<ComponentItem> TEXT_MODULE = REGISTRATE
             .item("text_module", ComponentItem::create)
             .onRegister(attach(new TextModuleBehaviour())).register();
+
+    public static ItemEntry<ComponentItem> IMAGE_MODULE = REGISTRATE
+            .item("image_module", ComponentItem::create)
+            .onRegister(attach(new ImageModuleBehaviour())).register();
 
     public static void init() {
         GTMaterialItems.generateMaterialItems();
