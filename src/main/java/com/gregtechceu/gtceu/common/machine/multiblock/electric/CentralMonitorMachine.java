@@ -287,6 +287,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public Widget createUIWidget() {
+        updateStructureDimensions();
         selectedComponents.clear();
         WidgetGroup builder = (WidgetGroup) super.createUIWidget();
         WidgetGroup main = new WidgetGroup();
@@ -310,8 +311,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
             groupConfig.clearAllWidgets();
             groupConfig.addWidget(new LabelWidget(0, 0, () -> {
-                if (configGroup.get(0) == null) return "Currently editing:";
-                return "Currently editing: %s".formatted(configGroup.get(0).getName());
+                if (configGroup.get(0) == null)
+                    return Component.translatable("gtceu.central_monitor.gui.currently_editing", "").getString();
+                return Component
+                        .translatable("gtceu.central_monitor.gui.currently_editing", configGroup.get(0).getName())
+                        .getString();
             }));
             SlotWidget slot = new SlotWidget(
                     group.getItemStackHandler(), 0,
@@ -377,10 +381,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         builder.addWidget(groupList);
         main.addWidget(options);
         ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 60, 20, null);
-        removeFromGroupButton.setButtonTexture(new TextTexture("Remove from group"));
+        removeFromGroupButton.setButtonTexture(
+                new TextTexture(Component.translatable("gtceu.central_monitor.gui.remove_from_group").getString()));
         removeFromGroupButton.setVisible(false);
         ButtonWidget setTargetButton = new ButtonWidget(0, 15, 60, 20, null);
-        setTargetButton.setButtonTexture(new TextTexture("Set target"));
+        setTargetButton.setButtonTexture(
+                new TextTexture(Component.translatable("gtceu.central_monitor.gui.set_target").getString()));
         setTargetButton.setVisible(false);
         ButtonWidget createGroupButton = new ButtonWidget(0, 0, 60, 20, null);
         createGroupButton.setOnPressCallback(click -> {
@@ -440,7 +446,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 rightClickCallbacks.getOrDefault(selectedTarget.get(0).getPos(), () -> {}).run();
             }
         });
-        createGroupButton.setButtonTexture(new TextTexture("Create group"));
+        createGroupButton.setButtonTexture(
+                new TextTexture(Component.translatable("gtceu.central_monitor.gui.create_group").getString()));
         createGroupButton.setVisible(false);
         options.addWidget(removeFromGroupButton);
         options.addWidget(createGroupButton);
