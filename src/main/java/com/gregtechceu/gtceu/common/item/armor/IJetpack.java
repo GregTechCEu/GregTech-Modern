@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -76,8 +76,8 @@ public interface IJetpack {
             return;
         }
 
-        boolean flyKeyDown = KeyBind.VANILLA_JUMP.isKeyDown(player);
-        boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
+        boolean flyKeyDown = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
+        boolean descendKeyDown = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
 
         if (!player.onGround() && player.getSleepingPos().isEmpty() && canUseEnergy(stack, getEnergyPerUse())) {
@@ -121,10 +121,18 @@ public interface IJetpack {
             // Make sure they aren't using elytra movement
             if (!player.isFallFlying()) {
                 Vec3 movement = new Vec3(0, 0, 0);
-                if (KeyBind.VANILLA_FORWARD.isKeyDown(player)) movement = movement.add(0, 0, speedForward);
-                if (KeyBind.VANILLA_BACKWARD.isKeyDown(player)) movement = movement.add(0, 0, -speedSideways * 0.8f);
-                if (KeyBind.VANILLA_LEFT.isKeyDown(player)) movement = movement.add(speedSideways, 0, 0);
-                if (KeyBind.VANILLA_RIGHT.isKeyDown(player)) movement = movement.add(-speedSideways, 0, 0);
+                if (SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player)) {
+                    movement = movement.add(0, 0, speedForward);
+                }
+                if (SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player)) {
+                    movement = movement.add(0, 0, -speedSideways * 0.8f);
+                }
+                if (SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player)) {
+                    movement = movement.add(speedSideways, 0, 0);
+                }
+                if (SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player)) {
+                    movement = movement.add(-speedSideways, 0, 0);
+                }
 
                 var dist = movement.length();
                 if (dist >= 1.0E-7) {
