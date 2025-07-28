@@ -9,12 +9,14 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -25,7 +27,6 @@ import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -40,6 +41,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -119,17 +121,24 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
+        Level level = getLevel();
+        if (level == null) {
+            return;
+        }
+
         for (MonitorGroup group : monitorGroups) {
             ItemStack stack = group.getItemStackHandler().getStackInSlot(0);
-            if (!stack.isEmpty() && stack.getItem() instanceof IComponentItem componentItem) {
-                for (IItemComponent component : componentItem.getComponents()) {
-                    if (component instanceof IMonitorModuleItem module) {
-                        module.tick(stack, this, group);
-                        Level level = getLevel();
-                        if (level != null) GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
-                                new SCPacketMonitorGroupNBTChange(stack, group, this));
-                    }
+            if (stack.isEmpty() || !(stack.getItem() instanceof IComponentItem componentItem)) {
+                continue;
+            }
+
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (!(component instanceof IMonitorModuleItem module)) {
+                    continue;
                 }
+                module.tick(stack, this, group);
+                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                        new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
     }
@@ -252,20 +261,26 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     @Nullable
     public IMonitorComponent getComponent(int row, int col) {
-        col = leftDist + rightDist - col;
-        BlockPos pos = getPos()
-                .relative(RelativeDirection.LEFT.getActualDirection(getFrontFacing()), leftDist - col)
-                .relative(RelativeDirection.UP.getActualDirection(getFrontFacing()), upDist - row);
         Level level = getLevel();
         if (level == null) return null;
+
+        Direction front = getFrontFacing();
+        Direction spin = getUpwardsFacing();
+        boolean flipped = isFlipped();
+
+        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
+        Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
+
+        col = leftDist + rightDist - col;
+        BlockPos pos = getPos().relative(right, rightDist + col).relative(up, upDist - row);
+
         if (level.getBlockEntity(pos) instanceof IMonitorComponent component) {
             return component;
+        } else if (MetaMachine.getMachine(level, pos) instanceof IMonitorComponent component) {
+            return component;
+        } else {
+            return null;
         }
-        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machine) {
-            if (machine.getMetaMachine() instanceof IMonitorComponent component)
-                return component;
-        }
-        return null;
     }
 
     public boolean isMonitor(int row, int col) {
@@ -302,7 +317,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         infoWidget.setHoverTooltips(
                 GTStringUtils.toImmutable(LangHandler.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip")));
         builder.addWidget(infoWidget);
-        @Nullable
         List<MonitorGroup> configGroup = new ArrayList<>();
         configGroup.add(null);
         Consumer<MonitorGroup> openGroupConfig = (group) -> {
@@ -314,11 +328,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
             groupConfig.clearAllWidgets();
             groupConfig.addWidget(new LabelWidget(0, 5, () -> {
-                if (configGroup.get(0) == null)
-                    return Component.translatable("gtceu.central_monitor.gui.currently_editing", "").getString();
-                return Component
-                        .translatable("gtceu.central_monitor.gui.currently_editing", configGroup.get(0).getName())
-                        .getString();
+                String currentName = "";
+                if (configGroup.get(0) != null) {
+                    currentName = configGroup.get(0).getName();
+                }
+                return Component.translatable("gtceu.central_monitor.gui.currently_editing", currentName).getString();
             }));
             for (int i = 0; i < 8; i++) {
                 SlotWidget slot = new SlotWidget(group.getPlaceholderSlotsHandler(), i, -38, 16 * i + 46);
@@ -360,6 +374,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 n -> dataSlot[0] = Mth.clamp(n, 1, dataSlot[1]));
         dataSlotInput.setVisible(false);
         builder.addWidget(dataSlotInput);
+
         Consumer<MonitorGroup> addGroupToList = group -> {
             ButtonWidget label = new ButtonWidget(20, groupList.widgets.size() * 15 + 5, 60, 10, null);
             TextTexture text = new TextTexture(group.getName());
@@ -375,6 +390,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 }
             });
             groupList.addWidget(label);
+
             ButtonWidget configButton = new ButtonWidget(
                     0, label.getSelfPositionY() - 3,
                     16, 16,
@@ -388,19 +404,19 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     });
             groupList.addWidget(configButton);
         };
+
         monitorGroups.forEach(addGroupToList);
         builder.addWidget(groupList);
         main.addWidget(options);
         ButtonWidget removeFromGroupButton = new ButtonWidget(0, 0, 60, 20, null);
-        removeFromGroupButton.setButtonTexture(
-                new TextTexture(Component.translatable("gtceu.central_monitor.gui.remove_from_group").getString()));
+        removeFromGroupButton.setButtonTexture(new TextTexture("gtceu.central_monitor.gui.remove_from_group"));
         removeFromGroupButton.setVisible(false);
         ButtonWidget setTargetButton = new ButtonWidget(0, 15, 60, 20, null);
-        setTargetButton.setButtonTexture(
-                new TextTexture(Component.translatable("gtceu.central_monitor.gui.set_target").getString()));
+        setTargetButton.setButtonTexture(new TextTexture("gtceu.central_monitor.gui.set_target"));
         setTargetButton.setVisible(false);
         ButtonWidget createGroupButton = new ButtonWidget(0, 0, 60, 20, null);
         createGroupButton.setOnPressCallback(click -> {
+            // TODO make translatable
             MonitorGroup group = new MonitorGroup("Group #" + (monitorGroups.size() + 1));
             for (IMonitorComponent component : selectedComponents) {
                 if (isInAnyGroup(component)) return;
@@ -408,6 +424,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
             monitorGroups.add(group);
             addGroupToList.accept(group);
+
             createGroupButton.setVisible(false);
             removeFromGroupButton.setVisible(true);
             Iterator<IMonitorComponent> it = selectedComponents.iterator();
@@ -445,6 +462,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             monitorGroups.removeIf(MonitorGroup::isEmpty);
             groupList.clearAllWidgets();
             monitorGroups.forEach(addGroupToList);
+
             removeFromGroupButton.setVisible(false);
             createGroupButton.setVisible(true);
             Iterator<IMonitorComponent> it = selectedComponents.iterator();
@@ -457,8 +475,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 rightClickCallbacks.getOrDefault(selectedTarget.get(0).getPos(), () -> {}).run();
             }
         });
-        createGroupButton.setButtonTexture(
-                new TextTexture(Component.translatable("gtceu.central_monitor.gui.create_group").getString()));
+        createGroupButton.setButtonTexture(new TextTexture("gtceu.central_monitor.gui.create_group"));
         createGroupButton.setVisible(false);
         options.addWidget(removeFromGroupButton);
         options.addWidget(createGroupButton);
@@ -476,18 +493,23 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 Consumer<Iterator<IMonitorComponent>> callback = (it) -> {
                     if (!component.isMonitor()) return;
                     if (selectedComponents.contains(component)) {
-                        if (it == null)
+                        if (it == null) {
                             selectedComponents.remove(component);
-                        else
+                        } else {
                             it.remove();
+                        }
+
                         if (!selectedTarget.isEmpty() && selectedTarget.get(0) == component) {
                             ColorRectTexture rect = new ColorRectTexture(Color.BLUE);
                             textures.setTextures(rect, texture);
-                        } else textures.setTextures(texture);
+                        } else {
+                            textures.setTextures(texture);
+                        }
+
                         createGroupButton.setVisible(selectedComponents.stream().noneMatch(this::isInAnyGroup));
-                        removeFromGroupButton
-                                .setVisible(selectedComponents.stream().allMatch(this::isInAnyGroup));
+                        removeFromGroupButton.setVisible(selectedComponents.stream().allMatch(this::isInAnyGroup));
                         setTargetButton.setVisible(removeFromGroupButton.isVisible());
+
                         if (selectedComponents.isEmpty()) {
                             createGroupButton.setVisible(false);
                             removeFromGroupButton.setVisible(false);
@@ -513,9 +535,15 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     }
                     if (isInAnyGroup(component)) {
                         monitorGroups.forEach(group -> {
-                            if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
+                            if (group.contains(component.getPos())) {
+                                // TODO make translatable
+                                img.setHoverTooltips("Group: " + group.getName());
+                            }
                         });
-                    } else img.setHoverTooltips("Group: none");
+                    } else {
+                        // TODO make translatable
+                        img.setHoverTooltips("Group: none");
+                    }
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTarget.isEmpty()) {
@@ -560,9 +588,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 if (isInAnyGroup(component)) {
                     monitorGroups.forEach(group -> {
+                        // TODO make translatable
                         if (group.contains(component.getPos())) img.setHoverTooltips("Group: " + group.getName());
                     });
-                } else img.setHoverTooltips("Group: none");
+                } else {
+                    // TODO make translatable
+                    img.setHoverTooltips("Group: none");
+                }
                 img.setOnPressCallback(click -> {
                     if (click.button == 0) callback.accept(null);
                     else if (click.button == 1) rightClickCallback.run();
@@ -590,11 +622,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public @NotNull List<Component> getDebugInfo(Player player, int logLevel,
                                                  PortableScannerBehavior.DisplayMode mode) {
+        // TODO make translatable
         return List.of(Component.literal("Size: (%d+1+%d)x(%d+1+%d)".formatted(leftDist, rightDist, upDist, downDist)));
     }
 
     @Override
     public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        // TODO make translatable
         return List.of(Component.literal("Size: %dx%d".formatted(leftDist + rightDist + 1, upDist + downDist + 1)));
     }
 

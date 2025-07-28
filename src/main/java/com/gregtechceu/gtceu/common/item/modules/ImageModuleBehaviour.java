@@ -34,9 +34,9 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
         textField.setTextSupplier(null);
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
+
             CompoundTag tag = stack.getOrCreateTag();
             tag.putString("url", textField.getCurrentString());
-            stack.setTag(tag);
             GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);

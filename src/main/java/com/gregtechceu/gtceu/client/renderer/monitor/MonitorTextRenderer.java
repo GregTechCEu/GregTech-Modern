@@ -32,6 +32,7 @@ public class MonitorTextRenderer implements IMonitorRenderer {
         int columns = group.getRow(0, machine::toRelative).size();
         poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
         poseStack.scale(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE);
+
         int y = 9;
         for (Component s : text) {
             boolean didAnything = false;
@@ -62,7 +63,9 @@ public class MonitorTextRenderer implements IMonitorRenderer {
                 y += Minecraft.getInstance().font.lineHeight;
                 didAnything = true;
             }
-            if (!didAnything) y += Minecraft.getInstance().font.lineHeight;
+            if (!didAnything) {
+                y += Minecraft.getInstance().font.lineHeight;
+            }
         }
     }
 }
