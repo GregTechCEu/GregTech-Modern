@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -65,9 +66,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         this.exportItems = createExportItemHandler(args);
 
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+        if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
             // outputFacing will always be opposite the front facing on init
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, RelativeDirection.BACK));
+            setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK));
         }
     }
 
@@ -123,14 +124,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     public void updateModelVentDirection() {
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+        if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
             Direction upwardsDir = getUpwardsFacing();
             // the up facing is already rotated if extended facing is enabled for the machine
             if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
                 upwardsDir = upwardsDir.getOpposite();
             }
             var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(), upwardsDir);
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+            setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, relative));
         }
     }
 

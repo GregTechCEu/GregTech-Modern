@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -23,8 +25,10 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -53,7 +57,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -313,9 +317,45 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+
+        if (hasAutoOutputFluid()) {
+            configuratorPanel.attachConfigurators(createAutoOutputFluidConfigurator());
+        }
+        if (hasAutoOutputItem()) {
+            configuratorPanel.attachConfigurators(createAutoOutputItemConfigurator());
+        }
+
         if (isCircuitSlotEnabled()) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
+    }
+
+    private IFancyConfigurator createAutoOutputFluidConfigurator() {
+        return createAutoOutputConfigurator(
+                GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON,
+                this::isAutoOutputFluids,
+                (cd, nextState) -> this.setAutoOutputFluids(nextState));
+    }
+
+    private IFancyConfigurator createAutoOutputItemConfigurator() {
+        return createAutoOutputConfigurator(
+                GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON,
+                this::isAutoOutputItems,
+                (cd, nextState) -> this.setAutoOutputItems(nextState));
+    }
+
+    private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture,
+                                                            BooleanSupplier stateSupplier,
+                                                            BiConsumer<ClickData, Boolean> onToggle) {
+        return new IFancyConfiguratorButton.Toggle(
+                new GuiTextureGroup(
+                        GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
+                        modesButtonTexture.getSubTexture(0, 1 / 3f, 1, 1 / 3f)),
+                new GuiTextureGroup(
+                        GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
+                        modesButtonTexture.getSubTexture(0, 2 / 3f, 1, 1 / 3f)),
+                stateSupplier,
+                onToggle);
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -361,7 +401,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             }));
 
     /**
-     * Create an energy bar widget.
+     * Create a battery slot widget.
      */
     protected static EditableUI<SlotWidget, SimpleTieredMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
@@ -378,7 +418,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     }
 
     /**
-     * Create an energy bar widget.
+     * Create a ghost circuit slot widget.
      */
     protected static EditableUI<GhostCircuitSlotWidget, SimpleTieredMachine> createCircuitConfigurator() {
         return new EditableUI<>("circuit_configurator", GhostCircuitSlotWidget.class, () -> {

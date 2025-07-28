@@ -167,7 +167,7 @@ public class RecipeRunner {
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return ActionResult.fail(null, entry.getKey());
+                return ActionResult.fail(null, entry.getKey(), capIO);
             }
         }
 

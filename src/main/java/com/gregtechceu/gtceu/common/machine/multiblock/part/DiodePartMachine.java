@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -67,7 +68,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
         }
     }
 
-    public static final EnumProperty<DiodePartMachine.AmpMode> AMP_MODE_PROPERTY = EnumProperty.create("amp_mode", AmpMode.class);
+    public static final EnumProperty<DiodePartMachine.AmpMode> AMP_MODE_PROPERTY = GTMachineModelProperties.DIODE_AMP_MODE;
     // spotless:on
 
     public static int MAX_AMPS = 16;
@@ -140,7 +141,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
         cycleAmpMode();
         if (getLevel().isClientSide) {
             setRenderState(getRenderState()
-                    .setValue(AMP_MODE_PROPERTY, AmpMode.getByValue(this.amps)));
+                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
 
             scheduleRenderUpdate();
             playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));

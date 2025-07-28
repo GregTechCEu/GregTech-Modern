@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -32,7 +33,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TransformerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
-    public static final BooleanProperty TRANSFORM_UP_PROPERTY = BooleanProperty.create("transform_up");
+    public static final BooleanProperty TRANSFORM_UP_PROPERTY = GTMachineModelProperties.IS_TRANSFORM_UP;
 
     @Persisted
     @DescSynced
@@ -120,7 +121,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         if (this.isTransformUp != isTransformUp && !isRemote()) {
             this.isTransformUp = isTransformUp;
             updateEnergyContainer(isTransformUp);
-            setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, isTransformUp));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TRANSFORM_UP, isTransformUp));
         }
     }
 

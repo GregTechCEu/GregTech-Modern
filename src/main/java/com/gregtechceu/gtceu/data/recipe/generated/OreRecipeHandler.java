@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
@@ -64,9 +66,11 @@ public final class OreRecipeHandler {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
             if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) && !prefix.isIgnored(material)) {
-                VanillaRecipeHelper.addSmeltingRecipe(provider,
-                        "smelt_" + prefix.name + "_" + material.getName() + "_to_ingot",
-                        ChemicalHelper.getTag(prefix, material), ingotStack, 0.5f);
+                String name = "smelt_" + prefix.name + "_" + material.getName() + "_to_ingot";
+                TagKey<Item> tag = ChemicalHelper.getTag(prefix, material);
+
+                VanillaRecipeHelper.addSmeltingRecipe(provider, name, tag, ingotStack, 0.5f);
+                VanillaRecipeHelper.addBlastingRecipe(provider, name, tag, ingotStack, 0.5f);
             }
         }
     }

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -232,7 +233,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     public void setActive(boolean active) {
         this.active = active;
-        setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, active));
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, active));
     }
 
     public void update() {

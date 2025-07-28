@@ -10,11 +10,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import org.jetbrains.annotations.Contract;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 
+import java.lang.Math;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
@@ -62,8 +60,28 @@ public class GTMatrixUtils {
      * @param dest the vector to save the result to
      * @return {@code dest}
      */
-    public static Vector3f getRotationAxis(Vector3fc from, Vector3fc to, Vector3f dest) {
+    public static Vector3f getRotationAxis(final Vector3fc from, final Vector3fc to, Vector3f dest) {
         return from.cross(to, dest).normalize();
+    }
+
+    /**
+     * @param from the original vector
+     * @param to   the wanted vector
+     * @return the quaternion to make {@code from} point in the direction of {@code to}
+     */
+    @Contract(pure = true)
+    public static Quaternionf getRotation(final Vector3fc from, final Vector3fc to) {
+        return from.rotationTo(to, new Quaternionf());
+    }
+
+    /**
+     * @param from the original direction
+     * @param to   the wanted direction
+     * @return the quaternion to make a vector based on {@code from} point towards {@code to}
+     */
+    @Contract(pure = true)
+    public static Quaternionf getRotation(final Direction from, final Direction to) {
+        return getRotation(getDirectionAxis(from), getDirectionAxis(to));
     }
 
     /**

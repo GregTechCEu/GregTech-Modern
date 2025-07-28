@@ -1,7 +1,23 @@
+import org.gradle.internal.os.OperatingSystem
+
+ext.isJetbrainsRuntime = System.getProperty('java.vm.vendor').contains('JetBrains')
+
 mixin {
     var refmap = add sourceSets.main, "gtceu.refmap.json"
     slimJar.from refmap
     config 'gtceu.mixins.json'
+}
+
+// we have to force LWJGL version 3.3.2, because RenderNurse requires Java 21, and LWJGL 3.3.1 cannot run on Java 21.
+configurations.configureEach {
+    resolutionStrategy {
+        eachDependency {
+            if (it.requested.group == "org.lwjgl") {
+                it.useVersion("3.3.2")
+                it.because("We need a version of LWJGL that supports java 21 for RenderDoc support")
+            }
+        }
+    }
 }
 
 legacyForge {
@@ -102,6 +118,26 @@ legacyForge {
             programArguments.addAll('--all')
             programArguments.addAll('--output', file('src/generated/resources/').getAbsolutePath())
             programArguments.addAll('--existing', file('src/main/resources/').getAbsolutePath())
+        }
+
+        String renderDocPath = System.getenv("RENDERDOC_LIB")
+        // RenderDoc cannot run on macos so we don't add the config for mac users
+        if(renderDocPath != null && !OperatingSystem.current().isMacOsX()) {
+            create("renderDocClient") {
+                client()
+                sourceSet = sourceSets.client
+                ideName = "Clean Client + RenderDoc (Requires Java 21)"
+
+                programArguments.addAll('--username', 'screret', '--uuid', '1184eb79-5831-4f7d-b8f4-3a46fccf7a1d')
+
+                systemProperty("neoforge.rendernurse.renderdoc.library", renderDocPath)
+                if(OperatingSystem.current().isLinux()) {
+                    environment("LD_PRELOAD", renderDocPath)
+                }
+                // parses out the render nurse jar path and adds as `-javaagent:${path}`
+                jvmArguments.addAll(project.configurations.renderNurseCfg.incoming.files.elements.map { it.collect { "-javaagent:${it.asFile.absolutePath}" }})
+                jvmArguments.addAll("--enable-preview", "--enable-native-access=ALL-UNNAMED")
+            }
         }
 
         // applies to all the run configs above

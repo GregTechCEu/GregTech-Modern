@@ -80,6 +80,7 @@ dependencies {
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)
     modClientLocalRuntime(forge.oculus)
+    renderNurseCfg(libs.renderNurse)
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //

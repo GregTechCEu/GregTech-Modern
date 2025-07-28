@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -58,8 +60,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = EnumProperty.create("recipe_logic_status",
-            RecipeLogic.Status.class);
+    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
@@ -268,12 +269,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 totalContinuousRunningTime++;
             } else {
                 setWaiting(handleTick.reason());
-                runAttempt++;
-                if (runAttempt > 5) {
-                    runAttempt = 0;
-                    setStatus(Status.SUSPEND);
+
+                // Machine isn't getting enough power, suspend after 5 attempts.
+                if (conditionResult.io() == IO.IN && conditionResult.capability() == EURecipeCapability.CAP) {
+                    runAttempt++;
+                    if (runAttempt > 5) {
+                        runAttempt = 0;
+                        setStatus(Status.SUSPEND);
+                    }
+                    runDelay = runAttempt * 10;
                 }
-                runDelay = runAttempt * 10;
             }
         } else {
             setWaiting(conditionResult.reason());
@@ -372,7 +377,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
-            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
@@ -463,7 +468,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     setStatus(Status.SUSPEND);
                 } else {
                     setStatus(Status.IDLE);
-                    waitingReason = recipeCheck.reason();
+                    if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
+                        waitingReason = recipeCheck.reason();
+                    }
                 }
                 consecutiveRecipes = 0;
                 progress = 0;
