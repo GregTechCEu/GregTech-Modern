@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -222,7 +223,7 @@ public class RecipeHelper {
 
         if (result.isSuccess() || result.capability() == null) return result;
 
-        if (!simulated) {
+        if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
                     Component.translatable(io.tooltip).getString(), recipe, holder);
         }
