@@ -170,6 +170,10 @@ public class RecipeRunner {
                     RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
                     Collections.emptyList())) {
                 copiedRecipeContents = bypass_handler.handleRecipe(io, recipe, copiedRecipeContents, true);
+                if (copiedRecipeContents.isEmpty()) {
+                    found = true;
+                    break;
+                }
             }
 
             if (!found) continue;
