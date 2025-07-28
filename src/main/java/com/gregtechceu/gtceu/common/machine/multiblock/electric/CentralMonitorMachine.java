@@ -70,11 +70,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
             .setExactLimit(1)
-            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setMaxGlobalLimited(2))
+            .or(Predicates.abilities(PartAbility.DATA_ACCESS)
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
+                    .setMaxGlobalLimited(2))
             .or(Predicates.machines(GTMachines.HULL))
-            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
-            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_8))
-            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
             .or(Predicates.machines(GTMachines.MONITOR))
             .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
 
@@ -88,7 +88,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @RequireRerender
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
-    private final List<IMonitorComponent> selectedTarget = new ArrayList<>();
+    private final List<IMonitorComponent> selectedTargets = new ArrayList<>();
 
     private MultiblockState patternFindingState;
 
@@ -258,15 +258,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();
         boolean flipped = isFlipped();
-
         Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
         Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
 
-        return getPos().mutable()
-                .move(right, rightDist - pos.get(right.getAxis()))
-                .move(up, upDist - pos.get(up.getAxis()))
-                .move(front.getOpposite(), -pos.get(front.getAxis()))
-                .immutable();
+        BlockPos tmp = getPos().mutable().move(right, rightDist).move(up, upDist);
+
+        return new BlockPos(Math.abs(tmp.get(right.getAxis()) - pos.get(right.getAxis())),
+                Math.abs(tmp.get(up.getAxis()) - pos.get(up.getAxis())),
+                0);
     }
 
     @Nullable
@@ -278,11 +277,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction spin = getUpwardsFacing();
         boolean flipped = isFlipped();
 
-        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
+        Direction left = RelativeDirection.LEFT.getRelative(front, spin, flipped);
         Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
 
         col = leftDist + rightDist - col;
-        BlockPos pos = getPos().relative(right, rightDist + col).relative(up, upDist - row);
+        BlockPos pos = getPos().relative(left, leftDist - col).relative(up, upDist - row);
 
         if (level.getBlockEntity(pos) instanceof IMonitorComponent component) {
             return component;
@@ -446,8 +445,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 BlockPos rel = toRelative(c.getPos());
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
-            if (!selectedTarget.isEmpty()) {
-                rightClickCallbacks.getOrDefault(selectedTarget.get(0).getPos(), () -> {}).run();
+            if (!selectedTargets.isEmpty()) {
+                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getPos(), () -> {}).run();
             }
         });
         setTargetButton.setOnPressCallback(click -> {
@@ -462,9 +461,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 if (group != null) break;
             }
             if (group == null) return;
-            if (selectedTarget.isEmpty()) group.setTarget(null);
+            if (selectedTargets.isEmpty()) group.setTarget(null);
             else {
-                group.setTarget(selectedTarget.get(0).getPos());
+                group.setTarget(selectedTargets.get(0).getPos());
                 group.setDataSlot(dataSlot[0] - 1);
             }
         });
@@ -484,8 +483,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 BlockPos rel = toRelative(c.getPos());
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
-            if (!selectedTarget.isEmpty()) {
-                rightClickCallbacks.getOrDefault(selectedTarget.get(0).getPos(), () -> {}).run();
+            if (!selectedTargets.isEmpty()) {
+                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getPos(), () -> {}).run();
             }
         });
         createGroupButton.setButtonTexture(new TextTexture("gtceu.central_monitor.gui.create_group"));
@@ -501,7 +500,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 IGuiTexture texture = getComponentTexture(row, col);
                 GuiTextureGroup textures = new GuiTextureGroup(texture, new ColorBorderTexture(2, 0xFFFFFF));
                 IMonitorComponent component = getComponent(row, col);
-                if (component == null) continue;
+                if (component == null) {
+                    GTUtil.getLast(imageButtons).add(it -> {});
+                    continue;
+                }
                 ButtonWidget img = new ButtonWidget(startX + (16 * col), startY + (16 * row), 16, 16, textures, null);
                 Consumer<Iterator<IMonitorComponent>> callback = (it) -> {
                     if (!component.isMonitor()) return;
@@ -512,7 +514,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             it.remove();
                         }
 
-                        if (!selectedTarget.isEmpty() && selectedTarget.get(0) == component) {
+                        if (!selectedTargets.isEmpty() && selectedTargets.get(0) == component) {
                             ColorRectTexture rect = new ColorRectTexture(Color.BLUE);
                             textures.setTextures(rect, texture);
                         } else {
@@ -537,7 +539,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         if (it == null) {
                             selectedComponents.add(component);
                         }
-                        int color = selectedTarget.isEmpty() || selectedTarget.get(0) != component ?
+                        int color = selectedTargets.isEmpty() || selectedTargets.get(0) != component ?
                                 0xFF0000 : 0xFFAFAF;
 
                         if (it == null) selectedComponents.add(component);
@@ -557,18 +559,22 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     }
                 };
                 Runnable rightClickCallback = () -> {
-                    if (!selectedTarget.isEmpty()) {
-                        if (selectedTarget.get(0) == component) {
-                            selectedTarget.clear();
+                    if (!selectedTargets.isEmpty()) {
+                        if (selectedTargets.get(0) == component) {
+                            selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
                                 textures.setTextures(rect, texture);
-                            } else textures.setTextures(texture);
+                            } else {
+                                textures.setTextures(texture);
+                            }
                             dataSlotInput.setVisible(false);
                             return;
-                        } else rightClickCallbacks.get(selectedTarget.get(0).getPos()).run();
+                        } else {
+                            rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                        }
                     }
-                    selectedTarget.add(component);
+                    selectedTargets.add(component);
                     ColorRectTexture rect;
                     if (selectedComponents.contains(component)) {
                         rect = new ColorRectTexture(Color.PINK);
@@ -582,8 +588,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         for (MonitorGroup group : monitorGroups) {
                             for (IMonitorComponent c : selectedComponents) {
                                 if (group.contains(c.getPos())) {
-                                    if (selectedGroup == null || selectedGroup == group) selectedGroup = group;
-                                    else {
+                                    if (selectedGroup == null || selectedGroup == group) {
+                                        selectedGroup = group;
+                                    } else {
                                         selectedGroup = null;
                                         break;
                                     }
