@@ -120,6 +120,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return new CentralMonitorLogic(this);
     }
 
+    public @Nullable EnergyContainerList getFormedEnergyContainer() {
+        return this.energyContainer;
+    }
+
     public void tick() {
         Level level = getLevel();
         if (level == null) {

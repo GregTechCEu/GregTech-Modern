@@ -42,7 +42,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
         RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, machine.getFrontFacing());
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
         poseStack.translate(-machine.getRightDist() - .5f, -machine.getUpDist() - .5f, .01f);
-        if (machine.getRecipeLogic().isOn()) {
+        if (machine.getRecipeLogic().isActive()) {
             for (MonitorGroup group : machine.getMonitorGroups()) {
                 ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
                 if (itemStack.getItem() instanceof ComponentItem item) {

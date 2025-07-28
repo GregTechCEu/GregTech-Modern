@@ -4,29 +4,14 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
 
-import lombok.Getter;
-
 public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorLogic.class,
-            RecipeLogic.MANAGED_FIELD_HOLDER);
-
     private static final int BASE_UPDATE_INTERVAL = 8 * 20;
-
-    @Persisted
-    private int tick = 0;
-    @Persisted
-    @Getter
-    @DescSynced
-    private boolean isOn = false;
 
     public CentralMonitorLogic(IRecipeLogicMachine machine) {
         super(machine);
@@ -39,9 +24,14 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
     private boolean consumeEnergy() {
         int tier = Mth.clamp(getMachine().getTier(), GTValues.ULV, GTValues.MAX);
         long energyToDrain = GTValues.VA[tier];
-        long resultEnergy = getMachine().getEnergyContainer().getEnergyStored() - energyToDrain;
-        if (resultEnergy >= 0L && resultEnergy <= getMachine().getEnergyContainer().getEnergyCapacity()) {
-            getMachine().getEnergyContainer().removeEnergy(energyToDrain);
+        EnergyContainerList energyContainer = getMachine().getFormedEnergyContainer();
+        if (energyContainer == null) {
+            return false;
+        }
+
+        long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;
+        if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
+            energyContainer.removeEnergy(energyToDrain);
             return true;
         }
         return false;
@@ -49,7 +39,9 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
 
     private int getUpdateInterval() {
         int interval = BASE_UPDATE_INTERVAL;
-        for (int i = 0; i < getMachine().getTier(); i++) interval /= 2;
+        for (int i = 1; i < getMachine().getTier(); i++) {
+            interval /= 2;
+        }
         return Math.max(interval, 1);
     }
 
@@ -57,23 +49,18 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
     public void serverTick() {
         if (!getMachine().isFormed() || !isWorkingEnabled()) {
             setStatus(Status.IDLE);
-            return;
-        } else setStatus(Status.WORKING);
-        if (consumeEnergy()) {
-            isOn = true;
-            tick = (tick + 1) % getUpdateInterval();
-            if (tick == 0) {
+        } else if (consumeEnergy()) {
+            setStatus(Status.WORKING);
+            isActive = true;
+            progress = (progress + 1) % getUpdateInterval();
+            if (progress == 0) {
                 getMachine().tick();
             }
         } else {
-            isOn = false;
-            tick = Math.max(tick - 2, 1);
+            setStatus(Status.WAITING);
+            isActive = false;
+            progress = Math.max(progress - 2, 1);
         }
-    }
-
-    @Override
-    public int getProgress() {
-        return tick;
     }
 
     @Override
@@ -83,11 +70,6 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
 
     @Override
     public boolean isActive() {
-        return getMachine().isFormed();
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        return getMachine().isFormed() && this.isActive;
     }
 }
