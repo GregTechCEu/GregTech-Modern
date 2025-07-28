@@ -2,14 +2,13 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
@@ -115,7 +114,7 @@ public class GTResearchMachines {
             .tier(ZPM)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
-            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> {
                         model.addReplaceableTextures("bottom", "top", "side");
@@ -442,8 +441,8 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .modelProperty(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY, false)
-                .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
+                .modelProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, false)
+                .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                 .model(createHPCAPartModel(isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
                         GTCEu.id("block/overlay/machine/hpca/damaged" + (isAdvanced ? "_advanced" : ""))));

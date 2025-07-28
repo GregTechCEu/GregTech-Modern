@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
@@ -58,7 +59,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
-        setRenderState(getRenderState().setValue(ConverterMachine.FE_TO_EU_PROPERTY, feToEu));
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
         machine.notifyBlockUpdate();
     }
 

@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -244,7 +245,7 @@ public class GTMachineUtils {
                             case 3 -> VC[tier];
                             default -> -1;
                         })
-                        .modelProperty(TransformerMachine.TRANSFORM_UP_PROPERTY, false)
+                        .modelProperty(GTMachineModelProperties.IS_TRANSFORM_UP, false)
                         .model(createTransformerModel(baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 langName.isEmpty() ? "" : langName + " "))
@@ -293,7 +294,7 @@ public class GTMachineUtils {
                 .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
                 .recipeModifier(SimpleSteamMachine::recipeModifier)
-                .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
+                .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                 .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                 .register());
     }
@@ -325,7 +326,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .modelProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
+                        .modelProperty(GTMachineModelProperties.CHARGER_STATE, ChargerMachine.State.IDLE)
                         .model(GTMachineModels.createChargerModel())
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
@@ -351,7 +352,7 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
                                 amperage))
-                        .modelProperty(ConverterMachine.FE_TO_EU_PROPERTY, false)
+                        .modelProperty(GTMachineModelProperties.IS_FE_TO_EU, false)
                         .model(GTMachineModels.createConverterModel(amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
@@ -402,7 +403,7 @@ public class GTMachineUtils {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
-                .modelProperty(CrateMachine.TAPED_PROPERTY, false)
+                .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -591,7 +592,7 @@ public class GTMachineUtils {
                 .recoveryItems(
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
-                .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+                .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(texture,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
                         .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
