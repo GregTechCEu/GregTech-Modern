@@ -290,14 +290,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public Widget createUIWidget() {
         updateStructureDimensions();
         selectedComponents.clear();
-        WidgetGroup builder = (WidgetGroup) super.createUIWidget();
+        WidgetGroup builder = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         WidgetGroup main = new WidgetGroup();
-        DraggableScrollableWidgetGroup componentSelection = new DraggableScrollableWidgetGroup(0, 10, 200, 150);
+        DraggableScrollableWidgetGroup componentSelection = new DraggableScrollableWidgetGroup(0, 10, 200, 110);
         main.addWidget(componentSelection);
         WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
-        WidgetGroup groupConfig = new WidgetGroup(10, 60, 100, 100);
+        WidgetGroup groupConfig = new WidgetGroup(10, 10, 100, 100);
         groupConfig.setVisible(false);
-        ButtonWidget infoWidget = new ButtonWidget(160, 10, 20, 20, null);
+        ButtonWidget infoWidget = new ButtonWidget(200, 10, 20, 20, null);
         infoWidget.setButtonTexture(GuiTextures.INFO_ICON);
         infoWidget.setHoverTooltips(
                 GTStringUtils.toImmutable(LangHandler.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip")));
@@ -321,7 +321,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         .getString();
             }));
             for (int i = 0; i < 8; i++) {
-                SlotWidget slot = new SlotWidget(group.getPlaceholderSlotsHandler(), i, -38, 16 * i - 4);
+                SlotWidget slot = new SlotWidget(group.getPlaceholderSlotsHandler(), i, -38, 16 * i + 46);
                 slot.setHoverTooltips(GTStringUtils
                         .toImmutable(LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1)));
                 groupConfig.addWidget(slot);
@@ -360,7 +360,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         dataSlotInput.setVisible(false);
         builder.addWidget(dataSlotInput);
         Consumer<MonitorGroup> addGroupToList = group -> {
-            ButtonWidget label = new ButtonWidget(20, groupList.widgets.size() * 15 + 5, 80, 10, null);
+            ButtonWidget label = new ButtonWidget(20, groupList.widgets.size() * 15 + 5, 60, 10, null);
             TextTexture text = new TextTexture(group.getName());
             text.setType(TextTexture.TextType.LEFT);
             label.setButtonTexture(text);
@@ -463,7 +463,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         options.addWidget(createGroupButton);
         options.addWidget(setTargetButton);
         int startX = 20;
-        int startY = 59;
+        int startY = 0;
         for (int row = 0; row <= downDist + upDist; row++) {
             imageButtons.add(new ArrayList<>());
             for (int col = 0; col <= leftDist + rightDist; col++) {
@@ -570,6 +570,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
         builder.addWidget(main);
+        builder.setBackground(GuiTextures.DISPLAY);
         return builder;
     }
 

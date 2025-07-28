@@ -60,7 +60,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
-        CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 40);
+        CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
             ListTag listTag = new ListTag();
@@ -78,7 +78,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         builder.addWidget(editor);
         builder.addWidget(saveButton);
         Widget placeholderReference = GTCEu.PLACEHOLDER_HANDLER.getPlaceholderHandlerUI("");
-        placeholderReference.setSelfPosition(-130, -100);
+        placeholderReference.setSelfPosition(-100, -50);
         builder.addWidget(placeholderReference);
         return builder;
     }
