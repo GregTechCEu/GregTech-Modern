@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -59,7 +60,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
-                                   implements IMonitorComponent, IDataInfoProvider {
+                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -591,5 +592,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         return List.of(Component.literal("Size: %dx%d".formatted(leftDist + rightDist + 1, upDist + downDist + 1)));
+    }
+
+    @Override
+    public void onMachineRemoved() {
+        for (MonitorGroup group : monitorGroups) {
+            clearInventory(group.getItemStackHandler());
+            clearInventory(group.getPlaceholderSlotsHandler());
+        }
     }
 }
