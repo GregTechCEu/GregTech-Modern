@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -44,7 +43,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -178,34 +176,10 @@ public class ComputerMonitorCover extends CoverBehavior
                     group.clearAllWidgets();
                     group.addWidget(mainPage);
                 });
-        DraggableScrollableWidgetGroup placeholderReference = new DraggableScrollableWidgetGroup(280, 15, 100, 200);
-        Consumer<String> onSearch = (newSearch) -> {
-            setPlaceholderSearch(newSearch);
-            placeholderReference.clearAllWidgets();
-            int y = verticalPadding;
-            ArrayList<String> placeholders = new ArrayList<>(GTCEu.PLACEHOLDER_HANDLER.getAllPlaceholderNames());
-            placeholders.removeIf(s -> s == null || !s.contains(placeholderSearch));
-            placeholders.sort(String::compareTo);
-            for (String placeholder : placeholders) {
-                TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
-                placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
-                placeholderName.setHoverTooltips(GTStringUtils
-                        .toImmutable(LangHandler.getSingleOrMultiLang("gtceu.placeholder_info." + placeholder)));
-                placeholderReference.addWidget(placeholderName);
-                y += 15;
-            }
-        };
-        TextTextureWidget placeholderReferenceLabel = new TextTextureWidget(
-                280, 0,
-                160, 15,
-                GTStringUtils.componentsToString(
-                        LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.placeholder_reference")));
-        placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
-        mainPage.addWidget(placeholderReferenceLabel);
+        mainPage.addWidget(GTCEu.PLACEHOLDER_HANDLER.getPlaceholderHandlerUI(""));
         // TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
         // searchBox.setHoverTooltips("Search");
         // mainPage.addWidget(searchBox);
-        onSearch.accept("");
         IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval,
                 this::setUpdateInterval);
         updateIntervalInput.setMin(1);
@@ -217,7 +191,6 @@ public class ComputerMonitorCover extends CoverBehavior
                 .setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
         switchBack.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_displayed_text"));
         mainPage.addWidget(switchToFormatStringArgsPageButton);
-        mainPage.addWidget(placeholderReference);
         formatStringArgsPage.addWidget(switchBack);
         group.addWidget(mainPage);
         return group;
