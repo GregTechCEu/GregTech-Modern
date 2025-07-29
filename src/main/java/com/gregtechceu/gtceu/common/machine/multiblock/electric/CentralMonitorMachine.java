@@ -183,11 +183,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (level == null) return;
 
         Direction front = getFrontFacing();
+        Direction spin = getUpwardsFacing();
 
-        Direction left = RelativeDirection.LEFT.getActualDirection(front);
-        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
-        Direction up = RelativeDirection.UP.getActualDirection(front);
-        Direction down = RelativeDirection.DOWN.getActualDirection(front);
+        Direction left = RelativeDirection.LEFT.getRelative(front, spin, false);
+        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, false);
+        Direction up = RelativeDirection.UP.getRelative(front, spin, false);
+        Direction down = RelativeDirection.DOWN.getRelative(front, spin, false);
         BlockPos.MutableBlockPos posLeft = getPos().mutable().move(left);
         BlockPos.MutableBlockPos posRight = getPos().mutable().move(right);
         BlockPos.MutableBlockPos posUp = getPos().mutable().move(up);
