@@ -1623,6 +1623,11 @@ public class LangHandler {
         multiLang(provider, "gtceu.placeholder_info.bf",
                 "Usage:",
                 "  {bf <data_item_slot_index> <code>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.cmd",
+                "Executes Minecraft commands and returns their output.",
+                "Requires a data item bound to a player, bind any data item to yourself by right-clicking with it.",
+                "Usage:",
+                "  {cmd <slot_index> <command>} -> command output");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
@@ -1673,6 +1678,7 @@ public class LangHandler {
                 "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
+        provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
     }
 
     /**

@@ -16,7 +16,12 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -42,6 +47,19 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     }
 
     @Override
+    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+        if (player.isShiftKeyDown()) {
+            ItemStack stack = player.getItemInHand(usedHand);
+            stack.getOrCreateTag().putString("boundPlayerName", Component.Serializer.toJson(player.getDisplayName()));
+            int perm = 0;
+            while (player.hasPermissions(perm)) perm++;
+            stack.getOrCreateTag().putInt("boundPlayerPermLevel", perm - 1);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        }
+        return IInteractionItem.super.use(item, level, player, usedHand);
+    }
+
+    @Override
     public boolean requireDataBank() {
         return requireDataBank;
     }
@@ -49,6 +67,10 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
+        if (stack.getOrCreateTag().contains("boundPlayerName")) {
+            MutableComponent name = Component.Serializer.fromJson(stack.getOrCreateTag().getString("boundPlayerName"));
+            tooltipComponents.add(Component.translatable("gtceu.tooltip.player_bind", name));
+        }
         if (stack.getOrCreateTag().contains("targetX")) {
             tooltipComponents.add(Component.translatable(
                     "gtceu.tooltip.wireless_transmitter_bind",
