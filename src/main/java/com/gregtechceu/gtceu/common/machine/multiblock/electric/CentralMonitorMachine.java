@@ -70,6 +70,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
             .setMaxGlobalLimited(2)
+            .setMinGlobalLimited(1)
             .or(Predicates.abilities(PartAbility.DATA_ACCESS)
                     .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
                     .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
