@@ -246,10 +246,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     pattern[i].append('B'); // any valid block
             }
         }
-        String[] tmp = new String[upDist + downDist + 1];
-        for (int i = 0; i < upDist + downDist + 1; i++) tmp[i] = pattern[i].toString();
-        return FactoryBlockPattern.start(RelativeDirection.LEFT, RelativeDirection.UP, RelativeDirection.FRONT)
-                .aisle(tmp)
+
+        String[] aisle = new String[upDist + downDist + 1];
+        for (int i = 0; i < upDist + downDist + 1; i++) {
+            aisle[i] = pattern[i].toString();
+        }
+
+        return FactoryBlockPattern.start()
+                .aisle(aisle)
                 .where('B', BLOCK_PREDICATE)
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
