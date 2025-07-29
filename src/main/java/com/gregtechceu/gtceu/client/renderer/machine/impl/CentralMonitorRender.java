@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -42,6 +43,15 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
         poseStack.pushPose();
         RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, machine.getFrontFacing());
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
+        if (machine.getFrontFacing() == Direction.UP) {
+            poseStack.mulPose(switch (machine.getUpwardsFacing()) {
+                case SOUTH -> Axis.ZP.rotationDegrees(180);
+                case WEST -> Axis.ZP.rotationDegrees(270);
+                case EAST -> Axis.ZP.rotationDegrees(90);
+                case NORTH -> Axis.ZP.rotationDegrees(0);
+                default -> Axis.XP.rotationDegrees(0);
+            });
+        }
         poseStack.translate(-machine.getRightDist() - .5f, -machine.getUpDist() - .5f, .01f);
 
         if (machine.getRecipeLogic().isActive()) {
@@ -61,7 +71,6 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 }
             }
         }
-        float offset = 1 / 16f;
         for (int i = 0; i <= machine.getUpDist() + machine.getDownDist(); i++) {
             for (int j = 0; j <= machine.getLeftDist() + machine.getRightDist(); j++) {
                 IMonitorComponent component = machine.getComponent(i, j);

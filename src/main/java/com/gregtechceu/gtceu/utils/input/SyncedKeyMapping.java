@@ -47,7 +47,7 @@ public final class SyncedKeyMapping {
     private final Set<IKeyPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.keyMapping = mcKeyMapping.get().get();
         }
         // Does not need to be registered, will be registered by MC
@@ -57,7 +57,7 @@ public final class SyncedKeyMapping {
     }
 
     private SyncedKeyMapping(int keyCode) {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.keyCode = keyCode;
         }
         // Does not need to be registered, is not a configurable key mapping
@@ -67,7 +67,7 @@ public final class SyncedKeyMapping {
     }
 
     private SyncedKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode, String category) {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.keyMapping = (KeyMapping) createKeyMapping(nameKey, ctx, keyCode, category);
         }
         this.needsRegister = true;

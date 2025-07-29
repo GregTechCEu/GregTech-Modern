@@ -207,11 +207,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     }
 
     @Override
-    public boolean isMonitor() {
-        return false;
-    }
-
-    @Override
     public IGuiTexture getComponentIcon() {
         return GuiTextures.BUTTON_CHECK; // temporary
     }

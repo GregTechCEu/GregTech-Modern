@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -10,7 +11,6 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -181,13 +181,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void updateStructureDimensions() {
         Level level = getLevel();
         if (level == null) return;
-        if (getFrontFacing() == Direction.UP) { // disable upwards-facing monitors
-            leftDist = 0;
-            rightDist = 0;
-            upDist = 0;
-            downDist = 0;
-            return;
-        }
 
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();
@@ -291,13 +284,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         col = leftDist + rightDist - col;
         BlockPos pos = getPos().relative(left, leftDist - col).relative(up, upDist - row);
 
-        if (level.getBlockEntity(pos) instanceof IMonitorComponent component) {
-            return component;
-        } else if (MetaMachine.getMachine(level, pos) instanceof IMonitorComponent component) {
-            return component;
-        } else {
-            return null;
-        }
+        return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
 
     public boolean isMonitor(int row, int col) {
@@ -383,7 +370,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             groupConfig.setVisible(true);
         };
         builder.addWidget(groupConfig);
-        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 80, 80);
+        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 70, 80);
 
         List<List<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
         Map<BlockPos, Runnable> rightClickCallbacks = new HashMap<>();
@@ -645,11 +632,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         builder.addWidget(main);
         builder.setBackground(GuiTextures.DISPLAY);
         return builder;
-    }
-
-    @Override
-    public boolean isMonitor() {
-        return false;
     }
 
     @Override
