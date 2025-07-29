@@ -31,6 +31,7 @@ public class ImageCache {
                     return stream.readAllBytes();
                 } catch (IOException e) {
                     GTCEu.LOGGER.error("Could not load image {}", url, e);
+                    downloading = false;
                     return NULL_MARKER;
                 } finally {
                     GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
