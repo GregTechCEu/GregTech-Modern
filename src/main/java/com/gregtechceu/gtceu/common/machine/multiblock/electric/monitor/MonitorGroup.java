@@ -64,6 +64,7 @@ public class MonitorGroup {
         for (BlockPos pos : monitorPositions) {
             yLevelsSet.add(toRelative.apply(pos).getY());
         }
+        if (row < 0) row += yLevelsSet.size();
         int y = yLevelsSet.intStream().sorted().toArray()[row];
         List<BlockPos> rowPositions = new ArrayList<>();
         for (BlockPos pos : monitorPositions) {
