@@ -47,7 +47,7 @@ public final class SyncedKeyMapping {
     private final Set<IKeyPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
-            if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.keyMapping = mcKeyMapping.get().get();
         }
         // Does not need to be registered, will be registered by MC
