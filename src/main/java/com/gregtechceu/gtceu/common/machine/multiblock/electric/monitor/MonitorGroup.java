@@ -102,23 +102,23 @@ public class MonitorGroup {
 
     public @Nullable BlockPos getTarget(Level level) {
         if (target == null) return null;
-        if (MetaMachine.getMachine(level, target) instanceof IMonitorComponent component) {
-            if (component.getDataItems() != null) {
-                ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
-                CompoundTag tag = stack.getTag();
-                if (tag == null) {
-                    return null;
-                }
-                int x = tag.getInt("targetX");
-                int y = tag.getInt("targetY");
-                int z = tag.getInt("targetZ");
-                Direction face = Direction.byName(tag.getString("face"));
-                if (face == null) {
-                    return null;
-                }
-                setTargetCoverSide(face);
-                return new BlockPos(x, y, z);
+
+        IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
+        if (component != null && component.getDataItems() != null) {
+            ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
+            CompoundTag tag = stack.getTag();
+            if (tag == null) {
+                return null;
             }
+            int x = tag.getInt("targetX");
+            int y = tag.getInt("targetY");
+            int z = tag.getInt("targetZ");
+            Direction face = Direction.byName(tag.getString("face"));
+            if (face == null) {
+                return null;
+            }
+            setTargetCoverSide(face);
+            return new BlockPos(x, y, z);
         }
         return target;
     }

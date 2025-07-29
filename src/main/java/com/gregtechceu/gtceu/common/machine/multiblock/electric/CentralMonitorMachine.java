@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -291,13 +292,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         col = leftDist + rightDist - col;
         BlockPos pos = getPos().relative(left, leftDist - col).relative(up, upDist - row);
 
-        if (level.getBlockEntity(pos) instanceof IMonitorComponent component) {
-            return component;
-        } else if (MetaMachine.getMachine(level, pos) instanceof IMonitorComponent component) {
-            return component;
-        } else {
-            return null;
-        }
+        return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
 
     public boolean isMonitor(int row, int col) {
