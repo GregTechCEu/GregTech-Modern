@@ -74,7 +74,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             .or(Predicates.abilities(PartAbility.DATA_ACCESS)
                     .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
                     .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
-                    .setMaxGlobalLimited(2))
+                    .setMaxGlobalLimited(4))
             .or(Predicates.machines(GTMachines.HULL))
             .or(Predicates.machines(GTMachines.MONITOR))
             .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
