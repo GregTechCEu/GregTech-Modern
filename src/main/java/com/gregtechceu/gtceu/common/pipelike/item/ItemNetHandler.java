@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
 
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -27,11 +26,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
 
 public class ItemNetHandler implements IItemHandlerModifiable {
 
@@ -395,7 +394,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (tile == null) return null;
 
         ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
-                    handlerFacing.getOpposite());
+                handlerFacing.getOpposite());
         if (coverable == null) return null;
         return coverable.getCoverAtSide(handlerFacing.getOpposite());
     }
