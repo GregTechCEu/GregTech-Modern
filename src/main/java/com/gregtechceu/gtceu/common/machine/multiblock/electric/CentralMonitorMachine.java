@@ -377,7 +377,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             groupConfig.setVisible(true);
         };
         builder.addWidget(groupConfig);
-        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 80, 80);
+        DraggableScrollableWidgetGroup groupList = new DraggableScrollableWidgetGroup(-100, 50, 70, 80);
 
         List<List<Consumer<Iterator<IMonitorComponent>>>> imageButtons = new ArrayList<>();
         Map<BlockPos, Runnable> rightClickCallbacks = new HashMap<>();

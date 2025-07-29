@@ -61,7 +61,6 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 }
             }
         }
-        float offset = 1 / 16f;
         for (int i = 0; i <= machine.getUpDist() + machine.getDownDist(); i++) {
             for (int j = 0; j <= machine.getLeftDist() + machine.getRightDist(); j++) {
                 IMonitorComponent component = machine.getComponent(i, j);
