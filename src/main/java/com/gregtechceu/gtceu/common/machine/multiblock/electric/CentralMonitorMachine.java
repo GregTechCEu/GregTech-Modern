@@ -643,11 +643,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public boolean isMonitor() {
-        return false;
-    }
-
-    @Override
     public IGuiTexture getComponentIcon() {
         return ResourceTexture.fromSpirit(GTCEu.id("block/multiblock/network_switch/overlay_front_active"));
     }

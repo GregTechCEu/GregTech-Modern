@@ -115,11 +115,6 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     @Override
-    public boolean isMonitor() {
-        return false;
-    }
-
-    @Override
     public IGuiTexture getComponentIcon() {
         return GuiTextures.BUTTON_CHECK; // temporary (until there's a texture that is not fully 16x16 for this)
     }

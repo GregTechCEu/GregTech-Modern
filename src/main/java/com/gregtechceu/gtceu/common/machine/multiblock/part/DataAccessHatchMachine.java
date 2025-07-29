@@ -195,11 +195,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public boolean isMonitor() {
-        return false;
-    }
-
-    @Override
     public IGuiTexture getComponentIcon() {
         return new ResourceTexture(GTCEu.id("textures/item/data_module.png")).getSubTexture(0, 0, 1, 1 / 13f);
     }
