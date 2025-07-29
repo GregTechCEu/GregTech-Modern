@@ -66,26 +66,24 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
+        TextFieldWidget scaleInput = new TextFieldWidget(
+                -50, 47,
+                40, 10,
+                null,
+                null);
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
             ListTag listTag = new ListTag();
             editor.getLines().forEach(line -> listTag.add(StringTag.valueOf(line)));
             CompoundTag tag2 = stack.getOrCreateTag();
             tag2.put("formatStringLines", listTag);
+            try {
+                tag2.putDouble("scale", Double.parseDouble(scaleInput.getCurrentString()));
+            } catch (NumberFormatException ignored) {}
             stack.setTag(tag2);
             GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
-        TextFieldWidget scaleInput = new TextFieldWidget(
-                -50, 47,
-                40, 10,
-                null,
-                scale -> {
-                    try {
-                        stack.getOrCreateTag().putDouble("scale", Double.parseDouble(scale));
-                        GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
-                    } catch (NumberFormatException ignored) {}
-                });
         List<Boolean> tmp = new ArrayList<>();
         Supplier<String> scaleInputSupplier = () -> {
             if (tmp.isEmpty()) tmp.add(true);
