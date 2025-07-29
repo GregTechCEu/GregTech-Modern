@@ -70,11 +70,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
-            .setMaxGlobalLimited(2)
-            .setMinGlobalLimited(1)
-            .or(Predicates.abilities(PartAbility.DATA_ACCESS)
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
+            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
+            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
                     .setMaxGlobalLimited(4))
             .or(Predicates.machines(GTMachines.HULL))
             .or(Predicates.machines(GTMachines.MONITOR))
@@ -184,12 +183,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (level == null) return;
 
         Direction front = getFrontFacing();
-        Direction spin = getUpwardsFacing();
 
-        Direction left = RelativeDirection.LEFT.getRelative(front, spin, false);
-        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, false);
-        Direction up = RelativeDirection.UP.getRelative(front, spin, false);
-        Direction down = RelativeDirection.DOWN.getRelative(front, spin, false);
+        Direction left = RelativeDirection.LEFT.getActualDirection(front);
+        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
+        Direction up = RelativeDirection.UP.getActualDirection(front);
+        Direction down = RelativeDirection.DOWN.getActualDirection(front);
         BlockPos.MutableBlockPos posLeft = getPos().mutable().move(left);
         BlockPos.MutableBlockPos posRight = getPos().mutable().move(right);
         BlockPos.MutableBlockPos posUp = getPos().mutable().move(up);
@@ -231,12 +229,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public BlockPattern getPattern() {
         updateStructureDimensions();
-        if (leftDist + rightDist + upDist + downDist == 0) {
+        if (leftDist + rightDist < 1 || upDist + downDist < 1) {
             leftDist = 3;
             rightDist = 0;
             upDist = 1;
             downDist = 1;
         }
+
         StringBuilder[] pattern = new StringBuilder[upDist + downDist + 1];
         for (int i = 0; i < upDist + downDist + 1; i++) {
             pattern[i] = new StringBuilder(leftDist + rightDist + 1);
