@@ -641,6 +641,11 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.gear, GTMaterials.TungstenSteel), 'P', CustomTags.LuV_CIRCUITS, 'A',
                 GTMachines.HULL[GTValues.LuV].asStack(), 'C',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.TungstenSteel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "central_monitor",
+                GTMultiMachines.CENTRAL_MONITOR.asStack(), "CMC", "SAE", "FFF", 'C',
+                CustomTags.MV_CIRCUITS, 'M', GTItems.COVER_SCREEN, 'S', GTItems.SENSOR_MV,
+                'A', GTMachines.HULL[GTValues.MV].asStack(), 'E', GTItems.EMITTER_MV,
+                'F', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_bronze_boiler",
                 GTMultiMachines.LARGE_BOILER_BRONZE.asStack(), "PSP", "SAS", "PSP", 'P',

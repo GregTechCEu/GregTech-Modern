@@ -53,6 +53,46 @@ public class ComputerRecipes {
                 .duration(400).EUt(6000)
                 .addMaterialInfo(true, true).save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("wireless_transmitter_cover")
+                .inputItems(plate, EnderPearl)
+                .inputItems(foil, AnnealedCopper)
+                .inputItems(EMITTER_MV)
+                .inputItems(wireFine, Platinum)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(COVER_WIRELESS_TRANSMITTER)
+                .duration(1000).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("text_module")
+                .inputItems(PLASTIC_CIRCUIT_BOARD)
+                .inputItems(foil, Steel, 4)
+                .inputItems(wireFine, RedAlloy, 4)
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(TEXT_MODULE)
+                .duration(1000).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("image_module")
+                .inputItems(PLASTIC_CIRCUIT_BOARD)
+                .inputItems(foil, Electrum, 4)
+                .inputItems(wireFine, Silver, 4)
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(IMAGE_MODULE)
+                .duration(1000).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("monitor_casing")
+                .inputItems(HULL[MV])
+                .inputItems(COVER_SCREEN)
+                .inputItems(plate, Glass, 4)
+                .inputItems(wireFine, RedAlloy, 4)
+                .inputFluids(Glowstone, L)
+                .outputItems(MONITOR, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .duration(1000).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)
                 .inputItems(plate, Iridium, 6)
