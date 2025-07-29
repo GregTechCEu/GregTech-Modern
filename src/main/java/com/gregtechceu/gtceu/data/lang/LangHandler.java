@@ -1628,6 +1628,10 @@ public class LangHandler {
                 "Requires a data item bound to a player, bind any data item to yourself by right-clicking with it.",
                 "Usage:",
                 "  {cmd <slot_index> <command>} -> command output");
+        multiLang(provider, "gtceu.placeholder_info.tm",
+                "Returns the ™ symbol",
+                "Usage:",
+                "  {tm} -> the ™ symbol");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");

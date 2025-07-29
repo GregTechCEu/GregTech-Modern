@@ -623,5 +623,12 @@ public class GTPlaceholders {
                 } else throw new NotSupportedException();
             }
         });
+        PlaceholderHandler.addPlaceholder(new Placeholder("tm") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
+                return MultiLineComponent.literal("™");
+            }
+        });
     }
 }
