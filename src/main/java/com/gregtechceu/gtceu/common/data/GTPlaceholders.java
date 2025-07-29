@@ -27,6 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -35,10 +36,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 public class GTPlaceholders {
 
@@ -610,7 +608,7 @@ public class GTPlaceholders {
                     };
                     CommandSourceStack source = new CommandSourceStack(
                             customSource,
-                            ctx.pos().getCenter(),
+                            ctx.pos() == null ? Vec3.ZERO : ctx.pos().getCenter(),
                             Vec2.ZERO,
                             serverLevel,
                             perm,
@@ -628,6 +626,26 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
                 return MultiLineComponent.literal("™");
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("formatInt") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                long n = PlaceholderUtils.toLong(args.get(0));
+                Map<Long, String> suffixes = Map.of(
+                        1L, "",
+                        1000L, "K",
+                        1000000L, "M",
+                        1000000000L, "B",
+                        1000000000000L, "T");
+                long max = 1;
+                for (Long i : suffixes.keySet()) {
+                    if (n >= i && max < i) max = i;
+                }
+                return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
             }
         });
     }

@@ -136,4 +136,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         }
         return out;
     }
+
+    public long toLong() {
+        if (this.isEmpty()) return 0;
+        if (this.size() > 1) throw new NumberFormatException(this.toString());
+        return Long.parseLong(this.get(0).getString());
+    }
 }

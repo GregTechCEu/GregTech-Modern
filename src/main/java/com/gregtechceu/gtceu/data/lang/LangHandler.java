@@ -1632,6 +1632,11 @@ public class LangHandler {
                 "Returns the ™ symbol",
                 "Usage:",
                 "  {tm} -> the ™ symbol");
+        multiLang(provider, "gtceu.placeholder_info.formatInt",
+                "Returns a string representation of the provided integer",
+                "Example: {formatInt 1236457} -> 1.24M",
+                "Usage:",
+                "  {formatInt <arg>} -> string representation of the int");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");

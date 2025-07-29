@@ -38,4 +38,12 @@ public class PlaceholderUtils {
         if (!allowMore) checkArgs(args, args_num);
         if (args.size() < args_num) throw new NotEnoughArgsException(args_num, args.size());
     }
+
+    public static long toLong(MultiLineComponent component) throws InvalidNumberException {
+        try {
+            return component.toLong();
+        } catch (NumberFormatException e) {
+            throw new InvalidNumberException(component.toString());
+        }
+    }
 }
