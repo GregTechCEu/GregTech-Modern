@@ -17,6 +17,10 @@ repositories {
         url = "https://maven.firstdarkdev.xyz/snapshots"
     }
 
+    exclusiveContent { // Configuration
+        forRepository { maven { url = "https://api.repsy.io/mvn/toma/public" } }
+        filter { includeGroup("dev.toma.configuration")}
+    }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
         filter { includeGroup("dev.latvian.mods")}
