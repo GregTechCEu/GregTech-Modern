@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+
 public class ItemNetHandler implements IItemHandlerModifiable {
 
     @Getter
@@ -42,8 +43,6 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     private final Direction facing;
     private final Object2IntOpenHashMap<FacingPos> simulatedTransfersGlobalRoundRobin = new Object2IntOpenHashMap<>();
     private int simulatedTransfers = 0;
-
-    private final ItemStackHandler testHandler = new ItemStackHandler(1);
 
     public ItemNetHandler(ItemPipeNet net, ItemPipeBlockEntity pipe, Direction facing) {
         this.network = net;
@@ -289,14 +288,13 @@ public class ItemNetHandler implements IItemHandlerModifiable {
                 routePath.getTargetFacing());
 
         if (pipeCover != null) {
-            testHandler.setStackInSlot(0, stack.copy());
-            IItemHandlerModifiable itemHandler = pipeCover.getItemHandlerCap(testHandler);
-            if (itemHandler == null || (itemHandler != testHandler &&
+            var defaultHandler = new ItemStackHandler(1);
+            defaultHandler.setStackInSlot(0, stack.copy());
+            IItemHandlerModifiable itemHandler = pipeCover.getItemHandlerCap(defaultHandler);
+            if (itemHandler == null || (itemHandler != defaultHandler &&
                     (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
-                testHandler.setStackInSlot(0, ItemStack.EMPTY);
                 return stack;
             }
-            testHandler.setStackInSlot(0, ItemStack.EMPTY);
         }
         IItemHandler neighbourHandler = routePath.getHandler(network.getLevel());
         if (pipeCover instanceof RobotArmCover robotArm && robotArm.getIo() == IO.OUT) {
