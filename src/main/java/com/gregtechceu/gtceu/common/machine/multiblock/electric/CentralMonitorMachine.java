@@ -181,13 +181,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void updateStructureDimensions() {
         Level level = getLevel();
         if (level == null) return;
-        if (getFrontFacing() == Direction.UP) { // disable upwards-facing monitors
-            leftDist = 0;
-            rightDist = 0;
-            upDist = 0;
-            downDist = 0;
-            return;
-        }
 
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();

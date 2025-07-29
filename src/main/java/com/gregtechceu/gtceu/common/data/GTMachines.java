@@ -1043,6 +1043,7 @@ public class GTMachines {
             .tier(MV)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/machine/part/computer_monitor")))
+            .allowExtendedFacing(true)
             .register();
 
     public static void init() {
