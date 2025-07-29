@@ -1040,7 +1040,7 @@ public class GTMachines {
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(OUT, 4096,
             PartAbility.OUTPUT_LASER);
     public static final MachineDefinition MONITOR = REGISTRATE.machine("monitor", MonitorPartMachine::new)
-            .sidedOverlayCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"), GTCEu.id("block/cover/computer_monitor"))
+            .sidedOverlayCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"), GTCEu.id("block/cover/computer_overlay"))
             .register();
 
     public static void init() {
