@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 public class GTPlaceholders {
 
@@ -506,6 +508,59 @@ public class GTPlaceholders {
                     case "!=" -> MultiLineComponent.literal(a != b ? 1 : 0);
                     default -> throw new InvalidArgsException();
                 };
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("bf") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                int capacity = -1;
+                if (stack.getItem() instanceof ComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof IDataItem dataComponent) {
+                            capacity = dataComponent.getCapacity();
+                            break;
+                        }
+                    }
+                }
+                if (capacity == -1) throw new MissingItemException("any data item", slot);
+                ListTag tag = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
+                int operationsLeft = 1000;
+                int p = 0;
+                String code = args.get(1).toString();
+                Stack<Integer> loops = new Stack<>();
+                for (int i = 0; i < code.length() && operationsLeft > 0; i++) {
+                    while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
+                    if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
+                    try {
+                        switch (code.charAt(i)) {
+                            case '+' -> tag.set(p,
+                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) + 1)));
+                            case '-' -> tag.set(p,
+                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) - 1)));
+                            case '>' -> p++;
+                            case '<' -> p--;
+                            case '[' -> loops.push(i);
+                            case ']' -> {
+                                if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
+                                else i = loops.peek();
+                            }
+                            default -> throw new PlaceholderException(Component
+                                    .translatable("gtceu.computer_monitor_cover.error.bf_invalid", i).getString());
+                        }
+                    } catch (InvalidNumberException e) {
+                        throw new PlaceholderException(Component
+                                .translatable("gtceu.computer_monitor_cover.error.bf_invalid_num", p, i).getString());
+                    }
+                    operationsLeft--;
+                }
+                return MultiLineComponent.empty();
             }
         });
     }

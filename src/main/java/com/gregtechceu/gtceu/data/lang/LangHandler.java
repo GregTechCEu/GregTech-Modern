@@ -1620,6 +1620,9 @@ public class LangHandler {
                 "Returns a 1 or 0 based on the expression in it's arguments",
                 "Usage:",
                 "  {cmp <a> <operator> <b>} -> 1 or 0, operator is one of >, <, >=, <=, ==, !=");
+        multiLang(provider, "gtceu.placeholder_info.bf",
+                "Usage:",
+                "  {bf <data_item_slot_index> <code>} -> empty string");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
@@ -1637,6 +1640,9 @@ public class LangHandler {
                 "Expected %s to be between %d and %d (inclusive), got %d");
         provider.add("gtceu.computer_monitor_cover.error.invalid_args", "Invalid arguments!");
         provider.add("gtceu.computer_monitor_cover.error.missing_item", "Missing %s in slot %d!");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid_num",
+                "Invalid number at index %d when processing symbol number %d");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid", "Invalid character at %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.main_textbox_tooltip",
                 "Input string to display on line %d here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
