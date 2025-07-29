@@ -480,7 +480,15 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             for (MonitorGroup group : monitorGroups) {
                 for (IMonitorComponent component : selectedComponents) group.remove(component.getPos());
             }
-            monitorGroups.removeIf(MonitorGroup::isEmpty);
+            Iterator<MonitorGroup> itg = monitorGroups.iterator();
+            while (itg.hasNext()) {
+                MonitorGroup group = itg.next();
+                if (group.isEmpty()) {
+                    clearInventory(group.getItemStackHandler());
+                    clearInventory(group.getPlaceholderSlotsHandler());
+                    itg.remove();
+                }
+            }
             groupList.clearAllWidgets();
             monitorGroups.forEach(addGroupToList);
 
