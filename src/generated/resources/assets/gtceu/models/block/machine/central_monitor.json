@@ -15,7 +15,8 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front"
         }
       }
     },
@@ -23,7 +24,8 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front"
         }
       }
     },
@@ -31,7 +33,9 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/central_monitor/overlay_front_active_emissive"
         }
       }
     },
@@ -39,7 +43,9 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/central_monitor/overlay_front_active_emissive"
         }
       }
     },
@@ -47,7 +53,8 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front"
         }
       }
     },
@@ -55,7 +62,8 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front"
         }
       }
     },
@@ -63,7 +71,9 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/central_monitor/overlay_front_active_emissive"
         }
       }
     },
@@ -71,7 +81,9 @@
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
+          "all": "gtceu:block/casings/solid/machine_casing_frost_proof",
+          "overlay_front": "gtceu:block/multiblock/central_monitor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/central_monitor/overlay_front_active_emissive"
         }
       }
     }

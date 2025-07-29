@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -69,11 +70,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     public static final TraceabilityPredicate BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
-            .setMaxGlobalLimited(2)
-            .setMinGlobalLimited(1)
-            .or(Predicates.abilities(PartAbility.DATA_ACCESS)
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4))
-                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
+            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
+            .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
+                    .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
                     .setMaxGlobalLimited(4))
             .or(Predicates.machines(GTMachines.HULL))
             .or(Predicates.machines(GTMachines.MONITOR))
@@ -230,12 +230,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public BlockPattern getPattern() {
         updateStructureDimensions();
-        if (leftDist + rightDist + upDist + downDist == 0) {
+        if (leftDist + rightDist < 1 || upDist + downDist < 1) {
             leftDist = 3;
             rightDist = 0;
             upDist = 1;
             downDist = 1;
         }
+
         StringBuilder[] pattern = new StringBuilder[upDist + downDist + 1];
         for (int i = 0; i < upDist + downDist + 1; i++) {
             pattern[i] = new StringBuilder(leftDist + rightDist + 1);
@@ -246,10 +247,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     pattern[i].append('B'); // any valid block
             }
         }
-        String[] tmp = new String[upDist + downDist + 1];
-        for (int i = 0; i < upDist + downDist + 1; i++) tmp[i] = pattern[i].toString();
-        return FactoryBlockPattern.start(RelativeDirection.LEFT, RelativeDirection.UP, RelativeDirection.FRONT)
-                .aisle(tmp)
+
+        String[] aisle = new String[upDist + downDist + 1];
+        for (int i = 0; i < upDist + downDist + 1; i++) {
+            aisle[i] = pattern[i].toString();
+        }
+
+        return FactoryBlockPattern.start()
+                .aisle(aisle)
                 .where('B', BLOCK_PREDICATE)
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
@@ -306,16 +311,23 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
+    public void addDisplayText(List<Component> textList) {
+        MultiblockDisplayText.builder(textList, isFormed())
+                .addWorkingStatusLine();
+        getDefinition().getAdditionalDisplay().accept(this, textList);
+    }
+
+    @Override
     public Widget createUIWidget() {
         updateStructureDimensions();
         selectedComponents.clear();
-        WidgetGroup builder = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+        WidgetGroup builder = (WidgetGroup) super.createUIWidget();
 
         WidgetGroup main = new WidgetGroup();
         DraggableScrollableWidgetGroup componentSelection = new DraggableScrollableWidgetGroup(0, 10, 200, 110);
         main.addWidget(componentSelection);
         WidgetGroup options = new WidgetGroup(-100, 20, 60, 20);
-        WidgetGroup groupConfig = new WidgetGroup(10, 10, 100, 100);
+        WidgetGroup groupConfig = new WidgetGroup(10, 30, 100, 100);
         groupConfig.setVisible(false);
 
         ButtonWidget infoWidget = new ButtonWidget(200, 10, 20, 20, null);
@@ -497,7 +509,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         options.addWidget(createGroupButton);
         options.addWidget(setTargetButton);
         int startX = 20;
-        int startY = 0;
+        int startY = 30;
         for (int row = 0; row <= downDist + upDist; row++) {
             imageButtons.add(new ArrayList<>());
             for (int col = 0; col <= leftDist + rightDist; col++) {
@@ -630,7 +642,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
         builder.addWidget(main);
-        builder.setBackground(GuiTextures.DISPLAY);
         return builder;
     }
 
