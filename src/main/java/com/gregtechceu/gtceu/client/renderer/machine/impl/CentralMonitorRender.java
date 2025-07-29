@@ -95,4 +95,33 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
         vertexConsumer.vertex(pose, maxX, minY, z).color(color).endVertex();
         vertexConsumer.vertex(pose, minX, minY, z).color(color).endVertex();
     }
+
+    @Override
+    public boolean shouldRenderOffScreen(CentralMonitorMachine machine) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(CentralMonitorMachine machine, Vec3 cameraPos) {
+        return machine.isFormed();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(CentralMonitorMachine machine) {
+        BlockPos pos = machine.getPos();
+        BoundingBox bounds = new BoundingBox(
+                pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
+                pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+
+        for (int row = 0; row <= machine.getUpDist() + machine.getDownDist(); row++) {
+            for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
+                IMonitorComponent component = machine.getComponent(row, col);
+                if (component != null && component.isMonitor()) {
+                    // noinspection deprecation
+                    bounds.encapsulate(component.getPos());
+                }
+            }
+        }
+        return AABB.of(bounds);
+    }
 }
