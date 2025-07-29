@@ -15,18 +15,24 @@ import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -561,6 +567,60 @@ public class GTPlaceholders {
                     operationsLeft--;
                 }
                 return MultiLineComponent.empty();
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("cmd") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                if (!stack.getOrCreateTag().contains("boundPlayerPermLevel"))
+                    throw new MissingItemException("any data item bound to player", slot);
+                int perm = stack.getOrCreateTag().getInt("boundPlayerPermLevel");
+                if (ctx.level() instanceof ServerLevel serverLevel) {
+                    MinecraftServer server = serverLevel.getServer();
+                    MultiLineComponent output = MultiLineComponent.empty();
+                    CommandSource customSource = new CommandSource() {
+
+                        @Override
+                        public void sendSystemMessage(@NotNull Component message) {
+                            output.append(List.of(message));
+                            output.appendNewline();
+                        }
+
+                        @Override
+                        public boolean acceptsSuccess() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean acceptsFailure() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean shouldInformAdmins() {
+                            return false;
+                        }
+                    };
+                    CommandSourceStack source = new CommandSourceStack(
+                            customSource,
+                            ctx.pos().getCenter(),
+                            Vec2.ZERO,
+                            serverLevel,
+                            perm,
+                            "Placeholder processor",
+                            Component.literal("Placeholder processor"),
+                            server,
+                            null);
+                    server.getCommands().performPrefixedCommand(source, args.get(1).toString());
+                    return output;
+                } else throw new NotSupportedException();
             }
         });
     }
