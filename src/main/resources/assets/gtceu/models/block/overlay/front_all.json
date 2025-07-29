@@ -1,0 +1,24 @@
+{
+    "parent": "gtceu:block/cube/tinted/all",
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#all", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#all", "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#all", "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#all", "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#all", "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#all", "cullface": "east",  "tintindex": 1 }
+            }
+        },
+        {
+            "from": [  0,  0, -0.01 ],
+            "to":   [ 16, 16, -0.01 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
+            }
+        }
+    ]
+}
