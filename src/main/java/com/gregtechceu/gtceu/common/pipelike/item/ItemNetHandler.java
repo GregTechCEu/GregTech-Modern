@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
 
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -35,9 +35,9 @@ import java.util.*;
 public class ItemNetHandler implements IItemHandlerModifiable {
 
     @Getter
-    private ItemPipeNet net;
-    private ItemPipeBlockEntity pipe;
-    private final Level world;
+    @Setter
+    private ItemPipeNet network;
+    private final ItemPipeBlockEntity pipe;
     @Getter
     private final Direction facing;
     private final Object2IntOpenHashMap<FacingPos> simulatedTransfersGlobalRoundRobin = new Object2IntOpenHashMap<>();
@@ -46,28 +46,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     private final ItemStackHandler testHandler = new ItemStackHandler(1);
 
     public ItemNetHandler(ItemPipeNet net, ItemPipeBlockEntity pipe, Direction facing) {
-        this.net = net;
+        this.network = net;
         this.pipe = pipe;
         this.facing = facing;
-        this.world = pipe.getPipeLevel();
-    }
-
-    private long getLevelTime() {
-        return net.getLevel().getGameTime();
-    }
-
-    public void updateNetwork(ItemPipeNet net) {
-        this.net = net;
-    }
-
-    public void updatePipe(ItemPipeBlockEntity pipe) {
-        this.pipe = pipe;
-    }
-
-    private void copyTransferred() {
-        simulatedTransfers = pipe.getTransferredItems();
-        simulatedTransfersGlobalRoundRobin.clear();
-        simulatedTransfersGlobalRoundRobin.putAll(pipe.getTransferred());
     }
 
     /// Attempt to insert an item stack onto the pipe network.
@@ -76,11 +57,14 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) return stack;
 
-        if (net == null || pipe == null || pipe.isInValid() || pipe.isBlocked(facing)) {
+        if (network == null || pipe == null || pipe.isInValid() || pipe.isBlocked(facing)) {
             return stack;
         }
 
-        copyTransferred();
+        simulatedTransfers = pipe.getTransferredItems();
+        simulatedTransfersGlobalRoundRobin.clear();
+        simulatedTransfersGlobalRoundRobin.putAll(pipe.getTransferred());
+
         CoverBehavior pipeCover = pipe.getCoverContainer().getCoverAtSide(facing);
         CoverBehavior tileCover = getCoverOnNeighbour(pipe.getPipePos(), facing);
         ConveyorCover conveyor = null;
@@ -91,10 +75,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (!checkImportCover(tileCover, false, stack)) return stack;
 
         if (pipeCover instanceof ConveyorCover pipeConveyor) conveyor = pipeConveyor;
-
         if (tileCover instanceof ConveyorCover tileConveyor) conveyor = tileConveyor;
 
-        List<ItemRoutePath> routePaths = net.getNetData(pipe.getPipePos(), facing);
+        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing);
         if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
@@ -102,13 +85,8 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
         switch (conveyor.getDistributionMode()) {
             case INSERT_FIRST -> stack = distributeHighestPriority(routePathsCopy, stack, simulate);
-            case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, routePaths.size(), simulate);
-            case ROUND_ROBIN_PRIO -> {
-                stack = distributeUsingWeightedPriority(routePathsCopy, stack, simulate);
-                if (!stack.isEmpty() && !routePathsCopy.isEmpty())
-                    stack = distributeUsingWeightedPriority(routePathsCopy, stack, simulate);
-
-            }
+            case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, simulate);
+            case ROUND_ROBIN_PRIO -> stack = distributeUsingWeightedPriority(routePathsCopy, stack, simulate);
         }
 
         return stack;
@@ -169,6 +147,8 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
         ItemStack remainder = stack.copy();
         remainder.setCount(count - inserted);
+        if (!stack.isEmpty() && !copy.isEmpty()) remainder = distributeUsingWeightedPriority(copy, stack, simulate);
+
         return remainder;
     }
 
@@ -180,7 +160,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
      * @param simulate simulate
      * @return remainder
      */
-    private ItemStack distributeEqually(List<ItemRoutePath> copy, ItemStack stack, int dest, boolean simulate) {
+    private ItemStack distributeEqually(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
         List<EnhancedRoundRobinData> transferred = new ArrayList<>();
         IntList steps = new IntArrayList();
         int min = Integer.MAX_VALUE;
@@ -230,7 +210,6 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         outer:
         while (amount > 0 && !transferredCopy.isEmpty()) {
             Iterator<EnhancedRoundRobinData> iterator = transferredCopy.iterator();
-            int i = 0;
             while (iterator.hasNext()) {
                 EnhancedRoundRobinData data = iterator.next();
                 if (nextStep >= 0 && data.transferred >= nextStep)
@@ -259,7 +238,6 @@ public class ItemNetHandler implements IItemHandlerModifiable {
                 if ((amount -= toInsert) == 0) {
                     break outer;
                 }
-                i++;
             }
 
             for (EnhancedRoundRobinData data : transferredCopy) {
@@ -320,7 +298,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             }
             testHandler.setStackInSlot(0, ItemStack.EMPTY);
         }
-        IItemHandler neighbourHandler = routePath.getHandler(net.getLevel());
+        IItemHandler neighbourHandler = routePath.getHandler(network.getLevel());
         if (pipeCover instanceof RobotArmCover robotArm && robotArm.getIo() == IO.OUT) {
             return insertOverRobotArm(neighbourHandler, robotArm, stack, simulate, allowed, ignoreLimit);
         }
@@ -413,14 +391,15 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     public CoverBehavior getCoverOnNeighbour(BlockPos pos, Direction handlerFacing) {
+        var level = pipe.getLevel();
+        if (level == null) return null;
         BlockEntity tile = pipe.getLevel().getBlockEntity(pos.relative(handlerFacing));
-        if (tile != null) {
-            ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
+        if (tile == null) return null;
+
+        ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
                     handlerFacing.getOpposite());
-            if (coverable == null) return null;
-            return coverable.getCoverAtSide(handlerFacing.getOpposite());
-        }
-        return null;
+        if (coverable == null) return null;
+        return coverable.getCoverAtSide(handlerFacing.getOpposite());
     }
 
     private int checkTransferable(float rate, int amount, boolean simulate) {
@@ -446,27 +425,11 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         }
     }
 
-    private boolean contains(ItemRoutePath handler, boolean simulate) {
-        if (simulate) {
-            return simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos());
-        } else {
-            return pipe.getTransferred().containsKey(handler.toFacingPos());
-        }
-    }
-
     private int didTransferTo(ItemRoutePath handler, boolean simulate) {
         if (simulate) {
             return simulatedTransfersGlobalRoundRobin.getOrDefault(handler.toFacingPos(), 0);
         } else {
             return pipe.getTransferred().getOrDefault(handler.toFacingPos(), 0);
-        }
-    }
-
-    private void resetTransferred(boolean simulated) {
-        if (simulated) {
-            simulatedTransfersGlobalRoundRobin.clear();
-        } else {
-            pipe.resetTransferred();
         }
     }
 
