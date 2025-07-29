@@ -239,7 +239,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         for (int i = 0; i < upDist + downDist + 1; i++) {
             pattern[i] = new StringBuilder(leftDist + rightDist + 1);
             for (int j = 0; j < leftDist + rightDist + 1; j++) {
-                if (i == upDist && j == rightDist)
+                if (i == downDist && j == rightDist)
                     pattern[i].append('C'); // controller
                 else
                     pattern[i].append('B'); // any valid block
