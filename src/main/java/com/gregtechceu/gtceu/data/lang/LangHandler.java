@@ -1612,6 +1612,10 @@ public class LangHandler {
         multiLang(provider, "gtceu.gui.computer_monitor_cover.placeholder_reference",
                 "All placeholders:",
                 "(hover for more info)");
+        multiLang(provider, "gtceu.placeholder_info.subList",
+                "Returns arguments from with indexes from l (inclusive) to r (exclusive) (starting from 0)",
+                "Usage:",
+                "  {subList <left> <right> [arg0] [arg1] ...} -> all arguments with indexes from l to r separated by spaces");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");

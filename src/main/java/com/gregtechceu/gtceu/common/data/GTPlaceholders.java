@@ -473,5 +473,21 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal((char) PlaceholderUtils.toInt(args.get(0)));
             }
         });
+        PlaceholderHandler.addPlaceholder(new Placeholder("subList") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2, true);
+                int l = PlaceholderUtils.toInt(args.get(0));
+                int r = PlaceholderUtils.toInt(args.get(1));
+                PlaceholderUtils.checkRange("start index", 0, args.size(), l);
+                PlaceholderUtils.checkRange("end index", 0, args.size(), r);
+                MultiLineComponent out = MultiLineComponent.empty();
+                for (int i = l; i < r - 1; i++) out.append(args.get(i)).append(' ');
+                out.append(args.get(r - 1));
+                return out;
+            }
+        });
     }
 }
