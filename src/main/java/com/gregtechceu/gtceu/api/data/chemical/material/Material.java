@@ -516,11 +516,15 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
-        return getProperty(key) != null;
+        return properties.hasProperty(key);
     }
 
     public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
         return properties.getProperty(key);
+    }
+
+    public <T extends IMaterialProperty> void removeProperty(PropertyKey<T> key) {
+        properties.removeProperty(key);
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
