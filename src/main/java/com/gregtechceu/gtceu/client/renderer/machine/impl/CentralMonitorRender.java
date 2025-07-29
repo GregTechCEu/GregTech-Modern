@@ -12,21 +12,27 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, CentralMonitorRender> {
 
+    // spotless:off
     public static final Codec<CentralMonitorRender> CODEC = Codec.unit(CentralMonitorRender::new);
-    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<>(
-            CODEC);
+    public static final DynamicRenderType<CentralMonitorMachine, CentralMonitorRender> TYPE = new DynamicRenderType<>(CODEC);
+    // spotless:on
+    private static final float BACKGROUND_OFFSET_XY = 1 / 16f;
+    private static final float BACKGROUND_OFFSET_Z = -0.01f;
+    private static final float SCREEN_OFFSET_Z = 0.03f;
 
     public CentralMonitorRender() {}
 
@@ -38,21 +44,10 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
     @Override
     public void render(CentralMonitorMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!machine.isFormed()) return;
-
         poseStack.pushPose();
-        RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, machine.getFrontFacing());
-        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
-        if (machine.getFrontFacing() == Direction.UP) {
-            poseStack.mulPose(switch (machine.getUpwardsFacing()) {
-                case SOUTH -> Axis.ZP.rotationDegrees(180);
-                case WEST -> Axis.ZP.rotationDegrees(270);
-                case EAST -> Axis.ZP.rotationDegrees(90);
-                case NORTH -> Axis.ZP.rotationDegrees(0);
-                default -> Axis.XP.rotationDegrees(0);
-            });
-        }
-        poseStack.translate(-machine.getRightDist() - .5f, -machine.getUpDist() - .5f, .01f);
+        RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, machine.getFrontFacing());
+        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), machine.getUpwardsFacing());
+        poseStack.translate(-machine.getRightDist() - 0.5f, -machine.getUpDist() - 0.5f, SCREEN_OFFSET_Z);
 
         if (machine.getRecipeLogic().isActive()) {
             for (MonitorGroup group : machine.getMonitorGroups()) {
@@ -71,61 +66,33 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 }
             }
         }
-        for (int i = 0; i <= machine.getUpDist() + machine.getDownDist(); i++) {
-            for (int j = 0; j <= machine.getLeftDist() + machine.getRightDist(); j++) {
-                IMonitorComponent component = machine.getComponent(i, j);
-                if (component == null) continue;
-                if (component.isMonitor()) {
-                    renderRect(
-                            poseStack, buffer, packedLight, packedOverlay, 0,
-                            machine.isMonitor(i, j - 1) ? j : j + 1 / 16f,
-                            machine.isMonitor(i - 1, j) ? i : i + 1 / 16f,
-                            machine.isMonitor(i, j + 1) ? j + 1 : j + 1 - 1 / 16f,
-                            machine.isMonitor(i + 1, j) ? i + 1 : i + 1 - 1 / 16f,
-                            -.005f);
-                }
+
+        PoseStack.Pose pose = poseStack.last();
+        for (int row = 0; row <= machine.getUpDist() + machine.getDownDist(); row++) {
+            for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
+                IMonitorComponent component = machine.getComponent(row, col);
+                if (component == null || !component.isMonitor()) continue;
+
+                float minX = col, minY = row, maxX = minX + 1, maxY = minY + 1;
+                if (machine.isMonitor(row, col - 1)) minX += BACKGROUND_OFFSET_XY;
+                if (machine.isMonitor(row - 1, col)) minY += BACKGROUND_OFFSET_XY;
+                if (machine.isMonitor(row, col + 1)) maxX -= BACKGROUND_OFFSET_XY;
+                if (machine.isMonitor(row + 1, col)) maxY -= BACKGROUND_OFFSET_XY;
+
+                renderRect(pose, buffer, 0, minX, minY, maxX, maxY, BACKGROUND_OFFSET_Z);
             }
         }
         poseStack.popPose();
     }
 
-    public void renderRect(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay,
-                           int color, float minX, float minY, float maxX, float maxY, float z) {
-        poseStack.pushPose();
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.solid());
+    public void renderRect(PoseStack.Pose last, MultiBufferSource bufferSource, int color,
+                           float minX, float minY, float maxX, float maxY, float z) {
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.gui());
+        Matrix4f pose = last.pose();
 
-        Matrix4f pose = poseStack.last().pose();
-        Matrix3f normal = poseStack.last().normal();
-
-        vertexConsumer.vertex(pose, minX, maxY, z)
-                .color(color)
-                .uv(0, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(normal, 0, 0, 1)
-                .endVertex();
-        vertexConsumer.vertex(pose, maxX, maxY, z)
-                .color(color)
-                .uv(0, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(normal, 0, 0, 1)
-                .endVertex();
-        vertexConsumer.vertex(pose, maxX, minY, z)
-                .color(color)
-                .uv(0, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(normal, 0, 0, 1)
-                .endVertex();
-        vertexConsumer.vertex(pose, minX, minY, z)
-                .color(color)
-                .uv(0, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(normal, 0, 0, 1)
-                .endVertex();
-
-        poseStack.popPose();
+        vertexConsumer.vertex(pose, minX, maxY, z).color(color).endVertex();
+        vertexConsumer.vertex(pose, maxX, maxY, z).color(color).endVertex();
+        vertexConsumer.vertex(pose, maxX, minY, z).color(color).endVertex();
+        vertexConsumer.vertex(pose, minX, minY, z).color(color).endVertex();
     }
 }
