@@ -489,5 +489,24 @@ public class GTPlaceholders {
                 return out;
             }
         });
+        PlaceholderHandler.addPlaceholder(new Placeholder("cmp") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 3);
+                double a = PlaceholderUtils.toDouble(args.get(0));
+                double b = PlaceholderUtils.toDouble(args.get(2));
+                return switch (args.get(1).toString()) {
+                    case ">" -> MultiLineComponent.literal(a > b ? 1 : 0);
+                    case "<" -> MultiLineComponent.literal(a < b ? 1 : 0);
+                    case ">=" -> MultiLineComponent.literal(a >= b ? 1 : 0);
+                    case "<=" -> MultiLineComponent.literal(a <= b ? 1 : 0);
+                    case "==" -> MultiLineComponent.literal(a == b ? 1 : 0);
+                    case "!=" -> MultiLineComponent.literal(a != b ? 1 : 0);
+                    default -> throw new InvalidArgsException();
+                };
+            }
+        });
     }
 }
