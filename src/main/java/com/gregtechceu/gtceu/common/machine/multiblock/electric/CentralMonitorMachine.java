@@ -389,7 +389,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         int[] dataSlot = new int[2]; // list to be able to modify it in lambdas
         dataSlot[0] = 1; // the slot (index starts from 1)
         dataSlot[1] = 9; // amount of slots
-        IntInputWidget dataSlotInput = new IntInputWidget(120, 20, 60, 20, () -> dataSlot[0],
+        IntInputWidget dataSlotInput = new IntInputWidget(120, 20, 60, -20, () -> dataSlot[0],
                 n -> dataSlot[0] = Mth.clamp(n, 1, dataSlot[1]));
         dataSlotInput.setVisible(false);
         builder.addWidget(dataSlotInput);
