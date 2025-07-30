@@ -18,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -47,8 +46,8 @@ public class GTHoeItem extends HoeItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
-                        Properties properties) {
+    public GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                     Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -60,11 +59,6 @@ public class GTHoeItem extends HoeItem implements IGTTool {
         definition$init();
     }
 
-    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                   IGTToolDefinition toolStats, Item.Properties properties) {
-        return new GTHoeItem(toolType, tier, material, toolStats, properties);
-    }
-
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return definition$initCapabilities(stack, nbt);
@@ -73,11 +67,6 @@ public class GTHoeItem extends HoeItem implements IGTTool {
     @Override
     public ItemStack getDefaultInstance() {
         return get();
-    }
-
-    @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
     }
 
     @Override

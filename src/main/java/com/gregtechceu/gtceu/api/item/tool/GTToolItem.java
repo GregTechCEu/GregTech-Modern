@@ -51,8 +51,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     @Getter
     private IGTToolDefinition toolStats;
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
-                         Properties properties) {
+    public GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
+                      Properties properties) {
         super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
         this.toolType = toolType;
         this.material = material;
@@ -64,11 +64,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         definition$init();
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                    IGTToolDefinition definition, Properties properties) {
-        return new GTToolItem(toolType, tier, material, definition, properties);
-    }
-
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return definition$initCapabilities(stack, nbt);
@@ -77,11 +72,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     @Override
     public ItemStack getDefaultInstance() {
         return get();
-    }
-
-    @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
     }
 
     @Override

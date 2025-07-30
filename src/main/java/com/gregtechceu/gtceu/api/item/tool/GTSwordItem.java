@@ -59,11 +59,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
         definition$init();
     }
 
-    public static GTSwordItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                     IGTToolDefinition toolStats, Item.Properties properties) {
-        return new GTSwordItem(toolType, tier, material, toolStats, properties);
-    }
-
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return definition$initCapabilities(stack, nbt);
@@ -72,11 +67,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     @Override
     public ItemStack getDefaultInstance() {
         return get();
-    }
-
-    @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
     }
 
     @Override

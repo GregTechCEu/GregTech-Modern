@@ -46,7 +46,7 @@ public class GTToolType {
             .toolTag(ItemTags.SWORDS)
             .harvestTag(BlockTags.SWORD_EFFICIENT)
             .toolStats(b -> b.attacking().attackDamage(3.0F).attackSpeed(-2.4F))
-            .constructor(GTSwordItem::create)
+            .constructor(GTSwordItem::new)
             .toolClassNames("sword")
             .defaultActions(ToolActions.DEFAULT_SWORD_ACTIONS)
             .materialAmount(2 * GTValues.M)
@@ -66,7 +66,7 @@ public class GTToolType {
             .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F)
                     .behaviors(GrassPathBehavior.INSTANCE, DouseCampfireBehavior.INSTANCE))
-            .constructor(GTShovelItem::create)
+            .constructor(GTShovelItem::new)
             .toolClassNames("shovel")
             .defaultActions(ToolActions.SHOVEL_DIG)
             .materialAmount(GTValues.M)
@@ -79,7 +79,7 @@ public class GTToolType {
                     .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE,
                             LogStripBehavior.INSTANCE,
                             ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
-            .constructor(GTAxeItem::create)
+            .constructor(GTAxeItem::new)
             .toolClassNames("axe")
             .materialAmount(3 * GTValues.M)
             .defaultActions(ToolActions.AXE_DIG)
@@ -88,7 +88,7 @@ public class GTToolType {
             .toolTag(ItemTags.HOES)
             .harvestTag(BlockTags.MINEABLE_WITH_HOE)
             .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F).behaviors(HoeGroundBehavior.INSTANCE))
-            .constructor(GTHoeItem::create)
+            .constructor(GTHoeItem::new)
             .toolClassNames("hoe")
             .defaultActions(ToolActions.HOE_DIG)
             .materialAmount(2 * GTValues.M)
@@ -125,7 +125,7 @@ public class GTToolType {
                     .aoe(2, 2, 2)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
-            .constructor(GTHoeItem::create)
+            .constructor(GTHoeItem::new)
             .toolClassNames("scythe")
             .toolClasses(GTToolType.HOE)
             .defaultActions(ToolActions.HOE_DIG)
@@ -239,7 +239,7 @@ public class GTToolType {
             .toolTag(CustomTags.KNIVES)
             .harvestTag(CustomTags.MINEABLE_WITH_KNIFE)
             .toolStats(b -> b.crafting().attacking().attackSpeed(3.0F))
-            .constructor(GTSwordItem::create)
+            .constructor(GTSwordItem::new)
             .symbol('k')
             .toolClasses(GTToolType.SWORD)
             .defaultActions(GTToolActions.KNIFE_DIG)
@@ -249,7 +249,7 @@ public class GTToolType {
             .toolTag(CustomTags.BUTCHERY_KNIVES)
             .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F)
                     .defaultEnchantment(Enchantments.MOB_LOOTING, 3))
-            .constructor(GTSwordItem::create)
+            .constructor(GTSwordItem::new)
             .materialAmount(4 * GTValues.M)
             .build();
     // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
@@ -582,7 +582,7 @@ public class GTToolType {
         @Setter
         private char symbol = ' ';
         @Setter
-        private ToolConstructor constructor = GTToolItem::create;
+        private ToolConstructor constructor = GTToolItem::new;
         @Setter
         private ResourceLocation modelLocation;
         private SoundEntry sound;

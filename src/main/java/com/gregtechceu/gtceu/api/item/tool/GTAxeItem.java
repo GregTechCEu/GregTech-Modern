@@ -18,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class GTAxeItem extends AxeItem implements IGTTool {
 
@@ -48,8 +46,8 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTAxeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
-                        Properties properties) {
+    public GTAxeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                     Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -61,11 +59,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
         definition$init();
     }
 
-    public static GTAxeItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                   IGTToolDefinition toolStats, Item.Properties properties) {
-        return new GTAxeItem(toolType, tier, material, toolStats, properties);
-    }
-
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return definition$initCapabilities(stack, nbt);
@@ -74,11 +67,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Override
     public ItemStack getDefaultInstance() {
         return get();
-    }
-
-    @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
     }
 
     @Override
@@ -135,11 +123,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Override
     public boolean playSoundOnBlockDestroy() {
         return toolType.playSoundOnBlockDestroy;
-    }
-
-    @Override
-    public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return Set.of(this.toolType);
     }
 
     @Override
