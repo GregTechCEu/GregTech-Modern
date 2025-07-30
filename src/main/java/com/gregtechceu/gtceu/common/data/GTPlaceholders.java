@@ -25,6 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -580,9 +581,17 @@ public class GTPlaceholders {
                 if (!stack.getOrCreateTag().contains("boundPlayerPermLevel"))
                     throw new MissingItemException("any data item bound to player", slot);
                 int perm = stack.getOrCreateTag().getInt("boundPlayerPermLevel");
+                Component displayName = Component.Serializer
+                        .fromJson(stack.getOrCreateTag().getString("boundPlayerName"));
+                if (displayName == null) displayName = Component.literal("Placeholder processor");
                 if (ctx.level() instanceof ServerLevel serverLevel) {
                     MinecraftServer server = serverLevel.getServer();
                     MultiLineComponent output = MultiLineComponent.empty();
+                    UUID playerUUID = null;
+                    try {
+                        playerUUID = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
+                    } catch (RuntimeException ignored) {}
+                    ServerPlayer player = playerUUID == null ? null : server.getPlayerList().getPlayer(playerUUID);
                     CommandSource customSource = new CommandSource() {
 
                         @Override
@@ -612,10 +621,10 @@ public class GTPlaceholders {
                             Vec2.ZERO,
                             serverLevel,
                             perm,
-                            "Placeholder processor",
-                            Component.literal("Placeholder processor"),
+                            displayName.getString(),
+                            displayName,
                             server,
-                            null);
+                            player);
                     server.getCommands().performPrefixedCommand(source, args.get(1).toString());
                     return output;
                 } else throw new NotSupportedException();

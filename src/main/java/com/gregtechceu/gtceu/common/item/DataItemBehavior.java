@@ -54,6 +54,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             int perm = 0;
             while (player.hasPermissions(perm)) perm++;
             stack.getOrCreateTag().putInt("boundPlayerPermLevel", perm - 1);
+            stack.getOrCreateTag().putString("boundPlayerUUID", player.getStringUUID());
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
