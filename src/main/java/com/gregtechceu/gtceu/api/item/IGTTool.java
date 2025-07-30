@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -21,7 +20,6 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -188,51 +186,37 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         return get(defaultMaxCharge, defaultMaxCharge);
     }
 
-    default Material getToolMaterial(ItemStack stack) {
-        if (stack.getItem() instanceof IGTTool tool) {
-            return tool.getMaterial();
-        }
-
-        return GTMaterials.Iron;
+    default @Nullable ToolProperty getToolProperty() {
+        return getMaterial().getProperty(PropertyKey.TOOL);
     }
 
-    @Nullable
-    default ToolProperty getToolProperty(ItemStack stack) {
-        return getToolMaterial(stack).getProperty(PropertyKey.TOOL);
-    }
-
-    @Nullable
-    default DustProperty getDustProperty(ItemStack stack) {
-        return getToolMaterial(stack).getProperty(PropertyKey.DUST);
-    }
-
-    default float getMaterialToolSpeed(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialToolSpeed() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getHarvestSpeed();
     }
 
-    default float getMaterialAttackDamage(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialAttackDamage() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getAttackDamage();
     }
 
-    default float getMaterialAttackSpeed(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialAttackSpeed() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getAttackSpeed();
     }
 
-    default int getMaterialDurability(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialDurability() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getDurability() * toolProperty.getDurabilityMultiplier();
     }
 
-    default int getMaterialEnchantability(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialEnchantability() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getEnchantability();
     }
 
-    default int getMaterialHarvestLevel(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialHarvestLevel() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getHarvestLevel();
     }
 
@@ -261,7 +245,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         if (toolTag.contains(TOOL_SPEED_KEY, Tag.TAG_FLOAT)) {
             return toolTag.getFloat(TOOL_SPEED_KEY);
         }
-        float toolSpeed = getToolStats().getEfficiencyMultiplier(stack) * getMaterialToolSpeed(stack) +
+        float toolSpeed = getToolStats().getEfficiencyMultiplier(stack) * getMaterialToolSpeed() +
                 getToolStats().getBaseEfficiency(stack);
         toolTag.putFloat(TOOL_SPEED_KEY, toolSpeed);
         return toolSpeed;
@@ -276,7 +260,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         float attackDamage = 0;
         // represents a tool that should always have an attack damage value of 0
         if (baseDamage != Float.MIN_VALUE) {
-            attackDamage = getMaterialAttackDamage(stack) + baseDamage;
+            attackDamage = getMaterialAttackDamage() + baseDamage;
         }
         toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
         return attackDamage;
@@ -287,7 +271,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         if (toolTag.contains(ATTACK_SPEED_KEY, Tag.TAG_FLOAT)) {
             return toolTag.getFloat(ATTACK_SPEED_KEY);
         }
-        float attackSpeed = getMaterialAttackSpeed(stack) + getToolStats().getAttackSpeed(stack);
+        float attackSpeed = getMaterialAttackSpeed() + getToolStats().getAttackSpeed(stack);
         toolTag.putFloat(ATTACK_SPEED_KEY, attackSpeed);
         return attackSpeed;
     }
@@ -299,7 +283,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         }
 
         IGTToolDefinition toolStats = getToolStats();
-        int maxDurability = getMaterialDurability(stack);
+        int maxDurability = getMaterialDurability();
         int builderDurability = (int) (toolStats.getBaseDurability(stack) * toolStats.getDurabilityMultiplier(stack));
 
         // If there is no durability set in the tool builder, multiply the builder AOE multiplier to the material
@@ -316,7 +300,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         if (toolTag.contains(ENCHANTABILITY_KEY, Tag.TAG_INT)) {
             return toolTag.getInt(ENCHANTABILITY_KEY);
         }
-        int enchantability = getMaterialEnchantability(stack);
+        int enchantability = getMaterialEnchantability();
         toolTag.putInt(ENCHANTABILITY_KEY, enchantability);
         return enchantability;
     }
@@ -326,7 +310,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         if (toolTag.contains(HARVEST_LEVEL_KEY, Tag.TAG_INT)) {
             return toolTag.getInt(HARVEST_LEVEL_KEY);
         }
-        int harvestLevel = getMaterialHarvestLevel(stack) + getToolStats().getBaseQuality(stack);
+        int harvestLevel = getMaterialHarvestLevel() + getToolStats().getBaseQuality(stack);
         toolTag.putInt(HARVEST_LEVEL_KEY, harvestLevel);
         return harvestLevel;
     }
@@ -420,11 +404,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         // this is needed so enchantment merging works when both tools are full durability
         if (toRepair.getDamageValue() == 0) return false;
         if (repair.getItem() instanceof IGTTool gtTool) {
-            return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
+            return this.getMaterial() == gtTool.getMaterial();
         }
+
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
         if (entry.isEmpty()) return false;
-        if (entry.material() == getToolMaterial(toRepair)) {
+
+        if (entry.material() == this.getMaterial()) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
                 return entry.tagPrefix() == TagPrefix.planks;
@@ -770,7 +756,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         // repair info
         if (!tagCompound.getBoolean(UNBREAKABLE_KEY)) {
             if (GTUtil.isShiftDown()) {
-                Material material = getToolMaterial(stack);
+                Material material = getMaterial();
 
                 Collection<Component> repairItems = new ArrayList<>();
                 if (!VanillaRecipeHelper.isMaterialWood(material)) {
@@ -846,7 +832,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
             }
         }
 
-        ToolProperty property = getToolProperty(stack);
+        ToolProperty property = this.getToolProperty();
         if (property == null) return false;
 
         // Check for any special enchantments specified by the material of this Tool
@@ -856,11 +842,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
         // Check for any additional Enchantment Types added in the builder
         return getToolStats().isEnchantable(stack) && getToolStats().canApplyEnchantment(stack, enchantment);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    default int getColor(ItemStack stack, int tintIndex) {
-        return tintIndex % 2 == 1 ? getToolMaterial(stack).getMaterialRGB() : 0xFFFFFF;
     }
 
     // Sound Playing
