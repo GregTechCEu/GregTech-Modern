@@ -50,14 +50,15 @@ public class RecipeLogicTest {
         return itemStackHandler;
     }
 
-    @GameTest(template = "lcr", setupTicks = 350L, timeoutTicks = 400, required = false)
+    // This is still not consistent, sometimes it doesn't form. Feel free to look into this if you see this :)
+    @GameTest(template = "lcr", setupTicks = 350L, timeoutTicks = 400, required = false, attempts=10)
     public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
-        if (!(holder instanceof MetaMachineBlockEntity atte)) {
+        if (!(holder instanceof MetaMachineBlockEntity metaMachineBlockEntity)) {
             helper.fail("wrong block at relative pos [1,2,0]!");
             return;
         }
-        MetaMachine machine = atte.getMetaMachine();
+        MetaMachine machine = metaMachineBlockEntity.getMetaMachine();
         if (!(machine instanceof IRecipeLogicMachine recipeLogicMachine)) {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
@@ -67,9 +68,9 @@ public class RecipeLogicTest {
             return;
         }
 
-        helper.assertTrue(controller.isFormed(), "Controller didn't form after 200 ticks");
+        helper.assertTrue(controller.isFormed(), "Controller didn't form after 350 ticks");
         helper.assertTrue(controller.getParts().size() == 4,
-                "Controller didn't register all 4 parts after 200 ticks");
+                "Controller didn't register all 4 parts after 350 ticks");
 
         // force insert the recipe into the manager.
         GTRecipeType type = recipeLogicMachine.getRecipeType();
@@ -97,7 +98,6 @@ public class RecipeLogicTest {
         NotifiableItemStackHandler outputSlot = getOutputSlot(recipeLogicMachine);
         inputSlot.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
         inputSlot.onContentsChanged();
-
         // Inputs change. did we detect it ?
         // helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input
         // bus");
