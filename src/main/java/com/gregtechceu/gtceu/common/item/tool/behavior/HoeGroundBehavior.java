@@ -77,7 +77,7 @@ public class HoeGroundBehavior implements IToolBehavior {
         }
 
         if (tilled) {
-            level.playSound(player, blocks.get(0), SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;

@@ -39,6 +39,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
     @NotNull
     @Override
     public InteractionResult onItemUse(UseOnContext context) {
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
@@ -58,7 +59,13 @@ public class HarvestCropsBehavior implements IToolBehavior {
             harvested |= harvestBlockRoutine(blockPos, context);
             if (stack.isEmpty()) break;
         }
-        return harvested ? InteractionResult.sidedSuccess(context.getLevel().isClientSide) : InteractionResult.PASS;
+
+        if (harvested) {
+            BlockState state = level.getBlockState(pos);
+            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        return InteractionResult.PASS;
     }
 
     private static boolean isBlockCrops(UseOnContext context) {
@@ -93,7 +100,6 @@ public class HarvestCropsBehavior implements IToolBehavior {
                     Block.popResource(level, pos, drop);
                 }
             }
-            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
             level.setBlock(pos, cropBlock.getStateForAge(0), Block.UPDATE_ALL_IMMEDIATE);
             ToolHelper.damageItem(stack, player);
             return true;

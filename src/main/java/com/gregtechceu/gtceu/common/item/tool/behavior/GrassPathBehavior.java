@@ -73,7 +73,7 @@ public class GrassPathBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(player, blocks.get(0), SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
