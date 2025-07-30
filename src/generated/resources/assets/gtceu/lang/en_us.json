@@ -4518,6 +4518,7 @@
   "item.gtceu.tool.tooltip.attack_damage": "%s §cAttack Damage",
   "item.gtceu.tool.tooltip.attack_speed": "%s §9Attack Speed",
   "item.gtceu.tool.tooltip.crafting_uses": "%s §aCrafting Uses",
+  "item.gtceu.tool.tooltip.default_enchantments": "§5Default Enchantments:",
   "item.gtceu.tool.tooltip.general_uses": "%s §bDurability",
   "item.gtceu.tool.tooltip.harvest_level": "§eHarvest Level %s",
   "item.gtceu.tool.tooltip.harvest_level_extra": "§eHarvest Level %s §f(%s§f)",

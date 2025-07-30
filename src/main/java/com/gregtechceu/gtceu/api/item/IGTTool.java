@@ -444,53 +444,40 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
     }
 
     default Map<Enchantment, Integer> definition$getAllEnchantments(ItemStack stack) {
-        CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(INNATE_ENCHANTMENTS_KEY, Tag.TAG_LIST)) {
-            ListTag innateEnchantmentsTag = toolTag.getList(INNATE_ENCHANTMENTS_KEY, Tag.TAG_COMPOUND);
-            if (innateEnchantmentsTag.isEmpty()) {
-                return EnchantmentHelper.getEnchantments(stack);
-            }
+        var defaultEnchantments = getDefaultEnchantments(stack);
 
-            var existing = EnchantmentHelper.deserializeEnchantments(innateEnchantmentsTag);
-            return IGTTool.joinEnchantments(stack, existing);
+        if (defaultEnchantments.isEmpty()) {
+            return EnchantmentHelper.getEnchantments(stack);
+        }
+        return joinEnchantments(stack, defaultEnchantments);
+    }
+
+    default Map<Enchantment, Integer> getDefaultEnchantments(ItemStack stack) {
+        CompoundTag toolTag = getToolTag(stack);
+
+        if (toolTag.contains(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_LIST)) {
+            ListTag defaultsTag = toolTag.getList(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_COMPOUND);
+            return EnchantmentHelper.deserializeEnchantments(defaultsTag);
         }
 
         // Get tool and material enchantments
-        Object2IntMap<Enchantment> innateEnchantments = new Object2IntLinkedOpenHashMap<>();
-        innateEnchantments.putAll(getToolStats().getDefaultEnchantments(stack));
-        innateEnchantments.putAll(this.getMaterial().getProperty(PropertyKey.TOOL).getEnchantments());
+        Object2IntMap<Enchantment> defaultEnchantments = new Object2IntLinkedOpenHashMap<>();
+        defaultEnchantments.putAll(getToolStats().getDefaultEnchantments(stack));
+        defaultEnchantments.putAll(this.getMaterial().getProperty(PropertyKey.TOOL).getEnchantments());
 
-        setInnateEnchantments(innateEnchantments, stack);
-        return IGTTool.joinEnchantments(stack, innateEnchantments);
-    }
-
-    private void setInnateEnchantments(Map<Enchantment, Integer> enchantments, ItemStack stack) {
-        CompoundTag toolTag = getToolTag(stack);
+        // save them to the tool NBT tag
         ListTag enchantList = new ListTag();
-
-        for (var entry : enchantments.entrySet()) {
+        for (var entry : defaultEnchantments.object2IntEntrySet()) {
             Enchantment enchantment = entry.getKey();
             if (enchantment == null || !this.definition$canApplyAtEnchantingTable(stack, enchantment)) {
                 continue;
             }
-            int level = entry.getValue();
+            int level = entry.getIntValue();
             enchantList.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level));
         }
+        toolTag.put(DEFAULT_ENCHANTMENTS_KEY, enchantList);
 
-        toolTag.put(INNATE_ENCHANTMENTS_KEY, enchantList);
-    }
-
-    private static Map<Enchantment, Integer> joinEnchantments(ItemStack stack, Map<Enchantment, Integer> enchantments) {
-        // this returns the enchantments stored in the normal NBT tag, so it won't be an infinite loop
-        var original = EnchantmentHelper.getEnchantments(stack);
-        if (enchantments.isEmpty()) {
-            return original;
-        }
-        Object2IntMap<Enchantment> joined = new Object2IntLinkedOpenHashMap<>(original);
-        for (var entry : enchantments.entrySet()) {
-            joined.mergeInt(entry.getKey(), entry.getValue(), Integer::max);
-        }
-        return joined;
+        return defaultEnchantments;
     }
 
     default int definition$getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
@@ -803,7 +790,17 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         }
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
+        }
 
+        var defaultEnchants = getDefaultEnchantments(stack);
+        if (!defaultEnchants.isEmpty()) {
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
+            for (var entry : defaultEnchants.entrySet()) {
+                Enchantment enchant = entry.getKey();
+                if (enchant == null) continue;
+
+                tooltip.add(enchant.getFullname(entry.getValue()));
+            }
         }
     }
 

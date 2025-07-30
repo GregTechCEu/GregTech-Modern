@@ -263,6 +263,7 @@ public class LangHandler {
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
+        provider.add("item.gtceu.tool.tooltip.default_enchantments", "§5Default Enchantments:");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
