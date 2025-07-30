@@ -48,6 +48,7 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class Material implements Comparable<Material> {
 
@@ -156,6 +157,11 @@ public class Material implements Comparable<Material> {
 
     public String getName() {
         return materialInfo.resourceLocation.getPath();
+    }
+
+    public String getLangName() {
+        return materialInfo.overriddenName != null ? materialInfo.overriddenName :
+                toEnglishName(materialInfo.resourceLocation.getPath());
     }
 
     public String getModid() {
@@ -593,6 +599,11 @@ public class Material implements Comparable<Material> {
             materialInfo = new MaterialInfo(resourceLocation);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        public Builder langValue(String name) {
+            materialInfo.setOverriddenName(name);
+            return this;
         }
 
         public Builder customTags(TagKey<Item> key) {
@@ -1333,6 +1344,10 @@ public class Material implements Comparable<Material> {
          * Required.
          */
         private final ResourceLocation resourceLocation;
+
+        @Setter
+        @Getter
+        private String overriddenName;
 
         /**
          * The colors of this Material.
