@@ -51,7 +51,6 @@ public class RecipeLogicTest {
         return itemStackHandler;
     }
 
-    // This is still not consistent, sometimes it doesn't form. Feel free to look into this if you see this :)
     @GameTest(template = "lcr")
     public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
