@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
@@ -64,6 +65,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.collect.HashMultimap;
@@ -80,7 +82,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, IForgeItem {
 
     GTToolType getToolType();
 
@@ -142,7 +144,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
 
         toolTag.putInt(MAX_DURABILITY_KEY, durability - 1);
-        toolTag.putInt(DURABILITY_KEY, 0);
         if (toolProperty.isUnbreakable()) {
             stackCompound.putBoolean(UNBREAKABLE_KEY, true);
         }
@@ -342,7 +343,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default boolean definition$hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         getToolStats().getBehaviors().forEach(behavior -> behavior.hitEntity(stack, target, attacker));
-        damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
+        ToolHelper.damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
         return true;
     }
 
@@ -398,7 +399,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
             if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
-                damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
+                ToolHelper.damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
             }
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
                 // sneaking disables AOE, which means it is okay to play the sound
@@ -588,31 +589,20 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return true;
     }
 
-    default boolean definition$isDamaged(ItemStack stack) {
-        return definition$getDamage(stack) > 0;
-    }
-
     default int definition$getDamage(ItemStack stack) {
-        // bypass the Forge OreDictionary using ItemStack#getItemDamage instead of ItemStack#getMetadata
-        // this will allow tools to retain their oredicts when durability changes.
-        // No normal tool ItemStack a player has should ever have a metadata value other than 0
-        // so this should not cause unexpected behavior for them
-
         CompoundTag toolTag = getToolTag(stack);
+        // this only exists to support old tools now.
         if (toolTag.contains(DURABILITY_KEY, Tag.TAG_INT)) {
-            return toolTag.getInt(DURABILITY_KEY);
+            int damage = toolTag.getInt(DURABILITY_KEY);
+            // remove the old durability nbt tag
+            toolTag.remove(DURABILITY_KEY);
+            return damage;
         }
-        toolTag.putInt(DURABILITY_KEY, 0);
-        return 0;
+        return IForgeItem.super.getDamage(stack);
     }
 
     default int definition$getMaxDamage(ItemStack stack) {
         return getTotalMaxDurability(stack);
-    }
-
-    default void definition$setDamage(ItemStack stack, int durability) {
-        CompoundTag toolTag = getToolTag(stack);
-        toolTag.putInt(DURABILITY_KEY, durability);
     }
 
     default double definition$getDurabilityForDisplay(ItemStack stack) {

@@ -197,20 +197,12 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
         return definition$shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
 
-    public boolean isDamaged(ItemStack stack) {
-        return definition$isDamaged(stack);
-    }
-
     public int getDamage(ItemStack stack) {
         return definition$getDamage(stack);
     }
 
     public int getMaxDamage(ItemStack stack) {
         return definition$getMaxDamage(stack);
-    }
-
-    public void setDamage(ItemStack stack, int damage) {
-        definition$setDamage(stack, damage);
     }
 
     @Override
