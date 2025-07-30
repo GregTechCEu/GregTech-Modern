@@ -34,6 +34,8 @@ public final class SyncedKeyMapping {
 
     @OnlyIn(Dist.CLIENT)
     private KeyMapping keyMapping;
+    @OnlyIn(Dist.CLIENT)
+    private Supplier<Supplier<KeyMapping>> keyMappingGetter;
     private final boolean needsRegister;
     @OnlyIn(Dist.CLIENT)
     private int keyCode;
@@ -48,7 +50,7 @@ public final class SyncedKeyMapping {
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         if (GTCEu.isClientSide()) {
-            this.keyMapping = mcKeyMapping.get().get();
+            this.keyMappingGetter = mcKeyMapping;
         }
         // Does not need to be registered, will be registered by MC
         this.needsRegister = false;
@@ -159,6 +161,10 @@ public final class SyncedKeyMapping {
 
     public static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
         for (SyncedKeyMapping value : KEYMAPPINGS.values()) {
+            if (value.keyMappingGetter != null) {
+                value.keyMapping = value.keyMappingGetter.get().get();
+                value.keyMappingGetter = null;
+            }
             if (value.keyMapping != null && value.needsRegister) {
                 event.register(value.keyMapping);
             }
