@@ -174,6 +174,11 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
+    public boolean isFoil(ItemStack stack) {
+        return definition$isFoil(stack);
+    }
+
+    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return definition$getDefaultAttributeModifiers(slot, stack);
     }
@@ -212,6 +217,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
+        return definition$isCorrectToolForDrops(stack, state);
     }
 }

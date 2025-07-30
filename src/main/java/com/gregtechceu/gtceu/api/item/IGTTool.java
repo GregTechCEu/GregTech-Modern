@@ -484,6 +484,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         return definition$getAllEnchantments(stack).getOrDefault(enchantment, 0);
     }
 
+    default boolean definition$isFoil(ItemStack stack) {
+        return !getAllEnchantments(stack).isEmpty();
+    }
+
     default Multimap<Attribute, AttributeModifier> definition$getDefaultAttributeModifiers(EquipmentSlot equipmentSlot,
                                                                                            ItemStack stack) {
         Multimap<Attribute, AttributeModifier> multimap = HashMultimap.create();
