@@ -14,8 +14,6 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
  */
 public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBlockEntity {
 
-    int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
-
     /**
      * @return return {@code true} if current machine connected to a valid ME network, {@code false} otherwise.
      */
@@ -27,7 +25,7 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
      * @return {@code true} if current machine should interact with ME network, {@code false} otherwise.
      */
     default boolean shouldSyncME() {
-        return self().getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
+        return self().getOffsetTimer() % ConfigHolder.INSTANCE.compat.ae2.updateIntervals == 0;
     }
 
     default AECableType getCableConnectionType(Direction dir) {
