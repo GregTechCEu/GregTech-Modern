@@ -59,6 +59,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -580,6 +581,19 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
+    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ToolAction action) {
+        if (getToolType().defaultAbilities.contains(action)) {
+            return true;
+        }
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (behavior.canPerformAction(stack, action)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
             if (behavior.onItemUseFirst(stack, context) == InteractionResult.SUCCESS) {
@@ -592,11 +606,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default InteractionResult definition$onItemUse(UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUse(context) == InteractionResult.SUCCESS) {
-                return InteractionResult.SUCCESS;
+            InteractionResult result = behavior.onItemUse(context);
+            if (result != InteractionResult.PASS) {
+                return result;
             }
         }
-
         return InteractionResult.PASS;
     }
 

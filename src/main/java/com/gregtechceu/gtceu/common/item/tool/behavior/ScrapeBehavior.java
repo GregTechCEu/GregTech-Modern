@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,11 @@ public class ScrapeBehavior implements IToolBehavior {
     public static final ScrapeBehavior INSTANCE = new ScrapeBehavior();
 
     protected ScrapeBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.AXE_SCRAPE;
+    }
 
     @NotNull
     @Override

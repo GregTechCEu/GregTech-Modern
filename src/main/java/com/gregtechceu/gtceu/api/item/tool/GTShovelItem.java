@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -83,6 +84,11 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
     @Override
     public boolean hasCraftingRemainingItem() {
         return super.hasCraftingRemainingItem();
+    }
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return definition$canPerformAction(stack, action);
     }
 
     @Override

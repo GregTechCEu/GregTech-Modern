@@ -26,6 +26,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -77,6 +78,11 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Override
     public boolean hasCraftingRemainingItem() {
         return super.hasCraftingRemainingItem();
+    }
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return definition$canPerformAction(stack, action);
     }
 
     @Override

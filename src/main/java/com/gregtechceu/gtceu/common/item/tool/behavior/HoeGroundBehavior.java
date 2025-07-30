@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,11 @@ public class HoeGroundBehavior implements IToolBehavior {
     public static final HoeGroundBehavior INSTANCE = new HoeGroundBehavior();
 
     protected HoeGroundBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.HOE_TILL;
+    }
 
     @NotNull
     @Override
