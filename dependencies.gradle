@@ -110,7 +110,4 @@ dependencies {
 
     modExtraLocalRuntime(forge.kotlinforforge)
     modExtraLocalRuntime(forge.observable)
-    //////////////////////////
-
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
