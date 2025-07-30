@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -11,8 +10,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -21,8 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
-
-import static com.gregtechceu.gtceu.common.data.machines.GTMultiMachines.LARGE_CHEMICAL_REACTOR;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -121,8 +118,8 @@ public class RecipeLogicTest {
         recipeLogic.serverTick();
         helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
         helper.assertTrue(
-                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0)
-                    , new ItemStack(Blocks.STONE, 1)),
+                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0),
+                        new ItemStack(Blocks.STONE, 1)),
                 "wrong output stack.");
         helper.assertTrue(recipeLogic.isActive(), "RecipeLogic is not active, when it should be.");
 
@@ -147,7 +144,8 @@ public class RecipeLogicTest {
         helper.assertTrue(recipeLogic.isActive(), "RecipeLogic didn't start running again");
         recipeLogic.serverTick();
         helper.assertTrue(
-                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0), new ItemStack(Blocks.STONE, 1)),
+                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0),
+                        new ItemStack(Blocks.STONE, 1)),
                 "Wrong stack.");
 
         // Finish.
