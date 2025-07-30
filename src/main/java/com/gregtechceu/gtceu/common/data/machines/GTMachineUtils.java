@@ -217,8 +217,7 @@ public class GTMachineUtils {
                             .rotationState(RotationState.ALL)
                             .colorOverlayTieredHullModel(ioOverlay, pipeOverlay, emissiveOverlay)
                             .abilities(abilities)
-                            .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"))
-                            .allowCoverOnFront(true);
+                            .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"));
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",

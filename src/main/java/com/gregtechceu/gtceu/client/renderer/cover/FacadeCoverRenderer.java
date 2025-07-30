@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.common.cover.FacadeCover;
+import com.gregtechceu.gtceu.common.cover.misc.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
 

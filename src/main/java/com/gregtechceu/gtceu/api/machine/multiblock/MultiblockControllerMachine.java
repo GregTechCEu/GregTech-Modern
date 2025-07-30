@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -292,5 +293,10 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         if (getLevel() != null && !getLevel().isClientSide) {
             checkPattern();
         }
+    }
+
+    @Override
+    public boolean canAttachCover(Direction side, CoverBehavior cover) {
+        return true;
     }
 }

@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
-import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
-import com.gregtechceu.gtceu.common.cover.ShutterCover;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
+import com.gregtechceu.gtceu.common.cover.filter.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.io.ShutterCover;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

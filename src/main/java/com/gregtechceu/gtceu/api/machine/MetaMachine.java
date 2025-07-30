@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.IIOCover;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
@@ -27,8 +28,9 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
-import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.detector.DetectorCover;
+import com.gregtechceu.gtceu.common.cover.filter.FluidFilterCover;
+import com.gregtechceu.gtceu.common.cover.filter.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
@@ -480,6 +482,23 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             }
         }
         return InteractionResult.PASS;
+    }
+
+    /***
+     *
+     * @param side  the side attempting to place the cover
+     * @param cover the cover itself trying to be placed
+     * @return Whether the machine allows the cover to be placed on that side
+     */
+    public boolean canAttachCover(Direction side, CoverBehavior cover) {
+        if (side == getFrontFacing()) {
+            if (cover instanceof IIOCover) {
+                return false;
+            } else if (cover instanceof DetectorCover) {
+                return true;
+            }
+        }
+        return true;
     }
 
     //////////////////////////////////////

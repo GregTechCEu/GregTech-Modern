@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -223,6 +224,11 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             }
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    public boolean canAttachCover(Direction side, CoverBehavior cover) {
+        return true;
     }
 
     //////////////////////////////////////

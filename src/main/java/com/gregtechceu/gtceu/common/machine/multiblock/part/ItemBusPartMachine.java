@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -196,6 +197,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 this.isDistinct = invTag.getBoolean("isDistinct");
             }
         }
+    }
+
+    @Override
+    public boolean canAttachCover(Direction side, CoverBehavior cover) {
+        return true;
     }
 
     //////////////////////////////////////

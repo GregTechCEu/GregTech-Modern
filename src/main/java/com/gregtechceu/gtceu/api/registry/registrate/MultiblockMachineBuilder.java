@@ -90,7 +90,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         super(registrate, name, MultiblockMachineDefinition::new, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
-        allowCoverOnFront(true);
         // always add the formed property to multi controllers
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
@@ -475,11 +474,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
         return (MultiblockMachineBuilder) super.allowExtendedFacing(allowExtendedFacing);
-    }
-
-    @Override
-    public MultiblockMachineBuilder allowCoverOnFront(boolean allowCoverOnFront) {
-        return (MultiblockMachineBuilder) super.allowCoverOnFront(allowCoverOnFront);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
@@ -175,6 +176,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
+    }
+
+    @Override
+    public boolean canAttachCover(Direction side, CoverBehavior cover) {
+        return true;
     }
 
     //////////////////////////////////////

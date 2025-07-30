@@ -100,9 +100,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     @MustBeInvokedByOverriders
     public boolean canAttach() {
         var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
-        return machine == null ||
-                (machine.getDefinition().isAllowCoverOnFront() || !machine.hasFrontFacing() ||
-                        coverHolder.getFrontFacing() != attachedSide);
+        return machine != null && machine.canAttachCover(attachedSide, this);
     }
 
     /**

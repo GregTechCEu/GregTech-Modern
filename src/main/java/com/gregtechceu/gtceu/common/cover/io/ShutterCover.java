@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.cover;
+package com.gregtechceu.gtceu.common.cover.io;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;

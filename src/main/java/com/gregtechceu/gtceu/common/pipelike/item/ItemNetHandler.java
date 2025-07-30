@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
-import com.gregtechceu.gtceu.common.cover.ConveyorCover;
-import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
-import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
+import com.gregtechceu.gtceu.common.cover.filter.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.io.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.io.RobotArmCover;
 import com.gregtechceu.gtceu.utils.FacingPos;
 
 import net.minecraft.core.BlockPos;
