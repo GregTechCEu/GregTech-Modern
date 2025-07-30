@@ -170,6 +170,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
+        recipeType.setMinRecipeConditions(builder.conditions.size());
         return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
