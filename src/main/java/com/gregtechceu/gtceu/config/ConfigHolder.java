@@ -13,16 +13,8 @@ import dev.toma.configuration.config.format.ConfigFormats;
 @Config(id = GTCEu.MOD_ID)
 public class ConfigHolder {
 
-    public static ConfigHolder INSTANCE;
-    private static final Object LOCK = new Object();
-
-    public static void init() {
-        synchronized (LOCK) {
-            if (INSTANCE == null) {
-                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
-            }
-        }
-    }
+    public static ConfigHolder INSTANCE = Configuration
+            .registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
 
     @Configurable
     public RecipeConfigs recipes = new RecipeConfigs();

@@ -15,6 +15,7 @@ public class IntegrationLang {
         initWailaLikeLang(provider);
         initMinimapLang(provider);
         initOwnershipLang(provider);
+        initAE2Lang(provider);
     }
 
     /** JEI, REI, EMI */
@@ -125,5 +126,9 @@ public class IntegrationLang {
         provider.add("gtceu.ownership.name.player", "Player");
         provider.add("gtceu.ownership.name.ftb", "FTB Teams");
         provider.add("gtceu.ownership.name.argonauts", "Argonauts Guild");
+    }
+
+    private static void initAE2Lang(RegistrateLangProvider provider) {
+        provider.add("gui.ae2.units.eu", "EU");
     }
 }
