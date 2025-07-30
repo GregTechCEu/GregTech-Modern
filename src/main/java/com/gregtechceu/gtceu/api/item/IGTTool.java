@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -29,6 +30,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
+import net.minecraft.Util;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +41,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -457,17 +460,17 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         innateEnchantments.putAll(getToolStats().getDefaultEnchantments(stack));
         innateEnchantments.putAll(this.getMaterial().getProperty(PropertyKey.TOOL).getEnchantments());
 
-        IGTTool.setInnateEnchantments(innateEnchantments, stack);
+        setInnateEnchantments(innateEnchantments, stack);
         return IGTTool.joinEnchantments(stack, innateEnchantments);
     }
 
-    private static void setInnateEnchantments(Map<Enchantment, Integer> enchantments, ItemStack stack) {
+    private void setInnateEnchantments(Map<Enchantment, Integer> enchantments, ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
         ListTag enchantList = new ListTag();
 
         for (var entry : enchantments.entrySet()) {
             Enchantment enchantment = entry.getKey();
-            if (enchantment == null || !enchantment.canEnchant(stack)) {
+            if (enchantment == null || !this.definition$canApplyAtEnchantingTable(stack, enchantment)) {
                 continue;
             }
             int level = entry.getValue();
@@ -491,7 +494,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
     }
 
     default int definition$getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        return definition$getAllEnchantments(stack).get(enchantment);
+        return definition$getAllEnchantments(stack).getOrDefault(enchantment, 0);
     }
 
     default Multimap<Attribute, AttributeModifier> definition$getDefaultAttributeModifiers(EquipmentSlot equipmentSlot,
@@ -804,20 +807,25 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         }
     }
 
+    ResourceLocation COFH_SMASHING_ENCHANT_ID = new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smashing");
+    Set<ResourceLocation> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
+        set.add(new ResourceLocation(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
+        set.add(new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
+    });
+
     default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) return false;
 
-        // special case enchants from other mods
-        switch (enchantment.getDescriptionId()) {
-            case "enchantment.cofhcore.smashing":
-                // block cofhcore smashing enchant from all tools
+        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        if (COFH_SMASHING_ENCHANT_ID.equals(enchantmentId)) {
+            // block CoFH smashing enchant from all tools
+            return false;
+        } else if (AUTOSMELT_ENCHANT_IDS.contains(enchantmentId)) {
+            // block autosmelt enchants from AoE and Tree-Felling tools
+            if (!getToolStats().getAoEDefinition(stack).isZero() ||
+                    getBehaviorsTag(stack).contains(TREE_FELLING_KEY)) {
                 return false;
-            case "enchantment.autosmelt": // endercore
-            case "enchantment.cofhcore.smelting": // cofhcore
-            case "enchantment.as.smelting": // astral sorcery
-                // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack).isZero() &&
-                        !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
+            }
         }
 
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.

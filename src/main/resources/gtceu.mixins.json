@@ -33,6 +33,7 @@
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
+        "AnvilMenuMixin",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
