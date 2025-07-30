@@ -14,10 +14,14 @@ import org.spongepowered.asm.mixin.injection.At;
 public class RecipeFinderMixin {
 
     @WrapOperation(method = "addNormalItem",
-            at = {
-                    @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z", remap = true),
-                    @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z", remap = true),
-            })
+                   at = {
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z",
+                               remap = true),
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z",
+                               remap = true),
+                   })
     private boolean gtceu$ignoreGTToolDamageAndEnchants(ItemStack stack, Operation<Boolean> original) {
         if (stack.getItem() instanceof IGTTool) {
             return false;

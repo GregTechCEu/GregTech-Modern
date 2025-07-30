@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 public class InputSlotCrafterMixin {
 
     @WrapOperation(method = "areItemsEqual",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
-                    remap = true))
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
+                            remap = true))
     private static boolean gtceu$ignoreGTToolNbt(ItemStack stack, ItemStack other, Operation<Boolean> original) {
         if (stack.getItem() instanceof IGTTool && other.getItem() instanceof IGTTool) {
             return ItemStack.isSameItem(stack, other);
@@ -25,10 +25,14 @@ public class InputSlotCrafterMixin {
     }
 
     @WrapOperation(method = "takeInventoryStack",
-            at = {
-                    @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z", remap = true),
-                    @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z", remap = true),
-            })
+                   at = {
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z",
+                               remap = true),
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z",
+                               remap = true),
+                   })
     private boolean gtceu$ignoreGTToolDamageAndEnchants(ItemStack stack, Operation<Boolean> original) {
         if (stack.getItem() instanceof IGTTool) {
             return false;
