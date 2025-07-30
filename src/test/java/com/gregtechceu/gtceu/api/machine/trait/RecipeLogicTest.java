@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -49,10 +50,7 @@ public class RecipeLogicTest {
         return itemStackHandler;
     }
 
-    // This test doesn't work yet, I yield so I can focus on more productive things
-    // If you see this, please feel free to give it another shot :)
-    // Leaving it in here because it's still a good test to take inspiration from.
-    @GameTest(template = "lcr", setupTicks = 20L, timeoutTicks = 200, required = false)
+    @GameTest(template = "lcr", setupTicks = 350L, timeoutTicks = 400, required = false)
     public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
         if (!(holder instanceof MetaMachineBlockEntity atte)) {
@@ -68,88 +66,86 @@ public class RecipeLogicTest {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
-        controller.onStructureFormed();
-        controller.asyncCheckPattern(0);
-        helper.runAfterDelay(100, () -> {
-            helper.assertTrue(controller.isFormed(), "Controller didn't form after 100 ticks");
-            helper.assertTrue(controller.getParts().size() == 4,
-                    "Controller didn't register all 4 parts after 100 ticks");
 
-            // force insert the recipe into the manager.
-            GTRecipeType type = recipeLogicMachine.getRecipeType();
-            type.getLookup().addRecipe(type
-                    .recipeBuilder(GTCEu.id("test"))
-                    .id(GTCEu.id("test"))
-                    .inputItems(new ItemStack(Blocks.COBBLESTONE))
-                    .outputItems(new ItemStack(Blocks.STONE))
-                    .EUt(512).duration(1)
-                    .buildRawRecipe());
+        helper.assertTrue(controller.isFormed(), "Controller didn't form after 200 ticks");
+        helper.assertTrue(controller.getParts().size() == 4,
+                "Controller didn't register all 4 parts after 200 ticks");
 
-            RecipeLogic recipeLogic = recipeLogicMachine.getRecipeLogic();
+        // force insert the recipe into the manager.
+        GTRecipeType type = recipeLogicMachine.getRecipeType();
+        type.getLookup().removeAllRecipes();
+        type.getLookup().addRecipe(type
+                .recipeBuilder(GTCEu.id("test-multiblock-recipelogic"))
+                .id(GTCEu.id("test-multiblock-recipelogic"))
+                .inputItems(new ItemStack(Blocks.COBBLESTONE))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.UV]).duration(1) // NBT has a schematic in it with an UV energy input
+                                                           // hatch
+                .buildRawRecipe());
 
-            recipeLogic.findAndHandleRecipe();
+        RecipeLogic recipeLogic = recipeLogicMachine.getRecipeLogic();
 
-            // no recipe found
-            helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
-            helper.assertTrue(recipeLogic.getLastRecipe() == null,
-                    "Recipe logic has somehow found a recipe, when there should be none");
+        recipeLogic.findAndHandleRecipe();
 
-            // put an item in the inventory that will trigger recipe recheck
-            NotifiableItemStackHandler inputSlot = getInputSlot(recipeLogicMachine);
-            NotifiableItemStackHandler outputSlot = getOutputSlot(recipeLogicMachine);
-            inputSlot.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-            inputSlot.onContentsChanged();
+        // no recipe found
+        helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
+        helper.assertTrue(recipeLogic.getLastRecipe() == null,
+                "Recipe logic has somehow found a recipe, when there should be none");
 
-            // Inputs change. did we detect it ?
-            // helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input
-            // bus");
-            recipeLogic.findAndHandleRecipe();
-            helper.assertFalse(recipeLogic.getLastRecipe() == null,
-                    "Last recipe is empty, even though recipe logic should've found a recipe.");
-            helper.assertTrue(recipeLogic.isActive(), "Recipelogic is inactive, when it should be active.");
-            int stackCount = inputSlot.getStackInSlot(0).getCount();
-            helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s)".formatted(stackCount));
+        // put an item in the inventory that will trigger recipe recheck
+        NotifiableItemStackHandler inputSlot = getInputSlot(recipeLogicMachine);
+        NotifiableItemStackHandler outputSlot = getOutputSlot(recipeLogicMachine);
+        inputSlot.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
+        inputSlot.onContentsChanged();
 
-            // Save a reference to the old recipe so we can make sure it's getting reused
-            GTRecipe prev = recipeLogic.getLastRecipe();
+        // Inputs change. did we detect it ?
+        // helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input
+        // bus");
+        recipeLogic.findAndHandleRecipe();
+        helper.assertFalse(recipeLogic.getLastRecipe() == null,
+                "Last recipe is empty, even though recipe logic should've found a recipe.");
+        helper.assertTrue(recipeLogic.isActive(), "Recipelogic is inactive, when it should be active.");
+        int stackCount = inputSlot.getStackInSlot(0).getCount();
+        helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s)".formatted(stackCount));
 
-            // Finish the recipe, the output should generate, and the next iteration should begin
-            recipeLogic.serverTick();
-            helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
-            helper.assertTrue(ItemStack.isSameItem(
-                    getOutputSlot(recipeLogicMachine).getStackInSlot(0),
-                    new ItemStack(Blocks.STONE, 1)), "wrong output stack.");
-            helper.assertTrue(recipeLogic.isActive(), "RecipeLogic is not active, when it should be.");
+        // Save a reference to the old recipe so we can make sure it's getting reused
+        GTRecipe prev = recipeLogic.getLastRecipe();
 
-            // Complete the second iteration, but the machine stops because its output is now full
-            // Fill up the recipe with enough stone to complete 1 more recipe and then nothing more.
-            outputSlot.setStackInSlot(0,
-                    new ItemStack(Blocks.STONE, 63));
-            for (int i = 1; i < outputSlot.getSlots(); i++) {
-                outputSlot.setStackInSlot(1,
-                        new ItemStack(Blocks.STONE, 64));
-            }
-            recipeLogic.serverTick();
-            helper.assertFalse(recipeLogic.isActive(), "RecipeLogic is active, when it shouldn't be.");
+        // Finish the recipe, the output should generate, and the next iteration should begin
+        recipeLogic.serverTick();
+        helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
+        helper.assertTrue(ItemStack.isSameItem(
+                getOutputSlot(recipeLogicMachine).getStackInSlot(0),
+                new ItemStack(Blocks.STONE, 1)), "wrong output stack.");
+        helper.assertTrue(recipeLogic.isActive(), "RecipeLogic is not active, when it should be.");
 
-            // Try to process again and get failed out because of full buffer.
-            recipeLogic.serverTick();
-            helper.assertFalse(recipeLogic.isActive(), "Recipelogic is active, when it shouldn't be.");
+        // Complete the second iteration, but the machine stops because its output is now full
+        // Fill up the recipe with enough stone to complete 1 more recipe and then nothing more.
+        outputSlot.setStackInSlot(0,
+                new ItemStack(Blocks.STONE, 63));
+        for (int i = 1; i < outputSlot.getSlots(); i++) {
+            outputSlot.setStackInSlot(i,
+                    new ItemStack(Blocks.STONE, 64));
+        }
+        recipeLogic.serverTick();
+        helper.assertFalse(recipeLogic.isActive(), "RecipeLogic is active, when it shouldn't be.");
 
-            // Some room is freed in the output bus, so we can continue now.
-            outputSlot.setStackInSlot(1, ItemStack.EMPTY);
-            recipeLogic.serverTick();
-            // helper.assertTrue(arl.isActive(), "Recipelogic is inactive.");
-            helper.assertTrue(ItemStack.isSameItem(outputSlot.getStackInSlot(0), new ItemStack(Blocks.STONE, 1)),
-                    "Wrong stack.");
+        // Try to process again and get failed out because of full buffer.
+        recipeLogic.serverTick();
+        helper.assertFalse(recipeLogic.isActive(), "Recipelogic is active, when it shouldn't be.");
 
-            // Finish.
-            helper.succeed();
+        // Some room is freed in the output bus, so we can continue now.
+        outputSlot.setStackInSlot(1, ItemStack.EMPTY);
+        recipeLogic.serverTick();
+        // helper.assertTrue(arl.isActive(), "Recipelogic is inactive.");
+        helper.assertTrue(ItemStack.isSameItem(outputSlot.getStackInSlot(0), new ItemStack(Blocks.STONE, 1)),
+                "Wrong stack.");
 
-        });
+        // Finish.
+        helper.succeed();
     }
 
-    @GameTest(template = "singleblock_chem_reactor", setupTicks = 20L, timeoutTicks = 200, required = false)
+    @GameTest(template = "singleblock_chem_reactor")
     public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(0, 1, 0));
         if (!(holder instanceof MetaMachineBlockEntity atte)) {
@@ -164,12 +160,13 @@ public class RecipeLogicTest {
 
         // force insert the recipe into the manager.
         GTRecipeType type = recipeLogicMachine.getRecipeType();
+        type.getLookup().removeAllRecipes();
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test"))
-                .id(GTCEu.id("test"))
+                .recipeBuilder(GTCEu.id("test-singleblock"))
+                .id(GTCEu.id("test-singleblock"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
-                .EUt(1).duration(1)
+                .EUt(512).duration(1)
                 .buildRawRecipe());
 
         RecipeLogic recipeLogic = recipeLogicMachine.getRecipeLogic();
