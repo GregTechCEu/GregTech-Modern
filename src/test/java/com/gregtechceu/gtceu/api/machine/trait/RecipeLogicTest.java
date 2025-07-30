@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -16,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -67,7 +64,7 @@ public class RecipeLogicTest {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
-        if(!(machine instanceof MultiblockControllerMachine controller)){
+        if (!(machine instanceof MultiblockControllerMachine controller)) {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
@@ -75,8 +72,8 @@ public class RecipeLogicTest {
         controller.asyncCheckPattern(0);
         helper.runAfterDelay(100, () -> {
             helper.assertTrue(controller.isFormed(), "Controller didn't form after 100 ticks");
-            helper.assertTrue(controller.getParts().size() == 4, "Controller didn't register all 4 parts after 100 ticks");
-
+            helper.assertTrue(controller.getParts().size() == 4,
+                    "Controller didn't register all 4 parts after 100 ticks");
 
             GTRecipe recipe = GTRecipeBuilder.ofRaw()
                     .id(GTCEu.id("test"))
@@ -103,7 +100,8 @@ public class RecipeLogicTest {
             inputSlot.onContentsChanged();
 
             // Inputs change. did we detect it ?
-            //helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input bus");
+            // helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input
+            // bus");
             recipeLogic.findAndHandleRecipe();
             helper.assertFalse(recipeLogic.getLastRecipe() == null,
                     "Last recipe is empty, even though recipe logic should've found a recipe.");
