@@ -6,14 +6,14 @@ import net.minecraft.world.item.ItemStack;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import dev.emi.emi.network.FillRecipeC2SPacket;
+import dev.emi.emi.registry.EmiRecipeFiller;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(value = FillRecipeC2SPacket.class, remap = false)
-public abstract class FillRecipePacketMixin {
+@Mixin(value = EmiRecipeFiller.class, remap = false)
+public abstract class EmiRecipeFillerMixin {
 
-    @WrapOperation(method = "grabMatching",
+    @WrapOperation(method = { "getStacks", "clientFill" },
                    at = @At(value = "INVOKE",
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
                             remap = true))
