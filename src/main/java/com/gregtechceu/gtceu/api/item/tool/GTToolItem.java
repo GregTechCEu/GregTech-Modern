@@ -120,6 +120,11 @@ public class GTToolItem extends DiggerItem implements IGTTool {
     }
 
     @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        return definition$use(level, player, usedHand);
+    }
+
+    @Override
     public boolean isElectric() {
         return electricTier > -1;
     }
@@ -221,11 +226,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
 
     public void setDamage(ItemStack stack, int damage) {
         definition$setDamage(stack, damage);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        return definition$use(level, player, usedHand);
     }
 
     @Override

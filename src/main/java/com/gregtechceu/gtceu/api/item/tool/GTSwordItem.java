@@ -70,11 +70,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     }
 
     @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
-    }
-
-    @Override
     public ItemStack getDefaultInstance() {
         return get();
     }
@@ -226,5 +221,10 @@ public class GTSwordItem extends SwordItem implements IGTTool {
 
     public void setDamage(ItemStack stack, int damage) {
         definition$setDamage(stack, damage);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return this.definition$isCorrectToolForDrops(stack, state);
     }
 }
