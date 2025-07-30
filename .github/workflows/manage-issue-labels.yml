@@ -1,0 +1,23 @@
+# Manages labels on new issues
+name: Issue Labels
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '1.20.1'
+          sparse-checkout: '.github/labeler.yml'
+      - uses: github/issue-labeler@v3.3
+        with:
+          configuration-path: .github/labeler.yml
+          enable-versioned-regex: 0

@@ -4,11 +4,6 @@ import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote IRedstoneSignalMachine
- */
 public interface IRedstoneSignalMachine extends IMachineFeature {
 
     default int getOutputSignal(@Nullable Direction side) {

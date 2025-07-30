@@ -33,11 +33,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilterCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemFilterCover extends CoverBehavior implements IUICover {
@@ -77,7 +72,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return coverHolder.getItemHandlerCap(attachedSide, false) != null;
+        return super.canAttach() && coverHolder.getItemHandlerCap(attachedSide, false) != null;
     }
 
     @Override

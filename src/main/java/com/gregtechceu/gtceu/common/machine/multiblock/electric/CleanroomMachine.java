@@ -62,6 +62,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +83,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    public static final int CLEAN_AMOUNT_THRESHOLD = 90;
+    public static final int CLEAN_AMOUNT_THRESHOLD = 95;
     public static final int MIN_CLEAN_AMOUNT = 0;
 
     public static final int MIN_RADIUS = 2;
@@ -150,11 +151,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         this.cleanroomReceivers = ImmutableSet.copyOf(receivers);
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(this));
 
-        // max progress is based on the dimensions of the structure: (x^3)-(x^2)
+        // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
         // taller cleanrooms take longer than wider ones
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-        this.getRecipeLogic().setDuration((Math.max(100,
-                ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1)))));
+        // max sized CR is around 1142 ticks per progression
+
+        var area = (lDist + rDist + 1) * (bDist + fDist + 1);
+        var duration = Math.pow(area, 0.8) * (hDist + 1);
+        this.getRecipeLogic().setDuration(Math.max(100, (int) duration));
     }
 
     @Override
@@ -181,26 +185,28 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             if (isPartIgnored(part)) continue;
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
-            for (var handler : part.getRecipeHandlers()) {
-                // If IO not compatible
-                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP &&
-                        handler instanceof IEnergyContainer container) {
-                    energyContainers.add(container);
-                }
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (!handlerList.isValid(io)) continue;
+                handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(IEnergyContainer.class::isInstance)
+                        .map(IEnergyContainer.class::cast)
+                        .forEach(energyContainers::add);
             }
+
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
-        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
+        this.tier = Math.min(GTValues.MAX, GTUtil.getFloorTierByVoltage(getMaxVoltage()));
     }
 
     @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability
@@ -369,13 +375,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             c[i] = ceilingLayer[i].toString();
         }
 
+        var area = (lDist + rDist + 1) * (bDist + fDist + 1);
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
         TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                 .setMaxGlobalLimited(2)
                 .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
                         .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
                         .setMaxGlobalLimited(1))
-                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+                // limit pass through hatches to a quarter of the floor area
+                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(area / 4));
 
         return FactoryBlockPattern.start(LEFT, FRONT, UP)
                 .aisle(f)
@@ -408,7 +416,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     @NotNull
     protected static TraceabilityPredicate doorPredicate() {
-        return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock,
+        return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().is(CustomTags.CLEANROOM_DOORS),
                 () -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
                         Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER)) });
     }
@@ -505,6 +513,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
+                    fDist + bDist + 1));
         } else {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                     .withStyle(ChatFormatting.GRAY);
@@ -550,4 +561,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (inputEnergyContainers == null) return GTValues.LV;
         return inputEnergyContainers.getInputVoltage();
     }
+
+    // Do not allow cleanroom to be paused due to custom recipe logic
+    @Override
+    public boolean isWorkingEnabled() {
+        return true;
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean ignored) {}
 }

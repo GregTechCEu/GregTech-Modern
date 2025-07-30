@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
@@ -26,9 +24,12 @@ import net.minecraft.core.Direction;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeLatchedRedstoneBetweenValues;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -42,14 +43,14 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         return MANAGED_FIELD_HOLDER;
     }
 
+    private static final int DEFAULT_MIN_PERCENT = 33;
+    private static final int DEFAULT_MAX_PERCENT = 66;
+
     @Persisted
     @Getter
     @Setter
     public long minValue, maxValue;
-    @Persisted
-    @Getter
-    @Setter
-    private int outputAmount;
+
     @Persisted
     @Getter
     private boolean usePercent;
@@ -59,9 +60,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
 
     public AdvancedEnergyDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-
-        final int DEFAULT_MIN_PERCENT = 33, DEFAULT_MAX_PERCENT = 66;
-
         this.minValue = DEFAULT_MIN_PERCENT;
         this.maxValue = DEFAULT_MAX_PERCENT;
         this.usePercent = true;
@@ -72,30 +70,40 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (coverHolder.getOffsetTimer() % 20 != 0) return;
 
         IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
+        if (energyInfoProvider == null) return;
 
-        if (energyInfoProvider == null) {
-            setRedstoneSignalOutput(outputAmount);
-            return;
-        }
+        var energyInfo = energyInfoProvider.getEnergyInfo();
+        var isBigInt = energyInfoProvider.supportsBigIntEnergyValues();
 
-        // TODO properly support values > MAX_LONG
-        IEnergyInfoProvider.EnergyInfo energyInfo = energyInfoProvider.getEnergyInfo();
-        long capacity = energyInfo.capacity().longValue();
-        long stored = energyInfo.stored().longValue();
-
-        if (usePercent) {
-            if (capacity > 0) {
-                float ratio = (float) stored / capacity;
-                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(ratio * 100, this.maxValue,
-                        this.minValue, isInverted(), this.outputAmount);
+        if (isBigInt) {
+            if (usePercent) {
+                if (energyInfo.capacity().compareTo(BigInteger.ZERO) > 0) {
+                    var ratio = GTMath.ratio(energyInfo.stored(), energyInfo.capacity());
+                    setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
+                            minValue, isInverted(), redstoneSignalOutput));
+                } else {
+                    setRedstoneSignalOutput(isInverted() ? 15 : 0);
+                }
             } else {
-                this.outputAmount = isInverted() ? 0 : 15;
+                setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(energyInfo.stored(),
+                        BigInteger.valueOf(this.maxValue), BigInteger.valueOf(this.minValue),
+                        isInverted(), redstoneSignalOutput));
             }
         } else {
-            this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(stored, this.maxValue, this.minValue,
-                    isInverted(), this.outputAmount);
+            if (usePercent) {
+                if (energyInfo.capacity().longValue() > 0) {
+                    var ratio = energyInfo.stored().longValue() / energyInfo.capacity().longValue();
+                    setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
+                            minValue, isInverted(), redstoneSignalOutput));
+                } else {
+                    setRedstoneSignalOutput(isInverted() ? 15 : 0);
+                }
+            } else {
+                setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(energyInfo.stored().longValue(),
+                        this.maxValue, this.minValue,
+                        isInverted(), redstoneSignalOutput));
+            }
         }
-        setRedstoneSignalOutput(outputAmount);
     }
 
     public void setUsePercent(boolean usePercent) {
@@ -129,29 +137,16 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(
                 9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
-
-            @Override
-            public void updateScreen() {
-                super.updateScreen();
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.invert." + (isPressed ? "enabled" : "disabled"))));
-            }
-        });
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
+                .isMultiLang()
+                .setTooltipText("cover.advanced_energy_detector.invert"));
 
         // Mode (EU / Percent) Toggle:
         group.addWidget(new ToggleButtonWidget(
                 176 - 29, 20, 20, 20,
-                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent) {
-
-            @Override
-            public void updateScreen() {
-                super.updateScreen();
-
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.use_percent." + (isPressed ? "enabled" : "disabled"))));
-            }
-        });
+                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent)
+                .isMultiLang()
+                .setTooltipText("cover.advanced_energy_detector.use_percent"));
 
         return group;
     }
@@ -160,7 +155,12 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (GTCEu.isClientThread() || minValueInput == null || maxValueInput == null)
             return;
 
-        long energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValue();
+        long energyCapacity;
+        try {
+            energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValueExact();
+        } catch (ArithmeticException e) {
+            energyCapacity = Long.MAX_VALUE;
+        }
 
         minValueInput.setMin(0L);
         maxValueInput.setMin(0L);
@@ -169,8 +169,6 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             // This needs to be before setting the maximum, because otherwise the value would be limited to 100 EU
             // before converting to percent.
             if (!wasPercent) {
-                minValueInput.setValue(Math.max((long) (((double) minValue / energyCapacity) * 100), 100));
-
                 minValueInput.setValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
                 maxValueInput.setValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
             }

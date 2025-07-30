@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:mv_steam_turbine",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/generator_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/generator_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/generator_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side_active",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/generator_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side_active",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    }
+  }
+}

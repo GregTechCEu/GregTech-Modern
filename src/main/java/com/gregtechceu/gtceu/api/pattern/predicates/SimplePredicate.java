@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,7 +143,7 @@ public class SimplePredicate {
             return false;
         }
         if (slotName != null) {
-            Map<Long, Set<String>> slots = blockWorldState.getMatchContext().getOrCreate("slots",
+            Long2ObjectMap<Set<String>> slots = blockWorldState.getMatchContext().getOrCreate("slots",
                     Long2ObjectArrayMap::new);
             slots.computeIfAbsent(blockWorldState.getPos().asLong(), s -> new HashSet<>()).add(slotName);
             return true;
@@ -152,10 +153,8 @@ public class SimplePredicate {
 
     public boolean testGlobal(MultiblockState blockWorldState) {
         if (minCount == -1 && maxCount == -1) return true;
-        Integer count = blockWorldState.getGlobalCount().get(this);
         boolean base = predicate.test(blockWorldState);
-        count = (count == null ? 0 : count) + (base ? 1 : 0);
-        blockWorldState.getGlobalCount().put(this, count);
+        int count = blockWorldState.getGlobalCount().mergeInt(this, base ? 1 : 0, Integer::sum);
         if (maxCount == -1 || count <= maxCount) return base;
         blockWorldState.setError(new SinglePredicateError(this, 0));
         return false;
@@ -163,10 +162,8 @@ public class SimplePredicate {
 
     public boolean testLayer(MultiblockState blockWorldState) {
         if (minLayerCount == -1 && maxLayerCount == -1) return true;
-        Integer count = blockWorldState.getLayerCount().get(this);
         boolean base = predicate.test(blockWorldState);
-        count = (count == null ? 0 : count) + (base ? 1 : 0);
-        blockWorldState.getLayerCount().put(this, count);
+        int count = blockWorldState.getLayerCount().mergeInt(this, base ? 1 : 0, Integer::sum);
         if (maxLayerCount == -1 || count <= maxLayerCount) return base;
         blockWorldState.setError(new SinglePredicateError(this, 2));
         return false;

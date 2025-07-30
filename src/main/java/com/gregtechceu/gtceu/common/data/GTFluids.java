@@ -21,11 +21,6 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote GTFluids
- */
 public class GTFluids {
 
     public static final FluidEntry<PotionFluid> POTION = REGISTRATE

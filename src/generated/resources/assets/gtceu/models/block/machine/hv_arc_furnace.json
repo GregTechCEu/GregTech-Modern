@@ -1,0 +1,67 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hv_arc_furnace",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/arc_furnace/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/arc_furnace/overlay_back_emissive",
+          "overlay_bottom": "gtceu:block/machines/arc_furnace/overlay_bottom",
+          "overlay_bottom_emissive": "gtceu:block/machines/arc_furnace/overlay_bottom_emissive",
+          "overlay_front": "gtceu:block/machines/arc_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/arc_furnace/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/arc_furnace/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/arc_furnace/overlay_side_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/arc_furnace/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/arc_furnace/overlay_back_emissive",
+          "overlay_bottom": "gtceu:block/machines/arc_furnace/overlay_bottom",
+          "overlay_bottom_emissive": "gtceu:block/machines/arc_furnace/overlay_bottom_emissive",
+          "overlay_front": "gtceu:block/machines/arc_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/arc_furnace/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/arc_furnace/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/arc_furnace/overlay_side_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/arc_furnace/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/arc_furnace/overlay_back_active_emissive",
+          "overlay_bottom": "gtceu:block/machines/arc_furnace/overlay_bottom_active",
+          "overlay_bottom_emissive": "gtceu:block/machines/arc_furnace/overlay_bottom_active_emissive",
+          "overlay_front": "gtceu:block/machines/arc_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/arc_furnace/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/arc_furnace/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/arc_furnace/overlay_side_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/arc_furnace/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/arc_furnace/overlay_back_active_emissive",
+          "overlay_bottom": "gtceu:block/machines/arc_furnace/overlay_bottom_active",
+          "overlay_bottom_emissive": "gtceu:block/machines/arc_furnace/overlay_bottom_active_emissive",
+          "overlay_front": "gtceu:block/machines/arc_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/arc_furnace/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/arc_furnace/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/arc_furnace/overlay_side_active_emissive"
+        }
+      }
+    }
+  }
+}

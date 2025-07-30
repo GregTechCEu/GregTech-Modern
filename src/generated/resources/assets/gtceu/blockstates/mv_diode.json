@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/mv_diode",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/mv_diode",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/mv_diode"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/mv_diode",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/mv_diode",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/mv_diode",
+      "y": 270
+    }
+  }
+}

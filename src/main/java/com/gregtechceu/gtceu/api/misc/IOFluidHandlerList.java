@@ -13,11 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * @author KilaBash
- * @date 2023/3/14
- * @implNote IOFluidTransferList
- */
 public class IOFluidHandlerList extends FluidHandlerList implements IFluidHandlerModifiable {
 
     @Getter

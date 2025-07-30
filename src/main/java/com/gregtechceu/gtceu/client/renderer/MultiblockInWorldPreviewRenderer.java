@@ -285,7 +285,7 @@ public class MultiblockInWorldPreviewRenderer {
                                     .getBlockEntityRenderDispatcher().getRenderer(tile);
                             if (ber != null) {
                                 if (tile.hasLevel() && tile.getType().isValid(tile.getBlockState())) {
-                                    ber.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
+                                    ber.render(tile, partialTicks, poseStack, buffers, LightTexture.FULL_BRIGHT,
                                             OverlayTexture.NO_OVERLAY);
                                 }
                             }

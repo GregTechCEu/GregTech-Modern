@@ -56,4 +56,12 @@ public interface IMEStockingPart extends IAutoPullPart {
             }
         }
     }
+
+    int getMinStackSize();
+
+    void setMinStackSize(int newSize);
+
+    int getTicksPerCycle();
+
+    void setTicksPerCycle(int newSize);
 }

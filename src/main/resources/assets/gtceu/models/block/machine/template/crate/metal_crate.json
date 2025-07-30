@@ -1,0 +1,6 @@
+{
+    "parent": "gtceu:block/cube/tinted/all",
+    "textures": {
+        "all": "gtceu:block/storage/crates/metal_crate"
+    }
+}

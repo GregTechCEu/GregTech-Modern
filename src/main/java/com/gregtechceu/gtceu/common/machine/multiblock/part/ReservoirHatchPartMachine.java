@@ -61,6 +61,13 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
         }
     }
 
+    // By returning false here, we don't allow shift-clicking
+    // with a screwdriver to swap the IO.
+    @Override
+    public boolean swapIO() {
+        return false;
+    }
+
     protected static class InfiniteWaterTank extends CustomFluidTank {
 
         private static final CompoundTag EMPTY = new CompoundTag();
@@ -101,12 +108,5 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
         @Override
         public void deserializeNBT(CompoundTag nbt) {}
-
-        @Override
-        public CustomFluidTank copy() {
-            var storage = new InfiniteWaterTank(capacity);
-            storage.setFluid(fluid.copy());
-            return storage;
-        }
     }
 }

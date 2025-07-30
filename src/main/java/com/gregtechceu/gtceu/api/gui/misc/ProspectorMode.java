@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.gui.misc;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,11 +48,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote ProspectorMode
- */
 public abstract class ProspectorMode<T> {
 
     public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
@@ -71,9 +67,9 @@ public abstract class ProspectorMode<T> {
                         if (state.is(oreTag)) {
                             var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
-                                var entry = ChemicalHelper.getUnificationEntry(blockState.getBlock());
-                                if (entry != null && entry.material != null) {
-                                    name = "material_" + entry.material.toString();
+                                var entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
+                                if (!entry.isEmpty()) {
+                                    name = "material_" + entry.material();
                                 }
                                 return name;
                             });
@@ -88,7 +84,7 @@ public abstract class ProspectorMode<T> {
         public int getItemColor(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
-                if (mat != null) {
+                if (!mat.isNull()) {
                     return mat.getMaterialRGB();
                 }
             }
@@ -100,10 +96,10 @@ public abstract class ProspectorMode<T> {
             return ICON_CACHE.computeIfAbsent(item, name -> {
                 if (name.startsWith("material_")) {
                     var mat = GTMaterials.get(name.substring(9));
-                    if (mat != null) {
+                    if (!mat.isNull()) {
                         var list = new ArrayList<ItemStack>();
                         for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
-                            for (var block : ChemicalHelper.getBlocks(new UnificationEntry(oreTag, mat))) {
+                            for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
                                 list.add(new ItemStack(block));
                             }
                         }
@@ -119,7 +115,7 @@ public abstract class ProspectorMode<T> {
         public String getDescriptionId(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
-                if (mat != null) {
+                if (!mat.isNull()) {
                     return mat.getUnlocalizedName();
                 }
             }
@@ -148,11 +144,11 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public void appendTooltips(List<String[]> items, List<Component> tooltips, String selected) {
-            Map<String, Integer> counter = new HashMap<>();
+            Object2IntOpenHashMap<String> counter = new Object2IntOpenHashMap<>();
             for (var array : items) {
                 for (String item : array) {
                     if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
-                        counter.put(item, counter.getOrDefault(item, 0) + 1);
+                        counter.addTo(item, 1);
                     }
                 }
             }
@@ -299,7 +295,7 @@ public abstract class ProspectorMode<T> {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
-                                new OreInfo(entry.getFirst(), entry.getSecond(), left, oreVein.getOreYield()));
+                                new OreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }
                 }
             }

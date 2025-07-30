@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,9 +30,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @Author GlodBlock
- * @Description The Output Bus that can directly send its contents to ME storage network.
- * @Date 2023/4/19-20:37
+ * The Output Bus that can directly send its contents to ME storage network.
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -120,7 +119,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             return Collections.emptyList();
         }
 

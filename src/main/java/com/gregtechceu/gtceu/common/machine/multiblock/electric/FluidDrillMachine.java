@@ -34,11 +34,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/7/12
- * @implNote FluidDrillMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidDrillMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
@@ -63,7 +58,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     }
 
     public int getEnergyTier() {
-        var energyContainer = this.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP);
+        var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
         if (energyContainer == null) return this.tier;
         var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
                 .map(IEnergyContainer.class::cast).toList());

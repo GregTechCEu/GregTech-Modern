@@ -22,11 +22,6 @@ import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/7/24
- * @implNote StrictShapedRecipe
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class StrictShapedRecipe extends ShapedRecipe {

@@ -7,15 +7,17 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ActiveBlock extends AppearanceBlock {
-
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public ActiveBlock(Properties properties) {
         super(properties);
@@ -28,6 +30,10 @@ public class ActiveBlock extends AppearanceBlock {
         builder.add(ACTIVE);
     }
 
+    /**
+     * Use {@link BlockState#setValue(Property, Comparable)}
+     */
+    @ApiStatus.Obsolete(since = "7.0.0")
     public BlockState changeActive(BlockState state, boolean active) {
         if (state.is(this)) {
             return state.setValue(ACTIVE, active);
@@ -35,6 +41,10 @@ public class ActiveBlock extends AppearanceBlock {
         return state;
     }
 
+    /**
+     * Use {@link BlockState#getValue(Property)}
+     */
+    @ApiStatus.Obsolete(since = "7.0.0")
     public boolean isActive(BlockState state) {
         return state.getValue(ACTIVE);
     }

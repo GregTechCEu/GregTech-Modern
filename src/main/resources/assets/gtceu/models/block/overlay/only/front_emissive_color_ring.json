@@ -1,0 +1,26 @@
+{
+    "parent": "gtceu:block/overlay/only/front_emissive",
+    "textures": {
+        "overlay_color": "gtceu:block/overlay/machine/overlay_color"
+    },
+    "elements": [
+        {
+            "from": [  0,  0, -0.01 ],
+            "to":   [ 16, 16, -0.01 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101 }
+            }
+        },
+        {
+            "from": [  0,  0, -0.02 ],
+            "to":   [ 16, 16, -0.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_color", "cullface": "north", "tintindex": 9 }
+            }
+        }
+    ]
+}

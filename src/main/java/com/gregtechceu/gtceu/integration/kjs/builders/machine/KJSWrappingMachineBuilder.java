@@ -6,16 +6,20 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
+@SuppressWarnings("unused")
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMachineBuilder tieredBuilder;
 
     public KJSWrappingMachineBuilder(ResourceLocation id, KJSTieredMachineBuilder tieredBuilder) {
@@ -48,9 +52,28 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
         return this;
     }
 
+    public KJSWrappingMachineBuilder addDefaultModel(boolean addDefaultModel) {
+        tieredBuilder.addDefaultModel(addDefaultModel);
+        return this;
+    }
+
+    public KJSWrappingMachineBuilder isGenerator(boolean isGenerator) {
+        tieredBuilder.isGenerator(isGenerator);
+        return this;
+    }
+
+    @Override
+    public void generateDataJsons(DataJsonGenerator generator) {
+        tieredBuilder.generateDataJsons(generator);
+    }
+
+    @Override
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+        tieredBuilder.generateAssetJsons(generator);
+    }
+
     @Override
     public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 

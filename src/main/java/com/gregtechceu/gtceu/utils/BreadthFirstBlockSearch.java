@@ -3,15 +3,19 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.TriPredicate;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class BreadthFirstBlockSearch {
@@ -55,8 +59,15 @@ public class BreadthFirstBlockSearch {
     public static <T extends BlockEntity> Set<T> conditionalBlockEntitySearch(Class<T> clazz, T start,
                                                                               TriPredicate<T, T, Direction> condition,
                                                                               int blockLimit, int iterationLimit) {
-        var level = start.getLevel();
-        if (level == null) return Set.of();
+        return conditionalSearch(clazz, start, start.getLevel(),
+                BlockEntity::getBlockPos, condition, blockLimit, iterationLimit);
+    }
+
+    public static <T> Set<T> conditionalSearch(Class<T> clazz, T start, @Nullable Level level,
+                                               Function<T, @NotNull BlockPos> posGetter,
+                                               TriPredicate<T, T, Direction> condition,
+                                               int blockLimit, int iterationLimit) {
+        if (level == null) return Collections.emptySet();
 
         var passed = new LinkedHashSet<T>();
         var queue = new ObjectArrayFIFOQueue<Triple<T, T, Direction>>(16);
@@ -69,10 +80,10 @@ public class BreadthFirstBlockSearch {
             if (passed.contains(next)) {
                 continue;
             }
-            if (condition.test(tuple.getLeft(), tuple.getMiddle(), tuple.getRight())) {
+            if (condition.test(tuple.getLeft(), next, tuple.getRight())) {
                 passed.add(next);
-                for (var direction : Direction.values()) {
-                    var neighbor = level.getBlockEntity(next.getBlockPos().relative(direction));
+                for (var direction : GTUtil.DIRECTIONS) {
+                    var neighbor = level.getBlockEntity(posGetter.apply(next).relative(direction));
                     if (!clazz.isInstance(neighbor)) continue;
                     T casted = clazz.cast(neighbor);
                     if (passed.contains(casted)) continue;

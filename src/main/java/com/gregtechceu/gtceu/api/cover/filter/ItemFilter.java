@@ -13,11 +13,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilter
- */
 public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
 
     Map<ItemLike, Function<ItemStack, ItemFilter>> FILTERS = new HashMap<>();

@@ -141,11 +141,11 @@ public class OreGenerator {
     @Nullable
     private GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random,
                                      IWorldGenLayer layer) {
-        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random).stream()
-                .filter(vein -> vein.getValue().layer().equals(layer))
+        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome).stream()
+                .filter(vein -> vein.vein().layer().equals(layer))
                 .toList();
-        int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
-        return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
+        var randomVein = GTUtil.getRandomItem(random, veins);
+        return randomVein == null ? null : randomVein.vein();
     }
 
     @NotNull

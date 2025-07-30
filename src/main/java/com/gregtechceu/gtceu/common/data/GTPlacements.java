@@ -18,11 +18,6 @@ import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/26
- * @implNote GTPlacements
- */
 public class GTPlacements {
 
     public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE,

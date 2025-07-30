@@ -102,7 +102,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
         autoIOSubscription.updateSubscription();
     }
 
-    private Boolean shouldAutoIO() {
+    private boolean shouldAutoIO() {
         if (!isFormed()) return false;
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;

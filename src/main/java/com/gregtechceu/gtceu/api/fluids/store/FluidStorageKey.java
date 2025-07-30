@@ -2,9 +2,12 @@ package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
@@ -22,7 +25,7 @@ public final class FluidStorageKey {
     @Getter
     private final ResourceLocation resourceLocation;
     @Getter
-    private final String tagKey;
+    private final TagKey<Fluid> extraTag;
     @Getter
     private final MaterialIconType iconType;
     private final Function<Material, String> registryNameFunction;
@@ -33,13 +36,13 @@ public final class FluidStorageKey {
     @Getter
     private final int registrationPriority;
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
+    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @Nullable TagKey<Fluid> extraTag,
                            @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
         this.resourceLocation = resourceLocation;
-        this.tagKey = tagKey;
+        this.extraTag = extraTag;
         this.iconType = iconType;
         this.registryNameFunction = registryNameFunction;
         this.translationKeyFunction = translationKeyFunction;
@@ -50,6 +53,25 @@ public final class FluidStorageKey {
             throw new IllegalArgumentException("Cannot create duplicate keys");
         }
         keys.put(resourceLocation, this);
+    }
+
+    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
+                           @NotNull MaterialIconType iconType,
+                           @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
+                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+                           @Nullable FluidState defaultFluidState, int registrationPriority) {
+        this(resourceLocation, TagUtil.createFluidTag(tagKey), iconType,
+                registryNameFunction, translationKeyFunction,
+                defaultFluidState, registrationPriority);
+    }
+
+    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
+                           @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
+                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+                           @Nullable FluidState defaultFluidState, int registrationPriority) {
+        this(resourceLocation, (TagKey<Fluid>) null, iconType,
+                registryNameFunction, translationKeyFunction,
+                defaultFluidState, registrationPriority);
     }
 
     public static @Nullable FluidStorageKey getByName(@NotNull ResourceLocation location) {
