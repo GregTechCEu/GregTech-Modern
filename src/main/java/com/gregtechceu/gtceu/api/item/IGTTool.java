@@ -745,6 +745,19 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
         tooltip.add(CommonComponents.EMPTY);
 
+        var defaultEnchants = getDefaultEnchantments(stack);
+        if (!defaultEnchants.isEmpty()) {
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
+            for (var entry : defaultEnchants.entrySet()) {
+                Enchantment enchant = entry.getKey();
+                if (enchant == null) continue;
+
+                tooltip.add(enchant.getFullname(entry.getValue()));
+            }
+        }
+
+        tooltip.add(CommonComponents.EMPTY);
+
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClassNames(stack).stream()
@@ -780,17 +793,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         }
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
-        }
-
-        var defaultEnchants = getDefaultEnchantments(stack);
-        if (!defaultEnchants.isEmpty()) {
-            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
-            for (var entry : defaultEnchants.entrySet()) {
-                Enchantment enchant = entry.getKey();
-                if (enchant == null) continue;
-
-                tooltip.add(enchant.getFullname(entry.getValue()));
-            }
         }
     }
 
