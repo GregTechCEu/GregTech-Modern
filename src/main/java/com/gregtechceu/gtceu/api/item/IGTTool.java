@@ -841,6 +841,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
             case BREAKABLE -> {
                 return stack.getTag() != null && !stack.getTag().getBoolean(UNBREAKABLE_KEY);
             }
+            case VANISHABLE -> {
+                return true;
+            }
         }
 
         ToolProperty property = getToolProperty(stack);
