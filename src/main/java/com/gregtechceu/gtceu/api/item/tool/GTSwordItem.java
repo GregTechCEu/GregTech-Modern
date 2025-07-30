@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,6 +33,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 public class GTSwordItem extends SwordItem implements IGTTool {
 
@@ -46,8 +46,8 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
-                          Properties properties) {
+    public GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                       Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -171,6 +171,16 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return definition$isValidRepairItem(stack, repairCandidate);
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        return definition$getAllEnchantments(stack);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getEnchantmentLevel(stack, enchantment);
     }
 
     @Override

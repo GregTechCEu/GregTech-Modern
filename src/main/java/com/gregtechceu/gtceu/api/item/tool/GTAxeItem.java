@@ -34,6 +34,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GTAxeItem extends AxeItem implements IGTTool {
@@ -172,6 +173,16 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return definition$isValidRepairItem(stack, repairCandidate);
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        return definition$getAllEnchantments(stack);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getEnchantmentLevel(stack, enchantment);
     }
 
     @Override

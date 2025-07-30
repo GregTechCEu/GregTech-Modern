@@ -34,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -52,6 +53,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -66,9 +68,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -144,16 +145,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         toolTag.putInt(DURABILITY_KEY, 0);
         if (toolProperty.isUnbreakable()) {
             stackCompound.putBoolean(UNBREAKABLE_KEY, true);
-        }
-
-        // Set tool and material enchantments
-        Object2IntMap<Enchantment> enchantments = new Object2IntOpenHashMap<>(toolProperty.getEnchantments());
-        enchantments.putAll(toolStats.getDefaultEnchantments(stack));
-        for (var entry : Object2IntMaps.fastIterable(enchantments)) {
-            var enchantment = entry.getKey();
-            if (enchantment.canEnchant(stack)) {
-                stack.enchant(enchantment, entry.getIntValue());
-            }
         }
 
         // Set behaviours
@@ -446,6 +437,60 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             }
         }
         return false;
+    }
+
+    default Map<Enchantment, Integer> definition$getAllEnchantments(ItemStack stack) {
+        CompoundTag toolTag = getToolTag(stack);
+        if (toolTag.contains(INNATE_ENCHANTMENTS_KEY, Tag.TAG_LIST)) {
+            ListTag innateEnchantmentsTag = toolTag.getList(INNATE_ENCHANTMENTS_KEY, Tag.TAG_COMPOUND);
+            if (innateEnchantmentsTag.isEmpty()) {
+                return EnchantmentHelper.getEnchantments(stack);
+            }
+
+            var existing = EnchantmentHelper.deserializeEnchantments(innateEnchantmentsTag);
+            return IGTTool.joinEnchantments(stack, existing);
+        }
+
+        // Get tool and material enchantments
+        Object2IntMap<Enchantment> innateEnchantments = new Object2IntLinkedOpenHashMap<>();
+        innateEnchantments.putAll(getToolStats().getDefaultEnchantments(stack));
+        innateEnchantments.putAll(this.getMaterial().getProperty(PropertyKey.TOOL).getEnchantments());
+
+        IGTTool.setInnateEnchantments(innateEnchantments, stack);
+        return IGTTool.joinEnchantments(stack, innateEnchantments);
+    }
+
+    private static void setInnateEnchantments(Map<Enchantment, Integer> enchantments, ItemStack stack) {
+        CompoundTag toolTag = getToolTag(stack);
+        ListTag enchantList = new ListTag();
+
+        for (var entry : enchantments.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            if (enchantment == null || !enchantment.canEnchant(stack)) {
+                continue;
+            }
+            int level = entry.getValue();
+            enchantList.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level));
+        }
+
+        toolTag.put(INNATE_ENCHANTMENTS_KEY, enchantList);
+    }
+
+    private static Map<Enchantment, Integer> joinEnchantments(ItemStack stack, Map<Enchantment, Integer> enchantments) {
+        // this returns the enchantments stored in the normal NBT tag, so it won't be an infinite loop
+        var original = EnchantmentHelper.getEnchantments(stack);
+        if (enchantments.isEmpty()) {
+            return original;
+        }
+        Object2IntMap<Enchantment> joined = new Object2IntLinkedOpenHashMap<>(original);
+        for (var entry : enchantments.entrySet()) {
+            joined.mergeInt(entry.getKey(), entry.getValue(), Integer::max);
+        }
+        return joined;
+    }
+
+    default int definition$getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getAllEnchantments(stack).get(enchantment);
     }
 
     default Multimap<Attribute, AttributeModifier> definition$getDefaultAttributeModifiers(EquipmentSlot equipmentSlot,

@@ -48,7 +48,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
@@ -105,6 +104,7 @@ public class ToolHelper {
     public static final String ATTACK_SPEED_KEY = "AttackSpeed";
     public static final String ENCHANTABILITY_KEY = "Enchantability";
     public static final String HARVEST_LEVEL_KEY = "HarvestLevel";
+    public static final String INNATE_ENCHANTMENTS_KEY = "InnateEnchantments";
     public static final String LAST_CRAFTING_USE_KEY = "LastCraftingUse";
 
     // Keys that resides in behaviours tag
@@ -215,7 +215,7 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
-                int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, stack);
+                int unbreakingLevel = stack.getEnchantmentLevel(Enchantments.UNBREAKING);
                 int negated = 0;
                 for (int k = 0; unbreakingLevel > 0 && k < damage; k++) {
                     if (DigDurabilityEnchantment.shouldIgnoreDurabilityDrop(stack, unbreakingLevel, random)) {
@@ -245,7 +245,7 @@ public class ToolHelper {
         }
     }
 
-    public static void playToolSound(GTToolType toolType, ServerPlayer player) {
+    public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
