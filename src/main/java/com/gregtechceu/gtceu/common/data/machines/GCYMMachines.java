@@ -287,7 +287,7 @@ public class GCYMMachines {
             .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
-            .recipeType(ASSEMBLER_RECIPES)
+            .recipeTypes(ASSEMBLER_RECIPES, RECIPE_REIPCE)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
                     BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
