@@ -64,8 +64,8 @@ public class GTToolType {
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(ItemTags.SHOVELS)
             .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
-            .toolStats(
-                    b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
+            .toolStats(b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F)
+                    .behaviors(GrassPathBehavior.INSTANCE, DouseCampfireBehavior.INSTANCE))
             .constructor(GTShovelItem::create)
             .toolClassNames("shovel")
             .defaultActions(ToolActions.SHOVEL_DIG)
@@ -111,7 +111,8 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    .behaviors(AOEConfigUIBehavior.INSTANCE, GrassPathBehavior.INSTANCE))
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, GrassPathBehavior.INSTANCE,
+                            DouseCampfireBehavior.INSTANCE))
             .toolClasses(GTToolType.SHOVEL)
             .defaultActions(ToolActions.SHOVEL_DIG)
             .materialAmount(3 * GTValues.M)
@@ -571,7 +572,7 @@ public class GTToolType {
         private final Set<ToolAction> defaultAbilities = Sets.newIdentityHashSet();
         @Setter
         private Set<String> toolClassNames = new HashSet<>();
-        private Set<GTToolType> toolClasses = new HashSet<>();
+        private final Set<GTToolType> toolClasses = new HashSet<>();
         @Setter
         private IGTToolDefinition toolStats;
         @Setter
@@ -595,13 +596,13 @@ public class GTToolType {
 
         @SafeVarargs
         public final Builder toolTag(TagKey<Item>... tags) {
-            itemTags.addAll(Arrays.stream(tags).toList());
+            itemTags.addAll(Arrays.asList(tags));
             return this;
         }
 
         @SafeVarargs
         public final Builder harvestTag(TagKey<Block>... tags) {
-            harvestTags.addAll(Arrays.stream(tags).toList());
+            harvestTags.addAll(Arrays.asList(tags));
             return this;
         }
 
@@ -623,14 +624,14 @@ public class GTToolType {
 
         @Tolerate
         public Builder toolClasses(GTToolType... classes) {
-            this.toolClasses.addAll(Arrays.stream(classes).toList());
+            this.toolClasses.addAll(Arrays.asList(classes));
             this.toolClassNames.addAll(Arrays.stream(classes).map(type -> type.name).toList());
             return this;
         }
 
         @Tolerate
         public Builder toolClassNames(String... classes) {
-            this.toolClassNames.addAll(Arrays.stream(classes).toList());
+            this.toolClassNames.addAll(Arrays.asList(classes));
             return this;
         }
 
