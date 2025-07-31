@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -1125,6 +1126,24 @@ public class GTMultiMachines {
             null,
             (builder, overlay) -> builder.workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));
+
+    public static final MultiblockMachineDefinition CENTRAL_MONITOR = REGISTRATE
+            .multiblock("central_monitor", CentralMonitorMachine::new)
+            .rotationState(RotationState.ALL)
+            .recipeType(DUMMY_RECIPES)
+            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("BCB", "BBB", "BBB", "BBB")
+                    .where('C', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('B', CentralMonitorMachine.BLOCK_PREDICATE)
+                    .build())
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(
+                    GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+                    GTCEu.id("block/multiblock/central_monitor"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
+            .hasBER(true)
+            .register();
 
     public static void init() {}
 }

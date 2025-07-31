@@ -73,6 +73,10 @@ public class GTCovers {
 
     public final static CoverDefinition MACHINE_CONTROLLER = register("machine_controller",
             MachineControllerCover::new);
+    public final static CoverDefinition WIRELESS_TRANSMITTER = register(
+            "wireless_transmitter",
+            WirelessTransmitterCover::new,
+            () -> () -> new SimpleCoverRenderer(GTCEu.id("block/cover/wireless_transmitter")));
 
     // Voiding
     public final static CoverDefinition ITEM_VOIDING = register("item_voiding", ItemVoidingCover::new);

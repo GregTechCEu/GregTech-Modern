@@ -38,6 +38,8 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<IHazardParticleContainer> CAPABILITY_HAZARD_CONTAINER = CapabilityManager
             .get(new CapabilityToken<>() {});
+    public static final Capability<IMonitorComponent> CAPABILITY_MONITOR_COMPONENT = CapabilityManager
+            .get(new CapabilityToken<>() {});
 
     public static final Capability<IMedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
             .get(new CapabilityToken<>() {});

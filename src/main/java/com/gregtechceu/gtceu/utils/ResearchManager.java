@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -132,7 +133,8 @@ public final class ResearchManager {
     public static void createDefaultResearchRecipe(@NotNull GTRecipeType recipeType, @NotNull String researchId,
                                                    @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
                                                    @NotNull ItemStack dataItem,
-                                                   int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
+                                                   int duration, EnergyStack eut, int CWUt,
+                                                   Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         CompoundTag compound = dataItem.getOrCreateTag();
@@ -147,7 +149,7 @@ public final class ResearchManager {
             if (!researchFluid.isEmpty()) builder.inputFluids(researchFluid);
 
             builder.outputItems(dataItem)
-                    .EUt(EUt)
+                    .EUt(eut.voltage(), eut.amperage())
                     .CWUt(CWUt)
                     .totalCWU(duration)
                     .save(provider);
@@ -160,7 +162,7 @@ public final class ResearchManager {
 
             builder.outputItems(dataItem)
                     .duration(duration)
-                    .EUt(EUt)
+                    .EUt(eut.voltage(), eut.amperage())
                     .researchScan(true)
                     .save(provider);
         }

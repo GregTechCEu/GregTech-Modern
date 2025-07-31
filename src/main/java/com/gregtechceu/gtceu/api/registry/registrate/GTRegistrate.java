@@ -193,6 +193,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     private RegistryEntry<CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
+    public RegistryEntry<CreativeModeTab> creativeModeTab() {
+        return this.currentTab;
+    }
+
     public void creativeModeTab(Supplier<RegistryEntry<CreativeModeTab>> currentTab) {
         this.currentTab = currentTab.get();
     }

@@ -382,11 +382,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public boolean isCustomRenderer() {
-        if (dynamicRenders.isEmpty()) return false;
-        for (DynamicRender<?, ?> render : dynamicRenders) {
-            if (render.isBlockEntityRenderer()) return true;
-        }
-        return false;
+        return true;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -396,6 +392,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                        int packedLight, int packedOverlay) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
         if (machineBE.getDefinition() != getDefinition()) return;
+        ICoverableRenderer.super.renderDynamicCovers(machineBE.getMetaMachine(), partialTick, poseStack, buffer,
+                packedLight,
+                packedOverlay);
         if (dynamicRenders.isEmpty()) return;
 
         MetaMachine machine = machineBE.getMetaMachine();
@@ -453,6 +452,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public boolean shouldRender(BlockEntity blockEntity, @NotNull Vec3 cameraPos) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
         if (machineBE.getDefinition() != getDefinition()) return false;
+        if (machineBE.getMetaMachine().getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
 
         MetaMachine machine = machineBE.getMetaMachine();
@@ -466,8 +466,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public int getViewDistance() {
-        if (dynamicRenders.isEmpty()) return 0;
-
         int distance = 0;
         for (DynamicRender<?, ?> model : dynamicRenders) {
             distance = Math.max(distance, model.getViewDistance());

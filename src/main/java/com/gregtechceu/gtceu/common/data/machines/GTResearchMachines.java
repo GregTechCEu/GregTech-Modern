@@ -324,6 +324,18 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .register();
 
+    public static final MachineDefinition BASIC_DATA_ACCESS_HATCH = REGISTRATE
+            .machine("basic_data_access_hatch", (holder) -> new DataAccessHatchMachine(holder, HV, false))
+            .langValue("Basic Data Access Hatch")
+            .tier(HV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.DATA_ACCESS)
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 4),
+                    Component.translatable("gtceu.part_sharing.disabled"))
+            .overlayTieredHullModel("data_access_hatch")
+            .register();
+
     public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE
             .machine("data_access_hatch", (holder) -> new DataAccessHatchMachine(holder, EV, false))
             .langValue("Data Access Hatch")
