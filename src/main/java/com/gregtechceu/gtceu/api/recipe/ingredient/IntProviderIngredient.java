@@ -65,8 +65,12 @@ public class IntProviderIngredient extends Ingredient {
     public ItemStack @NotNull [] getItems() {
         if (itemStacks == null) {
             itemStacks = inner.getItems();
+            int cache = getSampledCount(GTValues.RNG);
+            if (cache == 0) {
+                return new ItemStack[] { ItemStack.EMPTY };
+            }
             for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = itemStacks[i].copyWithCount(getSampledCount(GTValues.RNG));
+                itemStacks[i] = itemStacks[i].copyWithCount(cache);
             }
         }
         return itemStacks;
