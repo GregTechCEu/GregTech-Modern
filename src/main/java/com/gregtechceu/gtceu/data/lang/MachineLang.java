@@ -27,8 +27,8 @@ public class MachineLang {
 
         provider.add("gtceu.machine.lp_steam_extractor.tooltip", "§7Extracting your first Rubber");
         provider.add("gtceu.machine.hp_steam_extractor.tooltip", "§7Extracting your first Rubber");
-        provider.add("gtceu.machine.lp_steam_macerator.tooltip", "§7Macerating your Ores");
-        provider.add("gtceu.machine.hp_steam_macerator.tooltip", "§7Macerating your Ores");
+        provider.add("gtceu.machine.lp_steam_macerator.tooltip", "§7Macerating your Ores without Byproducts");
+        provider.add("gtceu.machine.hp_steam_macerator.tooltip", "§7Macerating your Ores without Byproducts");
         provider.add("gtceu.machine.lp_steam_compressor.tooltip", "§7Compressing Items");
         provider.add("gtceu.machine.hp_steam_compressor.tooltip", "§7Compressing Items");
         provider.add("gtceu.machine.lp_steam_forge_hammer.tooltip", "§7Forge Hammer");
