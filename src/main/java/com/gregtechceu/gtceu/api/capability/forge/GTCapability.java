@@ -28,6 +28,8 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<IMaintenanceMachine> CAPABILITY_MAINTENANCE_MACHINE = CapabilityManager
             .get(new CapabilityToken<>() {});
+    public static final Capability<ITurbineMachine> CAPABILITY_TURBINE_MACHINE = CapabilityManager
+            .get(new CapabilityToken<>() {});
     public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IOpticalComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager
@@ -51,6 +53,7 @@ public class GTCapability {
         event.register(IElectricItem.class);
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);
+        event.register(ITurbineMachine.class);
         event.register(ILaserContainer.class);
         event.register(IOpticalComputationProvider.class);
         event.register(IDataAccessHatch.class);
