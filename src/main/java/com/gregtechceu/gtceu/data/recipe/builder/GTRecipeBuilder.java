@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -46,6 +47,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -1112,6 +1114,54 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder environmentalHazard(MedicalCondition condition) {
         return environmentalHazard(condition, false);
+    }
+
+    public GTRecipeBuilder adjacentFluid(Fluid... fluids) {
+        return adjacentFluid(false, fluids);
+    }
+
+    public GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
+        return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
+        return adjacentFluid(false, tags);
+    }
+
+    public GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
+        return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids) {
+        return adjacentFluid(fluids, false);
+    }
+
+    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids, boolean isReverse) {
+        return addCondition(new AdjacentFluidCondition(isReverse, new ArrayList<>(fluids)));
+    }
+
+    public GTRecipeBuilder adjacentBlock(Block... blocks) {
+        return adjacentBlock(false, blocks);
+    }
+
+    public GTRecipeBuilder adjacentBlock(boolean isReverse, Block... blocks) {
+        return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
+        return adjacentBlock(false, tags);
+    }
+
+    public GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+        return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks) {
+        return adjacentBlock(blocks, false);
+    }
+
+    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks, boolean isReverse) {
+        return addCondition(new AdjacentBlockCondition(isReverse, new ArrayList<>(blocks)));
     }
 
     public GTRecipeBuilder daytime(boolean isNight) {
