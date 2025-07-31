@@ -651,12 +651,6 @@ public class GTRecipeTypes {
             .setMaxTooltips(4)
             .setUiBuilder(FusionReactorMachine::addEUToStartLabel);
 
-    public final static GTRecipeType RECIPE_REIPCE = register("big_chonk", ELECTRIC)
-            .setMaxIOSize(900, 1, 0, 0)
-            .setEUIO(IO.IN)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ASSEMBLER, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.ASSEMBLER);
-
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
 
