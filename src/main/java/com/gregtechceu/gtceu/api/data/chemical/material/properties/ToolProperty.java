@@ -115,6 +115,7 @@ public class ToolProperty implements IMaterialProperty {
     /**
      * Enchantment to be applied to tools made from this Material.
      */
+    @Getter
     private final Object2IntMap<Enchantment> enchantments = new Object2IntArrayMap<>();
 
     public ToolProperty(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types) {
@@ -127,10 +128,6 @@ public class ToolProperty implements IMaterialProperty {
 
     public ToolProperty() {
         this(1.0F, 1.0F, 100, 2, GTToolType.getTypes().values().toArray(GTToolType[]::new));
-    }
-
-    public Object2IntMap<Enchantment> getEnchantments() {
-        return enchantments;
     }
 
     @Override
@@ -168,10 +165,19 @@ public class ToolProperty implements IMaterialProperty {
         return this;
     }
 
+    @SuppressWarnings("unused") // API, need to treat all of these as used
     public static class Builder {
 
         private final ToolProperty toolProperty;
 
+        /**
+         * Create Tools for this Material.
+         *
+         * @param harvestSpeed The mining speed of a tool made from this Material.
+         * @param attackDamage The attack damage of a tool made from this Material.
+         * @param durability   The durability of a tool made from this Material.
+         * @param harvestLevel The harvest level that tools of this Material can mine.
+         */
         public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel) {
             return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, new GTToolType[] {
                     SWORD,
@@ -211,6 +217,15 @@ public class ToolProperty implements IMaterialProperty {
             });
         }
 
+        /**
+         * Create Tools for this Material.
+         *
+         * @param harvestSpeed The mining speed of a tool made from this Material.
+         * @param attackDamage The attack damage of a tool made from this Material.
+         * @param durability   The durability of a tool made from this Material.
+         * @param harvestLevel The harvest level that tools of this Material can mine.
+         * @param types        The types of tools that can be made of this Material.
+         */
         public static Builder of(float harvestSpeed, float attackDamage, int durability, int harvestLevel,
                                  GTToolType... types) {
             return new Builder(harvestSpeed, attackDamage, durability, harvestLevel, types);
@@ -220,46 +235,76 @@ public class ToolProperty implements IMaterialProperty {
             toolProperty = new ToolProperty(harvestSpeed, attackDamage, durability, harvestLevel, types);
         }
 
+        /**
+         * Set the base enchantability of a tool made from this Material. Iron is 14, Diamond is 10, Stone is 5.
+         */
         public Builder enchantability(int enchantability) {
             toolProperty.enchantability = enchantability;
             return this;
         }
 
+        /**
+         * Set the attack speed of a tool made from this Material (animation time).
+         */
         public Builder attackSpeed(float attackSpeed) {
             toolProperty.attackSpeed = attackSpeed;
             return this;
         }
 
+        /**
+         * Disable crafting tools being made from this Material.
+         */
         public Builder ignoreCraftingTools() {
             toolProperty.ignoreCraftingTools = true;
             return this;
         }
 
+        /**
+         * Set tools made from this Material as unbreakable, bypassing all durability.
+         */
         public Builder unbreakable() {
             toolProperty.isUnbreakable = true;
             return this;
         }
 
+        /**
+         * Set the types of tools that can be made of this Material.
+         */
         public Builder types(GTToolType... types) {
             toolProperty.types = types;
             return this;
         }
 
+        /**
+         * Add additional types of tools that can be made of this Material.
+         */
         public Builder addTypes(GTToolType... types) {
             toolProperty.types = ArrayUtils.addAll(toolProperty.types, types);
             return this;
         }
 
+        /**
+         * Add a default enchantment to tools made of this Material.
+         * 
+         * @param enchantment The default enchantment, applied on crafting the tool.
+         * @param level       The level of the enchantment.
+         */
         public Builder enchantment(Enchantment enchantment, int level) {
             toolProperty.addEnchantmentForTools(enchantment, level);
             return this;
         }
 
+        /**
+         * Set tools made from this Material as magnetic, pulling mined blocks into your inventory.
+         */
         public Builder magnetic() {
             toolProperty.isMagnetic = true;
             return this;
         }
 
+        /**
+         * Set a multiplier to the base durability of tools made from this Material.
+         */
         public Builder durabilityMultiplier(int multiplier) {
             toolProperty.durabilityMultiplier = multiplier;
             return this;
