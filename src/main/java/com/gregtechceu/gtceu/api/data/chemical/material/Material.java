@@ -603,14 +603,11 @@ public class Material implements Comparable<Material> {
             flags = new MaterialFlags();
         }
 
-
+        /**
+         * @param name Set the material localized name to this value
+         */
         public Builder langValue(String name) {
             materialInfo.setOverriddenName(name);
-            return this;
-        }
-
-        public Builder customTags(TagKey<Item> key) {
-            this.itemTags.add(key);
             return this;
         }
 
