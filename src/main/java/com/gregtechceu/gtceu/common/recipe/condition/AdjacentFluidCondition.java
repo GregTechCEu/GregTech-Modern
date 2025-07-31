@@ -123,18 +123,16 @@ public class AdjacentFluidCondition extends RecipeCondition {
     public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@NotNull GTRecipe recipe) {
         if (this.fluids.isEmpty() || (recipe.data.contains("fluidA") && recipe.data.contains("fluidB"))) {
             List<HolderSet<Fluid>> fluids = new ArrayList<>();
-            if (recipe.data.contains("fluidA")) {
-                Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-                if (!fluidA.defaultFluidState().isEmpty()) {
-                    fluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
-                }
+
+            Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
+            if (!fluidA.defaultFluidState().isEmpty()) {
+                fluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
-            if (recipe.data.contains("fluidB")) {
-                Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
-                if (!fluidB.defaultFluidState().isEmpty()) {
-                    fluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
-                }
+            Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+            if (!fluidB.defaultFluidState().isEmpty()) {
+                fluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }
+
             this.fluids = fluids;
         }
         return this.fluids;

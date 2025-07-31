@@ -123,17 +123,14 @@ public class AdjacentBlockCondition extends RecipeCondition {
     public @NotNull List<HolderSet<Block>> getOrInitBlocks(@NotNull GTRecipe recipe) {
         if (this.blocks.isEmpty() || (recipe.data.contains("blockA") && recipe.data.contains("blockB"))) {
             List<HolderSet<Block>> blocks = new ArrayList<>();
-            if (recipe.data.contains("blockA")) {
-                Block blockA = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockA")));
-                if (!blockA.defaultBlockState().isAir()) {
-                    blocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
-                }
+
+            Block blockA = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockA")));
+            if (!blockA.defaultBlockState().isAir()) {
+                blocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
             }
-            if (recipe.data.contains("blockB")) {
-                Block blockB = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockB")));
-                if (!blockB.defaultBlockState().isAir()) {
-                    blocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
-                }
+            Block blockB = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockB")));
+            if (!blockB.defaultBlockState().isAir()) {
+                blocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
             }
             this.blocks = blocks;
         }
