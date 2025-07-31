@@ -18,26 +18,26 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class RockBreakerCondition extends RecipeCondition {
+public class AdjacentFluidCondition extends RecipeCondition {
 
-    public static final Codec<RockBreakerCondition> CODEC = RecordCodecBuilder
+    public static final Codec<AdjacentFluidCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
-                    .apply(instance, RockBreakerCondition::new));
+                    .apply(instance, AdjacentFluidCondition::new));
 
-    public final static RockBreakerCondition INSTANCE = new RockBreakerCondition();
+    public final static AdjacentFluidCondition INSTANCE = new AdjacentFluidCondition();
 
-    public RockBreakerCondition(boolean isReverse) {
+    public AdjacentFluidCondition(boolean isReverse) {
         super(isReverse);
     }
 
     @Override
     public RecipeConditionType<?> getType() {
-        return GTRecipeConditions.ROCK_BREAKER;
+        return GTRecipeConditions.ADJACENT_FLUID;
     }
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.rock_breaker.tooltip");
+        return Component.translatable("recipe.condition.adjacent_fluid.tooltip");
     }
 
     @Override
@@ -60,6 +60,6 @@ public class RockBreakerCondition extends RecipeCondition {
 
     @Override
     public RecipeCondition createTemplate() {
-        return new RockBreakerCondition();
+        return new AdjacentFluidCondition();
     }
 }
