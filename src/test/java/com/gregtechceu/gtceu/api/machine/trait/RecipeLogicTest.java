@@ -154,11 +154,11 @@ public class RecipeLogicTest {
     @GameTest(template = "singleblock_chem_reactor")
     public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
         BlockEntity holder = helper.getBlockEntity(new BlockPos(0, 1, 0));
-        if (!(holder instanceof MetaMachineBlockEntity atte)) {
+        if (!(holder instanceof MetaMachineBlockEntity metaMachineBlockEntity)) {
             helper.fail("wrong block at relative pos [0,1,0]!");
             return;
         }
-        MetaMachine machine = atte.getMetaMachine();
+        MetaMachine machine = metaMachineBlockEntity.getMetaMachine();
         if (!(machine instanceof IRecipeLogicMachine recipeLogicMachine)) {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
@@ -191,9 +191,6 @@ public class RecipeLogicTest {
         inputSlots.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
         inputSlots.onContentsChanged();
 
-        // Inputs change. did we detect it ?
-        // helper.assertTrue(recipeLogic.isRecipeDirty(), "Recipe is not dirty after inserting cobblestone in input
-        // bus");
         recipeLogic.findAndHandleRecipe();
         helper.assertFalse(recipeLogic.getLastRecipe() == null,
                 "Last recipe is empty, even though recipe logic should've found a recipe.");
