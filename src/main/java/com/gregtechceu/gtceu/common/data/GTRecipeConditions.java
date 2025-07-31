@@ -25,7 +25,7 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<RainingCondition> RAINING = GTRegistries.RECIPE_CONDITIONS.register("rain",
             new RecipeConditionType<>(RainingCondition::new, RainingCondition.CODEC));
     public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = GTRegistries.RECIPE_CONDITIONS
-            .register("rock_breaker", new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
+            .register("adjacent_fluid", new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
     public static final RecipeConditionType<AdjacentBlockCondition> ADJACENT_BLOCK = GTRegistries.RECIPE_CONDITIONS
             .register("adjacent_block",
                     new RecipeConditionType<>(AdjacentBlockCondition::new, AdjacentBlockCondition.CODEC));
@@ -65,6 +65,9 @@ public final class GTRecipeConditions {
                     .register("heracles_quest",
                             new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
         }
+        // fix the rock breaker condition's ID
+        GTRegistries.RECIPE_CONDITIONS.remap("rock_breaker", "adjacent_fluid");
+
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
                 (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
