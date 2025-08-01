@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.cover.ender;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
 
@@ -27,7 +28,10 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
 
     public EnderRedstoneLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        uuid = storage.addMember();
+        if (!isRemote()) {
+            storage = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), EntryTypes.ENDER_REDSTONE, getChannelName());
+            uuid = storage.addMember();
+        } else uuid = null;
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -45,6 +46,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
         super(definition, coverHolder, attachedSide);
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.item(this);
+        if (!isRemote()) storage = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), EntryTypes.ENDER_ITEM, getChannelName());
     }
 
     @Override
