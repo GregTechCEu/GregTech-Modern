@@ -33,7 +33,7 @@ public class GTRecipeLookupTest {
     private static GTRecipeLookup lookup;
     private static Predicate<GTRecipe> truePredicate = gtRecipe -> true;
     private static Predicate<GTRecipe> falsePredicate = gtRecipe -> false;
-    private static GTRecipe recipe1, recipe2, recipe3, recipe4;
+    private static GTRecipe smelt_stone, smelt_acacia_wood, smelt_birch_wood, smelt_cherry_wood;
 
     @BeforeBatch(batch = "GTRecipeLookup")
     public static void prepare(ServerLevel level) {
@@ -45,24 +45,27 @@ public class GTRecipeLookupTest {
                 .setMaxIOSize(1, 1, 0, 0);
         lookup = new GTRecipeLookup(type);
 
-        recipe1 = type.recipeBuilder("test_recipe_1")
+        smelt_stone = type.recipeBuilder("smelt_stone")
                 .inputItems(Items.COBBLESTONE, 1)
                 .outputItems(Items.STONE, 1)
                 .buildRawRecipe();
-        recipe2 = type.recipeBuilder("test_recipe_2")
+        smelt_acacia_wood = type.recipeBuilder("smelt_acacia_wood")
                 .inputItems(Items.ACACIA_WOOD, 1)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
-        recipe3 = type.recipeBuilder("test_recipe_3")
+        smelt_birch_wood = type.recipeBuilder("smelt_birch_wood")
                 .inputItems(Items.BIRCH_WOOD, 1)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
-        recipe4 = type.recipeBuilder("test_recipe_4")
+        smelt_cherry_wood = type.recipeBuilder("smelt_cherry_wood")
                 .inputItems(Items.CHERRY_WOOD, 16)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
 
-        for (GTRecipe recipe : List.of(recipe1, recipe2, recipe3)) {
+        for (GTRecipe recipe : List.of(smelt_stone,
+                smelt_acacia_wood,
+                smelt_birch_wood,
+                smelt_cherry_wood)) {
             lookup.addRecipe(recipe);
         }
 
@@ -82,7 +85,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupSimpleSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
-        helper.assertTrue(recipe1.equals(resultRecipe),
+        helper.assertTrue(smelt_stone.equals(resultRecipe),
                 "GT Recipe should be test_recipe_1, instead was " + resultRecipe);
         helper.succeed();
     }
@@ -93,7 +96,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupSimpleFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.REDSTONE_TORCH, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
-        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was %s" + resultRecipe);
+        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
         helper.succeed();
     }
 
@@ -103,7 +106,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupFalsePredicateFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), falsePredicate);
-        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was %s" + resultRecipe);
+        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
         helper.succeed();
     }
 
@@ -113,17 +116,26 @@ public class GTRecipeLookupTest {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1),
                 new ItemStack(Items.REDSTONE_TORCH, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
-        helper.assertTrue(recipe1.equals(resultRecipe),
+        helper.assertTrue(smelt_stone.equals(resultRecipe),
                 "GT Recipe should be test_recipe_1, instead was " + resultRecipe);
         helper.succeed();
     }
 
-    // Recipe test whose lookup should fail because the amount in the recipe is not enough
+    // Recipe test whose lookup should succeed because even though the amount in the recipe is not enough,
+    // ingredients don't count items
     @GameTest(template = "empty", batch = "GTRecipeLookup")
-    public static void recipeLookupIngredientCountFailTest(GameTestHelper helper) {
-        var ingredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 8));
-        GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
-        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was %s" + resultRecipe);
+    public static void recipeLookupIngredientCountSucceedTest(GameTestHelper helper) {
+        // NOTE: RecipeLookup only checks item type, not item count, so this will still work
+        var notEnoughIngredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 8));
+        GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(notEnoughIngredients, lookup.getLookup(),
+                truePredicate);
+        helper.assertTrue(smelt_cherry_wood.equals(resultRecipe),
+                "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
+
+        var enoughIngredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 16));
+        resultRecipe = lookup.recurseIngredientTreeFindRecipe(enoughIngredients, lookup.getLookup(), truePredicate);
+        helper.assertTrue(smelt_cherry_wood.equals(resultRecipe),
+                "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
         helper.succeed();
     }
 }
