@@ -115,7 +115,7 @@ public interface GTRecipeSchema {
         }
 
         public <T> GTKubeRecipe output(RecipeCapability<T> capability, Object... obj) {
-            var key = perTick ? ALL_TICK_INPUTS : ALL_INPUTS;
+            var key = perTick ? ALL_TICK_OUTPUTS : ALL_OUTPUTS;
             if (getValue(key) == null) setValue(key, new CapabilityMap());
             CapabilityMap map = getValue(key);
             for (Object object : obj) {
