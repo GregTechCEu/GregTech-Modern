@@ -1880,6 +1880,12 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
             .register();
 
+    public static ItemEntry<ComponentItem> COVER_ENDER_ITEM_LINK = REGISTRATE
+            .item("ender_item_link_cover", ComponentItem::create)
+            .lang("Ender Item Link")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_ITEM_LINK)))
+            .register();
+
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
             .item("fluid_voiding_cover", ComponentItem::create)
             .lang("Fluid Voiding Cover")
