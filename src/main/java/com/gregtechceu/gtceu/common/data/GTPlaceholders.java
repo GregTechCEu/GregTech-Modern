@@ -668,9 +668,11 @@ public class GTPlaceholders {
                 String type = args.get(0).toString();
                 String channel = args.get(1).toString();
                 UUID owner = null;
-                if (args.size() > 2) {
+                if (args.size() > 2 && !args.get(2).toString().isEmpty()) {
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                    ItemStack stack = ctx.itemStackHandler().getStackInSlot(PlaceholderUtils.toInt(args.get(2)));
+                    int slot = PlaceholderUtils.toInt(args.get(2));
+                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                     if (stack.getOrCreateTag().contains("boundPlayerUUID")) owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
                 }
                 VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
@@ -678,6 +680,23 @@ public class GTPlaceholders {
                     case "redstone" -> {
                         channel = "ERLink#" + channel;
                         if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel)) return MultiLineComponent.literal(0);
+                        if (args.size() > 4) {
+                            if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                            int slot = PlaceholderUtils.toInt(args.get(3));
+                            PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                            ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                            UUID uuid;
+                            if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
+                                uuid = stack.getOrCreateTag().getUUID("enderRedstoneLinkTransmitterUUID");
+                            } else {
+                                uuid = UUID.randomUUID();
+                                stack.getOrCreateTag().putUUID("enderRedstoneLinkTransmitterUUID", uuid);
+                            }
+                            int power = PlaceholderUtils.toInt(args.get(4));
+                            PlaceholderUtils.checkRange("redstone signal", 0, 15, power);
+                            ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).setSignal(uuid, power);
+                            return MultiLineComponent.empty();
+                        }
                         return MultiLineComponent.literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
                     }
                     case "item" -> {
