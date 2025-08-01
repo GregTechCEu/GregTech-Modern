@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;

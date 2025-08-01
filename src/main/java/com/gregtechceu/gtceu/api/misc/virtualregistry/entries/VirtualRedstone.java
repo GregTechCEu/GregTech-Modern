@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +15,10 @@ public class VirtualRedstone extends VirtualEntry {
 
     private static final String MEMBERS_KEY = "members";
 
-    @Setter
     @Getter
-    private Map<UUID, Short> members = new HashMap<>();
+    private final Map<UUID, Short> members = new HashMap<>();
+
+    public VirtualRedstone() {}
 
     public int getSignal() {
         return members.values().stream().max(Short::compareTo).orElse((short) 0);

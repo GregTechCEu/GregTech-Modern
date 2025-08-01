@@ -102,8 +102,8 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
         WidgetGroup group = new WidgetGroup(x, y, width, height);
-        for (int i = 0; i < storage.getHandler().getSlots(); i++) {
-            group.addWidget(new SlotWidget(storage.getHandler(), i, 8 * i, 0, canClick, canClick));
+        for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
+            group.addWidget(new SlotWidget(((VirtualItemStorage) entry).getHandler(), i, 8 * i, 0, canClick, canClick));
         }
         return group;
     }

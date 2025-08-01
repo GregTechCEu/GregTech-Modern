@@ -7,17 +7,20 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedstone> {
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderRedstoneLinkCover.class, AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
 
     @Persisted
     @DescSynced
@@ -69,8 +72,7 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
 
     @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        return new LabelWidget(x, y,
-                () -> Component.translatable("cover.ender_redstone_link.label", storage.getSignal()).getString());
+        return new WidgetGroup(x, y, width, height);
     }
 
     @Override
@@ -92,5 +94,10 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     protected int getSignalInput() {
         return coverHolder.getLevel().getSignal(coverHolder.getPos().relative(attachedSide),
                 attachedSide.getOpposite());
+    }
+
+    @Override
+    public @NotNull ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }
