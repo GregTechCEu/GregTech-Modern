@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
@@ -38,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.placeholder.PlaceholderUtils.checkArgs;
 
 public class GTPlaceholders {
 
@@ -81,7 +85,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
             }
@@ -91,7 +95,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);
             }
@@ -139,7 +143,7 @@ public class GTPlaceholders {
                 if (args.size() == 1)
                     return MultiLineComponent
                             .literal(countFluids(GTStringUtils.componentsToString(args.get(0)), fluidHandler));
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 return MultiLineComponent.empty(); // unreachable
             }
         });
@@ -148,7 +152,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2, true);
+                checkArgs(args, 2, true);
                 try {
                     if (GTStringUtils.toDouble(args.get(0)) != 0) {
                         return args.get(1);
@@ -164,7 +168,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                checkArgs(args, 2);
                 ChatFormatting color = ChatFormatting.getByName(GTStringUtils.componentsToString(args.get(0)));
                 if (color == null) throw new InvalidArgsException();
                 return new MultiLineComponent(args.get(1).stream().map(c -> c.withStyle(color)).toList());
@@ -175,7 +179,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 return new MultiLineComponent(
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.UNDERLINE)).toList());
             }
@@ -185,7 +189,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 return new MultiLineComponent(
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.STRIKETHROUGH)).toList());
             }
@@ -195,7 +199,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 return new MultiLineComponent(
                         args.get(0).stream().map(c -> c.withStyle(ChatFormatting.OBFUSCATED)).toList());
             }
@@ -205,7 +209,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                checkArgs(args, 2);
                 return MultiLineComponent.literal(GTValues.RNG.nextIntBetweenInclusive(
                         PlaceholderUtils.toInt(args.get(0)), PlaceholderUtils.toInt(args.get(1))));
             }
@@ -215,7 +219,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                checkArgs(args, 2);
                 int count = PlaceholderUtils.toInt(args.get(0));
                 MultiLineComponent out = MultiLineComponent.empty();
                 for (int i = 0; i < count; i++) out.append(args.get(1));
@@ -227,7 +231,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 return MultiLineComponent.literal("█");
             }
         });
@@ -236,7 +240,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 if (ctx.cover() instanceof IPlaceholderInfoProviderCover cover)
                     return MultiLineComponent.literal(cover.getTicksSincePlaced());
                 throw new NotSupportedException();
@@ -247,9 +251,9 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1, true);
+                checkArgs(args, 1, true);
                 int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkArgs(args, i + 2);
+                checkArgs(args, i + 2);
                 return args.get(i + 1);
             }
         });
@@ -258,7 +262,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2, true);
+                checkArgs(args, 2, true);
                 if (GTStringUtils.equals(args.get(0), "get")) {
                     Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
                     if (direction == null)
@@ -280,7 +284,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 int i = PlaceholderUtils.toInt(args.get(0));
                 if (ctx.previousText() == null) throw new NotSupportedException();
                 PlaceholderUtils.checkRange("line", 1, ctx.previousText().size(), i);
@@ -292,7 +296,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -304,7 +308,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -316,7 +320,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (maintenance == null) throw new NotSupportedException();
@@ -328,7 +332,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 IWorkable workable = GTCapabilityHelper.getWorkable(ctx.level(),
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
@@ -340,7 +344,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 if (ctx.level().getBlockEntity(ctx.pos()) instanceof CableBlockEntity cable) {
                     return MultiLineComponent.literal(cable.getAverageVoltage());
                 }
@@ -352,7 +356,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
+                checkArgs(args, 0);
                 if (ctx.level().getBlockEntity(ctx.pos()) instanceof CableBlockEntity cable) {
                     return MultiLineComponent.literal(cable.getAverageAmperage());
                 }
@@ -364,7 +368,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1, true);
+                checkArgs(args, 1, true);
                 String arg1 = GTStringUtils.componentsToString(args.get(0));
                 int cnt = -1;
                 for (List<MutableComponent> arg : args) {
@@ -378,7 +382,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2, true);
+                checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
                     PlaceholderUtils.checkRange("slot index", 1, 8, slot);
@@ -440,7 +444,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 int slot = GTStringUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
@@ -453,7 +457,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 if (args.get(0).isEmpty()) return MultiLineComponent.empty();
                 StringBuilder out = new StringBuilder();
                 for (char c : GTStringUtils.componentsToString(args.get(0)).toCharArray()) out.append(c).append(' ');
@@ -465,7 +469,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 String arg = args.get(0).toString();
                 if (arg.length() != 1) throw new InvalidArgsException();
                 return MultiLineComponent.literal((int) arg.toCharArray()[0]);
@@ -476,7 +480,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 return MultiLineComponent.literal((char) PlaceholderUtils.toInt(args.get(0)));
             }
         });
@@ -485,7 +489,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2, true);
+                checkArgs(args, 2, true);
                 int l = PlaceholderUtils.toInt(args.get(0));
                 int r = PlaceholderUtils.toInt(args.get(1));
                 PlaceholderUtils.checkRange("start index", 0, args.size(), l);
@@ -501,7 +505,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 3);
+                checkArgs(args, 3);
                 double a = PlaceholderUtils.toDouble(args.get(0));
                 double b = PlaceholderUtils.toDouble(args.get(2));
                 return switch (args.get(1).toString()) {
@@ -520,7 +524,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                checkArgs(args, 2);
                 int slot = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
@@ -573,7 +577,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                checkArgs(args, 2);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                 int slot = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
@@ -642,7 +646,7 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                checkArgs(args, 1);
                 long n = PlaceholderUtils.toLong(args.get(0));
                 Map<Long, String> suffixes = Map.of(
                         1L, "",
@@ -655,6 +659,42 @@ public class GTPlaceholders {
                     if (n >= i && max < i) max = i;
                 }
                 return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("ender") {
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+                checkArgs(args, 2, true);
+                String type = args.get(0).toString();
+                String channel = args.get(1).toString();
+                UUID owner = null;
+                if (args.size() > 2) {
+                    if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                    ItemStack stack = ctx.itemStackHandler().getStackInSlot(PlaceholderUtils.toInt(args.get(2)));
+                    if (stack.getOrCreateTag().contains("boundPlayerUUID")) owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
+                }
+                VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
+                switch (type) {
+                    case "redstone" -> {
+                        channel = "ERLink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel)) return MultiLineComponent.literal(0);
+                        return MultiLineComponent.literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
+                    }
+                    case "item" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel)) return MultiLineComponent.literal(0);
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        int count = 0;
+                        for (int i = 0; i < items.getSlots(); i++) count += items.getStackInSlot(i).getCount();
+                        return MultiLineComponent.literal(count);
+                    }
+                    case "fluid" -> {
+                        channel = "EFLink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_FLUID, channel)) return MultiLineComponent.literal(0);
+                        return MultiLineComponent.literal(ender.getEntry(owner, EntryTypes.ENDER_FLUID, channel).getFluidTank().getFluidAmount());
+                    }
+                    default -> throw new InvalidArgsException();
+                }
             }
         });
     }

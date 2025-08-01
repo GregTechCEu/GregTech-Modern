@@ -41,7 +41,7 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
 
     @Override
     protected String identifier() {
-        return "EELink#";
+        return "ERLink#";
     }
 
     @Override
