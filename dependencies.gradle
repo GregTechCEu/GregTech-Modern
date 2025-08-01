@@ -115,10 +115,8 @@ dependencies {
 
     modExtraLocalRuntime(forge.kotlinforforge)
     modExtraLocalRuntime(forge.observable)
+
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
-    //////////////////////////
-
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
