@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
+
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
+
 import net.minecraft.nbt.CompoundTag;
 
 public class VirtualRedstoneAccessor extends CustomObjectAccessor<VirtualRedstone> {
+
     public static final VirtualRedstoneAccessor INSTANCE = new VirtualRedstoneAccessor();
 
     protected VirtualRedstoneAccessor() {

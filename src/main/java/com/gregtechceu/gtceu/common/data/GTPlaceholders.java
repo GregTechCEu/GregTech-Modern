@@ -662,8 +662,10 @@ public class GTPlaceholders {
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("ender") {
+
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
                 checkArgs(args, 2, true);
                 String type = args.get(0).toString();
                 String channel = args.get(1).toString();
@@ -673,13 +675,15 @@ public class GTPlaceholders {
                     int slot = PlaceholderUtils.toInt(args.get(2));
                     PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
-                    if (stack.getOrCreateTag().contains("boundPlayerUUID")) owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
+                    if (stack.getOrCreateTag().contains("boundPlayerUUID"))
+                        owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
                 }
                 VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
                 switch (type) {
                     case "redstone" -> {
                         channel = "ERLink#" + channel;
-                        if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel)) return MultiLineComponent.literal(0);
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel))
+                            return MultiLineComponent.literal(0);
                         if (args.size() > 4) {
                             if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                             int slot = PlaceholderUtils.toInt(args.get(3));
@@ -697,11 +701,13 @@ public class GTPlaceholders {
                             ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).setSignal(uuid, power);
                             return MultiLineComponent.empty();
                         }
-                        return MultiLineComponent.literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
+                        return MultiLineComponent
+                                .literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
                     }
                     case "item" -> {
                         channel = "EILink#" + channel;
-                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel)) return MultiLineComponent.literal(0);
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.literal(0);
                         IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
                         int count = 0;
                         for (int i = 0; i < items.getSlots(); i++) count += items.getStackInSlot(i).getCount();
@@ -709,8 +715,10 @@ public class GTPlaceholders {
                     }
                     case "fluid" -> {
                         channel = "EFLink#" + channel;
-                        if (!ender.hasEntry(owner, EntryTypes.ENDER_FLUID, channel)) return MultiLineComponent.literal(0);
-                        return MultiLineComponent.literal(ender.getEntry(owner, EntryTypes.ENDER_FLUID, channel).getFluidTank().getFluidAmount());
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_FLUID, channel))
+                            return MultiLineComponent.literal(0);
+                        return MultiLineComponent.literal(
+                                ender.getEntry(owner, EntryTypes.ENDER_FLUID, channel).getFluidTank().getFluidAmount());
                     }
                     default -> throw new InvalidArgsException();
                 }

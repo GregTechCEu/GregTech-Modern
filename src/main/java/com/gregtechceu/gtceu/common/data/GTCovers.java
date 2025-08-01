@@ -47,7 +47,8 @@ public class GTCovers {
     public final static CoverDefinition INFINITE_WATER = register("infinite_water", InfiniteWaterCover::new);
     public final static CoverDefinition ENDER_FLUID_LINK = register("ender_fluid_link", EnderFluidLinkCover::new);
     public final static CoverDefinition ENDER_ITEM_LINK = register("ender_item_link", EnderItemLinkCover::new);
-    public final static CoverDefinition ENDER_REDSTONE_LINK = register("ender_redstone_link", EnderRedstoneLinkCover::new);
+    public final static CoverDefinition ENDER_REDSTONE_LINK = register("ender_redstone_link",
+            EnderRedstoneLinkCover::new);
     public final static CoverDefinition SHUTTER = register("shutter", ShutterCover::new);
     public final static CoverDefinition COVER_STORAGE = register("storage", StorageCover::new);
 
