@@ -10,20 +10,25 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorage> {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderItemLinkCover.class, AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderItemLinkCover.class,
+            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
 
     protected static final int TRANSFER_RATE = 8;
 
@@ -38,7 +43,6 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     public EnderItemLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        storage = new VirtualItemStorage();
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.item(this);
     }
@@ -74,15 +78,17 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
         if (itemsLeftToTransferLastSecond > 0) {
             itemsLeftToTransferLastSecond -= doTransferItems(itemsLeftToTransferLastSecond);
         }
-        if (timer % 20 == 0) itemsLeftToTransferLastSecond = TRANSFER_RATE*20;
+        if (timer % 20 == 0) itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
     }
 
     private int doTransferItems(int max) {
         IItemHandler ownHandler = getOwnItemHandler();
         if (ownHandler == null) return 0;
         return switch (io) {
-            case IN -> GTTransferUtils.transferItemsFiltered(ownHandler, storage.getHandler(), filterHandler.getFilter(), max);
-            case OUT -> GTTransferUtils.transferItemsFiltered(storage.getHandler(), ownHandler, filterHandler.getFilter(), max);
+            case IN -> GTTransferUtils.transferItemsFiltered(ownHandler, storage.getHandler(),
+                    filterHandler.getFilter(), max);
+            case OUT -> GTTransferUtils.transferItemsFiltered(storage.getHandler(), ownHandler,
+                    filterHandler.getFilter(), max);
             default -> 0;
         };
     }
@@ -95,7 +101,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
         WidgetGroup group = new WidgetGroup(x, y, width, height);
         for (int i = 0; i < storage.getHandler().getSlots(); i++) {
-            group.addWidget(new SlotWidget(storage.getHandler(), i, 8*i, 0, canClick, canClick));
+            group.addWidget(new SlotWidget(storage.getHandler(), i, 8 * i, 0, canClick, canClick));
         }
         return group;
     }

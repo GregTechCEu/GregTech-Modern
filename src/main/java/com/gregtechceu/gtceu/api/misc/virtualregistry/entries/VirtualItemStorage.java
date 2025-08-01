@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry.entries;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,6 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class VirtualItemStorage extends VirtualEntry {
+
     protected static final int DEFAULT_SLOT_AMOUNT = 1;
 
     @NotNull
