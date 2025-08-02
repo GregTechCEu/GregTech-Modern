@@ -1,0 +1,9 @@
+{
+  "name": "test",
+  "gui": [
+    {
+      "widget": "image",
+      "min": 50
+    }
+  ]
+}
