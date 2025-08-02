@@ -137,7 +137,7 @@ public class RecipeRunner {
                     for (RecipeHandlerList bypass_handler : handlerGroups.getOrDefault(
                             RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
                             Collections.emptyList())) {
-                        res = bypass_handler.handleRecipe(io, recipe, res, false);
+                        bypass_handler.handleRecipe(io, recipe, recipeContents, false);
                     }
                 }
                 recipeContents.clear();
