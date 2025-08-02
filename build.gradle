@@ -32,9 +32,6 @@ sourceSets {
     }
 
     test {
-        kotlin {
-            srcDirs += 'src/test/java'
-        }
         compileClasspath += main.output
         runtimeClasspath += main.output + main.runtimeClasspath
     }
