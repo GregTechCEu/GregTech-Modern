@@ -30,10 +30,4 @@ public interface ILayoutWidget extends INotifyEnabled {
     default boolean shouldIgnoreChildSize(IWidget child) {
         return false;
     }
-
-    @Override
-    default void onChildChangeEnabled(IWidget child, boolean enabled) {
-        layoutWidgets();
-        postLayoutWidgets();
-    }
 }
