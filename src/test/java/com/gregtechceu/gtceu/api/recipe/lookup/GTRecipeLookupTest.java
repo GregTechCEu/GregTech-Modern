@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -86,7 +88,7 @@ public class GTRecipeLookupTest {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
         helper.assertTrue(smelt_stone.equals(resultRecipe),
-                "GT Recipe should be test_recipe_1, instead was " + resultRecipe);
+                "GT Recipe should be smelt_stone, instead was " + resultRecipe);
         helper.succeed();
     }
 
@@ -117,7 +119,7 @@ public class GTRecipeLookupTest {
                 new ItemStack(Items.REDSTONE_TORCH, 1));
         GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), truePredicate);
         helper.assertTrue(smelt_stone.equals(resultRecipe),
-                "GT Recipe should be test_recipe_1, instead was " + resultRecipe);
+                "GT Recipe should be smelt_stone, instead was " + resultRecipe);
         helper.succeed();
     }
 
@@ -136,6 +138,31 @@ public class GTRecipeLookupTest {
         resultRecipe = lookup.recurseIngredientTreeFindRecipe(enoughIngredients, lookup.getLookup(), truePredicate);
         helper.assertTrue(smelt_cherry_wood.equals(resultRecipe),
                 "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
+        helper.succeed();
+    }
+
+    // Recipe test with a recipe-based canHandle check
+    @GameTest(template = "empty", batch = "GTRecipeLookup")
+    public static void recipeLookupCustomCountCanHandleTest(GameTestHelper helper) {
+        var ingredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 16));
+        // Do a recipe check with a condition that requires at least 4 ingredients in the inputs
+        // The recipe has 8, so this should succeed
+        GTRecipe resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(),
+                recipe -> recipe.inputs
+                        .getOrDefault(ItemRecipeCapability.CAP, List.of())
+                        .stream()
+                        .allMatch(content -> ((SizedIngredient) content.getContent()).getAmount() > 4));
+        helper.assertTrue(smelt_cherry_wood.equals(resultRecipe),
+                "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
+
+        // Do a recipe check with a condition that requires at least 32 ingredients in the inputs
+        // The recipe has 8, so this should fail
+        resultRecipe = lookup.recurseIngredientTreeFindRecipe(ingredients, lookup.getLookup(), recipe -> recipe.inputs
+                .getOrDefault(ItemRecipeCapability.CAP, List.of())
+                .stream()
+                .allMatch(content -> ((SizedIngredient) content.getContent()).getAmount() > 32));
+        helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
+
         helper.succeed();
     }
 }
