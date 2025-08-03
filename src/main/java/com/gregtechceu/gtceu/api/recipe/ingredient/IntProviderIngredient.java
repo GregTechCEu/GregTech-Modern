@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 public class IntProviderIngredient extends Ingredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
+    public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
 
     @Getter
     protected final IntProvider countProvider;
@@ -64,9 +65,14 @@ public class IntProviderIngredient extends Ingredient {
     @Override
     public ItemStack @NotNull [] getItems() {
         if (itemStacks == null) {
-            itemStacks = inner.getItems();
+            int cachedCount = getSampledCount(GTValues.RNG);
+            if (cachedCount == 0) {
+                return EMPTY_STACK_ARRAY;
+            }
+            var innerStacks = inner.getItems();
+            this.itemStacks = new ItemStack[innerStacks.length];
             for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = itemStacks[i].copyWithCount(getSampledCount(GTValues.RNG));
+                itemStacks[i] = innerStacks[i].copyWithCount(cachedCount);
             }
         }
         return itemStacks;

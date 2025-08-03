@@ -52,7 +52,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
@@ -498,24 +497,35 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             final int amount = sizedIngredient.getAmount();
             var mapped = tryMapInner(sizedIngredient.getInner(), amount);
             if (mapped != null) return mapped;
+
+            if (sizedIngredient.getInner() instanceof IntProviderIngredient intProvider) {
+                ItemStackList stackList = new ItemStackList();
+                for (ItemStack i : intProvider.getInner().getItems()) {
+                    stackList.add(i);
+                }
+                return stackList;
+            }
         } else if (ingredient instanceof IntProviderIngredient intProvider) {
             final int amount = 1;
             var mapped = tryMapInner(intProvider.getInner(), amount);
             if (mapped != null) return mapped;
+
+            ItemStackList stackList = new ItemStackList();
+            for (ItemStack i : intProvider.getInner().getItems()) {
+                stackList.add(i);
+            }
+            return stackList;
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             return mapIntersection(intersection, -1);
         } else {
             var tagList = tryMapTag(ingredient, 1);
             if (tagList != null) return tagList;
         }
-        ItemStackList stackList = new ItemStackList();
-        boolean isIntProvider = ingredient instanceof IntProviderIngredient ||
-                (ingredient instanceof SizedIngredient sized && sized.getInner() instanceof IntProviderIngredient);
 
-        UnaryOperator<ItemStack> setCount = stack -> isIntProvider ? stack.copyWithCount(1) : stack;
-        Arrays.stream(ingredient.getItems())
-                .map(setCount)
-                .forEach(stackList::add);
+        ItemStackList stackList = new ItemStackList();
+        for (ItemStack i : ingredient.getItems()) {
+            stackList.add(i);
+        }
         return stackList;
     }
 

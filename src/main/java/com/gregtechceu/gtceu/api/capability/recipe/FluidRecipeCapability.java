@@ -403,8 +403,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount;
-        if (ingredient instanceof IntProviderFluidIngredient provider) {
-            amount = provider.getCountProvider().getMaxValue();
+        if (ingredient instanceof IntProviderFluidIngredient) {
+            amount = 1;
         } else {
             amount = ingredient.getAmount();
         }
