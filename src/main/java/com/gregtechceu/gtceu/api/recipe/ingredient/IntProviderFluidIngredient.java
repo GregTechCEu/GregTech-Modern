@@ -58,8 +58,12 @@ public class IntProviderFluidIngredient extends FluidIngredient {
             if (cache == 0) {
                 return EMPTYSTACK;
             }
-            inner.setAmount(cache);
-            fluidStacks = inner.getStacks();
+            var innerStacks = inner.getStacks();
+            this.fluidStacks = new FluidStack[innerStacks.length];
+            for (int i = 0; i < fluidStacks.length; i++) {
+                fluidStacks[i] = innerStacks[i].copy();
+                fluidStacks[i].setAmount(cache);
+            }
         }
         return fluidStacks;
     }
