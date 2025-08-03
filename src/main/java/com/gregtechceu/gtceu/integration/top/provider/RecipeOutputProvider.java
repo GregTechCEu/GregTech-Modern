@@ -61,10 +61,11 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 List<Ingredient> itemOutputs = new ArrayList<>();
                 for (var item : itemContents) {
                     ItemStack[] stacks;
-                    if (ItemRecipeCapability.CAP.of(item.content) instanceof IntProviderIngredient provider) {
+                    Ingredient content = ItemRecipeCapability.CAP.of(item.content);
+                    if (content instanceof IntProviderIngredient provider) {
                         stacks = provider.getInner().getItems();
                     } else {
-                        stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        stacks = content .getItems();
                     }
                     if (stacks.length == 0) continue;
                     if (stacks[0].isEmpty()) continue;
@@ -83,10 +84,11 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 List<FluidIngredient> fluidOutputs = new ArrayList<>();
                 for (var fluid : fluidContents) {
                     FluidStack[] stacks;
-                    if (FluidRecipeCapability.CAP.of(fluid.content) instanceof IntProviderFluidIngredient provider) {
+                    FluidIngredient content = FluidRecipeCapability.CAP.of(fluid.content);
+                    if (content instanceof IntProviderFluidIngredient provider) {
                         stacks = provider.getInner().getStacks();
                     } else {
-                        stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                        stacks = content.getStacks();
                     }
                     if (stacks.length == 0) continue;
                     if (stacks[0].isEmpty()) continue;
