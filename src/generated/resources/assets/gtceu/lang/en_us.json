@@ -3758,6 +3758,7 @@
   "gtceu.tooltip.fluid_pipe_hold_shift": "§7Hold SHIFT to show Fluid Containment Info",
   "gtceu.tooltip.hold_ctrl": "§7Hold CTRL for more info",
   "gtceu.tooltip.hold_shift": "§7Hold SHIFT for more info",
+  "gtceu.tooltip.machine_config_data": "Storing configuration of %s",
   "gtceu.tooltip.player_bind": "Bound to player: %s",
   "gtceu.tooltip.potion.each": "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r",
   "gtceu.tooltip.potion.header": "§6Contains effects:",
