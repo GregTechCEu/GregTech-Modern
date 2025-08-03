@@ -604,7 +604,7 @@ public class Material implements Comparable<Material> {
         }
 
         /**
-         * @param name Set the material localized name to this value
+         * @param name Set the material's (US english) localized name to this value
          */
         public Builder langValue(String name) {
             materialInfo.setOverriddenName(name);
