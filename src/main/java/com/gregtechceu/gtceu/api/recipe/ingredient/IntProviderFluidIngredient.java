@@ -56,7 +56,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         if (fluidStacks == null) {
             int cache = getSampledCount(GTValues.RNG);
             if (cache == 0) {
-                return EMPTYSTACK;
+                return EMPTY_STACK_ARRAY;
             }
             var innerStacks = inner.getStacks();
             this.fluidStacks = new FluidStack[innerStacks.length];
