@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public class IntProviderIngredient extends Ingredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
-    public static final ItemStack[] EMPTYSTACK = new ItemStack[] { ItemStack.EMPTY };
+    public static final ItemStack[] EMPTYSTACK = new ItemStack[0];
 
     @Getter
     protected final IntProvider countProvider;
