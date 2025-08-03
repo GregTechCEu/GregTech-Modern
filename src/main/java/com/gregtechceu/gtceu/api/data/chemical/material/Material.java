@@ -156,9 +156,9 @@ public class Material implements Comparable<Material> {
         return materialInfo.resourceLocation.getPath();
     }
 
-    public String getLangName() {
-        return materialInfo.overriddenName != null ? materialInfo.overriddenName :
-                toEnglishName(materialInfo.resourceLocation.getPath());
+    @ApiStatus.Internal
+    public String getDefaultTranslation() {
+        return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
     }
 
     public String getModid() {
