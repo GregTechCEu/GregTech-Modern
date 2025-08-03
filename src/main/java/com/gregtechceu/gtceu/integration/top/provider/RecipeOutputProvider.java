@@ -65,7 +65,7 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                     if (content instanceof IntProviderIngredient provider) {
                         stacks = provider.getInner().getItems();
                     } else {
-                        stacks = content .getItems();
+                        stacks = content.getItems();
                     }
                     if (stacks.length == 0) continue;
                     if (stacks[0].isEmpty()) continue;
