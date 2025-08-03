@@ -4,9 +4,16 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -14,6 +21,8 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,6 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -89,6 +99,13 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                             GTStringUtils.toComponent(
                                     stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING))));
         }
+        if (stack.getOrCreateTag().contains("machineConfig")) {
+            tooltipComponents.add(
+                    Component.translatable(
+                            "gtceu.tooltip.machine_config_data",
+                            ItemStack.of(stack.getOrCreateTagElement("machineConfig").getCompound("item"))
+                                    .getDisplayName()));
+        }
         ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) {
             if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
@@ -149,9 +166,97 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     return interactable.onDataStickUse(context.getPlayer(), itemStack);
                 }
             } else {
+                if (context.isSecondaryUseActive()) {
+                    saveMachineConfig(machine, itemStack.getOrCreateTagElement("machineConfig"));
+                } else if (itemStack.getOrCreateTag().contains("machineConfig")) {
+                    loadMachineConfig(machine, itemStack.getTagElement("machineConfig"), null);
+                }
                 return InteractionResult.PASS;
             }
         }
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+    }
+
+    protected void saveMachineConfig(MetaMachine machine, CompoundTag nbt) {
+        nbt.put("item", machine.getDefinition().asStack().serializeNBT());
+        if (machine instanceof IAutoOutputItem output) {
+            CompoundTag tag = new CompoundTag();
+            Direction direction = output.getOutputFacingItems();
+            if (direction != null)
+                tag.putString("direction", direction.toString());
+            tag.putBoolean("allowInputFromOutputSide", output.isAllowInputFromOutputSideItems());
+            tag.putBoolean("auto", output.isAutoOutputItems());
+            nbt.put("itemOutput", tag);
+        }
+        if (machine instanceof IAutoOutputFluid output) {
+            CompoundTag tag = new CompoundTag();
+            Direction direction = output.getOutputFacingFluids();
+            if (direction != null)
+                tag.putString("direction", direction.toString());
+            tag.putBoolean("allowInputFromOutputSide", output.isAllowInputFromOutputSideFluids());
+            tag.putBoolean("auto", output.isAutoOutputFluids());
+            nbt.put("fluidOutput", tag);
+        }
+        if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
+            CompoundTag tag = new CompoundTag();
+            tag.put("storage", simpleTieredMachine.getCircuitInventory().storage.serializeNBT());
+            nbt.put("circuitInventory", tag);
+        }
+        {
+            CompoundTag tag = new CompoundTag();
+            for (Direction face : Direction.values()) {
+                CoverBehavior cover = machine.getCoverContainer().getCoverAtSide(face);
+                if (cover == null) continue;
+                CompoundTag coverTag = new CompoundTag();
+                coverTag.put("item", cover.getAttachItem().serializeNBT());
+                tag.put(face.getName(), coverTag);
+            }
+            nbt.put("covers", tag);
+        }
+    }
+
+    protected void loadMachineConfig(MetaMachine machine, CompoundTag nbt, @Nullable IItemHandler itemHandler) {
+        if (machine instanceof IAutoOutputItem output && nbt.contains("itemOutput")) {
+            CompoundTag tag = nbt.getCompound("itemOutput");
+            if (tag.contains("direction"))
+                output.setOutputFacingItems(Direction.byName(tag.getString("direction")));
+            output.setAllowInputFromOutputSideItems(tag.getBoolean("allowInputFromOutputSide"));
+            output.setAutoOutputItems(tag.getBoolean("auto"));
+        }
+        if (machine instanceof IAutoOutputFluid output && nbt.contains("fluidOutput")) {
+            CompoundTag tag = nbt.getCompound("fluidOutput");
+            if (tag.contains("direction"))
+                output.setOutputFacingFluids(Direction.byName(tag.getString("direction")));
+            output.setAllowInputFromOutputSideFluids(tag.getBoolean("allowInputFromOutputSide"));
+            output.setAutoOutputFluids(tag.getBoolean("auto"));
+        }
+        if (machine instanceof SimpleTieredMachine simpleTieredMachine && nbt.contains("circuitInventory")) {
+            CompoundTag tag = nbt.getCompound("circuitInventory");
+            simpleTieredMachine.getCircuitInventory().storage.deserializeNBT(tag.getCompound("storage"));
+        }
+        if (itemHandler != null) {
+            CompoundTag tag = nbt.getCompound("covers");
+            for (Direction face : Direction.values()) {
+                if (!tag.contains(face.getSerializedName())) continue;
+                ItemStack coverStack = ItemStack.of(tag.getCompound(face.getSerializedName()).getCompound("item"));
+                if (coverStack.isEmpty()) continue;
+                boolean foundItem = false;
+                for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                    ItemStack stack = itemHandler.extractItem(slot, 1, true);
+                    if (stack.is(coverStack.getItem())) {
+                        itemHandler.extractItem(slot, 1, false);
+                        foundItem = true;
+                    }
+                }
+                if (!foundItem) continue;
+                if (coverStack.getItem() instanceof IComponentItem item) {
+                    for (IItemComponent component : item.getComponents()) {
+                        if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
+                            coverPlaceBehavior.coverDefinition().createCoverBehavior(machine.getCoverContainer(), face);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
