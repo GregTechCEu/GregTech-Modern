@@ -500,7 +500,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             if (sizedIngredient.getInner() instanceof IntProviderIngredient intProvider) {
                 ItemStackList stackList = new ItemStackList();
-                Arrays.stream((intProvider).getInner().getItems()).forEach(stackList::add);
+                for (ItemStack i : intProvider.getInner().getItems()) {
+                    stackList.add(i);
+                }
                 return stackList;
             }
         } else if (ingredient instanceof IntProviderIngredient intProvider) {
@@ -509,7 +511,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (mapped != null) return mapped;
 
             ItemStackList stackList = new ItemStackList();
-            Arrays.stream(intProvider.getInner().getItems()).forEach(stackList::add);
+            for (ItemStack i : intProvider.getInner().getItems()) {
+                stackList.add(i);
+            }
             return stackList;
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             return mapIntersection(intersection, -1);
@@ -519,7 +523,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         }
 
         ItemStackList stackList = new ItemStackList();
-        Arrays.stream(ingredient.getItems()).forEach(stackList::add);
+        for (ItemStack i : ingredient.getItems()) {
+            stackList.add(i);
+        }
         return stackList;
     }
 
