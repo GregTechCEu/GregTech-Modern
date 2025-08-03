@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -140,23 +139,6 @@ public class RecipeRunner {
                             Collections.emptyList())) {
                         recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
                     }
-                    // If there's items left in recipeContents here, that means we didn't consume all the items, while
-                    // our simulation said we could.
-                    if (!recipeContents.isEmpty()) {
-                        StringBuilder warningString = new StringBuilder(
-                                "Couldn't consume all items during recipe handle consumption: ");
-                        for (var recipeEntry : recipeContents.entrySet()) {
-                            for (var recipeItem : recipeEntry.getValue()) {
-                                warningString.append("[")
-                                        .append(recipeEntry.getKey())
-                                        .append(", ")
-                                        .append(recipeItem)
-                                        .append("], ");
-                            }
-                        }
-
-                        GTCEu.LOGGER.warn(warningString);
-                    }
                 }
                 recipeContents.clear();
                 return ActionResult.SUCCESS;
@@ -211,23 +193,6 @@ public class RecipeRunner {
                     recipeContents.clear();
                     return ActionResult.SUCCESS;
                 }
-            }
-            // If there's items left in copiedRecipeContents here, that means we didn't consume all the items, while
-            // our simulation said we could.
-            if (!copiedRecipeContents.isEmpty()) {
-                StringBuilder warningString = new StringBuilder(
-                        "Couldn't consume all items during recipe handle consumption: ");
-                for (var recipeEntry : copiedRecipeContents.entrySet()) {
-                    for (var recipeItem : recipeEntry.getValue()) {
-                        warningString.append("[")
-                                .append(recipeEntry.getKey())
-                                .append(", ")
-                                .append(recipeItem)
-                                .append("], ");
-                    }
-                }
-
-                GTCEu.LOGGER.warn(warningString);
             }
         }
 
