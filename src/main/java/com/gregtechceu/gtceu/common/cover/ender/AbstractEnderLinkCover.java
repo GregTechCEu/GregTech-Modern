@@ -32,6 +32,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -510,5 +511,23 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 addChannelWidgets(entries);
             }
         }
+    }
+
+    @Override
+    public void copyConfig(@NotNull CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putString("colorStr", colorStr);
+        nbt.putBoolean("workingEnabled", isWorkingEnabled());
+        nbt.putString("permission", permission.name());
+        nbt.putString("manualIOMode", manualIOMode.name());
+    }
+
+    @Override
+    public void pasteConfig(@NotNull CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("colorStr")) colorStr = nbt.getString("colorStr");
+        if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
+        if (nbt.contains("permission")) setPermission(Permissions.valueOf(nbt.getString("permission")));
+        if (nbt.contains("manualIOMode")) setManualIOMode(ManualIOMode.valueOf(nbt.getString("manualIOMode")));
     }
 }
