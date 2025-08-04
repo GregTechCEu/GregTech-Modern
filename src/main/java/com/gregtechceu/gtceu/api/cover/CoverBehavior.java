@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,9 +36,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -153,6 +153,14 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     public boolean canConnectRedstone() {
         return false;
     }
+
+    public void copyConfig(CompoundTag nbt) {}
+
+    public Map<Predicate<ItemStack>, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+        return new HashMap<>();
+    }
+
+    public void pasteConfig(CompoundTag nbt) {}
 
     //////////////////////////////////////
     // ******* Interaction *******//
