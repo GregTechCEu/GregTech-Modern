@@ -57,11 +57,11 @@ GTCEuStartupEvents.registry("gtceu:machine", (event) => {
 });
 ```
 
-1. Loading the java class that is required to build the parallel hatch multipart
+1. Loading the parallel hatch's java class is required
 2. Using the GT registry event to register a tiered custom machine
-3. The tiers used for the parallel hatches to register
-    GT will generate items of "gtceu:uhv_parallel_hatch" etc
-4. Server side machine construction method
+3. The tiers to register the machine for
+    Here, GT will generate items and blocks named `gtceu:uhv_parallel_hatch`, `gtceu:uev_parallel_hatch`, `gtceu:uiv_parallel_hatch`, and `gtceu:uxv_parallel_hatch`
+4. Use the loaded class for creating the machines in the world
 5. Specifying the multipart to use parallel hatch ability
 6. The texture to use for the multipart, this example just uses the t4 texture as a placeholder
   You can look at gtm's assets to see the animations and textures to edit
