@@ -112,25 +112,17 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Override
     public void copyConfig(CompoundTag nbt) {
         super.copyConfig(nbt);
-        nbt.putString("filterMode", filterMode.localeName);
-        nbt.putString("allowFlow", allowFlow.localeName);
+        nbt.putString("filterMode", filterMode.name());
+        nbt.putString("allowFlow", allowFlow.name());
     }
 
     @Override
     public void pasteConfig(CompoundTag nbt) {
         super.pasteConfig(nbt);
         if (nbt.contains("filterMode"))
-            filterMode = switch (nbt.getString("filterMode")) {
-                case "filter_both" -> FilterMode.FILTER_BOTH;
-                case "filter_extract" -> FilterMode.FILTER_EXTRACT;
-                default -> FilterMode.FILTER_INSERT;
-            };
+            filterMode = FilterMode.valueOf("filterMode");
         if (nbt.contains("allowFlow"))
-            allowFlow = switch (nbt.getString("allowFlow")) {
-                case "filtered" -> ManualIOMode.FILTERED;
-                case "unfiltered" -> ManualIOMode.UNFILTERED;
-                default -> ManualIOMode.DISABLED;
-            };
+            allowFlow = ManualIOMode.valueOf(nbt.getString("allowFlow"));
     }
 
     private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {

@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -33,6 +34,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -48,6 +50,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -125,6 +129,35 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
                 .resolve()
                 .orElse(null);
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putInt("transferRate", transferRate);
+        nbt.putString("manualIOMode", manualIOMode.name());
+        nbt.putBoolean("workingEnabled", isWorkingEnabled());
+        nbt.put("filter", filterHandler.getFilterItem().serializeNBT());
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("transferRate")) transferRate = nbt.getInt("transferRate");
+        if (nbt.contains("manualIOMode")) manualIOMode = ManualIOMode.valueOf(nbt.getString("manualIOMode"));
+        if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
+        if (nbt.contains("filter")) {
+            filterHandler.getFilterItem().deserializeNBT(nbt.getCompound("filter"));
+        }
+    }
+
+    @Override
+    public Map<Predicate<ItemStack>, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+        Map<Predicate<ItemStack>, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
+        if (!filterHandler.isFilterPresent() && nbt.contains("filter")) {
+            out.put(stack -> stack.is(GTItems.FLUID_FILTER.asItem()), 1);
+        }
+        return out;
     }
 
     //////////////////////////////////////
