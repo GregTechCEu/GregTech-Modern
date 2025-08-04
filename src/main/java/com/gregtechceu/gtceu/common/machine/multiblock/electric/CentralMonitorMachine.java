@@ -83,20 +83,25 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private MultiblockState patternFindingState;
 
+    private static TraceabilityPredicate MULTI_PREDICATE = null;
+
     public CentralMonitorMachine(IMachineBlockEntity holder) {
         super(holder);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {
-        return Predicates.abilities(PartAbility.INPUT_ENERGY)
-                .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
-                .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
-                        .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
-                        .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
-                        .setMaxGlobalLimited(4))
-                .or(Predicates.machines(GTMachines.HULL))
-                .or(Predicates.machines(GTMachines.MONITOR))
-                .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
+        if (MULTI_PREDICATE == null) {
+            MULTI_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
+                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
+                    .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
+                            .setMaxGlobalLimited(4))
+                    .or(Predicates.machines(GTMachines.HULL))
+                    .or(Predicates.machines(GTMachines.MONITOR))
+                    .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
+        }
+        return MULTI_PREDICATE;
     }
 
     @Override
@@ -404,8 +409,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             label.setOnPressCallback(click -> {
                 group.getRelativePositions().forEach(pos -> {
                     BlockPos rel = toRelative(pos);
-                    if (imageButtons.size()-1 < rel.getY()) return;
-                    if (imageButtons.get(rel.getY()).size()-1 < rel.getX()) return;
+                    if (imageButtons.size() - 1 < rel.getY()) return;
+                    if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) return;
                     imageButtons.get(rel.getY()).get(rel.getX()).accept(null);
                 });
                 if (group.getTargetRaw() != null) {
@@ -501,8 +506,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             while (it.hasNext()) {
                 IMonitorComponent c = it.next();
                 BlockPos rel = toRelative(c.getPos());
-                if (imageButtons.size()-1 < rel.getY()) continue;
-                if (imageButtons.get(rel.getY()).size()-1 < rel.getX()) continue;
+                if (imageButtons.size() - 1 < rel.getY()) continue;
+                if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) continue;
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
             if (!selectedTargets.isEmpty()) {
