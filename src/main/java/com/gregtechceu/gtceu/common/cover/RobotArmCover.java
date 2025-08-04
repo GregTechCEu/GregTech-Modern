@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -218,5 +219,19 @@ public class RobotArmCover extends ConveyorCover {
             return true;
 
         return !this.filterHandler.getFilter().supportsAmounts();
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putString("transferMode", transferMode.name());
+        nbt.putInt("globalTransferLimit", getGlobalTransferLimit());
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("transferMode")) transferMode = TransferMode.valueOf(nbt.getString("transferMode"));
+        if (nbt.contains("globalTransferLimit")) globalTransferLimit = nbt.getInt("globalTransferLimit");
     }
 }
