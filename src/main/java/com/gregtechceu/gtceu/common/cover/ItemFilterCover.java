@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -106,6 +107,30 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putString("filterMode", filterMode.localeName);
+        nbt.putString("allowFlow", allowFlow.localeName);
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("filterMode"))
+            filterMode = switch (nbt.getString("filterMode")) {
+                case "filter_both" -> FilterMode.FILTER_BOTH;
+                case "filter_extract" -> FilterMode.FILTER_EXTRACT;
+                default -> FilterMode.FILTER_INSERT;
+            };
+        if (nbt.contains("allowFlow"))
+            allowFlow = switch (nbt.getString("allowFlow")) {
+                case "filtered" -> ManualIOMode.FILTERED;
+                case "unfiltered" -> ManualIOMode.UNFILTERED;
+                default -> ManualIOMode.DISABLED;
+            };
     }
 
     private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {
