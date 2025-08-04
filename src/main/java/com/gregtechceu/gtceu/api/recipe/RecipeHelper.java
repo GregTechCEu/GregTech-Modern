@@ -353,10 +353,11 @@ public class RecipeHelper {
             map.computeIfAbsent(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT, $ -> new ArrayList<>()).add(handler);
             return;
         }
-        // Add undyed RHL's to every group that's not distinct, and also the undyed group itself.
+        // Add undyed RHL's to every group that's not distinct, bypass, and also the undyed group itself.
         if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
             for (var entry : map.entrySet()) {
                 if (entry.getKey().equals(RecipeHandlerGroupDistinctness.BUS_DISTINCT) ||
+                        entry.getKey().equals(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) ||
                         entry.getKey().equals(RecipeHandlerGroupColor.UNDYED)) {
                     continue;
                 }
