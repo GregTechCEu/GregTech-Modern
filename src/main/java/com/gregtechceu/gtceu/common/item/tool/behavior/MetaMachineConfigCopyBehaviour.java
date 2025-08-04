@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
 import net.minecraft.ChatFormatting;
@@ -50,6 +52,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String AUTO = "auto";
     public static final String INPUT_FROM_OUTPUT_SIDE = "in_from_out";
     public static final String MUFFLED = "muffled";
+    public static final String PARALLEL = "parallel";
 
     public static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
             .withStyle(ChatFormatting.GREEN);
@@ -133,6 +136,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine instanceof IMufflableMachine mufflableMachine) {
             configData.putBoolean(MUFFLED, mufflableMachine.isMuffled());
         }
+        if (machine instanceof IParallelHatch parallelHatch) {
+            configData.putInt(PARALLEL, parallelHatch.getCurrentParallel());
+        }
         if (!configData.isEmpty()) {
             stack.getOrCreateTag().put(CONFIG_DATA, configData);
         }
@@ -155,6 +161,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         }
         if (configData.contains(MUFFLED) && machine instanceof IMufflableMachine mufflableMachine) {
             mufflableMachine.setMuffled(configData.getBoolean(MUFFLED));
+        }
+        if (configData.contains(PARALLEL) && machine instanceof ParallelHatchPartMachine parallelHatch) {
+            parallelHatch.setCurrentParallel(configData.getInt(PARALLEL));
         }
         return InteractionResult.SUCCESS;
     }
