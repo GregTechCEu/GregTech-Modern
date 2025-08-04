@@ -161,13 +161,16 @@ public class RecipeRunner {
                     break;
                 }
             }
-            for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(
-                    RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
-                    Collections.emptyList())) {
-                copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
-                if (copiedRecipeContents.isEmpty()) {
-                    found = true;
-                    break;
+            // If we're already in the bypass_distinct group, don't check it twice.
+            if (handlerListEntry.getKey() != RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(
+                        RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
+                    if (copiedRecipeContents.isEmpty()) {
+                        found = true;
+                        break;
+                    }
                 }
             }
 
@@ -185,13 +188,16 @@ public class RecipeRunner {
                 }
             }
             // Then go through the handlers that bypass the distinctness system and empty those
-            for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(
-                    RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
-                    Collections.emptyList())) {
-                copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, false);
-                if (copiedRecipeContents.isEmpty()) {
-                    recipeContents.clear();
-                    return ActionResult.SUCCESS;
+            // If we're already in the bypass_distinct group, don't check it twice.
+            if (handlerListEntry.getKey() != RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(
+                        RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, false);
+                    if (copiedRecipeContents.isEmpty()) {
+                        recipeContents.clear();
+                        return ActionResult.SUCCESS;
+                    }
                 }
             }
         }
