@@ -69,8 +69,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    public static TraceabilityPredicate BLOCK_PREDICATE;
-
     @Persisted
     @DescSynced
     @Getter
@@ -87,17 +85,18 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public CentralMonitorMachine(IMachineBlockEntity holder) {
         super(holder);
-        if (BLOCK_PREDICATE == null) {
-            BLOCK_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
-                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
-                    .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
-                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
-                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
-                            .setMaxGlobalLimited(4))
-                    .or(Predicates.machines(GTMachines.HULL))
-                    .or(Predicates.machines(GTMachines.MONITOR))
-                    .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
-        }
+    }
+
+    public static TraceabilityPredicate getMultiPredicate() {
+        return Predicates.abilities(PartAbility.INPUT_ENERGY)
+                .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
+                .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+                        .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
+                        .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
+                        .setMaxGlobalLimited(4))
+                .or(Predicates.machines(GTMachines.HULL))
+                .or(Predicates.machines(GTMachines.MONITOR))
+                .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
     }
 
     @Override
@@ -172,7 +171,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (level.isOutsideBuildHeight(pos)) return false;
 
         MultiblockState state = getPatternFindingState();
-        if (!state.update(pos, BLOCK_PREDICATE)) {
+        if (!state.update(pos, getMultiPredicate())) {
             return false;
         }
         state.io = IO.BOTH;
@@ -258,7 +257,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
         return FactoryBlockPattern.start()
                 .aisle(aisle)
-                .where('B', BLOCK_PREDICATE)
+                .where('B', getMultiPredicate())
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
     }
@@ -405,6 +404,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             label.setOnPressCallback(click -> {
                 group.getRelativePositions().forEach(pos -> {
                     BlockPos rel = toRelative(pos);
+                    if (imageButtons.size()-1 < rel.getY()) return;
+                    if (imageButtons.get(rel.getY()).size()-1 < rel.getX()) return;
                     imageButtons.get(rel.getY()).get(rel.getX()).accept(null);
                 });
                 if (group.getTargetRaw() != null) {
@@ -500,6 +501,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             while (it.hasNext()) {
                 IMonitorComponent c = it.next();
                 BlockPos rel = toRelative(c.getPos());
+                if (imageButtons.size()-1 < rel.getY()) continue;
+                if (imageButtons.get(rel.getY()).size()-1 < rel.getX()) continue;
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
             if (!selectedTargets.isEmpty()) {
