@@ -125,9 +125,12 @@ public class RecipeRunner {
         for (RecipeHandlerList handler : handlerGroups.getOrDefault(BUS_DISTINCT, Collections.emptyList())) {
             // Handle the contents of this handler and also all the bypassed handlers
             var res = handler.handleRecipe(io, recipe, searchRecipeContents, true);
-            for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                    Collections.emptyList())) {
-                res = bypassHandler.handleRecipe(io, recipe, res, true);
+            if (!res.isEmpty()) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    res = bypassHandler.handleRecipe(io, recipe, res, true);
+                    if (res.isEmpty()) break;
+                }
             }
             if (res.isEmpty()) {
                 if (!simulated) {
