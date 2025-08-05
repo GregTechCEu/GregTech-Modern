@@ -183,10 +183,15 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
             // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
             long timer = NetworkSwitchMachine.this.getOffsetTimer();
-            if (timerCWUt == timer && tickSaturated) {
-                return 0;
+            if (timerCWUt == timer) {
+                if (tickSaturated) {
+                    return 0;
+                }
+            } else {
+                // First call this tick, reset saturation
+                timerCWUt = timer;
+                tickSaturated = false;
             }
-            timerCWUt = timer;
 
             Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
             int allocatedCWUt = 0;
