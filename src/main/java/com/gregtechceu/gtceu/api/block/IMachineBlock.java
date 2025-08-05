@@ -159,7 +159,7 @@ public interface IMachineBlock extends EntityBlock {
                 var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
                         IEnergyContainer.class);
                 if (!list.isEmpty()) {
-                    return new EnergyContainerList(list);
+                    return list.size() == 1 ? list.get(0) : new EnergyContainerList(list);
                 }
             }
             return null;
