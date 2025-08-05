@@ -1135,7 +1135,7 @@ public class GTMultiMachines {
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("BCB", "BBB", "BBB", "BBB")
                     .where('C', Predicates.controller(Predicates.blocks(definition.get())))
-                    .where('B', CentralMonitorMachine.BLOCK_PREDICATE)
+                    .where('B', CentralMonitorMachine.getMultiPredicate())
                     .build())
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(

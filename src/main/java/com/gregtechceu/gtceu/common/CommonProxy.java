@@ -138,8 +138,11 @@ public class CommonProxy {
         GTPlaceholders.initPlaceholders();
         if (GTCEu.Mods.isCreateLoaded()) {
             GTCreateIntegration.init();
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
             GTAEPlaceholders.init();
         }
+
         GTCovers.init();
         GTFluids.init();
         GTCreativeModeTabs.init();

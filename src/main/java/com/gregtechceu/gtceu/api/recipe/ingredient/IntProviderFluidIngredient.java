@@ -54,8 +54,16 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     @Override
     public FluidStack[] getStacks() {
         if (fluidStacks == null) {
-            inner.setAmount(getSampledCount(GTValues.RNG));
-            fluidStacks = inner.getStacks();
+            int cachedAmount = getSampledCount(GTValues.RNG);
+            if (cachedAmount == 0) {
+                return EMPTY_STACK_ARRAY;
+            }
+            var innerStacks = inner.getStacks();
+            this.fluidStacks = new FluidStack[innerStacks.length];
+            for (int i = 0; i < fluidStacks.length; i++) {
+                fluidStacks[i] = innerStacks[i].copy();
+                fluidStacks[i].setAmount(cachedAmount);
+            }
         }
         return fluidStacks;
     }
