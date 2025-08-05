@@ -106,6 +106,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                 Collection<ItemStack> added = new ObjectOpenHashSet<>();
                 outer:
                 for (GTRecipe recipe : recipes) {
+                    var contents = recipe.getOutputContents(ItemRecipeCapability.CAP);
+                    if (contents.isEmpty()) continue;
                     ItemStack output = ItemRecipeCapability.CAP
                             .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
                     for (var item : added) {
