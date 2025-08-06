@@ -138,7 +138,8 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         nbt.putString("manualIOMode", manualIOMode.name());
         nbt.putString("io", io.name());
         nbt.putBoolean("workingEnabled", isWorkingEnabled());
-        nbt.put("filter", filterHandler.getFilterItem().serializeNBT());
+        if (filterHandler.isFilterPresent())
+            nbt.put("filter", filterHandler.getFilterItem().serializeNBT());
     }
 
     @Override
@@ -149,7 +150,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         if (nbt.contains("io")) io = IO.valueOf(nbt.getString("io"));
         if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
         if (nbt.contains("filter")) {
-            filterHandler.getFilterItem().deserializeNBT(nbt.getCompound("filter"));
+            filterHandler.setFilter(ItemStack.of(nbt.getCompound("filter")));
         }
     }
 

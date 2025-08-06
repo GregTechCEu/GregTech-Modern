@@ -342,6 +342,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (itemHandler == null) return requiredItems.isEmpty();
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
         for (Predicate<ItemStack> predicate : requiredItems.keySet()) {
+            if (predicate.test(ItemStack.EMPTY)) continue;
             boolean foundItem = false;
             for (int slot = 0; slot < itemHandler.getSlots() && !foundItem; slot++) {
                 int amount = requiredItems.get(predicate);

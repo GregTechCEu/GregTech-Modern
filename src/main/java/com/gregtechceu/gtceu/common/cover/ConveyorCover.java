@@ -143,7 +143,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         nbt.putString("manualIOMode", manualIOMode.name());
         nbt.putString("io", io.name());
         nbt.putBoolean("workingEnabled", isWorkingEnabled());
-        nbt.put("filter", getFilterHandler().getFilterItem().serializeNBT());
+        if (getFilterHandler().isFilterPresent())
+            nbt.put("filter", getFilterHandler().getFilterItem().serializeNBT());
     }
 
     @Override
@@ -156,7 +157,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         if (nbt.contains("io")) io = IO.valueOf(nbt.getString("io"));
         if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
         if (nbt.contains("filter")) {
-            getFilterHandler().getFilterItem().deserializeNBT(nbt.getCompound("filter"));
+            getFilterHandler().setFilter(ItemStack.of(nbt.getCompound("filter")));
         }
     }
 

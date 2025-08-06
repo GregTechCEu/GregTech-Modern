@@ -178,6 +178,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         }
     }
 
+    public void setFilter(ItemStack stack) {
+        getFilterSlot().setStackInSlot(0, stack);
+        updateFilter();
+    }
+
     //////////////////////////////////////
     // ***** LDLib SyncData ******//
     //////////////////////////////////////
