@@ -150,14 +150,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static InteractionResult handlePaste(CompoundTag tag, Level level, BlockPos pos,
                                                 @Nullable IItemHandler itemHandler) {
         if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
-            return handlePaste(tag, machineBE.getMetaMachine(), itemHandler);
+            return handleMachinePaste(tag, machineBE.getMetaMachine(), itemHandler);
         else if (tag.contains(CUSTOM_DATA) && level.getBlockEntity(pos) instanceof ICopyable copyable) {
             if (consumeItems(itemHandler, copyable.getItemsRequiredForPaste(tag.getCompound(CUSTOM_DATA)))) {
                 copyable.pasteConfig(tag.getCompound(CUSTOM_DATA));
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
-        } else if (tag.contains(BLOCK_ITEM) && level.getBlockEntity(pos) == null) {
+        } else if (tag.contains(BLOCK_ITEM)) {
             if (!level.getBlockState(pos).isAir()) return InteractionResult.PASS;
             ItemStack stack = ItemStack.of(tag.getCompound(BLOCK_ITEM));
             if (stack.getItem() instanceof BlockItem item && consumeItems(itemHandler, Map.of(item, 1))) {
@@ -234,8 +234,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         return InteractionResult.SUCCESS;
     }
 
-    public static InteractionResult handlePaste(CompoundTag tag, MetaMachine machine,
-                                                @Nullable IItemHandler itemHandler) {
+    public static InteractionResult handleMachinePaste(CompoundTag tag, MetaMachine machine,
+                                                       @Nullable IItemHandler itemHandler) {
         if (!tag.contains(CONFIG_DATA)) return InteractionResult.PASS;
         CompoundTag configData = tag.getCompound(CONFIG_DATA);
         Direction originalFront = tagToDirection(configData.get(ORIGINAL_FRONT));
@@ -388,7 +388,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     }
 
     private static boolean consumeItems(@Nullable IItemHandler itemHandler,
-                                        Map<Item, Integer> requiredItems) {
+                                        Map<Item, Integer> requiredItems) { // TODO add some feedback to the player if
+                                                                            // missing items
         if (itemHandler == null) return requiredItems.isEmpty();
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
         for (Item item : requiredItems.keySet()) {
