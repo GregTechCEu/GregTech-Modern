@@ -9,10 +9,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.ICopyable;
-import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -68,6 +65,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String PARTS = "parts";
     public static final String MULTIBLOCK = "multiblock";
     public static final String CUSTOM_DATA = "custom_data";
+    public static final String GHOST_CIRCUITS = "ghost_circuits";
+    public static final String CIRCUIT_SLOT = "circuit_inventory";
+    public static final String CIRCUIT_SLOT_ENABLED = "circuit_enabled";
 
     public static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
             .withStyle(ChatFormatting.GREEN);
@@ -199,6 +199,12 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             }
         }
         if (!covers.isEmpty()) configData.put(COVERS, covers);
+        if (machine instanceof IHasCircuitSlot circuitSlotMachine) {
+            CompoundTag circuitSlotTag = new CompoundTag();
+            circuitSlotTag.put(CIRCUIT_SLOT, circuitSlotMachine.getCircuitInventory().storage.serializeNBT());
+            circuitSlotTag.putBoolean(CIRCUIT_SLOT_ENABLED, circuitSlotMachine.isCircuitSlotEnabled());
+            configData.put(GHOST_CIRCUITS, circuitSlotTag);
+        }
         if (machine.getLevel() != null && machine instanceof MultiblockControllerMachine multiblock) {
             CompoundTag multiblockTag = new CompoundTag();
             ListTag parts = new ListTag();
@@ -275,6 +281,11 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     cover.pasteConfig(coverConfig);
                 }
             }
+        }
+        if (configData.contains(GHOST_CIRCUITS) && machine instanceof IHasCircuitSlot circuitSlotMachine) {
+            if (configData.getCompound(GHOST_CIRCUITS).getBoolean(CIRCUIT_SLOT_ENABLED))
+                circuitSlotMachine.getCircuitInventory().storage
+                        .deserializeNBT(configData.getCompound(GHOST_CIRCUITS).getCompound(CIRCUIT_SLOT));
         }
         if (configData.contains(MULTIBLOCK) && machine instanceof MultiblockControllerMachine multiblock &&
                 machine.getLevel() != null) {
