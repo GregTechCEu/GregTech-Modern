@@ -520,6 +520,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         nbt.putBoolean("workingEnabled", isWorkingEnabled());
         nbt.putString("permission", permission.name());
         nbt.putString("manualIOMode", manualIOMode.name());
+        nbt.putString("io", io.name());
     }
 
     @Override
@@ -529,5 +530,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
         if (nbt.contains("permission")) setPermission(Permissions.valueOf(nbt.getString("permission")));
         if (nbt.contains("manualIOMode")) setManualIOMode(ManualIOMode.valueOf(nbt.getString("manualIOMode")));
+        if (nbt.contains("io")) setIo(IO.valueOf(nbt.getString("io")));
     }
 }
