@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 
@@ -104,7 +105,7 @@ public class OverclockLogicTest {
 
     // Test for running LV 1t recipe at HV
     @GameTest(template = "lcr_input_separation", batch = "OverclockLogic", setupTicks = 40, timeoutTicks = 200)
-    public static void overclockLogicTwoTiersAbove16Parralels(GameTestHelper helper) {
+    public static void overclockLogicTwoTiersAbove16Parallels(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.STICK, 64));
         // One tick to start, 4 for the recipe to run (16/t from ULV recipe to HV)
@@ -135,7 +136,8 @@ public class OverclockLogicTest {
     public static void overclockLogicApplyPerfectOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-input-separation"))
                 .id(GTCEu.id("test-multiblock-input-separation"))
@@ -146,10 +148,11 @@ public class OverclockLogicTest {
 
         GTRecipe newRecipe = OC_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.duration == (recipeBeforeModifiers.duration / 4.0),
+        helper.assertTrue(newRecipe.duration == (recipeBeforeModifiers.duration / PERFECT_DURATION_FACTOR_INV),
                 "Perfect perfect overclock didn't cut recipe time by 4");
         helper.assertTrue(
-                newRecipe.getInputEUt().getTotalEU() == (recipeBeforeModifiers.getInputEUt().getTotalEU() * 4.0),
+                newRecipe.getInputEUt().getTotalEU() ==
+                        (recipeBeforeModifiers.getInputEUt().getTotalEU() * STD_VOLTAGE_FACTOR),
                 "Non perfect overclock didn't multiply EU by 4");
         helper.succeed();
     }
@@ -159,7 +162,8 @@ public class OverclockLogicTest {
     public static void overclockLogicApplyNonPerfectOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-npo"))
                 .id(GTCEu.id("test-multiblock-overclock-test-npo"))
@@ -170,10 +174,11 @@ public class OverclockLogicTest {
 
         GTRecipe newRecipe = OC_NON_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.duration == (recipeBeforeModifiers.duration / 2.0),
+        helper.assertTrue(newRecipe.duration == (recipeBeforeModifiers.duration / STD_DURATION_FACTOR_INV),
                 "Non perfect overclock didn't cut recipe time by 2");
         helper.assertTrue(
-                newRecipe.getInputEUt().getTotalEU() == (recipeBeforeModifiers.getInputEUt().getTotalEU() * 4.0),
+                newRecipe.getInputEUt().getTotalEU() ==
+                        (recipeBeforeModifiers.getInputEUt().getTotalEU() * STD_VOLTAGE_FACTOR),
                 "Non perfect overclock didn't multiply EU by 4");
         helper.succeed();
     }
@@ -183,7 +188,8 @@ public class OverclockLogicTest {
     public static void overclockLogicApplyPerfectParallelOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-psto"))
                 .id(GTCEu.id("test-multiblock-overclock-test-psto"))
@@ -195,12 +201,12 @@ public class OverclockLogicTest {
 
         GTRecipe newRecipe = OC_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
-
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == 4,
-                "Perfect subtick overclock didn't multiply parralels by 4");
+        helper.assertTrue(newRecipe.parallels == PERFECT_DURATION_FACTOR_INV,
+                "Perfect subtick overclock didn't multiply parallels by 4");
         helper.assertTrue(
-                newRecipe.getInputEUt().getTotalEU() == (recipeBeforeModifiers.getInputEUt().getTotalEU() * 4.0),
+                newRecipe.getInputEUt().getTotalEU() ==
+                        (recipeBeforeModifiers.getInputEUt().getTotalEU() * STD_VOLTAGE_FACTOR),
                 "Perfect subtick overclock didn't multiply EU by 4");
         helper.succeed();
     }
@@ -210,7 +216,8 @@ public class OverclockLogicTest {
     public static void overclockLogicApplyNonPerfectParallelOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-npsto"))
                 .id(GTCEu.id("test-multiblock-overclock-test-npsto"))
@@ -222,12 +229,12 @@ public class OverclockLogicTest {
 
         GTRecipe newRecipe = OC_NON_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
-
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == 2,
-                "Non-Perfect subtick overclock didn't multiply parralels by 2");
+        helper.assertTrue(newRecipe.parallels == STD_DURATION_FACTOR_INV,
+                "Non-Perfect subtick overclock didn't multiply parallels by 2");
         helper.assertTrue(
-                newRecipe.getInputEUt().getTotalEU() == (recipeBeforeModifiers.getInputEUt().getTotalEU() * 4.0),
+                newRecipe.getInputEUt().getTotalEU() ==
+                        (recipeBeforeModifiers.getInputEUt().getTotalEU() * STD_VOLTAGE_FACTOR),
                 "Non-Perfect subtick overclock didn't multiply EU by 4");
         helper.succeed();
     }
@@ -237,7 +244,8 @@ public class OverclockLogicTest {
     public static void overclockLogicApplyNonPerfectNonParallel1tOverclockTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-npsto"))
                 .id(GTCEu.id("test-multiblock-overclock-test-npsto"))
@@ -248,7 +256,6 @@ public class OverclockLogicTest {
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
         GTRecipe newRecipe = OC_NON_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
-
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
         helper.assertTrue(newRecipe.parallels == 1,
@@ -264,7 +271,8 @@ public class OverclockLogicTest {
     public static void overclockLogicEVRecipeHVMachineTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for parallel
+        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
+        // parallel
         GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
                 .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-ev-hv"))
                 .id(GTCEu.id("test-multiblock-overclock-test-ev-hv"))
@@ -276,11 +284,8 @@ public class OverclockLogicTest {
 
         GTRecipe newRecipe = OC_NON_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
-
         helper.assertTrue(newRecipe == null, "Applied EV overclock to HV recipe when it shouldn't have");
 
         helper.succeed();
     }
-
-
 }
