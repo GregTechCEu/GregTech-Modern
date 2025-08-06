@@ -205,8 +205,22 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
             else amount = ing.getAmount();
 
-            if (content.chance == 0) nonConsumables.addTo(ing, amount);
-            else consumables.addTo(ing, amount);
+            if (content.chance == 0) {
+                nonConsumables.addTo(ing, amount);
+            } else {
+                boolean has = false;
+                for (var recipeIng : consumables.object2LongEntrySet()) {
+                    var stack = ing.getStacks()[0];
+                    if (recipeIng.getKey().test(stack)) {
+                        recipeIng.setValue(recipeIng.getLongValue() + stack.getAmount());
+                        has = true;
+                        break;
+                    }
+                }
+                if (!has) {
+                    consumables.addTo(ing, amount);
+                }
+            }
         }
 
         // is this even possible
