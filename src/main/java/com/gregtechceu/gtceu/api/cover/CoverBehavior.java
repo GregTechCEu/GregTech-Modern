@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +38,6 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -156,7 +156,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
 
     public void copyConfig(CompoundTag nbt) {}
 
-    public Map<Predicate<ItemStack>, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
         return new HashMap<>();
     }
 

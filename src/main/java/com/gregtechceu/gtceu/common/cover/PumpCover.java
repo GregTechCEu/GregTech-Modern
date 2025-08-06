@@ -36,6 +36,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,7 +52,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -155,10 +155,10 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     }
 
     @Override
-    public Map<Predicate<ItemStack>, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
-        Map<Predicate<ItemStack>, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
+    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+        Map<Item, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
         if (!filterHandler.isFilterPresent() && nbt.contains("filter")) {
-            out.put(stack -> stack.is(GTItems.FLUID_FILTER.asItem()), 1);
+            out.put(GTItems.FLUID_FILTER.asItem(), out.getOrDefault(GTItems.FLUID_FILTER.asItem(), 0) + 1);
         }
         return out;
     }

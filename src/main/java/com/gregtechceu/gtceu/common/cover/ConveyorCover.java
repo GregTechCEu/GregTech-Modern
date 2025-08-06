@@ -39,6 +39,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -56,7 +57,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -162,10 +162,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     @Override
-    public Map<Predicate<ItemStack>, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
-        Map<Predicate<ItemStack>, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
+    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+        Map<Item, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
         if (!getFilterHandler().isFilterPresent() && nbt.contains("filter")) {
-            out.put(stack -> stack.is(GTItems.ITEM_FILTER.asItem()), 1);
+            out.put(GTItems.ITEM_FILTER.asItem(), out.getOrDefault(GTItems.ITEM_FILTER.asItem(), 0) + 1);
         }
         return out;
     }

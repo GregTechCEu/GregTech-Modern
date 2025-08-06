@@ -31,10 +31,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
@@ -47,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInformation {
 
@@ -221,7 +217,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag coverTag : covers) {
                 if (!(coverTag instanceof CompoundTag compoundTag)) continue;
                 ItemStack coverItem = ItemStack.of(compoundTag.getCompound(COVER_ITEM));
-                if (!consumeItems(itemHandler, Map.of(stack2 -> stack2.is(coverItem.getItem()), 1))) continue;
+                if (!consumeItems(itemHandler, Map.of(coverItem.getItem(), 1))) continue;
                 Direction originalFace = tagToDirection(compoundTag.get(ORIGINAL_COVER_SIDE));
                 Direction face = RelativeDirection.getActualDirection(originalFront, machine.getFrontFacing(),
                         originalFace);
@@ -252,9 +248,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
             CompoundTag multiblockTag = configData.getCompound(MULTIBLOCK);
             ListTag parts = multiblockTag.getList(PARTS, Tag.TAG_COMPOUND);
-            Map<Predicate<ItemStack>, Integer> requiredItems = new HashMap<>();
+            Map<Item, Integer> requiredItems = new HashMap<>();
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
-                requiredItems.put(stack -> stack.is(ItemStack.of(partTag.getCompound(BLOCK_ITEM)).getItem()), 1);
+                Item reqItem = ItemStack.of(partTag.getCompound(BLOCK_ITEM)).getItem();
+                requiredItems.put(reqItem, requiredItems.getOrDefault(reqItem, 0) + 1);
             }
             if (consumeItems(itemHandler, requiredItems)) {
                 for (Tag part : parts) {
@@ -338,18 +335,21 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     }
 
     private static boolean consumeItems(@Nullable IItemHandler itemHandler,
-                                        Map<Predicate<ItemStack>, Integer> requiredItems) {
+                                        Map<Item, Integer> requiredItems) {
         if (itemHandler == null) return requiredItems.isEmpty();
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
-        for (Predicate<ItemStack> predicate : requiredItems.keySet()) {
-            if (predicate.test(ItemStack.EMPTY)) continue;
+        for (Item item : requiredItems.keySet()) {
+            if (item == Items.AIR || requiredItems.get(item) <= 0) continue;
             boolean foundItem = false;
+            int amount = requiredItems.get(item);
             for (int slot = 0; slot < itemHandler.getSlots() && !foundItem; slot++) {
-                int amount = requiredItems.get(predicate);
                 ItemStack stack = itemHandler.extractItem(slot, amount + itemCountBySlot.getOrDefault(slot, 0), true);
-                if (stack.getCount() == amount + itemCountBySlot.getOrDefault(slot, 0) && predicate.test(stack)) {
+                if (stack.getCount() == itemCountBySlot.getOrDefault(slot, 0) + amount && stack.is(item)) {
                     foundItem = true;
                     itemCountBySlot.put(slot, itemCountBySlot.getOrDefault(slot, 0) + amount);
+                } else if (stack.getCount() > itemCountBySlot.getOrDefault(slot, 0) && stack.is(item)) {
+                    itemCountBySlot.put(slot, stack.getCount());
+                    amount -= stack.getCount() - itemCountBySlot.getOrDefault(slot, 0);
                 }
             }
             if (!foundItem) return false;
