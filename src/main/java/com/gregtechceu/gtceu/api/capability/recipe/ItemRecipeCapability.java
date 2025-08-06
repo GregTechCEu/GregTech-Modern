@@ -215,13 +215,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (inputs == null || inputs.isEmpty()) return limit;
 
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        List<Object2IntMap<ItemStack>> inventoryGroups = getInputContents(holder);
+        List<Object2LongMap<ItemStack>> inventoryGroups = getInputContents(holder);
         if (inventoryGroups.isEmpty()) return 0;
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
         // notConsumable ingredients are not counted towards the max ratio
-        var nonConsumables = new Object2IntOpenHashMap<Ingredient>();
-        var consumables = new Object2IntOpenHashMap<Ingredient>();
+        var nonConsumables = new Object2LongOpenHashMap<Ingredient>();
+        var consumables = new Object2LongOpenHashMap<Ingredient>();
         for (Content content : inputs) {
             Ingredient ing = of(content.content);
             if (ing instanceof IntCircuitIngredient) continue;
@@ -243,13 +243,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         for (var group : inventoryGroups) {
             // Check for enough NC in inventory group
             boolean satisfied = true;
-            for (var ncEntry : Object2IntMaps.fastIterable(nonConsumables)) {
+            for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
                 Ingredient ingredient = ncEntry.getKey();
-                int needed = ncEntry.getIntValue();
-                for (var stackEntry : Object2IntMaps.fastIterable(group)) {
+                long needed = ncEntry.getLongValue();
+                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
                     if (ingredient.test(stackEntry.getKey())) {
-                        int count = stackEntry.getIntValue();
-                        int lesser = Math.min(needed, count);
+                        long count = stackEntry.getLongValue();
+                        long lesser = Math.min(needed, count);
                         count -= lesser;
                         needed -= lesser;
                         stackEntry.setValue(count);
@@ -268,21 +268,21 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int invMultiplier = Integer.MAX_VALUE;
             // Loop over all consumables
-            for (var cEntry : Object2IntMaps.fastIterable(consumables)) {
+            for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
                 Ingredient ingredient = cEntry.getKey();
-                final int needed = cEntry.getIntValue();
-                final int maxNeeded = needed * limit;
-                int available = 0;
+                final long needed = cEntry.getLongValue();
+                final long maxNeeded = needed * limit;
+                long available = 0;
                 // Search stacks in our inventory group, summing them up
-                for (var stackEntry : Object2IntMaps.fastIterable(group)) {
+                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
                     if (ingredient.test(stackEntry.getKey())) {
-                        available += stackEntry.getIntValue();
+                        available += stackEntry.getLongValue();
                         // We can stop if we already have enough for max parallel
                         if (available >= maxNeeded) break;
                     }
                 }
                 // ratio will equal 0 if available < needed
-                int ratio = Math.min(limit, available / needed);
+                int ratio = GTMath.saturatedCast(Math.min(limit, available / needed));
                 invMultiplier = Math.min(invMultiplier, ratio);
                 // Not enough of this ingredient in this group -> skip inventory
                 if (ratio == 0) break;
@@ -295,7 +295,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return maxMultiplier;
     }
 
-    private static List<Object2IntMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
+    private static List<Object2LongMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
@@ -310,11 +310,11 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
-        List<Object2IntMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
+        List<Object2LongMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-            Object2IntOpenCustomHashMap<ItemStack> distinctInv = new Object2IntOpenCustomHashMap<>(strat);
+            Object2LongOpenCustomHashMap<ItemStack> distinctInv = new Object2LongOpenCustomHashMap<>(strat);
 
             for (IRecipeHandler<?> handler : handlers) {
                 for (var content : handler.getContents()) {
@@ -331,7 +331,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
 
-            Object2IntOpenCustomHashMap<ItemStack> inventory = new Object2IntOpenCustomHashMap<>(strat);
+            Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
             for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
                 for (var handler : handlers) {
