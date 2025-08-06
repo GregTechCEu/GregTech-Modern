@@ -42,6 +42,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -352,6 +353,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Client/Server data related
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);
+        event.add("GTModelProperties", GTMachineModelProperties.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
@@ -560,6 +562,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         }
         if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
             builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
+            builder.recipeType.setMinRecipeConditions(builder.conditions.size());
         }
         if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
             builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));

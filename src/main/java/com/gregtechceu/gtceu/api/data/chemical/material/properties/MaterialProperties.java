@@ -37,7 +37,7 @@ public class MaterialProperties {
     }
 
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
-        return propertyMap.get(key) != null;
+        return propertyMap.containsKey(key);
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty value) {

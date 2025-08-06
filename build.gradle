@@ -32,9 +32,6 @@ sourceSets {
     }
 
     test {
-        kotlin {
-            srcDirs += 'src/test/java'
-        }
         compileClasspath += main.output
         runtimeClasspath += main.output + main.runtimeClasspath
     }
@@ -60,6 +57,10 @@ configurations {
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
     extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
+
+    renderNurseCfg {
+        canBeConsumed = false
+    }
 }
 
 afterEvaluate {

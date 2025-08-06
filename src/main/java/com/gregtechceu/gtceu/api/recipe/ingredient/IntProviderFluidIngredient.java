@@ -75,14 +75,22 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * Gets a usable {@link FluidStack FluidStack[]} from this {@link IntProviderFluidIngredient}.
      * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it.
-     * 
+     *
      * @return a {@link FluidStack FluidStack[]} with amount {@link IntProviderFluidIngredient#sampledCount}
      */
     @Override
     public FluidStack[] getStacks() {
         if (fluidStacks == null) {
-            inner.setAmount(getSampledCount());
-            fluidStacks = inner.getStacks();
+            int cachedAmount = getSampledCount(GTValues.RNG);
+            if (cachedAmount == 0) {
+                return EMPTY_STACK_ARRAY;
+            }
+            var innerStacks = inner.getStacks();
+            this.fluidStacks = new FluidStack[innerStacks.length];
+            for (int i = 0; i < fluidStacks.length; i++) {
+                fluidStacks[i] = innerStacks[i].copy();
+                fluidStacks[i].setAmount(cachedAmount);
+            }
         }
         return fluidStacks;
     }
@@ -91,7 +99,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * Gets a {@link FluidStack} containing the maximum possible output from this {@link IntProviderFluidIngredient}.
      * Mainly used for things like Recipe provider simulations to see if there is enough tank space to handle
      * the recipe output.
-     * 
+     *
      * @return a {@link FluidStack} with amount {@link IntProvider#getMaxValue()}
      */
     public @NotNull FluidStack getMaxSizeStack() {
@@ -106,7 +114,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * If it has, returns the existing roll.
      * Passthrough method, invokes {@link IntProviderFluidIngredient#getSampledCount(RandomSource)} using the threadsafe
      * {@link GTValues#RNG}.
-     * 
+     *
      * @return the amount rolled
      */
     public int getSampledCount() {
@@ -117,7 +125,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
      * returns the roll.
      * If it has, returns the existing roll.
-     * 
+     *
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
      * @return the amount rolled
      */
