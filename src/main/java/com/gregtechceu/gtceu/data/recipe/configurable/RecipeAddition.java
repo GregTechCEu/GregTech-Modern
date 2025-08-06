@@ -1228,11 +1228,7 @@ public class RecipeAddition {
         } else {
             ASSEMBLER_RECIPES.recipeBuilder("crafting_table").duration(80).EUt(6).circuitMeta(4)
                     .inputItems(ItemTags.PLANKS, 4).outputItems(new ItemStack(Blocks.CRAFTING_TABLE)).save(provider);
-            ASSEMBLER_RECIPES.recipeBuilder("furnace").circuitMeta(8)
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 2)
+            ASSEMBLER_RECIPES.recipeBuilder("furnace").circuitMeta(8).inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 8)
                     .outputItems(new ItemStack(Blocks.FURNACE)).duration(100).EUt(VA[ULV])
                     .addMaterialInfo(true).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("enchanting_table").inputItems(new ItemStack(Blocks.OBSIDIAN, 4))

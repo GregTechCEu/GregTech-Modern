@@ -231,8 +231,22 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             else if (ing instanceof IntProviderIngredient provider) count = provider.getCountProvider().getMaxValue();
             else count = 1;
 
-            if (content.chance == 0) nonConsumables.addTo(ing, count);
-            else consumables.addTo(ing, count);
+            if (content.chance == 0) {
+                nonConsumables.addTo(ing, count);
+            } else {
+                boolean has = false;
+                for (var recipeIng : consumables.object2LongEntrySet()) {
+                    var stack = ing.getItems()[0];
+                    if (recipeIng.getKey().test(stack)) {
+                        recipeIng.setValue(recipeIng.getLongValue() + stack.getCount());
+                        has = true;
+                        break;
+                    }
+                }
+                if (!has) {
+                    consumables.addTo(ing, count);
+                }
+            }
         }
 
         // is this even possible
