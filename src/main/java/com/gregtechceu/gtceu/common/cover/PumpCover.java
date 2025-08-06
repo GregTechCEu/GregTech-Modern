@@ -136,6 +136,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         super.copyConfig(nbt);
         nbt.putInt("transferRate", transferRate);
         nbt.putString("manualIOMode", manualIOMode.name());
+        nbt.putString("io", io.name());
         nbt.putBoolean("workingEnabled", isWorkingEnabled());
         nbt.put("filter", filterHandler.getFilterItem().serializeNBT());
     }
@@ -145,6 +146,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         super.pasteConfig(nbt);
         if (nbt.contains("transferRate")) transferRate = nbt.getInt("transferRate");
         if (nbt.contains("manualIOMode")) manualIOMode = ManualIOMode.valueOf(nbt.getString("manualIOMode"));
+        if (nbt.contains("io")) io = IO.valueOf(nbt.getString("io"));
         if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
         if (nbt.contains("filter")) {
             filterHandler.getFilterItem().deserializeNBT(nbt.getCompound("filter"));

@@ -182,6 +182,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     CompoundTag partConfig = new CompoundTag();
                     handleCopy(partConfig, machineBE.getMetaMachine());
                     partTag.put(CONFIG_DATA, partConfig);
+                    partTag.putString(ORIGINAL_FRONT, directionToString(machineBE.getMetaMachine().getFrontFacing()));
                 }
                 parts.add(partTag);
             }
@@ -259,18 +260,19 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 for (Tag part : parts) {
                     if (!(part instanceof CompoundTag partTag)) continue;
                     BlockPos relPos = posFromTag(partTag.get(POSITION));
-                    BlockPos.MutableBlockPos pos = new BlockPos(relPos.get(right.getAxis()), relPos.get(up.getAxis()),
-                            relPos.get(front.getAxis())).mutable();
+                    BlockPos.MutableBlockPos pos = new BlockPos(relPos.get(front.getAxis()), relPos.get(up.getAxis()),
+                            relPos.get(right.getAxis())).mutable();
                     pos.move(machine.getPos());
                     ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
                     if (stack.getItem() instanceof BlockItem blockItem) {
                         machine.getLevel().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
                         if (partTag.contains(CONFIG_DATA) &&
                                 machine.getLevel().getBlockEntity(pos) instanceof IMachineBlockEntity machineBE) {
-                            machineBE.getMetaMachine().setFrontFacing(
-                                    RelativeDirection.getActualDirection(
-                                            originalFront, multiblock.getFrontFacing(),
-                                            tagToDirection(partTag.getCompound(CONFIG_DATA).get(ORIGINAL_FRONT))));
+                            if (partTag.contains(ORIGINAL_FRONT))
+                                machineBE.getMetaMachine().setFrontFacing(
+                                        RelativeDirection.getActualDirection(
+                                                originalFront, multiblock.getFrontFacing(),
+                                                tagToDirection(partTag.get(ORIGINAL_FRONT))));
                             handlePaste(partTag.getCompound(CONFIG_DATA), machineBE.getMetaMachine(), itemHandler);
                         }
                     }
@@ -346,7 +348,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 ItemStack stack = itemHandler.extractItem(slot, amount + itemCountBySlot.getOrDefault(slot, 0), true);
                 if (stack.getCount() == amount + itemCountBySlot.getOrDefault(slot, 0) && predicate.test(stack)) {
                     foundItem = true;
-                    itemCountBySlot.put(slot, itemCountBySlot.getOrDefault(slot, 0));
+                    itemCountBySlot.put(slot, itemCountBySlot.getOrDefault(slot, 0) + amount);
                 }
             }
             if (!foundItem) return false;
