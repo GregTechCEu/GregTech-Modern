@@ -162,8 +162,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     @Override
-    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
-        Map<Item, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
+    public Map<Item, Integer> getItemsRequiredForPaste(CompoundTag nbt) {
+        Map<Item, Integer> out = super.getItemsRequiredForPaste(nbt);
         if (!getFilterHandler().isFilterPresent() && nbt.contains("filter")) {
             out.put(GTItems.ITEM_FILTER.asItem(), out.getOrDefault(GTItems.ITEM_FILTER.asItem(), 0) + 1);
         }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ICopyable;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -48,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
@@ -154,12 +155,15 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return false;
     }
 
+    @Override
     public void copyConfig(CompoundTag nbt) {}
 
-    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
+    @Override
+    public Map<Item, Integer> getItemsRequiredForPaste(CompoundTag nbt) {
         return new HashMap<>();
     }
 
+    @Override
     public void pasteConfig(CompoundTag nbt) {}
 
     //////////////////////////////////////

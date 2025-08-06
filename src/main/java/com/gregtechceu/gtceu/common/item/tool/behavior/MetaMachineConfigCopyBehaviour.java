@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.ICopyable;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -18,7 +19,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
@@ -66,6 +67,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String BLOCK_ITEM = "place_item";
     public static final String PARTS = "parts";
     public static final String MULTIBLOCK = "multiblock";
+    public static final String CUSTOM_DATA = "custom_data";
 
     public static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
             .withStyle(ChatFormatting.GREEN);
@@ -116,23 +118,54 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        // spotless:off
-        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity blockEntity) {
-            var machine = blockEntity.getMetaMachine();
-            if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
-                return InteractionResult.FAIL;
-            }
-            if (context.isSecondaryUseActive()) {
-                return handleCopy(stack.getOrCreateTag(), machine);
-            } else if (stack.getTagElement(CONFIG_DATA) != null) {
-                return handlePaste(stack.getOrCreateTag(), machine, context.getPlayer() == null ? null : new CustomItemStackHandler(context.getPlayer().getInventory().items));
-            }
-        } else if (context.isSecondaryUseActive() && context.getLevel().getBlockState(context.getClickedPos()).isAir()) {
-            stack.removeTagKey(CONFIG_DATA);
+        if (context.isSecondaryUseActive()) {
+            return handleCopy(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos());
+        } else if (stack.getTagElement(CONFIG_DATA) != null) {
+            return handlePaste(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(),
+                    context.getPlayer() == null ? null :
+                            new CustomItemStackHandler(context.getPlayer().getInventory().items));
+        } else return InteractionResult.SUCCESS;
+    }
+
+    public static InteractionResult handleCopy(CompoundTag tag, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
+            return handleCopy(tag, machineBE.getMetaMachine());
+        else if (level.getBlockEntity(pos) instanceof ICopyable copyable) {
+            CompoundTag customData = new CompoundTag();
+            copyable.copyConfig(customData);
+            tag.put(CUSTOM_DATA, customData);
             return InteractionResult.SUCCESS;
-        }
-        // spotless:on
-        return InteractionResult.SUCCESS;
+        } else if (level.getBlockEntity(pos) == null) {
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir()) {
+                tag.remove(CUSTOM_DATA);
+                return InteractionResult.SUCCESS;
+            }
+            tag.put(BLOCK_ITEM, new ItemStack(state.getBlock().asItem()).serializeNBT());
+            // TODO copy entire block state (should this feature even exist?)
+            return InteractionResult.SUCCESS;
+        } else return InteractionResult.PASS;
+    }
+
+    public static InteractionResult handlePaste(CompoundTag tag, Level level, BlockPos pos,
+                                                @Nullable IItemHandler itemHandler) {
+        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
+            return handlePaste(tag, machineBE.getMetaMachine(), itemHandler);
+        else if (tag.contains(CUSTOM_DATA) && level.getBlockEntity(pos) instanceof ICopyable copyable) {
+            if (consumeItems(itemHandler, copyable.getItemsRequiredForPaste(tag.getCompound(CUSTOM_DATA)))) {
+                copyable.pasteConfig(tag.getCompound(CUSTOM_DATA));
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        } else if (tag.contains(BLOCK_ITEM) && level.getBlockEntity(pos) == null) {
+            if (!level.getBlockState(pos).isAir()) return InteractionResult.PASS;
+            ItemStack stack = ItemStack.of(tag.getCompound(BLOCK_ITEM));
+            if (stack.getItem() instanceof BlockItem item && consumeItems(itemHandler, Map.of(item, 1))) {
+                level.setBlockAndUpdate(pos, item.getBlock().defaultBlockState());
+                // TODO paste entire block state
+                return InteractionResult.SUCCESS;
+            } else return InteractionResult.PASS;
+        } else return InteractionResult.PASS;
     }
 
     public static InteractionResult handleCopy(CompoundTag tag, MetaMachine machine) {
@@ -174,16 +207,20 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 partTag.put(POSITION, posToTag(partPos.subtract(machine.getPos())));
                 partTag.put(BLOCK_ITEM,
                         new ItemStack(machine.getLevel().getBlockState(partPos).getBlock().asItem()).serializeNBT());
-                if (machine.getLevel().getBlockEntity(partPos) instanceof IMachineBlockEntity machineBE) {
-                    CompoundTag partConfig = new CompoundTag();
-                    handleCopy(partConfig, machineBE.getMetaMachine());
-                    partTag.put(CONFIG_DATA, partConfig);
+                CompoundTag partConfig = new CompoundTag();
+                handleCopy(partConfig, machine.getLevel(), partPos);
+                partTag.put(CONFIG_DATA, partConfig);
+                if (machine.getLevel().getBlockEntity(partPos) instanceof IMachineBlockEntity machineBE)
                     partTag.putString(ORIGINAL_FRONT, directionToString(machineBE.getMetaMachine().getFrontFacing()));
-                }
                 parts.add(partTag);
             }
             multiblockTag.put(PARTS, parts);
             configData.put(MULTIBLOCK, multiblockTag);
+        }
+        if (machine instanceof ICopyable copyable) {
+            CompoundTag customData = new CompoundTag();
+            copyable.copyConfig(customData);
+            tag.put(CUSTOM_DATA, customData);
         }
         if (!configData.isEmpty()) {
             tag.put(CONFIG_DATA, configData);
@@ -234,7 +271,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 }
                 if (cover == null) continue;
                 CompoundTag coverConfig = compoundTag.getCompound(COVER_CONFIG);
-                if (consumeItems(itemHandler, cover.getItemsRequiredForConfigPaste(coverConfig))) {
+                if (consumeItems(itemHandler, cover.getItemsRequiredForPaste(coverConfig))) {
                     cover.pasteConfig(coverConfig);
                 }
             }
@@ -270,10 +307,15 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                                         RelativeDirection.getActualDirection(
                                                 originalFront, multiblock.getFrontFacing(),
                                                 tagToDirection(partTag.get(ORIGINAL_FRONT))));
-                            handlePaste(partTag.getCompound(CONFIG_DATA), machineBE.getMetaMachine(), itemHandler);
                         }
+                        handlePaste(partTag.getCompound(CONFIG_DATA), machine.getLevel(), pos, itemHandler);
                     }
                 }
+            }
+        }
+        if (configData.contains(CUSTOM_DATA) && machine instanceof ICopyable copyable) {
+            if (consumeItems(itemHandler, copyable.getItemsRequiredForPaste(configData.getCompound(CUSTOM_DATA)))) {
+                copyable.pasteConfig(configData.getCompound(CUSTOM_DATA));
             }
         }
         return InteractionResult.SUCCESS;

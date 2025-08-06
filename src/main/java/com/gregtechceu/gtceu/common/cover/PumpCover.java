@@ -155,8 +155,8 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     }
 
     @Override
-    public Map<Item, Integer> getItemsRequiredForConfigPaste(CompoundTag nbt) {
-        Map<Item, Integer> out = super.getItemsRequiredForConfigPaste(nbt);
+    public Map<Item, Integer> getItemsRequiredForPaste(CompoundTag nbt) {
+        Map<Item, Integer> out = super.getItemsRequiredForPaste(nbt);
         if (!filterHandler.isFilterPresent() && nbt.contains("filter")) {
             out.put(GTItems.FLUID_FILTER.asItem(), out.getOrDefault(GTItems.FLUID_FILTER.asItem(), 0) + 1);
         }
