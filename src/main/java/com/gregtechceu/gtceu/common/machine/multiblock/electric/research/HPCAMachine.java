@@ -546,6 +546,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         /** Allocate computation on a given request. Allocates for one tick. */
         public int allocateCWUt(int cwut, boolean simulate) {
+            if (cwut == 0) return 0;
             int maxCWUt = getMaxCWUt();
             int availableCWUt = maxCWUt - this.allocatedCWUt;
             int toAllocate = Math.min(cwut, availableCWUt);
