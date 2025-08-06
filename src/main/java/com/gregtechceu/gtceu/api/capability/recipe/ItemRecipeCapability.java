@@ -220,8 +220,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
         // notConsumable ingredients are not counted towards the max ratio
-        var nonConsumables = new Object2IntOpenHashMap<Ingredient>();
-        var consumables = new Object2IntOpenHashMap<Ingredient>();
+        var nonConsumables = new Object2LongOpenHashMap<Ingredient>();
+        var consumables = new Object2LongOpenHashMap<Ingredient>();
         for (Content content : inputs) {
             Ingredient ing = of(content.content);
             if (ing instanceof IntCircuitIngredient) continue;
@@ -243,9 +243,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         for (var group : inventoryGroups) {
             // Check for enough NC in inventory group
             boolean satisfied = true;
-            for (var ncEntry : Object2IntMaps.fastIterable(nonConsumables)) {
+            for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
                 Ingredient ingredient = ncEntry.getKey();
-                long needed = ncEntry.getIntValue();
+                long needed = ncEntry.getLongValue();
                 for (var stackEntry : Object2LongMaps.fastIterable(group)) {
                     if (ingredient.test(stackEntry.getKey())) {
                         long count = stackEntry.getLongValue();
@@ -268,9 +268,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int invMultiplier = Integer.MAX_VALUE;
             // Loop over all consumables
-            for (var cEntry : Object2IntMaps.fastIterable(consumables)) {
+            for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
                 Ingredient ingredient = cEntry.getKey();
-                final long needed = cEntry.getIntValue();
+                final long needed = cEntry.getLongValue();
                 final long maxNeeded = needed * limit;
                 long available = 0;
                 // Search stacks in our inventory group, summing them up
