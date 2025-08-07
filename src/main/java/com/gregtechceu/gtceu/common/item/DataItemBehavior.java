@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -103,18 +105,36 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
-                Collection<ItemStack> added = new ObjectOpenHashSet<>();
-                outer:
+                Collection<ItemStack> addedItems = new ObjectOpenHashSet<>();
+                Collection<FluidStack> addedFluids = new ObjectOpenHashSet<>();
+                outerItems:
                 for (GTRecipe recipe : recipes) {
-                    ItemStack output = ItemRecipeCapability.CAP
-                            .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
-                    for (var item : added) {
-                        if (output.is(item.getItem())) continue outer;
+                    var contents = recipe.getOutputContents(ItemRecipeCapability.CAP);
+                    if (contents.isEmpty()) continue;
+                    ItemStack outputItems = ItemRecipeCapability.CAP
+                            .of(contents.get(0).content).getItems()[0];
+                    for (var item : addedItems) {
+                        if (outputItems.is(item.getItem())) continue outerItems;
                     }
-                    if (added.add(output)) {
+                    if (addedItems.add(outputItems)) {
                         tooltipComponents.add(
                                 Component.translatable("behavior.data_item.assemblyline.data",
-                                        output.getDisplayName()));
+                                        outputItems.getDisplayName()));
+                    }
+                }
+                outerFluids:
+                for (GTRecipe recipe : recipes) {
+                    var contents = recipe.getOutputContents(FluidRecipeCapability.CAP);
+                    if (contents.isEmpty()) continue;
+                    FluidStack outputFluids = FluidRecipeCapability.CAP
+                            .of(contents.get(0).content).getStacks()[0];
+                    for (var fluid : addedFluids) {
+                        if (outputFluids.isFluidStackIdentical(fluid)) continue outerFluids;
+                    }
+                    if (addedFluids.add(outputFluids)) {
+                        tooltipComponents.add(
+                                Component.translatable("behavior.data_item.assemblyline.data",
+                                        outputFluids.getDisplayName()));
                     }
                 }
             }

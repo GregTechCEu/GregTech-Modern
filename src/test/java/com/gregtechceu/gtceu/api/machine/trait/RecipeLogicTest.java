@@ -67,9 +67,7 @@ public class RecipeLogicTest {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
-        // Force a structure check and to register the parts
-        controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
-        controller.onStructureFormed();
+        TestUtils.formMultiblock(controller);
 
         helper.assertTrue(controller.isFormed(), "Controller didn't form after structure check");
         helper.assertTrue(controller.getParts().size() == 4,
