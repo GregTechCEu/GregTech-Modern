@@ -43,7 +43,6 @@ public class DataGenerators {
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                             .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
                             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
                     set));
             generator.addProvider(true,
