@@ -293,6 +293,7 @@ public final class PipeRecipeHandler {
     }
 
     private static int getVoltageMultiplier(Material material) {
+        if (material.hasProperty(PropertyKey.POLYMER)) return 4;
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
     }
 }
