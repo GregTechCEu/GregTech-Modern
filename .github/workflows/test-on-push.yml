@@ -1,0 +1,60 @@
+name: Test pull request on push
+
+on:
+  pull_request:
+    paths: ['**']
+
+# Cancel previous jobs if PR gets another push
+concurrency:
+  group: PR-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_SUFFIX: "PR-${{ github.event.number }}"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Path Filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - '*.gradle'
+              - 'gradle.properties'
+              - 'gradlew*'
+              - 'gradle/**'
+      - name: Setup Build
+        if: steps.filter.outputs.code == 'true'
+        uses: ./.github/actions/build_setup
+      - name: Run GameTests
+        if: steps.filter.outputs.code == 'true'
+        id: gametest
+        continue-on-error: true
+        run: ./gradlew runGameTestServer
+      - name: Add "Tests Passed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 'Tests: Passed'
+      - name: Remove "Tests Failed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: 'Tests: Failed'
+      - name: Add "Tests Failed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 'Tests: Failed'
+      - name: Remove "Tests Passed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: 'Tests: Passed'
+      - name: Fail on GameTest failures
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
+        run: exit 1
