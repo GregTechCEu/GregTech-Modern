@@ -35,26 +35,26 @@ jobs:
         id: gametest
         continue-on-error: true
         run: ./gradlew runGameTestServer
-      - name: Add "Tests Passed" label
-        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions-ecosystem/action-add-labels@v1
+      - name: Update “Tests Passed” / “Tests Failed” labels
+        if: steps.filter.outputs.code == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
         with:
-          labels: 'Tests: Passed'
-      - name: Remove "Tests Failed" label
-        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions-ecosystem/action-remove-labels@v1
-        with:
-          labels: 'Tests: Failed'
-      - name: Add "Tests Failed" label
-        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          labels: 'Tests: Failed'
-      - name: Remove "Tests Passed" label
-        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions-ecosystem/action-remove-labels@v1
-        with:
-          labels: 'Tests: Passed'
+          script: |
+            const [add, remove] = {
+              success: ['Tests: Passed','Tests: Failed'],
+              failure: ['Tests: Failed','Tests: Passed']
+            }['${{ steps.gametest.outcome }}'];
+
+            const { owner, repo }    = context.repo;
+            const issue_number       = context.payload.pull_request.number;
+
+            await github.rest.issues
+              .addLabels({ owner, repo, issue_number, labels: [add] })
+              .catch(() => {});
+
+            await github.rest.issues
+              .removeLabel({ owner, repo, issue_number, name: remove })
+              .catch(() => {});
       - name: Fail on GameTest failures
         if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
         run: exit 1

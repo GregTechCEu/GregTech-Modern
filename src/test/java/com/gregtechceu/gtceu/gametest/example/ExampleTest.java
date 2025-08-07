@@ -13,7 +13,7 @@ public class ExampleTest {
 
     @GameTest(template = "empty")
     public static void myTest(GameTestHelper helper) {
-        helper.assertTrue(true, "true is false");
+        helper.assertTrue(true, "true is false ");
         helper.succeed();
     }
 }
