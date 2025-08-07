@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
+
 import org.jetbrains.annotations.ApiStatus;
 
 /**

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface IHoverable extends IIcon {

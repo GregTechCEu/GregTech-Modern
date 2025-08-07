@@ -1,0 +1,169 @@
+package com.gregtechceu.gtceu.client.mui.screen.viewport;
+
+import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.base.MCHelper;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix4f;
+
+/**
+ * A gui context contains various properties like screen size, mouse position, last clicked button etc.
+ * It also is a matrix/pose stack.
+ * A default instance can be obtained using {@link #getDefault()}, which can be used in {@link IDrawable IDrawables} for
+ * example.
+ * That instance is automatically updated at all times (except when no UI is currently open).
+ */
+public class GuiContext extends GuiViewportStack {
+
+    public static GuiContext getDefault() {
+        return ClientScreenHandler.getBestContext();
+    }
+
+    @Getter
+    private final Area screenArea = new Area();
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private GuiGraphics graphics = null;
+
+    /* Mouse states */
+    /**
+     * Absolute X coordinate of the mouse without the scrolling areas applied
+     */
+    @Getter
+    private int absMouseX;
+    /**
+     * Absolute Y coordinate of the mouse without the scrolling areas applied
+     */
+    @Getter
+    private int absMouseY;
+    @Getter
+    private int mouseButton;
+    @Getter
+    private double mouseScrollDelta;
+
+    /* Keyboard states */
+    @Getter
+    private int keyCode;
+    @Getter
+    private int scanCode;
+    @Getter
+    private int modifiers;
+
+    /* Render states */
+    @Getter
+    private float partialTicks;
+    @Getter
+    private long tick = 0;
+    @Getter
+    private int currentDrawingZ = 0;
+
+    public boolean isAbove(IGuiElement widget) {
+        return isMouseAbove(widget.getArea());
+    }
+
+    /**
+     * @return true the mouse is anywhere above the widget
+     */
+    public boolean isMouseAbove(IGuiElement widget) {
+        return isMouseAbove(widget.getArea());
+    }
+
+    /**
+     * @return true the mouse is anywhere above the area
+     */
+    public boolean isMouseAbove(Area area) {
+        return area.isInside(this.absMouseX, this.absMouseY);
+    }
+
+    @ApiStatus.Internal
+    public void updateState(int mouseX, int mouseY, float partialTicks) {
+        this.absMouseX = mouseX;
+        this.absMouseY = mouseY;
+        this.partialTicks = partialTicks;
+    }
+
+    @ApiStatus.Internal
+    public void updateMouseButton(int button) {
+        this.mouseButton = button;
+    }
+
+    @ApiStatus.Internal
+    public void updateMouseWheel(double scrollDelta) {
+        this.mouseScrollDelta = scrollDelta;
+    }
+
+    @ApiStatus.Internal
+    public void updateLatestKey(int keyCode, int scanCode, int modifiers) {
+        this.keyCode = keyCode;
+        this.scanCode = scanCode;
+        this.modifiers = modifiers;
+    }
+
+    @ApiStatus.Internal
+    public void updateScreenArea(int w, int h) {
+        this.screenArea.set(0, 0, w, h);
+        this.screenArea.rx = 0;
+        this.screenArea.ry = 0;
+    }
+
+    public void updateZ(int z) {
+        this.currentDrawingZ = z;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public Minecraft getMC() {
+        return Minecraft.getInstance();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public Font getFont() {
+        return MCHelper.getFont();
+    }
+
+    public void tick() {
+        this.tick += 1;
+    }
+
+    /* Viewport */
+
+    public Matrix4f getLastPose() {
+        if (graphics == null) return new Matrix4f();
+        return graphics.pose().last().pose();
+    }
+
+    public int getMouseX() {
+        return unTransformX(this.absMouseX, this.absMouseY);
+    }
+
+    public int getMouseY() {
+        return unTransformY(this.absMouseX, this.absMouseY);
+    }
+
+    public int getMouse(GuiAxis axis) {
+        return axis.isHorizontal() ? getMouseX() : getMouseY();
+    }
+
+    public int getAbsMouse(GuiAxis axis) {
+        return axis.isHorizontal() ? getMouseX() : getMouseY();
+    }
+
+    public boolean isMuiContext() {
+        return false;
+    }
+
+    public ModularGuiContext getMuiContext() {
+        throw new UnsupportedOperationException("This is not a MuiContext");
+    }
+}

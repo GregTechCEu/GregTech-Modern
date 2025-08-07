@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.SecondaryPanel;
+
 import org.jetbrains.annotations.ApiStatus;
 
 /**

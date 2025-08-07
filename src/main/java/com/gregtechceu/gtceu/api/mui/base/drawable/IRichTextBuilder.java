@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 
 import com.gregtechceu.gtceu.api.mui.drawable.text.Spacer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+
 import net.minecraft.network.chat.Component;
 
 public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {

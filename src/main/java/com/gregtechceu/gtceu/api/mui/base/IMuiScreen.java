@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.ScreenWrapper;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerScreenAccessor;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,16 +37,6 @@ public interface IMuiScreen {
      */
     @NotNull
     ModularScreen getScreen();
-
-    /**
-     * {@link Screen GuiScreens} need to be focused when a text field is focused, to prevent key input from
-     * behaving unexpectedly.
-     *
-     * @param focused if the screen should be focused
-     */
-    default void setFocused(boolean focused) {
-        getScreen().setFocused(focused);
-    }
 
     /**
      * This method decides how the gui background is drawn.

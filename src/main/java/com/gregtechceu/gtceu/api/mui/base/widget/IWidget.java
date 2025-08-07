@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
-import com.google.common.base.CharMatcher;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
@@ -12,6 +11,8 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Flex;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import com.google.common.base.CharMatcher;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.base.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
+
 import net.minecraft.network.FriendlyByteBuf;
 
 /**

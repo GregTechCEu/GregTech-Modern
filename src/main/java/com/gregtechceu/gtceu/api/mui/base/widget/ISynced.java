@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.base.widget;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
+
 import org.jetbrains.annotations.NotNull;
 
 /**
