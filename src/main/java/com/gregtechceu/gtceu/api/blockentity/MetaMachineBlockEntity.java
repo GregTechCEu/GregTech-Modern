@@ -214,6 +214,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
                         LazyOptional.of(() -> maintenanceMachine));
             }
+        } else if (cap == GTCapability.CAPABILITY_TURBINE_MACHINE) {
+            if (machine instanceof ITurbineMachine turbineMachine) {
+                return GTCapability.CAPABILITY_TURBINE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> turbineMachine));
+            }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var handler = machine.getItemHandlerCap(side, true);
             if (handler != null) {
@@ -258,6 +263,14 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MONITOR_COMPONENT) {
+            if (machine instanceof IMonitorComponent monitorComponent) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> monitorComponent));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IMonitorComponent.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         }
         if (GTCEu.Mods.isAE2Loaded()) {

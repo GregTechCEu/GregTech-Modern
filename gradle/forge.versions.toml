@@ -22,6 +22,9 @@ ftbteams = "2001.3.0"
 ftbquests = "2001.4.11"
 ftbchunks = "2001.3.4"
 ccTweaked = "1.114.3"
+create = "6.0.6-150"
+ponder = "1.0.80"
+flywheel = "1.0.4"
 
 ## modrinth maven ##
 jade = "11.6.3"
@@ -66,6 +69,10 @@ rei-forge           = { module = "me.shedaniel:RoughlyEnoughItems-forge", versio
 emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
+create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create"}
+ponder              = { module = "net.createmod.ponder:Ponder-Forge-1.20.1", version.ref = "ponder"}
+flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
+flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-forge-1.20.1", version.ref = "flywheel"}
 kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = "kubejs" }
 rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }

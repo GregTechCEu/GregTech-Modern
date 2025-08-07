@@ -247,10 +247,21 @@ public class PatternPreviewWidget extends WidgetGroup {
         }
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
         var itemHandler = new CycleItemStackHandler(pattern.parts);
+        int xOffset = 0;
         for (int i = 0; i < slotWidgets.length; i++) {
-            slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
+            int padding = 1;
+            if (itemHandler.getStackInSlot(i).getCount() / 100_000 >= 1) {
+                padding = 10;
+            } else if (itemHandler.getStackInSlot(i).getCount() / 10_000 >= 1) {
+                padding = 7;
+            } else if (itemHandler.getStackInSlot(i).getCount() / 1_000 >= 1) {
+                padding = 4;
+            }
+
+            slotWidgets[i] = new PatternPreviewSlotWidget(itemHandler, i, (4 + xOffset + padding), 0, false, false)
                     .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
                     .setIngredientIO(IngredientIO.INPUT);
+            xOffset += 18 + (2 * padding);
             scrollableWidgetGroup.addWidget(slotWidgets[i]);
         }
     }
@@ -467,11 +478,9 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         public List<ItemStack> getItemStack() {
             return Arrays.stream(itemStackKey.getItemStack())
-                    .map(itemStack -> {
-                        var item = itemStack.copy();
-                        item.setCount(amount);
-                        return item;
-                    }).filter(item -> !item.isEmpty()).toList();
+                    .map(stack -> stack.copyWithCount(amount))
+                    .filter(item -> !item.isEmpty())
+                    .toList();
         }
     }
 

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -61,8 +62,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         }
     }
 
-    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = EnumProperty.create("charger_state",
-            ChargerMachine.State.class);
+    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = GTMachineModelProperties.CHARGER_STATE;
 
     @Persisted
     @Getter
@@ -189,7 +189,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
-            setRenderState(getRenderState().setValue(STATE_PROPERTY, newState));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.CHARGER_STATE, newState));
         }
     }
 

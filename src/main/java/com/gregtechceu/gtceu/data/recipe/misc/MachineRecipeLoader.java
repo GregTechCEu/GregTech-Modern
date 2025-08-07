@@ -759,7 +759,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Bronze, 3)
                 .inputItems(frameGt, Bronze)
                 .inputItems(plate, Bronze, 3)
-                .outputItems(GTBlocks.FIREBOX_BRONZE, 2)
+                .outputItems(GTBlocks.FIREBOX_BRONZE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(100)
                 .EUt(VA[LV])
                 .save(provider);
@@ -767,7 +768,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Steel, 3)
                 .inputItems(frameGt, Steel)
                 .inputItems(plate, Steel, 3)
-                .outputItems(GTBlocks.FIREBOX_STEEL, 2)
+                .outputItems(GTBlocks.FIREBOX_STEEL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(200)
                 .EUt(VA[LV])
                 .save(provider);
@@ -775,7 +777,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Titanium, 3)
                 .inputItems(frameGt, Titanium)
                 .inputItems(plate, Titanium, 3)
-                .outputItems(GTBlocks.FIREBOX_TITANIUM, 2)
+                .outputItems(GTBlocks.FIREBOX_TITANIUM, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(300)
                 .EUt(VA[HV])
                 .save(provider);
@@ -783,7 +786,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, TungstenSteel, 3)
                 .inputItems(frameGt, TungstenSteel)
                 .inputItems(plate, TungstenSteel, 3)
-                .outputItems(GTBlocks.FIREBOX_TUNGSTENSTEEL, 2)
+                .outputItems(GTBlocks.FIREBOX_TUNGSTENSTEEL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(400)
                 .EUt(VA[EV])
                 .save(provider);

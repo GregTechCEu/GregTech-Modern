@@ -32,6 +32,9 @@ public class SizedIngredient extends Ingredient {
     protected int amount;
     @Getter
     protected final Ingredient inner;
+    /**
+     * This array's elements must be treated as immutable.
+     */
     protected ItemStack[] itemStacks = null;
     private boolean changed = true;
     @Getter
@@ -136,9 +139,10 @@ public class SizedIngredient extends Ingredient {
             return intProviderIngredient.getItems();
         }
         if (changed || itemStacks == null) {
-            itemStacks = inner.getItems();
+            var innerStacks = inner.getItems();
+            this.itemStacks = new ItemStack[innerStacks.length];
             for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = itemStacks[i].copyWithCount(amount);
+                itemStacks[i] = innerStacks[i].copyWithCount(amount);
             }
             changed = false;
         }

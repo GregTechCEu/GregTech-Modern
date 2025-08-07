@@ -33,6 +33,34 @@ jobs:
       - name: Build
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew assemble
+      - name: Run GameTests
+        if: steps.filter.outputs.code == 'true'
+        id: gametest
+        continue-on-error: true
+        run: ./gradlew runGameTestServer
+      - name: Add "Tests Passed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 'Tests: Passed'
+      - name: Remove "Tests Failed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: 'Tests: Failed'
+      - name: Add "Tests Failed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: 'Tests: Failed'
+      - name: Remove "Tests Passed" label
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: 'Tests: Passed'
+      - name: Fail on GameTest failures
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
+        run: exit 1
       - name: Rename Jars
         if: steps.filter.outputs.code == 'true'
         run: for file in build/libs/*; do mv "$file" "${file/.jar/-${{ env.VERSION_SUFFIX }}.jar}"; done;

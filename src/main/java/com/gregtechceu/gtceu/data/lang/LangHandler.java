@@ -1000,6 +1000,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
         provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
         provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
+        provider.add("gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
         provider.add("gtceu.fluid.click_to_fill",
                 "§7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).");
         provider.add("gtceu.fluid.click_combined",
@@ -1419,6 +1420,275 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.false", "False");
         provider.add("gtceu.tooltip.status.trinary.true", "True");
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
+
+        provider.add("gtceu.tooltip.wireless_transmitter_bind", "Binding to a transmitter cover at %s %s %s facing %s");
+        provider.add("gtceu.tooltip.computer_monitor_config", "Storing computer monitor cover configuration data");
+        provider.add("gtceu.tooltip.computer_monitor_data", "Storing data: %s");
+
+        provider.add("gtceu.display_source.computer_monitor_cover", "Computer Monitor Cover");
+        provider.add("gtceu.display_target.computer_monitor_cover", "Computer Monitor Cover");
+        multiLang(provider, "gtceu.placeholder_info.energy",
+                "Returns the amount of energy stored.",
+                "Usage:",
+                "  {energy} -> the amount of energy stored");
+        multiLang(provider, "gtceu.placeholder_info.energyCapacity",
+                "Returns the max amount of energy that can be stored",
+                "Usage:",
+                "{energyCapacity} -> the energy capacity");
+        multiLang(provider, "gtceu.placeholder_info.itemCount",
+                "Returns the amount of items (can be filtered).",
+                "Usage:",
+                "  {itemCount} -> total item amount",
+                "  {itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover");
+        multiLang(provider, "gtceu.placeholder_info.calc",
+                "Returns the result of a math function or operation.",
+                "Usage:",
+                "  {calc <any_string>} -> any_string",
+                "  {calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
+                "  {calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation");
+        multiLang(provider, "gtceu.placeholder_info.if",
+                "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.",
+                "Usage:",
+                "  {if <condition> <returned_if_true> [returned_if_false]}");
+        multiLang(provider, "gtceu.placeholder_info.obf",
+                "Returns the text from the first argument, obfuscated.",
+                "Usage:",
+                "  {obf <text>} -> obfuscated text");
+        multiLang(provider, "gtceu.placeholder_info.underline",
+                "Returns the text from the first argument, underlined",
+                "Usage:",
+                "  {underline <text>} -> underlined text");
+        multiLang(provider, "gtceu.placeholder_info.strike",
+                "Returns the text from the first text, displaying it as if it was crossed out",
+                "Usage:",
+                "  {strike <text>} -> crossed-out text");
+        multiLang(provider, "gtceu.placeholder_info.color",
+                "Returns the text from the second argument, colored with the color from the first argument. All default minecraft chat colors can be used.",
+                "Usage:",
+                "  {color <color> <text>} -> colored text");
+        multiLang(provider, "gtceu.placeholder_info.tick",
+                "Returns the amount of ticks passed from when this cover was placed.",
+                "Usage:",
+                "  {tick} -> the amount of ticks");
+        multiLang(provider, "gtceu.placeholder_info.block", "Returns the block symbol (█).",
+                "Usage:",
+                "  {block} -> '█'");
+        multiLang(provider, "gtceu.placeholder_info.repeat",
+                "Returns the text from the second arguments, repeated the amount of times specified in the first argument.",
+                "Usage:",
+                "  {repeat <amount> <text>} -> text repeated the specified amount of times");
+        multiLang(provider, "gtceu.placeholder_info.random",
+                "Returns a random number in the specified interval (inclusive).",
+                "Usage:",
+                "  {random <min> <max>} -> a random number between min and max (inclusive)");
+        multiLang(provider, "gtceu.placeholder_info.select",
+                "Returns the argument at the specified index (starting from 0)",
+                "Usage:",
+                "  {select <index> [arg1] [arg2] [arg3] ... -> argument at the specified index");
+        multiLang(provider, "gtceu.placeholder_info.redstone",
+                "Returns the redstone signal strength or sets the redstone output strength",
+                "Usage:",
+                "  {redstone get <up|down|north|south|east|west>} -> redstone signal strength (0-15) at the specified side",
+                "  {redstone get link <slot_index> <freq_slot_index>} -> redstone signal strength of a Create redstone link frequency specified by a linked controller in slot #slot_index. freq_slot_index is the index of the frequency inside the controller (from left to right, 0-6)",
+                "  {redstone set <power>} -> empty string, sets the redstone output strength from this cover's side",
+                "  {redstone set link <slot_index> <freq_slot_index> <power>} -> empty string, broadcasts the specified redstone power on the specified Create redstone link frequency");
+        multiLang(provider, "gtceu.placeholder_info.fluidCount",
+                "Returns the amount of fluids (can be filtered).",
+                "Usage:",
+                "  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        multiLang(provider, "gtceu.placeholder_info.displayTarget",
+                "Returns the specified line that was transmitted to this cover using a display link.",
+                "Usage:",
+                "  {displayTarget <line_number>} -> the text on the specified line (line number is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.previousText",
+                "Returns the text that was previously displayed by this cover at the specified line (before line-wrapping).",
+                "Usage:",
+                "  {previousText <line>} -> the text previously displayed on the specified line (index starts at 1)");
+        multiLang(provider, "gtceu.placeholder_info.ae2itemCount",
+                "Same as itemCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting by filter or all items may cause lag!",
+                "Usage:",
+                "  {itemCount} -> total item amount",
+                "  {itemCount <item_id>} -> amount of items with ids equal to item_id",
+                "  {itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover");
+        multiLang(provider, "gtceu.placeholder_info.ae2fluidCount",
+                "Same as fluidCount, but counts items in the ME network of the block this cover is attached to.",
+                "Note that counting all fluids may cause lag!",
+                "Usage:",
+                "  {fluidCount [fluidId]} -> the amount of all fluids, or the fluid with fluidId if specified");
+        multiLang(provider, "gtceu.placeholder_info.progress",
+                "Returns the progress of the currently running recipe of the block this cover is attached to.",
+                "Note that progress is an integer between 0 and {maxProgress}",
+                "Usage:",
+                "  {progress} -> the progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maxProgress",
+                "Returns the maximum progress of the currently running recipe of the block this cover is attached to.",
+                "Example: 'Progress: {calc {calc {progress} / {maxProgress}} * 100}%'",
+                "Usage:",
+                "  {maxProgress} -> the max progress of the currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.maintenance",
+                "Returns a 1 if there are maintenance problems in the block the cover is attached to, 0 otherwise.",
+                "Example: 'Maintenance status: {if {maintenance} FIXING\\ REQUIRED OK}'",
+                "Usage:",
+                "  {maintenance} -> whether there are maintenance problems");
+        multiLang(provider, "gtceu.placeholder_info.active",
+                "Returns a 1 if the block the cover is attached to is currently running a recipe, 0 otherwise.",
+                "Usage:",
+                "  {active} -> whether there's a currently running recipe");
+        multiLang(provider, "gtceu.placeholder_info.voltage",
+                "Returns the voltage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {voltage} -> the voltage in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.amperage",
+                "Returns the amperage in the wire/cable the cover is on.",
+                "Usage:",
+                "  {amperage} -> the amperate in the wire/cable");
+        multiLang(provider, "gtceu.placeholder_info.ae2energy",
+                "Returns the energy currently stored in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2energy} -> the energy in the ME network (in AE units)");
+        multiLang(provider, "gtceu.placeholder_info.ae2maxPower",
+                "Returns the energy capacity of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2maxPower} -> the energy capacity of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2powerUsage",
+                "Returns the energy consumption of the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2powerUsage} -> the energy consumption of the ME network");
+        multiLang(provider, "gtceu.placeholder_info.ae2spatial",
+                "Returns information about spatial I/O in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2spatial power} -> the amount of power required to initiate spatial I/O",
+                "  {ae2spatial efficiency} -> the efficiency of the Spatial Containment Structure (SPS)",
+                "  {ae2spatial size<X|Y|Z>} -> the size of the SPS along the specified axis (example: 'Size: {sizeX}x{sizeY}x{sizeZ}')");
+        multiLang(provider, "gtceu.placeholder_info.ae2crafting",
+                "Returns information about auto-crafting in the ME network of the block this cover is on.",
+                "Usage:",
+                "  {ae2crafting get amount} -> the amount of crafting CPUs in the ME network",
+                "  {ae2crafting get <index> storage} -> the amount of crafting storage the specified CPU has",
+                "  {ae2crafting get <index> threads} -> the amount of co-processors the specified CPU has",
+                "  {ae2crafting get <index> name} -> the name of the specified crafting CPU",
+                "  {ae2crafting get <index> selectionMode} -> the selection mode of the specified crafting CPU (used for manual, automatic or both requests)",
+                "  {ae2crafting get <index> amount} -> the amount of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> item} -> the display name of the item that was requested, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> progress} -> the crafting job progress, or 0 if the CPU is idle",
+                "  {ae2crafting get <index> time} -> the amount of time elapsed from the start of the craft (in nanoseconds), or 0 if the CPU is idle");
+        multiLang(provider, "gtceu.placeholder_info.count",
+                "Returns how many of the provided arguments are equal to the first (compared as strings, so \"0\" != \"0.0\")",
+                "Usage:",
+                "  {count <arg1> [arg2] [arg3] [arg4] ...} -> the amount of arguments that are equal to the first");
+        multiLang(provider, "gtceu.placeholder_info.data",
+                "Stores or retrieves some data from a data item (data stick/orb/module) in one of the slots.",
+                "If you leave the <index> argument empty, it will be replaced with the value p (p is an integer from 0 to (capacity - 1) that is stored in the data item nbt).",
+                "Usage:",
+                "  {data get <slot> <index>} -> the data stored in the item in the specified slot",
+                "  {data set <slot> <index> <value>} -> sets the data stored in the item in the specified slot, returns an empty string",
+                "  {data getp <slot>} -> p",
+                "  {data setp <slot> <value>} -> sets p, returns an empty string",
+                "  {data inc <slot>} -> increments p by 1, if p becomes more than or equal to capacity, sets p to 0",
+                "  {data dec <slot>} -> decrements p by 1, if p becomes less than 0, sets p to (capacity - 1)");
+        multiLang(provider, "gtceu.placeholder_info.combine",
+                "Combines all of it's arguments into a single string (by escaping all spaces between the arguments)",
+                "Example: {combine abc def ghi jkl mno} -> \"abc\\ def\\ ghi\\ jkl\\ mno\"",
+                "Usage:",
+                "  {combine [arg1] [arg2] [arg3] ...} -> a string that will be treated as a single argument in further placeholders");
+        multiLang(provider, "gtceu.placeholder_info.nbt",
+                "Returns the nbt data of the item in the specified slot",
+                "Usage:",
+                "  {nbt <slot>} -> nbt data");
+        multiLang(provider, "gtceu.placeholder_info.toChars",
+                "Returns the characters of the provided string with spaces between them",
+                "Example: {toChars example} -> 'e x a m p l e'",
+                "Usage:",
+                "  {toChars <arg>} -> characters");
+        multiLang(provider, "gtceu.placeholder_info.toAscii",
+                "Returns the ASCII code of the provided character",
+                "Usage:",
+                "  {toAscii <character>} -> ASCII code of the character");
+        multiLang(provider, "gtceu.placeholder_info.fromAscii",
+                "Returns the character represented by the provided ASCII code",
+                "Usage:",
+                "  {fromAscii <char_code>} -> a character");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.placeholder_reference",
+                "All placeholders:",
+                "(hover for more info)");
+        multiLang(provider, "gtceu.placeholder_info.subList",
+                "Returns arguments from with indexes from l (inclusive) to r (exclusive) (starting from 0)",
+                "Usage:",
+                "  {subList <left> <right> [arg0] [arg1] ...} -> all arguments with indexes from l to r separated by spaces");
+        multiLang(provider, "gtceu.placeholder_info.cmp",
+                "Returns a 1 or 0 based on the expression in it's arguments",
+                "Usage:",
+                "  {cmp <a> <operator> <b>} -> 1 or 0, operator is one of >, <, >=, <=, ==, !=");
+        multiLang(provider, "gtceu.placeholder_info.bf",
+                "Usage:",
+                "  {bf <data_item_slot_index> <code>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.cmd",
+                "Executes Minecraft commands and returns their output.",
+                "Requires a data item bound to a player, bind any data item to yourself by right-clicking with it.",
+                "Usage:",
+                "  {cmd <slot_index> <command>} -> command output");
+        multiLang(provider, "gtceu.placeholder_info.tm",
+                "Returns the ™ symbol",
+                "Usage:",
+                "  {tm} -> the ™ symbol");
+        multiLang(provider, "gtceu.placeholder_info.formatInt",
+                "Returns a string representation of the provided integer",
+                "Example: {formatInt 1236457} -> 1.24M",
+                "Usage:",
+                "  {formatInt <arg>} -> string representation of the int");
+        provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
+        provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
+        provider.add("gtceu.gui.central_monitor.text_scale", "Text scale");
+        provider.add("gtceu.gui.central_monitor.group", "Group: %s");
+        provider.add("gtceu.gui.central_monitor.group_default_name", "Group #%d");
+        provider.add("gtceu.gui.central_monitor.none", "none");
+        provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
+        provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
+        provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");
+        provider.add("gtceu.computer_monitor_cover.error.not_enough_args", "Expected at least %d args, got %d!");
+        provider.add("gtceu.computer_monitor_cover.error.no_cover", "No cover!");
+        provider.add("gtceu.computer_monitor_cover.error.exception", "Unexpected exception occurred: %s");
+        provider.add("gtceu.computer_monitor_cover.error.not_in_range",
+                "Expected %s to be between %d and %d (inclusive), got %d");
+        provider.add("gtceu.computer_monitor_cover.error.invalid_args", "Invalid arguments!");
+        provider.add("gtceu.computer_monitor_cover.error.missing_item", "Missing %s in slot %d!");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid_num",
+                "Invalid number at index %d when processing symbol number %d");
+        provider.add("gtceu.computer_monitor_cover.error.bf_invalid", "Invalid character at %d");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.main_textbox_tooltip",
+                "Input string to display on line %d here.",
+                "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
+                "Placeholders can also be inside other placeholders.");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.slot_tooltip",
+                "A slot for items that some placeholders can reference",
+                "Slot number: %d");
+        multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
+                "Input placeholder to be used in place of %s '{}' here.",
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+        provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
+        provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
+        provider.add("gtceu.computer_monitor_cover.error.no_ae", "Cover holder does not have an AE2 network!");
+        provider.add("gtceu.computer_monitor_cover.error.not_supported",
+                "This feature is not supported by this block/cover!");
+        provider.add("gtceu.central_monitor.gui.create_group", "Create group");
+        provider.add("gtceu.central_monitor.gui.remove_from_group", "Remove from group");
+        provider.add("gtceu.central_monitor.gui.set_target", "Set target");
+        provider.add("gtceu.central_monitor.gui.currently_editing", "Currently editing: %s");
+        multiLang(provider, "gtceu.central_monitor.info_tooltip",
+                "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
+                "Select them by left-clicking, then click 'Create group'.",
+                "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
+                "To delete a group, select all of it's components and click 'Remove from group'.",
+                "You can quickly select all components of a group by clicking on it's name. Click again to unselect.",
+                "Some modules may display things depending on the block they target, to set a target for a group select any component of that group and right-click on the target component.",
+                "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
+                "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
+                "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
+        provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
     }
 
     /**

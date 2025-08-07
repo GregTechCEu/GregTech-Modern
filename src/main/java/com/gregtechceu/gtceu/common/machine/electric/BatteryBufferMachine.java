@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -38,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-                                  implements IControllable, IFancyUIMachine, IMachineLife {
+                                  implements IControllable, IFancyUIMachine, IMachineLife, IMonitorComponent {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -202,6 +204,11 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public void onMachineRemoved() {
         clearInventory(batteryInventory);
+    }
+
+    @Override
+    public IGuiTexture getComponentIcon() {
+        return GuiTextures.BUTTON_CHECK; // temporary
     }
 
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {

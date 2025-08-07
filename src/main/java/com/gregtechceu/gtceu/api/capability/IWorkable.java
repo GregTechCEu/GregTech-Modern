@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 /**
@@ -7,7 +9,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  */
 public interface IWorkable extends IControllable {
 
-    BooleanProperty ACTIVE_PROPERTY = BooleanProperty.create("active");
+    BooleanProperty ACTIVE_PROPERTY = GTMachineModelProperties.IS_ACTIVE;
 
     /**
      * @return current progress of machine

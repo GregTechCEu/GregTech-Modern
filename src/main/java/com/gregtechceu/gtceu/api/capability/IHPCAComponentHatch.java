@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public interface IHPCAComponentHatch {
 
-    BooleanProperty HPCA_PART_DAMAGED_PROPERTY = BooleanProperty.create("hpca_part_damaged");
+    BooleanProperty HPCA_PART_DAMAGED_PROPERTY = GTMachineModelProperties.IS_HPCA_PART_DAMAGED;
 
     /**
      * How much EU/t this component needs for the multi to just be idle.
