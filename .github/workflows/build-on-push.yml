@@ -42,12 +42,12 @@ jobs:
         if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'success'
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          labels: Tests Passed
+          labels: 'Tests: Passed'
       - name: Add "Tests Failed" label
         if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          labels: Tests Failed
+          labels: 'Tests: Failed'
       - name: Fail on GameTest failures
         if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
         run: exit 1
