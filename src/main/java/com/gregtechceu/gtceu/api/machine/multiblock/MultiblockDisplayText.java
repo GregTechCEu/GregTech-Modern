@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -15,6 +17,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -349,45 +353,67 @@ public class MultiblockDisplayText {
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
+                int runs = recipe.parallels * recipe.batchParallels;
 
                 for (var item : itemOutputs) {
-                    var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
-                    if (stacks.length == 0) continue;
-                    var stack = stacks[0];
-                    int count = stack.getCount();
-                    double countD = count;
-                    if (item.chance < item.maxChance) {
-                        countD = countD * recipe.parallels * recipe.batchParallels *
-                                function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                        count = countD < 1 ? 1 : (int) Math.round(countD);
+                    boolean rounded = false;
+                    ItemStack stack;
+                    int count = 0;
+                    double countD = runs;
+                    if (item.content instanceof IntProviderIngredient provider) {
+                        rounded = true;
+                        stack = provider.getMaxSizeStack();
+                        countD = countD * provider.getMidRoll();
+                    } else {
+                        var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        if (stacks.length == 0) continue;
+                        stack = stacks[0];
+                        count = stack.getCount();
+                        countD = count;
                     }
+                    if (item.chance < item.maxChance) {
+                        rounded = true;
+                        countD = countD * function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                    }
+                    if (rounded) count = countD < 1 ? 1 : (int) Math.round(countD);
                     if (count < maxDurationSec) {
-                        String key = "gtceu.multiblock.output_line." + (item.chance < item.maxChance ? "2" : "0");
+                        String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
                         textList.add(Component.translatable(key, stack.getHoverName(), count,
                                 FormattingUtil.formatNumber2Places(maxDurationSec / countD)));
                     } else {
-                        String key = "gtceu.multiblock.output_line." + (item.chance < item.maxChance ? "3" : "1");
+                        String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
                         textList.add(Component.translatable(key, stack.getHoverName(), count,
                                 FormattingUtil.formatNumber2Places(countD / maxDurationSec)));
                     }
                 }
                 for (var fluid : fluidOutputs) {
-                    var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
-                    if (stacks.length == 0) continue;
-                    var stack = stacks[0];
-                    int amount = stack.getAmount();
-                    double amountD = amount;
-                    if (fluid.chance < fluid.maxChance) {
-                        amountD = amountD * recipe.parallels * recipe.batchParallels *
-                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                        amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                    boolean rounded = false;
+                    FluidStack stack;
+                    int amount = 0;
+                    double amountD = runs;
+                    if (fluid.content instanceof IntProviderFluidIngredient provider) {
+                        rounded = true;
+                        stack = provider.getMaxSizeStack();
+                        amountD = amountD * provider.getMidRoll();
+                    } else {
+                        var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                        if (stacks.length == 0) continue;
+                        stack = stacks[0];
+                        amount = stack.getAmount();
+                        amountD = amount;
                     }
+                    if (fluid.chance < fluid.maxChance) {
+                        rounded = true;
+                        amountD = amountD * runs *
+                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                    }
+                    if (rounded) amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                     if (amount < maxDurationSec) {
-                        String key = "gtceu.multiblock.output_line." + (fluid.chance < fluid.maxChance ? "2" : "0");
+                        String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
                         textList.add(Component.translatable(key, stack.getDisplayName(), amount,
                                 FormattingUtil.formatNumber2Places(maxDurationSec / amountD)));
                     } else {
-                        String key = "gtceu.multiblock.output_line." + (fluid.chance < fluid.maxChance ? "3" : "1");
+                        String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
                         textList.add(Component.translatable(key, stack.getDisplayName(), amount,
                                 FormattingUtil.formatNumber2Places(amountD / maxDurationSec)));
                     }

@@ -133,6 +133,13 @@ public class IntProviderIngredient extends Ingredient {
         return sampledCount;
     }
 
+    /**
+     * @return the average roll of this ranged amount
+     */
+    public double getMidRoll() {
+        return ((countProvider.getMaxValue() + countProvider.getMinValue()) / 2.0);
+    }
+
     @Override
     public @NotNull IntList getStackingIds() {
         return inner.getStackingIds();
