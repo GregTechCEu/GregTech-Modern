@@ -1,0 +1,60 @@
+name: Test pull request on push
+
+on:
+  pull_request:
+    paths: ['**']
+
+# Cancel previous jobs if PR gets another push
+concurrency:
+  group: PR-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_SUFFIX: "PR-${{ github.event.number }}"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Path Filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - '*.gradle'
+              - 'gradle.properties'
+              - 'gradlew*'
+              - 'gradle/**'
+      - name: Setup Build
+        if: steps.filter.outputs.code == 'true'
+        uses: ./.github/actions/build_setup
+      - name: Run GameTests
+        if: steps.filter.outputs.code == 'true'
+        id: gametest
+        continue-on-error: true
+        run: ./gradlew runGameTestServer
+      - name: Update “Tests Passed” / “Tests Failed” labels
+        if: steps.filter.outputs.code == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const [add, remove] = {
+              success: ['Tests: Passed','Tests: Failed'],
+              failure: ['Tests: Failed','Tests: Passed']
+            }['${{ steps.gametest.outcome }}'];
+
+            const { owner, repo }    = context.repo;
+            const issue_number       = context.payload.pull_request.number;
+
+            await github.rest.issues
+              .addLabels({ owner, repo, issue_number, labels: [add] })
+              .catch(() => {});
+
+            await github.rest.issues
+              .removeLabel({ owner, repo, issue_number, name: remove })
+              .catch(() => {});
+      - name: Fail on GameTest failures
+        if: steps.filter.outputs.code == 'true' && steps.gametest.outcome == 'failure'
+        run: exit 1
