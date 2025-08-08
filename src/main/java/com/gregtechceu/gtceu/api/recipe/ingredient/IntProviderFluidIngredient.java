@@ -81,6 +81,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return sampledCount;
     }
 
+    /**
+     * @return the average roll of this ranged amount
+     */
+    public double getMidRoll() {
+        return ((countProvider.getMaxValue() + countProvider.getMinValue()) / 2.0);
+    }
+
     @Override
     public boolean isEmpty() {
         return inner.isEmpty();
