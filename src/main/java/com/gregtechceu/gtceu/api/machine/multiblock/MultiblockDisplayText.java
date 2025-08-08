@@ -353,36 +353,41 @@ public class MultiblockDisplayText {
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
-                int runs = recipe.parallels * recipe.batchParallels;
+//                int runs = recipe.parallels * recipe.batchParallels;
 
                 for (var item : itemOutputs) {
                     boolean rounded = false;
                     ItemStack stack;
                     int count = 0;
-                    double countD = runs;
+                    double countD = 1;
+                    Component displaycount;
+                    if (item.chance < item.maxChance) {
+                        rounded = true;
+                        countD = countD * function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                    }
                     if (item.content instanceof IntProviderIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
+                        displaycount = Component.translatable("gtceu.gui.content.range",
+                                provider.getCountProvider().getMinValue() * countD,
+                                provider.getCountProvider().getMaxValue() * countD);
                         countD = countD * provider.getMidRoll();
                     } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         count = stack.getCount();
-                        countD = count;
+                        countD *= count;
+                        count = countD < 1 ? 1 : (int) Math.round(countD);
+                        displaycount = Component.literal(String.valueOf(count));
                     }
-                    if (item.chance < item.maxChance) {
-                        rounded = true;
-                        countD = countD * function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                    }
-                    if (rounded) count = countD < 1 ? 1 : (int) Math.round(countD);
-                    if (count < maxDurationSec) {
+                    if (countD < maxDurationSec) {
                         String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
-                        textList.add(Component.translatable(key, stack.getHoverName(), count,
+                        textList.add(Component.translatable(key, stack.getHoverName(), displaycount,
                                 FormattingUtil.formatNumber2Places(maxDurationSec / countD)));
                     } else {
                         String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
-                        textList.add(Component.translatable(key, stack.getHoverName(), count,
+                        textList.add(Component.translatable(key, stack.getHoverName(), displaycount,
                                 FormattingUtil.formatNumber2Places(countD / maxDurationSec)));
                     }
                 }
@@ -390,31 +395,35 @@ public class MultiblockDisplayText {
                     boolean rounded = false;
                     FluidStack stack;
                     int amount = 0;
-                    double amountD = runs;
+                    double amountD = 1;
+                    Component displaycount;
+                    if (fluid.chance < fluid.maxChance) {
+                        rounded = true;
+                        amountD = amountD * function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                    }
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
+                        displaycount = Component.translatable("gtceu.gui.content.range",
+                                provider.getCountProvider().getMinValue() * amountD,
+                                provider.getCountProvider().getMaxValue() * amountD);
                         amountD = amountD * provider.getMidRoll();
                     } else {
                         var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         amount = stack.getAmount();
-                        amountD = amount;
+                        amountD *= amount;
+                        amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                        displaycount = Component.literal(String.valueOf(amount));
                     }
-                    if (fluid.chance < fluid.maxChance) {
-                        rounded = true;
-                        amountD = amountD * runs *
-                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                    }
-                    if (rounded) amount = amountD < 1 ? 1 : (int) Math.round(amountD);
-                    if (amount < maxDurationSec) {
+                    if (amountD < maxDurationSec) {
                         String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
-                        textList.add(Component.translatable(key, stack.getDisplayName(), amount,
+                        textList.add(Component.translatable(key, stack.getDisplayName(), displaycount,
                                 FormattingUtil.formatNumber2Places(maxDurationSec / amountD)));
                     } else {
                         String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
-                        textList.add(Component.translatable(key, stack.getDisplayName(), amount,
+                        textList.add(Component.translatable(key, stack.getDisplayName(), displaycount,
                                 FormattingUtil.formatNumber2Places(amountD / maxDurationSec)));
                     }
                 }
