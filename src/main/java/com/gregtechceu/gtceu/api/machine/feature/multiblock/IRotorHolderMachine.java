@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
@@ -24,9 +25,9 @@ public interface IRotorHolderMachine extends IMultiPart {
     int SPEED_INCREMENT = 1;
     int SPEED_DECREMENT = 3;
 
-    BooleanProperty HAS_ROTOR_PROPERTY = BooleanProperty.create("has_rotor");
-    BooleanProperty ROTOR_SPINNING_PROPERTY = BooleanProperty.create("rotor_spinning");
-    BooleanProperty EMISSIVE_ROTOR_PROPERTY = BooleanProperty.create("emissive_rotor");
+    BooleanProperty HAS_ROTOR_PROPERTY = GTMachineModelProperties.HAS_ROTOR;
+    BooleanProperty ROTOR_SPINNING_PROPERTY = GTMachineModelProperties.IS_ROTOR_SPINNING;
+    BooleanProperty EMISSIVE_ROTOR_PROPERTY = GTMachineModelProperties.IS_EMISSIVE_ROTOR;
 
     /**
      * @return the base efficiency of the rotor holder in %

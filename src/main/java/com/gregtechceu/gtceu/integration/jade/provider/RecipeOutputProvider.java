@@ -177,21 +177,23 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         IElementHelper helper = iTooltip.getElementHelper();
         for (Ingredient itemOutput : outputItems) {
             if (itemOutput != null && !itemOutput.isEmpty()) {
-                ItemStack item = itemOutput.getItems()[0];
-                int count = item.getCount();
-                item.setCount(1);
-                iTooltip.add(helper.smallItem(item));
+                ItemStack item;
                 MutableComponent text = CommonComponents.space();
                 if (itemOutput instanceof IntProviderIngredient provider) {
+                    item = provider.getInner().getItems()[0];
                     text = text.append(Component.translatable("gtceu.gui.content.range",
                             String.valueOf(provider.getCountProvider().getMinValue()),
                             String.valueOf(provider.getCountProvider().getMaxValue())));
                 } else {
-                    text.append(String.valueOf(count));
+                    item = itemOutput.getItems()[0];
+                    text.append(String.valueOf(item.getCount()));
+                    item.setCount(1);
                 }
                 text.append(Component.translatable("gtceu.gui.content.times_item",
                         getItemName(item))
                         .withStyle(ChatFormatting.WHITE));
+
+                iTooltip.add(helper.smallItem(item));
                 iTooltip.append(text);
             }
         }
@@ -200,18 +202,22 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     private void addFluidTooltips(ITooltip iTooltip, List<FluidIngredient> outputFluids) {
         for (FluidIngredient fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
-                iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
+                FluidStack stack;
                 MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
+                    stack = provider.getInner().getStacks()[0];
                     text.append(Component.translatable("gtceu.gui.content.range",
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
                 } else {
-                    text.append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
+                    stack = fluidOutput.getStacks()[0];
+                    text.append(FluidTextHelper.getUnicodeMillibuckets(stack.getAmount(), true));
                 }
                 text.append(CommonComponents.space())
-                        .append(getFluidName(fluidOutput.getStacks()[0]))
+                        .append(getFluidName(stack))
                         .withStyle(ChatFormatting.WHITE);
+
+                iTooltip.add(GTElementHelper.smallFluid(getFluid(stack)));
                 iTooltip.append(text);
             }
         }

@@ -105,6 +105,7 @@ legacyForge {
 
             gameDirectory.set(file('run/gametest'))
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            environment('TEST', 'true')
         }
 
         data {

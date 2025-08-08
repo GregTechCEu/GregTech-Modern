@@ -89,10 +89,21 @@ public class ArmorProperty implements IMaterialProperty {
         }
     }
 
+    @SuppressWarnings("unused") // API, need to treat all of these as used
     public static class Builder {
 
         private final ArmorProperty armorProperty;
 
+        /**
+         * Create Armor for this Material.
+         *
+         * @param durabilityMultiplier The durability value of this Armor. Leather is 5, Iron is 15, Diamond is 33.
+         * @param protectionValues     The protection values of each armor piece in the set.<br>
+         *                             Ordered as Helmet, Chestplate, Leggings, Boots.
+         * @throws IllegalArgumentException If the protectionValues array parameter does not have exactly 4 entries.
+         *
+         * @see net.minecraft.world.item.ArmorMaterials
+         */
         public static ArmorProperty.Builder of(int durabilityMultiplier, int[] protectionValues) {
             Preconditions.checkArgument(protectionValues != null && protectionValues.length == 4,
                     "protectionValues must have 4 entries!");
@@ -103,26 +114,45 @@ public class ArmorProperty implements IMaterialProperty {
             armorProperty = new ArmorProperty(durabilityMultiplier, protectionValues);
         }
 
+        /**
+         * Set armors made from this Material as unbreakable, bypassing all durability.
+         */
         public ArmorProperty.Builder unbreakable() {
             armorProperty.durabilityMultiplier = 0;
             return this;
         }
 
+        /**
+         * Set the base enchantability of a tool made from this Material. Iron is 14, Diamond is 10, Stone is 5.
+         */
         public ArmorProperty.Builder enchantability(int enchantability) {
             armorProperty.enchantability = enchantability;
             return this;
         }
 
+        /**
+         * Set the protection value for a specific piece of armor made from this Material.
+         */
         public ArmorProperty.Builder protectionValue(ArmorItem.Type type, int value) {
             armorProperty.protectionValues.put(type, value);
             return this;
         }
 
+        /**
+         * Set the protection values for all pieces of armor made from this Material.
+         *
+         * @throws IllegalArgumentException If the provided map does not have a value for all 4 armor pieces.
+         */
         public ArmorProperty.Builder protectionValues(Map<ArmorItem.Type, Integer> protectionValues) {
+            Preconditions.checkArgument(protectionValues != null && protectionValues.size() == 4,
+                    "protectionValues must have 4 entries!");
             armorProperty.protectionValues = protectionValues;
             return this;
         }
 
+        /**
+         * Set an Ingredient to use as the repair ingredient when repairing armors made of this Material in an Anvil.
+         */
         public ArmorProperty.Builder repairIngredient(@Nullable Supplier<@NotNull Ingredient> repairIngredient) {
             if (repairIngredient == null) {
                 armorProperty.repairIngredient = null;
@@ -133,21 +163,40 @@ public class ArmorProperty implements IMaterialProperty {
             return this;
         }
 
+        /**
+         * Set the toughness granted for wearing armors made of this Material.
+         * Diamond is 2, Netherite is 3, other armors are 0.
+         *
+         * @see net.minecraft.world.item.ArmorMaterials
+         * @see <a href="https://minecraft.wiki/w/Armor#Armor_toughness">Armor Toughness - Minecraft Wiki</a>
+         */
         public ArmorProperty.Builder toughness(float toughness) {
             armorProperty.toughness = toughness;
             return this;
         }
 
+        /**
+         * Set the knockback resistance granted for wearing armor made of this Material.<br>
+         * Netherite is 0.1 (10%), other armors are 0.
+         *
+         * @see net.minecraft.world.item.ArmorMaterials
+         */
         public ArmorProperty.Builder knockbackResistance(float knockbackResistance) {
             armorProperty.knockbackResistance = knockbackResistance;
             return this;
         }
 
+        /**
+         * Set whether armor made of this Material can be dyed, similar to Leather armor.
+         */
         public ArmorProperty.Builder dyeable(boolean dyeable) {
             armorProperty.dyeable = dyeable;
             return this;
         }
 
+        /**
+         * Set a custom worn armor texture for armor made of this Material.
+         */
         public ArmorProperty.Builder customTexture(ArmorProperty.@NotNull CustomTextureGetter textureGetter) {
             armorProperty.customTextureGetter = textureGetter;
             return this;

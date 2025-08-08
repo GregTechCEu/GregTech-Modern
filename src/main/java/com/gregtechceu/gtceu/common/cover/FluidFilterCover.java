@@ -40,6 +40,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredFluidHandlerWrapper fluidFilterWrapper;
+    @Persisted
     @Setter
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
