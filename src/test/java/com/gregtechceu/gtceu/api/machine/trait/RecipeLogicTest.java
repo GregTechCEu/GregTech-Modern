@@ -89,7 +89,7 @@ public class RecipeLogicTest {
 
         recipeLogic.findAndHandleRecipe();
 
-        // no recipe found
+        // No recipe found
         helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
         helper.assertTrue(recipeLogic.getLastRecipe() == null,
                 "Recipe logic has somehow found a recipe, when there should be none");
