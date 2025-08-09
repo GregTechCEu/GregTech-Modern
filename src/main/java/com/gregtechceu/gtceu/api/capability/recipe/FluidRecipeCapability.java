@@ -35,6 +35,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -66,13 +67,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) return content.copy();
         if (content instanceof IntProviderFluidIngredient provider) {
+            var modifiedProvider = new FlooredInt(
+                    new AddedFloat(
+                            new MultipliedFloat(
+                                    new CastedFloat(provider.getCountProvider()),
+                                    ConstantFloat.of((float) modifier.multiplier())),
+                            ConstantFloat.of((float) modifier.addition())));
             return IntProviderFluidIngredient.of(provider.getInner(),
-                    new FlooredInt(
-                            new AddedFloat(
-                                    new MultipliedFloat(
-                                            new CastedFloat(provider.getCountProvider()),
-                                            ConstantFloat.of((float) modifier.multiplier())),
-                                    ConstantFloat.of((float) modifier.addition()))));
+                    UniformInt.of(modifiedProvider.getMinValue(), modifiedProvider.getMaxValue()));
         }
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
