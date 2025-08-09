@@ -334,6 +334,10 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
+        public GTRecipeJS itemInputsRanged(ExtendedOutputItem ingredient, int min, int max) {
+            return inputItemsRanged(ingredient.ingredient.getInner(), min, max);
+        }
+
         public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
             return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(ingredient, 1, UniformInt.of(min, max)));
         }

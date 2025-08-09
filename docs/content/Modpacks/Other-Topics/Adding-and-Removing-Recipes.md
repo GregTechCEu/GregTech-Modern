@@ -86,7 +86,7 @@ ServerEvents.recipes(event => {
         - `.itemInput()`
         - `.itemInputs()`
         - `.chancedInput()`
-        - `.inputItemsRanged()`
+        - `.itemInputsRanged()`
         - `.notConsumable()`
     - Fluids:
         - `.inputFluids()`
@@ -100,7 +100,7 @@ ServerEvents.recipes(event => {
         - `.itemOutput()`
         - `.itemOutputs()`
         - `.chancedOutput()`
-        - `.outputItemsRanged()`
+        - `.itemOutputsRanged()`
     - Fluids:
         - `.outputFluids()`
         - `.chancedFluidOutput()`
