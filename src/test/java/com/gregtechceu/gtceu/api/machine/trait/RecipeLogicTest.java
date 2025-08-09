@@ -67,9 +67,7 @@ public class RecipeLogicTest {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
-        // Force a structure check and to register the parts
-        controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
-        controller.onStructureFormed();
+        TestUtils.formMultiblock(controller);
 
         helper.assertTrue(controller.isFormed(), "Controller didn't form after structure check");
         helper.assertTrue(controller.getParts().size() == 4,
@@ -91,7 +89,7 @@ public class RecipeLogicTest {
 
         recipeLogic.findAndHandleRecipe();
 
-        // no recipe found
+        // No recipe found
         helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
         helper.assertTrue(recipeLogic.getLastRecipe() == null,
                 "Recipe logic has somehow found a recipe, when there should be none");

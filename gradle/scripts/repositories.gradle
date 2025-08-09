@@ -17,7 +17,6 @@ repositories {
         url = "https://maven.firstdarkdev.xyz/snapshots"
     }
 
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
@@ -25,10 +24,6 @@ repositories {
             includeGroup("com.simibubi.create")
             includeGroup("dev.engine-room.flywheel")
         }
-    }
-    exclusiveContent { // Configuration
-        forRepository { maven { url = "https://api.repsy.io/mvn/toma/public" } }
-        filter { includeGroup("dev.toma.configuration")}
     }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
