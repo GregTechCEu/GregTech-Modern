@@ -41,6 +41,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
@@ -75,13 +76,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
+            var modifiedProvider = new FlooredInt(
+                    new AddedFloat(
+                            new MultipliedFloat(
+                                    new CastedFloat(intProviderIngredient.getCountProvider()),
+                                    ConstantFloat.of((float) modifier.multiplier())),
+                            ConstantFloat.of((float) modifier.addition())));
             return IntProviderIngredient.of(intProviderIngredient.getInner(),
-                    new FlooredInt(
-                            new AddedFloat(
-                                    new MultipliedFloat(
-                                            new CastedFloat(intProviderIngredient.getCountProvider()),
-                                            ConstantFloat.of((float) modifier.multiplier())),
-                                    ConstantFloat.of((float) modifier.addition()))));
+                    UniformInt.of(modifiedProvider.getMinValue(), modifiedProvider.getMaxValue()));
         }
         return SizedIngredient.create(content, modifier.apply(1));
     }
