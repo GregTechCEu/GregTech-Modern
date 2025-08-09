@@ -34,8 +34,8 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
                 FluidStack stack = new FluidStack(fluidValue.fluid(),
                         // wait. that's illegal.
                         (ingredient instanceof IntProviderFluidIngredient provider ?
-                                provider.getCountProvider().getMaxValue():
-                        ingredient.getAmount()),
+                                provider.getCountProvider().getMaxValue() :
+                                ingredient.getAmount()),
                         ingredient.getNbt());
                 ingredients.add(new FluidStackMapIngredient(stack, ingredient));
             }

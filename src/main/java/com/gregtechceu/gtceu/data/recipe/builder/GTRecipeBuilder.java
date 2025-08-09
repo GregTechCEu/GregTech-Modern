@@ -335,7 +335,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs) {
-         if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
         }
         return input(ItemRecipeCapability.CAP, inputs);

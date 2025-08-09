@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.ExtraCodecs;
@@ -13,7 +13,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
