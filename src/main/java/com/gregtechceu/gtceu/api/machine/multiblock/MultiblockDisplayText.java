@@ -353,7 +353,7 @@ public class MultiblockDisplayText {
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
-//                int runs = recipe.parallels * recipe.batchParallels;
+                int runs = recipe.parallels * recipe.batchParallels;
 
                 for (var item : itemOutputs) {
                     boolean rounded = false;
@@ -361,16 +361,16 @@ public class MultiblockDisplayText {
                     int count = 0;
                     double countD = 1;
                     Component displaycount;
-                    if (item.chance < item.maxChance) {
-                        rounded = true;
-                        countD = countD * function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                    }
                     if (item.content instanceof IntProviderIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue() * countD,
-                                provider.getCountProvider().getMaxValue() * countD);
+                                provider.getCountProvider().getMinValue(),
+                                provider.getCountProvider().getMaxValue());
+                        if (item.chance < item.maxChance) {
+                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
+                                    item.maxChance;
+                        }
                         countD = countD * provider.getMidRoll();
                     } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
@@ -378,6 +378,11 @@ public class MultiblockDisplayText {
                         stack = stacks[0];
                         count = stack.getCount();
                         countD *= count;
+                        if (item.chance < item.maxChance) {
+                            rounded = true;
+                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
+                                    item.maxChance;
+                        }
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                         displaycount = Component.literal(String.valueOf(count));
                     }
@@ -397,16 +402,16 @@ public class MultiblockDisplayText {
                     int amount = 0;
                     double amountD = 1;
                     Component displaycount;
-                    if (fluid.chance < fluid.maxChance) {
-                        rounded = true;
-                        amountD = amountD * function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                    }
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue() * amountD,
-                                provider.getCountProvider().getMaxValue() * amountD);
+                                provider.getCountProvider().getMinValue(),
+                                provider.getCountProvider().getMaxValue());
+                        if (fluid.chance < fluid.maxChance) {
+                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
+                                    fluid.maxChance;
+                        }
                         amountD = amountD * provider.getMidRoll();
                     } else {
                         var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
@@ -414,6 +419,11 @@ public class MultiblockDisplayText {
                         stack = stacks[0];
                         amount = stack.getAmount();
                         amountD *= amount;
+                        if (fluid.chance < fluid.maxChance) {
+                            rounded = true;
+                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
+                                    fluid.maxChance;
+                        }
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                         displaycount = Component.literal(String.valueOf(amount));
                     }
