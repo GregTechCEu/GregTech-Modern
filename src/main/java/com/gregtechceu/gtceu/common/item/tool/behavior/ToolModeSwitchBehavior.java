@@ -4,7 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketToolRightClick;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -86,6 +89,12 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                 AllSoundEvents.WRENCH_REMOVE.playOnServer(world, pos, 1, Create.RANDOM.nextFloat() * .5f + .5f);
                 return InteractionResultHolder.success(itemStack);
             }
+
+            if (world.isClientSide()) {
+                if (Minecraft.getInstance().hitResult instanceof BlockHitResult clientHitResult)
+                    GTNetwork.sendToServer(new CPacketToolRightClick(clientHitResult));
+            }
+            return InteractionResultHolder.success(itemStack);
         }
 
         return IToolBehavior.super.onItemRightClick(world, player, hand);
