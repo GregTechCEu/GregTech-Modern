@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 
 import net.minecraft.ChatFormatting;
@@ -24,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -68,6 +70,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String GHOST_CIRCUITS = "ghost_circuits";
     public static final String CIRCUIT_SLOT = "circuit_inventory";
     public static final String CIRCUIT_SLOT_ENABLED = "circuit_enabled";
+    public static final String CUSTOM_TOOLTIP = "tooltip";
 
     public static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
             .withStyle(ChatFormatting.GREEN);
@@ -227,6 +230,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             CompoundTag customData = new CompoundTag();
             copyable.copyConfig(customData);
             tag.put(CUSTOM_DATA, customData);
+            Component customTooltip = copyable.getConfigTooltip(customData);
+            if (customTooltip != null) tag.putString(CUSTOM_TOOLTIP, Component.Serializer.toJson(customTooltip));
         }
         if (!configData.isEmpty()) {
             tag.put(CONFIG_DATA, configData);
@@ -349,6 +354,44 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     var component = cap.getColoredName();
                     addConfigTypeTooltips(tooltipComponents, component, configData, origFront);
                 }
+                if (data.contains(COVERS)) {
+                    tooltipComponents.add(Component.translatable("gtceu.behaviour.setting.cover_list")
+                            .withStyle(ChatFormatting.DARK_AQUA));
+                    ListTag coversTag = data.getList(COVERS, Tag.TAG_COMPOUND);
+                    for (Tag tag : coversTag) if (tag instanceof CompoundTag coverTag) {
+                        MutableComponent component = Component.empty();
+                        component.append(" - ");
+                        ItemStack coverStack = ItemStack.of(coverTag.getCompound(COVER_ITEM));
+                        component.append(coverStack.getDisplayName());
+                        component.append(Component.translatable(
+                                "gtceu.behaviour.setting.cover_side",
+                                relativeDirectionComponent(origFront,
+                                        tagToDirection(coverTag.get(ORIGINAL_COVER_SIDE)))));
+                        tooltipComponents.add(component);
+                    }
+                }
+                if (data.contains(GHOST_CIRCUITS) &&
+                        data.getCompound(GHOST_CIRCUITS).getBoolean(CIRCUIT_SLOT_ENABLED)) {
+                    CustomItemStackHandler handler = new CustomItemStackHandler(1);
+                    handler.deserializeNBT(data.getCompound(GHOST_CIRCUITS).getCompound(CIRCUIT_SLOT));
+                    if (handler.getSlots() > 0 && !handler.getStackInSlot(0).isEmpty())
+                        tooltipComponents.add(Component.translatable(
+                                "gtceu.behaviour.setting.ghost_circuit",
+                                IntCircuitBehaviour.getCircuitConfiguration(handler.getStackInSlot(0))));
+                }
+                if (data.contains(PARALLEL)) {
+                    tooltipComponents
+                            .add(Component.translatable("gtceu.behaviour.setting.parallel", data.getInt(PARALLEL)));
+                }
+                if (data.contains(MULTIBLOCK)) {
+                    tooltipComponents.add(Component.translatable(
+                            "gtceu.behaviour.setting.multiblock",
+                            data.getCompound(MULTIBLOCK).getList(PARTS, Tag.TAG_COMPOUND).size()));
+                }
+                if (data.contains(CUSTOM_DATA) && data.getCompound(CUSTOM_DATA).contains(CUSTOM_TOOLTIP)) {
+                    tooltipComponents.add(
+                            Component.Serializer.fromJson(data.getCompound(CUSTOM_DATA).getString(CUSTOM_TOOLTIP)));
+                }
             }
             if (data.contains(MUFFLED)) {
                 tooltipComponents.add(Component.translatable("behaviour.setting.muffled.tooltip",
@@ -388,8 +431,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     }
 
     private static boolean consumeItems(@Nullable IItemHandler itemHandler,
-                                        Map<Item, Integer> requiredItems) { // TODO add some feedback to the player if
-                                                                            // missing items
+                                        Map<Item, Integer> requiredItems) {
+        // TODO add some feedback to the player if missing items
         if (itemHandler == null) return requiredItems.isEmpty();
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
         for (Item item : requiredItems.keySet()) {
