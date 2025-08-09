@@ -335,9 +335,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs) {
-        if (intProviderInputError(inputs, 0)) {
-            return this;
-        } else if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
+         if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
         }
         return input(ItemRecipeCapability.CAP, inputs);
@@ -347,9 +345,7 @@ public class GTRecipeBuilder {
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < inputs.length; i++) {
             var ingredient = inputs[i];
-            if (intProviderInputError(ingredient, i)) {
-                return this;
-            } else if (missingIngredientError(i, true, ItemRecipeCapability.CAP, ingredient::isEmpty)) {
+            if (missingIngredientError(i, true, ItemRecipeCapability.CAP, ingredient::isEmpty)) {
                 return this;
             } else {
                 ingredients.add(ingredient);
@@ -359,9 +355,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs, int count) {
-        if (intProviderInputError(inputs, 0)) {
-            return this;
-        } else if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(inputs, count));
@@ -479,6 +473,31 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(MachineDefinition machine, int count) {
         return inputItems(machine.asStack(count));
+    }
+
+    public GTRecipeBuilder inputItemsRanged(ItemStack input, IntProvider intProvider) {
+        return inputItems(IntProviderIngredient.of(input, intProvider));
+    }
+
+    public GTRecipeBuilder inputItemsRanged(Item input, IntProvider intProvider) {
+        return inputItemsRanged(new ItemStack(input), intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(Supplier<? extends ItemLike> input, IntProvider intProvider) {
+        return inputItemsRanged(new ItemStack(input.get().asItem()), intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(TagPrefix orePrefix, Material material, IntProvider intProvider) {
+        var item = ChemicalHelper.get(orePrefix, material, 1);
+        if (item.isEmpty()) {
+            GTCEu.LOGGER.error("Tried to set input ranged item stack that doesn't exist, TagPrefix: {}, Material: {}",
+                    orePrefix, material);
+        }
+        return inputItemsRanged(item, intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
+        return inputItemsRanged(machine.asStack(), intProvider);
     }
 
     public GTRecipeBuilder outputItems(Object output) {
@@ -956,6 +975,14 @@ public class GTRecipeBuilder {
             }
         }
         return input(FluidRecipeCapability.CAP, ingredients.toArray(FluidIngredient[]::new));
+    }
+
+    public GTRecipeBuilder inputFluidsRanged(FluidStack input, IntProvider intProvider) {
+        return inputFluidsRanged(FluidIngredient.of(input), intProvider);
+    }
+
+    protected GTRecipeBuilder inputFluidsRanged(FluidIngredient input, IntProvider intProvider) {
+        return inputFluids(IntProviderFluidIngredient.of(input, intProvider));
     }
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
@@ -1512,16 +1539,6 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
                     id, io, capability.name, io, max);
         }
-    }
-
-    protected boolean intProviderInputError(Ingredient ingredient, int index) {
-        if (ingredient instanceof IntProviderIngredient) {
-            int size = (perTick ? tickOutput : output).getOrDefault(ItemRecipeCapability.CAP, List.of()).size();
-            GTCEu.LOGGER.error("Using int provider ingredients as inputs is not supported!" +
-                    "Input {} in recipe {} will be skipped.", size + index, id);
-            return true;
-        }
-        return false;
     }
 
     protected boolean missingIngredientError(int index, boolean isInput,
