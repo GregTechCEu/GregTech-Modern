@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
@@ -26,7 +27,6 @@ import net.minecraft.world.phys.HitResult;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.AllTags;
-import com.simibubi.create.Create;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,8 +85,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                             .forEach(stack -> player.getInventory().placeItemBackInInventory(stack));
                 state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
                 world.destroyBlock(pos, false);
-                // noinspection deprecation Create.RANDOM is used in Create's wrench code so why not use it here
-                AllSoundEvents.WRENCH_REMOVE.playOnServer(world, pos, 1, Create.RANDOM.nextFloat() * .5f + .5f);
+                AllSoundEvents.WRENCH_REMOVE.playOnServer(world, pos, 1, GTValues.RNG.nextFloat() * .5f + .5f);
                 return InteractionResultHolder.success(itemStack);
             }
 
