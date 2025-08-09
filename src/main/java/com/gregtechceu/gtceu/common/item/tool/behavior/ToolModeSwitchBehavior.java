@@ -1,23 +1,35 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
+import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.AllTags;
+import com.simibubi.create.Create;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
@@ -41,8 +53,14 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                                                                         @NotNull InteractionHand hand) {
         var itemStack = player.getItemInHand(hand);
         var tagCompound = getBehaviorsTag(itemStack);
-        if (player.isShiftKeyDown()) {
-
+        ClipContext ctx = new ClipContext(
+                player.getEyePosition(),
+                player.getEyePosition().add(player.getViewVector(0).scale(player.isCreative() ? 5 : 4.5)),
+                ClipContext.Block.OUTLINE,
+                ClipContext.Fluid.ANY,
+                null);
+        BlockHitResult blockHitResult = world.clip(ctx);
+        if (player.isShiftKeyDown() && blockHitResult.getType() == HitResult.Type.MISS) {
             var toolTypes = ToolHelper.getToolTypes(itemStack);
             if (toolTypes.contains(GTToolType.WRENCH)) {
                 tagCompound.putByte("Mode",
@@ -51,6 +69,23 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                         WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
             }
             return InteractionResultHolder.success(itemStack);
+        } else if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+            BlockState state = world.getBlockState(blockHitResult.getBlockPos());
+            BlockPos pos = blockHitResult.getBlockPos();
+            Set<GTToolType> toolTypes = ToolHelper.getToolTypes(itemStack);
+            if (toolTypes.contains(GTToolType.WRENCH) && GTCEu.Mods.isCreateLoaded() &&
+                    AllTags.AllBlockTags.WRENCH_PICKUP.matches(state)) {
+                if (!(world instanceof ServerLevel))
+                    return InteractionResultHolder.success(itemStack);
+                if (!player.isCreative())
+                    Block.getDrops(state, (ServerLevel) world, pos, world.getBlockEntity(pos), player, itemStack)
+                            .forEach(stack -> player.getInventory().placeItemBackInInventory(stack));
+                state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
+                world.destroyBlock(pos, false);
+                // noinspection deprecation Create.RANDOM is used in Create's wrench code so why not use it here
+                AllSoundEvents.WRENCH_REMOVE.playOnServer(world, pos, 1, Create.RANDOM.nextFloat() * .5f + .5f);
+                return InteractionResultHolder.success(itemStack);
+            }
         }
 
         return IToolBehavior.super.onItemRightClick(world, player, hand);
