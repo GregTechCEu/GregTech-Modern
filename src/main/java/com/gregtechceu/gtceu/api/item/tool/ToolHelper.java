@@ -285,7 +285,7 @@ public class ToolHelper {
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos, pos == targeted)) {
+                if (!breakBlockRoutine(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
 
@@ -536,7 +536,10 @@ public class ToolHelper {
         }
 
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        UseOnContext context = new UseOnContext(player, player.getUsedItemHand(), hitResult);
+        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), GTToolType.MINING_HAMMER) ?
+                InteractionHand.MAIN_HAND : null;
+        if (hand == null) return Collections.emptyList();
+        UseOnContext context = new UseOnContext(player, hand, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
 
