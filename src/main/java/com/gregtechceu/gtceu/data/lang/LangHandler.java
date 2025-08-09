@@ -1693,7 +1693,8 @@ public class LangHandler {
         provider.add("gtceu.behaviour.setting.cover_list", "Covers:");
         provider.add("gtceu.behaviour.setting.ghost_circuit", "Circuit configuration: %d");
         provider.add("gtceu.behaviour.setting.parallel", "Parallel amount: %d");
-        provider.add("gtceu.behaviour.setting.multiblock", "Storing configuration for %d hatches");
+        provider.add("gtceu.behaviour.setting.multiblock",
+                "Storing configuration for a multiblock consisting of %d blocks");
     }
 
     /**

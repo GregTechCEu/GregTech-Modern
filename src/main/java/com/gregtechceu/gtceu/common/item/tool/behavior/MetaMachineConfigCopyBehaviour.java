@@ -26,6 +26,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -33,16 +34,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import joptsimple.internal.Strings;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInformation {
@@ -211,7 +214,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         if (machine.getLevel() != null && machine instanceof MultiblockControllerMachine multiblock) {
             CompoundTag multiblockTag = new CompoundTag();
             ListTag parts = new ListTag();
-            for (BlockPos partPos : multiblock.getPartPositions()) {
+            HashSet<BlockPos> partPositions = new HashSet<>(List.of(multiblock.getPartPositions()));
+            partPositions.addAll(
+                    multiblock.getMultiblockState().getMatchContext().getOrDefault("blocks", new LongOpenHashSet())
+                            .stream().map(BlockPos::of).toList());
+            for (BlockPos partPos : partPositions) {
+                if ((machine.getLevel().getBlockEntity(partPos) instanceof IMachineBlockEntity machineBE) &&
+                        (machineBE.getMetaMachine() instanceof MultiblockControllerMachine))
+                    continue;
                 CompoundTag partTag = new CompoundTag();
                 partTag.put(POSITION, posToTag(partPos.subtract(machine.getPos())));
                 partTag.put(BLOCK_ITEM,
@@ -303,8 +313,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             ListTag parts = multiblockTag.getList(PARTS, Tag.TAG_COMPOUND);
             Map<Item, Integer> requiredItems = new HashMap<>();
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
+                BlockPos relPos = posFromTag(partTag.get(POSITION));
+                BlockPos.MutableBlockPos pos = new BlockPos(relPos.get(front.getAxis()), relPos.get(up.getAxis()),
+                        relPos.get(right.getAxis())).mutable();
+                pos.move(machine.getPos());
                 Item reqItem = ItemStack.of(partTag.getCompound(BLOCK_ITEM)).getItem();
-                requiredItems.put(reqItem, requiredItems.getOrDefault(reqItem, 0) + 1);
+                if (!(reqItem instanceof BlockItem blockItem) ||
+                        !machine.getLevel().getBlockState(pos).is(blockItem.getBlock()))
+                    requiredItems.put(reqItem, requiredItems.getOrDefault(reqItem, 0) + 1);
             }
             if (consumeItems(itemHandler, requiredItems)) {
                 for (Tag part : parts) {
@@ -315,6 +331,21 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     pos.move(machine.getPos());
                     ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
                     if (stack.getItem() instanceof BlockItem blockItem) {
+                        if (!machine.getLevel().getBlockState(pos).isAir() &&
+                                machine.getLevel() instanceof ServerLevel serverLevel) {
+                            for (ItemStack drop : serverLevel.getBlockState(pos)
+                                    .getDrops(new LootParams.Builder(serverLevel)
+                                            .withParameter(LootContextParams.ORIGIN, pos.getCenter())
+                                            .withParameter(LootContextParams.TOOL,
+                                                    new ItemStack(Items.NETHERITE_PICKAXE)) // TODO idk what to do with
+                                                                                            // the drops (or should i
+                                                                                            // just not allow copying
+                                                                                            // when there are blocks
+                                                                                            // already)
+                                            .withOptionalParameter(LootContextParams.BLOCK_ENTITY,
+                                                    serverLevel.getBlockEntity(pos))))
+                                Block.popResource(serverLevel, machine.getPos(), drop);
+                        }
                         machine.getLevel().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
                         if (partTag.contains(CONFIG_DATA) &&
                                 machine.getLevel().getBlockEntity(pos) instanceof IMachineBlockEntity machineBE) {

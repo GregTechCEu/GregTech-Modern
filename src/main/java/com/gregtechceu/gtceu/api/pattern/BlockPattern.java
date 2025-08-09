@@ -164,6 +164,7 @@ public class BlockPattern {
                             matchContext.getOrCreate("vaBlocks", LongOpenHashSet::new)
                                     .add(worldState.getPos().asLong());
                         }
+                        matchContext.getOrCreate("blocks", LongOpenHashSet::new).add(worldState.getPos().asLong());
                         if (!predicate.test(worldState) || !canPartShared) { // matching failed
                             if (findFirstAisle) {
                                 if (r < aisleRepetitions[c][0]) {// retreat to see if the first aisle can start later

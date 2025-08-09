@@ -2172,7 +2172,7 @@
   "gtceu.behaviour.setting.cover_list": "Covers:",
   "gtceu.behaviour.setting.cover_side": " on %s side",
   "gtceu.behaviour.setting.ghost_circuit": "Circuit configuration: %d",
-  "gtceu.behaviour.setting.multiblock": "Storing configuration for %d hatches",
+  "gtceu.behaviour.setting.multiblock": "Storing configuration for a multiblock consisting of %d blocks",
   "gtceu.behaviour.setting.parallel": "Parallel amount: %d",
   "gtceu.bender": "Bender",
   "gtceu.brewery": "Brewery",
