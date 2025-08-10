@@ -30,7 +30,7 @@ public class TestUtils {
     }
 
     // Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
-    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name){
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name) {
         GTRecipeType type = createRecipeType(name);
         type.getLookup().addRecipe(type
                 .recipeBuilder(GTCEu.id("testRecipe"))
