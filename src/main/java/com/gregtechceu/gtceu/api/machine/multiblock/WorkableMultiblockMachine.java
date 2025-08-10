@@ -307,7 +307,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
      * @param newType The new recipe type
      */
     @ApiStatus.Internal
-    public void setRecipeType(GTRecipeType newType){
+    public void setRecipeType(GTRecipeType newType) {
         recipeTypes[activeRecipeType] = newType;
     }
 }

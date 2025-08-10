@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -30,12 +29,12 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class OverclockLogicTest {
+
     private static GTRecipeType LCRrecipeType;
     private static GTRecipeType CRrecipeType;
 
@@ -43,7 +42,6 @@ public class OverclockLogicTest {
     public static void prepare(ServerLevel level) {
         LCRrecipeType = TestUtils.createRecipeType("OverclockLogicLCRTests");
         CRrecipeType = TestUtils.createRecipeType("OverclockLogicCRTests");
-
 
         LCRrecipeType.getLookup().addRecipe(LCRrecipeType
                 .recipeBuilder(GTCEu.id("test-overlock-logic"))

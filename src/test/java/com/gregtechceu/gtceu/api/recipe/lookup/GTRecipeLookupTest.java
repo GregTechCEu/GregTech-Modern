@@ -1,32 +1,26 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemStackMapIngredient;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
