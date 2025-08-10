@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -26,12 +27,13 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_REC
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class InputSeparationTest {
+    private static GTRecipeType LCRrecipeType;
 
     @BeforeBatch(batch = "InputSeparation")
     public static void prepare(ServerLevel level) {
+        LCRrecipeType = TestUtils.createRecipeType("InputSeparationLCRTests");
         // Force insert the recipe into the manager.
-        LARGE_CHEMICAL_RECIPES.getLookup().removeAllRecipes();
-        LARGE_CHEMICAL_RECIPES.getLookup().addRecipe(LARGE_CHEMICAL_RECIPES
+        LCRrecipeType.getLookup().addRecipe(LCRrecipeType
                 .recipeBuilder(GTCEu.id("test-multiblock-input-separation"))
                 .id(GTCEu.id("test-multiblock-input-separation"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.ACACIA_WOOD))
@@ -46,7 +48,7 @@ public class InputSeparationTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1) {}
+                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -55,9 +57,10 @@ public class InputSeparationTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        MultiblockControllerMachine controller = (MultiblockControllerMachine) getMetaMachine(
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
+        controller.setRecipeType(LCRrecipeType);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 1, 0)));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
@@ -66,7 +69,7 @@ public class InputSeparationTest {
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
         FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 2, 0)));
-        return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1);
+        return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, controller);
     }
 
     // Test for putting both ingredients in the same bus.

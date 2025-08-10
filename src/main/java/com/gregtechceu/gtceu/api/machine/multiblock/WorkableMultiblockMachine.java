@@ -33,6 +33,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -296,5 +297,17 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
+    }
+
+    /**
+     * Sets a recipe type of the machine.
+     * FOR INTERNAL / TESTING USE ONLY!
+     * NOT SUPPORTED FOR PRODUCTION USE!
+     *
+     * @param newType The new recipe type
+     */
+    @ApiStatus.Internal
+    public void setRecipeType(GTRecipeType newType){
+        recipeTypes[activeRecipeType] = newType;
     }
 }

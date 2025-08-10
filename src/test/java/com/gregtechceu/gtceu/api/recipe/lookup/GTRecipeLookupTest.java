@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.gametest.util.TestUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -33,31 +35,27 @@ public class GTRecipeLookupTest {
     private static GTRecipeLookup lookup;
     private static final Predicate<GTRecipe> ALWAYS_TRUE = gtRecipe -> true;
     private static final Predicate<GTRecipe> ALWAYS_FALSE = gtRecipe -> false;
+    private static GTRecipeType recipeType;
     private static GTRecipe smeltStone, smeltAcaciaWood, smeltBirchWood, smeltCherryWood;
 
     @BeforeBatch(batch = "GTRecipeLookup")
     public static void prepare(ServerLevel level) {
-        GTRegistries.RECIPE_TYPES.unfreeze();
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
-        RecipeType<?> proxyRecipes = RecipeType.SMELTING;
-        GTRecipeType type = new GTRecipeType(GTCEu.id("test_recipes"), ELECTRIC, proxyRecipes)
-                .setEUIO(IO.IN)
-                .setMaxIOSize(1, 1, 0, 0);
-        lookup = new GTRecipeLookup(type);
+        recipeType = TestUtils.createRecipeType("recipeLookup");
+        lookup = new GTRecipeLookup(recipeType);
 
-        smeltStone = type.recipeBuilder("smelt_stone")
+        smeltStone = recipeType.recipeBuilder("smelt_stone")
                 .inputItems(Items.COBBLESTONE, 1)
                 .outputItems(Items.STONE, 1)
                 .buildRawRecipe();
-        smeltAcaciaWood = type.recipeBuilder("smelt_acacia_wood")
+        smeltAcaciaWood = recipeType.recipeBuilder("smelt_acacia_wood")
                 .inputItems(Items.ACACIA_WOOD, 1)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
-        smeltBirchWood = type.recipeBuilder("smelt_birch_wood")
+        smeltBirchWood = recipeType.recipeBuilder("smelt_birch_wood")
                 .inputItems(Items.BIRCH_WOOD, 1)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
-        smeltCherryWood = type.recipeBuilder("smelt_cherry_wood")
+        smeltCherryWood = recipeType.recipeBuilder("smelt_cherry_wood")
                 .inputItems(Items.CHERRY_WOOD, 16)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
@@ -68,9 +66,6 @@ public class GTRecipeLookupTest {
                 smeltCherryWood)) {
             lookup.addRecipe(recipe);
         }
-
-        GTRegistries.RECIPE_TYPES.freeze();
-        GTRegistries.RECIPE_CATEGORIES.freeze();
     }
 
     private static List<List<AbstractMapIngredient>> createIngredients(ItemStack... stacks) {

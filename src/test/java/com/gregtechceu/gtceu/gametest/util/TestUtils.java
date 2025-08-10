@@ -1,8 +1,15 @@
 package com.gregtechceu.gtceu.gametest.util;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
 public class TestUtils {
 
@@ -17,5 +24,22 @@ public class TestUtils {
     public static void formMultiblock(MultiblockControllerMachine controller) {
         controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
         controller.onStructureFormed();
+    }
+
+    public static GTRecipeType createRecipeType(String name){
+        return createRecipeType(name, 1, 1, 1, 1);
+    }
+
+    public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs, int maxFluidOutputs){
+
+        GTRegistries.RECIPE_TYPES.unfreeze();
+        GTRegistries.RECIPE_CATEGORIES.unfreeze();
+        GTRecipeType type = new GTRecipeType(GTCEu.id(name), ELECTRIC, RecipeType.SMELTING)
+                .setEUIO(IO.IN)
+                .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
+
+        GTRegistries.RECIPE_CATEGORIES.freeze();
+        GTRegistries.RECIPE_TYPES.freeze();
+        return type;
     }
 }
