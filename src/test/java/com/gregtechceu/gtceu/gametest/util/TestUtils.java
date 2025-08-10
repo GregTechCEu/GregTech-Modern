@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -24,6 +27,19 @@ public class TestUtils {
     public static void formMultiblock(MultiblockControllerMachine controller) {
         controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
         controller.onStructureFormed();
+    }
+
+    // Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name){
+        GTRecipeType type = createRecipeType(name);
+        type.getLookup().addRecipe(type
+                .recipeBuilder(GTCEu.id("testRecipe"))
+                .id(GTCEu.id("testRecipe"))
+                .inputItems(new ItemStack(Items.COBBLESTONE))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.V[GTValues.HV])
+                .duration(1).buildRawRecipe());
+        return type;
     }
 
     public static GTRecipeType createRecipeType(String name) {
