@@ -16,10 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
-import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
-import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
-import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
-import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.*;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
@@ -34,9 +31,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -68,14 +63,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) return content.copy();
         if (content instanceof IntProviderFluidIngredient provider) {
-            var modifiedProvider = new FlooredInt(
-                    new AddedFloat(
-                            new MultipliedFloat(
-                                    new CastedFloat(provider.getCountProvider()),
-                                    ConstantFloat.of((float) modifier.multiplier())),
-                            ConstantFloat.of((float) modifier.addition())));
             return IntProviderFluidIngredient.of(provider.getInner(),
-                    UniformInt.of(modifiedProvider.getMinValue(), modifiedProvider.getMaxValue()));
+                    ModifiedIntProvider.of(provider.getCountProvider(), modifier));
         }
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
