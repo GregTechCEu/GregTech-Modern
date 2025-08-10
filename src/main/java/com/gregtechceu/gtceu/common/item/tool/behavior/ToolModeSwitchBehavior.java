@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketToolRightClick;
 
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.AllTags;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -78,14 +78,14 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
             Set<GTToolType> toolTypes = ToolHelper.getToolTypes(itemStack);
             if (toolTypes.contains(GTToolType.WRENCH) && GTCEu.Mods.isCreateLoaded() &&
                     AllTags.AllBlockTags.WRENCH_PICKUP.matches(state)) {
-                if (!(world instanceof ServerLevel))
+                if (!(world instanceof ServerLevel serverLevel))
                     return InteractionResultHolder.success(itemStack);
                 if (!player.isCreative())
-                    Block.getDrops(state, (ServerLevel) world, pos, world.getBlockEntity(pos), player, itemStack)
+                    Block.getDrops(state, serverLevel, pos, world.getBlockEntity(pos), player, itemStack)
                             .forEach(stack -> player.getInventory().placeItemBackInInventory(stack));
-                state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
+                state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
                 world.destroyBlock(pos, false);
-                AllSoundEvents.WRENCH_REMOVE.playOnServer(world, pos, 1, GTValues.RNG.nextFloat() * .5f + .5f);
+                GTSoundEntries.WRENCH_TOOL.playOnServer(serverLevel, pos, 1, GTValues.RNG.nextFloat() * .5f + .5f);
                 return InteractionResultHolder.success(itemStack);
             }
 
