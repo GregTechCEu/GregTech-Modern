@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-
-import appeng.api.networking.IGrid;
-import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.me.ManagedGridNode;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -13,17 +9,29 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
+
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -34,6 +42,14 @@ public class PatternBufferTest {
     @BeforeBatch(batch = "PatternBuffer")
     public static void prepare(ServerLevel level) {
         LCRrecipeType = TestUtils.createRecipeTypeAndInsertRecipe("PatternBufferTests");
+
+        LCRrecipeType.getLookup().addRecipe(LCRrecipeType
+                .recipeBuilder(GTCEu.id("testRecipe2"))
+                .id(GTCEu.id("testRecipe2"))
+                .inputItems(new ItemStack(Items.RED_BED))
+                .outputItems(new ItemStack(Blocks.BROWN_BED))
+                .EUt(GTValues.V[GTValues.EV])
+                .duration(1).buildRawRecipe());
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
@@ -41,7 +57,8 @@ public class PatternBufferTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, MEPatternBufferPartMachine patternBuffer, WorkableMultiblockMachine controller) {}
+                             FluidHatchPartMachine outputHatch1, MEPatternBufferPartMachine patternBuffer,
+                             WorkableMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -81,24 +98,122 @@ public class PatternBufferTest {
         });
     }
 
+    // Test for checking if pattern buffers work at all
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
-    public static void patternBufferPatternBufferTest(GameTestHelper helper) {
+    public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
-        ManagedGridNode node = (ManagedGridNode) busHolder.patternBuffer.getMainNode();
-        ICraftingProvider provider = node.getNode().getService(ICraftingProvider.class);
 
-        // busHolder.patternBuffer.requestItem ????? do some request logic here
-        /*
-        helper.succeedWhen(() -> {
-            helper.assertTrue(
-                    TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
-                            new ItemStack(Blocks.STONE)),
-                    "Crafting items in same bus failed, expected STONE but was " +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+        ICraftingService craftingService = grid.getCraftingService();
+        Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
+                helper.getLevel(),
+                IActionSource::empty,
+                AEItemKey.of(Items.STONE),
+                1,
+                CalculationStrategy.REPORT_MISSING_ITEMS);
+
+        helper.runAfterDelay(40, () -> {
+            ICraftingPlan job;
+            try {
+                job = plan.get(5, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                helper.fail("Job didn't get queued in 40 ticks");
+                throw new RuntimeException("Oopsie, could not get job to start craft");
+            }
+            ICraftingSubmitResult result = craftingService.submitJob(job, null, null, true, IActionSource.empty());
+
+            helper.assertTrue(result.successful(), "Could not queue crafting job");
+
+            helper.succeedWhen(() -> {
+                helper.assertTrue(
+                        TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
+                                new ItemStack(Blocks.STONE)),
+                        "Crafting items in same bus failed, expected STONE but was " +
+                                busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+            });
         });
-         */
+
+        helper.succeed();
+    }
+
+    // Test for checking if pattern buffers work if you set distinct
+    @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
+    public static void patternBufferDistinctDoesNothingTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.setDistinct(true);
+
+        IGrid grid = busHolder.patternBuffer.getGrid();
+
+        ICraftingService craftingService = grid.getCraftingService();
+        Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
+                helper.getLevel(),
+                IActionSource::empty,
+                AEItemKey.of(Items.STONE),
+                1,
+                CalculationStrategy.REPORT_MISSING_ITEMS);
+
+        helper.runAfterDelay(40, () -> {
+            ICraftingPlan job;
+            try {
+                job = plan.get(5, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                helper.fail("Job didn't get queued in 40 ticks");
+                throw new RuntimeException("Oopsie, could not get job to start craft");
+            }
+            ICraftingSubmitResult result = craftingService.submitJob(job, null, null, true, IActionSource.empty());
+
+            helper.assertTrue(result.successful(), "Could not queue crafting job");
+
+            helper.succeedWhen(() -> {
+                helper.assertTrue(
+                        TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
+                                new ItemStack(Blocks.STONE)),
+                        "Crafting items in same bus failed, expected STONE but was " +
+                                busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+            });
+        });
+
+        helper.succeed();
+    }
+
+    // Test for checking if pattern buffers work if you dye them
+    @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
+    public static void patternBufferDyeingDoesNothingTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.setPaintingColor(0xff);
+
+        IGrid grid = busHolder.patternBuffer.getGrid();
+
+        ICraftingService craftingService = grid.getCraftingService();
+        Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
+                helper.getLevel(),
+                IActionSource::empty,
+                AEItemKey.of(Items.STONE),
+                1,
+                CalculationStrategy.REPORT_MISSING_ITEMS);
+
+        helper.runAfterDelay(40, () -> {
+            ICraftingPlan job;
+            try {
+                job = plan.get(5, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                helper.fail("Job didn't get queued in 40 ticks");
+                throw new RuntimeException("Oopsie, could not get job to start craft");
+            }
+            ICraftingSubmitResult result = craftingService.submitJob(job, null, null, true, IActionSource.empty());
+
+            helper.assertTrue(result.successful(), "Could not queue crafting job");
+
+            helper.failIfEver(() -> {
+                helper.assertTrue(
+                        TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
+                                new ItemStack(Blocks.STONE)),
+                        "Crafting items in same bus failed, expected STONE but was " +
+                                busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+            });
+        });
+
         helper.succeed();
     }
 }
