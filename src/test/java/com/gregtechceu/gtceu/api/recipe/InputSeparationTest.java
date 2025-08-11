@@ -25,13 +25,13 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(GTCEu.MOD_ID)
 public class InputSeparationTest {
 
-    private static GTRecipeType LCRrecipeType;
+    private static GTRecipeType LCR_RECIPE_TYPE;
 
     @BeforeBatch(batch = "InputSeparation")
     public static void prepare(ServerLevel level) {
-        LCRrecipeType = TestUtils.createRecipeType("InputSeparationLCRTests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("InputSeparationLCRTests");
         // Force insert the recipe into the manager.
-        LCRrecipeType.getLookup().addRecipe(LCRrecipeType
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test-multiblock-input-separation"))
                 .id(GTCEu.id("test-multiblock-input-separation"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.ACACIA_WOOD))
@@ -58,7 +58,7 @@ public class InputSeparationTest {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
-        controller.setRecipeType(LCRrecipeType);
+        controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 1, 0)));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
