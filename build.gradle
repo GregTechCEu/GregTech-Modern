@@ -32,7 +32,7 @@ sourceSets {
     }
 
     test {
-        compileClasspath += main.output
+        compileClasspath += main.output + main.compileClasspath
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 
@@ -57,8 +57,6 @@ configurations {
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
     extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
-
-    testCompileClasspath.extendsFrom modCompileOnly
 
     renderNurseCfg {
         canBeConsumed = false
