@@ -124,5 +124,4 @@ dependencies {
     ///////////////////////////////////
     // Mods for testing in GameTests //
     ///////////////////////////////////
-    testImplementation(forge.ae2)
 }

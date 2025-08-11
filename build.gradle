@@ -58,6 +58,8 @@ configurations {
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
     extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
 
+    testCompileClasspath.extendsFrom modCompileOnly
+
     renderNurseCfg {
         canBeConsumed = false
     }

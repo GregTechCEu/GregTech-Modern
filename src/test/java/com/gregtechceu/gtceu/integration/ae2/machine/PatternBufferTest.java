@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.me.ManagedGridNode;
 import com.gregtechceu.gtceu.GTCEu;
@@ -85,9 +84,11 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferPatternBufferTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+
         IGrid grid = busHolder.patternBuffer.getGrid();
         ManagedGridNode node = (ManagedGridNode) busHolder.patternBuffer.getMainNode();
         ICraftingProvider provider = node.getNode().getService(ICraftingProvider.class);
+
         // busHolder.patternBuffer.requestItem ????? do some request logic here
         /*
         helper.succeedWhen(() -> {
