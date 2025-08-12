@@ -36,6 +36,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
@@ -307,6 +308,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
      * @param newType The new recipe type
      */
     @ApiStatus.Internal
+    @VisibleForTesting
     public void setRecipeType(GTRecipeType newType) {
         recipeTypes[activeRecipeType] = newType;
     }
