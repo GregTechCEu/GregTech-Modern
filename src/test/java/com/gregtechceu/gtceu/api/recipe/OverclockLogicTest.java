@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -29,54 +29,54 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class OverclockLogicTest {
 
+    private static GTRecipeType LCR_RECIPE_TYPE;
+    private static GTRecipeType CR_RECIPE_TYPE;
+
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
-        LARGE_CHEMICAL_RECIPES.getLookup().addRecipe(LARGE_CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-overlock-logic"))
-                .id(GTCEu.id("test-overlock-logic"))
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests");
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests");
+
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_overclock_logic"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(20)
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
-        LARGE_CHEMICAL_RECIPES.getLookup().addRecipe(LARGE_CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-overlock-logic-2"))
-                .id(GTCEu.id("test-overlock-logic-2"))
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_overclock_logic_2"))
                 .inputItems(new ItemStack(Items.STICK))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.LV])
                 .duration(1)
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
-        LARGE_CHEMICAL_RECIPES.getLookup().addRecipe(LARGE_CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-overlock-logic-3"))
-                .id(GTCEu.id("test-overlock-logic-3"))
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_overclock_logic_3"))
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.EV])
                 .duration(1)
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
-        CHEMICAL_RECIPES.getLookup().addRecipe(CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-overlock-logic-4"))
-                .id(GTCEu.id("test-overlock-logic-4"))
+        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_overclock_logic_4"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(16)
                 // NBT has a schematic in it with an HV charged singleblock CR in it
                 .buildRawRecipe());
-        CHEMICAL_RECIPES.getLookup().addRecipe(CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-overlock-logic-5"))
-                .id(GTCEu.id("test-overlock-logic-5"))
+        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_overclock_logic_5"))
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.MV])
@@ -90,7 +90,7 @@ public class OverclockLogicTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, MultiblockControllerMachine controller) {}
+                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -99,9 +99,10 @@ public class OverclockLogicTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        MultiblockControllerMachine controller = (MultiblockControllerMachine) getMetaMachine(
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
+        controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 1, 0)));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
@@ -320,6 +321,7 @@ public class OverclockLogicTest {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
+        machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableEnergyContainer energyContainer = (NotifiableEnergyContainer) machine
                 .getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP).get(0);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
@@ -353,6 +355,7 @@ public class OverclockLogicTest {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
+        machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableEnergyContainer energyContainer = (NotifiableEnergyContainer) machine
                 .getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP).get(0);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
