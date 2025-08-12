@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +13,10 @@ import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
@@ -31,7 +34,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
         @Override
         public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-            if(!ConfigHolder.INSTANCE.client.tankItemFluidPreview.drum) return false;
+            if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.drum) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
     };
@@ -40,7 +43,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
         @Override
         public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-            if(!ConfigHolder.INSTANCE.client.tankItemFluidPreview.quantumTank) return false;
+            if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.quantumTank) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
     };
@@ -83,7 +86,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
         }
 
         Optional<IFluidHandlerItem> optional = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
-            .resolve();
+                .resolve();
         if (optional.isEmpty()) {
             return false;
         }
@@ -93,22 +96,21 @@ public class GTTankItemFluidPreview implements IItemDecorator {
         }
 
         IFluidHandlerItem fluidHandler = optional.get();
-        for (int index = 0, renderedCount = 0; index < fluidHandler.getTanks()
-            && renderedCount < getMaxRenderCount(); index++) {
+        for (int index = 0, renderedCount = 0; index < fluidHandler.getTanks() &&
+                renderedCount < getMaxRenderCount(); index++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(index);
             if (!fluidInTank.isEmpty()) {
                 DrawerHelper.drawFluidForGui(
-                    guiGraphics,
-                    FluidHelperImpl.toFluidStack(fluidInTank),
-                    x + OFFSET[renderedCount][0],
-                    y + OFFSET[renderedCount][1],
-                    8.0F,
-                    8.0F);
+                        guiGraphics,
+                        FluidHelperImpl.toFluidStack(fluidInTank),
+                        x + OFFSET[renderedCount][0],
+                        y + OFFSET[renderedCount][1],
+                        8.0F,
+                        8.0F);
                 renderedCount++;
             }
         }
 
         return true;
     }
-
 }
