@@ -77,8 +77,7 @@ public class RecipeLogicTest {
         GTRecipeType type = recipeLogicMachine.getRecipeType();
         type.getLookup().removeAllRecipes();
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test-multiblock-recipelogic"))
-                .id(GTCEu.id("test-multiblock-recipelogic"))
+                .recipeBuilder(GTCEu.id("test_multiblock_recipelogic"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.UV]).duration(1)
@@ -166,8 +165,7 @@ public class RecipeLogicTest {
         GTRecipeType type = recipeLogicMachine.getRecipeType();
         type.getLookup().removeAllRecipes();
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test-singleblock"))
-                .id(GTCEu.id("test-singleblock"))
+                .recipeBuilder(GTCEu.id("test_singleblock"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(512).duration(1)

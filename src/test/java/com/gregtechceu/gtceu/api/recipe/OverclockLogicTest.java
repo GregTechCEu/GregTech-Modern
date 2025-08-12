@@ -40,12 +40,11 @@ public class OverclockLogicTest {
 
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("OverclockLogicLCRTests");
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("OverclockLogicCRTests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests");
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests");
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-overlock-logic"))
-                .id(GTCEu.id("test-overlock-logic"))
+                .recipeBuilder(GTCEu.id("test_overclock_logic"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
@@ -53,8 +52,7 @@ public class OverclockLogicTest {
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-overlock-logic-2"))
-                .id(GTCEu.id("test-overlock-logic-2"))
+                .recipeBuilder(GTCEu.id("test_overclock_logic_2"))
                 .inputItems(new ItemStack(Items.STICK))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.LV])
@@ -62,8 +60,7 @@ public class OverclockLogicTest {
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-overlock-logic-3"))
-                .id(GTCEu.id("test-overlock-logic-3"))
+                .recipeBuilder(GTCEu.id("test_overclock_logic_3"))
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.EV])
@@ -71,8 +68,7 @@ public class OverclockLogicTest {
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-overlock-logic-4"))
-                .id(GTCEu.id("test-overlock-logic-4"))
+                .recipeBuilder(GTCEu.id("test_overclock_logic_4"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
@@ -80,8 +76,7 @@ public class OverclockLogicTest {
                 // NBT has a schematic in it with an HV charged singleblock CR in it
                 .buildRawRecipe());
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-overlock-logic-5"))
-                .id(GTCEu.id("test-overlock-logic-5"))
+                .recipeBuilder(GTCEu.id("test_overclock_logic_5"))
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.MV])

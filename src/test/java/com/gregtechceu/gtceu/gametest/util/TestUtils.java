@@ -33,8 +33,7 @@ public class TestUtils {
     public static GTRecipeType createRecipeTypeAndInsertRecipe(String name) {
         GTRecipeType type = createRecipeType(name);
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("testRecipe"))
-                .id(GTCEu.id("testRecipe"))
+                .recipeBuilder(GTCEu.id("test_recipe"))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])

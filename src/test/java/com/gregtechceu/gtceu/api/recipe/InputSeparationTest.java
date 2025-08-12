@@ -29,11 +29,10 @@ public class InputSeparationTest {
 
     @BeforeBatch(batch = "InputSeparation")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("InputSeparationLCRTests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("input_separation_tests");
         // Force insert the recipe into the manager.
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test-multiblock-input-separation"))
-                .id(GTCEu.id("test-multiblock-input-separation"))
+                .recipeBuilder(GTCEu.id("test_multiblock_input_separation"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.ACACIA_WOOD))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)

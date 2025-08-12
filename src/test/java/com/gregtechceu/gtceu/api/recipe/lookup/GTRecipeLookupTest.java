@@ -34,8 +34,8 @@ public class GTRecipeLookupTest {
 
     @BeforeBatch(batch = "GTRecipeLookup")
     public static void prepare(ServerLevel level) {
-        RECIPE_TYPE = TestUtils.createRecipeType("recipeLookup");
-        LOOKUP = new GTRecipeLookup(RECIPE_TYPE);
+        RECIPE_TYPE = TestUtils.createRecipeType("recipe_lookup");
+        LOOKUP = RECIPE_TYPE.getLookup();
 
         SMELT_STONE = RECIPE_TYPE.recipeBuilder("smelt_stone")
                 .inputItems(Items.COBBLESTONE, 1)
