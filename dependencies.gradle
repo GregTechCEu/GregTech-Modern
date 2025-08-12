@@ -119,9 +119,4 @@ dependencies {
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
-
-
-    ///////////////////////////////////
-    // Mods for testing in GameTests //
-    ///////////////////////////////////
 }
