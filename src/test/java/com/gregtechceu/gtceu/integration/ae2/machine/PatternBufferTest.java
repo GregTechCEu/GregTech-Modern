@@ -37,15 +37,15 @@ import java.util.concurrent.TimeUnit;
 @GameTestHolder(GTCEu.MOD_ID)
 public class PatternBufferTest {
 
-    private static GTRecipeType LCRrecipeType;
+    private static GTRecipeType LCR_RECIPE_TYPE;
 
     @BeforeBatch(batch = "PatternBuffer")
     public static void prepare(ServerLevel level) {
-        LCRrecipeType = TestUtils.createRecipeTypeAndInsertRecipe("PatternBufferTests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeTypeAndInsertRecipe("pattern_buffer_tests");
 
-        LCRrecipeType.getLookup().addRecipe(LCRrecipeType
-                .recipeBuilder(GTCEu.id("testRecipe2"))
-                .id(GTCEu.id("testRecipe2"))
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_recipe_pattern_buffer"))
+                .id(GTCEu.id("test_recipe_pattern_buffer"))
                 .inputItems(new ItemStack(Items.RED_BED))
                 .outputItems(new ItemStack(Blocks.BROWN_BED))
                 .EUt(GTValues.V[GTValues.EV])
@@ -70,7 +70,7 @@ public class PatternBufferTest {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
-        controller.setRecipeType(LCRrecipeType);
+        controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 1, 0)));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
