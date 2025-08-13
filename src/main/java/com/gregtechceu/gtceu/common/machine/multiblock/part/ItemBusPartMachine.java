@@ -297,9 +297,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IDistinctPart.super.attachConfigurators(configuratorPanel);
-        if (this.io == IO.IN && hasCircuitSlot && isCircuitSlotEnabled()) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        if (this.io == IO.IN) {
+            IDistinctPart.super.attachConfigurators(configuratorPanel);
+            if (hasCircuitSlot && isCircuitSlotEnabled()) {
+                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
+        } else {
+            super.attachConfigurators(configuratorPanel);
         }
     }
 
