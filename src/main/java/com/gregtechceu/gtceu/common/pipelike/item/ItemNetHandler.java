@@ -406,7 +406,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
             if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
-            else if (!ItemStack.isSameItemSameTags(stack, slot)) continue;
+            if (!ignoreNBT && !ItemStack.isSameItemSameTags(stack, slot)) continue;
             if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }

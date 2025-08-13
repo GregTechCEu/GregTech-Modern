@@ -156,7 +156,8 @@ public class SimpleItemFilter implements ItemFilter {
         for (var candidate : matches) {
             if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
-            } else if (ItemStack.isSameItemSameTags(candidate, itemStack)) {
+            }
+            if (!ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }
