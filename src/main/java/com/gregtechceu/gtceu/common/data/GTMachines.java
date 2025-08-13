@@ -930,8 +930,8 @@ public class GTMachines {
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
                     .overlayTieredHullModel("fluid_passthrough_hatch")
                     .tooltips(
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", tier + 1,
-                                    16 * FluidType.BUCKET_VOLUME),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", 1,
+                                    FluidHatchPartMachine.getTankCapacity(8, tier) * FluidType.BUCKET_VOLUME),
                             Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             ELECTRIC_TIERS);
