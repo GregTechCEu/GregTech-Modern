@@ -49,7 +49,7 @@ import java.util.*;
  */
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
-    private static final AABB FACADE_PLANE = new AABB(0.001, 0.001, 0.001, 0.999, 0.999, 1 / 160f);
+    private static final AABB FACADE_PLANE = new AABB(0.001, 0.001, 0.001, 0.999, 0.999, 1 / 16f);
     private static final EnumSet<Direction> FACADE_EDGE_FACES = EnumSet.of(Direction.DOWN, Direction.UP,
             Direction.SOUTH, Direction.WEST, Direction.EAST);
     private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
