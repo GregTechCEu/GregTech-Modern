@@ -20,16 +20,17 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GTOreByProductWidget extends WidgetGroup {
 
     // XY positions of every item and fluid, in three enormous lists
-    protected final static ImmutableList<Integer> ITEM_INPUT_LOCATIONS = ImmutableList.of(
+    protected final static IntImmutableList ITEM_INPUT_LOCATIONS = IntImmutableList.of(
             3, 3,       // ore
             23, 3,      // furnace (direct smelt)
             3, 24,      // macerator (ore -> crushed)
@@ -48,7 +49,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             101, 25     // sifter
     );
 
-    protected final static ImmutableList<Integer> ITEM_OUTPUT_LOCATIONS = ImmutableList.of(
+    protected final static IntImmutableList ITEM_OUTPUT_LOCATIONS = IntImmutableList.of(
             46, 3,      // smelt result: 0
             3, 47,      // ore -> crushed: 2
             3, 65,      // byproduct: 4
@@ -85,13 +86,13 @@ public class GTOreByProductWidget extends WidgetGroup {
             155, 21     // 66
     );
 
-    protected final static ImmutableList<Integer> FLUID_LOCATIONS = ImmutableList.of(
+    protected final static IntImmutableList FLUID_LOCATIONS = IntImmutableList.of(
             42, 25, // washer in
             42, 48  // chem bath in
     );
 
     // Used to set intermediates as both input and output
-    protected final static ImmutableSet<Integer> FINAL_OUTPUT_INDICES = ImmutableSet.of(
+    protected final static IntSet FINAL_OUTPUT_INDICES = IntSet.of(
             0, 4, 8, 10, 12, 16, 20, 22, 24, 28, 30, 32, 40, 44, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66);
 
     public GTOreByProductWidget(Material material) {
@@ -101,10 +102,11 @@ public class GTOreByProductWidget extends WidgetGroup {
     }
 
     public void setRecipe(GTOreByProduct recipeWrapper) {
-        List<Boolean> itemOutputExists = new ArrayList<>();
+        BooleanList itemOutputExists = new BooleanArrayList();
 
         // only draw slot on inputs if it is the ore
-        addWidget(new ImageWidget(ITEM_INPUT_LOCATIONS.get(0), ITEM_INPUT_LOCATIONS.get(1), 18, 18, GuiTextures.SLOT));
+        addWidget(new ImageWidget(ITEM_INPUT_LOCATIONS.getInt(0), ITEM_INPUT_LOCATIONS.getInt(1), 18, 18,
+                GuiTextures.SLOT));
         boolean hasSifter = recipeWrapper.hasSifter();
 
         addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_BASE));
@@ -126,8 +128,8 @@ public class GTOreByProductWidget extends WidgetGroup {
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             final int finalI = i;
-            itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i),
-                    ITEM_INPUT_LOCATIONS.get(i + 1))
+            itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.getInt(i),
+                    ITEM_INPUT_LOCATIONS.getInt(i + 1))
                     .setCanTakeItems(false)
                     .setCanPutItems(false)
                     .setIngredientIO(IngredientIO.INPUT)
@@ -151,8 +153,8 @@ public class GTOreByProductWidget extends WidgetGroup {
                 continue;
             }
 
-            itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i),
-                    ITEM_OUTPUT_LOCATIONS.get(i + 1))
+            itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.getInt(i),
+                    ITEM_OUTPUT_LOCATIONS.getInt(i + 1))
                     .setCanTakeItems(false)
                     .setCanPutItems(false)
                     .setIngredientIO(FINAL_OUTPUT_INDICES.contains(i) ? IngredientIO.OUTPUT : IngredientIO.BOTH)
@@ -170,7 +172,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).isEmpty()) {
                 var tank = new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
-                        FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
+                        FLUID_LOCATIONS.getInt(i), FLUID_LOCATIONS.getInt(i + 1), false, false)
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackground(GuiTextures.FLUID_SLOT)
                         .setShowAmount(false);
@@ -183,9 +185,9 @@ public class GTOreByProductWidget extends WidgetGroup {
 
         for (int i = 0; i < ITEM_OUTPUT_LOCATIONS.size(); i += 2) {
             // stupid hack to show all sifter slots if the first one exists
-            if (itemOutputExists.get(i / 2) || (i > 28 * 2 && itemOutputExists.get(28) && hasSifter)) {
-                addWidget(this.widgets.size() - 3, new ImageWidget(ITEM_OUTPUT_LOCATIONS.get(i),
-                        ITEM_OUTPUT_LOCATIONS.get(i + 1), 18, 18, GuiTextures.SLOT));
+            if (itemOutputExists.getBoolean(i / 2) || (i > 28 * 2 && itemOutputExists.getBoolean(28) && hasSifter)) {
+                addWidget(this.widgets.size() - 3, new ImageWidget(ITEM_OUTPUT_LOCATIONS.getInt(i),
+                        ITEM_OUTPUT_LOCATIONS.getInt(i + 1), 18, 18, GuiTextures.SLOT));
             }
         }
     }

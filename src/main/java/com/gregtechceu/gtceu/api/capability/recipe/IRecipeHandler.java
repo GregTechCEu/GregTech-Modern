@@ -8,11 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote IRecipeHandler
- */
 public interface IRecipeHandler<K> extends IFilteredHandler<K> {
 
     /**
@@ -84,8 +79,4 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         }
         return handleRecipeInner(io, recipe, contents, simulate);
     }
-
-    default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
-
-    default void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 }

@@ -1,0 +1,48 @@
+{
+    "parent": "block/block",
+    "textures": {
+        "particle": "#side",
+        "bottom": "gtceu:block/casings/voltage/lv/bottom",
+        "top": "gtceu:block/casings/voltage/lv/top",
+        "side": "gtceu:block/casings/voltage/lv/side",
+
+        "screen": "gtceu:block/overlay/machine/overlay_screen",
+        "screen_emissive": "gtceu:block/overlay/machine/overlay_screen_emissive",
+        "hatch": "gtceu:block/overlay/machine/overlay_hatch",
+        "pump": "gtceu:block/overlay/machine/overlay_adv_pump"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
+            }
+        },
+        {
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
+            "faces": {
+                "up":    { "uv": [0, 0, 16, 16], "texture": "#screen", "cullface": "up"    },
+                "down":  { "uv": [0, 0, 16, 16], "texture": "#hatch",  "cullface": "down"  },
+                "west":  { "uv": [0, 0, 16, 16], "texture": "#pump",   "cullface": "west"  },
+                "east":  { "uv": [0, 0, 16, 16], "texture": "#pump",   "cullface": "east"  },
+                "south": { "uv": [0, 0, 16, 16], "texture": "#pump",   "cullface": "south" }
+            }
+        },
+        {
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
+            "faces": {
+                "up": { "uv": [0, 0, 16, 16], "texture": "#screen_emissive", "cullface": "up", "tintindex": -101 }
+            }
+        }
+    ]
+}

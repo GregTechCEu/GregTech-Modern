@@ -74,7 +74,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7000, 1000)
+                        .chancedOutput(gemStack, 7500, 0)
                         .duration(1200).EUt(24)
                         .save(provider);
 
@@ -256,7 +256,7 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
-                smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new MaterialEntry(dust, material));
+                smallDustStack.copyWithCount(4), " X", "  ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material.getName()),
                 dustStack, "XX", "XX", 'X', new MaterialEntry(dustSmall, material));
 
@@ -284,7 +284,7 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
-                tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new MaterialEntry(dust, material));
+                tinyDustStack.copyWithCount(9), "X ", "  ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material.getName()),
                 dustStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(dustTiny, material));
 
@@ -434,7 +434,7 @@ public final class MaterialRecipeHandler {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnder(prefix.name)),
+                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
                     crushedStack,
                     "X", "m", 'X', new MaterialEntry(prefix, material));
         }
@@ -449,14 +449,14 @@ public final class MaterialRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnder(lowerPrefix.name),
+                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
                         material.getName()),
                 prevStack,
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(prefix.name) +
-                        "_to_" + FormattingUtil.toLowerCaseUnder(lowerPrefix.name))
+                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
+                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
@@ -465,8 +465,8 @@ public final class MaterialRecipeHandler {
 
         LASER_ENGRAVER_RECIPES
                 .recipeBuilder(
-                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(prefix.name) +
-                                "_to_" + FormattingUtil.toLowerCaseUnder(lowerPrefix.name))
+                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
+                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
                 .inputItems(prevStack)
                 .notConsumable(lens, MarkerMaterials.Color.White)
                 .outputItems(prefix, material)
@@ -642,7 +642,9 @@ public final class MaterialRecipeHandler {
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
-                if (!material.hasProperty(PropertyKey.BLAST)) {
+                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
+                        material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
                             .inputItems(dust, material, (int) (materialAmount / M))
                             .notConsumable(GTItems.SHAPE_MOLD_BLOCK)

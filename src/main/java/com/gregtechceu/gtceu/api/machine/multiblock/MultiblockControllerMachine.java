@@ -1,16 +1,18 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -43,11 +45,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote MultiblockControllerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MultiblockControllerMachine extends MetaMachine implements IMultiController {
@@ -177,6 +174,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureFormed() {
         isFormed = true;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
+        }
+
         this.parts.clear();
         Set<IMultiPart> set = getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet);
         for (IMultiPart part : set) {
@@ -184,7 +186,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
                 this.parts.add(part);
             }
         }
-        this.parts.sort(getDefinition().getPartSorter());
+        this.parts.sort(getPartSorter());
         for (var part : parts) {
             if (part instanceof IParallelHatch pHatch) {
                 parallelHatch = pHatch;
@@ -197,6 +199,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureInvalid() {
         isFormed = false;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
+        }
+
         for (IMultiPart part : parts) {
             part.removedFromController(this);
         }
@@ -247,9 +254,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
-                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+                blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
@@ -264,8 +271,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
@@ -274,8 +280,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             if (!isRemote()) {
                 setFrontFacing(gridSide);
             }
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }

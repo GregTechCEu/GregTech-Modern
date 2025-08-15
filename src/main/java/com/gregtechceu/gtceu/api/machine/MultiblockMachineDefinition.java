@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 
@@ -11,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -19,13 +21,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote MultiblockMachineDefinition
- */
 public class MultiblockMachineDefinition extends MachineDefinition {
 
     @Getter
@@ -51,7 +49,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private Supplier<ItemStack[]> recoveryItems;
     @Setter
     @Getter
-    private Comparator<IMultiPart> partSorter;
+    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter;
     @Getter
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
@@ -59,12 +57,8 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay;
 
-    protected MultiblockMachineDefinition(ResourceLocation id) {
+    public MultiblockMachineDefinition(ResourceLocation id) {
         super(id);
-    }
-
-    public static MultiblockMachineDefinition createDefinition(ResourceLocation id) {
-        return new MultiblockMachineDefinition(id);
     }
 
     public List<MultiblockShapeInfo> getMatchingShapes() {
@@ -72,15 +66,15 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         if (!designs.isEmpty()) return designs;
         var structurePattern = patternFactory.get();
         int[][] aisleRepetitions = structurePattern.aisleRepetitions;
-        return repetitionDFS(structurePattern, new ArrayList<>(), aisleRepetitions, new Stack<>());
+        return repetitionDFS(structurePattern, new ArrayList<>(), aisleRepetitions, new IntArrayList());
     }
 
     private List<MultiblockShapeInfo> repetitionDFS(BlockPattern pattern, List<MultiblockShapeInfo> pages,
-                                                    int[][] aisleRepetitions, Stack<Integer> repetitionStack) {
+                                                    int[][] aisleRepetitions, IntArrayList repetitionStack) {
         if (repetitionStack.size() == aisleRepetitions.length) {
             int[] repetition = new int[repetitionStack.size()];
             for (int i = 0; i < repetitionStack.size(); i++) {
-                repetition[i] = repetitionStack.get(i);
+                repetition[i] = repetitionStack.getInt(i);
             }
             pages.add(new MultiblockShapeInfo(pattern.getPreview(repetition)));
         } else {
@@ -88,7 +82,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
                     aisleRepetitions[repetitionStack.size()][1]; i++) {
                 repetitionStack.push(i);
                 repetitionDFS(pattern, pages, aisleRepetitions, repetitionStack);
-                repetitionStack.pop();
+                repetitionStack.popInt();
             }
         }
         return pages;

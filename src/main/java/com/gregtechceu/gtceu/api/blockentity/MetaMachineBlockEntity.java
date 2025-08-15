@@ -13,13 +13,22 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
-import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -44,33 +53,47 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote MetaMachineBlockEntity
- */
-public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
+public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MetaMachineBlockEntity.class);
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    @Getter
     public final MetaMachine metaMachine;
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
 
-    protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+        this.renderState = getDefinition().defaultRenderState();
         this.metaMachine = getDefinition().createMetaMachine(this);
-    }
 
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos,
-                                                           BlockState blockState) {
-        return new MetaMachineBlockEntity(type, pos, blockState);
+        this.getRootStorage().attach(getSyncStorage());
     }
-
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {}
 
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void onChanged() {
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::setChanged);
+        }
     }
 
     @Override
@@ -85,6 +108,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
+    public void setRenderState(MachineRenderState state) {
+        this.renderState = state;
+        scheduleRenderUpdate();
+    }
+
+    @Override
     public long getOffset() {
         return offset;
     }
@@ -96,8 +125,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public void clearRemoved() {
-        super.clearRemoved();
+    public void onLoad() {
+        super.onLoad();
         metaMachine.onLoad();
     }
 
@@ -108,15 +137,15 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         return metaMachine.sideTips(player, pos, state, toolTypes, side);
     }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         var result = getCapability(getMetaMachine(), cap, side);
-        return result == null ? super.getCapability(cap, side) : result;
+        return result.isPresent() ? result : super.getCapability(cap, side);
     }
 
     @Override
@@ -126,7 +155,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         }
     }
 
-    @Nullable
     public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
                                                     @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
@@ -186,28 +214,29 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
                         LazyOptional.of(() -> maintenanceMachine));
             }
+        } else if (cap == GTCapability.CAPABILITY_TURBINE_MACHINE) {
+            if (machine instanceof ITurbineMachine turbineMachine) {
+                return GTCapability.CAPABILITY_TURBINE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> turbineMachine));
+            }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var handler = machine.getItemHandlerCap(side, true);
             if (handler != null) {
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> handler));
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             var handler = machine.getFluidHandlerCap(side, true);
             if (handler != null) {
-                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> handler));
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
             if (machine instanceof IEnergyStorage energyStorage) {
-                return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> energyStorage));
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> energyStorage));
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
-                return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> list.get(0)));
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {
@@ -235,20 +264,23 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
-        }
-        if (GTCEu.Mods.isAE2Loaded()) {
-            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
-                if (machine instanceof IInWorldGridNodeHost nodeHost) {
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
-                }
-                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
-                if (!list.isEmpty()) {
-                    // TODO wrap list in the future (or not.)
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
-                }
+        } else if (cap == GTCapability.CAPABILITY_MONITOR_COMPONENT) {
+            if (machine instanceof IMonitorComponent monitorComponent) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> monitorComponent));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IMonitorComponent.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         }
-        return null;
+        if (GTCEu.Mods.isAE2Loaded()) {
+            LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            if (opt.isPresent()) {
+                // noinspection unchecked
+                return (LazyOptional<T>) opt;
+            }
+        }
+        return LazyOptional.empty();
     }
 
     public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide,
@@ -267,19 +299,17 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
      * Why, Forge, Why?
      * Why must you make me add a method for no good reason?
      */
+    @SuppressWarnings("unchecked")
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        GTRendererProvider instance = GTRendererProvider.getInstance();
-        if (instance != null) {
-            IRenderer renderer = instance.getRenderer(this);
-            if (renderer != null) {
-                if (renderer.getViewDistance() == 64 /* the default */) {
-                    return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
-                }
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
-                int viewDistHalf = renderer.getViewDistance() / 2;
-                return new AABB(worldPosition).inflate(viewDistHalf);
+        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
+            if (modelWithBER.getBlockEntityType() == this.getType()) {
+                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER)
+                        .getRenderBoundingBox(this);
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
@@ -289,5 +319,23 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public void load(CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
         super.load(tag);
+    }
+
+    public static class AE2CallWrapper {
+
+        public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
+                                                                Direction side) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
+            return LazyOptional.empty();
+        }
     }
 }

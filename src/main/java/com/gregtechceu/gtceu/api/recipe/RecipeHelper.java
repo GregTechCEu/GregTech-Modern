@@ -2,9 +2,16 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -18,49 +25,41 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote RecipeHelper
- */
 public class RecipeHelper {
 
-    public static long getInputEUt(GTRecipe recipe) {
-        return recipe.getTickInputContents(EURecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToLong(EURecipeCapability.CAP::of)
-                .sum();
+    public static EnergyStack getRealEUt(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return stack;
+        return recipe.getOutputEUt();
     }
 
-    public static long getOutputEUt(GTRecipe recipe) {
-        return recipe.getTickOutputContents(EURecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToLong(EURecipeCapability.CAP::of)
-                .sum();
-    }
-
-    public static long getRealEUt(@NotNull GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt > 0) return EUt;
-        return -getOutputEUt(recipe);
+    /**
+     * Get a pair of the absolute EU/t value this recipe inputs or outputs and if it's input or output
+     *
+     * @param recipe
+     * @return A pair of {@code (EnergyStack, isInput)}
+     */
+    public static EnergyStack.WithIO getRealEUtWithIO(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return new EnergyStack.WithIO(stack, IO.IN);
+        return new EnergyStack.WithIO(recipe.getOutputEUt(), IO.OUT);
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt == 0) {
-            EUt = getOutputEUt(recipe);
-        }
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt == 0) EUt = getOutputEUt(recipe);
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.getTotalEU();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
@@ -222,15 +221,15 @@ public class RecipeHelper {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
-        if (result.isSuccess() || result.capability() == null) return result.result();
+        if (result.isSuccess() || result.capability() == null) return result;
 
-        if (!simulated) {
+        if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
                     Component.translatable(io.tooltip).getString(), recipe, holder);
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()));
+                .append(": ").append(result.capability().getName()), result.capability(), io);
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -238,38 +237,6 @@ public class RecipeHelper {
         if (!match.isSuccess()) return match;
 
         return matchTickRecipe(holder, recipe);
-    }
-
-    public static void preWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        handlePre(holder, recipe, IO.IN);
-        handlePre(holder, recipe, IO.OUT);
-    }
-
-    public static void postWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        handlePost(holder, recipe, IO.IN);
-        handlePost(holder, recipe, IO.OUT);
-    }
-
-    public static void handlePre(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
-        for (var cap : map.keySet()) {
-            var handlers = holder.getCapabilitiesFlat(io, cap);
-            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
-            for (var handler : handlers) {
-                handler.preWorking(holder, io, recipe);
-            }
-        }
-    }
-
-    public static void handlePost(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
-        for (var cap : map.keySet()) {
-            var handlers = holder.getCapabilitiesFlat(io, cap);
-            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
-            for (var handler : handlers) {
-                handler.postWorking(holder, io, recipe);
-            }
-        }
     }
 
     /**
@@ -288,7 +255,7 @@ public class RecipeHelper {
             } else if (!condition.check(recipe, recipeLogic)) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
                         .append(": ")
-                        .append(condition.getTooltips()));
+                        .append(condition.getTooltips()), null, null);
             }
         }
 
@@ -303,7 +270,7 @@ public class RecipeHelper {
             }
 
             if (!passed) {
-                return ActionResult.fail(component);
+                return ActionResult.fail(component, null, null);
             }
         }
         return ActionResult.SUCCESS;
@@ -377,5 +344,55 @@ public class RecipeHelper {
         }
 
         return outputs;
+    }
+
+    public static void addToRecipeHandlerMap(RecipeHandlerGroup key, RecipeHandlerList handler,
+                                             Map<RecipeHandlerGroup, List<RecipeHandlerList>> map) {
+        // If they should bypass this system, add them to the BYPASS_DISTINCT group.
+        if (handler.doesCapabilityBypassDistinct()) {
+            map.computeIfAbsent(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT, $ -> new ArrayList<>()).add(handler);
+            return;
+        }
+        // Add undyed RHL's to every group that's not distinct, bypass, and also the undyed group itself.
+        if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
+            for (var entry : map.entrySet()) {
+                if (entry.getKey().equals(RecipeHandlerGroupDistinctness.BUS_DISTINCT) ||
+                        entry.getKey().equals(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) ||
+                        entry.getKey().equals(RecipeHandlerGroupColor.UNDYED)) {
+                    continue;
+                }
+                entry.getValue().add(handler);
+            }
+        }
+        // Add other RHL's to their own group, or create it (using the undyed group as base) if it does not exist.
+        List<RecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
+
+        map.computeIfAbsent(key, $ -> new ArrayList<>(undyed)).add(handler);
+    }
+
+    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
+                                            @Nullable ItemStack output) {
+        int[] divisors = new int[] { 2, 5, 10, 25, 50 };
+        int ratio = -1;
+
+        for (int divisor : divisors) {
+
+            if (!isFluidStackDivisibleForDistillery(fluidInput, divisor))
+                continue;
+
+            if (!isFluidStackDivisibleForDistillery(fluidOutput, divisor))
+                continue;
+
+            if (output != null && output.getCount() % divisor != 0)
+                continue;
+
+            ratio = divisor;
+        }
+
+        return Math.max(1, ratio);
+    }
+
+    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
+        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

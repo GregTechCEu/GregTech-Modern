@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.ClientLevelAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.ClientLevelAccessor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;

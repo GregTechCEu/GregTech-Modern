@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -21,7 +22,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -40,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -60,7 +62,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Setter
     @Persisted
     @DescSynced
-    @RequireRerender
     @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
@@ -89,8 +90,10 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     @Override
     public int tintColor(int index) {
-        if (index == 2) {
-            return getRotorMaterial().getMaterialARGB();
+        if (index >= 2) {
+            return getRotorMaterial().getLayerARGB(index - 2);
+        } else if (index <= -103) {
+            return getRotorMaterial().getLayerARGB(index + 2);
         }
         return super.tintColor(index);
     }
@@ -136,8 +139,17 @@ public class RotorHolderPartMachine extends TieredPartMachine
         var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         if (rotorBehaviour != null) {
             this.rotorMaterial = rotorBehaviour.getPartMaterial(stack);
+
+            boolean emissive = this.rotorMaterial.hasProperty(PropertyKey.ORE) &&
+                    this.rotorMaterial.getProperty(PropertyKey.ORE).isEmissive();
+            setRenderState(getRenderState()
+                    .setValue(HAS_ROTOR, true)
+                    .setValue(IS_EMISSIVE_ROTOR, emissive));
         } else {
             this.rotorMaterial = GTMaterials.NULL;
+            setRenderState(getRenderState()
+                    .setValue(HAS_ROTOR, false)
+                    .setValue(IS_EMISSIVE_ROTOR, false));
         }
     }
 
@@ -169,7 +181,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     public void setRotorSpeed(int rotorSpeed) {
         if ((this.rotorSpeed > 0 && rotorSpeed <= 0) || (this.rotorSpeed <= 0 && rotorSpeed > 0)) {
-            scheduleRenderUpdate();
+            setRenderState(getRenderState().setValue(IS_ROTOR_SPINNING, rotorSpeed > 0));
         }
         this.rotorSpeed = rotorSpeed;
     }

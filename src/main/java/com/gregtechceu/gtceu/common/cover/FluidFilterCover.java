@@ -28,11 +28,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilterCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidFilterCover extends CoverBehavior implements IUICover {
@@ -45,6 +40,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredFluidHandlerWrapper fluidFilterWrapper;
+    @Persisted
     @Setter
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;

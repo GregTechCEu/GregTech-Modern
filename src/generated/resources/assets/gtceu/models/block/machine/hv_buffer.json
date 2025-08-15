@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hv_buffer",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/single",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/hv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_buffer",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_buffer_emissive",
+          "side": "gtceu:block/casings/voltage/hv/side",
+          "top": "gtceu:block/casings/voltage/hv/top"
+        }
+      }
+    }
+  }
+}

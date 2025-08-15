@@ -1,0 +1,25 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "cullface": "north",
+          "texture": "#steam_vent"
+        }
+      },
+      "from": [
+        0,
+        0,
+        -0.002
+      ],
+      "to": [
+        16,
+        16,
+        -0.002
+      ]
+    }
+  ],
+  "textures": {
+    "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+  }
+}

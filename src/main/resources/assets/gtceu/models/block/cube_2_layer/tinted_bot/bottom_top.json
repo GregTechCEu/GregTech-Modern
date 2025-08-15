@@ -1,0 +1,19 @@
+{
+  "parent": "gtceu:block/cube_2_layer/tinted_bot/default",
+  "textures": {
+    "particle": "#bot_side",
+    "bot_down": "#bot_bottom",
+    "bot_up": "#bot_top",
+    "bot_north": "#bot_side",
+    "bot_south": "#bot_side",
+    "bot_west": "#bot_side",
+    "bot_east": "#bot_side",
+
+    "top_down": "#top_bottom",
+    "top_up": "#top_top",
+    "top_north": "#top_side",
+    "top_south": "#top_side",
+    "top_west": "#top_side",
+    "top_east": "#top_side"
+  }
+}

@@ -45,7 +45,7 @@ jobs:
         id: ver
         run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
       - name: Build
-        run: ./gradlew assemble --build-cache
+        run: ./gradlew assemble
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -58,7 +58,7 @@ jobs:
         env:
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        run: ./gradlew publish --build-cache
+        run: ./gradlew publish
 
   upload-release-artifacts:
     name: Upload Artifacts
@@ -95,7 +95,7 @@ jobs:
           MC_VERSION: ${{ inputs.branch == '1.21' && '1.21.1' || '1.20.1' }}
           LOADER: ${{ inputs.branch == '1.21' && 'neoforge' || 'forge' }}
           JAVA: ${{ inputs.branch == '1.21' && '21' || '17' }}
-          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'alpha' || 'beta' }}
+          VERSION_TYPE: ${{ inputs.branch == '1.21' && 'beta' || 'beta' }}
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           modrinth-id: 7tG215v7
@@ -103,7 +103,7 @@ jobs:
           files: |
             ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
             ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
-          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          name: 'GregTech CEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version-type: ${{ env.VERSION_TYPE }}
           changelog: ${{ inputs.release-body }}
@@ -136,7 +136,7 @@ jobs:
           files: |
             ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
             ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
-          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          name: 'GregTech CEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version-type: ${{ env.VERSION_TYPE }}
           changelog: ${{ inputs.release-body }}
@@ -147,7 +147,7 @@ jobs:
   # After successful release, PR version bump and changelog
   bump-version-and-changelog:
     name: Bump Version and Build Changelog
-    needs: [ build, upload-release-artifacts, publish-modrinth, publish-cf]
+    needs: [ build, upload-release-artifacts ]
     if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:

@@ -21,10 +21,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
-/**
- * @author Rundas
- * @implNote Gregicality Multiblocks Recipe Types
- */
 public class GCYMRecipeTypes {
 
     //////////////////////////////////////
@@ -54,7 +50,6 @@ public class GCYMRecipeTypes {
                 }
                 return "";
             })
-            .setMaxTooltips(4)
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();

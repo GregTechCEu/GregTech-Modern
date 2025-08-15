@@ -6,11 +6,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote ITickSubscription
- */
 public interface ITickSubscription {
 
     /**

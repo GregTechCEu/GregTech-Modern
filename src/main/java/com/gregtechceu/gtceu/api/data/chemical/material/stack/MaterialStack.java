@@ -20,6 +20,18 @@ public record MaterialStack(@NotNull Material material, long amount) {
         return new MaterialStack(material, amount);
     }
 
+    public MaterialStack add(long amount) {
+        return new MaterialStack(material, this.amount + amount);
+    }
+
+    public MaterialStack multiply(long amount) {
+        return new MaterialStack(material, this.amount * amount);
+    }
+
+    public MaterialStack divide(long amount) {
+        return new MaterialStack(material, this.amount / amount);
+    }
+
     public static MaterialStack fromString(CharSequence str) {
         String trimmed = str.toString().trim();
         String copy = trimmed;

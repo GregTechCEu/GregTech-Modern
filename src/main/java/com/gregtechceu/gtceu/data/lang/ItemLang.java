@@ -25,7 +25,7 @@ public class ItemLang {
         }
 
         // Recipe Categories
-        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Plasma Scrapping");
+        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Arc Scrapping");
         provider.add("gtceu.recipe.category.macerator_recycling", "Part Grinding");
         provider.add("gtceu.recipe.category.extractor_recycling", "Scrap Remelting");
         provider.add("gtceu.recipe.category.ore_crushing", "Ore Grinding");
@@ -75,6 +75,11 @@ public class ItemLang {
                 "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)");
         provider.add("item.gtceu.gear_casting_mold.small.tooltip", "§7Mold for making small Gears");
         provider.add("item.gtceu.rotor_casting_mold.tooltip", "§7Mold for making Rotors");
+        provider.add("item.gtceu.pipe.tiny_casting_mold.tooltip", "§7Mold for making tiny Pipes");
+        provider.add("item.gtceu.pipe.small_casting_mold.tooltip", "§7Mold for making small Pipes");
+        provider.add("item.gtceu.pipe.normal_casting_mold.tooltip", "§7Mold for making Pipes");
+        provider.add("item.gtceu.pipe.large_casting_mold.tooltip", "§7Mold for making large Pipes");
+        provider.add("item.gtceu.pipe.huge_casting_mold.tooltip", "§7Mold for making full Block Pipes");
         provider.add("item.gtceu.plate_extruder_mold.tooltip", "§7Extruder Shape for making Plates");
         provider.add("item.gtceu.rod_extruder_mold.tooltip", "§7Extruder Shape for making Rods");
         provider.add("item.gtceu.bolt_extruder_mold.tooltip", "§7Extruder Shape for making Bolts");
@@ -117,9 +122,7 @@ public class ItemLang {
         provider.add("item.gtceu.zpm_battery_hull.tooltip", "§7An empty §fZPM §7Battery Hull");
         provider.add("item.gtceu.uv_battery_hull.tooltip", "§7An empty §3UV §7Battery Hull");
         provider.add("item.gtceu.battery.charge_time", "§aHolds %s %s of Power (%s)");
-        provider.add("item.gtceu.battery.charge_detailed.0", "§a%s/%s EU§7 - Tier %s §7(§a%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.1", "§e%s/%s EU§7 - Tier %s §7(§e%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.2", "§c%s/%s EU§7 - Tier %s §7(§c%s/%s %s remaining§7)");
+        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s %s remaining§7)");
         provider.add("item.gtceu.battery.charge_unit.second", "seconds");
         provider.add("item.gtceu.battery.charge_unit.minute", "minutes");
         provider.add("item.gtceu.battery.charge_unit.hour", "hours");

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -104,7 +105,7 @@ public final class ChestGenHooks {
 
     private static @NotNull String createEntryName(@NotNull ItemStack stack, @NotNull String modid, int weight,
                                                    @NotNull RandomWeightLootFunction function) {
-        int hashCode = Objects.hash(HASH_STRATEGY.hashCode(stack), modid, weight, function.getMinAmount(),
+        int hashCode = GTMath.hashInts(HASH_STRATEGY.hashCode(stack), modid.hashCode(), weight, function.getMinAmount(),
                 function.getMaxAmount());
         return String.format("#%s:loot_%s", modid, hashCode);
     }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,31 +39,31 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ChemicalHelper
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {
 
-    public static MaterialStack getMaterialStack(@Nullable Object object) {
-        if (object instanceof MaterialStack materialStack) {
-            return materialStack;
-        } else if (object instanceof MaterialEntry entry) {
-            return getMaterialStack(entry);
+    public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
+        if (object instanceof ItemMaterialInfo materialInfo) {
+            return materialInfo;
+        } else if (object instanceof MaterialStack materialStack) {
+            return new ItemMaterialInfo(materialStack);
         } else if (object instanceof ItemStack itemStack) {
-            return getMaterialStack(itemStack);
+            return ItemMaterialData.getMaterialInfo(itemStack.getItem());
         } else if (object instanceof ItemLike item) {
-            return getMaterialStack(item);
+            return ItemMaterialData.getMaterialInfo(item);
+        } else if (object instanceof MaterialEntry entry) {
+            var items = getItems(entry);
+            if (!items.isEmpty()) {
+                return ItemMaterialData.getMaterialInfo(items.get(0));
+            }
         } else if (object instanceof Ingredient ing) {
             for (var stack : ing.getItems()) {
-                var ms = getMaterialStack(stack);
-                if (!ms.isEmpty()) return ms;
+                var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
+                if (ms != null) return ms;
             }
         }
-        return MaterialStack.EMPTY;
+        return null;
     }
 
     public static MaterialStack getMaterialStack(ItemStack itemStack) {
@@ -85,7 +85,7 @@ public class ChemicalHelper {
             Material entryMaterial = entry.material();
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
-        ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
+        ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;
         if (info.getMaterial().isEmpty()) {
             GTCEu.LOGGER.error("ItemMaterialInfo for {} is empty!", itemLike);
@@ -183,7 +183,7 @@ public class ChemicalHelper {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             for (var entry : ITEM_MATERIAL_ENTRY) {
-                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get(), entry.getSecond());
+                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get().asItem(), entry.getSecond());
             }
             ITEM_MATERIAL_ENTRY.clear();
 
@@ -226,15 +226,15 @@ public class ChemicalHelper {
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
         if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
-            var items = new ArrayList<Supplier<? extends ItemLike>>();
-            for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {
+            TagPrefix prefix = entry.tagPrefix();
+            var items = new ArrayList<Supplier<? extends Item>>();
+            for (TagKey<Item> tag : prefix.getItemTags(entry.material())) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder::value);
                 }
             }
-            TagPrefix prefix = entry.tagPrefix();
             if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(entry.material())) {
-                return List.of(prefix.getItemFromTable(entry.material()));
+                return List.of(() -> prefix.getItemFromTable(entry.material()).get().asItem());
             }
             return items;
         }).stream().map(Supplier::get).collect(Collectors.toList());
@@ -259,12 +259,17 @@ public class ChemicalHelper {
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
         if (materialEntry.isEmpty()) return Collections.emptyList();
         return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
-
+            TagPrefix prefix = entry.tagPrefix();
             var blocks = new ArrayList<Supplier<? extends Block>>();
-            for (var tag : getTags(materialEntry.tagPrefix(), entry.material())) {
-                var blockTag = TagKey.create(Registries.BLOCK, tag.location());
-                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(blockTag)) {
+            for (TagKey<Block> tag : prefix.getBlockTags(entry.material())) {
+                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
                     blocks.add(itemHolder::value);
+                }
+            }
+            if (blocks.isEmpty() && prefix.hasItemTable() && prefix.doGenerateBlock(entry.material())) {
+                var blockSupplier = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
+                if (blockSupplier != null) {
+                    return Collections.singletonList(blockSupplier);
                 }
             }
             return blocks;
@@ -301,14 +306,10 @@ public class ChemicalHelper {
         return null;
     }
 
-    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @NotNull Material material) {
-        return orePrefix.getItemTags(material);
-    }
-
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {
         List<Pair<ItemStack, ItemMaterialInfo>> f = new ArrayList<>();
         for (var entry : ITEM_MATERIAL_INFO.entrySet()) {
-            f.add(Pair.of(new ItemStack(entry.getKey().asItem()), entry.getValue()));
+            f.add(Pair.of(new ItemStack(entry.getKey()), entry.getValue()));
         }
         return f;
     }

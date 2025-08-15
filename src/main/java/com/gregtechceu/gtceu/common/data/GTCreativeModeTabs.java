@@ -21,11 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTCreativeModeTabs
- */
 @SuppressWarnings("Convert2MethodRef")
 public class GTCreativeModeTabs {
 

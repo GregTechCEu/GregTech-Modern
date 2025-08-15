@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api;
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntFunction;
 
 import static net.minecraft.ChatFormatting.*;
 
@@ -117,6 +119,7 @@ public class GTValues {
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
+            MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
@@ -126,7 +129,9 @@ public class GTValues {
             MODID_ARGONAUTS = "argonauts",
             MODID_HERACLES = "heracles",
             MODID_GAMESTAGES = "gamestages",
-            MODID_FTB_QUEST = "ftbquests";
+            MODID_FTB_QUEST = "ftbquests",
+            MODID_CCTWEAKED = "computercraft";
+
     /**
      * Spray painting compat modids
      */
@@ -137,6 +142,12 @@ public class GTValues {
      */
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
+
+    public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
+            GREEN + BOLD + "A" +
+            BLUE + BOLD + "X" +
+            YELLOW + BOLD + "+" +
+            RED + BOLD + value;
 
     /**
      * The short names for the voltages, formatted for text
@@ -157,38 +168,22 @@ public class GTValues {
             YELLOW + "UXV",
             BLUE.toString() + BOLD + "OpV",
             RED.toString() + BOLD + "MAX",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "1",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "2",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "3",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "4",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "5",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "6",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "7",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "8",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "9",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "10",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "11",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "12",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "13",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "14",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "15",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "16",
+            MAX_PLUS_FORMAT.apply(1),
+            MAX_PLUS_FORMAT.apply(2),
+            MAX_PLUS_FORMAT.apply(3),
+            MAX_PLUS_FORMAT.apply(4),
+            MAX_PLUS_FORMAT.apply(5),
+            MAX_PLUS_FORMAT.apply(6),
+            MAX_PLUS_FORMAT.apply(7),
+            MAX_PLUS_FORMAT.apply(8),
+            MAX_PLUS_FORMAT.apply(9),
+            MAX_PLUS_FORMAT.apply(10),
+            MAX_PLUS_FORMAT.apply(11),
+            MAX_PLUS_FORMAT.apply(12),
+            MAX_PLUS_FORMAT.apply(13),
+            MAX_PLUS_FORMAT.apply(14),
+            MAX_PLUS_FORMAT.apply(15),
+            MAX_PLUS_FORMAT.apply(16),
     };
 
     public static final String[] VCF = new String[] {
@@ -266,6 +261,29 @@ public class GTValues {
     public static final int[] VC = new int[] { 0xC80000, 0xDCDCDC, 0xFF6400, 0xFFFF1E, 0x808080, 0xF0F0F5, 0xE99797,
             0x7EC3C4, 0x7EB07E, 0xBF74C0, 0x0B5CFE, 0x914E91, 0x488748, 0x8C0000, 0x2828F5 };
 
+    // Main colour for each tier
+    public static final int[] VCM = new int[] {
+            DARK_GRAY.getColor(),
+            GRAY.getColor(),
+            AQUA.getColor(),
+            GOLD.getColor(),
+            DARK_PURPLE.getColor(),
+            BLUE.getColor(),
+            LIGHT_PURPLE.getColor(),
+            RED.getColor(),
+            DARK_AQUA.getColor(),
+            DARK_RED.getColor(),
+            GREEN.getColor(),
+            DARK_GREEN.getColor(),
+            YELLOW.getColor(),
+            BLUE.getColor(),
+            RED.getColor()
+    };
+
+    // Main color for steam machines
+    public static final int VC_LP_STEAM = 0xBB8E53;
+    public static final int VC_HP_STEAM = 0x79756F;
+
     /**
      * The long names for the voltages
      */
@@ -279,14 +297,14 @@ public class GTValues {
      */
     public static boolean HT = false;
 
-    public static Supplier<Boolean> FOOLS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("04") && yearMonthDay[2].equals("01");
+    public static BooleanSupplier FOOLS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };
 
-    public static Supplier<Boolean> XMAS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("12") && (yearMonthDay[2].equals("24") || yearMonthDay[2].equals("25"));
+    public static BooleanSupplier XMAS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.DECEMBER && (now.getDayOfMonth() == 24 || now.getDayOfMonth() == 25);
     };
 
     public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";

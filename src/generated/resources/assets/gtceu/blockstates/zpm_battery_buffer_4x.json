@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/zpm_battery_buffer_4x",
+      "y": 270
+    }
+  }
+}

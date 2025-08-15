@@ -1,0 +1,46 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hv_rotor_holder",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/machine/template/rotor_holder/block",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/hv/bottom",
+            "side": "gtceu:block/casings/voltage/hv/side",
+            "top": "gtceu:block/casings/voltage/hv/top"
+          }
+        }
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/overlay"
+      },
+      "when": {
+        "is_formed": "true"
+      }
+    }
+  ],
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "emissive_rotor=false,has_rotor=true,is_formed=true,rotor_spinning=false": {
+      "model": "gtceu:block/machine/template/rotor_holder/rotor_idle"
+    },
+    "emissive_rotor=false,has_rotor=true,is_formed=true,rotor_spinning=true": {
+      "model": "gtceu:block/machine/template/rotor_holder/rotor_spinning"
+    },
+    "emissive_rotor=true,has_rotor=true,is_formed=true,rotor_spinning=false": {
+      "model": "gtceu:block/machine/template/rotor_holder/rotor_idle_emissive"
+    },
+    "emissive_rotor=true,has_rotor=true,is_formed=true,rotor_spinning=true": {
+      "model": "gtceu:block/machine/template/rotor_holder/rotor_spinning_emissive"
+    }
+  }
+}

@@ -30,11 +30,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote MaterialItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TagPrefixItem extends Item {
@@ -56,16 +51,9 @@ public class TagPrefixItem extends Item {
         return getItemBurnTime();
     }
 
-    public void onRegister() {}
-
     @OnlyIn(Dist.CLIENT)
-    public static ItemColor tintColor() {
-        return (itemStack, index) -> {
-            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                return tagPrefixItem.material.getLayerARGB(index);
-            }
-            return -1;
-        };
+    public static ItemColor tintColor(Material material) {
+        return (itemStack, index) -> material.getLayerARGB(index);
     }
 
     @Override

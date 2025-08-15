@@ -18,11 +18,6 @@ import net.minecraftforge.fluids.FluidStack;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/7/12
- * @implNote FluidDrillLogic
- */
 public class FluidDrillLogic extends RecipeLogic {
 
     public static final int MAX_PROGRESS = 20;
@@ -113,7 +108,6 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.postWorking(this.machine, lastRecipe);
             RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();

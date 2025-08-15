@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
@@ -69,7 +71,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-@LDLRegister(name = "fluid_slot", group = "widget.container", priority = 50)
+@LDLRegister(name = "gtm_fluid_slot", group = "widget.gtm_container", priority = 50)
 @Accessors(chain = true)
 public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfigurableWidget {
 
@@ -111,8 +113,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     protected int lastTankCapacity;
     @Setter
     protected Runnable changeListener;
-    @Nullable
-    FluidStack currentJEIRenderedIngredient = null;
+    @Setter
+    protected boolean showAmountOverlay = true;
 
     public TankWidget() {
         this(null, 0, 0, 18, 18, true, true);
@@ -132,8 +134,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidTank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidTank;
-        this.tank = 0;
+        setFluidTank(fluidTank, 0);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -148,8 +149,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidHandler, int tank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidHandler;
-        this.tank = tank;
+        setFluidTank(fluidHandler, tank);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -157,19 +157,41 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     public TankWidget setFluidTank(IFluidHandler fluidTank) {
-        this.fluidTank = fluidTank;
-        this.tank = 0;
+        return setFluidTank(fluidTank, 0);
+    }
+
+    public TankWidget setFluidTank(IFluidHandler fluidTank, int tank) {
+        if (fluidTank instanceof NotifiableFluidTank notifiable) {
+            this.fluidTank = notifiable.getStorages()[tank];
+            this.tank = 0;
+        } else {
+            this.fluidTank = fluidTank;
+            this.tank = tank;
+        }
         if (isClientSideWidget) {
             setClientSideWidget();
         }
         return this;
     }
 
-    public TankWidget setFluidTank(IFluidHandler fluidTank, int tank) {
-        this.fluidTank = fluidTank;
-        this.tank = tank;
-        if (isClientSideWidget) {
-            setClientSideWidget();
+    // for kjs
+    public FluidStack getFluid() {
+        if (isClientSideWidget || isRemote()) {
+            return lastFluidInTank == null ? FluidStack.EMPTY : lastFluidInTank;
+        }
+        return fluidTank != null ? fluidTank.getFluidInTank(tank) : FluidStack.EMPTY;
+    }
+
+    public TankWidget setFluid(FluidStack fluidStack) {
+        return setFluid(fluidStack, true);
+    }
+
+    public TankWidget setFluid(FluidStack fluidStack, boolean notify) {
+        if (fluidTank instanceof IFluidHandlerModifiable modifiable) {
+            modifiable.setFluidInTank(tank, fluidStack);
+            if (notify) {
+                detectAndSendChanges();
+            }
         }
         return this;
     }
@@ -300,15 +322,16 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public List<Component> getFullTooltipTexts() {
         List<Component> tooltips = new ArrayList<>();
         boolean isPhantom = this instanceof PhantomFluidWidget;
-        var stack = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
-        if (stack != null && !stack.isEmpty()) {
-            tooltips.add(stack.getDisplayName());
+        var fluidStack = this.lastFluidInTank;
+        if (fluidStack != null && !fluidStack.isEmpty()) {
+            tooltips.add(fluidStack.getDisplayName());
             if (!isPhantom && showAmount) {
                 tooltips.add(
-                        Component.translatable("gtceu.fluid.amount", FormattingUtil.formatNumbers(stack.getAmount()),
+                        Component.translatable("gtceu.fluid.amount",
+                                FormattingUtil.formatNumbers(fluidStack.getAmount()),
                                 FormattingUtil.formatNumbers(lastTankCapacity)));
             }
-            TooltipsHandler.appendFluidTooltips(stack, tooltips::add, null);
+            TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add, null);
         } else {
             tooltips.add(Component.translatable("gtceu.fluid.empty"));
             if (!isPhantom && showAmount) {
@@ -321,12 +344,12 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     @Override
-    public void setCurrentJEIRenderedIngredient(Object ingredient) {
+    public Object getXEICurrentIngredient() {
+        if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
         if (GTCEu.Mods.isJEILoaded()) {
-            currentJEIRenderedIngredient = ingredient instanceof FluidStack f ? f : null;
-        } else {
-            currentJEIRenderedIngredient = null;
+            return JEICallWrapper.getJEIFluidClickable(lastFluidInTank, getPosition(), getSize());
         }
+        return null;
     }
 
     @Override
@@ -347,7 +370,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
         Position pos = getPosition();
         Size size = getSize();
-        var renderedFluid = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
+        var renderedFluid = lastFluidInTank;
         if (renderedFluid != null) {
             RenderSystem.disableBlend();
             if (!renderedFluid.isEmpty()) {
@@ -366,7 +389,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                         ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             }
 
-            if (showAmount && !renderedFluid.isEmpty()) {
+            if (showAmount && showAmountOverlay && !renderedFluid.isEmpty()) {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 1);
                 String s = TextFormattingUtil.formatLongToCompactStringBuckets(renderedFluid.getAmount(), 3) + "B";

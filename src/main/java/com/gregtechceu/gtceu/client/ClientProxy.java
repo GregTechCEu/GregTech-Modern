@@ -5,10 +5,21 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -23,6 +34,7 @@ import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -30,22 +42,16 @@ import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-/**
- * @author KilaBash
- * @date 2023/7/30
- * @implNote ClientProxy
- */
 public class ClientProxy extends CommonProxy {
 
     public static final BiMap<ResourceLocation, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
@@ -63,6 +69,7 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
+        initializeDynamicRenders();
     }
 
     @SubscribeEvent
@@ -85,8 +92,24 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
+    public void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
+        for (Item item : ForgeRegistries.ITEMS) {
+            if (item instanceof IComponentItem) {
+                event.register(item, GTComponentItemDecorator.INSTANCE);
+            }
+            if (item instanceof IGTTool) {
+                event.register(item, GTToolBarRenderer.INSTANCE);
+            }
+            if (item instanceof LampBlockItem) {
+                event.register(item, GTLampItemOverlayRenderer.INSTANCE);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void registerKeyBindings(RegisterKeyMappingsEvent event) {
         KeyBind.onRegisterKeyBinds(event);
+        SyncedKeyMapping.onRegisterKeyBinds(event);
     }
 
     @SubscribeEvent
@@ -107,5 +130,23 @@ public class ClientProxy extends CommonProxy {
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
+    }
+
+    public static void initializeDynamicRenders() {
+        DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
+
+        DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
+
+        DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
+
+        DynamicRenderManager.register(GTCEu.id("central_monitor"), CentralMonitorRender.TYPE);
+    }
+
+    @SubscribeEvent
+    public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
+        event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
     }
 }

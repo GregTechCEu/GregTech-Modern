@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -9,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
@@ -49,8 +50,8 @@ public class Predicates {
         var candidates = new ArrayList<BlockState>();
         for (BlockState state : allowedStates) {
             candidates.add(state);
-            if (state.getBlock() instanceof ActiveBlock block) {
-                candidates.add(block.changeActive(state, !block.isActive(state)));
+            if (state.hasProperty(ACTIVE)) {
+                candidates.add(state.setValue(ACTIVE, !state.getValue(ACTIVE)));
             }
         }
         return new TraceabilityPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));
@@ -63,6 +64,16 @@ public class Predicates {
     public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
         return new TraceabilityPredicate(
                 new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+    }
+
+    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
+        ArrayList<IMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
+        for (var definition : definitions) {
+            if (definition != null) {
+                machineBlocks.add(definition.get());
+            }
+        }
+        return blocks(machineBlocks.toArray(IMachineBlock[]::new));
     }
 
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {

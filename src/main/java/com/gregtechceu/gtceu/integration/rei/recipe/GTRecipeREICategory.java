@@ -58,9 +58,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
 
     public static void registerWorkStations(CategoryRegistry registry) {
         for (MachineDefinition machine : GTRegistries.MACHINES) {
-            if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
                     registry.addWorkstations(machineCategory(category), EntryStacks.of(machine.asStack()));

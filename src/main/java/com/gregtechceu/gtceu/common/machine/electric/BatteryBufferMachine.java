@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -28,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,15 +37,10 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/10
- * @implNote BatteryBufferMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
-                                  implements IControllable, IFancyUIMachine, IMachineLife {
+                                  implements IControllable, IFancyUIMachine, IMachineLife, IMonitorComponent {
 
     public static final long AMPS_PER_BATTERY = 2L;
 
@@ -53,7 +49,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     @Persisted
     @Getter
-    @Setter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
@@ -148,6 +143,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     // ****** Battery Logic ******//
     //////////////////////////////////////
 
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        energyContainer.checkOutputSubscription();
+    }
+
     private List<Object> getNonFullBatteries() {
         List<Object> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
@@ -205,6 +206,11 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         clearInventory(batteryInventory);
     }
 
+    @Override
+    public IGuiTexture getComponentIcon() {
+        return GuiTextures.BUTTON_CHECK; // temporary
+    }
+
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
         protected EnergyBatteryTrait(int inventorySize) {
@@ -212,6 +218,16 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                     inventorySize * AMPS_PER_BATTERY, GTValues.V[tier], inventorySize);
             this.setSideInputCondition(side -> side != getFrontFacing() && isWorkingEnabled());
             this.setSideOutputCondition(side -> side == getFrontFacing() && isWorkingEnabled());
+        }
+
+        @Override
+        public void checkOutputSubscription() {
+            if (isWorkingEnabled()) {
+                super.checkOutputSubscription();
+            } else if (outputSubs != null) {
+                outputSubs.unsubscribe();
+                outputSubs = null;
+            }
         }
 
         @Override
@@ -247,6 +263,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyOutputPerSec += charged;
                 }
 
                 if (changed) {
@@ -305,6 +322,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyInputPerSec += charged;
                 }
 
                 if (changed) {

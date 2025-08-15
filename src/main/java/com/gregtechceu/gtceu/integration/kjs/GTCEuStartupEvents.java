@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 
@@ -17,7 +18,7 @@ public interface GTCEuStartupEvents {
 
     private static boolean validateRegistry(Object o) {
         try {
-            var id = GTCEu.appendId(o.toString());
+            var id = GTCEu.id(o.toString());
             return GTRegistry.REGISTERED.containsKey(id) || GTRegistryInfo.EXTRA_IDS.contains(id);
         } catch (Exception ex) {
             return false;
@@ -26,4 +27,5 @@ public interface GTCEuStartupEvents {
 
     EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
+    EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsEventJS.class);
 }

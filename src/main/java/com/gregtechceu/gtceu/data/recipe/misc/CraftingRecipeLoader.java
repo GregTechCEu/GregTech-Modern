@@ -200,8 +200,6 @@ public class CraftingRecipeLoader {
                 " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod", SHAPE_EXTRUDER_ROD.asStack(), "   ",
                 " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod_long",
-                SHAPE_EXTRUDER_ROD_LONG.asStack(), "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_plate", SHAPE_EXTRUDER_PLATE.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_FOIL.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear_small",
@@ -237,6 +235,17 @@ public class CraftingRecipeLoader {
                 "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_plate", SHAPE_MOLD_PLATE.asStack(), " h ",
                 " S ", "   ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pipe_huge",
+                SHAPE_MOLD_HUGE_PIPE.asStack(), "   ", "   ", "hS ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pipe_large",
+                SHAPE_MOLD_LARGE_PIPE.asStack(), "   ", "h  ", " S ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pipe_normal",
+                SHAPE_MOLD_NORMAL_PIPE.asStack(), "   ", " h ", " S ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pipe_small",
+                SHAPE_MOLD_SMALL_PIPE.asStack(), "   ", "  h", " S ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pipe_tiny",
+                SHAPE_MOLD_TINY_PIPE.asStack(), "   ", "   ", " Sh", 'S', SHAPE_EMPTY.asStack());
+
         ///////////////////////////////////////////////////
         // Armors //
         ///////////////////////////////////////////////////

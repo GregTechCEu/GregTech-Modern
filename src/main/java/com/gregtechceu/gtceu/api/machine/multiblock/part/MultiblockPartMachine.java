@@ -6,11 +6,12 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -20,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -31,11 +33,6 @@ import java.util.SortedSet;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote MultiblockPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
@@ -44,7 +41,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
-    @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
@@ -113,7 +109,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
             } else {
-                handlerList = RecipeHandlerList.of(handlerIO, handlers);
+                handlerList = RecipeHandlerList.of(handlerIO, getPaintingColor(), handlers);
             }
         }
         return handlerList;
@@ -140,15 +136,29 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
 
+    @MustBeInvokedByOverriders
     @Override
     public void removedFromController(IMultiController controller) {
         controllerPositions.remove(controller.self().getPos());
         controllers.remove(controller);
+
+        if (controllers.isEmpty()) {
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+                setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
+            }
+        }
     }
 
+    @MustBeInvokedByOverriders
     @Override
     public void addedToController(IMultiController controller) {
         controllerPositions.add(controller.self().getPos());
         controllers.add(controller);
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
+        }
     }
 }

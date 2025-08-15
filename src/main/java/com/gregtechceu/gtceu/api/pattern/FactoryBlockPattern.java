@@ -3,22 +3,23 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.CharArrayList;
+import it.unimi.dsi.fastutil.chars.CharList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class FactoryBlockPattern {
 
     private static final Joiner COMMA_JOIN = Joiner.on(",");
     private final List<String[]> depth;
     private final List<int[]> aisleRepetitions;
-    private final Map<Character, TraceabilityPredicate> symbolMap;
+    private final Char2ObjectMap<TraceabilityPredicate> symbolMap;
     private final RelativeDirection[] structureDir;
     private int aisleHeight;
     private int rowWidth;
@@ -26,7 +27,7 @@ public class FactoryBlockPattern {
     private FactoryBlockPattern(RelativeDirection charDir, RelativeDirection stringDir, RelativeDirection aisleDir) {
         depth = new ArrayList<>();
         aisleRepetitions = new ArrayList<>();
-        symbolMap = new HashMap<>();
+        symbolMap = new Char2ObjectArrayMap<>();
         structureDir = new RelativeDirection[3];
         structureDir[0] = charDir;
         structureDir[1] = stringDir;
@@ -167,11 +168,11 @@ public class FactoryBlockPattern {
     }
 
     private void checkMissingPredicates() {
-        List<Character> list = new ArrayList<>();
+        CharList list = new CharArrayList();
 
-        for (Entry<Character, TraceabilityPredicate> entry : this.symbolMap.entrySet()) {
+        for (var entry : this.symbolMap.char2ObjectEntrySet()) {
             if (entry.getValue() == null) {
-                list.add(entry.getKey());
+                list.add(entry.getCharKey());
             }
         }
 

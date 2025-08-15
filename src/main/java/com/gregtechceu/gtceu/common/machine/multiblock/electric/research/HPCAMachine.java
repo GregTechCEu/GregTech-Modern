@@ -51,6 +51,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -101,7 +102,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> coolantContainers = new ArrayList<>();
         List<IHPCAComponentHatch> componentHatches = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (part instanceof IHPCAComponentHatch componentHatch) {
@@ -544,6 +546,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         /** Allocate computation on a given request. Allocates for one tick. */
         public int allocateCWUt(int cwut, boolean simulate) {
+            if (cwut == 0) return 0;
             int maxCWUt = getMaxCWUt();
             int availableCWUt = maxCWUt - this.allocatedCWUt;
             int toAllocate = Math.min(cwut, availableCWUt);
@@ -712,7 +715,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,
                                               Direction upwardsFacing, boolean flip) {
-            Direction relativeUp = RelativeDirection.UP.getRelativeFacing(frontFacing, upwardsFacing, flip);
+            Direction relativeUp = RelativeDirection.UP.getRelative(frontFacing, upwardsFacing, flip);
 
             if (components.isEmpty()) {
                 BlockPos testPos = pos

@@ -1,6 +1,6 @@
 {
-	"parent": "gtceu:block/overlay/front",
-	"textures": {
-		"overlay": "gtceu:block/cover/overlay_pump"
-	}
+    "parent": "gtceu:block/overlay/front",
+    "textures": {
+        "overlay": "gtceu:block/cover/pump"
+    }
 }

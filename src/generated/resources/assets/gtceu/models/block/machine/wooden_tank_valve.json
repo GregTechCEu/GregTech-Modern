@@ -1,0 +1,56 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:wooden_tank_valve",
+  "texture_overrides": {
+    "bottom": "gtceu:block/casings/wood_wall/bottom",
+    "side": "gtceu:block/casings/wood_wall/side",
+    "top": "gtceu:block/casings/wood_wall/top"
+  },
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/wood_wall/bottom",
+          "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front",
+          "side": "gtceu:block/casings/wood_wall/side",
+          "top": "gtceu:block/casings/wood_wall/top"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/wood_wall/bottom",
+          "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front",
+          "side": "gtceu:block/casings/wood_wall/side",
+          "top": "gtceu:block/casings/wood_wall/top"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/wood_wall/bottom",
+          "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active",
+          "side": "gtceu:block/casings/wood_wall/side",
+          "top": "gtceu:block/casings/wood_wall/top"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/wood_wall/bottom",
+          "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active",
+          "side": "gtceu:block/casings/wood_wall/side",
+          "top": "gtceu:block/casings/wood_wall/top"
+        }
+      }
+    }
+  }
+}

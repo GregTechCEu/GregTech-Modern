@@ -6,22 +6,22 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +56,10 @@ public abstract class RecipeCapability<T> {
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
         return Content.codec(capability).listOf();
+    }
+
+    public Tag contentToNbt(Object value) {
+        return this.serializer.toNbt(this.of(value));
     }
 
     /**
@@ -99,34 +103,24 @@ public abstract class RecipeCapability<T> {
         return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
-    public Component getName() {
+    public MutableComponent getName() {
         return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
+
+    public MutableComponent getColoredName() {
+        return getName().withStyle(style -> style.withColor(this.color));
     }
 
     public boolean isRecipeSearchFilter() {
         return false;
     }
 
-    /**
-     * Convert the passed object to a list of recipe lookup filters.
-     *
-     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
-     * @return a list of recipe lookup filters.
-     */
-    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
-        return List.of();
-    }
-
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
     }
 
-    public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
-        List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
-        for (var ingredient : ingredients) {
-            ret.add(convertToMapIngredient(ingredient));
-        }
-        return ret;
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        return null;
     }
 
     /**
@@ -138,17 +132,17 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
-     * maximum parallel amount based on the inputs (and possibly outputs) provided.
+     * Calculate the maximum parallel amount based on the output space of the holder
      *
-     * @param recipe     the recipe from which we get the input to product ratio
-     * @param holder     the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
-     * @param multiplier the maximum possible multiplied we can get from the input inventory
-     *                   see {@link ParallelLogic#limitByInput}
+     * @param holder        the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe        the recipe from which we get the input to product ratio
+     * @param maxMultiplier the upper bound on the multiplier, see {@link #getMaxParallelByInput}
+     * @param tick          whether to check regular outputs or tick outputs
      * @return the amount of times a {@link GTRecipe} outputs can be merged into an inventory without voiding products.
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
-    // TODO: kross - make it so caps check both regular outputs and tick outputs
-    public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier,
+                                        boolean tick) {
         return Integer.MAX_VALUE;
     }
 
@@ -156,14 +150,14 @@ public abstract class RecipeCapability<T> {
      * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input
      * inventories
      *
-     * @param holder         The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the
-     *                       machine.
-     * @param recipe         The {@link GTRecipe} for which to find the maximum that can be run simultaneously
-     * @param parallelAmount The limit on the amount of recipes that can be performed at one time
+     * @param holder The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe The {@link GTRecipe} for which to find the maximum that can be run simultaneously
+     * @param limit  The hard limit on the amount of recipes that can be performed at one time
+     * @param tick   whether to check regular outputs or tick outputs
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
-    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
         return Integer.MAX_VALUE;
     }
 
@@ -189,6 +183,9 @@ public abstract class RecipeCapability<T> {
         return null;
     }
 
+    /**
+     * Return the class of the supported widget that should be used to display this capability.
+     */
     @Nullable
     public Class<? extends Widget> getWidgetClass() {
         return null;
@@ -215,5 +212,14 @@ public abstract class RecipeCapability<T> {
 
     public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
+    }
+
+    /**
+     * Should this RecipeCapability bypass distinct checks?
+     * E.g. should this bus be added to all recipe checks on a multi, even distinct ones like ME Pattern buffers.
+     * for example: energy hatches, soul hatches, other "global per multi" hatches.
+     */
+    public boolean shouldBypassDistinct() {
+        return true;
     }
 }

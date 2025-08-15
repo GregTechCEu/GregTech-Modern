@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/overlay/2_layer/front",
+    "textures": {
+        "overlay": "gtceu:block/overlay/machine/overlay_maintenance_configurable",
+        "overlay_2": "gtceu:block/void"
+    }
+}

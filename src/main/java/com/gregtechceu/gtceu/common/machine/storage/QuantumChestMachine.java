@@ -282,7 +282,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     private static boolean isDoubleHit(UUID uuid) {
-        return (System.currentTimeMillis() - INTERACTION_LOGGER.getOrDefault(uuid, System.currentTimeMillis())) < 300;
+        return (System.currentTimeMillis() - INTERACTION_LOGGER.getLong(uuid)) < 300;
     }
 
     @Override
@@ -313,8 +313,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             } else {
                 setOutputFacingItems(null);
             }
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
@@ -426,8 +425,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {

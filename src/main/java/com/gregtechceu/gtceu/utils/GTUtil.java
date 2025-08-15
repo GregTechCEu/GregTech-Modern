@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +24,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -33,6 +36,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
@@ -40,30 +47,45 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote GTUtil
- */
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
+        var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
+        BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
+                .filter((pos) -> (pos.getX() == 0 || pos.getY() == 0 || pos.getZ() == 0) && !pos.equals(BlockPos.ZERO))
+                .map(BlockPos::immutable)
+                .forEach(builder::add);
+        return builder.build();
+    });
+
+    private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
+
+    /**
+     * Convenience method to get from VN -> Tier
+     * 
+     * @return the voltage tier by name, -1 if the tier name isn't valid
+     */
+    public static int getTierByName(String name) {
+        return RVN.getOrDefault(name, -1);
+    }
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -269,29 +291,28 @@ public class GTUtil {
         return replacement;
     }
 
-    public static <T> int getRandomItem(RandomSource random, List<? extends Entry<Integer, T>> randomList, int size) {
-        if (randomList.isEmpty())
-            return -1;
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(RandomSource random, List<T> randomList) {
+        if (randomList.isEmpty()) return null;
+        int size = randomList.size();
         int[] baseOffsets = new int[size];
         int currentIndex = 0;
         for (int i = 0; i < size; i++) {
-            Entry<Integer, T> entry = randomList.get(i);
-            if (entry.getKey() <= 0) {
-                throw new IllegalArgumentException("Invalid weight: " + entry.getKey());
+            int weight = randomList.get(i).weight();
+            if (weight <= 0) {
+                throw new IllegalArgumentException("Invalid weight: " + weight);
             }
-            currentIndex += entry.getKey();
+            currentIndex += weight;
             baseOffsets[i] = currentIndex;
         }
         int randomValue = random.nextInt(currentIndex);
         for (int i = 0; i < size; i++) {
-            if (randomValue < baseOffsets[i])
-                return i;
+            if (randomValue < baseOffsets[i]) return randomList.get(i);
         }
         throw new IllegalArgumentException("Invalid weight");
     }
 
-    public static <T> int getRandomItem(List<? extends Entry<Integer, T>> randomList, int size) {
-        return getRandomItem(GTValues.RNG, randomList, size);
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(List<T> randomList) {
+        return getRandomItem(GTValues.RNG, randomList);
     }
 
     @SuppressWarnings("unchecked")
@@ -371,18 +392,20 @@ public class GTUtil {
     public static DyeColor determineDyeColor(int rgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
-        Map<Double, DyeColor> distances = new HashMap<>();
+        double min = Double.MAX_VALUE;
+        DyeColor minColor = null;
         for (DyeColor dyeColor : DyeColor.values()) {
             float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            distances.put(distance, dyeColor);
+            if (Double.compare(min, distance) < 0) {
+                minColor = dyeColor;
+                min = distance;
+            }
         }
-
-        double min = Collections.min(distances.keySet());
-        return distances.get(min);
+        return minColor;
     }
 
     public static int convertRGBtoARGB(int colorValue) {
@@ -435,6 +458,45 @@ public class GTUtil {
         } else return world.isDay();
     }
 
+    /**
+     * @param state the blockstate to check
+     * @return if the block is a snow layer or snow block
+     */
+    public static boolean isBlockSnow(@NotNull BlockState state) {
+        return state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK);
+    }
+
+    /**
+     * Attempt to break a (single) snow layer at the given BlockPos.
+     * Will also turn snow blocks into snow layers at height 7.
+     *
+     * @return true if the passed IBlockState was valid snow block
+     */
+    public static boolean tryBreakSnow(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
+                                       boolean playSound) {
+        boolean success = false;
+        if (state.is(Blocks.SNOW_BLOCK)) {
+            level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 7),
+                    Block.UPDATE_ALL_IMMEDIATE);
+            success = true;
+        } else if (state.getBlock() == Blocks.SNOW) {
+            int layers = state.getValue(SnowLayerBlock.LAYERS);
+            if (layers == 1) {
+                level.destroyBlock(pos, false);
+            } else {
+                level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers - 1),
+                        Block.UPDATE_ALL_IMMEDIATE);
+            }
+            success = true;
+        }
+
+        if (success && playSound) {
+            level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
+        }
+
+        return success;
+    }
+
     public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
@@ -473,7 +535,7 @@ public class GTUtil {
                 }
             }
 
-            if (stack.getItem().canBeDepleted()) {
+            if (stack.isDamageableItem()) {
                 stack.setDamageValue(stack.getDamageValue());
             }
             return stack;
@@ -517,5 +579,13 @@ public class GTUtil {
                     Component.literal(String.valueOf(100 * probability))
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
+    }
+
+    public static <T> T getLast(List<T> list) {
+        return list.get(list.size() - 1);
+    }
+
+    public static <T> ArrayList<T> list(T obj) {
+        return new ArrayList<>(List.of(obj));
     }
 }

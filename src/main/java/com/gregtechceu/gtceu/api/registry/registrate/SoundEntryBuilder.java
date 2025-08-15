@@ -24,11 +24,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote SoundEntryBuilder
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SoundEntryBuilder {

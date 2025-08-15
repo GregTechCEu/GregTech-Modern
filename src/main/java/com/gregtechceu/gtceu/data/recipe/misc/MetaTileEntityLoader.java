@@ -138,21 +138,26 @@ public class MetaTileEntityLoader {
                 "PIP", "IFI", "PIP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene),
                 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.Polytetrafluoroethylene), 'I',
                 new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polytetrafluoroethylene));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_bronze_firebox", GTBlocks.FIREBOX_BRONZE.asStack(2),
+        // Decomposition info handled by the assembler recipe
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "casing_bronze_firebox",
+                GTBlocks.FIREBOX_BRONZE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft),
                 "PSP", "SFS", "PSP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Bronze), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.Bronze), 'S',
                 new MaterialEntry(TagPrefix.rod, GTMaterials.Bronze));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_steel_firebox", GTBlocks.FIREBOX_STEEL.asStack(2),
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "casing_steel_firebox",
+                GTBlocks.FIREBOX_STEEL.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft),
                 "PSP", "SFS", "PSP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Steel), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.Steel), 'S',
                 new MaterialEntry(TagPrefix.rod, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_titanium_firebox",
-                GTBlocks.FIREBOX_TITANIUM.asStack(2), "PSP", "SFS", "PSP", 'P',
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "casing_titanium_firebox",
+                GTBlocks.FIREBOX_TITANIUM.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PSP", "SFS", "PSP",
+                'P',
                 new MaterialEntry(TagPrefix.plate, GTMaterials.Titanium), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.Titanium), 'S',
                 new MaterialEntry(TagPrefix.rod, GTMaterials.Titanium));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_tungstensteel_firebox",
-                GTBlocks.FIREBOX_TUNGSTENSTEEL.asStack(2), "PSP", "SFS", "PSP", 'P',
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "casing_tungstensteel_firebox",
+                GTBlocks.FIREBOX_TUNGSTENSTEEL.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PSP", "SFS",
+                "PSP", 'P',
                 new MaterialEntry(TagPrefix.plate, GTMaterials.TungstenSteel), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel), 'S',
                 new MaterialEntry(TagPrefix.rod, GTMaterials.TungstenSteel));
@@ -558,19 +563,25 @@ public class MetaTileEntityLoader {
                 'R', new MaterialEntry(TagPrefix.rotor, GTMaterials.Iron),
                 'H', GTBlocks.BRONZE_BRICKS_HULL,
                 'F', Items.FLINT_AND_STEEL);
+
         if (!ConfigHolder.INSTANCE.recipes.hardMultiRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', Blocks.FURNACE.asItem(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', Blocks.BLAST_FURNACE.asItem(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_blast_furnace",
-                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), "FFF", "CMC", "WCW", 'M',
-                    GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(), 'C',
-                    CustomTags.LV_CIRCUITS,
+                    GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(),
+                    "FFF", "CMC", "WCW",
+                    'M', GTBlocks.CASING_INVAR_HEATPROOF.asStack(),
+                    'F', GTMachines.ELECTRIC_FURNACE[LV].asStack(),
+                    'C', CustomTags.LV_CIRCUITS,
                     'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin));
         }
+
         VanillaRecipeHelper.addShapedRecipe(provider, true, "vacuum_freezer", GTMultiMachines.VACUUM_FREEZER.asStack(),
                 "PPP", "CMC", "WCW", 'M', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(), 'P', GTItems.ELECTRIC_PUMP_HV,
                 'C', CustomTags.EV_CIRCUITS, 'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
@@ -635,6 +646,11 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.gear, GTMaterials.TungstenSteel), 'P', CustomTags.LuV_CIRCUITS, 'A',
                 GTMachines.HULL[GTValues.LuV].asStack(), 'C',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.TungstenSteel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "central_monitor",
+                GTMultiMachines.CENTRAL_MONITOR.asStack(), "CMC", "SAE", "FFF", 'C',
+                CustomTags.MV_CIRCUITS, 'M', GTItems.COVER_SCREEN, 'S', GTItems.SENSOR_MV,
+                'A', GTMachines.HULL[GTValues.MV].asStack(), 'E', GTItems.EMITTER_MV,
+                'F', GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_bronze_boiler",
                 GTMultiMachines.LARGE_BOILER_BRONZE.asStack(), "PSP", "SAS", "PSP", 'P',
@@ -863,26 +879,11 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.DIODE, GTValues.LuV, GTMachines.DIODE.length),
                 "CDC", "DHD", "PDP", 'H', HULL, 'D', GTItems.ADVANCED_SMD_DIODE, 'P', PLATE, 'C', CABLE_QUAD);
 
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV), " CC",
-                "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.UHV), "WCC",
-                "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC",
-                'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_2A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC",
-                'W', POWER_COMPONENT, 'C', CABLE_DOUBLE, 'T', CABLE_TIER_UP_DOUBLE, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.ULV, GTValues.MV), " CC", "TH ", " CC",
-                'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
-        registerMachineRecipe(provider,
-                ArrayUtils.subarray(GTMachines.HI_AMP_TRANSFORMER_4A, GTValues.MV, GTValues.UHV), "WCC", "TH ", "WCC",
-                'W', POWER_COMPONENT, 'C', CABLE_QUAD, 'T', CABLE_TIER_UP_QUAD, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.ULV, GTValues.MV),
-                " CC", "TH ", " CC", 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
-        registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.MV, GTValues.UHV),
-                "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
+        // Decomposition info handled by the assembler recipe
+        registerMachineRecipe(provider, false, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.ULV, GTValues.MV),
+                " CC", "TH ", " CC", 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
+        registerMachineRecipe(provider, false, ArrayUtils.subarray(GTMachines.TRANSFORMER, GTValues.MV, GTValues.IV),
+                "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE, 'T', CABLE_TIER_UP, 'H', HULL);
 
         registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_4, "WTW", "WMW", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN);

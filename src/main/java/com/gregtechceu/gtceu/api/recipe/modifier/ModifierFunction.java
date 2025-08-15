@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -98,6 +99,7 @@ public interface ModifierFunction {
     final class FunctionBuilder {
 
         private int parallels = 1;
+        private int batchParallels = 1;
         private int addOCs = 0;
         private ContentModifier eutModifier = ContentModifier.IDENTITY;
         private ContentModifier durationModifier = ContentModifier.IDENTITY;
@@ -159,15 +161,16 @@ public interface ModifierFunction {
                         recipe.data, recipe.duration, recipe.recipeCategory);
                 copied.parallels = recipe.parallels * parallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;
+                copied.batchParallels = recipe.batchParallels * batchParallels;
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
                     copied.duration = (int) Math.max(1, (recipe.duration * (1f - 0.025f * addOCs)));
                 } else {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));
                 }
                 if (eutModifier != ContentModifier.IDENTITY) {
-                    long preEUt = RecipeHelper.getRealEUt(recipe);
-                    long eut = Math.max(1, eutModifier.apply(Math.abs(preEUt)));
-                    EURecipeCapability.putEUContent(preEUt > 0 ? copied.tickInputs : copied.tickOutputs, eut);
+                    var preEUt = RecipeHelper.getRealEUtWithIO(recipe);
+                    EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt.stack(), eutModifier);
+                    EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
                 }
                 return copied;
             };
@@ -175,6 +178,7 @@ public interface ModifierFunction {
 
         private static Map<RecipeCapability<?>, List<Content>> applyAllButEU(ContentModifier cm,
                                                                              Map<RecipeCapability<?>, List<Content>> contents) {
+            if (cm == ContentModifier.IDENTITY) return new HashMap<>(contents);
             Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
             for (var entry : contents.entrySet()) {
                 var cap = entry.getKey();

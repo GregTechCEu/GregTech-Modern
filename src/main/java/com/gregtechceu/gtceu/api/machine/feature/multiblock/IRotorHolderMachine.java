@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
@@ -13,20 +14,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote IRotorHolderMachine
- */
 public interface IRotorHolderMachine extends IMultiPart {
 
     int SPEED_INCREMENT = 1;
     int SPEED_DECREMENT = 3;
+
+    BooleanProperty HAS_ROTOR_PROPERTY = GTMachineModelProperties.HAS_ROTOR;
+    BooleanProperty ROTOR_SPINNING_PROPERTY = GTMachineModelProperties.IS_ROTOR_SPINNING;
+    BooleanProperty EMISSIVE_ROTOR_PROPERTY = GTMachineModelProperties.IS_EMISSIVE_ROTOR;
 
     /**
      * @return the base efficiency of the rotor holder in %

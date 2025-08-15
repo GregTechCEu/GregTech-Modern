@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -213,7 +213,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",
                             machine.getFrontFacing().getSerializedName()));
                     list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing",
-                            machineBlockEntity.self().getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY)
+                            machineBlockEntity.self().getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING)
                                     .getSerializedName()));
                 }
 
@@ -330,21 +330,16 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                         list.addAll(recipeLogic.getFancyTooltip());
                     } else if (recipe != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
-                        var EUt = RecipeHelper.getInputEUt(recipe);
-                        var isInput = true;
-                        if (EUt == 0) {
-                            isInput = false;
-                            EUt = RecipeHelper.getOutputEUt(recipe);
-                        }
+                        var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
                         list.add(Component.translatable(
-                                isInput ? "behavior.portable_scanner.workable_consumption" :
+                                EUt.isInput() ? "behavior.portable_scanner.workable_consumption" :
                                         "behavior.portable_scanner.workable_production",
-                                Component.translatable(FormattingUtil.formatNumbers(EUt))
+                                // TODO is this supposed to show voltage or total EU/t?
+                                Component.translatable(FormattingUtil.formatNumbers(EUt.getTotalEU()))
                                         .withStyle(ChatFormatting.RED),
-                                // TODO: Change number once there is multi amp behavior
                                 Component.translatable(
-                                        FormattingUtil.formatNumbers(1))
+                                        FormattingUtil.formatNumbers(EUt.amperage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                 }
@@ -403,7 +398,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     var fluidInfo = ProspectorMode.FluidInfo
                             .fromVeinWorldEntry(veinData.getFluidVeinWorldEntry(chunkX, chunkZ));
                     var packet = new SPacketProspectBedrockFluid(level.dimension(), pos, fluidInfo);
-                    GTNetwork.NETWORK.sendToPlayer(packet, (ServerPlayer) player);
+                    GTNetwork.sendToPlayer((ServerPlayer) player, packet);
 
                     if (player.isCreative()) {
                         list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.amount",
