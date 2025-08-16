@@ -61,8 +61,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
     protected void validateResearchItem(ResourceLocation recipeId) {
         if (itemResearchStack.isEmpty() && fluidResearchStack.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Research recipe for " + recipeId + " must have an item or fluid stack!");
+            throw new IllegalArgumentException(String.format(
+                    "Research recipe must have an item or fluid stack, id %s", recipeId));
         }
 
         if (researchId == null) {
