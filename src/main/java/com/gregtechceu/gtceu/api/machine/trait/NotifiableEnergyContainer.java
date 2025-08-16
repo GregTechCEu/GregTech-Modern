@@ -314,7 +314,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             }
 
             // Check if recipe voltage is less than or equal to handler voltage
-            if (io.support(IO.IN) && stack.voltage() > this.getInputVoltage()) {
+            long maxVoltage = io == IO.IN ? this.getInputVoltage() : this.getOutputVoltage();
+            if (stack.voltage() > maxVoltage) {
                 continue;
             }
 
