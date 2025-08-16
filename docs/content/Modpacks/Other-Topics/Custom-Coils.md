@@ -20,4 +20,9 @@ StartupEvents.registry('block', event => {
 })
 ```
 
-1. The Energy Discount must be at least 1.
+Temperature, Level, energyDiscount, and Tier all must be integers.
+* `temperature`: Used by Electric Blast Furnace recipes
+* `level`: Used to determine Multi-Smelter Parallels, at 32*level
+* `energyDiscount`: Used to determine Multi-Smelter power usage. EU/t = (4 * Parallels) / (8 * Discount), before overclocks.
+* `tier`: Used for Speed Bonus in the Pyrolyze Oven, and Energy Discount in the Cracking Unit. +50% Speed, 
+-10% Energy per tier.
