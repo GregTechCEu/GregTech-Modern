@@ -8,7 +8,7 @@
         "parent": "gtceu:block/hpca_bridge_component_base",
         "textures": {
           "overlay": "gtceu:block/overlay/machine/hpca/bridge",
-          "overlay_emissive": "gtceu:block/void"
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/bridge_emissive"
         }
       }
     },
@@ -17,7 +17,7 @@
         "parent": "gtceu:block/hpca_bridge_component_base",
         "textures": {
           "overlay": "gtceu:block/overlay/machine/hpca/damaged",
-          "overlay_emissive": "gtceu:block/void"
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_emissive"
         }
       }
     },
