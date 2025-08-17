@@ -52,4 +52,4 @@ Energy Discount. This is significant because
   * A Perfect Overclock to lower recipes *(from +1800 temp)*
 * For the Multi-Smelter, there are effectively two stats: work-per-time, and work-per-EU.
   * For tiers that double the Level, the Multi-Smelter gains 2x the work-per-time, at the same work-per-EU
-  * For tiers that double the energyDiscount, the Multi-Smelter gains 2x the work-per-EU, at the same work-per-time
+  * For tiers that double the Energy Discount, the Multi-Smelter gains 2x the work-per-EU, at the same work-per-time
