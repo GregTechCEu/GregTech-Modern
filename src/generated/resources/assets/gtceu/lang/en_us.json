@@ -1592,7 +1592,7 @@
   "block.gtceu.white_studs": "White Studs",
   "block.gtceu.wire_coil.tooltip_cracking": "§8Cracking Unit:",
   "block.gtceu.wire_coil.tooltip_energy_cracking": "  §aEnergy Usage: §f%s%%",
-  "block.gtceu.wire_coil.tooltip_energy_smelter": "  §aEnergy Usage: §f%s EU/t §8per recipe",
+  "block.gtceu.wire_coil.tooltip_energy_smelter": "  §aEnergy Usage: §f%s EU/t",
   "block.gtceu.wire_coil.tooltip_extended_info": "§7Hold SHIFT to show Coil Bonus Info",
   "block.gtceu.wire_coil.tooltip_heat": "§cBase Heat Capacity: §f%d K",
   "block.gtceu.wire_coil.tooltip_parallel_smelter": "  §5Max Parallel: §f%s",
