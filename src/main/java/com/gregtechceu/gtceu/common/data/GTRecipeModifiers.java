@@ -228,7 +228,7 @@ public class GTRecipeModifiers {
      * <li>Calculates the maximum parallel as {@code 32 × coilLevel}</li>
      * <li>Finds the actual parallel amount that the smelter can do</li>
      * <li>Sets the recipe duration to {@code 128 × 2 × parallels / maxParallels}</li>
-     * <li>Sets the recipe EUt to {@code parallels / (8 × coilDiscount)}</li>
+     * <li>Sets the recipe EUt to {@code 4 × (parallels / (8 × coilDiscount))}</li>
      * <li>Applies {@link OverclockingLogic#NON_PERFECT_OVERCLOCK} to this modified recipe</li>
      * <li>Multiplies the recipe contents by the parallel amount</li>
      * </ol>
