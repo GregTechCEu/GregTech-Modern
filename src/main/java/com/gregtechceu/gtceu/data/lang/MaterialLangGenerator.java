@@ -9,7 +9,7 @@ public class MaterialLangGenerator {
 
     public static void generate(RegistrateLangProvider provider, MaterialRegistry registry) {
         for (Material material : registry.getAllMaterials()) {
-            provider.add(material.getUnlocalizedName(), material.getLangName());
+            provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
         }
     }
 }
