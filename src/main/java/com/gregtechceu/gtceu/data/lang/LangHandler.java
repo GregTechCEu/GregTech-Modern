@@ -871,8 +871,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
-        provider.add("behavior.data_item.assemblyline.title", "§nAssembly Line Construction Data:");
-        provider.add("behavior.data_item.assemblyline.data", "- §a%s");
+        provider.add("behavior.data_item.title", "§n%s Construction Data:");
+        provider.add("behavior.data_item.data", "- §a%s");
 
         provider.add("metaitem.terminal.tooltip", "Sharp tools make good work");
         provider.add("metaitem.terminal.tooltip.creative", "§bCreative Mode");

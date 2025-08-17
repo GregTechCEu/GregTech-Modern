@@ -1,6 +1,6 @@
 {
-  "behavior.data_item.assemblyline.data": "- §a%s",
-  "behavior.data_item.assemblyline.title": "§nAssembly Line Construction Data:",
+  "behavior.data_item.data": "- §a%s",
+  "behavior.data_item.title": "§n%s Construction Data:",
   "behavior.item_magnet.disabled": "§cMagnetic Field Disabled",
   "behavior.item_magnet.enabled": "§aMagnetic Field Enabled",
   "behavior.portable_scanner.amp_per_sec": "Average (last second): %s A",
