@@ -17,9 +17,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 
 import mcjty.theoneprobe.api.CompoundText;
 import mcjty.theoneprobe.api.ElementAlignment;
@@ -58,7 +60,13 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
 
                 List<Ingredient> itemOutputs = new ArrayList<>();
                 for (var item : itemContents) {
-                    var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                    ItemStack[] stacks;
+                    Ingredient content = ItemRecipeCapability.CAP.of(item.content);
+                    if (content instanceof IntProviderIngredient provider) {
+                        stacks = provider.getInner().getItems();
+                    } else {
+                        stacks = content.getItems();
+                    }
                     if (stacks.length == 0) continue;
                     if (stacks[0].isEmpty()) continue;
                     var stack = stacks[0].copy();
@@ -75,7 +83,13 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
 
                 List<FluidIngredient> fluidOutputs = new ArrayList<>();
                 for (var fluid : fluidContents) {
-                    var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                    FluidStack[] stacks;
+                    FluidIngredient content = FluidRecipeCapability.CAP.of(fluid.content);
+                    if (content instanceof IntProviderFluidIngredient provider) {
+                        stacks = provider.getInner().getStacks();
+                    } else {
+                        stacks = content.getStacks();
+                    }
                     if (stacks.length == 0) continue;
                     if (stacks[0].isEmpty()) continue;
                     var stack = stacks[0].copy();

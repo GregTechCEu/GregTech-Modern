@@ -170,6 +170,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
+        recipeType.setMinRecipeConditions(builder.conditions.size());
         return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
@@ -209,6 +210,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder addCondition(RecipeCondition condition) {
         conditions.add(condition);
+        recipeType.setMinRecipeConditions(conditions.size());
         return this;
     }
 
@@ -1223,7 +1225,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Scanner.
      */
     public GTRecipeBuilder scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }
@@ -1244,7 +1246,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Research Station.
      */
     public GTRecipeBuilder stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }
@@ -1574,7 +1576,7 @@ public class GTRecipeBuilder {
      */
     public record ResearchRecipeEntry(@NotNull String researchId,
                                       @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
-                                      @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {
+                                      @NotNull ItemStack dataStack, int duration, EnergyStack EUt, int CWUt) {
 
     }
 }

@@ -212,6 +212,14 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return traceCoverSide(rayTrace);
     }
 
+    default boolean hasDynamicCovers() {
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = this.getCoverAtSide(face);
+            if (cover != null && cover.getDynamicRenderer().get() != null) return true;
+        }
+        return false;
+    }
+
     class PrimaryBoxData {
 
         public final boolean usePlacementGrid;

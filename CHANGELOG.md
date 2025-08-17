@@ -1,5 +1,24 @@
 # ChangeLog
 
+## Version [v7.1.3](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.1.2-1.20.1...v7.1.3-1.20.1)
+### Added
+
+- Make Parallel calculations use longs for stack amounts by @jurrejelle in [#3650](https://github.com/GregTechCEu/GregTech-Modern/pull/3650)
+- make multiblock maintenance time configurable by @DilithiumThoride in [#3652](https://github.com/GregTechCEu/GregTech-Modern/pull/3652)
+- make the fe-to-eu and eu-to-fe ratios max at maxint by @NegaNote in [#3656](https://github.com/GregTechCEu/GregTech-Modern/pull/3656)
+
+### Fixed
+
+- 335,544.32% recipe logic improvement by @YoungOnionMC in [#3645](https://github.com/GregTechCEu/GregTech-Modern/pull/3645)
+- Fix diodes not updating their model on sync by @DilithiumThoride in [#3651](https://github.com/GregTechCEu/GregTech-Modern/pull/3651)
+- Fix recipe viewer integration not working with research recipes that contain fluids by @Ghostipedia in [#3655](https://github.com/GregTechCEu/GregTech-Modern/pull/3655)
+- Fix Parallel logic calculating the required amount wrong when there are split ingredients by @YoungOnionMC in [#3658](https://github.com/GregTechCEu/GregTech-Modern/pull/3658)
+
+### Changed
+
+- Optimize Network Switch for repeat CWU/t requests by @serenibyss in [#3654](https://github.com/GregTechCEu/GregTech-Modern/pull/3654)
+
+ 
 ## Version [v7.0.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.6.4-1.20.1...v7.0.0-1.20.1)
 ### Added
 

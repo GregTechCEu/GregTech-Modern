@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -109,6 +110,12 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     public void readInitialData(FriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         textField.setCurrentString(buffer.readUtf());
+    }
+
+    @Override
+    public Widget setHoverTooltips(String... tooltipText) {
+        textField.setHoverTooltips(tooltipText);
+        return super.setHoverTooltips(tooltipText);
     }
 
     private void buildUI() {

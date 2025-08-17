@@ -271,13 +271,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setWaiting(handleTick.reason());
 
                 // Machine isn't getting enough power, suspend after 5 attempts.
-                if (conditionResult.io() == IO.IN && conditionResult.capability() == EURecipeCapability.CAP) {
+                if (handleTick.io() == IO.IN && handleTick.capability() == EURecipeCapability.CAP) {
                     runAttempt++;
                     if (runAttempt > 5) {
                         runAttempt = 0;
                         setStatus(Status.SUSPEND);
                     }
-                    runDelay = runAttempt * 10;
+                    runDelay = runAttempt * 60;
                 }
             }
         } else {
@@ -421,12 +421,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        setSuspendAfterFinish(!isWorkingAllowed);
-        if (isWorkingAllowed) {
-            if (lastRecipe != null && duration > 0) {
-                setStatus(Status.WORKING);
-            } else {
-                setStatus(Status.IDLE);
+        if (!isWorkingAllowed && getStatus() == Status.IDLE) {
+            setStatus(Status.SUSPEND);
+        } else {
+            setSuspendAfterFinish(!isWorkingAllowed);
+            if (isWorkingAllowed) {
+                if (lastRecipe != null && duration > 0) {
+                    setStatus(Status.WORKING);
+                } else {
+                    setStatus(Status.IDLE);
+                }
             }
         }
     }

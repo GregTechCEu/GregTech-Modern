@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, BoilerMultiPartRender>
+public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMachine, BoilerMultiPartRender>
                                    implements IControllerModelRenderer {
 
     // spotless:off
@@ -48,7 +47,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
             BlockState.CODEC.fieldOf("firebox_active").forGetter(BoilerMultiPartRender::getFireboxActive),
             BlockState.CODEC.fieldOf("casing_block").forGetter(BoilerMultiPartRender::getCasing)
     ).apply(instance, BoilerMultiPartRender::new));
-    public static final DynamicRenderType<LargeBoilerMachine, BoilerMultiPartRender> TYPE = new DynamicRenderType<>(BoilerMultiPartRender.CODEC);
+    public static final DynamicRenderType<MultiblockControllerMachine, BoilerMultiPartRender> TYPE = new DynamicRenderType<>(BoilerMultiPartRender.CODEC);
     // spotless:on
 
     @Getter
@@ -72,16 +71,17 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     }
 
     @Override
-    public DynamicRenderType<LargeBoilerMachine, BoilerMultiPartRender> getType() {
+    public DynamicRenderType<MultiblockControllerMachine, BoilerMultiPartRender> getType() {
         return TYPE;
     }
 
     @Override
-    public void render(LargeBoilerMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
+    public void render(MultiblockControllerMachine machine, float partialTick, PoseStack poseStack,
+                       MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {}
 
     @Override
-    public boolean shouldRender(LargeBoilerMachine machine, Vec3 cameraPos) {
+    public boolean shouldRender(MultiblockControllerMachine machine, Vec3 cameraPos) {
         return false;
     }
 
