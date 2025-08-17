@@ -85,7 +85,7 @@ public class RecipeRunner {
 
                 if (cont.chance >= cont.maxChance) {
                     contentList.add(cont.content);
-                } else if (cont.chance > 0) {
+                } else if (cont.chance > 0 || cont.tierChanceBoost > 0) {
                     chancedContents.add(cont);
                 }
                 // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
