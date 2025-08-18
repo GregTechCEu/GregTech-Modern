@@ -46,6 +46,7 @@ import java.util.function.Function;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
@@ -114,6 +115,7 @@ public class GTResearchMachines {
             .tier(ZPM)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
+            .modelProperty(IS_FORMED, false)
             .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> {
@@ -330,6 +332,7 @@ public class GTResearchMachines {
             .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
+            .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 4),
                     Component.translatable("gtceu.part_sharing.disabled"))
@@ -342,6 +345,7 @@ public class GTResearchMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
+            .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 9),
                     Component.translatable("gtceu.part_sharing.disabled"))
@@ -354,6 +358,7 @@ public class GTResearchMachines {
             .tier(LuV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
+            .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 16),
                     Component.translatable("gtceu.part_sharing.disabled"))
@@ -366,6 +371,7 @@ public class GTResearchMachines {
             .tier(MAX)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
+            .modelProperty(IS_FORMED, false)
             .tooltipBuilder((s, list) -> {
                 list.add(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
                 CREATIVE_TOOLTIPS.accept(s, list);
@@ -443,6 +449,7 @@ public class GTResearchMachines {
                 .tier(tier)
                 .rotationState(RotationState.ALL)
                 .abilities(abilities)
+                .modelProperty(IS_FORMED, false)
                 .overlayTieredHullModel(model);
     }
 
@@ -453,6 +460,7 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
+                .modelProperty(IS_FORMED, false)
                 .modelProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, false)
                 .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                 .model(createHPCAPartModel(isAdvanced,
