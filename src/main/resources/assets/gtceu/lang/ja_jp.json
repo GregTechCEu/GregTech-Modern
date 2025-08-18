@@ -5351,7 +5351,7 @@
   "recipe.condition.eu_to_start.tooltip": "開始エネルギー: %d%s",
   "recipe.condition.pos_y.tooltip": "Y座標レベル: %d <= Y <= %d",
   "recipe.condition.rain.tooltip": "雨レベル: %d",
-  "recipe.condition.rock_breaker.tooltip": "周囲の液体ブロック",
+  "recipe.condition.adjacent_fluid.tooltip": "周囲の液体ブロック",
   "recipe.condition.steam_vent.tooltip": "蒸気排出口の清掃",
   "recipe.condition.thunder.tooltip": "雷レベル: %d",
   "tagprefix.andesite": "%s鉱石 (安山岩)",
