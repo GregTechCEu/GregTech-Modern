@@ -10,13 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
@@ -24,29 +23,27 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
 
-    protected final BiMap<K, V> registry;
+    protected final Map<K, V> keyToValue;
+    protected final Map<V, K> valueToKey;
     @Getter
     protected final ResourceLocation registryName;
     @Getter
     protected boolean frozen = true;
 
     public GTRegistry(ResourceLocation registryName) {
-        registry = initRegistry();
+        this.keyToValue = new HashMap<>();
+        this.valueToKey = new HashMap<>();
         this.registryName = registryName;
 
         REGISTERED.put(registryName, this);
     }
 
-    protected BiMap<K, V> initRegistry() {
-        return HashBiMap.create();
-    }
-
     public boolean containKey(K key) {
-        return registry.containsKey(key);
+        return keyToValue.containsKey(key);
     }
 
     public boolean containValue(V value) {
-        return registry.containsValue(value);
+        return keyToValue.containsValue(value);
     }
 
     public void freeze() {
@@ -82,74 +79,87 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     public <T extends V> T register(K key, T value) {
-        if (frozen) {
-            throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
-        }
-        if (containKey(key)) {
+        if (keyToValue.containsKey(key)) {
             throw new IllegalStateException(
                     "[register] registry %s contains key %s already".formatted(registryName, key));
         }
-        registry.put(key, value);
-        return value;
+
+        return registerOrOverride(key, value);
+    }
+
+    public void remap(K oldKey, K newKey) {
+        if (frozen) {
+            throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
+        }
+
+        if (keyToValue.containsKey(oldKey)) {
+            GTCEu.LOGGER.warn("[remap] cannot remap existing key {} in registry {}", oldKey, registryName);
+            return;
+        }
+        if (!keyToValue.containsKey(newKey)) {
+            GTCEu.LOGGER.warn("[remap] couldn't find value for key {} in registry {}", newKey, registryName);
+            return;
+        }
+        V newValue = keyToValue.get(newKey);
+        keyToValue.put(oldKey, newValue);
     }
 
     @Nullable
     public <T extends V> T replace(K key, T value) {
-        if (frozen) {
-            throw new IllegalStateException("[replace] registry %s has been frozen".formatted(registryName));
-        }
         if (!containKey(key)) {
-            GTCEu.LOGGER.warn("[replace] couldn't find key %s in registry %s".formatted(registryName, key));
+            GTCEu.LOGGER.warn("[replace] couldn't find key {} in registry {}", registryName, key);
         }
-        registry.put(key, value);
-        return value;
+
+        return registerOrOverride(key, value);
     }
 
     public <T extends V> T registerOrOverride(K key, T value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
-        registry.put(key, value);
+        keyToValue.put(key, value);
+        valueToKey.put(value, key);
+
         return value;
     }
 
     @NotNull
     @Override
-    public Iterator<V> iterator() {
-        return registry.values().iterator();
+    public @UnmodifiableView Iterator<V> iterator() {
+        return registry().values().iterator();
     }
 
-    public Set<V> values() {
-        return registry.values();
+    public @UnmodifiableView Set<V> values() {
+        return Collections.unmodifiableMap(valueToKey).keySet();
     }
 
-    public Set<K> keys() {
-        return registry.keySet();
+    public @UnmodifiableView Set<K> keys() {
+        return registry().keySet();
     }
 
-    public Set<Map.Entry<K, V>> entries() {
-        return registry.entrySet();
+    public @UnmodifiableView Set<Map.Entry<K, V>> entries() {
+        return registry().entrySet();
     }
 
-    public Map<K, V> registry() {
-        return registry;
+    public @UnmodifiableView Map<K, V> registry() {
+        return Collections.unmodifiableMap(keyToValue);
     }
 
     @Nullable
     public V get(K key) {
-        return registry.get(key);
+        return keyToValue.get(key);
     }
 
     public V getOrDefault(K key, V defaultValue) {
-        return registry.getOrDefault(key, defaultValue);
+        return keyToValue.getOrDefault(key, defaultValue);
     }
 
     public K getKey(V value) {
-        return registry.inverse().get(value);
+        return valueToKey.get(value);
     }
 
-    public K getOrDefaultKey(V key, K defaultKey) {
-        return registry.inverse().getOrDefault(key, defaultKey);
+    public K getOrDefaultKey(V value, K defaultKey) {
+        return valueToKey.getOrDefault(value, defaultKey);
     }
 
     public abstract void writeBuf(V value, FriendlyByteBuf buf);
@@ -163,7 +173,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     public abstract V loadFromNBT(Tag tag);
 
     public boolean remove(K name) {
-        return registry.remove(name) != null;
+        return keyToValue.remove(name) != null;
     }
 
     public abstract Codec<V> codec();
@@ -207,14 +217,13 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return Codec.STRING
-                    .flatXmap(
-                            str -> Optional.ofNullable(this.get(str)).map(DataResult::success)
-                                    .orElseGet(() -> DataResult
-                                            .error(() -> "Unknown registry key in " + this.registryName + ": " + str)),
-                            obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success)
-                                    .orElseGet(() -> DataResult.error(
-                                            () -> "Unknown registry element in " + this.registryName + ": " + obj)));
+            return Codec.STRING.flatXmap(
+                    key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(
+                                    () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
+                    val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(
+                                    () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
         }
     }
 
@@ -255,14 +264,13 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return ResourceLocation.CODEC
-                    .flatXmap(
-                            rl -> Optional.ofNullable(this.get(rl)).map(DataResult::success)
-                                    .orElseGet(() -> DataResult
-                                            .error(() -> "Unknown registry key in " + this.registryName + ": " + rl)),
-                            obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success)
-                                    .orElseGet(() -> DataResult.error(
-                                            () -> "Unknown registry element in " + this.registryName + ": " + obj)));
+            return ResourceLocation.CODEC.flatXmap(
+                    key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(
+                                    () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
+                    val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(
+                                    () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
         }
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,11 @@ public class GrassPathBehavior implements IToolBehavior {
     public static final GrassPathBehavior INSTANCE = new GrassPathBehavior();
 
     protected GrassPathBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.SHOVEL_FLATTEN;
+    }
 
     @NotNull
     @Override
@@ -67,7 +73,7 @@ public class GrassPathBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(player, blocks.get(0), SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;

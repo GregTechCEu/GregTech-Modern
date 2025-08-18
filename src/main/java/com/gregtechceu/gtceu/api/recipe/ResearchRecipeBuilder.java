@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -58,9 +59,10 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         return (T) this;
     }
 
-    protected void validateResearchItem() {
+    protected void validateResearchItem(ResourceLocation recipeId) {
         if (itemResearchStack.isEmpty() && fluidResearchStack.isEmpty()) {
-            throw new IllegalArgumentException("Research recipe must have an item or fluid stack!");
+            throw new IllegalArgumentException(String.format(
+                    "Research recipe must have an item or fluid stack, id: %s", recipeId));
         }
 
         if (researchId == null) {
@@ -90,7 +92,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
     public abstract ItemStack getDefaultDataItem();
 
-    public abstract GTRecipeBuilder.ResearchRecipeEntry build();
+    public abstract GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId);
 
     @NoArgsConstructor
     public static class ScannerRecipeBuilder extends ResearchRecipeBuilder<ScannerRecipeBuilder> {
@@ -111,8 +113,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         @Override
-        public GTRecipeBuilder.ResearchRecipeEntry build() {
-            validateResearchItem();
+        public GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId) {
+            validateResearchItem(recipeId);
             if (duration <= 0) duration = DEFAULT_SCANNER_DURATION;
             if (eut == null || eut.voltage() <= 0) eut = new EnergyStack(DEFAULT_SCANNER_EUT, 1);
             return new GTRecipeBuilder.ResearchRecipeEntry(researchId, itemResearchStack, fluidResearchStack, dataStack,
@@ -149,8 +151,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         @Override
-        public GTRecipeBuilder.ResearchRecipeEntry build() {
-            validateResearchItem();
+        public GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId) {
+            validateResearchItem(recipeId);
             if (cwut <= 0 || totalCWU <= 0) {
                 throw new IllegalArgumentException("CWU/t and total CWU must both be set, and non-zero!");
             }

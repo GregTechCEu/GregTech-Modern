@@ -104,7 +104,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
         } else {
             Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
-                tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
+                tooltipComponents.add(Component.translatable("behavior.data_item.title",
+                        Component.translatable(researchData.recipeType().registryName.toLanguageKey())));
                 Collection<ItemStack> addedItems = new ObjectOpenHashSet<>();
                 Collection<FluidStack> addedFluids = new ObjectOpenHashSet<>();
                 outerItems:
@@ -118,7 +119,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     }
                     if (addedItems.add(outputItems)) {
                         tooltipComponents.add(
-                                Component.translatable("behavior.data_item.assemblyline.data",
+                                Component.translatable("behavior.data_item.data",
                                         outputItems.getDisplayName()));
                     }
                 }
@@ -133,7 +134,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     }
                     if (addedFluids.add(outputFluids)) {
                         tooltipComponents.add(
-                                Component.translatable("behavior.data_item.assemblyline.data",
+                                Component.translatable("behavior.data_item.data",
                                         outputFluids.getDisplayName()));
                     }
                 }
