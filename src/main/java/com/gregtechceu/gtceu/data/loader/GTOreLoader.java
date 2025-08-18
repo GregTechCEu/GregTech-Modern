@@ -51,7 +51,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         if (GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.unfreeze();
         }
-        GTRegistries.ORE_VEINS.registry().clear();
+        GTRegistries.ORE_VEINS.clear();
 
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);

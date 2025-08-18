@@ -145,6 +145,14 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return Collections.unmodifiableMap(keyToValue);
     }
 
+    public void clear() {
+        if (frozen) {
+            throw new IllegalArgumentException("Registry is frozen!");
+        }
+        keyToValue.clear();
+        valueToKey.clear();
+    }
+
     @Nullable
     public V get(K key) {
         return keyToValue.get(key);
