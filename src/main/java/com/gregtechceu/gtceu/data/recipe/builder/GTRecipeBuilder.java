@@ -1225,7 +1225,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Scanner.
      */
     public GTRecipeBuilder scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }
@@ -1246,7 +1246,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Research Station.
      */
     public GTRecipeBuilder stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }

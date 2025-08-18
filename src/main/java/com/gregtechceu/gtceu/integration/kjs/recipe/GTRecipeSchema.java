@@ -968,7 +968,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -990,7 +990,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
