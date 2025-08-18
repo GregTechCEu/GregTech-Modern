@@ -45,7 +45,10 @@ public class NBTItemStackMapIngredientLookupTest {
 
         tag2 = new CompoundTag();
         tag2.putString("tag1", "tag1");
-        tag2.putString("tag2", "tag2");
+        var otherStuff = new CompoundTag();
+        otherStuff.putBoolean("a", true);
+        otherStuff.putLong("b", 4);
+        tag2.put("testTag", otherStuff);
 
         // Partial tag 2 matches a recipe looking for partial tag 1
         // apart from these, all ingredients should only match themselves
