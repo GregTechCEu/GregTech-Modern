@@ -3,11 +3,10 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -15,26 +14,26 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WaxOffBehavior implements IToolBehavior {
+public class DouseCampfireBehavior implements IToolBehavior {
 
-    public static final WaxOffBehavior INSTANCE = new WaxOffBehavior();
+    public static final DouseCampfireBehavior INSTANCE = new DouseCampfireBehavior();
 
-    protected WaxOffBehavior() {/**/}
+    protected DouseCampfireBehavior() {/**/}
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.AXE_WAX_OFF;
+        return action == GTToolActions.SHOVEL_DOUSE;
     }
 
     @NotNull
@@ -48,54 +47,49 @@ public class WaxOffBehavior implements IToolBehavior {
 
         List<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
-        if (isBlockUnwaxable(context)) {
+        if (isBlockDousable(context)) {
             if (aoeDefinition.isZero()) {
                 blocks = List.of(pos);
             } else {
-                blocks = getUnwaxableBlocks(aoeDefinition, context);
+                blocks = getDousableBlocks(aoeDefinition, context);
                 blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;
         }
 
-        boolean unwaxed = false;
+        boolean dowsed = false;
         for (BlockPos blockPos : blocks) {
-            UseOnContext posContext = new UseOnContext(level, player, context.getHand(), stack,
-                    context.getHitResult().withPosition(blockPos));
-            BlockState newState = getUnwaxed(level.getBlockState(blockPos), posContext);
-            unwaxed |= level.setBlock(blockPos, newState, Block.UPDATE_ALL);
-            level.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockPos, 0);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
+            BlockState oldState = level.getBlockState(blockPos);
+            CampfireBlock.dowse(player, level, blockPos, oldState);
+
+            BlockState newState = oldState.setValue(CampfireBlock.LIT, false);
+            dowsed |= level.setBlock(blockPos, newState, Block.UPDATE_ALL_IMMEDIATE);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, newState));
 
             ToolHelper.damageItem(stack, player);
             if (stack.isEmpty()) break;
         }
 
-        if (unwaxed) {
-            level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (dowsed) {
+            level.levelEvent(player, LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
     }
 
-    public static List<BlockPos> getUnwaxableBlocks(AoESymmetrical aoeDefinition, UseOnContext context) {
-        return ToolHelper.iterateAoE(aoeDefinition, WaxOffBehavior::isBlockUnwaxable, context);
+    public static List<BlockPos> getDousableBlocks(AoESymmetrical aoeDefinition, UseOnContext context) {
+        return ToolHelper.iterateAoE(aoeDefinition, DouseCampfireBehavior::isBlockDousable, context);
     }
 
-    protected static boolean isBlockUnwaxable(UseOnContext context) {
+    protected static boolean isBlockDousable(UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, true);
-        return newState != null && newState != state;
-    }
-
-    protected BlockState getUnwaxed(BlockState state, UseOnContext context) {
-        return state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
+        return state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT);
     }
 
     @Override
     public void addInformation(@NotNull ItemStack stack, @Nullable Level Level, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.gtceu.tool.behavior.remove_wax"));
+        tooltip.add(Component.translatable("item.gtceu.tool.behavior.dowse_campfire"));
     }
 }

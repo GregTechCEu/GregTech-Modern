@@ -192,6 +192,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
@@ -261,6 +262,7 @@ public class LangHandler {
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
+        provider.add("item.gtceu.tool.tooltip.default_enchantments", "§5Default Enchantments:");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
