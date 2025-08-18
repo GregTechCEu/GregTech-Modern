@@ -260,6 +260,7 @@ public class GTMachineUtils {
                             .rotationState(RotationState.ALL)
                             .colorOverlayTieredHullModel(ioOverlay, pipeOverlay, emissiveOverlay)
                             .abilities(abilities)
+                            .modelProperty(IS_FORMED, false)
                             .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
 
