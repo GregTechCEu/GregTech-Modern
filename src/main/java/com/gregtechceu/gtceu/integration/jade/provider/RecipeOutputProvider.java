@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -26,7 +25,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -51,8 +49,6 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     public RecipeOutputProvider() {
         super(GTCEu.id("recipe_output_info"));
     }
-
-    private static final Item empty_cell = Ingredient.of(GTItems.FLUID_CELL).getItems()[0].getItem();
 
     @Override
     protected @Nullable RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
@@ -194,12 +190,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     item.setCount(1);
                 }
                 text.append(Component.translatable("gtceu.gui.content.times_item",
-                        (item.getItem().equals(empty_cell) ?
-                                ComponentUtils.wrapInSquareBrackets(
-                                        Component.translatable(item.getItem().getDescription().getString(),
-                                                FluidStack.loadFluidStackFromNBT(item.getTagElement("Fluid"))
-                                                        .getDisplayName())) :
-                                getItemName(item)))
+                        getItemName(item))
                         .withStyle(ChatFormatting.WHITE));
 
                 iTooltip.add(helper.smallItem(item));
