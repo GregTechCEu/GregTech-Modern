@@ -5679,7 +5679,7 @@
   "recipe.condition.quest.completed.tooltip": "pǝʇǝןdɯoɔ %s sǝɹınbǝᴚ",
   "recipe.condition.quest.not_completed.tooltip": "pǝʇǝןdɯoɔ ʇou %s sǝɹınbǝᴚ",
   "recipe.condition.rain.tooltip": "%d :ןǝʌǝꞀ uıɐᴚ",
-  "recipe.condition.rock_breaker.tooltip": "punoɹɐ sʞɔoןq pınןℲ",
+  "recipe.condition.adjacent_fluid.tooltip": "punoɹɐ sʞɔoןq pınןℲ",
   "recipe.condition.steam_vent.tooltip": "ʇuǝʌ ɯɐǝʇs uɐǝןƆ",
   "recipe.condition.thunder.tooltip": "%d :ןǝʌǝꞀ ɹǝpunɥ⟘",
   "tagprefix.andesite": "ǝɹO %s ǝʇısǝpuⱯ",

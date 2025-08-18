@@ -5679,7 +5679,7 @@
   "recipe.condition.quest.completed.tooltip": "Requires %s completed",
   "recipe.condition.quest.not_completed.tooltip": "Requires %s not completed",
   "recipe.condition.rain.tooltip": "Rain Level: %d",
-  "recipe.condition.rock_breaker.tooltip": "Fluid blocks around",
+  "recipe.condition.adjacent_fluid.tooltip": "Fluid blocks around",
   "recipe.condition.steam_vent.tooltip": "Clean steam vent",
   "recipe.condition.thunder.tooltip": "Thunder Level: %d",
   "tagprefix.andesite": "Andesite %s Ore",
