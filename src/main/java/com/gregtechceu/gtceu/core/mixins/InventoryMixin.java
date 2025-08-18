@@ -10,8 +10,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-// Priority lowered to prevent clashing with Industrial Upgrade, see gtm#3763
-@Mixin(value = Inventory.class, priority = 800)
+// Priority increased to override Industrial Upgrade, see gtm#3763
+@Mixin(value = Inventory.class, priority = 1200)
 public abstract class InventoryMixin {
 
     @WrapOperation(method = { "findSlotMatchingUnusedItem", "findSlotMatchingItem" },
