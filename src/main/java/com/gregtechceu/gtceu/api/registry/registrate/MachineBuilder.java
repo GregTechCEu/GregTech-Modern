@@ -256,6 +256,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlayTieredHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
@@ -270,6 +271,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay,
                                                                   @Nullable String pipeOverlay,
                                                                   @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
@@ -290,6 +292,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlaySteamHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
@@ -305,6 +308,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
