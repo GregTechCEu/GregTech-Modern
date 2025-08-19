@@ -48,7 +48,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
         }
-        GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
+        GTRegistries.BEDROCK_ORE_DEFINITIONS.clear();
 
         AddonFinder.getAddons().forEach(IGTAddon::registerBedrockOreVeins);
         ModLoader.get().postEvent(

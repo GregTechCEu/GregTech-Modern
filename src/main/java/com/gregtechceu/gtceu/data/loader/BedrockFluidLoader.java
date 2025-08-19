@@ -46,7 +46,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
         if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
         }
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
+        GTRegistries.BEDROCK_FLUID_DEFINITIONS.clear();
 
         GTBedrockFluids.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);

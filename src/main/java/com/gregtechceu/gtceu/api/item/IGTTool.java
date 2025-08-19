@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -14,12 +14,12 @@ import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -28,15 +28,18 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
+import net.minecraft.Util;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -52,6 +55,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -59,15 +63,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +83,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, IForgeItem {
 
     GTToolType getToolType();
 
@@ -140,19 +145,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
 
         toolTag.putInt(MAX_DURABILITY_KEY, durability - 1);
-        toolTag.putInt(DURABILITY_KEY, 0);
         if (toolProperty.isUnbreakable()) {
             stackCompound.putBoolean(UNBREAKABLE_KEY, true);
-        }
-
-        // Set tool and material enchantments
-        Object2IntMap<Enchantment> enchantments = new Object2IntOpenHashMap<>(toolProperty.getEnchantments());
-        enchantments.putAll(toolStats.getDefaultEnchantments(stack));
-        for (var entry : Object2IntMaps.fastIterable(enchantments)) {
-            var enchantment = entry.getKey();
-            if (enchantment.canEnchant(stack)) {
-                stack.enchant(enchantment, entry.getIntValue());
-            }
         }
 
         // Set behaviours
@@ -192,51 +186,37 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return get(defaultMaxCharge, defaultMaxCharge);
     }
 
-    default Material getToolMaterial(ItemStack stack) {
-        if (stack.getItem() instanceof IGTTool tool) {
-            return tool.getMaterial();
-        }
-
-        return GTMaterials.Iron;
+    default @Nullable ToolProperty getToolProperty() {
+        return getMaterial().getProperty(PropertyKey.TOOL);
     }
 
-    @Nullable
-    default ToolProperty getToolProperty(ItemStack stack) {
-        return getToolMaterial(stack).getProperty(PropertyKey.TOOL);
-    }
-
-    @Nullable
-    default DustProperty getDustProperty(ItemStack stack) {
-        return getToolMaterial(stack).getProperty(PropertyKey.DUST);
-    }
-
-    default float getMaterialToolSpeed(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialToolSpeed() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getHarvestSpeed();
     }
 
-    default float getMaterialAttackDamage(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialAttackDamage() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getAttackDamage();
     }
 
-    default float getMaterialAttackSpeed(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default float getMaterialAttackSpeed() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0F : toolProperty.getAttackSpeed();
     }
 
-    default int getMaterialDurability(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialDurability() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getDurability() * toolProperty.getDurabilityMultiplier();
     }
 
-    default int getMaterialEnchantability(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialEnchantability() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getEnchantability();
     }
 
-    default int getMaterialHarvestLevel(ItemStack stack) {
-        ToolProperty toolProperty = getToolProperty(stack);
+    default int getMaterialHarvestLevel() {
+        ToolProperty toolProperty = getToolProperty();
         return toolProperty == null ? 0 : toolProperty.getHarvestLevel();
     }
 
@@ -265,7 +245,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (toolTag.contains(TOOL_SPEED_KEY, Tag.TAG_FLOAT)) {
             return toolTag.getFloat(TOOL_SPEED_KEY);
         }
-        float toolSpeed = getToolStats().getEfficiencyMultiplier(stack) * getMaterialToolSpeed(stack) +
+        float toolSpeed = getToolStats().getEfficiencyMultiplier(stack) * getMaterialToolSpeed() +
                 getToolStats().getBaseEfficiency(stack);
         toolTag.putFloat(TOOL_SPEED_KEY, toolSpeed);
         return toolSpeed;
@@ -280,7 +260,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         float attackDamage = 0;
         // represents a tool that should always have an attack damage value of 0
         if (baseDamage != Float.MIN_VALUE) {
-            attackDamage = getMaterialAttackDamage(stack) + baseDamage;
+            attackDamage = getMaterialAttackDamage() + baseDamage;
         }
         toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
         return attackDamage;
@@ -291,7 +271,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (toolTag.contains(ATTACK_SPEED_KEY, Tag.TAG_FLOAT)) {
             return toolTag.getFloat(ATTACK_SPEED_KEY);
         }
-        float attackSpeed = getMaterialAttackSpeed(stack) + getToolStats().getAttackSpeed(stack);
+        float attackSpeed = getMaterialAttackSpeed() + getToolStats().getAttackSpeed(stack);
         toolTag.putFloat(ATTACK_SPEED_KEY, attackSpeed);
         return attackSpeed;
     }
@@ -303,7 +283,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
 
         IGTToolDefinition toolStats = getToolStats();
-        int maxDurability = getMaterialDurability(stack);
+        int maxDurability = getMaterialDurability();
         int builderDurability = (int) (toolStats.getBaseDurability(stack) * toolStats.getDurabilityMultiplier(stack));
 
         // If there is no durability set in the tool builder, multiply the builder AOE multiplier to the material
@@ -320,7 +300,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (toolTag.contains(ENCHANTABILITY_KEY, Tag.TAG_INT)) {
             return toolTag.getInt(ENCHANTABILITY_KEY);
         }
-        int enchantability = getMaterialEnchantability(stack);
+        int enchantability = getMaterialEnchantability();
         toolTag.putInt(ENCHANTABILITY_KEY, enchantability);
         return enchantability;
     }
@@ -330,7 +310,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (toolTag.contains(HARVEST_LEVEL_KEY, Tag.TAG_INT)) {
             return toolTag.getInt(HARVEST_LEVEL_KEY);
         }
-        int harvestLevel = getMaterialHarvestLevel(stack) + getToolStats().getBaseQuality(stack);
+        int harvestLevel = getMaterialHarvestLevel() + getToolStats().getBaseQuality(stack);
         toolTag.putInt(HARVEST_LEVEL_KEY, harvestLevel);
         return harvestLevel;
     }
@@ -350,7 +330,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default boolean definition$hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         getToolStats().getBehaviors().forEach(behavior -> behavior.hitEntity(stack, target, attacker));
-        damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
+        ToolHelper.damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
         return true;
     }
 
@@ -406,7 +386,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
             if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
-                damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
+                ToolHelper.damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
             }
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
                 // sneaking disables AOE, which means it is okay to play the sound
@@ -424,11 +404,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         // this is needed so enchantment merging works when both tools are full durability
         if (toRepair.getDamageValue() == 0) return false;
         if (repair.getItem() instanceof IGTTool gtTool) {
-            return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
+            return this.getMaterial() == gtTool.getMaterial();
         }
+
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
         if (entry.isEmpty()) return false;
-        if (entry.material() == getToolMaterial(toRepair)) {
+
+        if (entry.material() == this.getMaterial()) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
                 return entry.tagPrefix() == TagPrefix.planks;
@@ -445,6 +427,51 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             }
         }
         return false;
+    }
+
+    default Map<Enchantment, Integer> definition$getAllEnchantments(ItemStack stack) {
+        var defaultEnchantments = getDefaultEnchantments(stack);
+
+        if (defaultEnchantments.isEmpty()) {
+            return EnchantmentHelper.getEnchantments(stack);
+        }
+        return joinEnchantments(stack, defaultEnchantments);
+    }
+
+    default Map<Enchantment, Integer> getDefaultEnchantments(ItemStack stack) {
+        CompoundTag toolTag = getToolTag(stack);
+
+        if (toolTag.contains(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_LIST)) {
+            ListTag defaultsTag = toolTag.getList(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_COMPOUND);
+            return EnchantmentHelper.deserializeEnchantments(defaultsTag);
+        }
+
+        // Get tool and material enchantments
+        Object2IntMap<Enchantment> defaultEnchantments = new Object2IntLinkedOpenHashMap<>();
+        defaultEnchantments.putAll(getToolStats().getDefaultEnchantments(stack));
+        defaultEnchantments.putAll(this.getMaterial().getProperty(PropertyKey.TOOL).getEnchantments());
+
+        // save them to the tool NBT tag
+        ListTag enchantList = new ListTag();
+        for (var entry : defaultEnchantments.object2IntEntrySet()) {
+            Enchantment enchantment = entry.getKey();
+            if (enchantment == null || !this.definition$canApplyAtEnchantingTable(stack, enchantment)) {
+                continue;
+            }
+            int level = entry.getIntValue();
+            enchantList.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level));
+        }
+        toolTag.put(DEFAULT_ENCHANTMENTS_KEY, enchantList);
+
+        return defaultEnchantments;
+    }
+
+    default int definition$getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getAllEnchantments(stack).getOrDefault(enchantment, 0);
+    }
+
+    default boolean definition$isFoil(ItemStack stack) {
+        return !getAllEnchantments(stack).isEmpty();
     }
 
     default Multimap<Attribute, AttributeModifier> definition$getDefaultAttributeModifiers(EquipmentSlot equipmentSlot,
@@ -542,31 +569,20 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return true;
     }
 
-    default boolean definition$isDamaged(ItemStack stack) {
-        return definition$getDamage(stack) > 0;
-    }
-
     default int definition$getDamage(ItemStack stack) {
-        // bypass the Forge OreDictionary using ItemStack#getItemDamage instead of ItemStack#getMetadata
-        // this will allow tools to retain their oredicts when durability changes.
-        // No normal tool ItemStack a player has should ever have a metadata value other than 0
-        // so this should not cause unexpected behavior for them
-
         CompoundTag toolTag = getToolTag(stack);
+        // this only exists to support old tools now.
         if (toolTag.contains(DURABILITY_KEY, Tag.TAG_INT)) {
-            return toolTag.getInt(DURABILITY_KEY);
+            int damage = toolTag.getInt(DURABILITY_KEY);
+            // remove the old durability nbt tag
+            toolTag.remove(DURABILITY_KEY);
+            return damage;
         }
-        toolTag.putInt(DURABILITY_KEY, 0);
-        return 0;
+        return IForgeItem.super.getDamage(stack);
     }
 
     default int definition$getMaxDamage(ItemStack stack) {
         return getTotalMaxDurability(stack);
-    }
-
-    default void definition$setDamage(ItemStack stack, int durability) {
-        CompoundTag toolTag = getToolTag(stack);
-        toolTag.putInt(DURABILITY_KEY, durability);
     }
 
     default double definition$getDurabilityForDisplay(ItemStack stack) {
@@ -578,6 +594,19 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default void definition$init() {
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
+    }
+
+    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ToolAction action) {
+        if (getToolType().defaultAbilities.contains(action)) {
+            return true;
+        }
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (behavior.canPerformAction(stack, action)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
@@ -592,11 +621,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default InteractionResult definition$onItemUse(UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUse(context) == InteractionResult.SUCCESS) {
-                return InteractionResult.SUCCESS;
+            InteractionResult result = behavior.onItemUse(context);
+            if (result != InteractionResult.PASS) {
+                return result;
             }
         }
-
         return InteractionResult.PASS;
     }
 
@@ -716,6 +745,19 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         tooltip.add(CommonComponents.EMPTY);
 
+        var defaultEnchants = getDefaultEnchantments(stack);
+        if (!defaultEnchants.isEmpty()) {
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
+            for (var entry : defaultEnchants.entrySet()) {
+                Enchantment enchant = entry.getKey();
+                if (enchant == null) continue;
+
+                tooltip.add(enchant.getFullname(entry.getValue()));
+            }
+        }
+
+        tooltip.add(CommonComponents.EMPTY);
+
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClassNames(stack).stream()
@@ -727,7 +769,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         // repair info
         if (!tagCompound.getBoolean(UNBREAKABLE_KEY)) {
             if (GTUtil.isShiftDown()) {
-                Material material = getToolMaterial(stack);
+                Material material = getMaterial();
 
                 Collection<Component> repairItems = new ArrayList<>();
                 if (!VanillaRecipeHelper.isMaterialWood(material)) {
@@ -751,24 +793,28 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
-
         }
     }
+
+    ResourceLocation COFH_SMASHING_ENCHANT_ID = new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smashing");
+    Set<ResourceLocation> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
+        set.add(new ResourceLocation(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
+        set.add(new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
+    });
 
     default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) return false;
 
-        // special case enchants from other mods
-        switch (enchantment.getDescriptionId()) {
-            case "enchantment.cofhcore.smashing":
-                // block cofhcore smashing enchant from all tools
+        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        if (COFH_SMASHING_ENCHANT_ID.equals(enchantmentId)) {
+            // block CoFH smashing enchant from all tools
+            return false;
+        } else if (AUTOSMELT_ENCHANT_IDS.contains(enchantmentId)) {
+            // block autosmelt enchants from AoE and Tree-Felling tools
+            if (!getToolStats().getAoEDefinition(stack).isZero() ||
+                    getBehaviorsTag(stack).contains(TREE_FELLING_KEY)) {
                 return false;
-            case "enchantment.autosmelt": // endercore
-            case "enchantment.cofhcore.smelting": // cofhcore
-            case "enchantment.as.smelting": // astral sorcery
-                // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack).isZero() &&
-                        !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
+            }
         }
 
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
@@ -783,9 +829,12 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             case BREAKABLE -> {
                 return stack.getTag() != null && !stack.getTag().getBoolean(UNBREAKABLE_KEY);
             }
+            case VANISHABLE -> {
+                return true;
+            }
         }
 
-        ToolProperty property = getToolProperty(stack);
+        ToolProperty property = this.getToolProperty();
         if (property == null) return false;
 
         // Check for any special enchantments specified by the material of this Tool
@@ -795,11 +844,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // Check for any additional Enchantment Types added in the builder
         return getToolStats().isEnchantable(stack) && getToolStats().canApplyEnchantment(stack, enchantment);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    default int getColor(ItemStack stack, int tintIndex) {
-        return tintIndex % 2 == 1 ? getToolMaterial(stack).getMaterialRGB() : 0xFFFFFF;
     }
 
     // Sound Playing

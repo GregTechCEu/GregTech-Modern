@@ -18,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -33,7 +33,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class GTAxeItem extends AxeItem implements IGTTool {
 
@@ -46,8 +46,8 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTAxeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
-                        Properties properties) {
+    public GTAxeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                     Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -57,11 +57,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
             ToolItemRenderer.create(this, toolType);
         }
         definition$init();
-    }
-
-    public static GTAxeItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                   IGTToolDefinition toolStats, Item.Properties properties) {
-        return new GTAxeItem(toolType, tier, material, toolStats, properties);
     }
 
     @Override
@@ -75,8 +70,8 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     }
 
     @Override
-    public boolean hasCraftingRemainingItem() {
-        return super.hasCraftingRemainingItem();
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return definition$canPerformAction(stack, action);
     }
 
     @Override
@@ -131,11 +126,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     }
 
     @Override
-    public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return Set.of(this.toolType);
-    }
-
-    @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         return definition$getDestroySpeed(stack, state);
     }
@@ -169,6 +159,21 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     }
 
     @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        return definition$getAllEnchantments(stack);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return definition$getEnchantmentLevel(stack, enchantment);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return definition$isFoil(stack);
+    }
+
+    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return definition$getDefaultAttributeModifiers(slot, stack);
     }
@@ -197,10 +202,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
         return definition$shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
 
-    public boolean isDamaged(ItemStack stack) {
-        return definition$isDamaged(stack);
-    }
-
     public int getDamage(ItemStack stack) {
         return definition$getDamage(stack);
     }
@@ -209,12 +210,8 @@ public class GTAxeItem extends AxeItem implements IGTTool {
         return definition$getMaxDamage(stack);
     }
 
-    public void setDamage(ItemStack stack, int damage) {
-        definition$setDamage(stack, damage);
-    }
-
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
+        return definition$isCorrectToolForDrops(stack, state);
     }
 }

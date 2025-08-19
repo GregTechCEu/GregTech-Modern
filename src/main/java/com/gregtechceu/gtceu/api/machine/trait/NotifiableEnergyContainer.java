@@ -313,6 +313,12 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
                 continue;
             }
 
+            // Check if recipe voltage is less than or equal to handler voltage
+            long maxVoltage = io == IO.IN ? this.getInputVoltage() : this.getOutputVoltage();
+            if (stack.voltage() > maxVoltage) {
+                continue;
+            }
+
             long totalEU = stack.getTotalEU();
             long canTransfer = Math.min(totalEU, (io == IO.IN ? this.getEnergyStored() :
                     this.getEnergyCapacity() - this.getEnergyStored()));

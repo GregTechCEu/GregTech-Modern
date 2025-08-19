@@ -345,8 +345,6 @@ public class OverclockLogicTest {
             helper.assertTrue(chargeUsed == chargeNeeded,
                     "Recipe didn't consume right amount, instead of " + chargeNeeded + " it used " + chargeUsed);
         });
-
-        helper.succeed();
     }
 
     // Test for charge usage of a singleblock HV chemical reactor running an MV recipe
@@ -381,7 +379,5 @@ public class OverclockLogicTest {
             helper.assertTrue(chargeUsed == chargeNeeded,
                     "Recipe didn't consume right amount, instead of " + chargeNeeded + " it used " + chargeUsed);
         });
-
-        helper.succeed();
     }
 }

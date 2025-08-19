@@ -161,7 +161,6 @@ public class CommonProxy {
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
-        // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
 
         GregTechDatagen.initPost();
