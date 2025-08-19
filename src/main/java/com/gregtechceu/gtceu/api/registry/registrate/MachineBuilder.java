@@ -279,6 +279,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return colorOverlayTieredHullModel(overlay, null, null);
     }
 
