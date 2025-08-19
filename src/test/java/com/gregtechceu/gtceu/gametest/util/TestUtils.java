@@ -114,7 +114,7 @@ public class TestUtils {
     }
 
     public static GTRecipeType createRecipeType(String name) {
-        return createRecipeType(name, 1, 1, 1, 1);
+        return createRecipeType(name, 2, 2, 2, 2);
     }
 
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
