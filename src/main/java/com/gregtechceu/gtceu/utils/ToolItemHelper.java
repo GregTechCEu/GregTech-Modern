@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -26,7 +26,7 @@ public class ToolItemHelper {
      */
     public static ItemStack getMaxChargeOverrideStack(Item item, long maxCharge) {
         ItemStack itemStack = item.getDefaultInstance();
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }

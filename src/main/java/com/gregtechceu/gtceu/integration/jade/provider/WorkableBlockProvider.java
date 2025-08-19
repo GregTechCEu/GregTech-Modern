@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -30,7 +30,9 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
     @Nullable
     @Override
     protected IWorkable getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getWorkable(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, side).resolve().orElse(null);
     }
 
     @Override

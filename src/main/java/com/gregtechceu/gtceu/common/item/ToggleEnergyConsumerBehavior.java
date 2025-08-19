@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
@@ -33,7 +33,7 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
     public InteractionResultHolder<ItemStack> use(Item item, Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+            IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             boolean isItemActive = isItemActive(itemStack);
             if (isItemActive) {
                 setItemActive(itemStack, false);
@@ -51,7 +51,7 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (isItemActive(stack) && electricItem != null) {
             boolean shouldRemainActive = drainActivationEnergy(electricItem, false);
             if (!shouldRemainActive) {

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
@@ -33,8 +33,9 @@ public interface ILocalizedHazardEmitter extends IMachineFeature {
         }
 
         if (self().getLevel() instanceof ServerLevel serverLevel) {
-            IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(serverLevel,
-                    self().getPos().relative(self().getFrontFacing()), self().getFrontFacing().getOpposite());
+            var blockEntity = serverLevel.getBlockEntity(self().getPos().relative(self().getFrontFacing()));
+            IHazardParticleContainer container = (blockEntity == null) ? null : blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, self().getFrontFacing().getOpposite()).resolve().orElse(null);
+
             if (container != null &&
                     container.getHazardCanBeInserted(getConditionToEmit()) > getHazardSizePerOperation()) {
                 container.addHazard(getConditionToEmit(), getHazardSizePerOperation());

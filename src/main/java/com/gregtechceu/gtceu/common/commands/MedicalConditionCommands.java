@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.commands;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.commands.arguments.MedicalConditionArgument;
 
@@ -86,7 +86,7 @@ public class MedicalConditionCommands {
     // spotless:off
 
     private static int queryMedicalConditions(ServerPlayer target) throws CommandSyntaxException {
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
+        IMedicalConditionTracker tracker = target.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
         if (tracker == null) {
             throw EntityArgument.NO_PLAYERS_FOUND.create();
         }
@@ -117,7 +117,7 @@ public class MedicalConditionCommands {
                                               @Nullable MedicalCondition condition) throws CommandSyntaxException {
         int count = 0;
         for (ServerPlayer target : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
+            IMedicalConditionTracker tracker = target.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
             if (tracker == null) {
                 continue;
             }
@@ -141,7 +141,7 @@ public class MedicalConditionCommands {
                                               float strength) throws CommandSyntaxException {
         int success = 0;
         for (ServerPlayer player : targets) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            IMedicalConditionTracker tracker = player.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
             if (tracker == null) {
                 continue;
             }

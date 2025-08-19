@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +27,9 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
     @Nullable
     @Override
     protected IControllable getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getControllable(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, side).resolve().orElse(null);
     }
 
     @Override

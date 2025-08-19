@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.create.display;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
@@ -19,8 +19,9 @@ public class ComputerMonitorCoverDisplaySource extends DisplaySource {
 
     @Override
     public List<MutableComponent> provideText(DisplayLinkContext context, DisplayTargetStats stats) {
-        ICoverable coverable = GTCapabilityHelper.getCoverable(context.level(), context.getSourcePos(),
-                context.blockEntity().getDirection().getOpposite());
+        var blockEntity = context.level().getBlockEntity(context.getSourcePos());
+        if (blockEntity == null) return GTStringUtils.literalLine("No cover!");
+        ICoverable coverable = blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, context.blockEntity().getDirection().getOpposite()).resolve().orElse(null);
         if (coverable != null) {
             if (coverable.getCoverAtSide(
                     context.blockEntity().getDirection().getOpposite()) instanceof ComputerMonitorCover cover) {

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
@@ -119,7 +119,7 @@ public class LocalizedHazardSavedData extends SavedData {
                 return;
             }
 
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            IMedicalConditionTracker tracker = player.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
             if (tracker == null) {
                 return;
             }

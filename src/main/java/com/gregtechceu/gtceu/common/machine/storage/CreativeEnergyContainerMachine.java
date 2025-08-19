@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -91,11 +91,11 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing),
-                    opposite);
+            var adjacentBlockEntity = getLevel().getBlockEntity(getPos().relative(facing));
+            IEnergyContainer container = adjacentBlockEntity == null ? null : adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, opposite).resolve().orElse(null);
             // Try to get laser capability
             if (container == null)
-                container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+                container = adjacentBlockEntity == null ? null : adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_LASER, opposite).resolve().orElse(null);
 
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
                 ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);

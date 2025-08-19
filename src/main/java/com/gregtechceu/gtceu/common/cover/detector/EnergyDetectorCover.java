@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
@@ -50,6 +50,6 @@ public class EnergyDetectorCover extends DetectorCover {
 
     @Nullable
     protected IEnergyInfoProvider getEnergyInfoProvider() {
-        return GTCapabilityHelper.getEnergyInfoProvider(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, attachedSide).resolve().orElse(null);
     }
 }

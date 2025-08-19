@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -207,7 +207,7 @@ public class ToolHelper {
                 RandomSource random = user == null ? GTValues.RNG : user.getRandom();
                 if (tool.isElectric()) {
                     int electricDamage = damage * ConfigHolder.INSTANCE.machines.energyUsageMultiplier;
-                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
                     if (electricItem != null) {
                         electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&

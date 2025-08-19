@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -68,6 +69,11 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
         if (level != null && !level.isClientSide && level.getServer() != null) {
             level.getServer().execute(this::markDirty);
         }
+    }
+
+    @Override
+    public BlockEntity getEntity() {
+        return pipeTile.self();
     }
 
     @Override

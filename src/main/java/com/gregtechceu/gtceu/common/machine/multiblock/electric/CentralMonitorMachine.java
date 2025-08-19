@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -296,7 +296,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         col = leftDist + rightDist - col;
         BlockPos pos = getPos().relative(left, leftDist - col).relative(up, upDist - row);
 
-        return GTCapabilityHelper.getMonitorComponent(level, pos, null);
+        var blockEntity = getLevel().getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, null).resolve().orElse(null);
     }
 
     public boolean isMonitor(int row, int col) {

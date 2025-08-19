@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
@@ -136,7 +136,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_CONTROLLABLE, null).resolve().orElse(null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {

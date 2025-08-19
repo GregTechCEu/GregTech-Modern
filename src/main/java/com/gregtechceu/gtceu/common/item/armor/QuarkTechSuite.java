@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -69,7 +69,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     @Override
     public void onArmorTick(Level world, Player player, ItemStack itemStack) {
-        IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem item = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (item == null)
             return;
 
@@ -300,7 +300,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public int damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
                            EquipmentSlot equipmentSlot) {
-        IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem item = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (item != null) {
             item.discharge(energyPerUse / 100L * damage, item.getTier(), true, false, false);
         }

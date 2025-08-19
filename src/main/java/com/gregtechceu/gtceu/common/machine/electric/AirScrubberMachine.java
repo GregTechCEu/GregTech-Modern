@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -89,7 +89,9 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
 
             for (Direction dir : GTUtil.DIRECTIONS) {
                 BlockPos offset = getPos().relative(dir);
-                if (GTCapabilityHelper.getHazardContainer(getLevel(), offset, dir.getOpposite()) != null) {
+                var adjacentBlockEntity = getLevel().getBlockEntity(offset);
+                if (adjacentBlockEntity == null) continue;
+                if (adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, dir.getOpposite()).isPresent()) {
                     if (getLevel().getBlockEntity(offset) instanceof DuctPipeBlockEntity duct &&
                             !duct.isConnected(dir.getOpposite())) {
                         continue;

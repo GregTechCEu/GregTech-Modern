@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -37,7 +37,9 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     @Nullable
     @Override
     protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, side).resolve().orElse(null);
     }
 
     @Override

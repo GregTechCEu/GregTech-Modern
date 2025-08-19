@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
@@ -31,7 +31,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
 
     @Override
     public void onArmorTick(Level world, @NotNull Player player, @NotNull ItemStack itemStack) {
-        IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem item = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (item == null) {
             return;
         }

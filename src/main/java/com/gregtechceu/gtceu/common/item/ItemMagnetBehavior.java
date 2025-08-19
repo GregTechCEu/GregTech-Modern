@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -264,7 +264,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private static boolean drainEnergy(boolean simulate, @NotNull ItemStack stack, long amount) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null)
             return false;
 

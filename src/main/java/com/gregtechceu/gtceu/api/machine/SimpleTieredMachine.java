@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -54,6 +54,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -133,9 +134,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 return 1;
             }
         };
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+        handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().isPresent() ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).resolve().isPresent()));
         return handler;
     }
 

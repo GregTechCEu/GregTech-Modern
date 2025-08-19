@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
@@ -43,7 +43,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
     @Override
     public void onArmorTick(Level world, Player player, ItemStack item) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
+        IElectricItem cont = item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (cont == null) {
             return;
         }
@@ -112,7 +112,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
                     var inventoryIterator = inventoryMap.getSecond().iterator();
                     while (inventoryIterator.hasNext()) {
                         int slot = inventoryIterator.nextInt();
-                        IElectricItem chargable = GTCapabilityHelper.getElectricItem(inventoryMap.getFirst().get(slot));
+                        IElectricItem chargable = inventoryMap.getFirst().get(slot).getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
 
                         // Safety check the null, it should not actually happen. Also don't try and charge itself
                         if (chargable == null || chargable == cont) {
@@ -175,7 +175,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         if (armor.getItem() instanceof ArmorComponentItem && player.isShiftKeyDown()) {
             CompoundTag data = armor.getOrCreateTag();
             boolean canShare = data.contains("canShare") && data.getBoolean("canShare");
-            IElectricItem cont = GTCapabilityHelper.getElectricItem(armor);
+            IElectricItem cont = armor.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (cont == null) {
                 return InteractionResultHolder.fail(armor);
             }
@@ -203,7 +203,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     @Override
     public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
         addCapacityHUD(item, this.HUD);
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
+        IElectricItem cont = item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (cont == null) return;
         if (!cont.canUse(energyPerUse)) return;
         CompoundTag data = item.getTag();
@@ -288,7 +288,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     }
 
     private static IElectricItem getIElectricItem(@NotNull ItemStack stack) {
-        return GTCapabilityHelper.getElectricItem(stack);
+        return stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
     }
 
     @Override

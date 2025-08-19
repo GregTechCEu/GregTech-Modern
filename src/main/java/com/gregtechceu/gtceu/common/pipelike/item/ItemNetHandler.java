@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
@@ -393,8 +393,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         BlockEntity tile = pipe.getLevel().getBlockEntity(pos.relative(handlerFacing));
         if (tile == null) return null;
 
-        ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
-                handlerFacing.getOpposite());
+        ICoverable coverable = tile.getCapability(GTCapability.CAPABILITY_COVERABLE).resolve().orElse(null);
         if (coverable == null) return null;
         return coverable.getCoverAtSide(handlerFacing.getOpposite());
     }

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 
 import net.minecraft.core.BlockPos;
@@ -240,7 +240,9 @@ public class CoverProvider extends CapabilityInfoProvider<ICoverable> {
     @Nullable
     @Override
     protected ICoverable getCapability(Level level, BlockPos pos, @org.jetbrains.annotations.Nullable Direction side) {
-        return GTCapabilityHelper.getCoverable(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve().orElse(null);
     }
 
     @Override

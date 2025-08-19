@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -62,6 +62,6 @@ public class CoverSolarPanel extends CoverBehavior {
 
     @Nullable
     protected IEnergyContainer getEnergyContainer() {
-        return GTCapabilityHelper.getEnergyContainer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, attachedSide).resolve().orElse(null);
     }
 }

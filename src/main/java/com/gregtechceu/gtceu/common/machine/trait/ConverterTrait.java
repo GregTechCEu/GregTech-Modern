@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -14,6 +13,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -75,9 +75,9 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         if (feToEu) { // output eu
             super.serverTick();
         } else { // output fe
-            var fontFacing = machine.getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getPos().relative(fontFacing), fontFacing.getOpposite());
+            var frontFacing = machine.getFrontFacing();
+            var adjacentBlockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(frontFacing));
+            IEnergyStorage energyContainer = adjacentBlockEntity == null ? null : adjacentBlockEntity.getCapability(ForgeCapabilities.ENERGY, frontFacing.getOpposite()).resolve().orElse(null);
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);

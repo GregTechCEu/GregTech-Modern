@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -104,7 +104,7 @@ public final class CustomToolRecipes {
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {
                 if (powerUnitItems.get(tier) != null) {
                     ItemStack batteryStack = batteryItem.asStack();
-                    long maxCharge = GTCapabilityHelper.getElectricItem(batteryStack).getMaxCharge();
+                    long maxCharge = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().get().getMaxCharge();
                     ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(),
                             maxCharge);
                     String recipeName = String.format("%s_%s",

@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -233,7 +233,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = getHolder().self().getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

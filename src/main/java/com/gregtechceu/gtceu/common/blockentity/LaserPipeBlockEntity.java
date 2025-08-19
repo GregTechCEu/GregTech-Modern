@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.pipelike.laser.*;
@@ -154,10 +153,11 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     @Override
     public boolean canAttachTo(Direction side) {
         if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof LaserPipeBlockEntity) {
+            var blockEntity = level.getBlockEntity(getBlockPos().relative(side));
+            if (blockEntity == null || blockEntity instanceof LaserPipeBlockEntity) {
                 return false;
             }
-            return GTCapabilityHelper.getLaser(level, getBlockPos().relative(side), side.getOpposite()) != null;
+            return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
         }
         return false;
     }

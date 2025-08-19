@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
@@ -48,7 +48,7 @@ public class ArmorUtils {
      * Check is possible to charge item
      */
     public static boolean isPossibleToCharge(ItemStack chargeable) {
-        IElectricItem container = GTCapabilityHelper.getElectricItem(chargeable);
+        IElectricItem container = chargeable.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (container != null) {
             return container.getCharge() < container.getMaxCharge() &&
                     (container.getCharge() + container.getTransferLimit()) <= container.getMaxCharge();
@@ -68,7 +68,7 @@ public class ArmorUtils {
         IntList openMainSlots = new IntArrayList();
         for (int i = 0; i < player.getInventory().items.size(); i++) {
             ItemStack current = player.getInventory().items.get(i);
-            IElectricItem item = GTCapabilityHelper.getElectricItem(current);
+            IElectricItem item = current.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (item == null) continue;
 
             if (isPossibleToCharge(current) && item.getTier() <= tier) {
@@ -83,7 +83,7 @@ public class ArmorUtils {
         IntList openArmorSlots = new IntArrayList();
         for (int i = 0; i < player.getInventory().armor.size(); i++) {
             ItemStack current = player.getInventory().armor.get(i);
-            IElectricItem item = GTCapabilityHelper.getElectricItem(current);
+            IElectricItem item = current.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (item == null) {
                 continue;
             }
@@ -98,7 +98,7 @@ public class ArmorUtils {
         }
 
         ItemStack offHand = player.getInventory().offhand.get(0);
-        IElectricItem offHandItem = GTCapabilityHelper.getElectricItem(offHand);
+        IElectricItem offHandItem = offHand.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (offHandItem == null) {
             return inventorySlotMap;
         }

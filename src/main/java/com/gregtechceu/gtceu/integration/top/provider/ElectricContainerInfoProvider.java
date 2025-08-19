@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.integration.top.element.ProgressElement;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -33,7 +33,9 @@ public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnerg
     @Nullable
     @Override
     protected IEnergyInfoProvider getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getEnergyInfoProvider(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, side).resolve().orElse(null);
     }
 
     @Override

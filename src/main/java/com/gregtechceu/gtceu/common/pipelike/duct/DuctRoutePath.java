@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.duct;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
@@ -41,8 +41,9 @@ public class DuctRoutePath implements IRoutePath<IHazardParticleContainer> {
 
     @Override
     public @Nullable IHazardParticleContainer getHandler(Level world) {
-        return GTCapabilityHelper.getHazardContainer(world, getTargetPipePos().relative(targetFacing),
-                targetFacing.getOpposite());
+        var blockEntity = world.getBlockEntity(getTargetPipePos().relative(targetFacing));
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, targetFacing.getOpposite()).resolve().orElse(null);
     }
 
     public FacingPos toFacingPos() {

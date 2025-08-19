@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -45,9 +45,9 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
             if (!outputsEnergy(side)) continue;
             BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
             Direction oppositeSide = side.getOpposite();
-            ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
-                    getMachine().getPos().relative(side), oppositeSide);
-            if (tileEntity != null && laserContainer != null) {
+
+            if (tileEntity != null) {
+                ILaserContainer laserContainer = tileEntity.getCapability(GTCapability.CAPABILITY_LASER, oppositeSide).resolve().orElse(null);
                 if (laserContainer == null || !laserContainer.inputsEnergy(oppositeSide)) continue;
                 amperesUsed += laserContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                         outputAmperes - amperesUsed);

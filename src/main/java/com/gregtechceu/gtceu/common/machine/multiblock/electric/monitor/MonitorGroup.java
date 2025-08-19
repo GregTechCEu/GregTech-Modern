@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
@@ -89,8 +88,10 @@ public class MonitorGroup {
 
     public @Nullable CoverBehavior getTargetCover(Level level) {
         if (getTarget(level) != null && targetCoverSide != null) {
-            ICoverable coverable = GTCapabilityHelper.getCoverable(level, getTarget(level), targetCoverSide);
-            if (coverable != null) return coverable.getCoverAtSide(targetCoverSide);
+            var blockEntity = level.getBlockEntity(getTarget(level));
+            if (blockEntity == null) return null;
+            var coverable = blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, targetCoverSide).resolve();
+            if (coverable.isPresent()) return coverable.get().getCoverAtSide(targetCoverSide);
         }
         return null;
     }
@@ -102,7 +103,11 @@ public class MonitorGroup {
     public @Nullable BlockPos getTarget(Level level) {
         if (target == null) return null;
 
-        IMonitorComponent component = GTCapabilityHelper.getMonitorComponent(level, target, null);
+        var blockEntity = level.getBlockEntity(target);
+
+        if (blockEntity == null) return target;
+
+        IMonitorComponent component = blockEntity.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, null).resolve().orElse(null);
         if (component != null && component.getDataItems() != null) {
             ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
             CompoundTag tag = stack.getTag();

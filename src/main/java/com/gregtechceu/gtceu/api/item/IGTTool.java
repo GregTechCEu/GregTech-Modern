@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -173,7 +173,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
     default ItemStack get(long defaultCharge, long defaultMaxCharge) {
         ItemStack stack = get();
         if (isElectric()) {
-            ElectricItem electricItem = (ElectricItem) GTCapabilityHelper.getElectricItem(stack);
+            ElectricItem electricItem = (ElectricItem)stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (electricItem != null) {
                 electricItem.setMaxChargeOverride(defaultMaxCharge);
                 electricItem.setCharge(defaultCharge);

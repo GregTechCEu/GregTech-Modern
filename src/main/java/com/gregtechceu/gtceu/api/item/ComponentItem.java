@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 
@@ -426,7 +426,7 @@ public class ComponentItem extends Item
      */
     public ItemStack getChargedStack(long chargeAmount) {
         ItemStack itemStack = getDefaultInstance();
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }
@@ -436,7 +436,7 @@ public class ComponentItem extends Item
 
     public ItemStack getInfiniteChargedStack() {
         ItemStack itemStack = getDefaultInstance();
-        IElectricItem iElectricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem iElectricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (!(iElectricItem instanceof ElectricItem electricItem)) {
             throw new IllegalStateException("Not a supported electric item.");
         }

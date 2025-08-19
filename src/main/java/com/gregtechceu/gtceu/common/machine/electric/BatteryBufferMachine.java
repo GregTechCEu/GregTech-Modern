@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -85,9 +86,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 return 1;
             }
         };
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+        handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 
@@ -153,13 +153,13 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         List<Object> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     batteries.add(electricItem);
                 }
             } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-                IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
+                IEnergyStorage energyStorage = batteryStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
                 if (energyStorage != null) {
                     if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
                         batteries.add(energyStorage);
@@ -174,7 +174,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         List<IElectricItem> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (electricItem != null) {
                 if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
                     batteries.add(electricItem);
@@ -188,14 +188,11 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         List<Object> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (electricItem != null) {
                 batteries.add(electricItem);
             } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-                IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(batteryStack);
-                if (energyStorage != null) {
-                    batteries.add(energyStorage);
-                }
+                batteryStack.getCapability(ForgeCapabilities.ENERGY).resolve().ifPresent(batteries::add);
             }
         }
         return batteries;
@@ -233,8 +230,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         @Override
         public void serverTick() {
             var outFacing = getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(outFacing),
-                    outFacing.getOpposite());
+            var adjacentBlockEntity = getLevel().getBlockEntity(getPos().relative(outFacing));
+            if (adjacentBlockEntity == null) return;
+            var energyContainer = adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outFacing.getOpposite()).resolve().orElse(null);
             if (energyContainer == null) {
                 return;
             }

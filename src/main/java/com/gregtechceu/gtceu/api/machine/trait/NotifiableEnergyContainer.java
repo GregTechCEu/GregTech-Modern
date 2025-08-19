@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -171,8 +172,11 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             for (Direction side : GTUtil.DIRECTIONS) {
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
-                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                        machine.getPos().relative(side), oppositeSide);
+
+                var adjacentBlockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(side));
+                if (adjacentBlockEntity == null) continue;
+                var energyContainer = adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, oppositeSide).resolve().orElse(null);
+
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                             outputAmperes - amperesUsed);
@@ -192,7 +196,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             return false;
         }
 
-        var electricItem = GTCapabilityHelper.getElectricItem(stackInSlot);
+        var electricItem = stackInSlot.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem != null) {
             if (handleElectricItem(electricItem, simulate)) {
                 if (!simulate) {
@@ -201,7 +205,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
                 return true;
             }
         } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-            IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(stackInSlot);
+            IEnergyStorage energyStorage = stackInSlot.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
             if (energyStorage != null && handleForgeEnergyItem(energyStorage, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);

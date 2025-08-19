@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -62,6 +62,7 @@ import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -150,9 +151,8 @@ public class FisherMachine extends TieredEnergyMachine
 
     protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+        handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 

@@ -4,11 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -166,7 +165,7 @@ public class ForgeCommonEventListener {
         }
 
         Player player = event.player;
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        IMedicalConditionTracker tracker = player.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER).resolve().orElse(null);
         if (tracker == null) {
             return;
         }
@@ -204,8 +203,8 @@ public class ForgeCommonEventListener {
     public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
         if (event.getEntity() instanceof Player player) {
             ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
-                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent()) {
+                IElectricItem helmet = item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().get();
                 MobEffectInstance effect = event.getEffectInstance();
                 int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
                 if (cost != -1) {
@@ -387,7 +386,7 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            IMedicalConditionTracker tracker = player.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER).resolve().orElse(null);
             if (tracker == null) {
                 return;
             }

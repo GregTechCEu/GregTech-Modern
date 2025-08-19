@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -32,7 +32,9 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
     @Nullable
     @Override
     protected IMaintenanceMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
-        var cap = GTCapabilityHelper.getMaintenanceMachine(level, blockPos, direction);
+        var blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity == null) return null;
+        var cap = blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, direction).resolve().orElse(null);
         if (cap != null) {
             return cap;
         }

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.Util;
@@ -32,7 +32,9 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
 
     @Override
     protected @Nullable IEnergyInfoProvider getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getEnergyInfoProvider(level, pos, side);
+        var blockEntity = level.getBlockEntity(pos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, side).resolve().orElse(null);
     }
 
     @Override

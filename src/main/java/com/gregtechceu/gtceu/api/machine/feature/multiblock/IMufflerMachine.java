@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -27,18 +26,19 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
      */
     default boolean isFrontFaceFree() {
         var frontPos = self().getPos().relative(self().getFrontFacing());
-        return self().getLevel().getBlockState(frontPos).isAir() ||
-                GTCapabilityHelper.getHazardContainer(self().getLevel(),
-                        frontPos, self().getFrontFacing().getOpposite()) != null;
+        if (self().getLevel().getBlockState(frontPos).isAir()) return true;
+
+        var blockEntity = self().getLevel().getBlockEntity(frontPos);
+        if (blockEntity == null) return false;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, self().getFrontFacing().getOpposite()).isPresent();
     }
 
     default void emitPollutionParticles() {
         var pos = self().getPos();
         var facing = self().getFrontFacing();
 
-        IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
-                pos.relative(facing), facing.getOpposite());
-        if (container != null) {
+        var blockEntity = self().getLevel().getBlockEntity(pos.relative(facing));
+        if (blockEntity != null && blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, facing.getOpposite()).isPresent()) {
             // do not emit particles if front face has a duct on it.
             return;
         }

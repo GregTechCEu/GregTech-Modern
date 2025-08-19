@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -58,6 +58,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -148,9 +149,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+        handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 
@@ -555,7 +555,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = getHolder().self().getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -108,7 +108,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
                 realTool = second;
             } else return ItemStack.EMPTY;
             if (!tool.isElectric()) return ItemStack.EMPTY;
-            IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(realTool);
+            IElectricItem powerUnit = realTool.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (toolHead.isEmpty() || powerUnit == null) return ItemStack.EMPTY;
             GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
             ItemStack newTool = GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), toolArray[tool.getElectricTier()])

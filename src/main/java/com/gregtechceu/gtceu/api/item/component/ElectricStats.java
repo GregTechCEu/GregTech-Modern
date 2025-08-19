@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
@@ -70,7 +70,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
-        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem != null) {
             var per = (electricItem.getCharge() * 7 / electricItem.getMaxCharge());
             return per / 100f;
@@ -81,7 +81,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
-        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
@@ -96,7 +96,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
@@ -129,11 +129,11 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static long chargeItemStack(long maxDischargeAmount, IElectricItem source, ItemStack target) {
-        var slotElectricItem = GTCapabilityHelper.getElectricItem(target);
+        IElectricItem slotElectricItem = target.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
             return chargeElectricItem(maxDischargeAmount, source, slotElectricItem);
         } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-            var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(target);
+            var feEnergyItem = target.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
             if (feEnergyItem != null && feEnergyItem.canReceive() &&
                     feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
                 return chargeForgeEnergyItem(maxDischargeAmount, source, feEnergyItem);
@@ -178,7 +178,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null) return;
         addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
                 electricItem.getTier(), electricItem.canProvideChargeExternally());
@@ -243,7 +243,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
         var stack = new ItemStack(item);
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem != null) {
             electricItem.charge(electricItem.getMaxCharge(), electricItem.getTier(), true, false);
             items.add(stack);
@@ -264,7 +264,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem != null) {
             return ToolChargeBarRenderer.renderElectricBar(guiGraphics, electricItem.getCharge(),
                     electricItem.getMaxCharge(), xOffset, yOffset, stack.isBarVisible());

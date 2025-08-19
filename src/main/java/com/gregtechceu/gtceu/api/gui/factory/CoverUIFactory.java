@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 
@@ -39,9 +39,10 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
         if (world == null) return null;
         var pos = syncData.readBlockPos();
         var side = syncData.readEnum(Direction.class);
-        var coverable = GTCapabilityHelper.getCoverable(world, pos, side);
-        if (coverable != null) {
-            return coverable.getCoverAtSide(side);
+        var blockEntity = world.getBlockEntity(pos);
+        if (blockEntity != null) {
+            var coverable =  blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve();
+            if (coverable.isPresent()) return coverable.get().getCoverAtSide(side);
         }
         return null;
     }

@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -421,7 +421,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var level = getLevel();
+        if (level == null) return InteractionResult.PASS;
+        var blockEntity = getLevel().getBlockEntity(getPos());
+        IControllable controllable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

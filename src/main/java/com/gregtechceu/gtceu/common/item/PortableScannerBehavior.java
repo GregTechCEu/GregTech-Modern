@@ -3,11 +3,10 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
@@ -134,7 +133,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     protected boolean drainEnergy(@Nonnull ItemStack stack, int amount, boolean simulate) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null) return false;
         return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }

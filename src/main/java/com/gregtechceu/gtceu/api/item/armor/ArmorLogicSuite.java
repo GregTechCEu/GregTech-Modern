@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
+import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +34,7 @@ import java.util.UUID;
 
 public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
+    @Getter
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
@@ -50,7 +52,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     @Override
     public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
-        IElectricItem item = GTCapabilityHelper.getElectricItem(armor);
+        IElectricItem item = armor.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (item == null) return 0;
         if (item.getCharge() >= energyPerUse) {
             return (int) Math.round(20.0F * this.getAbsorption() * this.getDamageAbsorption());
@@ -62,7 +64,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != this.type.getSlot()) return ImmutableMultimap.of();
-        IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem item = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         UUID uuid = IArmorLogic.ARMOR_MODIFIER_UUID_PER_TYPE.get(type);
         if (item == null) return ImmutableMultimap.of();
         if (item.getCharge() >= energyPerUse) {
@@ -93,7 +95,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     public void addInfo(ItemStack itemStack, List<Component> lines) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem cont = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (cont != null) {
             ElectricStats.addCurrentChargeTooltip(lines, cont.getCharge(), cont.getMaxCharge(), cont.getTier(), false);
         }
@@ -119,7 +121,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     @OnlyIn(Dist.CLIENT)
     protected static void addCapacityHUD(ItemStack stack, ArmorUtils.ModularHUD hud) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem cont = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (cont == null) return;
         if (cont.getCharge() == 0) return;
         float energyMultiplier = cont.getCharge() * 100.0F / cont.getMaxCharge();
@@ -131,10 +133,6 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @Override
     public boolean shouldDrawHUD() {
         return this.type == ArmorItem.Type.CHESTPLATE;
-    }
-
-    public int getEnergyPerUse() {
-        return this.energyPerUse;
     }
 
     protected float getAbsorption() {

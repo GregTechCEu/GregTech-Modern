@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -43,7 +43,9 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
     @Nullable
     @Override
     protected RecipeLogic getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
-        return GTCapabilityHelper.getRecipeLogic(level, blockPos, direction);
+        var blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity == null) return null;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, direction).resolve().orElse(null);
     }
 
     @Override

@@ -22,6 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -67,6 +68,11 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
         if (level != null && !level.isClientSide && level.getServer() != null) {
             level.getServer().execute(this::markDirty);
         }
+    }
+
+    @Override
+    public BlockEntity getEntity() {
+        return machine.getHolder().self();
     }
 
     @Override

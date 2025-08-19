@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -56,6 +56,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,11 +115,10 @@ public class MinerMachine extends WorkableTieredMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+    protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+        handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 

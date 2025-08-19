@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
@@ -42,7 +42,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack item) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
+        IElectricItem cont = item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (cont == null) {
             return;
         }
@@ -109,7 +109,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
     @Nullable
     private static IElectricItem getIElectricItem(@NotNull ItemStack stack) {
-        return GTCapabilityHelper.getElectricItem(stack);
+        return stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
     }
 
     @Override

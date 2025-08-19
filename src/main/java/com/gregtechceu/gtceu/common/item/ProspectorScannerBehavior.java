@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
@@ -63,7 +63,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
         if (electricItem == null) return false;
 
         int amount = Math.round(cost * (ConfigHolder.INSTANCE.machines.prospectorEnergyUseMultiplier / 100F));

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
 import net.minecraft.FieldsAreNonnullByDefault;
@@ -54,7 +54,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
                 if (ItemStack.isSameItem(craftingContainer.getItem(i), chargeStack)) {
                     ItemStack stack = craftingContainer.getItem(i);
-                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    IElectricItem electricItem = stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
                     if (electricItem != null) {
                         maxCharge += electricItem.getMaxCharge();
                         charge += electricItem.getCharge();
@@ -74,7 +74,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         long charge = 0L;
         ItemStack resultStack = super.getResultItem(registryAccess);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
-            IElectricItem electricItem = GTCapabilityHelper.getElectricItem(chargeStack);
+            IElectricItem electricItem = chargeStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
             if (electricItem != null) {
                 maxCharge += electricItem.getMaxCharge();
                 charge += electricItem.getCharge();
