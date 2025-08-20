@@ -26,7 +26,7 @@ public class TestUtils {
     // Compares two itemstacks and a range.
     // Checks if items are equal, and if stack2's amount is within range.
     public static boolean isItemStackWithinRange(ItemStack stack1, ItemStack stack2, int min, int max) {
-        return ItemStack.isSameItem(stack1, stack2) && isWithinRange(stack2, min, max);
+        return ItemStack.isSameItem(stack1, stack2) && isItemWithinRange(stack2, min, max);
     }
 
     // Compares an int representing an itemstack's size with a number of batches, parallels, and runs
@@ -47,18 +47,18 @@ public class TestUtils {
     // Compares two fluidstacks and a range.
     // Checks if items are equal, and if stack2's amount is within range.
     public static boolean isFluidStackWithinRange(FluidStack stack1, FluidStack stack2, int min, int max) {
-        return stack1.isFluidEqual(stack2) && isWithinRange(stack2, min, max);
+        return stack1.isFluidEqual(stack2) && isFluidWithinRange(stack2, min, max);
     }
 
     // compares an ItemStack with a range
     // returns true if the ItemStack's count is within range
-    public static boolean isWithinRange(ItemStack stack, int min, int max) {
+    public static boolean isItemWithinRange(ItemStack stack, int min, int max) {
         return stack.getCount() <= max && stack.getCount() >= min;
     }
 
     // compares a FluidStack with a range
     // returns true if the FluidStack's amount is within range
-    public static boolean isWithinRange(FluidStack stack, int min, int max) {
+    public static boolean isFluidWithinRange(FluidStack stack, int min, int max) {
         return stack.getAmount() <= max && stack.getAmount() >= min;
     }
 

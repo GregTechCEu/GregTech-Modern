@@ -49,9 +49,9 @@ public class IntProviderIngredientTest {
 
     @BeforeBatch(batch = "RangedIngredients")
     public static void prepare(ServerLevel level) {
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests");
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests");
-        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_inputs_centrifuge_tests");
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests", 2,2,3,2);
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests", 3,3,3,3);
+        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_inputs_centrifuge_tests", 1,1,6,6);
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
@@ -190,21 +190,24 @@ public class IntProviderIngredientTest {
         int runs = 7;
         itemIn.setStackInSlot(0, new ItemStack(Items.BLUE_BED, 64));
         itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
-        // 1t to turn on, 12t to run the recipe 4 times
-        helper.succeedOnTickWhen(runs * 2 + 1, () -> {
+        // 1t to turn on, 2t per recipe run
+        helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemIn.getStackInSlot(0);
+            int upperLimit = 64 - (runs * 1);
+            int lowerLimit = 64 - (runs * 9);
             helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), new ItemStack(Blocks.STONE, runs)),
                     "Singleblock CR didn't complete correct number of recipes, completed " +
                             itemOut.getStackInSlot(0).getCount());
-            helper.assertTrue(TestUtils.isWithinRange(results, 1, 57),
+            helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
                     "Singleblock CR didn't consume correct number of items, consumed " +
                             (64 - results.getCount()) + "items");
-            helper.assertFalse((results.getCount() == 1),
+            helper.assertFalse((results.getCount() == lowerLimit),
                     "Singleblock CR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == 57),
+            helper.assertFalse((results.getCount() == upperLimit),
                     "Singleblock CR rolled min value on every roll");
 
         });
+        helper.succeed();
     }
 
     // Test for singleblock machine with ranged item input
@@ -219,13 +222,12 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-
         int runs = 7;
         itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_SLAB, runs));
-        // 1t to turn on, 12t to run the recipe 4 times
-        helper.succeedOnTickWhen(runs * 2 + 1, () -> {
+        // 1t to turn on, 2t per recipe run
+        helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemOut.getStackInSlot(0);
-            helper.assertTrue(TestUtils.isWithinRange(results, 1, 57),
+            helper.assertTrue(TestUtils.isItemWithinRange(results, runs, runs * 9),
                     "Singleblock CR didn't produce correct number of items, produced " +
                             results.getCount() + "items");
             helper.assertFalse((results.getCount() == runs * 9),
@@ -234,5 +236,6 @@ public class IntProviderIngredientTest {
                     "Singleblock CR rolled min value on every roll");
 
         });
+        helper.succeed();
     }
 }
