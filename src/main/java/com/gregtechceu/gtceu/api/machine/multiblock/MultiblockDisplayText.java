@@ -386,7 +386,7 @@ public class MultiblockDisplayText {
                             countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
                                     item.maxChance;
                         }
-                        count = countD < 1 ? 1 : (int) Math.round(countD);
+                        count = Math.max(1, (int) Math.round(countD));
                         displaycount = Component.literal(String.valueOf(count));
                     }
                     if (countD < maxDurationSec) {
@@ -430,7 +430,7 @@ public class MultiblockDisplayText {
                             amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
                                     fluid.maxChance;
                         }
-                        amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                        amount = Math.max(1, (int) Math.round(amountD));
                         displaycount = Component.literal(String.valueOf(amount));
                     }
                     if (amountD < maxDurationSec) {

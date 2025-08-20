@@ -348,7 +348,7 @@ public interface GTRecipeSchema {
             return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(stack, UniformInt.of(min, max)));
         }
 
-        public GTRecipeJS inputItemsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+        public GTRecipeJS itemInputsRanged(TagPrefix orePrefix, Material material, int min, int max) {
             return inputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
         }
 

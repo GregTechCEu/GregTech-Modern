@@ -92,7 +92,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                             int count = stack.getCount();
                             double countD = (double) count * runs *
                                     function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                            count = countD < 1 ? 1 : (int) Math.round(countD);
+                            count = Math.max(1, (int) Math.round(countD));
                             itemTag.putInt("Count", count);
                         }
                     }
@@ -128,7 +128,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                             int amount = stacks[0].getAmount();
                             double amountD = (double) amount * runs *
                                     function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                            amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                            amount = Math.max(1, (int) Math.round(amountD));
                             fluidTag.putInt("Amount", amount);
                         }
                     }
