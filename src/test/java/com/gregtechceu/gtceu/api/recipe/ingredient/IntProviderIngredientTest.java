@@ -55,7 +55,7 @@ public class IntProviderIngredientTest {
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
-                .inputItemsRanged(new ItemStack(Items.BLUE_BED), UniformInt.of(1, 9))
+                .inputItemsRanged(new ItemStack(Items.GREEN_STAINED_GLASS), UniformInt.of(1, 9))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
@@ -65,7 +65,7 @@ public class IntProviderIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(new ItemStack(Blocks.BRICK_SLAB))
-                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(5, 5))
+                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
@@ -188,7 +188,7 @@ public class IntProviderIngredientTest {
 
 
         int runs = 7;
-        itemIn.setStackInSlot(0, new ItemStack(Items.BLUE_BED, 64));
+        itemIn.setStackInSlot(0, new ItemStack(Items.GREEN_STAINED_GLASS, 64));
         itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
@@ -217,7 +217,7 @@ public class IntProviderIngredientTest {
 
             // check if all the rolls were equal, but not min/max
             int[] rolls = new int[runs];
-            rolls[0] = addedRolls[0];
+            rolls[0] = 64 - addedRolls[0];
             boolean allEqual = false;
             for (int i = 1; i < runs; i++) {
                 rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
@@ -253,8 +253,8 @@ public class IntProviderIngredientTest {
         int[] addedRolls = new int[runs];
         for (int i = 0; i < runs; i++){
             final int finalI = i; //lambda preserve you
-            helper.runAfterDelay(2*i + 1, () -> {
-                addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
+            helper.runAfterDelay(2*i + 3, () -> {
+                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
             });
         }
         // check the results of all rolls together
