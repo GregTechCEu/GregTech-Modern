@@ -65,7 +65,7 @@ public class IntProviderIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(new ItemStack(Blocks.BRICK_SLAB))
-                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 9))
+                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(5, 5))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
@@ -191,6 +191,15 @@ public class IntProviderIngredientTest {
         itemIn.setStackInSlot(0, new ItemStack(Items.BLUE_BED, 64));
         itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
         // 1t to turn on, 2t per recipe run
+        // get the result of each roll independently
+        int[] addedRolls = new int[runs];
+        for (int i = 0; i < runs; i++){
+            final int finalI = i; //lambda preserve you
+            helper.runAfterDelay(2*i + 1, () -> {
+                addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
+            });
+        }
+        // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemIn.getStackInSlot(0);
             int upperLimit = 64 - (runs * 1);
@@ -206,8 +215,23 @@ public class IntProviderIngredientTest {
             helper.assertFalse((results.getCount() == upperLimit),
                     "Singleblock CR rolled min value on every roll");
 
+            // check if all the rolls were equal, but not min/max
+            int[] rolls = new int[runs];
+            rolls[0] = addedRolls[0];
+            boolean allEqual = false;
+            for (int i = 1; i < runs; i++) {
+                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
+                if (rolls[i] == rolls[i - 1]) {
+                    allEqual = true;
+                } else {
+                    allEqual = false;
+                    break;
+                }
+            }
+            helper.assertFalse(allEqual,
+                    "Singleblock CR rolled the same value on every input roll");
+            helper.succeed();
         });
-        helper.succeed();
     }
 
     // Test for singleblock machine with ranged item input
@@ -225,6 +249,15 @@ public class IntProviderIngredientTest {
         int runs = 7;
         itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_SLAB, runs));
         // 1t to turn on, 2t per recipe run
+        // get the result of each roll independently
+        int[] addedRolls = new int[runs];
+        for (int i = 0; i < runs; i++){
+            final int finalI = i; //lambda preserve you
+            helper.runAfterDelay(2*i + 1, () -> {
+                addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
+            });
+        }
+        // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemOut.getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemWithinRange(results, runs, runs * 9),
@@ -235,7 +268,22 @@ public class IntProviderIngredientTest {
             helper.assertFalse((results.getCount() == runs),
                     "Singleblock CR rolled min value on every roll");
 
+            // check if all the rolls were equal, but not min/max
+            int[] rolls = new int[runs];
+            rolls[0] = addedRolls[0];
+            boolean allEqual = false;
+            for (int i = 1; i < runs; i++) {
+                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+                if (rolls[i] == rolls[i - 1]) {
+                    allEqual = true;
+                } else {
+                    allEqual = false;
+                    break;
+                }
+            }
+            helper.assertFalse(allEqual,
+                    "Singleblock CR rolled the same value on every input roll");
+            helper.succeed();
         });
-        helper.succeed();
     }
 }
