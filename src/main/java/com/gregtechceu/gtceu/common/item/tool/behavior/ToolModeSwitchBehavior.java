@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ToolAction;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +28,17 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     public static final ToolModeSwitchBehavior INSTANCE = new ToolModeSwitchBehavior();
 
     protected ToolModeSwitchBehavior() {}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        var mode = WrenchModeType.values()[getBehaviorsTag(stack).getByte("Mode")];
+        boolean canWrenchConfigureAll = action == GTToolActions.WRENCH_CONFIGURE_ALL;
+        return action == GTToolActions.WRENCH_CONFIGURE || switch (mode) {
+            case ITEM -> canWrenchConfigureAll || action == GTToolActions.WRENCH_CONFIGURE_ITEMS;
+            case FLUID -> canWrenchConfigureAll || action == GTToolActions.WRENCH_CONFIGURE_FLUIDS;
+            case BOTH -> GTToolActions.WRENCH_CONFIGURE_ACTIONS.contains(action);
+        };
+    }
 
     @Override
     public void addBehaviorNBT(@NotNull ItemStack stack, @NotNull CompoundTag tag) {

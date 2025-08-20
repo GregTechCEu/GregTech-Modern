@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,11 @@ public class ScrapeBehavior implements IToolBehavior {
     public static final ScrapeBehavior INSTANCE = new ScrapeBehavior();
 
     protected ScrapeBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.AXE_SCRAPE;
+    }
 
     @NotNull
     @Override
@@ -65,7 +71,7 @@ public class ScrapeBehavior implements IToolBehavior {
         }
 
         if (scraped) {
-            level.playSound(player, blocks.get(0), SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;

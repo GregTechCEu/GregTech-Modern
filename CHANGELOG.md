@@ -1,5 +1,11 @@
 # ChangeLog
 
+## Version [v7.1.4](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.1.3-1.20.1...v7.1.4-1.20.1)
+### Fixed
+
+- Fix Machine power failing by @YoungOnionMC in [#3680](https://github.com/GregTechCEu/GregTech-Modern/pull/3680)
+
+ 
 ## Version [v7.1.3](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.1.2-1.20.1...v7.1.3-1.20.1)
 ### Added
 

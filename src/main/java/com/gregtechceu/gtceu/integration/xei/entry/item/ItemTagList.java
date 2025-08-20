@@ -55,7 +55,7 @@ public final class ItemTagList implements ItemEntryList {
         }
     }
 
-    private static ItemStack stackWithTag(Holder<Item> holder, int amount, @Nullable CompoundTag nbt) {
+    static ItemStack stackWithTag(Holder<Item> holder, int amount, @Nullable CompoundTag nbt) {
         ItemStack stack = new ItemStack(holder.value(), amount);
         stack.setTag(nbt);
         return stack;

@@ -162,7 +162,8 @@ public class SimpleFluidFilter implements FluidFilter {
         for (var candidate : matches) {
             if (ignoreNbt && candidate.getFluid() == fluidStack.getFluid()) {
                 totalAmount += candidate.getAmount();
-            } else if (candidate.isFluidEqual(fluidStack)) {
+            }
+            if (!ignoreNbt && candidate.isFluidEqual(fluidStack)) {
                 totalAmount += candidate.getAmount();
             }
         }
