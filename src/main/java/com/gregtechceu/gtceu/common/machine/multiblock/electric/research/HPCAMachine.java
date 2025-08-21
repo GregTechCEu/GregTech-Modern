@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -48,7 +47,6 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -488,16 +486,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     remainingCoolant -= drained.getAmount();
                     if (remainingCoolant <= 0) break;
                 }
-                if (remainingCoolant != 0) {
-                    if (remainingCoolant == maxCoolantDrain) {
-                        // coolant requirement was fully met
-                        temperatureChange -= maxActiveCooling;
-                    } else {
-                        // coolant requirement was only partially met, cool proportional to fluid amount drained
-                        // a * (b / c)
-                        int coolantDrained = maxCoolantDrain - remainingCoolant;
-                        temperatureChange -= maxActiveCooling * (1.0 * coolantDrained / maxCoolantDrain);
-                    }
+                if (remainingCoolant == 0) {
+                    // coolant requirement was fully met
+                    temperatureChange -= maxActiveCooling;
+                } else {
+                    // coolant requirement was only partially met, cool proportional to fluid amount drained
+                    // a * (b / c)
+                    int coolantDrained = maxCoolantDrain - remainingCoolant;
+                    temperatureChange -= maxActiveCooling * (1.0 * coolantDrained / maxCoolantDrain);
                 }
             } else if (temperatureChange > 0) {
                 // try to partially utilize active coolers to stabilize to zero
@@ -516,7 +512,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 } else {
                     // coolant requirement was only partially met, cool proportional to fluid amount drained
                     // a * (b / c)
-                    int coolantDrained = ( coolantToDrain - remainingCoolant );
+                    int coolantDrained = (coolantToDrain - remainingCoolant);
                     temperatureChange -= temperatureToDecrease * (1.0 * coolantDrained / coolantToDrain);
                 }
             }
