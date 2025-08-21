@@ -458,6 +458,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         public int totalCount;
     }
 
+    public boolean shouldRespectDistributionMode() {
+        return getDistributionMode() != DistributionMode.INSERT_FIRST &&
+                ((io == IO.IN) ?
+                        (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
+                        (getAdjacentItemHandler() instanceof ItemPipeBlockEntity));
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -469,9 +476,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
+        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
+                DistributionMode.values(), distributionMode, this::setDistributionMode);
+
+        distributionSelector.setVisible(shouldRespectDistributionMode());
+
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
+                    distributionSelector.setVisible(shouldRespectDistributionMode());
                     ioModeSwitch.setHoverTooltips(
                             LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
                 })
@@ -483,11 +496,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
                         LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
 
-        if (shouldDisplayDistributionMode()) {
-            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
-                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
-        }
-
         group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
                 ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
                 .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
@@ -498,12 +506,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         buildAdditionalUI(group);
 
         return group;
-    }
-
-    private boolean shouldDisplayDistributionMode() {
-        return coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
-                coverHolder.getLevel()
-                        .getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity;
     }
 
     @NotNull

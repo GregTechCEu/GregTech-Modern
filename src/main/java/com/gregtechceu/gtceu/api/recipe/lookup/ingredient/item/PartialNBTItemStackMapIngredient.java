@@ -41,7 +41,7 @@ public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     @Override
     protected int hash() {
-        return ItemStackHashStrategy.comparingAllButCount().hashCode(stack) * 31;
+        return ItemStackHashStrategy.comparingItem().hashCode(stack) * 31;
     }
 
     @Override

@@ -171,6 +171,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
                     }
                 }
+                needPatternSync = true;
             }));
         }
     }

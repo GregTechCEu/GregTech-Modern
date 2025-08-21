@@ -235,34 +235,36 @@ public class BlockHighlightRenderer {
         RenderUtil.rotateToFace(poseStack, front, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
-        poseStack.scale(0.9f, 0.9f, 1);
+
+        // set margin to 1/18 of scaled texture edge length
+        float MARGIN = 0.2f;
 
         if (leftBlocked != null) {
             int color = attachSide == left ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, leftBlocked, color, 0, 6, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, leftBlocked, color, 0, 6, 4, 4, MARGIN);
         }
         if (topBlocked != null) {
             int color = attachSide == top ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, topBlocked, color, 6, 12, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, topBlocked, color, 6, 12, 4, 4, MARGIN);
         }
         if (rightBlocked != null) {
             int color = attachSide == right ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, rightBlocked, color, 12, 6, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, rightBlocked, color, 12, 6, 4, 4, MARGIN);
         }
         if (bottomBlocked != null) {
             int color = attachSide == bottom ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, bottomBlocked, color, 6, 0, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, bottomBlocked, color, 6, 0, 4, 4, MARGIN);
         }
         if (frontBlocked != null) {
             int color = attachSide == front ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, frontBlocked, color, 6, 6, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, frontBlocked, color, 6, 6, 4, 4, MARGIN);
         }
         if (backBlocked != null) {
             int color = attachSide == back ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 0, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 0, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 12, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 12, 4, 4);
+            drawResourceTextureWithMargin(poseStack, bufferSource, backBlocked, color, 0, 0, 4, 4, MARGIN);
+            drawResourceTextureWithMargin(poseStack, bufferSource, backBlocked, color, 12, 0, 4, 4, MARGIN);
+            drawResourceTextureWithMargin(poseStack, bufferSource, backBlocked, color, 0, 12, 4, 4, MARGIN);
+            drawResourceTextureWithMargin(poseStack, bufferSource, backBlocked, color, 12, 12, 4, 4, MARGIN);
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
@@ -297,5 +299,12 @@ public class BlockHighlightRenderer {
         consumer.vertex(pose, x + w, y, 0).color(color).uv(u0 + u1, v0).uv2(LightTexture.FULL_BRIGHT).endVertex();
         consumer.vertex(pose, x, y, 0).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).endVertex();
         // spotless:on
+    }
+
+    private static void drawResourceTextureWithMargin(PoseStack poseStack, MultiBufferSource bufferSource,
+                                                      ResourceTexture texture, int color,
+                                                      float x, float y, float w, float h, float m) {
+        drawResourceTexture(poseStack, bufferSource, texture, color,
+                x + m, y + m, w - 2 * m, h - 2 * m);
     }
 }
