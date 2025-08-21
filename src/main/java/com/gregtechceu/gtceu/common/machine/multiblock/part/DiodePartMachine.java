@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -10,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -79,6 +79,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @Getter
     @DescSynced
     @Persisted(key = "amp_mode")
+    @UpdateListener(methodName = "onAmpUpdated")
     private int amps;
 
     public DiodePartMachine(IMachineBlockEntity holder, int tier) {
@@ -109,9 +110,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-
-        if (!GTCEu.isClientThread())
-            reinitializeEnergyContainer();
+        reinitializeEnergyContainer();
     }
 
     protected void reinitializeEnergyContainer() {
@@ -139,11 +138,8 @@ public class DiodePartMachine extends TieredIOPartMachine {
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
         cycleAmpMode();
-        if (getLevel().isClientSide) {
-            setRenderState(getRenderState()
-                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
-
-            scheduleRenderUpdate();
+        if (!isRemote()) {
+            this.scheduleRenderUpdate();
             playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
             return InteractionResult.SUCCESS;
         }
@@ -153,5 +149,19 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @SuppressWarnings("unused")
+    public void onAmpUpdated(int newValue, int oldValue) {
+        this.scheduleRenderUpdate();
+    }
+
+    @Override
+    public void scheduleRenderUpdate() {
+        if (!isRemote()) {
+            setRenderState(getRenderState()
+                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+            super.scheduleRenderUpdate();
+        }
     }
 }

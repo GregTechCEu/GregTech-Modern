@@ -171,6 +171,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
                     }
                 }
+                needPatternSync = true;
             }));
         }
     }
@@ -494,9 +495,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         public List<FluidStack> getFluids() {
             if (fluidStacks == null) {
-                fluidStacks = fluidInventory.object2LongEntrySet().stream()
-                        .map(e -> new FluidStack(e.getKey(), GTMath.saturatedCast(e.getLongValue())))
-                        .toList();
+                fluidStacks = new ArrayList<>();
+                fluidInventory.object2LongEntrySet().stream()
+                        .map(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()))
+                        .forEach(fluidStacks::addAll);
             }
             return fluidStacks;
         }

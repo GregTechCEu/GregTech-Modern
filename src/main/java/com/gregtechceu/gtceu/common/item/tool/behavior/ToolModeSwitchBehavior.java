@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketToolRightClick;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -20,11 +21,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level; 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolAction;
 
 import com.simibubi.create.AllTags;
 import lombok.Getter;
@@ -41,6 +43,17 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     public static final ToolModeSwitchBehavior INSTANCE = new ToolModeSwitchBehavior();
 
     protected ToolModeSwitchBehavior() {}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        var mode = WrenchModeType.values()[getBehaviorsTag(stack).getByte("Mode")];
+        boolean canWrenchConfigureAll = action == GTToolActions.WRENCH_CONFIGURE_ALL;
+        return action == GTToolActions.WRENCH_CONFIGURE || switch (mode) {
+            case ITEM -> canWrenchConfigureAll || action == GTToolActions.WRENCH_CONFIGURE_ITEMS;
+            case FLUID -> canWrenchConfigureAll || action == GTToolActions.WRENCH_CONFIGURE_FLUIDS;
+            case BOTH -> GTToolActions.WRENCH_CONFIGURE_ACTIONS.contains(action);
+        };
+    }
 
     @Override
     public void addBehaviorNBT(@NotNull ItemStack stack, @NotNull CompoundTag tag) {

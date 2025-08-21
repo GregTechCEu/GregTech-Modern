@@ -7,11 +7,11 @@
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
         "client.AbstractClientPlayerAccessor",
-        "client.FaceBakeryMixin",
         "client.BakedQuadMixin",
         "client.BiomeColorsMixin",
         "client.BlockModelMixin",
         "client.ClientLevelAccessor",
+        "client.FaceBakeryMixin",
         "client.GuiGraphicsAccessor",
         "client.GuiGraphicsMixin",
         "client.GuiHeartTypeMixin",
@@ -33,6 +33,7 @@
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
+        "AnvilMenuMixin",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
@@ -57,6 +58,7 @@
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",
+        "emi.EmiRecipeFillerMixin",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
         "forge.ConfiguredModelBuilderAccessor",

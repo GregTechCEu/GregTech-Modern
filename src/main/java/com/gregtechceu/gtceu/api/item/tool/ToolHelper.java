@@ -48,6 +48,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -69,6 +70,8 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,6 +108,7 @@ public class ToolHelper {
     public static final String ATTACK_SPEED_KEY = "AttackSpeed";
     public static final String ENCHANTABILITY_KEY = "Enchantability";
     public static final String HARVEST_LEVEL_KEY = "HarvestLevel";
+    public static final String DEFAULT_ENCHANTMENTS_KEY = "DefaultEnchantments";
     public static final String LAST_CRAFTING_USE_KEY = "LastCraftingUse";
 
     // Keys that resides in behaviours tag
@@ -215,7 +219,7 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
-                int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, stack);
+                int unbreakingLevel = stack.getEnchantmentLevel(Enchantments.UNBREAKING);
                 int negated = 0;
                 for (int k = 0; unbreakingLevel > 0 && k < damage; k++) {
                     if (DigDurabilityEnchantment.shouldIgnoreDurabilityDrop(stack, unbreakingLevel, random)) {
@@ -245,7 +249,7 @@ public class ToolHelper {
         }
     }
 
-    public static void playToolSound(GTToolType toolType, ServerPlayer player) {
+    public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
@@ -275,6 +279,21 @@ public class ToolHelper {
         return stack;
     }
 
+    public static Map<Enchantment, Integer> joinEnchantments(ItemStack stack, Map<Enchantment, Integer> enchantments) {
+        // this returns the enchantments stored in the normal NBT tag, so it won't be an infinite loop
+        var original = EnchantmentHelper.getEnchantments(stack);
+        if (enchantments.isEmpty()) {
+            return original;
+        } else if (original.isEmpty()) {
+            return enchantments;
+        }
+        Object2IntMap<Enchantment> joined = new Object2IntLinkedOpenHashMap<>(original);
+        for (var entry : enchantments.entrySet()) {
+            joined.mergeInt(entry.getKey(), entry.getValue(), Integer::max);
+        }
+        return joined;
+    }
+
     /**
      * AoE Block Breaking Routine.
      */
@@ -285,7 +304,7 @@ public class ToolHelper {
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos, pos == targeted)) {
+                if (!breakBlockRoutine(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
 
@@ -536,7 +555,13 @@ public class ToolHelper {
         }
 
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        UseOnContext context = new UseOnContext(player, player.getUsedItemHand(), hitResult);
+        var toolType = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GTToolItem toolItem ?
+                toolItem.toolType : null;
+        if (toolType == null) return Collections.emptyList();
+        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), toolType) ?
+                InteractionHand.MAIN_HAND : null;
+        if (hand == null) return Collections.emptyList();
+        UseOnContext context = new UseOnContext(player, hand, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
 

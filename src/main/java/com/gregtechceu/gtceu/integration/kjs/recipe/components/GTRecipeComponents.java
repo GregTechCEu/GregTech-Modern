@@ -18,9 +18,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -211,13 +211,10 @@ public class GTRecipeComponents {
                     return type.factory.createDefault();
                 }
             } else if (from instanceof JsonObject jsonObject) {
-                var conditionKey = GsonHelper.getAsString(jsonObject, "type", "");
-                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (type != null) {
-                    RecipeCondition condition = type.factory.createDefault();
-                    if (condition != null) {
-                        return condition.deserialize(jsonObject);
-                    }
+                var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+                var condition = RecipeCondition.CODEC.parse(ops, jsonObject).result();
+                if (condition.isPresent()) {
+                    return condition.get();
                 }
             } else if (from instanceof Tag tag) {
                 return read(recipe, NBTUtils.toJson(tag));

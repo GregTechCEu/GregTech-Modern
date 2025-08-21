@@ -67,9 +67,7 @@ public class RecipeLogicTest {
             helper.fail("wrong machine in MetaMachineBlockEntity!");
             return;
         }
-        // Force a structure check and to register the parts
-        controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
-        controller.onStructureFormed();
+        TestUtils.formMultiblock(controller);
 
         helper.assertTrue(controller.isFormed(), "Controller didn't form after structure check");
         helper.assertTrue(controller.getParts().size() == 4,
@@ -79,8 +77,7 @@ public class RecipeLogicTest {
         GTRecipeType type = recipeLogicMachine.getRecipeType();
         type.getLookup().removeAllRecipes();
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test-multiblock-recipelogic"))
-                .id(GTCEu.id("test-multiblock-recipelogic"))
+                .recipeBuilder(GTCEu.id("test_multiblock_recipelogic"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.UV]).duration(1)
@@ -91,7 +88,7 @@ public class RecipeLogicTest {
 
         recipeLogic.findAndHandleRecipe();
 
-        // no recipe found
+        // No recipe found
         helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
         helper.assertTrue(recipeLogic.getLastRecipe() == null,
                 "Recipe logic has somehow found a recipe, when there should be none");
@@ -168,8 +165,7 @@ public class RecipeLogicTest {
         GTRecipeType type = recipeLogicMachine.getRecipeType();
         type.getLookup().removeAllRecipes();
         type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test-singleblock"))
-                .id(GTCEu.id("test-singleblock"))
+                .recipeBuilder(GTCEu.id("test_singleblock"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(512).duration(1)

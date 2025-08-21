@@ -129,6 +129,31 @@ public class ConfigHolder {
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
         public boolean enchantedTools = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether to enable macerator decomposition recycling", "Default: true" })
+        public boolean enableMaceratorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of macerator decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float maceratorRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable arc furnace decomposition recycling", "Default: true" })
+        public boolean enableArcRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of arc furnace decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float arcRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable extractor decomposition recycling", "Default: true" })
+        public boolean enableExtractorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of extractor decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float extractorRecyclingYield = 1.0f;
     }
 
     public static class CompatibilityConfigs {
@@ -185,13 +210,13 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "Forge Energy to GTEU ratio for converting FE to EU.", "Only affects converters.",
                     "Default: 4 FE == 1 EU" })
-            @Configurable.Range(min = 1, max = 16)
+            @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
             public int feToEuRatio = 4;
 
             @Configurable
             @Configurable.Comment({ "GTEU to Forge Energy ratio for converting EU to FE.",
                     "Affects native conversion and Converters.", "Default: 4 FE == 1 EU" })
-            @Configurable.Range(min = 1, max = 16)
+            @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
             public int euToFeRatio = 4;
         }
 
@@ -460,6 +485,11 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true" })
         public boolean enableMaintenance = true;
+        @Configurable
+        @Configurable.Comment({
+                "Time in ticks between when Multiblocks can require Maintenance. By default, 48 hours.",
+                "Default: 3456000" })
+        public int maintenanceTime = 3456000;
 
         @Configurable
         @Configurable.Comment({
