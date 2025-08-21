@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -39,7 +40,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -57,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -162,10 +163,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     @Override
-    public Map<Item, Integer> getItemsRequiredForPaste(CompoundTag nbt) {
-        Map<Item, Integer> out = super.getItemsRequiredForPaste(nbt);
+    public Set<ItemStack> getItemsRequiredForPaste(CompoundTag nbt) {
+        Set<ItemStack> out = super.getItemsRequiredForPaste(nbt);
         if (!getFilterHandler().isFilterPresent() && nbt.contains("filter")) {
-            out.put(GTItems.ITEM_FILTER.asItem(), out.getOrDefault(GTItems.ITEM_FILTER.asItem(), 0) + 1);
+            GTUtil.addStackToSet(out, GTItems.ITEM_FILTER.asStack());
         }
         return out;
     }

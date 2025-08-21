@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
@@ -125,7 +127,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.isSecondaryUseActive()) {
-            return handleCopy(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos());
+            return handleCopy(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(), context.getPlayer(),
+                    context.getHitResult());
         } else if (stack.getTagElement(CONFIG_DATA) != null) {
             return handlePaste(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(),
                     context.getPlayer() == null ? null :
@@ -133,9 +136,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else return InteractionResult.SUCCESS;
     }
 
-    public static InteractionResult handleCopy(CompoundTag tag, Level level, BlockPos pos) {
+    public static InteractionResult handleCopy(CompoundTag tag, Level level, BlockPos pos, Player player,
+                                               BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
-            return handleCopy(tag, machineBE.getMetaMachine());
+            return handleCopy(tag, machineBE.getMetaMachine(), player, hitResult);
         else if (level.getBlockEntity(pos) instanceof ICopyable copyable) {
             CompoundTag customData = new CompoundTag();
             copyable.copyConfig(customData);
@@ -147,7 +151,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 tag.remove(CUSTOM_DATA);
                 return InteractionResult.SUCCESS;
             }
-            tag.put(BLOCK_ITEM, new ItemStack(state.getBlock().asItem()).serializeNBT());
+            tag.put(BLOCK_ITEM, state.getCloneItemStack(hitResult, level, pos, player).serializeNBT());
             // TODO copy entire block state (should this feature even exist?)
             return InteractionResult.SUCCESS;
         } else return InteractionResult.PASS;
@@ -166,7 +170,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else if (tag.contains(BLOCK_ITEM)) {
             if (!level.getBlockState(pos).isAir()) return InteractionResult.PASS;
             ItemStack stack = ItemStack.of(tag.getCompound(BLOCK_ITEM));
-            if (stack.getItem() instanceof BlockItem item && consumeItems(itemHandler, Map.of(item, 1))) {
+            if (stack.getItem() instanceof BlockItem item && consumeItems(itemHandler, Set.of(stack))) {
                 level.setBlockAndUpdate(pos, item.getBlock().defaultBlockState());
                 // TODO paste entire block state
                 return InteractionResult.SUCCESS;
@@ -174,7 +178,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else return InteractionResult.PASS;
     }
 
-    public static InteractionResult handleCopy(CompoundTag tag, MetaMachine machine) {
+    public static InteractionResult handleCopy(CompoundTag tag, MetaMachine machine, Player player,
+                                               BlockHitResult hitResult) {
         CompoundTag configData = new CompoundTag();
         configData.putString(ORIGINAL_FRONT, directionToString(machine.getFrontFacing()));
         if (machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.getOutputFacingItems() != null) {
@@ -227,7 +232,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 partTag.put(BLOCK_ITEM,
                         new ItemStack(machine.getLevel().getBlockState(partPos).getBlock().asItem()).serializeNBT());
                 CompoundTag partConfig = new CompoundTag();
-                handleCopy(partConfig, machine.getLevel(), partPos);
+                handleCopy(partConfig, machine.getLevel(), partPos, player, hitResult);
                 partTag.put(CONFIG_DATA, partConfig);
                 if (machine.getLevel().getBlockEntity(partPos) instanceof IMachineBlockEntity machineBE)
                     partTag.putString(ORIGINAL_FRONT, directionToString(machineBE.getMetaMachine().getFrontFacing()));
@@ -275,7 +280,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag coverTag : covers) {
                 if (!(coverTag instanceof CompoundTag compoundTag)) continue;
                 ItemStack coverItem = ItemStack.of(compoundTag.getCompound(COVER_ITEM));
-                if (!consumeItems(itemHandler, Map.of(coverItem.getItem(), 1))) continue;
+                if (!consumeItems(itemHandler, Set.of(coverItem))) continue;
                 Direction originalFace = tagToDirection(compoundTag.get(ORIGINAL_COVER_SIDE));
                 Direction face = RelativeDirection.getActualDirection(originalFront, machine.getFrontFacing(),
                         originalFace);
@@ -311,16 +316,18 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
             CompoundTag multiblockTag = configData.getCompound(MULTIBLOCK);
             ListTag parts = multiblockTag.getList(PARTS, Tag.TAG_COMPOUND);
-            Map<Item, Integer> requiredItems = new HashMap<>();
+            Set<ItemStack> requiredItems = new HashSet<>();
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
                 BlockPos relPos = posFromTag(partTag.get(POSITION));
-                BlockPos.MutableBlockPos pos = new BlockPos(relPos.get(front.getAxis()), relPos.get(up.getAxis()),
-                        relPos.get(right.getAxis())).mutable();
+                BlockPos.MutableBlockPos pos = new BlockPos(
+                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
+                        relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
+                        relPos.get(right.getAxis()) * right.getAxisDirection().getStep()).mutable();
                 pos.move(machine.getPos());
                 Item reqItem = ItemStack.of(partTag.getCompound(BLOCK_ITEM)).getItem();
                 if (!(reqItem instanceof BlockItem blockItem) ||
                         !machine.getLevel().getBlockState(pos).is(blockItem.getBlock()))
-                    requiredItems.put(reqItem, requiredItems.getOrDefault(reqItem, 0) + 1);
+                    GTUtil.addStackToSet(requiredItems, reqItem.getDefaultInstance());
             }
             if (consumeItems(itemHandler, requiredItems)) {
                 for (Tag part : parts) {
@@ -462,23 +469,25 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     }
 
     private static boolean consumeItems(@Nullable IItemHandler itemHandler,
-                                        Map<Item, Integer> requiredItems) {
+                                        Set<ItemStack> requiredItems) {
         // TODO add some feedback to the player if missing items
         if (itemHandler == null) return requiredItems.isEmpty();
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
-        for (Item item : requiredItems.keySet()) {
-            if (item == Items.AIR || requiredItems.get(item) <= 0) continue;
+        for (ItemStack itemStack : requiredItems) {
+            if (itemStack.isEmpty()) continue;
             boolean foundItem = false;
-            int amount = requiredItems.get(item);
+            int amount = itemStack.getCount();
             for (int slot = 0; slot < itemHandler.getSlots() && !foundItem; slot++) {
                 ItemStack stack = itemHandler.extractItem(slot, amount + itemCountBySlot.getOrDefault(slot, 0), true);
-                if (stack.getCount() == itemCountBySlot.getOrDefault(slot, 0) + amount && stack.is(item)) {
+                if (stack.getCount() == itemCountBySlot.getOrDefault(slot, 0) + amount &&
+                        ItemStack.isSameItemSameTags(stack, itemStack)) {
                     foundItem = true;
                     itemCountBySlot.put(slot, itemCountBySlot.getOrDefault(slot, 0) + amount);
-                } else if (stack.getCount() > itemCountBySlot.getOrDefault(slot, 0) && stack.is(item)) {
-                    itemCountBySlot.put(slot, stack.getCount());
-                    amount -= stack.getCount() - itemCountBySlot.getOrDefault(slot, 0);
-                }
+                } else if (stack.getCount() > itemCountBySlot.getOrDefault(slot, 0) &&
+                        ItemStack.isSameItemSameTags(stack, itemStack)) {
+                            itemCountBySlot.put(slot, stack.getCount());
+                            amount -= stack.getCount() - itemCountBySlot.getOrDefault(slot, 0);
+                        }
             }
             if (!foundItem) return false;
         }
