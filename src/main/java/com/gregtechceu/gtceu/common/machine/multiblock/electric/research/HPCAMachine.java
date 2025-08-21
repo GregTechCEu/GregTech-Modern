@@ -481,16 +481,21 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
             if (forceCoolWithActive || maxActiveCooling <= temperatureChange) {
                 // try to fully utilize active coolers
-                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
-                        getCoolantStack(maxCoolantDrain), IFluidHandler.FluidAction.EXECUTE);
-                if (!coolantStack.isEmpty()) {
-                    long coolantDrained = coolantStack.getAmount();
-                    if (coolantDrained == maxCoolantDrain) {
+                int remainingCoolant = maxCoolantDrain;
+                for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(HPCA_COOLANTS)) {
+                    FluidStack drained = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                            new FluidStack(fluid.get(), remainingCoolant), IFluidHandler.FluidAction.EXECUTE);
+                    remainingCoolant -= drained.getAmount();
+                    if (remainingCoolant <= 0) break;
+                }
+                if (remainingCoolant != 0) {
+                    if (remainingCoolant == maxCoolantDrain) {
                         // coolant requirement was fully met
                         temperatureChange -= maxActiveCooling;
                     } else {
                         // coolant requirement was only partially met, cool proportional to fluid amount drained
                         // a * (b / c)
+                        int coolantDrained = maxCoolantDrain - remainingCoolant;
                         temperatureChange -= maxActiveCooling * (1.0 * coolantDrained / maxCoolantDrain);
                     }
                 }
@@ -500,33 +505,22 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 int coolantToDrain = Math.max(1, (int) (maxCoolantDrain * (temperatureToDecrease / maxActiveCooling)));
                 int remainingCoolant = coolantToDrain;
                 for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(HPCA_COOLANTS)) {
-                    FluidStack remaining = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                    FluidStack drained = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
                             new FluidStack(fluid.get(), remainingCoolant), IFluidHandler.FluidAction.EXECUTE);
-                    remainingCoolant -= remaining.getAmount();
+                    remainingCoolant -= drained.getAmount();
                     if (remainingCoolant <= 0) break;
-                } ;
+                }
                 if (remainingCoolant == 0) {
                     // successfully stabilized to zero
                     return 0;
                 } else {
                     // coolant requirement was only partially met, cool proportional to fluid amount drained
                     // a * (b / c)
-                    temperatureChange -= temperatureToDecrease * (1.0 * remainingCoolant / coolantToDrain);
+                    int coolantDrained = ( coolantToDrain - remainingCoolant );
+                    temperatureChange -= temperatureToDecrease * (1.0 * coolantDrained / coolantToDrain);
                 }
             }
             return temperatureChange;
-        }
-
-        /**
-         * Get the coolant stack for this HPCA. Eventually this could be made more diverse with different
-         * coolants from different Active Cooler components, but currently it is just a fixed Fluid.
-         */
-        public FluidStack getCoolantStack(int amount) {
-            return new FluidStack(getCoolant(), amount);
-        }
-
-        private Fluid getCoolant() {
-            return GTMaterials.PCBCoolant.getFluid();
         }
 
         /**
