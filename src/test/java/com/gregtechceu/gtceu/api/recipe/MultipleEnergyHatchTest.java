@@ -35,7 +35,9 @@ public class MultipleEnergyHatchTest {
     // 2x 2a ev: run ev with 1x oc, run iv with 0x oc
     // 1x 4a ev: run ev with 1x oc, don't run iv
     // 1x 16a ev: run ev with 2x oc, don't run iv
+    // 1x 16a ev: run ev with 2x oc, don't run iv
     // 1x 16a ev + 1x 4a ev: run ev with 2x oc, run iv with 1x oc
+    // 1x 2a iv + 1x 16a ev: run iv recipe with 0x oc, don't run LuV
 
     private static GTRecipeType LCR_RECIPE_TYPE;
 
@@ -56,6 +58,14 @@ public class MultipleEnergyHatchTest {
                 .inputItems(new ItemStack(Items.BROWN_BED))
                 .outputItems(new ItemStack(Items.BROWN_BED))
                 .EUt(GTValues.V[GTValues.IV])
+                .duration(16)
+                .buildRawRecipe());
+
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_multiple_energy_hatch_iv"))
+                .inputItems(new ItemStack(Items.GREEN_BED))
+                .outputItems(new ItemStack(Items.GREEN_BED))
+                .EUt(GTValues.V[GTValues.LuV])
                 .duration(16)
                 .buildRawRecipe());
     }
@@ -271,10 +281,41 @@ public class MultipleEnergyHatchTest {
         helper.succeed();
     }
 
+    @GameTest(template = "energy/lcr_16a_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void SixteenAEVPlus2AHVHatchCanDoEVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 16)));
+
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.CYAN_BED));
+        // One tick to start, 1 for the recipe to run
+        helper.succeedOnTickWhen(2, () -> {
+            helper.assertTrue(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.CYAN_BED)),
+                    "Item didn't craft at the right tick with an on-tier recipe" +
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+        });
+    }
+
+    @GameTest(template = "energy/lcr_16a_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void SixteenAEVPlus2AHVHatchCanNotDoIVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 16)));
+
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
+        helper.failIfEver(() -> {
+            helper.assertFalse(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.BROWN_BED)),
+                    "Item crafted when it shouldn't have");
+        });
+        helper.succeed();
+    }
+
     @GameTest(template = "energy/lcr_16a_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void SixteenAPlus4AEVHatchCanDoEVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
-        checkContainerList(helper, busHolder, List.of(new Hatch(EV, 4), new Hatch(EV, 16)));
+        checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16), new Hatch(EV, 4)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.CYAN_BED));
         // One tick to start, 1 for the recipe to run
@@ -290,7 +331,7 @@ public class MultipleEnergyHatchTest {
     @GameTest(template = "energy/lcr_16a_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
     public static void SixteenAPlus4AEVHatchCanDoIVRecipeTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
-        checkContainerList(helper, busHolder, List.of(new Hatch(EV, 4), new Hatch(EV, 16)));
+        checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16), new Hatch(EV, 4)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
         // One tick to start, 4 for the recipe to run
@@ -301,5 +342,36 @@ public class MultipleEnergyHatchTest {
                     "Item didn't craft at the right tick with an on-tier recipe" +
                             busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
         });
+    }
+
+    @GameTest(template = "energy/lcr_iv_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void SixteenAEVPlus2AIVHatchCanDoIVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        checkContainerList(helper, busHolder, List.of(new Hatch(IV, 2), new Hatch(EV, 16)));
+
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
+        // One tick to start, 4 for the recipe to run
+        helper.succeedOnTickWhen(5, () -> {
+            helper.assertTrue(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.BROWN_BED)),
+                    "Item didn't craft at the right tick with an on-tier recipe" +
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+        });
+    }
+
+    @GameTest(template = "energy/lcr_iv_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void SixteenAEVPlus2AIVHatchCannotDoLuVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        checkContainerList(helper, busHolder, List.of(new Hatch(IV, 2), new Hatch(EV, 16)));
+
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.GREEN_BED));
+        helper.failIfEver(() -> {
+            helper.assertFalse(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.GREEN_BED)),
+                    "Item crafted when it shouldn't have");
+        });
+        helper.succeed();
     }
 }
