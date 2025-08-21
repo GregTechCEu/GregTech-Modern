@@ -203,6 +203,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         super.onLoad();
         if (!isRemote()) {
             energyContainer.addChangedListener(this::updateSubscription);
+            updateSubscription();
         }
     }
 

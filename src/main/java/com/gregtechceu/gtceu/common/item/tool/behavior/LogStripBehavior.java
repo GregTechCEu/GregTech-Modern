@@ -16,6 +16,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,11 @@ public class LogStripBehavior implements IToolBehavior {
     public static final LogStripBehavior INSTANCE = new LogStripBehavior();
 
     protected LogStripBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.AXE_STRIP;
+    }
 
     @NotNull
     @Override
@@ -64,7 +70,7 @@ public class LogStripBehavior implements IToolBehavior {
         }
 
         if (stripped) {
-            level.playSound(player, blocks.get(0), SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;

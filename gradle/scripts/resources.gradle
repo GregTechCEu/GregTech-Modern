@@ -39,7 +39,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             minecraft_version   : libs.versions.minecraft.get(),
             loader_version      : forgeVers,
             forge_version       : forgeVers, // only specify major version of forge
-            configuration_version: forge.versions.configuration.get().split("-")[0],
+            configuration_version: forge.versions.configuration.get(),
             kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             ldlib_version       : forge.versions.ldlib.get(),
             jei_version         : forge.versions.jei.get(),

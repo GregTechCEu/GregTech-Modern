@@ -86,6 +86,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSG = new Material.Builder(GTCEu.id("hssg"))
+                .langValue("HSS-G")
                 .ingot(3).fluid()
                 .color(0x9cbabe).secondaryColor(0x032550).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE,
@@ -116,6 +117,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSE = new Material.Builder(GTCEu.id("hsse"))
+                .langValue("HSS-E")
                 .ingot(4).fluid()
                 .color(0x9d9cbe).secondaryColor(0x2b0350).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_GEAR)
@@ -129,6 +131,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSS = new Material.Builder(GTCEu.id("hsss"))
+                .langValue("HSS-S")
                 .ingot(4).fluid()
                 .color(0xa482bf).secondaryColor(0x66000e).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR,

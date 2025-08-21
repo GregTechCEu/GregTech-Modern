@@ -32,7 +32,7 @@ sourceSets {
     }
 
     test {
-        compileClasspath += main.output
+        compileClasspath += main.output + main.compileClasspath
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 

@@ -41,6 +41,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +49,7 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class Material implements Comparable<Material> {
 
@@ -153,6 +155,11 @@ public class Material implements Comparable<Material> {
 
     public String getName() {
         return materialInfo.resourceLocation.getPath();
+    }
+
+    @ApiStatus.Internal
+    public String getDefaultTranslation() {
+        return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
     }
 
     public String getModid() {
@@ -595,6 +602,14 @@ public class Material implements Comparable<Material> {
             materialInfo = new MaterialInfo(resourceLocation);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        /**
+         * @param name Set the material's (US english) localized name to this value
+         */
+        public Builder langValue(String name) {
+            materialInfo.setOverriddenName(name);
+            return this;
         }
 
         /*
@@ -1876,6 +1891,10 @@ public class Material implements Comparable<Material> {
          * Required.
          */
         private final ResourceLocation resourceLocation;
+
+        @Setter
+        @Getter
+        private String overriddenName;
 
         /**
          * The colors of this Material.

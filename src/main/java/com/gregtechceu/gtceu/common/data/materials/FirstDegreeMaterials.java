@@ -185,6 +185,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Cooperite = new Material.Builder(GTCEu.id("cooperite"))
+                .langValue("Sheldonite") // greg's humor is now on 1.20...
                 .dust(1).ore()
                 .color(0xe9ffa7).secondaryColor(0x665f2f).iconSet(METALLIC)
                 .components(Platinum, 3, Nickel, 1, Sulfur, 1, Palladium, 1)
@@ -501,6 +502,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         RTMAlloy = new Material.Builder(GTCEu.id("rtm_alloy"))
+                .langValue("RTM Alloy")
                 .ingot().fluid()
                 .color(0x30306B).iconSet(SHINY)
                 .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
@@ -739,6 +741,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Limonite = new Material.Builder(GTCEu.id("yellow_limonite"))
+                .langValue("Limonite")
                 .dust().ore()
                 .color(0xf5e315).secondaryColor(0xc06f33).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_DOUBLE)
@@ -1221,6 +1224,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
+                .langValue("Iron III Chloride")
                 .liquid()
                 .color(0x060B0B)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
@@ -1228,6 +1232,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Iron2Chloride = new Material.Builder(GTCEu.id("iron_ii_chloride"))
+                .langValue("Iron II Chloride")
                 .liquid()
                 .color(0xe8e0be)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)

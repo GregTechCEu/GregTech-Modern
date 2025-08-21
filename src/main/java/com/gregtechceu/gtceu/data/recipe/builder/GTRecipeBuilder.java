@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -46,6 +47,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -335,9 +337,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs) {
-        if (intProviderInputError(inputs, 0)) {
-            return this;
-        } else if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
         }
         return input(ItemRecipeCapability.CAP, inputs);
@@ -347,9 +347,7 @@ public class GTRecipeBuilder {
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < inputs.length; i++) {
             var ingredient = inputs[i];
-            if (intProviderInputError(ingredient, i)) {
-                return this;
-            } else if (missingIngredientError(i, true, ItemRecipeCapability.CAP, ingredient::isEmpty)) {
+            if (missingIngredientError(i, true, ItemRecipeCapability.CAP, ingredient::isEmpty)) {
                 return this;
             } else {
                 ingredients.add(ingredient);
@@ -359,9 +357,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs, int count) {
-        if (intProviderInputError(inputs, 0)) {
-            return this;
-        } else if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(inputs, count));
@@ -479,6 +475,31 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(MachineDefinition machine, int count) {
         return inputItems(machine.asStack(count));
+    }
+
+    public GTRecipeBuilder inputItemsRanged(ItemStack input, IntProvider intProvider) {
+        return inputItems(IntProviderIngredient.of(input, intProvider));
+    }
+
+    public GTRecipeBuilder inputItemsRanged(Item input, IntProvider intProvider) {
+        return inputItemsRanged(new ItemStack(input), intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(Supplier<? extends ItemLike> input, IntProvider intProvider) {
+        return inputItemsRanged(new ItemStack(input.get().asItem()), intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(TagPrefix orePrefix, Material material, IntProvider intProvider) {
+        var item = ChemicalHelper.get(orePrefix, material, 1);
+        if (item.isEmpty()) {
+            GTCEu.LOGGER.error("Tried to set input ranged item stack that doesn't exist, TagPrefix: {}, Material: {}",
+                    orePrefix, material);
+        }
+        return inputItemsRanged(item, intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
+        return inputItemsRanged(machine.asStack(), intProvider);
     }
 
     public GTRecipeBuilder outputItems(Object output) {
@@ -958,6 +979,14 @@ public class GTRecipeBuilder {
         return input(FluidRecipeCapability.CAP, ingredients.toArray(FluidIngredient[]::new));
     }
 
+    public GTRecipeBuilder inputFluidsRanged(FluidStack input, IntProvider intProvider) {
+        return inputFluidsRanged(FluidIngredient.of(input), intProvider);
+    }
+
+    protected GTRecipeBuilder inputFluidsRanged(FluidIngredient input, IntProvider intProvider) {
+        return inputFluids(IntProviderFluidIngredient.of(input, intProvider));
+    }
+
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
         return input(FluidRecipeCapability.CAP, inputs);
     }
@@ -1116,6 +1145,54 @@ public class GTRecipeBuilder {
         return environmentalHazard(condition, false);
     }
 
+    public GTRecipeBuilder adjacentFluid(Fluid... fluids) {
+        return adjacentFluid(false, fluids);
+    }
+
+    public GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
+        return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
+        return adjacentFluid(false, tags);
+    }
+
+    public GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
+        return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids) {
+        return adjacentFluid(fluids, false);
+    }
+
+    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids, boolean isReverse) {
+        return addCondition(new AdjacentFluidCondition(isReverse, new ArrayList<>(fluids)));
+    }
+
+    public GTRecipeBuilder adjacentBlock(Block... blocks) {
+        return adjacentBlock(false, blocks);
+    }
+
+    public GTRecipeBuilder adjacentBlock(boolean isReverse, Block... blocks) {
+        return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
+        return adjacentBlock(false, tags);
+    }
+
+    public GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+        return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+    }
+
+    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks) {
+        return adjacentBlock(blocks, false);
+    }
+
+    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks, boolean isReverse) {
+        return addCondition(new AdjacentBlockCondition(isReverse, new ArrayList<>(blocks)));
+    }
+
     public GTRecipeBuilder daytime(boolean isNight) {
         return addCondition(new DaytimeCondition().setReverse(isNight));
     }
@@ -1225,7 +1302,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Scanner.
      */
     public GTRecipeBuilder scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }
@@ -1246,7 +1323,7 @@ public class GTRecipeBuilder {
      * Generates a research recipe for the Research Station.
      */
     public GTRecipeBuilder stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
-        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build(this.id);
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
             this.researchRecipeEntries.add(entry);
         }
@@ -1512,16 +1589,6 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
                     id, io, capability.name, io, max);
         }
-    }
-
-    protected boolean intProviderInputError(Ingredient ingredient, int index) {
-        if (ingredient instanceof IntProviderIngredient) {
-            int size = (perTick ? tickOutput : output).getOrDefault(ItemRecipeCapability.CAP, List.of()).size();
-            GTCEu.LOGGER.error("Using int provider ingredients as inputs is not supported!" +
-                    "Input {} in recipe {} will be skipped.", size + index, id);
-            return true;
-        }
-        return false;
     }
 
     protected boolean missingIngredientError(int index, boolean isInput,

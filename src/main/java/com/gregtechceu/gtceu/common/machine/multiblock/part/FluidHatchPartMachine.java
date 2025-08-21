@@ -198,7 +198,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected void updateTankSubscription(Direction newFacing) {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
+        if (isWorkingEnabled() && ((io.support(IO.OUT) && !tank.isEmpty()) || io.support(IO.IN)) &&
                 GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -214,6 +214,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                     tank.exportToNearby(getFrontFacing());
                 } else if (io == IO.IN) {
                     tank.importFromNearby(getFrontFacing());
+                } else if (io == IO.BOTH) {
+                    tank.importFromNearby(getFrontFacing());
+                    tank.exportToNearby(getFrontFacing().getOpposite());
                 }
             }
             updateTankSubscription();
