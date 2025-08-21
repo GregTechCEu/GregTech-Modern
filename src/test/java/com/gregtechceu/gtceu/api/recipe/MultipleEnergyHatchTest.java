@@ -26,6 +26,8 @@ import java.util.Optional;
 @GameTestHolder(GTCEu.MOD_ID)
 public class MultipleEnergyHatchTest {
     // This class tests the overclock logic:
+    // 1x 2a ev + 1x 2a mv: run ev with 0x oc, don't run iv
+    // 1x 2a ev + 1x 2a hv: run ev with 0x oc, don't run iv
     // 2x 2a ev: run ev with 1x oc, run iv with 0x oc
     // 1x 4a ev: run ev with 1x oc, don't run iv
     // 1x 16a ev: run ev with 2x oc, don't run iv
@@ -87,6 +89,61 @@ public class MultipleEnergyHatchTest {
         }
 
         return new BusHolder(inputBus, outputBus, controller, energyHatch, Optional.empty());
+    }
+
+    @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void EvPlusMvHatchCanDoEVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.CYAN_BED));
+        // One tick to start, 16 for the recipe to run
+        helper.succeedOnTickWhen(17, () -> {
+            helper.assertTrue(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.CYAN_BED)),
+                    "Item didn't craft at the right tick with an on-tier recipe" +
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+        });
+    }
+
+    @GameTest(template = "energy/lcr_ev_mv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void EvPlusMvHatchCannotDoIVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
+        helper.failIfEver(() -> {
+            helper.assertFalse(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.BROWN_BED)),
+                    "Item crafted when it shouldn't have");
+        });
+        helper.succeed();
+    }
+
+    @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void EvPlusHvHatchCanDoEVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.CYAN_BED));
+        // One tick to start, 16 for the recipe to run
+        helper.succeedOnTickWhen(17, () -> {
+            helper.assertTrue(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.CYAN_BED)),
+                    "Item didn't craft at the right tick with an on-tier recipe" +
+                            busHolder.outputBus.getInventory().getStackInSlot(0).getDisplayName());
+        });
+    }
+
+    @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
+    public static void EvPlusHvHatchCannotIVRecipeTest(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
+        // One tick to start, 16 for the recipe to run
+        helper.failIfEver(() -> {
+            helper.assertFalse(
+                    TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
+                            new ItemStack(Items.BROWN_BED)),
+                    "Item crafted when it shouldn't have");
+        });
+        helper.succeed();
     }
 
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
