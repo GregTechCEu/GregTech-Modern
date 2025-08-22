@@ -69,7 +69,7 @@ public class TestUtils {
     }
 
     /**
-     * compares an ItemStack with a range
+     * Compares an ItemStack with a range
      * 
      * @return {@code true} if the ItemStack's count is within range
      */
@@ -78,7 +78,7 @@ public class TestUtils {
     }
 
     /**
-     * compares a FluidStack with a range
+     * Compares a FluidStack with a range
      * 
      * @return {@code true} if the FluidStack's amount is within range
      */
