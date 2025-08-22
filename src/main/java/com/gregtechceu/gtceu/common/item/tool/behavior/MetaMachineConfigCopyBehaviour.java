@@ -131,7 +131,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     context.getHitResult());
         } else if (stack.getTagElement(CONFIG_DATA) != null) {
             return handlePaste(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(),
-                    context.getPlayer() == null ? null :
+                    context.getPlayer() == null || context.getPlayer().isCreative() ? null :
                             new CustomItemStackHandler(context.getPlayer().getInventory().items));
         } else return InteractionResult.SUCCESS;
     }
@@ -222,13 +222,23 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             HashSet<BlockPos> partPositions = new HashSet<>(List.of(multiblock.getPartPositions()));
             partPositions.addAll(
                     multiblock.getMultiblockState().getMatchContext().getOrDefault("blocks", new LongOpenHashSet())
-                            .stream().map(BlockPos::of).toList());
+                            .longStream().mapToObj(BlockPos::of).toList());
             for (BlockPos partPos : partPositions) {
                 if ((machine.getLevel().getBlockEntity(partPos) instanceof IMachineBlockEntity machineBE) &&
                         (machineBE.getMetaMachine() instanceof MultiblockControllerMachine))
                     continue;
                 CompoundTag partTag = new CompoundTag();
-                partTag.put(POSITION, posToTag(partPos.subtract(machine.getPos())));
+                Direction front = multiblock.getFrontFacing();
+                Direction spin = multiblock.getUpwardsFacing();
+                boolean flipped = multiblock.isFlipped();
+                Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
+                Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
+                BlockPos relPos = partPos.subtract(machine.getPos());
+                BlockPos pos = new BlockPos(
+                        relPos.get(front.getAxis()),
+                        relPos.get(up.getAxis()),
+                        relPos.get(right.getAxis()));
+                partTag.put(POSITION, posToTag(pos));
                 partTag.put(BLOCK_ITEM,
                         new ItemStack(machine.getLevel().getBlockState(partPos).getBlock().asItem()).serializeNBT());
                 CompoundTag partConfig = new CompoundTag();
@@ -260,12 +270,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         CompoundTag configData = tag.getCompound(CONFIG_DATA);
         Direction originalFront = tagToDirection(configData.get(ORIGINAL_FRONT));
         if (configData.contains(ITEM_CONFIG) && machine instanceof IAutoOutputItem autoOutputItem) {
-            pasteOutputConfig(originalFront, machine.getFrontFacing(), configData.getCompound(ITEM_CONFIG),
+            pasteOutputConfig(originalFront, machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    configData.getCompound(ITEM_CONFIG),
                     autoOutputItem::setOutputFacingItems, autoOutputItem::setAutoOutputItems,
                     autoOutputItem::setAllowInputFromOutputSideItems);
         }
         if (configData.contains(FLUID_CONFIG) && machine instanceof IAutoOutputFluid autoOutputFluid) {
-            pasteOutputConfig(originalFront, machine.getFrontFacing(), configData.getCompound(FLUID_CONFIG),
+            pasteOutputConfig(originalFront, machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    configData.getCompound(FLUID_CONFIG),
                     autoOutputFluid::setOutputFacingFluids, autoOutputFluid::setAutoOutputFluids,
                     autoOutputFluid::setAllowInputFromOutputSideFluids);
         }
@@ -320,7 +332,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
                 BlockPos relPos = posFromTag(partTag.get(POSITION));
                 BlockPos.MutableBlockPos pos = new BlockPos(
-                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
+                        relPos.get(front.getAxis()) * -front.getAxisDirection().getStep(),
                         relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
                         relPos.get(right.getAxis()) * right.getAxisDirection().getStep()).mutable();
                 pos.move(machine.getPos());
@@ -333,8 +345,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 for (Tag part : parts) {
                     if (!(part instanceof CompoundTag partTag)) continue;
                     BlockPos relPos = posFromTag(partTag.get(POSITION));
-                    BlockPos.MutableBlockPos pos = new BlockPos(relPos.get(front.getAxis()), relPos.get(up.getAxis()),
-                            relPos.get(right.getAxis())).mutable();
+                    BlockPos.MutableBlockPos pos = new BlockPos(
+                            relPos.get(front.getAxis()) * -front.getAxisDirection().getStep(),
+                            relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
+                            relPos.get(right.getAxis()) * right.getAxisDirection().getStep()).mutable();
                     pos.move(machine.getPos());
                     ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
                     if (stack.getItem() instanceof BlockItem blockItem) {
@@ -459,11 +473,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         return tag;
     }
 
-    private static void pasteOutputConfig(Direction originalFront, Direction currentFront, CompoundTag data,
+    private static void pasteOutputConfig(Direction originalFront, Direction currentFront, Direction up,
+                                          CompoundTag data,
                                           Consumer<Direction> outputSide, BooleanConsumer autoOutput,
                                           BooleanConsumer allowInputFromOutputSide) {
-        outputSide.accept(RelativeDirection.getActualDirection(originalFront, currentFront,
-                tagToDirection(data.get(DIRECTION))));
+        if (tagToDirection(data.get(DIRECTION)) == up) outputSide.accept(up);
+        else if (tagToDirection(data.get(DIRECTION)) == up.getOpposite()) outputSide.accept(up.getOpposite());
+        else outputSide.accept(RelativeDirection.findRelativeOf(originalFront, currentFront, up)
+                .getActualDirection(tagToDirection(data.get(DIRECTION))));
         autoOutput.accept(data.getBoolean(AUTO));
         allowInputFromOutputSide.accept(data.getBoolean(INPUT_FROM_OUTPUT_SIDE));
     }
@@ -471,7 +488,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     private static boolean consumeItems(@Nullable IItemHandler itemHandler,
                                         Set<ItemStack> requiredItems) {
         // TODO add some feedback to the player if missing items
-        if (itemHandler == null) return requiredItems.isEmpty();
+        if (itemHandler == null) return true;
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
         for (ItemStack itemStack : requiredItems) {
             if (itemStack.isEmpty()) continue;
