@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -29,6 +27,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import lombok.Getter;
+
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 
 /*
@@ -47,11 +47,17 @@ public class IntProviderIngredientTest {
     private static GTRecipeType LCR_RECIPE_TYPE;
     private static GTRecipeType CENTRIFUGE_RECIPE_TYPE;
 
+    /**
+     * How many times to repeat the Batch and Parallel random roll tests to avoid false positives
+     */
+    @Getter
+    private static final int REPLICAS = 7;
+
     @BeforeBatch(batch = "RangedIngredients")
     public static void prepare(ServerLevel level) {
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests", 2,2,3,2);
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests", 3,3,3,3);
-        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_inputs_centrifuge_tests", 2,6,1,6);
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests", 2, 2, 3, 2);
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests", 3, 3, 3, 3);
+        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_inputs_centrifuge_tests", 2, 6, 1, 6);
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
@@ -97,13 +103,12 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
+                .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(new ItemStack(Blocks.BRICK_WALL))
                 .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 4))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(16)
                 .buildRawRecipe());
-
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
@@ -120,7 +125,7 @@ public class IntProviderIngredientTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-   private static BusHolder getBussesAndFormLCR(GameTestHelper helper) {
+    private static BusHolder getBussesAndFormLCR(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
@@ -142,22 +147,21 @@ public class IntProviderIngredientTest {
      * @param helper the GameTestHelper
      * @return the busses, in the BusHolder record.
      */
-//    private static BusHolder getBussesAndFormLCENT(GameTestHelper helper) {
-//        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-//                helper.getBlockEntity(new BlockPos(1, 2, 0)));
-//        TestUtils.formMultiblock(controller);
-//        controller.setRecipeType(CENTRIFUGE_RECIPE_TYPE);
-//        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-//                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-//        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-//                helper.getBlockEntity(new BlockPos(2, 2, 0)));
-//        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-//                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-//        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-//                helper.getBlockEntity(new BlockPos(0, 2, 0)));
-//        return new BusHolder(inputBus1, inputHatch1, outputBus1, outputHatch1, controller);
-//    }
-
+    private static BusHolder getBussesAndFormLCENT(GameTestHelper helper) {
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(2, 2, 0)));
+        TestUtils.formMultiblock(controller);
+        controller.setRecipeType(CENTRIFUGE_RECIPE_TYPE);
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 2, 0)));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(2, 1, 0)));
+        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(1, 1, 0)));
+        return new BusHolder(inputBus1, inputHatch1, outputBus1, outputHatch1, controller);
+    }
 
     // Test for singleblock machine with ranged item input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
@@ -171,16 +175,15 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-
         int runs = 7;
         itemIn.setStackInSlot(0, new ItemStack(Items.GREEN_STAINED_GLASS, 64));
         itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++){
-            final int finalI = i; //lambda preserve you
-            helper.runAfterDelay(2*i + 1, () -> {
+        for (int i = 0; i < runs; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 1, () -> {
                 addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
             });
         }
@@ -236,9 +239,9 @@ public class IntProviderIngredientTest {
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++){
-            final int finalI = i; //lambda preserve you
-            helper.runAfterDelay(2*i + 3, () -> {
+        for (int i = 0; i < runs; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 3, () -> {
                 addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
             });
         }
@@ -286,9 +289,9 @@ public class IntProviderIngredientTest {
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++){
-            final int finalI = i; //lambda preserve you
-            helper.runAfterDelay(2*i + 1, () -> {
+        for (int i = 0; i < runs; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 1, () -> {
                 addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
             });
         }
@@ -340,9 +343,9 @@ public class IntProviderIngredientTest {
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++){
-            final int finalI = i; //lambda preserve you
-            helper.runAfterDelay(2*i + 3, () -> {
+        for (int i = 0; i < runs; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 3, () -> {
                 addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
             });
         }
@@ -376,18 +379,72 @@ public class IntProviderIngredientTest {
         });
     }
 
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+              batch = "RangedIngredients",
+              setupTicks = 40,
+              timeoutTicks = 200)
+    public static void multiblockLCentRangedItemInput16Parallel(GameTestHelper helper) {
+        BusHolder busHolder = getBussesAndFormLCENT(helper);
 
-//    @GameTest(template = "large_centrifuge_zpm_batch_parallel_64", batch = "RangedIngredients", setupTicks = 40, timeoutTicks = 200)
-//    public static void overclockLogicTwoTiersAbove16Parallels(GameTestHelper helper) {
-//        BusHolder busHolder = getBussesAndFormLCENT(helper);
-//        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.STICK, 64));
-//        // One tick to start, 4 for the recipe to run (16/t from ULV recipe to HV)
-//        helper.succeedOnTickWhen(5, () -> {
-//            helper.assertTrue(
-//                    TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
-//                            new ItemStack(Blocks.STONE, 64)),
-//                    "Item didn't craft at the right tick with an on-tier recipe" +
-//                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
-//        });
-//    }
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
+        NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
+
+        int runs = 16;
+        itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
+
+        boolean[] susRun = new boolean[REPLICAS];
+        // 1t to turn on, 1t per recipe run
+        // 16 parallels from OC
+        // check the results of all rolls together
+        // repeat recipe REPLICAS times
+        for (int i = 1; i <= REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(3 + finalI, () -> {
+                ItemStack results = itemIn.getStackInSlot(0);
+                int upperLimit = 64 - (runs * 1);
+                int lowerLimit = 64 - (runs * 4);
+                helper.assertTrue(
+                        TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), new ItemStack(Blocks.STONE, runs)),
+                        "LCent didn't complete correct number of recipes, completed " +
+                                itemOut.getStackInSlot(0).getCount());
+                helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
+                        "LCent didn't consume correct number of items, consumed " +
+                                (64 - results.getCount()));
+                helper.assertFalse((results.getCount() == lowerLimit),
+                        "LCent rolled max value on every roll");
+                helper.assertFalse((results.getCount() == upperLimit),
+                        "LCent rolled min value on every roll");
+
+                if (TestUtils.isStackSizeExactlyEvenMultiple(finalI, 1, 16, finalI)) {
+                    GTCEu.LOGGER.warn("LCent ranged item input test iteration " + finalI + "rolled exactly even to" +
+                            " Batch * Parallel count." +
+                            " If this message only appears once, this is likely a false positive.");
+                    susRun[finalI] = true;
+                }
+
+                // reset for a rerun
+                itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
+                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, runs));
+            });
+        }
+
+        helper.runAfterDelay(4 + REPLICAS, () -> {
+            boolean sus = false;
+            for (boolean run : susRun) {
+                if (run) sus = true;
+                else break;
+            }
+            if (sus) {
+                helper.assertFalse(
+                        TestUtils.isStackSizeExactlyEvenMultiple((int) Math.round(itemOut.getTotalContentAmount()),
+                                1, 16, REPLICAS),
+                        "LCent ranged item input test rolled exactly even to Batch * Parallel * Run count!"
+                // + " If this message has no other warnings before it, this is likely a false positive."
+                // + " Re-run the test suite."
+                );
+            }
+            helper.succeed();
+        });
+    }
 }
