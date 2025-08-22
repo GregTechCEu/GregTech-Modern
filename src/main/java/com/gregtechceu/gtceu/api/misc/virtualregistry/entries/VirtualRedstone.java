@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 
 import net.minecraft.nbt.CompoundTag;
 
+import it.unimi.dsi.fastutil.objects.Object2ShortMap;
+import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class VirtualRedstone extends VirtualEntry {
@@ -16,12 +16,12 @@ public class VirtualRedstone extends VirtualEntry {
     private static final String MEMBERS_KEY = "members";
 
     @Getter
-    private final Map<UUID, Short> members = new HashMap<>();
+    private final Object2ShortMap<UUID> members = new Object2ShortOpenHashMap<>();
 
     public VirtualRedstone() {}
 
     public int getSignal() {
-        return members.values().stream().max(Short::compareTo).orElse((short) 0);
+        return members.values().intStream().max().orElse(0);
     }
 
     public UUID addMember() {
@@ -36,7 +36,7 @@ public class VirtualRedstone extends VirtualEntry {
     }
 
     public void removeMember(UUID uuid) {
-        members.remove(uuid);
+        members.removeShort(uuid);
     }
 
     @Override
@@ -48,7 +48,8 @@ public class VirtualRedstone extends VirtualEntry {
     public CompoundTag serializeNBT() {
         CompoundTag tag = super.serializeNBT();
         CompoundTag tag2 = new CompoundTag();
-        for (UUID uuid : members.keySet()) tag2.putShort(uuid.toString(), members.get(uuid));
+        for (var entry : members.object2ShortEntrySet())
+            tag2.putShort(entry.getKey().toString(), entry.getShortValue());
         tag.put(MEMBERS_KEY, tag2);
         return tag;
     }
