@@ -783,10 +783,10 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
-            public boolean drum = true;
+            public boolean drum = false;
             @Configurable
             @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
-            public boolean quantumTank = true;
+            public boolean quantumTank = false;
         }
     }
 
