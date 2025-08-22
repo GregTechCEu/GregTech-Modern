@@ -486,7 +486,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     remainingCoolant -= drained.getAmount();
                     if (remainingCoolant <= 0) break;
                 }
-                if (remainingCoolant == 0) {
+                if (remainingCoolant <= 0) {
                     // coolant requirement was fully met
                     temperatureChange -= maxActiveCooling;
                 } else {
@@ -506,7 +506,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     remainingCoolant -= drained.getAmount();
                     if (remainingCoolant <= 0) break;
                 }
-                if (remainingCoolant == 0) {
+                if (remainingCoolant <= 0) {
                     // successfully stabilized to zero
                     return 0;
                 } else {
