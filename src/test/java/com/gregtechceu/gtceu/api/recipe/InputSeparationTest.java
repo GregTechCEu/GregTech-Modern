@@ -29,7 +29,7 @@ public class InputSeparationTest {
 
     @BeforeBatch(batch = "InputSeparation")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("input_separation_tests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("input_separation_tests", 3, 3, 3, 3);
         // Force insert the recipe into the manager.
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_input_separation"))
