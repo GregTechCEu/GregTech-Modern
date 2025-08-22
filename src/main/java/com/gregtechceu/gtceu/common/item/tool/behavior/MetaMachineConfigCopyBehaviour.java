@@ -85,8 +85,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final Component[] DIRECTION_TOOLTIPS = {
             Component.translatable("gtceu.direction.tooltip.up").withStyle(ChatFormatting.YELLOW),
             Component.translatable("gtceu.direction.tooltip.down").withStyle(ChatFormatting.YELLOW),
-            Component.translatable("gtceu.direction.tooltip.left").withStyle(ChatFormatting.YELLOW),
             Component.translatable("gtceu.direction.tooltip.right").withStyle(ChatFormatting.YELLOW),
+            Component.translatable("gtceu.direction.tooltip.left").withStyle(ChatFormatting.YELLOW),
             Component.translatable("gtceu.direction.tooltip.front").withStyle(ChatFormatting.YELLOW),
             Component.translatable("gtceu.direction.tooltip.back").withStyle(ChatFormatting.YELLOW),
     };
@@ -294,8 +294,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 ItemStack coverItem = ItemStack.of(compoundTag.getCompound(COVER_ITEM));
                 if (!consumeItems(itemHandler, Set.of(coverItem))) continue;
                 Direction originalFace = tagToDirection(compoundTag.get(ORIGINAL_COVER_SIDE));
-                Direction face = RelativeDirection.getActualDirection(originalFront, machine.getFrontFacing(),
-                        originalFace);
+                Direction face = RelativeDirection
+                        .findRelativeOf(originalFront, originalFace, machine.getUpwardsFacing())
+                        .getActualDirection(machine.getFrontFacing());
                 CoverBehavior cover = null;
                 if (coverItem.getItem() instanceof IComponentItem item) {
                     for (IItemComponent component : item.getComponents()) {
