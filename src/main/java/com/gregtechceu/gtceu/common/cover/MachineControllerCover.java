@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 
@@ -284,9 +283,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
             sideCoverSlot.onContentsChanged(0);
         } else {
             var side = controllerMode.side;
-            if (side == null && coverHolder instanceof MachineCoverContainer coverContainer) {
-                sideCoverSlot.setStackInSlot(0, coverContainer.getMachine().getDefinition().asStack());
-            } else {
+            if (side != null) {
                 var cover = coverHolder.getCoverAtSide(side);
                 if (cover != null) {
                     sideCoverSlot.setStackInSlot(0, cover.getAttachItem().copy());

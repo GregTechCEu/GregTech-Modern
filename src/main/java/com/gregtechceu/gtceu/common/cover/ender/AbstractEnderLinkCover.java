@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
@@ -150,7 +151,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     public UUID getOwner() {
         if (permission == Permissions.PRIVATE && coverHolder instanceof MachineCoverContainer mcc) {
-            var owner = mcc.getMachine().getOwner();
+            MetaMachine machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+            var owner = machine != null ? machine.getOwner() : null;
             return owner != null ? owner.getPlayerUUID() : null;
         }
         return null;
