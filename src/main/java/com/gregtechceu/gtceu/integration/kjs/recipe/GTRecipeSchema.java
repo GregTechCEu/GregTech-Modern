@@ -910,6 +910,19 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
         }
 
+        public GTRecipeJS removeAdjacentFluids(){
+            if (getValue(CONDITIONS) == null) return this;
+
+            List<RecipeCondition> conditions = new ArrayList<>(List.of(getValue(CONDITIONS)));
+
+            conditions.removeIf(condition -> condition instanceof AdjacentFluidCondition);
+
+            setValue(CONDITIONS, conditions.toArray(RecipeCondition[]::new));
+
+            save();
+            return this;
+        }
+
         public GTRecipeJS adjacentBlock(Block... blocks) {
             return adjacentBlock(false, blocks);
         }
