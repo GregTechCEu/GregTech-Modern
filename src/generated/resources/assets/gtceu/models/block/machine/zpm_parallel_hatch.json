@@ -8,7 +8,7 @@
     "side"
   ],
   "variants": {
-    "recipe_logic_status=idle": {
+    "is_formed=false,recipe_logic_status=idle": {
       "model": {
         "parent": "gtceu:block/casings/voltage/zpm",
         "textures": {
@@ -17,7 +17,7 @@
         }
       }
     },
-    "recipe_logic_status=suspend": {
+    "is_formed=false,recipe_logic_status=suspend": {
       "model": {
         "parent": "gtceu:block/casings/voltage/zpm",
         "textures": {
@@ -26,7 +26,7 @@
         }
       }
     },
-    "recipe_logic_status=waiting": {
+    "is_formed=false,recipe_logic_status=waiting": {
       "model": {
         "parent": "gtceu:block/casings/voltage/zpm",
         "textures": {
@@ -35,7 +35,43 @@
         }
       }
     },
-    "recipe_logic_status=working": {
+    "is_formed=false,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_active_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/parallel_hatch_mk3/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/parallel_hatch_mk3/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/parallel_hatch_mk3/overlay_front_active_emissive"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
       "model": {
         "parent": "gtceu:block/casings/voltage/zpm",
         "textures": {

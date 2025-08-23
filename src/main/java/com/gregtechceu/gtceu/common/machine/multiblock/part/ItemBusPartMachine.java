@@ -219,7 +219,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected void updateInventorySubscription(Direction newFacing) {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
+        if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
                 GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -235,6 +235,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                     getInventory().exportToNearby(getFrontFacing());
                 } else if (io == IO.IN) {
                     getInventory().importFromNearby(getFrontFacing());
+                } else if (io == IO.BOTH) {
+                    getInventory().importFromNearby(getFrontFacing());
+                    getInventory().exportToNearby(getFrontFacing().getOpposite());
                 }
             }
             updateInventorySubscription();
@@ -294,13 +297,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io == IO.OUT) {
-            IDistinctPart.super.superAttachConfigurators(configuratorPanel);
-        } else if (this.io == IO.IN) {
+        if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
             if (hasCircuitSlot && isCircuitSlotEnabled()) {
                 configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
+        } else {
+            super.attachConfigurators(configuratorPanel);
         }
     }
 

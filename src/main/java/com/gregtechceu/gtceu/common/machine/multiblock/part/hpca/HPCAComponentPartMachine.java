@@ -70,11 +70,6 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     }
 
     @Override
-    public boolean replacePartModelWhenFormed() {
-        return false;
-    }
-
-    @Override
     public boolean isDamaged() {
         return canBeDamaged() && damaged;
     }

@@ -86,10 +86,12 @@ ServerEvents.recipes(event => {
         - `.itemInput()`
         - `.itemInputs()`
         - `.chancedInput()`
+        - `.itemInputsRanged()`
         - `.notConsumable()`
     - Fluids:
         - `.inputFluids()`
         - `.chancedFluidInput()`
+        - `.inputFluidsRanged()`
         - `.notConsumableFluid()`
     - Misc:
         - `.circuit()`
@@ -98,7 +100,7 @@ ServerEvents.recipes(event => {
         - `.itemOutput()`
         - `.itemOutputs()`
         - `.chancedOutput()`
-        - `.outputItemsRanged()`
+        - `.itemOutputsRanged()`
     - Fluids:
         - `.outputFluids()`
         - `.chancedFluidOutput()`
@@ -126,8 +128,8 @@ ServerEvents.recipes(event => {
     Behavior was changed in 7.0.0.
     - `first` - Makes a chance roll for each item/fluid, in order of registration. Only the first item which succeeds 
     on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic.
-- Ranged Outputs:
-  - Item or Fluid outputs that will produce a random amount within a `min, max` range (inclusive).
+- Ranged Ingredients:
+  - Item or Fluid ingredients that will be consumed or produced in a random amount within a `min, max` range (inclusive).
 - Circuits
   - Many GT recipes use a `Programmed Circuit` item with a Configuration value of `1-32` as a `Non-Consumed` input,
   to distinguish them from other recipes in the same machine with similar ingredients. `.circuit()` adds one to a recipe.

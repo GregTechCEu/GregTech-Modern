@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -12,7 +13,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -22,8 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
- * recipe completion.
- * Only valid as a recipe fluid {@code output}.
+ * recipe start (input) / completion (output).
  * Instantiated using {@link IntProviderFluidIngredient#of()}, with a {@link FluidIngredient}
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
@@ -66,9 +65,12 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * You probably want either {@link IntProviderFluidIngredient#getStacks()} or
      * {@link IntProviderFluidIngredient#getMaxSizeStack()}.
      */
-    @DoNotCall
+    @Deprecated
     @Override
     public int getAmount() {
+        if (ConfigHolder.INSTANCE.dev.debug) {
+            throw new IllegalCallerException("An IPFI should never have getAmount() called on it!");
+        }
         return -1;
     }
 
@@ -134,6 +136,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
             sampledCount = countProvider.sample(random);
         }
         return sampledCount;
+    }
+
+    /**
+     * @return the average roll of this ranged amount
+     */
+    public double getMidRoll() {
+        return ((countProvider.getMaxValue() + countProvider.getMinValue()) / 2.0);
     }
 
     @Override

@@ -15,12 +15,14 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
-import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
+import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidHolderSetList;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -28,14 +30,15 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fml.ModLoader;
 
 import java.util.ArrayList;
@@ -412,19 +415,32 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
-            .prepareBuilder(recipeBuilder -> recipeBuilder.addCondition(RockBreakerCondition.INSTANCE))
+            .prepareBuilder(recipeBuilder -> {
+                recipeBuilder.addCondition(AdjacentFluidCondition.fromTags(FluidTags.LAVA, FluidTags.WATER));
+            })
             .setUiBuilder((recipe, widgetGroup) -> {
-                var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-                var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
-                if (fluidA != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidA, 1000)),
-                            widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
-                            .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
+                List<HolderSet<Fluid>> fluids = new ArrayList<>();
+                for (RecipeCondition condition : recipe.conditions) {
+                    if (condition instanceof AdjacentFluidCondition adjacentFluid) {
+                        fluids.addAll(adjacentFluid.getOrInitFluids(recipe));
+                    }
                 }
-                if (fluidB != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new CustomFluidTank(new FluidStack(fluidB, 1000)),
-                            widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
-                            .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
+                if (fluids.isEmpty()) {
+                    return;
+                }
+
+                int xOffset = 0;
+                for (HolderSet<Fluid> set : fluids) {
+                    if (set.size() == 0) {
+                        continue;
+                    }
+                    List<FluidEntryList> slots = Collections.singletonList(FluidHolderSetList.of(set, 1000, null));
+                    TankWidget tank = new TankWidget(new CycleFluidEntryHandler(slots),
+                            widgetGroup.getSize().width - 30 - xOffset, widgetGroup.getSize().height - 30, false, false)
+                            .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false);
+                    widgetGroup.addWidget(tank);
+
+                    xOffset += 20;
                 }
             })
             .setSound(GTSoundEntries.FIRE);
