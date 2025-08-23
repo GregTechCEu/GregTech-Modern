@@ -65,7 +65,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         }
 
         switch (voidingMode) {
-            case VOID_ANY -> voidAny(fluidHandler);
+            case VOID_ANY -> voidAny((IFluidHandlerModifiable) fluidHandler);
             case VOID_OVERFLOW -> voidOverflow(fluidHandler);
         }
     }
