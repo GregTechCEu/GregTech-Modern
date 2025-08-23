@@ -910,7 +910,7 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
         }
 
-        public GTRecipeJS removeAdjacentFluids(){
+        public GTRecipeJS removeAdjacentFluids() {
             if (getValue(CONDITIONS) == null) return this;
 
             List<RecipeCondition> conditions = new ArrayList<>(List.of(getValue(CONDITIONS)));
