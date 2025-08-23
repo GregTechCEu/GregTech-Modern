@@ -2,7 +2,7 @@
 
 ### Superheated Pyrolyzing Oven Multiblock (by Phoenixvine)
 
-### In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. Coil multiblocks such as the Electric Blast Furnace, Pyrolyse Oven, and the Cracker use this class.
+In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. Coil multiblocks such as the Electric Blast Furnace, Pyrolyse Oven, and the Cracker use this class.
 
 ```const CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine")```
 
