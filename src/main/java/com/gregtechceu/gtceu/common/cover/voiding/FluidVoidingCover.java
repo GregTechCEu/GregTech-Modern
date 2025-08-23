@@ -65,14 +65,14 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     protected void doVoidFluids() {
-        IFluidHandlerModifiable fluidHandler = getOwnFluidHandler();
+        IFluidHandler fluidHandler = getOwnFluidHandler();
         if (fluidHandler == null) {
             return;
         }
         voidAny(fluidHandler);
     }
 
-    void voidAny(IFluidHandlerModifiable fluidHandler) {
+    void voidAny(IFluidHandler fluidHandler) {
         Object2LongMap<FluidStack> fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
         for (var entry : Object2LongMaps.fastIterable(fluidAmounts)) {

@@ -124,7 +124,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public MetaMachine(IMachineBlockEntity holder) {
         this.holder = holder;
-        this.coverContainer = new MachineCoverContainer(this);
+        this.coverContainer = new MachineCoverContainer(getLevel(), getPos());
         this.traits = new ArrayList<>();
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();

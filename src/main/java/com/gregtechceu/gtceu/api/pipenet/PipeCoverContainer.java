@@ -25,6 +25,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -149,7 +151,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandler getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof ItemPipeBlockEntity itemPipe) {
             return getLevel() instanceof ServerLevel ? itemPipe.getHandler(side, useCoverCapability) :
                     (IItemHandlerModifiable) EmptyHandler.INSTANCE;
@@ -159,7 +161,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandler getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
             return fluidPipe.getTankList(side);
         } else {

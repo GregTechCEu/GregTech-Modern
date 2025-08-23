@@ -59,7 +59,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     @Override
     protected void doVoidFluids() {
-        IFluidHandlerModifiable fluidHandler = getOwnFluidHandler();
+        IFluidHandler fluidHandler = getOwnFluidHandler();
         if (fluidHandler == null) {
             return;
         }
@@ -70,7 +70,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         }
     }
 
-    private void voidOverflow(IFluidHandlerModifiable fluidHandler) {
+    private void voidOverflow(IFluidHandler fluidHandler) {
         var fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
         for (var entry : Object2LongMaps.fastIterable(fluidAmounts)) {

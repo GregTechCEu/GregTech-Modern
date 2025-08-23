@@ -73,7 +73,7 @@ public class FluidRegulatorCover extends PumpCover {
     //////////////////////////////////////
 
     @Override
-    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+    protected int doTransferFluidsInternal(IFluidHandler source, IFluidHandler destination,
                                            int platformTransferLimit) {
         return switch (transferMode) {
             case TRANSFER_ANY -> transferAny(source, destination, platformTransferLimit);
@@ -127,7 +127,7 @@ public class FluidRegulatorCover extends PumpCover {
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private int keepExact(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+    private int keepExact(IFluidHandler source, IFluidHandler destination,
                           int platformTransferLimit) {
         int fluidLeftToTransfer = platformTransferLimit;
 

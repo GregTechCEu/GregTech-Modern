@@ -22,6 +22,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.Nullable;
@@ -58,9 +60,9 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     boolean shouldRenderBackSide();
 
-    IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability);
+    IItemHandler getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability);
 
-    IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidHandler getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.

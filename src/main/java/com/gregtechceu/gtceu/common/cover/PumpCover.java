@@ -117,7 +117,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         return isWorkingEnabled() && getAdjacentFluidHandler() != null;
     }
 
-    protected @Nullable IFluidHandlerModifiable getOwnFluidHandler() {
+    protected IFluidHandler getOwnFluidHandler() {
         return coverHolder.getFluidHandlerCap(attachedSide, false);
     }
 
@@ -233,7 +233,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         var adjacent = getAdjacentFluidHandler();
         var adjacentModifiable = adjacent instanceof IFluidHandlerModifiable modifiable ? modifiable :
                 new ModifiableFluidHandlerWrapper(adjacent);
-        var ownFluidHandler = getOwnFluidHandler();
+        IFluidHandler ownFluidHandler = getOwnFluidHandler();
 
         if (adjacent != null && ownFluidHandler != null) {
             return switch (io) {
@@ -245,12 +245,12 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         return 0;
     }
 
-    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+    protected int doTransferFluidsInternal(IFluidHandler source, IFluidHandler destination,
                                            int platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
-    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+    protected int transferAny(IFluidHandler source, IFluidHandler destination,
                               int platformTransferLimit) {
         return GTTransferUtils.transferFluidsFiltered(source, destination, filterHandler.getFilter(),
                 platformTransferLimit);
@@ -261,7 +261,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         EXTRACT
     }
 
-    protected Object2LongMap<FluidStack> enumerateDistinctFluids(IFluidHandlerModifiable fluidHandler,
+    protected Object2LongMap<FluidStack> enumerateDistinctFluids(IFluidHandler fluidHandler,
                                                                  TransferDirection direction) {
         // Long map because we could have multiple tanks of the same fluid summing up to > Integer.MAX_VALUE
         var summedFluids = new Object2LongOpenHashMap<FluidStack>();
@@ -277,7 +277,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         return summedFluids;
     }
 
-    private static boolean canTransfer(IFluidHandlerModifiable fluidHandler, TransferDirection direction, int tank) {
+    private static boolean canTransfer(IFluidHandler fluidHandler, TransferDirection direction, int tank) {
         return switch (direction) {
             case INSERT -> fluidHandler.supportsFill(tank);
             case EXTRACT -> fluidHandler.supportsDrain(tank);

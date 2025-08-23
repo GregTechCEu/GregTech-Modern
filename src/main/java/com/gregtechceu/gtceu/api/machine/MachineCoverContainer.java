@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -21,8 +23,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
@@ -36,7 +45,12 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Getter
-    private final MetaMachine machine;
+    private final BlockPos pos;
+    @Getter
+    private final Level level;
+
+    private final long offset = GTValues.RNG.nextInt(20);
+
     @DescSynced
     @Persisted
     @UpdateListener(methodName = "onCoverSet")
@@ -45,8 +59,9 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
                      deserializeMethod = "deserializeCoverUid")
     private CoverBehavior up, down, north, south, west, east;
 
-    public MachineCoverContainer(MetaMachine machine) {
-        this.machine = machine;
+    public MachineCoverContainer(Level level, BlockPos pos) {
+        this.level = level;
+        this.pos = pos;
     }
 
     @SuppressWarnings("unused")
@@ -70,49 +85,63 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public Level getLevel() {
-        return machine.getLevel();
-    }
-
-    @Override
-    public BlockPos getPos() {
-        return machine.getPos();
-    }
-
-    @Override
     public long getOffsetTimer() {
-        return machine.getOffsetTimer();
+        if (level == null) return offset;
+        else if (level.isClientSide()) return GTValues.CLIENT_TIME + offset;
+
+        MinecraftServer server = level.getServer();
+        if (server != null) return server.getTickCount() + offset;
+        return offset;
     }
 
     @Override
     public void markDirty() {
-        machine.markDirty();
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity != null) {
+            blockEntity.setChanged();
+        }
     }
 
     @Override
     public void notifyBlockUpdate() {
-        machine.notifyBlockUpdate();
+        if (level != null) {
+            level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+        }
     }
 
     @Override
     public void scheduleRenderUpdate() {
-        machine.scheduleRenderUpdate();
+        if (level != null) {
+            BlockState state = level.getBlockState(pos);
+            if (level.isClientSide) {
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                if (blockEntity != null) blockEntity.requestModelDataUpdate();
+            } else {
+                level.blockEvent(pos, state.getBlock(), 1, 0);
+            }
+        }
     }
 
     @Override
     public void scheduleNeighborShapeUpdate() {
-        machine.scheduleNeighborShapeUpdate();
+        if (level == null || pos == null)
+            return;
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
 
     @Override
     public boolean isInValid() {
-        return machine.isInValid();
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        return blockEntity != null && blockEntity.isRemoved();
     }
 
     @Override
     public boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side) {
         ArrayList<VoxelShape> collisionList = new ArrayList<>();
-        machine.addCollisionBoundingBox(collisionList);
+        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
+            machineBE.getMetaMachine().addCollisionBoundingBox(collisionList);
+        else collisionList.add(Shapes.block());
         // noinspection RedundantIfStatement
         if (ICoverable.doesCoverCollide(side, collisionList, getCoverPlateThickness())) {
             // cover collision box overlaps with meta tile entity collision box
@@ -128,24 +157,28 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public Direction getFrontFacing() {
-        return machine.getFrontFacing();
+    public @Nullable Direction getFrontFacing() {
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        return machine == null ? null : machine.getFrontFacing();
     }
 
     @Override
     public boolean shouldRenderBackSide() {
-        return !machine.getBlockState().canOcclude();
+        return !level.getBlockState(pos).canOcclude();
     }
 
     @Nullable
     @Override
     public TickableSubscription subscribeServerTick(Runnable runnable) {
-        return machine.subscribeServerTick(runnable);
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        if (machine != null)
+            return machine.subscribeServerTick(runnable);
+        return null;
     }
 
     @Override
     public void unsubscribe(@Nullable TickableSubscription current) {
-        machine.unsubscribe(current);
+        if (current != null) current.unsubscribe();
     }
 
     @Override
@@ -176,12 +209,16 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandler getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return GTCapabilityHelper.getItemHandler(level, pos, side);
         return machine.getItemHandlerCap(side, useCoverCapability);
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandler getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return GTCapabilityHelper.getFluidHandler(level, pos, side);
         return machine.getFluidHandlerCap(side, useCoverCapability);
     }
 

@@ -24,6 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import lombok.Getter;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,12 +93,12 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         }
     }
 
-    protected @Nullable IFluidHandlerModifiable getOwnFluidHandler() {
+    protected IFluidHandler getOwnFluidHandler() {
         return coverHolder.getFluidHandlerCap(attachedSide, false);
     }
 
     private int doTransferFluids(int platformTransferLimit) {
-        var ownFluidHandler = getOwnFluidHandler();
+        IFluidHandler ownFluidHandler = getOwnFluidHandler();
 
         if (ownFluidHandler != null) {
             return switch (io) {

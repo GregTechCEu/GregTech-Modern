@@ -123,7 +123,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         return isWorkingEnabled() && getAdjacentItemHandler() != null;
     }
 
-    protected @Nullable IItemHandlerModifiable getOwnItemHandler() {
+    protected IItemHandler getOwnItemHandler() {
         return coverHolder.getItemHandlerCap(attachedSide, false);
     }
 
@@ -212,7 +212,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         if (timer % 5 == 0) {
             if (itemsLeftToTransferLastSecond > 0) {
                 var adjacent = getAdjacentItemHandler();
-                var self = getOwnItemHandler();
+                IItemHandler self = getOwnItemHandler();
 
                 if (adjacent != null && self != null) {
                     int totalTransferred = switch (io) {
