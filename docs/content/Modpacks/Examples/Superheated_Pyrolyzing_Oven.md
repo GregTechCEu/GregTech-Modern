@@ -1,7 +1,12 @@
+## In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. Coil multiblocks such as the Electric Blast Furnace, Pyrolyse Oven, and the Cracker use this class.
 
 ```const CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine")```
 
-```GTCEuStartupEvents.registry('gtceu:machine', event => {
+Below is an example of a multiblock using the CoilWorkableElectricMultiblockMachine class and the pyrolyseOvenOverclock machine logic.
+
+### Multiblock
+```js title="superheated_pyrolyzing_oven_multiblock.js"
+GTCEuStartupEvents.registry('gtceu:machine', event => {
     event.create("superheated_pyrolyzing_oven", "multiblock")
         .rotationState(RotationState.NON_Y_AXIS)
         .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
@@ -33,4 +38,17 @@
         .workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel",
             "gtceu:block/multiblock/pyrolyse_oven");
 
-})```
+})
+```
+### Lang
+
+```json title="en_us.json"
+{
+    "block.gtceu.superheated_pyrolyzing_oven": "Superheated Pyrolyzing Oven",
+}
+```
+
+
+
+
+
