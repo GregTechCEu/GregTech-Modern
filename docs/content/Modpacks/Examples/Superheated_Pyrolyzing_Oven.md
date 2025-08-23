@@ -1,4 +1,6 @@
-# Superheated Pyrolyzing Oven
+---
+title: "Superheated Pyrolyzing Oven"
+---
 
 ### Superheated Pyrolyzing Oven Multiblock (by Phoenixvine)
 
