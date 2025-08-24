@@ -249,7 +249,7 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1, true);
                 int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkArgs(args, i + 2);
+                PlaceholderUtils.checkArgs(args, i + 1, true);
                 return args.get(i + 1);
             }
         });
@@ -536,33 +536,66 @@ public class GTPlaceholders {
                 }
                 if (capacity == -1) throw new MissingItemException("any data item", slot);
                 ListTag tag = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
-                int operationsLeft = 1000;
-                int p = 0;
-                String code = args.get(1).toString();
+                int operationsLeft = 5000;
+                int p = 0, start = 0, cnt = 0;
+                String rawCode = args.get(1).toString().replaceAll("[^+\\-><\\[\\]]", "");
+                StringBuilder codeBuilder = new StringBuilder();
+                // optimize BF code ("[----[+++]-<<-]" -> "[4-[3+]1-2<1-]")
+                @Nullable
+                Character cur = null;
+                for (char i : rawCode.toCharArray()) {
+                    if (cur != null) {
+                        if (cur == i) cnt++;
+                        else {
+                            codeBuilder.append(cnt).append(cur);
+                            cur = null;
+                            cnt = 0;
+                        }
+                    }
+                    if (cur == null) {
+                        if (List.of('+', '-', '<', '>').contains(i)) {
+                            cur = i;
+                            cnt = 1;
+                        } else codeBuilder.append(i);
+                    }
+                }
+                if (cur != null) codeBuilder.append(cnt).append(cur);
+                String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
-                for (int i = 0; i < code.length() && operationsLeft > 0; i++) {
+                if (!getData(ctx).getBoolean("completed")) {
+                    p = getData(ctx).getInt("pointer");
+                    start = getData(ctx).getInt("index");
+                }
+                getData(ctx).putBoolean("completed", true);
+                int num = 0;
+                for (int i = start; i < code.length(); i++) {
+                    if (operationsLeft <= 0) {
+                        getData(ctx).putBoolean("completed", false);
+                        getData(ctx).putInt("pointer", p);
+                        getData(ctx).putInt("index", i);
+                        break;
+                    }
                     while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
                     if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
-                    try {
-                        switch (code.charAt(i)) {
-                            case '+' -> tag.set(p,
-                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) + 1)));
-                            case '-' -> tag.set(p,
-                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) - 1)));
-                            case '>' -> p++;
-                            case '<' -> p--;
-                            case '[' -> loops.push(i);
-                            case ']' -> {
-                                if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
-                                else i = loops.peek();
-                            }
-                            default -> throw new PlaceholderException(Component
-                                    .translatable("gtceu.computer_monitor_cover.error.bf_invalid", i).getString());
+                    switch (code.charAt(i)) {
+                        case '+' -> tag.set(p,
+                                StringTag.valueOf(String.valueOf((Integer.parseInt(tag.getString(p)) + num) % 256)));
+                        case '-' -> {
+                            int tmp = Integer.parseInt(tag.getString(p)) - num;
+                            if (tmp < 0) tmp = (256 - ((-tmp) % 256)) % 256;
+                            tag.set(p, StringTag.valueOf(String.valueOf(tmp)));
                         }
-                    } catch (InvalidNumberException e) {
-                        throw new PlaceholderException(Component
-                                .translatable("gtceu.computer_monitor_cover.error.bf_invalid_num", p, i).getString());
+                        case '>' -> p += num;
+                        case '<' -> p -= num;
+                        case '[' -> loops.push(i);
+                        case ']' -> {
+                            if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
+                            else i = loops.peek();
+                        }
                     }
+                    if (Character.isDigit(code.charAt(i))) {
+                        num = num * 10 + code.charAt(i) - '0';
+                    } else num = 0;
                     operationsLeft--;
                 }
                 return MultiLineComponent.empty();

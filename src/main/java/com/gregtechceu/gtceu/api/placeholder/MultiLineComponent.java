@@ -104,6 +104,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.append(MultiLineComponent.of(c.withStyle(style)));
             out.appendNewline();
         }
+        if (!out.isEmpty()) out.remove(out.size() - 1);
         return out;
     }
 
@@ -113,6 +114,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.append(MultiLineComponent.of(c.withStyle(style)));
             out.appendNewline();
         }
+        if (!out.isEmpty()) out.remove(out.size() - 1);
         return out;
     }
 

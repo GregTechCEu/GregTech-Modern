@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class TextModuleBehaviour implements IMonitorModuleItem {
@@ -38,6 +39,9 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         for (Tag value : tag) {
             formatStringLines.append(value.getAsString()).append('\n');
         }
+        if (!stack.getOrCreateTag().contains("placeholderUUID")) {
+            stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
+        }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 formatStringLines.toString(),
                 new PlaceholderContext(
@@ -46,7 +50,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
                         group.getTargetCoverSide(),
                         group.getPlaceholderSlotsHandler(),
                         group.getTargetCover(machine.getLevel()),
-                        null));
+                        null,
+                        stack.getOrCreateTag().getUUID("placeholderUUID")));
         stack.getOrCreateTag().put("text", text.toTag());
     }
 
@@ -66,6 +71,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
+        editor.codeEditor.setLanguageDefinition(PlaceholderHandler.LANG_DEFINITION);
         TextFieldWidget scaleInput = new TextFieldWidget(
                 -50, 47,
                 40, 10,
