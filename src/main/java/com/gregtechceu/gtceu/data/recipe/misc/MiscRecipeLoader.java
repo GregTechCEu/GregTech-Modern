@@ -41,6 +41,10 @@ public class MiscRecipeLoader {
                 "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
                 new MaterialEntry(wireGtSingle, Copper), 'S', new MaterialEntry(screw, RedAlloy), 'L',
                 CustomTags.LV_CIRCUITS);
+        // Multiblock Memory Card Recipe
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "multiblock_memory_card", MULTIBLOCK_MEMORY_CARD.asStack(),
+                "ECS", "CFC", "PPP", 'E', EMITTER_IV, 'C', CustomTags.LuV_CIRCUITS, 'S', SENSOR_IV, 'F',
+                FIELD_GENERATOR_IV, 'P', new MaterialEntry(plate, RhodiumPlatedPalladium));
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
                 new MaterialEntry(dust, Copper),
