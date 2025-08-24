@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
@@ -760,6 +761,34 @@ public class GTPlaceholders {
                         int count = 0;
                         for (int i = 0; i < items.getSlots(); i++) count += items.getStackInSlot(i).getCount();
                         return MultiLineComponent.literal(count);
+                    }
+                    case "itemId" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.literal(ItemStack.EMPTY.toString());
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (items.getSlots() == 0) return MultiLineComponent.literal(ItemStack.EMPTY.toString());
+                        return MultiLineComponent.literal(items.getStackInSlot(0).toString());
+                    }
+                    case "itemPull" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.empty();
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (ctx.itemStackHandler() != null)
+                            GTTransferUtils.transferItemsFiltered(items, ctx.itemStackHandler(), stack -> true, 1);
+                        else throw new NotSupportedException();
+                        return MultiLineComponent.empty();
+                    }
+                    case "itemPush" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.empty();
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (ctx.itemStackHandler() != null)
+                            GTTransferUtils.transferItemsFiltered(ctx.itemStackHandler(), items, stack -> true, 1);
+                        else throw new NotSupportedException();
+                        return MultiLineComponent.empty();
                     }
                     case "fluid" -> {
                         channel = "EFLink#" + channel;
