@@ -91,6 +91,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             Component.translatable("gtceu.direction.tooltip.back").withStyle(ChatFormatting.YELLOW),
     };
 
+    private final boolean copyMultiblocks;
+
     public static String directionToString(@Nullable Direction direction) {
         if (direction == null) return NONE_DIRECTION;
         return direction.getSerializedName();
@@ -112,6 +114,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static Component relativeDirectionComponent(Direction origFront, Direction origDirection) {
         RelativeDirection relative = RelativeDirection.findRelativeOf(origFront, origDirection);
         return DIRECTION_TOOLTIPS[relative.ordinal()];
+    }
+
+    public MetaMachineConfigCopyBehaviour(boolean copyMultiblocks) {
+        this.copyMultiblocks = copyMultiblocks;
     }
 
     @Override
@@ -136,8 +142,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else return InteractionResult.SUCCESS;
     }
 
-    public static InteractionResult handleCopy(CompoundTag tag, Level level, BlockPos pos, Player player,
-                                               BlockHitResult hitResult) {
+    public InteractionResult handleCopy(CompoundTag tag, Level level, BlockPos pos, Player player,
+                                        BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
             return handleCopy(tag, machineBE.getMetaMachine(), player, hitResult);
         else if (level.getBlockEntity(pos) instanceof ICopyable copyable) {
@@ -178,8 +184,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else return InteractionResult.PASS;
     }
 
-    public static InteractionResult handleCopy(CompoundTag tag, MetaMachine machine, Player player,
-                                               BlockHitResult hitResult) {
+    public InteractionResult handleCopy(CompoundTag tag, MetaMachine machine, Player player,
+                                        BlockHitResult hitResult) {
         CompoundTag configData = new CompoundTag();
         configData.putString(ORIGINAL_FRONT, directionToString(machine.getFrontFacing()));
         if (machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.getOutputFacingItems() != null) {
@@ -216,7 +222,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             circuitSlotTag.putBoolean(CIRCUIT_SLOT_ENABLED, circuitSlotMachine.isCircuitSlotEnabled());
             configData.put(GHOST_CIRCUITS, circuitSlotTag);
         }
-        if (machine.getLevel() != null && machine instanceof MultiblockControllerMachine multiblock) {
+        if (machine.getLevel() != null && copyMultiblocks &&
+                machine instanceof MultiblockControllerMachine multiblock) {
             CompoundTag multiblockTag = new CompoundTag();
             ListTag parts = new ListTag();
             HashSet<BlockPos> partPositions = new HashSet<>(List.of(multiblock.getPartPositions()));

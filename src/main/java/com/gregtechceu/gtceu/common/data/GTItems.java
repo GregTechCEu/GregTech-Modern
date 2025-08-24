@@ -2168,7 +2168,13 @@ public class GTItems {
             .item("machine_memory_card", ComponentItem::create)
             .lang("Machine Memory Card")
             .properties(p -> p.stacksTo(1))
-            .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
+            .onRegister(attach(new MetaMachineConfigCopyBehaviour(false)))
+            .register();
+    public static ItemEntry<ComponentItem> MULTIBLOCK_MEMORY_CARD = REGISTRATE
+            .item("multiblock_memory_card", ComponentItem::create)
+            .lang("Multiblock Memory Card")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new MetaMachineConfigCopyBehaviour(true)))
             .register();
 
     public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
