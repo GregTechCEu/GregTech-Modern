@@ -710,6 +710,7 @@ public class GTPlaceholders {
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("ender") {
+
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
