@@ -625,6 +625,30 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true, true)
                 .save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("cover_ender_item_link")
+                .inputItems(plate, EnderPearl, 9)
+                .inputItems(plateDouble, StainlessSteel)
+                .inputItems(SENSOR_HV)
+                .inputItems(EMITTER_HV)
+                .inputItems(CONVEYOR_MODULE_HV)
+                .inputFluids(Polytetrafluoroethylene, L * 2)
+                .outputItems(COVER_ENDER_ITEM_LINK)
+                .EUt(VA[HV]).duration(320)
+                .addMaterialInfo(true, true)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("cover_ender_redstone_link")
+                .inputItems(plate, EnderPearl, 4)
+                .inputItems(plateDouble, Aluminium)
+                .inputItems(SENSOR_MV)
+                .inputItems(EMITTER_MV)
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputFluids(SolderingAlloy, L * 2)
+                .outputItems(COVER_ENDER_REDSTONE_LINK)
+                .EUt(VA[MV]).duration(320)
+                .addMaterialInfo(true, true)
+                .save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
                 .inputItems(Tags.Blocks.CHESTS_WOODEN)
                 .inputItems(ELECTRIC_PISTON_LV)
