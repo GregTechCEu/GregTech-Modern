@@ -1570,6 +1570,8 @@ public class LangHandler {
                 "Example: {formatInt 1236457} -> 1.24M",
                 "Usage:",
                 "  {formatInt <arg>} -> string representation of the int");
+        multiLang(provider, "gtceu.placeholder_info.click",
+                "Returns whether the targeted advanced monitor was clicked before the current tick");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");

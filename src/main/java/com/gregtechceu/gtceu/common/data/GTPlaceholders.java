@@ -8,10 +8,12 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.ChatFormatting;
@@ -688,6 +690,21 @@ public class GTPlaceholders {
                     if (n >= i && max < i) max = i;
                 }
                 return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("click") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                if (!(MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof AdvancedMonitorPartMachine monitor))
+                    throw new NotSupportedException();
+                monitor.resetClicked();
+                if (args.isEmpty()) return MultiLineComponent.literal(monitor.isClicked() ? 1 : 0);
+                PlaceholderUtils.checkArgs(args, 1);
+                if (args.get(0).equalsString("x")) return MultiLineComponent.literal(monitor.getClickPosX());
+                if (args.get(0).equalsString("y")) return MultiLineComponent.literal(monitor.getClickPosY());
+                throw new InvalidArgsException();
             }
         });
     }

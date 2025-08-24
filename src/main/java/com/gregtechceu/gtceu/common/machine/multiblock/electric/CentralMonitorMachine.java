@@ -99,6 +99,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             .setMaxGlobalLimited(4))
                     .or(Predicates.machines(GTMachines.HULL))
                     .or(Predicates.machines(GTMachines.MONITOR))
+                    .or(Predicates.machines(GTMachines.ADVANCED_MONITOR))
                     .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
         }
         return MULTI_PREDICATE;

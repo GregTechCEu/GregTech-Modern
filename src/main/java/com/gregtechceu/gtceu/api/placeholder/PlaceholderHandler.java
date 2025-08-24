@@ -44,7 +44,12 @@ public class PlaceholderHandler {
             "Placeholders",
             List.of(
                     TokenTypes.KEYWORD.createTokenType(PlaceholderHandler.getAllPlaceholderNames().stream().toList()),
+                    TokenTypes.IDENTIFIER,
                     TokenTypes.STRING,
+                    TokenTypes.COMMENT,
+                    TokenTypes.NUMBER,
+                    TokenTypes.OPERATOR,
+                    TokenTypes.WHITESPACE,
                     TokenTypes.OTHER),
             Set.of());
 
