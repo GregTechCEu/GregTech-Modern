@@ -1353,7 +1353,8 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.true", "True");
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
 
-        provider.add("gtceu.tooltip.wireless_transmitter_bind", "Binding to a transmitter cover at %s %s %s facing %s");
+        provider.add("gtceu.tooltip.wireless_transmitter_bind",
+                "Binding to a transmitter cover at %s %s %s facing %s in %s");
         provider.add("gtceu.tooltip.computer_monitor_config", "Storing computer monitor cover configuration data");
         provider.add("gtceu.tooltip.computer_monitor_data", "Storing data: %s");
 

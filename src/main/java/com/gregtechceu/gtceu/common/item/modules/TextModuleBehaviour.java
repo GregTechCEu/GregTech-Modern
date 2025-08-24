@@ -45,7 +45,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 formatStringLines.toString(),
                 new PlaceholderContext(
-                        machine.getLevel(),
+                        group.getTargetLevel(machine.getLevel()),
                         group.getTarget(machine.getLevel()),
                         group.getTargetCoverSide(),
                         group.getPlaceholderSlotsHandler(),

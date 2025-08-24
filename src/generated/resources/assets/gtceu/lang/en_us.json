@@ -3787,7 +3787,7 @@
   "gtceu.tooltip.status.trinary.true": "True",
   "gtceu.tooltip.status.trinary.unknown": "Unknown",
   "gtceu.tooltip.tool_fluid_hold_shift": "§7Hold SHIFT to show Fluid Containment and Tool Info",
-  "gtceu.tooltip.wireless_transmitter_bind": "Binding to a transmitter cover at %s %s %s facing %s",
+  "gtceu.tooltip.wireless_transmitter_bind": "Binding to a transmitter cover at %s %s %s facing %s in %s",
   "gtceu.top.allow_output_input": "Allow Input",
   "gtceu.top.auto_output": "Auto Output",
   "gtceu.top.buffer_bound_pos": "Bound To - X: %s, Y: %s, Z: %s",
