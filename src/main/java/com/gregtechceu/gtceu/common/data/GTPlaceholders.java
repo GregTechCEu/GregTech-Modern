@@ -23,6 +23,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -445,12 +446,16 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                PlaceholderUtils.checkArgs(args, 1, true);
                 int slot = GTStringUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                return MultiLineComponent
-                        .literal(ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag().toString());
+                Tag tag = ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag();
+                for (int i = 1; i < args.size() - 1; i++) {
+                    if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
+                    tag = compoundTag.get(args.get(i).toString());
+                }
+                return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("toChars") {
