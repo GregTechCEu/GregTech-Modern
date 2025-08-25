@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
@@ -58,7 +57,6 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
                 .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
         clickPosY = hit.getLocation()
                 .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
-        GTCEu.LOGGER.info(getUpwardsFacing());
         clickPosX -= Math.floor(clickPosX);
         if (clickPosX < 0) clickPosX++;
         clickPosY -= Math.floor(clickPosY);
