@@ -87,6 +87,15 @@ public class TestUtils {
     }
 
     /**
+     * compares an integer with a range
+     *
+     * @return {@code true} if the integer count is within range
+     */
+    public static boolean isCountWithinRange(int stack, int min, int max) {
+        return stack <= max && stack >= min;
+    }
+
+    /**
      * Forces a structure check on multiblocks after being placed, to avoid having to wait ticks.
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
