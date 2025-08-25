@@ -34,16 +34,11 @@ import java.util.function.Supplier;
 public class TextModuleBehaviour implements IMonitorModuleItem {
 
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        StringBuilder formatStringLines = new StringBuilder();
-        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
-        for (Tag value : tag) {
-            formatStringLines.append(value.getAsString()).append('\n');
-        }
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                formatStringLines.toString(),
+                getPlaceholderText(stack),
                 new PlaceholderContext(
                         group.getTargetLevel(machine.getLevel()),
                         group.getTarget(machine.getLevel()),
@@ -63,8 +58,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
-                MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING)).toImmutable(),
-                Math.max(stack.getOrCreateTag().getDouble("scale"), .0001));
+                getText(stack).toImmutable(),
+                Math.max(getScale(stack), .0001));
     }
 
     @Override
@@ -114,5 +109,37 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         placeholderReference.setSelfPosition(-100, -50);
         builder.addWidget(placeholderReference);
         return builder;
+    }
+
+    @Override
+    public String getType() {
+        return "text";
+    }
+
+    public MultiLineComponent getText(ItemStack stack) {
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+    }
+
+    public double getScale(ItemStack stack) {
+        return Math.max(stack.getOrCreateTag().getDouble("scale"), .0001);
+    }
+
+    public void setScale(ItemStack stack, double scale) {
+        stack.getOrCreateTag().putDouble("scale", scale);
+    }
+
+    public void setPlaceholderText(ItemStack stack, String text) {
+        ListTag listTag = new ListTag();
+        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line));
+        stack.getOrCreateTag().put("formatStringLines", listTag);
+    }
+
+    public String getPlaceholderText(ItemStack stack) {
+        StringBuilder formatStringLines = new StringBuilder();
+        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
+        for (Tag value : tag) {
+            formatStringLines.append(value.getAsString()).append('\n');
+        }
+        return formatStringLines.toString();
     }
 }

@@ -81,6 +81,7 @@ public class ComputerMonitorCover extends CoverBehavior
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
     @Persisted
+    @Getter
     private final UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {

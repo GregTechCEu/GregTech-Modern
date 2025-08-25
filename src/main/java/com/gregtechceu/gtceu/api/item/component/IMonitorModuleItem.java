@@ -15,4 +15,8 @@ public interface IMonitorModuleItem extends IItemComponent {
     IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
     Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
+
+    default String getType() {
+        return "unknown";
+    }
 }
