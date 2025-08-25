@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProspectingBehaviour implements IToolBehavior {
+public class ProspectingBehavior implements IToolBehavior {
 
-    public static final ProspectingBehaviour INSTANCE = new ProspectingBehaviour();
+    public static final ProspectingBehavior INSTANCE = new ProspectingBehavior();
 
     @Override
     public @NotNull InteractionResult onItemUse(UseOnContext context) {
