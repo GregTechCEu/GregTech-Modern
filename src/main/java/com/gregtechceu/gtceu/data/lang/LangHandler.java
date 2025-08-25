@@ -194,6 +194,11 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
         provider.add("item.gtceu.tool.behavior.dowse_campfire", "§Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
+        provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
+        provider.add("item.gtceu.tool.behavior.prospecting.lava", "Found lava");
+        provider.add("item.gtceu.tool.behavior.prospecting.changing", "Detected material change");
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
         replace(provider, "item.gtceu.tool.shovel", "%s Shovel");
