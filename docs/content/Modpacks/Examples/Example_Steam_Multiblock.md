@@ -11,6 +11,7 @@ In order to use multiblock logic extending beyond the normal WorkableElectricMul
 Below is an example of a multiblock using the SteamParallelMultiblockMachine class.
 
 ### Multiblock
+
 ```js title="superheated_pyrolyzing_oven_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
 event.create('large_steam_compressor', 'multiblock')
@@ -37,9 +38,9 @@ event.create('large_steam_compressor', 'multiblock')
    .where('H', Predicates.controller(Predicates.blocks(definition.get())))
         .build())
     .workableCasingModel("gtceu:block/casings/steam/bronze/bottom", "gtceu:block/machines/compressor")
-
 })
 ```
+
 ### Lang
 
 ```json title="en_us.json"
