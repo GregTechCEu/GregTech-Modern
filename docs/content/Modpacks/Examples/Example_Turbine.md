@@ -11,6 +11,7 @@ In order to use multiblock logic extending beyond the normal WorkableElectricMul
 Below is an example of a multiblock using the CoilWorkableElectricMultiblockMachine class and the pyrolyseOvenOverclock machine logic.
 
 ### Multiblock
+
 ```js title="hyper_gas_turbine_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
     event.create('hyper_gas_turbine', 'multiblock').machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV))
@@ -35,10 +36,15 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 .where("F", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
    .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
    .where("G", Predicates.controller(Predicates.blocks(definition.get())))
-    .build())
-        .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel", "gtceu:block/multiblock/generator/large_gas_turbine")
+    .build()
+    )
+    .workableCasingModel(
+        "gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
+        "gtceu:block/multiblock/generator/large_gas_turbine"
+    )
 });
 ```
+
 ### Lang
 
 ```json title="en_us.json"
