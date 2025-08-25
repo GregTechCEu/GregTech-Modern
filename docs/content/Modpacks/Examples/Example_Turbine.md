@@ -4,7 +4,7 @@ title: "Example Turbine"
 
 ### Example Turbine
 
-In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. LargeTurbineMachines such as the gas and steam turbines use this class.
+In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. LargeTurbineMachines such as the gas, steam, and plasma turbines use this class.
 
 ```const $LargeTurbineMachine = Java.loadClass("com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine")```
 
