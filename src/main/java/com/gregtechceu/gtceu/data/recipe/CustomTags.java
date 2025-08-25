@@ -215,4 +215,6 @@ public class CustomTags {
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
+
+    public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 }

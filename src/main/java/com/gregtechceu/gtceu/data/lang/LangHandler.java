@@ -1570,6 +1570,18 @@ public class LangHandler {
                 "Example: {formatInt 1236457} -> 1.24M",
                 "Usage:",
                 "  {formatInt <arg>} -> string representation of the int");
+        multiLang(provider, "gtceu.placeholder_info.ender",
+                "Interacts with ender link covers",
+                "Can interact with private channels if provided with a data item bound to a player",
+                "Usage:",
+                "  {ender item <channel> [player_data_item_slot]} -> item count",
+                "  {ender fluid <channel> [player_data_item_slot]} -> fluid count",
+                "  {ender redstone <channel> [player_data_item_slot] -> redstone signal level",
+                "  {ender redstone <channel> <player_data_item_slot> <signal> -> sets the redstone signal outputed to the ender redstone link, returns empty string",
+                "The player_data_item_slot argument may be left empty (not 0, empty string)");
+        provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
+        provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
