@@ -87,7 +87,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         }
     }
 
-    public void updateActive(boolean active) {
+    public void setActive(boolean active) {
         MachineRenderState state = getRenderState();
         if (state.hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
             setRenderState(state.setValue(GTMachineModelProperties.IS_ACTIVE, active));
