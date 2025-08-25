@@ -43,7 +43,11 @@ public class BlockTagLoader {
 
         // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
         provider.addTag(CustomTags.MINEABLE_WITH_WRENCH)
-                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH);
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+                .add(Blocks.PISTON, Blocks.PISTON_HEAD, Blocks.STICKY_PISTON, Blocks.OBSERVER, Blocks.REDSTONE_LAMP,
+                        Blocks.REDSTONE_BLOCK, Blocks.IRON_DOOR, Blocks.IRON_TRAPDOOR,
+                        Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE,
+                        Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, Blocks.HOPPER);
         provider.addTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
                 .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
 
