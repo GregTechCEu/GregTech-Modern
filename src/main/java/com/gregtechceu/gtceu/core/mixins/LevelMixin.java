@@ -76,8 +76,7 @@ public abstract class LevelMixin implements LevelAccessor {
         if (!(((Object) this) instanceof ServerLevel serverLevel)) return;
 
         MultiblockWorldSavedData mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-        Set<MultiblockState> defensiveCopy = new HashSet<>(mwsd.getControllersInChunk(chunk.getPos()));
-        for (MultiblockState structure : defensiveCopy) {
+        for (MultiblockState structure : mwsd.getControllersInChunk(chunk.getPos())) {
             if (structure.isPosInCache(pos)) {
                 serverLevel.getServer().executeBlocking(() -> structure.onBlockStateChanged(pos, newState));
             }
