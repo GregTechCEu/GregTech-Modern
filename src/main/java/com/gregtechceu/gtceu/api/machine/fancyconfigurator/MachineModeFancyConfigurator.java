@@ -44,7 +44,7 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {
             int finalI = i;
             group.addWidget(new ButtonWidget(2, 2 + i * 20, 136, 20, IGuiTexture.EMPTY,
-                    cd -> machine.setActiveRecipeType(finalI)));
+                    cd -> machine.setActiveRecipeTypeAndUpdateTickSubs(finalI)));
             group.addWidget(new ImageWidget(2, 2 + i * 20, 136, 20,
                     () -> new GuiTextureGroup(
                             ResourceBorderTexture.BUTTON_COMMON.copy()
