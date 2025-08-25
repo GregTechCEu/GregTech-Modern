@@ -37,7 +37,8 @@ event.create('large_steam_compressor', 'multiblock')
    .where("G", Predicates.blocks("gtceu:bronze_machine_casing"))
    .where('H', Predicates.controller(Predicates.blocks(definition.get())))
         .build())
-    .workableCasingModel("gtceu:block/casings/steam/bronze/bottom", "gtceu:block/machines/compressor")
+    .workableCasingModel("gtceu:block/casings/steam/bronze/bottom",
+         "gtceu:block/machines/compressor")
 })
 ```
 
