@@ -2405,6 +2405,7 @@
   "gtceu.gui.item_voiding_partial.tooltip.disabled": "Item Voiding Disabled",
   "gtceu.gui.item_voiding_partial.tooltip.enabled": "Item Voiding Enabled",
   "gtceu.gui.machinemode": "Active Machine Mode: %s",
+  "gtceu.gui.machinemode.tab_tooltip": "Change active Machine Mode",
   "gtceu.gui.machinemode.title": "Active Machine Mode",
   "gtceu.gui.me_bus.auto_pull_button": "Click to toggle automatic item pulling from ME",
   "gtceu.gui.me_network.offline": "Network Status: §4Offline§r",

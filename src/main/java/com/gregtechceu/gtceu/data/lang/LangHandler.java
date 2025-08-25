@@ -1246,6 +1246,7 @@ public class LangHandler {
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
+        provider.add("gtceu.gui.machinemode.tab_tooltip", "Change active Machine Mode");
         provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
         provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
