@@ -35,7 +35,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Set the activeRecipeType, and if it changes, schedule the recipe logic.
      */
     default void setActiveRecipeTypeAndUpdateTickSubs(int activeRecipeType) {
-        boolean needUpdateTickSubs = activeRecipeType != getActiveRecipeType();
+        boolean needUpdateTickSubs = !keepSubscribing() && activeRecipeType != getActiveRecipeType();
         setActiveRecipeType(activeRecipeType);
         if (needUpdateTickSubs) {
             getRecipeLogic().updateTickSubscription();
