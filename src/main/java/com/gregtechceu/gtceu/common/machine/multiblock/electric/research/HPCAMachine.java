@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -204,11 +205,20 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             if (temperature >= DAMAGE_TEMPERATURE) {
                 hpcaHandler.attemptDamageHPCA();
             }
+            this.updateActive(hpcaHandler.getAllocatedCWUt() > 0);
             hpcaHandler.tick();
         } else {
             hpcaHandler.clearComputationCache();
+            this.updateActive(false);
             // passively cool (slowly) if not active
             temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
+        }
+    }
+
+    private void updateActive(boolean active) {
+        for (var part : getParts()) {
+            if (!(part instanceof HPCAComponentPartMachine hpcaPart)) continue;
+            hpcaPart.updateActive(active);
         }
     }
 
