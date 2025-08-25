@@ -44,7 +44,7 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {
             int finalI = i;
             group.addWidget(new ButtonWidget(2, 2 + i * 20, 136, 20, IGuiTexture.EMPTY,
-                    cd -> machine.setActiveRecipeTypeAndUpdateTickSubs(finalI)));
+                    cd -> setActiveRecipeTypeAndUpdateTickSubs(finalI)));
             group.addWidget(new ImageWidget(2, 2 + i * 20, 136, 20,
                     () -> new GuiTextureGroup(
                             ResourceBorderTexture.BUTTON_COMMON.copy()
@@ -61,6 +61,14 @@ public class MachineModeFancyConfigurator implements IFancyUIProvider {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.literal("Change active Machine Mode"));
         return tooltip;
+    }
+
+    private void setActiveRecipeTypeAndUpdateTickSubs(int activeRecipeType) {
+        boolean needUpdateTickSubs = !machine.keepSubscribing() && activeRecipeType != machine.getActiveRecipeType();
+        machine.setActiveRecipeType(activeRecipeType);
+        if (needUpdateTickSubs) {
+            machine.getRecipeLogic().updateTickSubscription();
+        }
     }
 
     public class MachineModeConfigurator extends WidgetGroup {
