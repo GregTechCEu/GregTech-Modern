@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ToolAction;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +36,11 @@ public class TreeFellingBehavior implements IToolBehavior {
     public static final TreeFellingBehavior INSTANCE = new TreeFellingBehavior();
 
     protected TreeFellingBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == GTToolActions.AXE_FELL_TREE;
+    }
 
     @Override
     public void addBehaviorNBT(ItemStack stack, CompoundTag tag) {

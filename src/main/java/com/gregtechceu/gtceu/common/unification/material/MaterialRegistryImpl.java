@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class MaterialRegistryImpl extends MaterialRegistry {
 
@@ -46,7 +45,7 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     @NotNull
     @Override
     public Collection<Material> getAllMaterials() {
-        return Collections.unmodifiableCollection(this.registry.values());
+        return this.values();
     }
 
     @Override

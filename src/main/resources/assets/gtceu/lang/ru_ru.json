@@ -2855,7 +2855,7 @@
     "recipe.condition.eu_to_start.tooltip": "Запуск: %d EU",
     "recipe.condition.pos_y.tooltip": "Высота Y: %d <= Y <= %d",
     "recipe.condition.rain.tooltip": "Уровень дождя: %d",
-    "recipe.condition.rock_breaker.tooltip": "Блоки жидкости вокруг",
+    "recipe.condition.adjacent_fluid.tooltip": "Блоки жидкости вокруг",
     "recipe.condition.steam_vent.tooltip": "Очистите пароотвод",
     "recipe.condition.thunder.tooltip": "Уровень грозы: %d",
     "tagprefix.andesite": "%s (Андезитовая руда)",

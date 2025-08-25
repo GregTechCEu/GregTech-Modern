@@ -42,6 +42,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -863,6 +865,44 @@ public interface GTRecipeSchema {
             return environmentalHazard(condition, false);
         }
 
+        public GTRecipeJS adjacentFluid(Fluid... fluids) {
+            return adjacentFluid(false, fluids);
+        }
+
+        public GTRecipeJS adjacentFluid(boolean isReverse, Fluid... fluids) {
+            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentFluid(ResourceLocation... tagNames) {
+            return adjacentFluid(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.FLUID, id))
+                    .toList();
+            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlock(Block... blocks) {
+            return adjacentBlock(false, blocks);
+        }
+
+        public GTRecipeJS adjacentBlock(boolean isReverse, Block... blocks) {
+            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlock(ResourceLocation... tagNames) {
+            return adjacentBlock(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Block>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.BLOCK, id))
+                    .toList();
+            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+        }
+
         public GTRecipeJS daytime(boolean isNight) {
             return addCondition(new DaytimeCondition().setReverse(isNight));
         }
@@ -968,7 +1008,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -990,7 +1030,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
