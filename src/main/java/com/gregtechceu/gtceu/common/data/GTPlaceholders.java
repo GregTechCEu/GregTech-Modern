@@ -438,6 +438,7 @@ public class GTPlaceholders {
                     out.append(args.get(i));
                     if (i != args.size() - 1) out.append(" ");
                 }
+                out.setIgnoreSpaces(true);
                 return out;
             }
         });

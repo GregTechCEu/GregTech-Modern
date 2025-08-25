@@ -111,24 +111,28 @@ public class PlaceholderHandler {
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
                             MultiLineComponent result = processPlaceholder(placeholder, ctx);
-                            for (int i = 0; i < result.size(); i++) {
-                                MutableComponent component = result.get(i);
-                                component.visit((style, string) -> {
-                                    String[] split = string.split(String.valueOf(ARG_SEPARATOR));
-                                    for (int j = 0; j < split.length; j++) {
-                                        String idk = split[j];
-                                        GTUtil.getLast(stack.peek())
-                                                .append(MultiLineComponent.literal(idk).withStyle(style));
-                                        if (j == split.length - 1) continue;
-                                        if (stack.size() == 1) {
-                                            GTUtil.getLast(stack.peek()).append(ARG_SEPARATOR);
-                                        } else {
-                                            stack.peek().add(MultiLineComponent.empty());
+                            if (result.isIgnoreSpaces()) {
+                                GTUtil.getLast(stack.peek()).append(result);
+                            } else {
+                                for (int i = 0; i < result.size(); i++) {
+                                    MutableComponent component = result.get(i);
+                                    component.visit((style, string) -> {
+                                        String[] split = string.split(String.valueOf(ARG_SEPARATOR));
+                                        for (int j = 0; j < split.length; j++) {
+                                            String idk = split[j];
+                                            GTUtil.getLast(stack.peek())
+                                                    .append(MultiLineComponent.literal(idk).withStyle(style));
+                                            if (j == split.length - 1) continue;
+                                            if (stack.size() == 1) {
+                                                GTUtil.getLast(stack.peek()).append(ARG_SEPARATOR);
+                                            } else {
+                                                stack.peek().add(MultiLineComponent.empty());
+                                            }
                                         }
-                                    }
-                                    return Optional.empty();
-                                }, component.getStyle());
-                                if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
+                                        return Optional.empty();
+                                    }, component.getStyle());
+                                    if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
+                                }
                             }
                         } catch (PlaceholderException e) {
                             e.setLineInfo(line, symbol);

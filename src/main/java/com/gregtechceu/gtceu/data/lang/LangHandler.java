@@ -1572,7 +1572,11 @@ public class LangHandler {
                 "Usage:",
                 "  {formatInt <arg>} -> string representation of the int");
         multiLang(provider, "gtceu.placeholder_info.click",
-                "Returns whether the targeted advanced monitor was clicked before the current tick");
+                "Returns whether the targeted advanced monitor was clicked before the current tick",
+                "Usage:",
+                "  {click} -> \"1\" if the targeted advanced monitor was clicked, \"0\" otherwise",
+                "  {click x} -> the x position of the last click (between 0 and 1)",
+                "  {click y} -> the y position of the last click (between 0 and 1)");
         multiLang(provider, "gtceu.placeholder_info.ender",
                 "Interacts with ender link covers",
                 "Can interact with private channels if provided with a data item bound to a player",
