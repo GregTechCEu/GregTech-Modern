@@ -27,8 +27,6 @@ import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +34,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -54,6 +53,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import lombok.Getter;
@@ -1362,31 +1362,11 @@ public class GTRecipeBuilder {
     }
 
     public void toJson(JsonObject json) {
-        json.addProperty("type", recipeType.registryName.toString());
-        json.addProperty("duration", Math.abs(duration));
-        if (data != null && !data.isEmpty()) {
-            json.add("data", NBTToJsonConverter.getObject(data));
-        }
-        json.add("inputs", capabilitiesToJson(input));
-        json.add("outputs", capabilitiesToJson(output));
-        json.add("tickInputs", capabilitiesToJson(tickInput));
-        json.add("tickOutputs", capabilitiesToJson(tickOutput));
-
-        json.add("inputChanceLogics", chanceLogicsToJson(inputChanceLogic));
-        json.add("outputChanceLogics", chanceLogicsToJson(outputChanceLogic));
-        json.add("tickInputChanceLogics", chanceLogicsToJson(tickInputChanceLogic));
-        json.add("tickOutputChanceLogics", chanceLogicsToJson(tickOutputChanceLogic));
-
-        json.addProperty("category", recipeCategory.registryKey.toString());
-
-        if (!conditions.isEmpty()) {
-            JsonArray array = new JsonArray();
-            for (RecipeCondition condition : conditions) {
-                var condJson = condition.serialize();
-                condJson.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
-                array.add(condJson);
-            }
-            json.add("recipeConditions", array);
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        JsonObject serialized = GTRecipeSerializer.CODEC.encodeStart(ops, buildRawRecipe())
+                .getOrThrow(false, GTCEu.LOGGER::error).getAsJsonObject();
+        for (String key : serialized.keySet()) {
+            json.add(key, serialized.get(key));
         }
     }
 
