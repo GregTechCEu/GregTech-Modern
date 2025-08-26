@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -17,9 +15,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
+
+import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -38,10 +37,6 @@ public class InputSeparationTest {
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 // NBT has a schematic in it with an HV energy input hatch
                 .buildRawRecipe());
-    }
-
-    private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
@@ -140,11 +135,11 @@ public class InputSeparationTest {
         busHolder.inputBus2.setPaintingColor(DyeColor.BLUE.getTextColor());
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.ACACIA_WOOD));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertTrue(busHolder.outputBus1.getInventory().getStackInSlot(0).isEmpty(),
                     "Crafting items in busses with different colors succeeded but shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for putting both ingredients in 2 busses with one distinct.
@@ -154,11 +149,11 @@ public class InputSeparationTest {
         busHolder.inputBus1.setDistinct(true);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.ACACIA_WOOD));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertTrue(busHolder.outputBus1.getInventory().getStackInSlot(0).isEmpty(),
                     "Crafting items in busses with distinct succeeded but shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for putting both ingredients in 2 busses with both distinct.
@@ -169,11 +164,11 @@ public class InputSeparationTest {
         busHolder.inputBus2.setDistinct(true);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.ACACIA_WOOD));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertTrue(busHolder.outputBus1.getInventory().getStackInSlot(0).isEmpty(),
                     "Crafting items in busses with distinct succeeded but shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for putting both ingredients in 2 busses with two distinct and dyed different colors.
@@ -186,11 +181,11 @@ public class InputSeparationTest {
         busHolder.inputBus2.setPaintingColor(DyeColor.BLUE.getTextColor());
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.ACACIA_WOOD));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertTrue(busHolder.outputBus1.getInventory().getStackInSlot(0).isEmpty(),
                     "Crafting items in busses with distinct succeeded but shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for putting both ingredients in 2 busses with one distinct and one colored.
@@ -201,10 +196,10 @@ public class InputSeparationTest {
         busHolder.inputBus2.setPaintingColor(DyeColor.BLUE.getTextColor());
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.ACACIA_WOOD));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertTrue(busHolder.outputBus1.getInventory().getStackInSlot(0).isEmpty(),
                     "Crafting items in busses with distinct succeeded but shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 }

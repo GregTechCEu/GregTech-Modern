@@ -56,12 +56,12 @@ public class ItemBusPartMachineTest {
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(TestUtils.isItemStackEqual(
                     itemBus.getInventory().getStackInSlot(0),
                     new ItemStack(Blocks.STONE, 16)), "Input bus automatically imported when off");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for output busses auto exporting
@@ -96,12 +96,12 @@ public class ItemBusPartMachineTest {
         itemBus.setFrontFacing(Direction.DOWN);
         itemBus.setWorkingEnabled(false);
         itemBus.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(TestUtils.isItemStackEqual(
                     crate.inventory.getStackInSlot(0),
                     new ItemStack(Blocks.STONE, 16)), "Export bus automatically exported when off");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for passthrough busses auto passthrough'ing
@@ -140,12 +140,14 @@ public class ItemBusPartMachineTest {
         CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 3, 0)))
                 .getMetaMachine();
         itemBus.setFrontFacing(Direction.DOWN);
+        itemBus.setWorkingEnabled(false);
         crate.inventory.setStackInSlot(0, new ItemStack(Blocks.STONE, 16));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(TestUtils.isItemStackEqual(
                     crate2.inventory.getStackInSlot(0),
-                    new ItemStack(Blocks.STONE, 16)), "Passthrough bus didn't automatically export");
+                    new ItemStack(Blocks.STONE, 16)),
+                    "Passthrough bus automatically exported when they shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 }

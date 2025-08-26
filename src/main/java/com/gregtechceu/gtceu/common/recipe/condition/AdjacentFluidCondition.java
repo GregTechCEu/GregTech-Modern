@@ -101,6 +101,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
 
         for (BlockPos offset : GTUtil.NON_CORNER_NEIGHBOURS) {
             FluidState fluid = level.getFluidState(pos.offset(offset));
+            if (!fluid.isSource()) continue;
             for (var it = remainingFluids.iterator(); it.hasNext();) {
                 if (fluid.is(it.next())) {
                     it.remove();
