@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
@@ -17,7 +16,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -68,10 +67,6 @@ public class MultipleEnergyHatchTest {
                 .EUt(GTValues.V[GTValues.LuV])
                 .duration(16)
                 .buildRawRecipe());
-    }
-
-    private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus, ItemBusPartMachine outputBus,
