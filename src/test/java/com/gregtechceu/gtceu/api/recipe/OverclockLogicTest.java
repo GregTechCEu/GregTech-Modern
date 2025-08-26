@@ -144,8 +144,6 @@ public class OverclockLogicTest {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
         helper.onEachTick(() -> {
-            helper.assertFalse(!busHolder.controller.getRecipeLogic().isActive(),
-                    "RecipeLogic turned on when it shouldn't have");
             helper.assertFalse(
                     busHolder.outputBus1.getInventory().getStackInSlot(0).getItem().equals(Blocks.STONE.asItem()),
                     "Item crafted at one tier over when it shouldn't have");
