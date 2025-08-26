@@ -35,7 +35,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
                 .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
             .where("D", Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
             .where("F", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
-             .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
+            .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
             .where("G", Predicates.controller(Predicates.blocks(definition.get())))
             .build())
         .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
