@@ -20,7 +20,6 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.util.HashSet;
@@ -66,55 +65,6 @@ public class GTRecipeSerializerTest {
         helper.succeed();
     }
 
-    private static final Codec<HolderSet<Fluid>> FLUID_SET_CODEC = net.minecraft.core.RegistryCodecs
-            .homogeneousList(Registries.FLUID);
-
-    @GameTest(template = "empty_5x5")
-    public static void GPT_tests(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Create a HolderSet with a direct fluid (water)
-        HolderSet<Fluid> directSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-
-        // Serialize to JSON
-        JsonElement json = FLUID_SET_CODEC.encodeStart(ops, directSet)
-                .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized direct fluid: " + json);
-
-        // Deserialize back
-        HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assert round-trip works
-        helper.assertTrue(decoded.contains(Fluids.WATER.builtInRegistryHolder()), "a");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void GPT_tests_2(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Create a HolderSet with a tag (forge:water)
-        TagKey<Fluid> waterTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "water"));
-        HolderSet<Fluid> tagSet = GTRegistries.builtinRegistry().registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(waterTag);
-
-        // Serialize to JSON
-        JsonElement json = FLUID_SET_CODEC.encodeStart(ops, tagSet)
-                .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized tag fluid: " + json);
-
-        // Deserialize back
-        HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assert round-trip works
-        helper.assertTrue(decoded.unwrapKey().isPresent() && decoded.unwrapKey().get().equals(waterTag), "b");
-        helper.succeed();
-    }
-
     @GameTest(template = "empty_5x5")
     public static void testAdjacentFluidConditionRoundTrip(GameTestHelper helper) {
         // RegistryOps with builtin registry
@@ -132,8 +82,6 @@ public class GTRecipeSerializerTest {
         // Serialize to JSON
         JsonElement json = AdjacentFluidCondition.CODEC.encodeStart(ops, original)
                 .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized AdjacentFluidCondition: " + json);
 
         // Deserialize back
         AdjacentFluidCondition decoded = AdjacentFluidCondition.CODEC.parse(ops, json)
@@ -163,7 +111,6 @@ public class GTRecipeSerializerTest {
         // Serialize
         JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
                 .getOrThrow(false, System.err::println);
-        System.out.println("Direct fluid JSON: " + json);
 
         // Deserialize
         List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
@@ -188,7 +135,6 @@ public class GTRecipeSerializerTest {
         // Serialize
         JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
                 .getOrThrow(false, System.err::println);
-        System.out.println("Tag fluid JSON: " + json);
 
         // Deserialize
         List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
@@ -218,7 +164,6 @@ public class GTRecipeSerializerTest {
         // Serialize
         JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
                 .getOrThrow(false, System.err::println);
-        System.out.println("Mixed fluid JSON: " + json);
 
         // Deserialize
         List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
@@ -247,7 +192,6 @@ public class GTRecipeSerializerTest {
 
         // Serialize using the condition's custom serialize()
         JsonObject json = original.serialize();
-        System.out.println("Condition.serialize() JSON: " + json);
 
         // Now parse the entire object with the CODEC
         AdjacentFluidCondition decoded = AdjacentFluidCondition.CODEC.parse(ops, json)
