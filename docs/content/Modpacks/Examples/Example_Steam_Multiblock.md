@@ -19,7 +19,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
         .recipeType('compressor')
         .recipeModifier((machine, recipe) => $SteamMulti.recipeModifier(machine, recipe), true)
         .machine((holder) => new $SteamMulti(holder, 4))
-        //The number in holder is the max amount of parallel it can use.
+        // The number in holder is the max amount of parallel it can use.
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("BCCCB", "BBCBB", "BBCBB", "BBBBB", "BBBBB")
             .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
