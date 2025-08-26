@@ -15,11 +15,11 @@ Below is an example of a multiblock using the SteamParallelMultiblockMachine cla
 ```js title="example_steam_multiblock_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
     event.create('large_steam_compressor', 'multiblock')
-        .machine((holder) => new $SteamMulti(holder, 4))
-        //The number in holder is the max amount of parallel it can use.
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeType('compressor')
         .recipeModifier((machine, recipe) => $SteamMulti.recipeModifier(machine, recipe), true)
+        .machine((holder) => new $SteamMulti(holder, 4))
+        //The number in holder is the max amount of parallel it can use.
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("BCCCB", "BBCBB", "BBCBB", "BBBBB", "BBBBB")
             .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
