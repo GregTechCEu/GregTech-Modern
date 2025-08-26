@@ -178,18 +178,15 @@ ServerEvents.recipes(event => {
 
 ### Rock breaker fluids
 
-By default, rock breaker recipes have an AdjacentFluidCondition of Water and Lava.
+Rock breaker recipes use AdjacentFluidConditions.
 
-If there are other fluids besides Lava and Water you need to use the `adjacentFluid(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
-
-To remove the Water and Lava conditions, you can use `.removeAdjacentFluids()` before adding your own conditions.
+To add a condition, you can use the `adjacentFluid(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
 ```js title="rock_breaker.js"
 ServerEvents.recipes(event => {
     event.recipes.gtceu.rock_breaker('rhino_jank')
         .notConsumable('minecraft:dirt')
         .itemOutputs('minecraft:dirt')
-        .removeAdjacentFluids()
         .adjacentFluid('minecraft:water')
         .adjacentFluid('minecraft:lava')
         .duration(16)
