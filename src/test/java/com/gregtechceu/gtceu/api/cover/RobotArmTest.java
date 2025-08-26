@@ -42,19 +42,18 @@ public class RobotArmTest {
         crate2.getCoverContainer().setCoverAtSide(
                 ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
         RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
+        cover.onLoad();
         // Set the cover to import from crate1 to crate2 exactly 7 items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.KEEP_EXACT);
         cover.setGlobalTransferLimit(7);
 
-        helper.succeedOnTickWhen(2, () -> {
+        helper.runAtTickTime(20, () -> {
             helper.assertTrue(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 7)),
                     "Conveyor didn't transfer right amount of items");
             helper.succeed();
         });
-
-        helper.succeed();
     }
 
     // Test for seeing if robot arm transfers correct amount when using transfer exact
@@ -70,19 +69,18 @@ public class RobotArmTest {
         crate2.getCoverContainer().setCoverAtSide(
                 ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
         RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
+        cover.onLoad();
         // Set the cover to import from crate1 to crate2 exactly 7 items 2 times
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_EXACT);
         cover.setGlobalTransferLimit(7);
 
-        helper.succeedOnTickWhen(2, () -> {
+        helper.runAtTickTime(40, () -> {
             helper.assertTrue(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 14)),
                     "Conveyor didn't transfer right amount of items");
             helper.succeed();
         });
-
-        helper.succeed();
     }
 
     // Test for seeing if robot arm transfers all items when using transfer any
@@ -98,18 +96,17 @@ public class RobotArmTest {
         crate2.getCoverContainer().setCoverAtSide(
                 ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
         RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
+        cover.onLoad();
         // Set the cover to import from crate1 to crate2 all items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_ANY);
         cover.setGlobalTransferLimit(13); // arbitrary amount, if the cover works correctly it shouldn't matter
 
-        helper.succeedOnTickWhen(2, () -> {
+        helper.runAtTickTime(40, () -> {
             helper.assertTrue(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Conveyor didn't transfer right amount of items");
             helper.succeed();
         });
-
-        helper.succeed();
     }
 }
