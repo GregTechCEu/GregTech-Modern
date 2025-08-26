@@ -14,7 +14,8 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 
 ```js title="hyper_gas_turbine_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('hyper_gas_turbine', 'multiblock').machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV))
+    event.create('hyper_gas_turbine', 'multiblock')
+        .machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV))
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeTypes("gas_turbine")
         .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
