@@ -30,9 +30,9 @@ public class ProspectingBehavior implements IToolBehavior {
     public @NotNull InteractionResult onItemUse(UseOnContext context) {
         if (context.getItemInHand().getItem() instanceof IGTTool tool) {
             int tier = tool.getTotalHarvestLevel(context.getItemInHand());
-            int depth = tier * 2 + 1;
+            int depth = tool.getProspectingDepth();
             findOres(context.getLevel(), context.getClickedPos(), context.getClickedFace(), depth).forEach(c -> {
-                if (context.getPlayer() != null)
+                if (context.getPlayer() != null && context.getLevel().isClientSide())
                     context.getPlayer().sendSystemMessage(c);
             });
             return InteractionResult.SUCCESS;
