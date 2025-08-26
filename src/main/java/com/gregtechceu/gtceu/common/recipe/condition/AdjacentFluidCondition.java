@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.google.gson.JsonArray;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -140,12 +140,10 @@ public class AdjacentFluidCondition extends RecipeCondition {
         return this.fluids;
     }
 
-
     @Override
     public RecipeCondition createTemplate() {
         return new AdjacentFluidCondition();
     }
-
 
     // Not in use, maybe delete if this ends up not needed
     private static JsonElement expandShorthand(JsonElement element) {
@@ -170,7 +168,6 @@ public class AdjacentFluidCondition extends RecipeCondition {
         return element;
     }
 
-
     @NotNull
     @Override
     public JsonObject serialize() {
@@ -184,14 +181,12 @@ public class AdjacentFluidCondition extends RecipeCondition {
         return config;
     }
 
-
-
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         var optionalList = FLUID_CODEC.parse(ops, config.get("fluids"));
-        if(optionalList.result().isPresent()){
+        if (optionalList.result().isPresent()) {
             this.fluids = optionalList.result().get();
         } else {
             GTCEu.LOGGER.error("Failed deserializing AdjacentFluidCondition");
