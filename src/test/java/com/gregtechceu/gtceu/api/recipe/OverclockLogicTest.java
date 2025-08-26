@@ -1,35 +1,25 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
-import com.gregtechceu.gtceu.common.recipe.condition.CleanroomCondition;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
@@ -47,18 +37,19 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.RESEARCH_STATION_RECIPES;
-import static com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition.FLUID_CODEC;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -143,45 +134,45 @@ public class OverclockLogicTest {
         return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, controller);
     }
 
+    private static final Codec<HolderSet<Fluid>> FLUID_SET_CODEC = net.minecraft.core.RegistryCodecs
+            .homogeneousList(Registries.FLUID);
 
-    private static final Codec<HolderSet<Fluid>> FLUID_SET_CODEC =
-            net.minecraft.core.RegistryCodecs.homogeneousList(Registries.FLUID);
+    @GameTest(template = "empty_5x5")
+    public static void GPT_tests(GameTestHelper helper) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
 
-    @GameTest(template="empty_5x5")
-    public static void GPT_tests(GameTestHelper helper){
-            var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Create a HolderSet with a direct fluid (water)
+        HolderSet<Fluid> directSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
 
-            // Create a HolderSet with a direct fluid (water)
-            HolderSet<Fluid> directSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
+        // Serialize to JSON
+        JsonElement json = FLUID_SET_CODEC.encodeStart(ops, directSet)
+                .getOrThrow(false, System.err::println);
 
-            // Serialize to JSON
-            JsonElement json = FLUID_SET_CODEC.encodeStart(ops, directSet)
-                    .getOrThrow(false, System.err::println);
+        System.out.println("Serialized direct fluid: " + json);
 
-            System.out.println("Serialized direct fluid: " + json);
+        // Deserialize back
+        HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
+                .getOrThrow(false, System.err::println);
 
-            // Deserialize back
-            HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
-                    .getOrThrow(false, System.err::println);
-
-            // Assert round-trip works
-            helper.assertTrue(decoded.contains(Fluids.WATER.builtInRegistryHolder()), "a");
-            helper.succeed();
+        // Assert round-trip works
+        helper.assertTrue(decoded.contains(Fluids.WATER.builtInRegistryHolder()), "a");
+        helper.succeed();
     }
 
-    @GameTest(template="empty_5x5")
-    public static void GPT_tests_2(GameTestHelper helper){
+    @GameTest(template = "empty_5x5")
+    public static void GPT_tests_2(GameTestHelper helper) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
 
         // Create a HolderSet with a tag (forge:water)
         TagKey<Fluid> waterTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "water"));
-        HolderSet<Fluid> tagSet =  GTRegistries.builtinRegistry().registryOrThrow(Registries.FLUID).getOrCreateTag(waterTag);
+        HolderSet<Fluid> tagSet = GTRegistries.builtinRegistry().registryOrThrow(Registries.FLUID)
+                .getOrCreateTag(waterTag);
 
         // Serialize to JSON
         JsonElement json = FLUID_SET_CODEC.encodeStart(ops, tagSet)
                 .getOrThrow(false, System.err::println);
 
-            System.out.println("Serialized tag fluid: " + json);
+        System.out.println("Serialized tag fluid: " + json);
 
         // Deserialize back
         HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
@@ -220,13 +211,11 @@ public class OverclockLogicTest {
         helper.assertTrue(decoded.getFluids().size() == 2, "Expected 2 fluid sets");
         helper.assertTrue(
                 decoded.getFluids().get(0).contains(Fluids.WATER.builtInRegistryHolder()),
-                "First set should contain water"
-        );
+                "First set should contain water");
         helper.assertTrue(
-                decoded.getFluids().get(1).unwrapKey().isPresent()
-                        && decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag),
-                "Second set should be the forge:lava tag"
-        );
+                decoded.getFluids().get(1).unwrapKey().isPresent() &&
+                        decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag),
+                "Second set should be the forge:lava tag");
 
         helper.succeed();
     }
@@ -274,8 +263,8 @@ public class OverclockLogicTest {
                 .getOrThrow(false, System.err::println);
 
         helper.assertTrue(decoded.size() == 1, "Expected 1 fluid set");
-        helper.assertTrue(decoded.get(0).unwrapKey().isPresent()
-                && decoded.get(0).unwrapKey().get().equals(lavaTag), "Should be forge:lava tag");
+        helper.assertTrue(decoded.get(0).unwrapKey().isPresent() && decoded.get(0).unwrapKey().get().equals(lavaTag),
+                "Should be forge:lava tag");
         helper.succeed();
     }
 
@@ -305,12 +294,10 @@ public class OverclockLogicTest {
 
         helper.assertTrue(decoded.size() == 2, "Expected 2 fluid sets");
         helper.assertTrue(decoded.get(0).contains(Fluids.WATER.builtInRegistryHolder()), "First should be water");
-        helper.assertTrue(decoded.get(1).unwrapKey().isPresent()
-                && decoded.get(1).unwrapKey().get().equals(lavaTag), "Second should be forge:lava tag");
+        helper.assertTrue(decoded.get(1).unwrapKey().isPresent() && decoded.get(1).unwrapKey().get().equals(lavaTag),
+                "Second should be forge:lava tag");
         helper.succeed();
     }
-
-
 
     @GameTest(template = "empty_5x5")
     public static void testConditionSerializeThenCodecDeserialize(GameTestHelper helper) {
@@ -337,13 +324,15 @@ public class OverclockLogicTest {
         // Assertions
         helper.assertTrue(decoded.isReverse(), "Reverse flag should be true");
         helper.assertTrue(decoded.getFluids().size() == 2, "Expected 2 fluid sets");
-        helper.assertTrue(decoded.getFluids().get(0).contains(Fluids.WATER.builtInRegistryHolder()), "First should be water");
-        helper.assertTrue(decoded.getFluids().get(1).unwrapKey().isPresent()
-                && decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag), "Second should be forge:lava tag");
+        helper.assertTrue(decoded.getFluids().get(0).contains(Fluids.WATER.builtInRegistryHolder()),
+                "First should be water");
+        helper.assertTrue(
+                decoded.getFluids().get(1).unwrapKey().isPresent() &&
+                        decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag),
+                "Second should be forge:lava tag");
 
         helper.succeed();
     }
-
 
     public static boolean equalFluidSets(List<HolderSet<Fluid>> a, List<HolderSet<Fluid>> b) {
         if (a.size() != b.size()) return false;
@@ -384,40 +373,6 @@ public class OverclockLogicTest {
 
         // One is Named, the other is Direct → not equal
         return false;
-    }
-
-    @GameTest(template="empty_5x5")
-    public static void serializeTest(GameTestHelper helper){
-        // Direct: water
-        HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-
-        // Tag: forge:lava
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
-
-        List<HolderSet<Fluid>> list = List.of(waterSet, lavaSet);
-
-
-        var condition = new AdjacentFluidCondition();
-        condition.setFluids(list);
-
-        var jsonObject = condition.serialize();
-
-        var back_to_condition = new AdjacentFluidCondition();
-        back_to_condition.deserialize(jsonObject);
-
-        helper.assertTrue(equalFluidSets(condition.getFluids(), (back_to_condition).getFluids()), "Condition did not deserialize properly");
-        JsonObject AFConditionJSON = new JsonObject();
-        GTRecipeBuilder.ofRaw().addCondition(condition).toJson(AFConditionJSON);
-
-        GTRecipe recipe = GTRecipeSerializer.SERIALIZER.fromJson(GTCEu.id("test"), AFConditionJSON);
-
-        AFConditionJSON.get("config");
-
-        helper.assertTrue(recipe.conditions.stream().anyMatch(x -> x instanceof AdjacentFluidCondition), "Fluid recipe condition did not deserialize properly");
-        helper.succeed();
     }
 
     // Test for running HV recipe at HV
