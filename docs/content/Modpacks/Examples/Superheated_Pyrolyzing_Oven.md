@@ -15,9 +15,10 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 GTCEuStartupEvents.registry('gtceu:machine', event => {
     event.create("superheated_pyrolyzing_oven", "multiblock")
         .rotationState(RotationState.NON_Y_AXIS)
-        .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
         .recipeTypes('pyrolyse_oven')
-        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT,GTRecipeModifiers.BATCH_MODE, (machine, recipe) => GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)])
+        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT,GTRecipeModifiers.BATCH_MODE, (machine, recipe) =>
+        .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
+        GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)])
         .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
         .pattern(definition => FactoryBlockPattern.start()
             .aisle("BBCCCBB", "BBCDCBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
