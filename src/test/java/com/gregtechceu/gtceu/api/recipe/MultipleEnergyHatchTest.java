@@ -146,13 +146,13 @@ public class MultipleEnergyHatchTest {
         checkContainerList(helper, busHolder, List.of(new Hatch(MV, 2), new Hatch(EV, 2)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     @GameTest(template = "energy/lcr_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
@@ -178,13 +178,13 @@ public class MultipleEnergyHatchTest {
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
         // One tick to start, 16 for the recipe to run
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     @GameTest(template = "energy/lcr_2x_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
@@ -241,13 +241,13 @@ public class MultipleEnergyHatchTest {
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 4)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     @GameTest(template = "energy/lcr_16a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
@@ -272,13 +272,13 @@ public class MultipleEnergyHatchTest {
         checkContainerList(helper, busHolder, List.of(new Hatch(EV, 16)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     @GameTest(template = "energy/lcr_16a_ev_hv", batch = "MultipleEnergyHatch", setupTicks = 10L)
@@ -303,13 +303,13 @@ public class MultipleEnergyHatchTest {
         checkContainerList(helper, busHolder, List.of(new Hatch(HV, 2), new Hatch(EV, 16)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.BROWN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     @GameTest(template = "energy/lcr_16a_4a_ev", batch = "MultipleEnergyHatch", setupTicks = 10L)
@@ -366,12 +366,12 @@ public class MultipleEnergyHatchTest {
         checkContainerList(helper, busHolder, List.of(new Hatch(IV, 2), new Hatch(EV, 16)));
 
         busHolder.inputBus.getInventory().setStackInSlot(0, new ItemStack(Items.GREEN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(busHolder.outputBus.getInventory().getStackInSlot(0),
                             new ItemStack(Items.GREEN_BED)),
                     "Item crafted when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 }
