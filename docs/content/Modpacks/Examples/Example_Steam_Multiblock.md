@@ -12,7 +12,7 @@ Below is an example of a multiblock using the SteamParallelMultiblockMachine cla
 
 ### Multiblock
 
-```js title="superheated_pyrolyzing_oven_multiblock.js"
+```js title="example_steam_multiblock_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
     event.create('large_steam_compressor', 'multiblock')
         .machine((holder) => new $SteamMulti(holder, 4))
