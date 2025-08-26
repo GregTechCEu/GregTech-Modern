@@ -90,9 +90,8 @@ public class AdjacentFluidConditionTest {
 
         itemIn.setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         helper.onEachTick(() -> {
-            helper.assertFalse(TestUtils.isItemStackEqual(
-                    itemOut.getStackInSlot(0),
-                    new ItemStack(Blocks.STONE, 1)),
+            helper.assertTrue(
+                    itemOut.isEmpty(),
                     "Singleblock Rock Breaker ran recipe without fluid present");
         });
         TestUtils.succeedAfterTest(helper);
@@ -115,9 +114,8 @@ public class AdjacentFluidConditionTest {
         itemIn.setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         // 1t to turn on, 8t to run the recipe
         helper.onEachTick(() -> {
-            helper.assertFalse(TestUtils.isItemStackEqual(
-                    itemOut.getStackInSlot(0),
-                    new ItemStack(Blocks.STONE, 1)),
+            helper.assertTrue(
+                    itemOut.isEmpty(),
                     "Singleblock Rock Breaker ran recipe with wrong fluid present");
         });
         TestUtils.succeedAfterTest(helper);
@@ -164,9 +162,8 @@ public class AdjacentFluidConditionTest {
 
         itemIn.setStackInSlot(0, new ItemStack(Items.OAK_WOOD));
         helper.onEachTick(() -> {
-            helper.assertFalse(TestUtils.isItemStackEqual(
-                    itemOut.getStackInSlot(0),
-                    new ItemStack(Items.CHARCOAL, 1)),
+            helper.assertTrue(
+                    itemOut.isEmpty(),
                     "Singleblock Rock Breaker ran with only 1 of 2 fluids present");
         });
         TestUtils.succeedAfterTest(helper);
@@ -188,9 +185,8 @@ public class AdjacentFluidConditionTest {
 
         itemIn.setStackInSlot(0, new ItemStack(Items.OAK_WOOD));
         helper.onEachTick(() -> {
-            helper.assertFalse(TestUtils.isItemStackEqual(
-                    itemOut.getStackInSlot(0),
-                    new ItemStack(Items.CHARCOAL, 1)),
+            helper.assertTrue(
+                    itemOut.isEmpty(),
                     "Singleblock Rock Breaker ran with only 1 of 2 fluids present");
         });
         TestUtils.succeedAfterTest(helper);
@@ -210,9 +206,8 @@ public class AdjacentFluidConditionTest {
 
         itemIn.setStackInSlot(0, new ItemStack(Items.OAK_WOOD));
         helper.onEachTick(() -> {
-            helper.assertFalse(TestUtils.isItemStackEqual(
-                    itemOut.getStackInSlot(0),
-                    new ItemStack(Items.CHARCOAL, 1)),
+            helper.assertTrue(
+                    itemOut.isEmpty(),
                     "Singleblock Rock Breaker ran with no fluids present");
         });
         TestUtils.succeedAfterTest(helper);
