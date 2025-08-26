@@ -44,8 +44,7 @@ public class GTRecipeSerializerTest {
 
         var jsonObject = condition.serialize();
 
-        var back_to_condition = new AdjacentFluidCondition();
-        back_to_condition.deserialize(jsonObject);
+        var back_to_condition = (AdjacentFluidCondition) RecipeCondition.deserialize(jsonObject);
 
         helper.assertTrue(equalFluidSets(condition.getFluids(), (back_to_condition).getFluids()),
                 "Condition did not deserialize properly");

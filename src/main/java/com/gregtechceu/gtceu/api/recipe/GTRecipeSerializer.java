@@ -81,8 +81,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static RecipeCondition conditionReader(FriendlyByteBuf buf) {
-        RecipeCondition condition = GTRegistries.RECIPE_CONDITIONS.get(buf.readUtf()).factory.createDefault();
-        return condition.fromNetwork(buf);
+        return RecipeCondition.fromNetwork(buf);
     }
 
     public static void conditionWriter(FriendlyByteBuf buf, RecipeCondition condition) {
