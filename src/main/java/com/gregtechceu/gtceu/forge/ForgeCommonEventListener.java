@@ -622,10 +622,11 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void breakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
-        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (chestplate.getItem() instanceof ArmorComponentItem componentItem) {
-            if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
-                if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (stack.getItem() instanceof ArmorComponentItem componentItem) {
+                if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
+                    if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
+                }
             }
         }
     }
