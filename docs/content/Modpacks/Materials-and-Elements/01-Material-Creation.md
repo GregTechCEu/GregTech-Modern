@@ -25,7 +25,7 @@ You can change the properties of the material by adding any combination of the f
 - `.secondaryColor(int colorCode)` gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
 - `.flags(flag1, flag2, ...)` can be used to select certain properties of the material, like generating gears, or disabling decomposition.
 - `.element(element)` -> similar to `.components()`, but is used when the material represents an element.
-- `.rotorStats(speed, damage, durability)` -> this will create a turbine rotor from this material.
+- `.rotorStats(/* int */ power, /* int */ efficiency, /* float */ damage, /* int */ durability)` -> this will create a turbine rotor from this material
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. temperature -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
