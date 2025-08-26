@@ -27,8 +27,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
+import com.mojang.serialization.JsonOps;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -1363,7 +1362,12 @@ public class GTRecipeBuilder {
     }
 
     public void toJson(JsonObject json) {
-        json.addProperty("type", recipeType.registryName.toString());
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        JsonObject serialized = GTRecipeSerializer.CODEC.encodeStart(ops, buildRawRecipe()).getOrThrow(false, GTCEu.LOGGER::error).getAsJsonObject();
+        for (String key : serialized.keySet()) {
+            json.add(key, serialized.get(key));
+        }
+        /*json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
         if (data != null && !data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(data));
@@ -1388,7 +1392,7 @@ public class GTRecipeBuilder {
                 array.add(condJson);
             }
             json.add("recipeConditions", array);
-        }
+        }*/
     }
 
     public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
