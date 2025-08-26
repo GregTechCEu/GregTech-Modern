@@ -20,9 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -136,28 +133,5 @@ public class AdjacentFluidCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new AdjacentFluidCondition();
-    }
-
-    // Not in use, maybe delete if this ends up not needed
-    private static JsonElement expandShorthand(JsonElement element) {
-        if (element.isJsonArray()) {
-            var arr = new JsonArray();
-            for (JsonElement e : element.getAsJsonArray()) {
-                arr.add(expandShorthand(e));
-            }
-            return arr;
-        } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
-            String s = element.getAsString();
-            var obj = new JsonObject();
-            if (s.startsWith("#")) {
-                // Tag reference
-                obj.addProperty("tag", s.substring(1));
-            } else {
-                // Direct fluid ID
-                obj.addProperty("id", s);
-            }
-            return obj;
-        }
-        return element;
     }
 }

@@ -11,41 +11,21 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
@@ -132,247 +112,6 @@ public class OverclockLogicTest {
         FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 2, 0)));
         return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, controller);
-    }
-
-    private static final Codec<HolderSet<Fluid>> FLUID_SET_CODEC = net.minecraft.core.RegistryCodecs
-            .homogeneousList(Registries.FLUID);
-
-    @GameTest(template = "empty_5x5")
-    public static void GPT_tests(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Create a HolderSet with a direct fluid (water)
-        HolderSet<Fluid> directSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-
-        // Serialize to JSON
-        JsonElement json = FLUID_SET_CODEC.encodeStart(ops, directSet)
-                .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized direct fluid: " + json);
-
-        // Deserialize back
-        HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assert round-trip works
-        helper.assertTrue(decoded.contains(Fluids.WATER.builtInRegistryHolder()), "a");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void GPT_tests_2(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Create a HolderSet with a tag (forge:water)
-        TagKey<Fluid> waterTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "water"));
-        HolderSet<Fluid> tagSet = GTRegistries.builtinRegistry().registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(waterTag);
-
-        // Serialize to JSON
-        JsonElement json = FLUID_SET_CODEC.encodeStart(ops, tagSet)
-                .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized tag fluid: " + json);
-
-        // Deserialize back
-        HolderSet<Fluid> decoded = FLUID_SET_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assert round-trip works
-        helper.assertTrue(decoded.unwrapKey().isPresent() && decoded.unwrapKey().get().equals(waterTag), "b");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void testAdjacentFluidConditionRoundTrip(GameTestHelper helper) {
-        // RegistryOps with builtin registry
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Build a condition with one direct fluid and one tag
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
-        HolderSet<Fluid> waterDirect = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-        HolderSet<Fluid> lavaTagSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
-
-        AdjacentFluidCondition original = new AdjacentFluidCondition(List.of(waterDirect, lavaTagSet));
-
-        // Serialize to JSON
-        JsonElement json = AdjacentFluidCondition.CODEC.encodeStart(ops, original)
-                .getOrThrow(false, System.err::println);
-
-        System.out.println("Serialized AdjacentFluidCondition: " + json);
-
-        // Deserialize back
-        AdjacentFluidCondition decoded = AdjacentFluidCondition.CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assertions
-        helper.assertTrue(decoded.getFluids().size() == 2, "Expected 2 fluid sets");
-        helper.assertTrue(
-                decoded.getFluids().get(0).contains(Fluids.WATER.builtInRegistryHolder()),
-                "First set should contain water");
-        helper.assertTrue(
-                decoded.getFluids().get(1).unwrapKey().isPresent() &&
-                        decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag),
-                "Second set should be the forge:lava tag");
-
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void testFluidCodecDirect(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Direct fluid: water
-        HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-        List<HolderSet<Fluid>> list = List.of(waterSet);
-
-        // Serialize
-        JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
-                .getOrThrow(false, System.err::println);
-        System.out.println("Direct fluid JSON: " + json);
-
-        // Deserialize
-        List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        helper.assertTrue(decoded.size() == 1, "Expected 1 fluid set");
-        helper.assertTrue(decoded.get(0).contains(Fluids.WATER.builtInRegistryHolder()), "Should contain water");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void testFluidCodecTag(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Tag: forge:lava
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
-        List<HolderSet<Fluid>> list = List.of(lavaSet);
-
-        // Serialize
-        JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
-                .getOrThrow(false, System.err::println);
-        System.out.println("Tag fluid JSON: " + json);
-
-        // Deserialize
-        List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        helper.assertTrue(decoded.size() == 1, "Expected 1 fluid set");
-        helper.assertTrue(decoded.get(0).unwrapKey().isPresent() && decoded.get(0).unwrapKey().get().equals(lavaTag),
-                "Should be forge:lava tag");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void testFluidCodecMixed(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Direct: water
-        HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-
-        // Tag: forge:lava
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
-
-        List<HolderSet<Fluid>> list = List.of(waterSet, lavaSet);
-
-        // Serialize
-        JsonElement json = AdjacentFluidCondition.FLUID_CODEC.encodeStart(ops, list)
-                .getOrThrow(false, System.err::println);
-        System.out.println("Mixed fluid JSON: " + json);
-
-        // Deserialize
-        List<HolderSet<Fluid>> decoded = AdjacentFluidCondition.FLUID_CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        helper.assertTrue(decoded.size() == 2, "Expected 2 fluid sets");
-        helper.assertTrue(decoded.get(0).contains(Fluids.WATER.builtInRegistryHolder()), "First should be water");
-        helper.assertTrue(decoded.get(1).unwrapKey().isPresent() && decoded.get(1).unwrapKey().get().equals(lavaTag),
-                "Second should be forge:lava tag");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty_5x5")
-    public static void testConditionSerializeThenCodecDeserialize(GameTestHelper helper) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-
-        // Build a condition with water + forge:lava
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
-        HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder());
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
-                .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
-
-        AdjacentFluidCondition original = new AdjacentFluidCondition(List.of(waterSet, lavaSet));
-        original.setReverse(true); // test reverse flag too
-
-        // Serialize using the condition's custom serialize()
-        JsonObject json = original.serialize();
-        System.out.println("Condition.serialize() JSON: " + json);
-
-        // Now parse the entire object with the CODEC
-        AdjacentFluidCondition decoded = AdjacentFluidCondition.CODEC.parse(ops, json)
-                .getOrThrow(false, System.err::println);
-
-        // Assertions
-        helper.assertTrue(decoded.isReverse(), "Reverse flag should be true");
-        helper.assertTrue(decoded.getFluids().size() == 2, "Expected 2 fluid sets");
-        helper.assertTrue(decoded.getFluids().get(0).contains(Fluids.WATER.builtInRegistryHolder()),
-                "First should be water");
-        helper.assertTrue(
-                decoded.getFluids().get(1).unwrapKey().isPresent() &&
-                        decoded.getFluids().get(1).unwrapKey().get().equals(lavaTag),
-                "Second should be forge:lava tag");
-
-        helper.succeed();
-    }
-
-    public static boolean equalFluidSets(List<HolderSet<Fluid>> a, List<HolderSet<Fluid>> b) {
-        if (a.size() != b.size()) return false;
-
-        // Convert list B into a mutable set for matching
-        Set<HolderSet<Fluid>> unmatched = new HashSet<>(b);
-
-        outer:
-        for (HolderSet<Fluid> setA : a) {
-            for (HolderSet<Fluid> setB : unmatched) {
-                if (holderSetEquals(setA, setB)) {
-                    unmatched.remove(setB);
-                    continue outer;
-                }
-            }
-            // No match found for setA
-            return false;
-        }
-
-        // All matched
-        return unmatched.isEmpty();
-    }
-
-    private static boolean holderSetEquals(HolderSet<Fluid> a, HolderSet<Fluid> b) {
-        // Case 1: both are Named (tags)
-        if (a.unwrapKey().isPresent() && b.unwrapKey().isPresent()) {
-            TagKey<Fluid> tagA = a.unwrapKey().get();
-            TagKey<Fluid> tagB = b.unwrapKey().get();
-            return Objects.equals(tagA, tagB);
-        }
-
-        // Case 2: both are Direct
-        if (!a.unwrapKey().isPresent() && !b.unwrapKey().isPresent()) {
-            Set<Holder<Fluid>> setA = new HashSet<>(a.stream().toList());
-            Set<Holder<Fluid>> setB = new HashSet<>(b.stream().toList());
-            return setA.equals(setB);
-        }
-
-        // One is Named, the other is Direct → not equal
-        return false;
     }
 
     // Test for running HV recipe at HV
