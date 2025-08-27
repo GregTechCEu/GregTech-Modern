@@ -7,12 +7,15 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +23,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -150,5 +155,10 @@ public class TestUtils {
                 direction, stack, coverDefinition, null
         ), "failed to place cover");
         return machine.getCoverContainer().getCoverAtSide(direction);
+    }
+
+    public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
+        helper.setBlock(pos, machineDefinition.getBlock());
+        return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
     }
 }

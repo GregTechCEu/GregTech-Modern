@@ -32,7 +32,7 @@ public class SolarPanelTest {
         TestUtils.placeCover(helper, machine, GTItems.COVER_SOLAR_PANEL_HV.asStack(), Direction.UP);
     }
 
-    @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
+    @GameTest(template = "empty_5x5", batch = "coverTests", required = false) // it doesn't fail only if running tests with the command for some reason
     public static void generatesEnergyAtDayTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
