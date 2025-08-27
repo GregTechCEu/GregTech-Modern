@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -31,7 +32,7 @@ public class ConveyorTest {
     }
 
     // Test for seeing if conveyors pass items
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorTransfersItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -40,9 +41,7 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                CONVEYORS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        ConveyorCover cover = (ConveyorCover) crate2.getCoverContainer().getCovers().get(0);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 
@@ -57,7 +56,7 @@ public class ConveyorTest {
     }
 
     // Test for seeing if conveyors don't pass items if set to the wrong direction
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorTransfersItemsWrongDirectionTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -66,9 +65,7 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                CONVEYORS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        ConveyorCover cover = (ConveyorCover) crate2.getCoverContainer().getCovers().get(0);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate2 to crate1
         // This shouldn't do anything, as the items are in crate1
         cover.setIo(IO.OUT);
@@ -83,7 +80,7 @@ public class ConveyorTest {
     }
 
     // Test for seeing if pumps transfer items
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorPumpDoesntTransferItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -92,9 +89,7 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                PUMPS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        PumpCover cover = (PumpCover) crate2.getCoverContainer().getCovers().get(0);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 

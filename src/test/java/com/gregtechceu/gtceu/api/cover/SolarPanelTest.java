@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTCovers;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 
+import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -27,15 +28,16 @@ public class SolarPanelTest {
                 .getMetaMachine();
     }
 
-    @GameTest(template = "empty_5x5")
+    private static void placeSolar(GameTestHelper helper, MetaMachine machine) {
+        TestUtils.placeCover(helper, machine, GTItems.COVER_SOLAR_PANEL_HV.asStack(), Direction.UP);
+    }
+
+    @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
     public static void generatesEnergyAtDayTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
-        CoverBehavior cover = GTCovers.SOLAR_PANEL[GTValues.HV].createCoverBehavior(machine.getCoverContainer(),
-                Direction.UP);
-        machine.getCoverContainer().setCoverAtSide(cover, Direction.UP);
-        cover.onLoad();
+        placeSolar(helper, machine);
         helper.runAtTickTime(40, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() > 0,
                     "Solar panel cover didn't generate energy at day time");
@@ -43,15 +45,12 @@ public class SolarPanelTest {
         });
     }
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void generatesEnergyAtNightTest(GameTestHelper helper) {
         helper.setDayTime(18000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
-        CoverBehavior cover = GTCovers.SOLAR_PANEL[GTValues.HV].createCoverBehavior(machine.getCoverContainer(),
-                Direction.UP);
-        machine.getCoverContainer().setCoverAtSide(cover, Direction.UP);
-        cover.onLoad();
+        placeSolar(helper, machine);
         helper.runAtTickTime(40, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() == 0,
                     "Solar panel cover generated energy at night time");
@@ -59,16 +58,13 @@ public class SolarPanelTest {
         });
     }
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void generatesEnergyAtDayWhenBlockedTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         helper.setBlock(new BlockPos(0, 3, 0), Blocks.DIAMOND_BLOCK);
         machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
-        CoverBehavior cover = GTCovers.SOLAR_PANEL[GTValues.HV].createCoverBehavior(machine.getCoverContainer(),
-                Direction.UP);
-        machine.getCoverContainer().setCoverAtSide(cover, Direction.UP);
-        cover.onLoad();
+        placeSolar(helper, machine);
         helper.runAtTickTime(40, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() == 0,
                     "Solar panel cover generated energy when blocked");

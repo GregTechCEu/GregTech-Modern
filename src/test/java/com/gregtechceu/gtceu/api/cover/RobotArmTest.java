@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -30,7 +31,7 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers more than keepExact's limit
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmKeepExactTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -39,10 +40,7 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
-        cover.onLoad();
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate1 to crate2 exactly 7 items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.KEEP_EXACT);
@@ -57,7 +55,7 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers correct amount when using transfer exact
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmTransferExactTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -66,10 +64,7 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
-        cover.onLoad();
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate1 to crate2 exactly 7 items 2 times
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_EXACT);
@@ -84,7 +79,7 @@ public class RobotArmTest {
     }
 
     // Test for seeing if robot arm transfers all items when using transfer any
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmTransferAnyTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
@@ -93,10 +88,7 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        crate2.getCoverContainer().setCoverAtSide(
-                ROBOT_ARMS[0].createCoverBehavior(crate2.getCoverContainer(), Direction.DOWN), Direction.DOWN);
-        RobotArmCover cover = (RobotArmCover) crate2.getCoverContainer().getCovers().get(0);
-        cover.onLoad();
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
         // Set the cover to import from crate1 to crate2 all items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_ANY);

@@ -3,10 +3,18 @@ package com.gregtechceu.gtceu.gametest.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -124,5 +132,23 @@ public class TestUtils {
         GTRegistries.RECIPE_CATEGORIES.freeze();
         GTRegistries.RECIPE_TYPES.freeze();
         return type;
+    }
+
+    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack, Direction direction) {
+        CoverDefinition coverDefinition = null;
+        if (stack.getItem() instanceof IComponentItem componentItem) {
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
+                    helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
+                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                }
+            }
+        }
+        helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
+        assert coverDefinition != null;
+        helper.assertTrue(machine.getCoverContainer().placeCoverOnSide(
+                direction, stack, coverDefinition, null
+        ), "failed to place cover");
+        return machine.getCoverContainer().getCoverAtSide(direction);
     }
 }
