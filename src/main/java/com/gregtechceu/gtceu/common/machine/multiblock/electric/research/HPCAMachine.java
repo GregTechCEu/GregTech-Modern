@@ -216,8 +216,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            if (!(part instanceof IHPCAComponentHatch hpcaPart)) continue;
-            hpcaPart.setActive(active);
+            if (part instanceof IHPCAComponentHatch hpcaPart) {
+                hpcaPart.setActive(active);
+            }
         }
     }
 
