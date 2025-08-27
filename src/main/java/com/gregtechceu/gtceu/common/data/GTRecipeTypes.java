@@ -35,7 +35,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
@@ -415,9 +414,6 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
-            .prepareBuilder(recipeBuilder -> {
-                recipeBuilder.addCondition(AdjacentFluidCondition.fromTags(FluidTags.LAVA, FluidTags.WATER));
-            })
             .setUiBuilder((recipe, widgetGroup) -> {
                 List<HolderSet<Fluid>> fluids = new ArrayList<>();
                 for (RecipeCondition condition : recipe.conditions) {
@@ -429,18 +425,23 @@ public class GTRecipeTypes {
                     return;
                 }
 
-                int xOffset = 0;
+                int xOffset = 35;
+                int yOffset = 0;
+                int i = 0;
                 for (HolderSet<Fluid> set : fluids) {
                     if (set.size() == 0) {
                         continue;
                     }
                     List<FluidEntryList> slots = Collections.singletonList(FluidHolderSetList.of(set, 1000, null));
                     TankWidget tank = new TankWidget(new CycleFluidEntryHandler(slots),
-                            widgetGroup.getSize().width - 30 - xOffset, widgetGroup.getSize().height - 30, false, false)
+                            widgetGroup.getSize().width - 30 - xOffset, widgetGroup.getSize().height - 30 + yOffset,
+                            false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false);
                     widgetGroup.addWidget(tank);
 
-                    xOffset += 20;
+                    i++;
+                    xOffset = 20 * (2 - (i % 3)) - 5;
+                    yOffset = 20 * (i / 3);
                 }
             })
             .setSound(GTSoundEntries.FIRE);

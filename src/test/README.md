@@ -94,6 +94,24 @@ It can also help you interact with the world, spawn mock/fake players, assert co
 You can also write your own utility methods for repeated patterns (e.g., checking inventories). 
 These go in `test/java/com/gregtechceu/gtceu/gametest/util/TestUtils.java`
 
+## Ensuring something does (not) happen
+To ensure something does happen:
+```
+helper.succeedWhen(()->{ 
+    helper.assertTrue(thething, ...);
+});
+```
+
+To ensure something does not happen:
+```
+helper.onEachTick(()->{
+    helper.assertTrue(thing that should not happen doesn't happen);
+});
+TestUtils.succeedAfterTest(helper);
+```
+If your test has a timeout value different from 100, you can pass that as a second argument succeedAfterTest
+
+
 ---
 
 ## Example: RecipeLogicTest
