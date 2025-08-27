@@ -26,6 +26,16 @@ You can change the properties of the material by adding any combination of the f
 - `.flags(flag1, flag2, ...)` can be used to select certain properties of the material, like generating gears, or disabling decomposition.
 - `.element(element)` -> similar to `.components()`, but is used when the material represents an element.
 - `.rotorStats(/* int */ power, /* int */ efficiency, /* float */ damage, /* int */ durability)` -> this will create a turbine rotor from this material
+  1. Power is the EU/t and fuel consumption multiplier the turbine gets when  equipped with this rotor.
+     This output varies depending on speed of turbine and rotor holder.
+  3. Efficiency is how well it handles fuel.
+     A smaller number will make it consume more fuel while a bigger number means it uses less fuel.
+     Actual efficiency: rotorEfficiency * holder Efficiency / 100
+  4. Damage is the amount of damage that happens to the player when opening the ui of a running turbine's rotor holder.
+  5. Durability is how much base durability it has.
+- Here are some examples of base gt rotors
+  1. Titanium Rotor: .rotorStats(130, 115, 3.0, 1600)
+  2. Tungsten Rotor .rotorStats(130, 115, 3.0, 2560)
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. temperature -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
@@ -51,7 +61,6 @@ You can change the properties of the material by adding any combination of the f
     1. Voltage, amperage, loss per block
     2. Voltage, amperage, loss per block, is superconductor -> for a super conductor, set loss as 0 and is super conductor as true
     3. Voltage, amperage, loss per block, is super conductor, critical temperature
-- `.toolProperties()`
 - `.fluidPipeProperties()`
 - `.itemPipeProperties()`
 - `.addDefaultEnchant()`
