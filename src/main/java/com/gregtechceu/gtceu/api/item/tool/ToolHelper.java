@@ -555,7 +555,10 @@ public class ToolHelper {
         }
 
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), GTToolType.MINING_HAMMER) ?
+        var toolType = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GTToolItem toolItem ?
+                toolItem.toolType : null;
+        if (toolType == null) return Collections.emptyList();
+        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), toolType) ?
                 InteractionHand.MAIN_HAND : null;
         if (hand == null) return Collections.emptyList();
         UseOnContext context = new UseOnContext(player, hand, hitResult);

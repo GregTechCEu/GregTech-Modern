@@ -6,11 +6,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -68,37 +65,5 @@ public class PositionYCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new PositionYCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("min", this.min);
-        config.addProperty("max", this.max);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        min = GsonHelper.getAsInt(config, "min", Integer.MIN_VALUE);
-        max = GsonHelper.getAsInt(config, "max", Integer.MAX_VALUE);
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        min = buf.readVarInt();
-        max = buf.readVarInt();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeVarInt(min);
-        buf.writeVarInt(max);
     }
 }

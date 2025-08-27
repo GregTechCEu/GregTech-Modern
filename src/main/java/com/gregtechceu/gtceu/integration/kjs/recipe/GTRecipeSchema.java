@@ -336,6 +336,22 @@ public interface GTRecipeSchema {
             return inputItems(machine.asStack(count));
         }
 
+        public GTRecipeJS itemInputsRanged(ExtendedOutputItem ingredient, int min, int max) {
+            return inputItemsRanged(ingredient.ingredient.getInner(), min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
+            return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(ingredient, 1, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS inputItemsRanged(ItemStack stack, int min, int max) {
+            return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(stack, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS itemInputsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+            return inputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
+        }
+
         public GTRecipeJS itemOutputs(ExtendedOutputItem... outputs) {
             return outputItems(outputs);
         }
@@ -694,6 +710,16 @@ public interface GTRecipeSchema {
                 }
             }
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
+        }
+
+        public GTRecipeJS inputFluidsRanged(FluidStackJS input, int min, int max) {
+            return inputFluidsRanged(input, UniformInt.of(min, max));
+        }
+
+        public GTRecipeJS inputFluidsRanged(FluidStackJS input, IntProvider range) {
+            FluidStack stack = new FluidStack(input.getFluid(), (int) input.getAmount(), input.getNbt());
+            return input(FluidRecipeCapability.CAP,
+                    IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
         }
 
         public GTRecipeJS outputFluids(FluidStackJS... outputs) {
