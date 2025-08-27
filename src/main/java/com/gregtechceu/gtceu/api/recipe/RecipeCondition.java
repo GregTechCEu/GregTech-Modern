@@ -95,6 +95,7 @@ public abstract class RecipeCondition {
 
     public final void toNetwork(FriendlyByteBuf buf) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.writeJsonWithCodec to include our RegistryOps
         DataResult<JsonElement> dataresult = CODEC.encodeStart(ops, this);
         buf.writeUtf(new Gson().toJson((JsonElement) Util.getOrThrow(dataresult,
                 (p_261421_) -> new EncoderException("Failed to encode: " + p_261421_ + " " + String.valueOf(this)))));
@@ -102,6 +103,7 @@ public abstract class RecipeCondition {
 
     public static RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.readJsonWithCodec to include our RegistryOps
         JsonElement jsonelement = (JsonElement) GsonHelper.fromJson(new Gson(), buf.readUtf(), JsonElement.class);
         DataResult<RecipeCondition> dataresult = CODEC.parse(ops, jsonelement);
         return (RecipeCondition) Util.getOrThrow(dataresult,
