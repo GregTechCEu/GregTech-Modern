@@ -1,0 +1,57 @@
+---
+title: "Example Turbine"
+---
+
+### Example Turbine
+
+In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. LargeTurbineMachines such as the gas, steam, and plasma turbines use this class.
+
+```const $LargeTurbineMachine = Java.loadClass("com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine")```
+
+Below is an example of a multiblock using the CoilWorkableElectricMultiblockMachine class and the pyrolyseOvenOverclock machine logic.
+
+### Multiblock
+
+```js title="hyper_gas_turbine_multiblock.js"
+GTCEuStartupEvents.registry('gtceu:machine', event => {
+    event.create('hyper_gas_turbine', 'multiblock')
+        .machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV))
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeTypes("gas_turbine")
+        .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
+        .appearanceBlock(GTBlocks.CASING_TITANIUM_STABLE)
+        .pattern(definition => FactoryBlockPattern.start()
+            .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
+            .aisle("BBBCBBB", "BBCACBB", "BBCECBB", "BBCACBB", "BBBCBBB")
+            .aisle("BBCCCBB", "BCAAACB", "BCAEACB", "BCAEACB", "BBCCCBB")
+            .aisle("BCCCCCB", "CAAEAAC", "CEEEEEC", "CAEEEAC", "BCCFCCB")
+            .aisle("BBCCCBB", "BCAAACB", "BCAEACB", "BCAEACB", "BBCCCBB")
+            .aisle("BBBCBBB", "BBCACBB", "BBCECBB", "BBCACBB", "BBBCBBB")
+            .aisle("BBBBBBB", "BBBCBBB", "BBBGBBB", "BBBCBBB", "BBBBBBB")
+            .where("A", Predicates.blocks("minecraft:air"))
+            .where("B", Predicates.any())
+            .where("C", Predicates.blocks("gtceu:stainless_steel_turbine_casing")
+                .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+            .where("D", Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
+            .where("F", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
+            .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
+            .where("G", Predicates.controller(Predicates.blocks(definition.get())))
+            .build())
+        .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
+            "gtceu:block/multiblock/generator/large_gas_turbine")
+});
+```
+
+### Lang
+
+```json title="en_us.json"
+{
+    "block.gtceu.hyper_gas_turbine": "Hyper Gas Turbine",
+}
+```
+
+
+
+
+

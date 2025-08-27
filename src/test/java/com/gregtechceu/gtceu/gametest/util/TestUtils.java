@@ -2,15 +2,19 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
@@ -124,5 +128,34 @@ public class TestUtils {
         GTRegistries.RECIPE_CATEGORIES.freeze();
         GTRegistries.RECIPE_TYPES.freeze();
         return type;
+    }
+
+    /**
+     * Shortcut function to retrieve a metamachine from a blockentity's
+     * 
+     * @param entity The MetaMachineBlockEntity
+     * @return the machine held, if any
+     */
+    public static MetaMachine getMetaMachine(BlockEntity entity) {
+        return ((MetaMachineBlockEntity) entity).getMetaMachine();
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper GameTestHelper
+     */
+    public static void succeedAfterTest(GameTestHelper helper) {
+        succeedAfterTest(helper, 100);
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper  GameTestHelper
+     * @param timeout Ticks to wait until succeeding
+     */
+    public static void succeedAfterTest(GameTestHelper helper, long timeout) {
+        helper.runAtTickTime(timeout, helper::succeed);
     }
 }

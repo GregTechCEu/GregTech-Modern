@@ -46,14 +46,11 @@ public class ConveyorTest {
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 
-        helper.succeedOnTickWhen(2, () -> {
+        helper.succeedWhen(() -> {
             helper.assertTrue(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Conveyor didn't transfer right amount of items");
-            helper.succeed();
         });
-
-        helper.succeed();
     }
 
     // Test for seeing if conveyors don't pass items if set to the wrong direction
@@ -73,13 +70,12 @@ public class ConveyorTest {
         // This shouldn't do anything, as the items are in crate1
         cover.setIo(IO.OUT);
 
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Conveyor transferred when it shouldn't have");
         });
-
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for seeing if pumps transfer items
@@ -98,12 +94,11 @@ public class ConveyorTest {
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Pump transferred when it shouldn't have");
         });
-
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper);
     }
 }
