@@ -71,7 +71,7 @@ public class MultiblockWorldSavedData extends SavedData {
         for (Set<MultiblockState> set : chunkPosMapping.values()) {
             set.remove(state);
         }
-        chunkLock.lock();
+        chunkLock.unlock();
     }
 
     @NotNull
