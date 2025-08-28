@@ -6,11 +6,11 @@ You can make tools out of materials you create by calling toolStats inside your 
 
 - `.toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)`
     1. harvestSpeed is how fast the tool actually breaks blocks in world.
--       Takes a decimal number eg.(5.6)
+-      Takes a decimal number eg.(5.6)
     2. attackDamage is the amount of damage per hit you deal to mobs/players.
--       Also takes a decimal number
+-      Also takes a decimal number
     3. durability is how long it takes of use to breaks.
--       This applies to the durability towards both crafting use and normal use.
+-      This applies to the durability towards both crafting use and normal use.
        Takes a whole number up to 2.147 billion eg.(700).
        Going up to max integer is not recommended
     4. harvestLevel is the tier of block it can break
