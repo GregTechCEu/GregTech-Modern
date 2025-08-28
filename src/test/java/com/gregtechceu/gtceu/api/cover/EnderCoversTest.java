@@ -45,7 +45,8 @@ public class EnderCoversTest {
         tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 1000),
                 IFluidHandler.FluidAction.EXECUTE);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(tank2.getStoredAmount() == 1000, "ender fluid link cover didn't transfer fluid");
+            helper.assertTrue(TestUtils.isFluidStackEqual(tank2.getStored(), new FluidStack(Fluids.WATER, 1000)),
+                    "ender fluid link cover didn't transfer fluid");
             helper.succeed();
         });
     }
@@ -64,7 +65,8 @@ public class EnderCoversTest {
         cover2.setIo(IO.OUT);
         chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, new ItemStack(Items.DIAMOND, 64), false);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(chest2.getStoredAmount() == 64, "ender item link cover didn't transfer fluid");
+            helper.assertTrue(TestUtils.isItemStackEqual(chest2.getStored(), new ItemStack(Items.DIAMOND, 64)),
+                    "ender item link cover didn't transfer fluid");
             helper.succeed();
         });
     }

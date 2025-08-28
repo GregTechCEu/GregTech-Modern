@@ -46,7 +46,7 @@ public class SolarPanelTest {
     }
 
     @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void generatesEnergyAtDayWhenBlockedTest(GameTestHelper helper) {
+    public static void doesntGenerateEnergyAtDayWhenBlockedTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         helper.setBlock(new BlockPos(0, 3, 0), Blocks.DIAMOND_BLOCK);
