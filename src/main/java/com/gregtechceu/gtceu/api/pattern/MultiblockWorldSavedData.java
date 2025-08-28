@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class MultiblockWorldSavedData extends SavedData {
 
@@ -34,8 +32,6 @@ public class MultiblockWorldSavedData extends SavedData {
      */
     public final Map<ChunkPos, Set<MultiblockState>> chunkPosMapping;
 
-    private final Lock chunkLock = new ReentrantLock();
-
     private MultiblockWorldSavedData() {
         this.mapping = new Object2ObjectOpenHashMap<>();
         this.chunkPosMapping = new HashMap<>();
@@ -46,32 +42,21 @@ public class MultiblockWorldSavedData extends SavedData {
     }
 
     public Set<MultiblockState> getControllersInChunk(ChunkPos chunkPos) {
-        if (chunkLock.tryLock()) {
-            try {
-                return chunkPosMapping.getOrDefault(chunkPos, Collections.emptySet());
-            } finally {
-                chunkLock.unlock();
-            }
-        }
-        return Set.of();
+        return chunkPosMapping.getOrDefault(chunkPos, Collections.emptySet());
     }
 
     public void addMapping(MultiblockState state) {
         this.mapping.put(state.controllerPos, state);
-        chunkLock.lock();
         for (BlockPos blockPos : state.getCache()) {
             chunkPosMapping.computeIfAbsent(new ChunkPos(blockPos), c -> new HashSet<>()).add(state);
         }
-        chunkLock.unlock();
     }
 
     public void removeMapping(MultiblockState state) {
         this.mapping.remove(state.controllerPos);
-        chunkLock.lock();
         for (Set<MultiblockState> set : chunkPosMapping.values()) {
             set.remove(state);
         }
-        chunkLock.unlock();
     }
 
     @NotNull

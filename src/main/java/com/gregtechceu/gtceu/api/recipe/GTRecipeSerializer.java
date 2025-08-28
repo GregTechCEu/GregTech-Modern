@@ -81,6 +81,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static RecipeCondition conditionReader(FriendlyByteBuf buf) {
+        // Consume the condition key that's set in conditionWriter
+        buf.readUtf();
         return RecipeCondition.fromNetwork(buf);
     }
 
