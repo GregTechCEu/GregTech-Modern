@@ -41,7 +41,7 @@ You can also add further arguments onto your tools such as:
 - Set the attack speed of a tool made from this Material (animation time).
   Takes a decimal number 
 - `ignoreCraftingTools()`
-  Disable crafting tools being made from this Material.
+-  Disable crafting tools being made from this Material.
 - `addEnchantmentForTools(enchantment, level)`
 - Enchantment is the default enchantment applied on tool creation
   Level is the level of said enchantment
