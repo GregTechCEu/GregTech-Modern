@@ -4,6 +4,12 @@ title: Tool Creation
 
 You can make tools out of materials you create by calling toolStats inside your material's code. 
 
+When working with tools you will need to load these classes at the top of your file.
+```js
+const $PropertyKey = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey');
+const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty');
+```
+
 - `.toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)`
     1. harvestSpeed is how fast the tool actually breaks blocks in world.
 -      Takes a decimal number eg.(5.6).
@@ -63,4 +69,18 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
         .unbreakable()
         .build())
 ```
-  
+
+You can also add more tool types to a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable (not changeable).
+```js title="example_tool_material.js"
+GTCEuStartupEvents.registry('gtceu:material', event => {
+    event.create('aluminfrost')
+        .ingot()
+        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
+        .toolStats($ToolProperty.Builder.of(1.8, 1.7, 700, 3,
+            [GTToolType.SWORD,
+            GTToolType.PICKAXE,
+            GTToolType.SHOVEL,
+            ])
+        .unbreakable()
+        .build())
+```
