@@ -44,7 +44,7 @@ You can also add further arguments onto your tools such as:
 -  Disable crafting tools being made from this Material.
 - `addEnchantmentForTools(enchantment, level)`
 - Enchantment is the default enchantment applied on tool creation
-  Level is the level of said enchantment
+-  Level is the level of said enchantment
 - `enchantability(int enchantability)`
 - Set the base enchantability of a tool made from this Material. 
   Iron is 14, Diamond is 10, Stone is 5.
