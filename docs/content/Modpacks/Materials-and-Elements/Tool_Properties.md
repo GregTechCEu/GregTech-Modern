@@ -58,11 +58,11 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
         .color(0xadd8e6)
         .secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
         .toolStats($ToolProperty.Builder.of(1.8, 1.7, 700, 3,
-            [GTToolType.SWORD,
-                GTToolType.PICKAXE,
-                GTToolType.SHOVEL,
-            ])
-            .unbreakable()
-            .build())
+        [GTToolType.SWORD,
+            GTToolType.PICKAXE,
+            GTToolType.SHOVEL,
+        ])
+        .unbreakable()
+        .build())
 ```
   
