@@ -36,6 +36,7 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
                 GTToolType.MINING_HAMMER
             ]
         ))
+});
 ```
 You can also add further arguments onto your tools such as:
 - `.unbreakable()`
@@ -68,18 +69,19 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
             ])
         .unbreakable()
         .build())
+});
 ```
 
 You can also add more tool types to a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable (not changeable).
 ```js title="tool_replacement.js"
 GTCEuStartupEvents.materialModification(event => {
-    if (GTMaterials.Neutronium.hasProperty($PropertyKey.TOOL)) {
-        GTMaterials.Neutronium.removeProperty($PropertyKey.TOOL);
+    if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
+        GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
     }
     GTMaterials.Neutronium.setProperty($PropertyKey.TOOL, new $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
-       [GTToolType.SWORD,GTToolType.DRILL_LV,GTToolType.DRILL_MV,GTToolType.DRILL_HV,GTToolType.DRILL_EV,
-        GTToolType.DRILL_IV,GTToolType.PICKAXE, GTToolType.SHOVEL, GTToolType.AXE, GTToolType.HOE, 
-        GTToolType.WRENCH, GTToolType.HARD_HAMMER, GTToolType.SAW, GTToolType.FILE, GTToolType.SCREWDRIVER, 
-        GTToolType.WIRE_CUTTER, GTToolType.KNIFE, GTToolType.SOFT_MALLET]).build());
+       [GTToolType.SOFT_MALLET,
+       GTToolType.DRILL_LVT
+       ])
+    .build());
 });
 ```
