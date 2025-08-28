@@ -23,8 +23,7 @@ An example of this being actually used is included below
 GTCEuStartupEvents.registry('gtceu:material', event => {
     event.create('aluminfrost')
         .ingot()
-        .color(0xadd8e6)
-        .secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
+        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
         .toolStats(new ToolProperty(12, 7, 3072, 6,
             [
                 GTToolType.DRILL_LV,
@@ -55,8 +54,7 @@ Here is an example of using them in your material:
 GTCEuStartupEvents.registry('gtceu:material', event => {
     event.create('aluminfrost')
         .ingot()
-        .color(0xadd8e6)
-        .secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
+        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
         .toolStats($ToolProperty.Builder.of(1.8, 1.7, 700, 3,
             [GTToolType.SWORD,
             GTToolType.PICKAXE,
