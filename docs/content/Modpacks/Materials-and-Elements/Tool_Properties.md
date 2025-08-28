@@ -11,7 +11,7 @@ You can make tools out of materials you create by calling toolStats inside your 
        Also takes a decimal number
     3. durability is how long it takes of use to breaks
        This applies to the durability towards both crafting use and normal use.
-       Takes a whole number up to 2.147 billion eg.(700)
+       Takes a whole number up to 2.147 billion eg.(700).
        Going up to max integer is not recommended
     4. harvestLevel is the tier of block it can break
        Can take a number between 1-6 with 1 being wood, 6 being neutronium.
