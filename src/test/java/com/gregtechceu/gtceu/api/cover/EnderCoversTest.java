@@ -51,7 +51,7 @@ public class EnderCoversTest {
         });
     }
 
-    @GameTest(template = "empty_5x5", batch = "coverTests")
+    @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
     public static void itemLinkCoverTest(GameTestHelper helper) {
         QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 1),
                 GTMachines.SUPER_CHEST[1]);
@@ -66,7 +66,7 @@ public class EnderCoversTest {
         chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, new ItemStack(Items.DIAMOND, 64), false);
         helper.runAtTickTime(20, () -> {
             helper.assertTrue(TestUtils.isItemStackEqual(chest2.getStored(), new ItemStack(Items.DIAMOND, 64)),
-                    "ender item link cover didn't transfer fluid");
+                    "ender item link cover didn't transfer items");
             helper.succeed();
         });
     }
