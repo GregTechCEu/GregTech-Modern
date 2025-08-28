@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -23,19 +25,19 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 public class ConveyorTest {
 
     public static void setupCrates(GameTestHelper helper) {
-        helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
-        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BRONZE_CRATE.getBlock());
+        helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
+        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
 
     // Test for seeing if conveyors pass items
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorTransfersItemsTest(GameTestHelper helper) {
         setupCrates(helper);
-        CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
+        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
-        CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
+        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
                 .getMetaMachine();
-        crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
+        crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
         ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
                 Direction.DOWN);
@@ -44,7 +46,7 @@ public class ConveyorTest {
 
         helper.succeedWhen(() -> {
             helper.assertTrue(
-                    TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
+                    TestUtils.isItemStackEqual(crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Conveyor didn't transfer right amount of items");
         });
     }
@@ -53,11 +55,11 @@ public class ConveyorTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorTransfersItemsWrongDirectionTest(GameTestHelper helper) {
         setupCrates(helper);
-        CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
+        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
-        CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
+        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
                 .getMetaMachine();
-        crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
+        crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
         ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
                 Direction.DOWN);
@@ -67,7 +69,7 @@ public class ConveyorTest {
 
         helper.onEachTick(() -> {
             helper.assertFalse(
-                    TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
+                    TestUtils.isItemStackEqual(crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Conveyor transferred when it shouldn't have");
         });
         TestUtils.succeedAfterTest(helper);
@@ -77,20 +79,20 @@ public class ConveyorTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void conveyorPumpDoesntTransferItemsTest(GameTestHelper helper) {
         setupCrates(helper);
-        CrateMachine crate1 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
+        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
-        CrateMachine crate2 = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
+        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
                 .getMetaMachine();
-        crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
+        crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),
+        PumpCover cover = (PumpCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),
                 Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 
         helper.onEachTick(() -> {
             helper.assertFalse(
-                    TestUtils.isItemStackEqual(crate2.inventory.getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
+                    TestUtils.isItemStackEqual(crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16)),
                     "Pump transferred when it shouldn't have");
         });
         TestUtils.succeedAfterTest(helper);

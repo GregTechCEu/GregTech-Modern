@@ -147,6 +147,11 @@ public class TestUtils {
 
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
                                            Direction direction) {
+        return placeCover(helper, machine, stack, direction, false);
+    }
+
+    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+                                           Direction direction, boolean shouldFail) {
         CoverDefinition coverDefinition = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
@@ -158,7 +163,7 @@ public class TestUtils {
         }
         helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
         assert coverDefinition != null;
-        helper.assertTrue(machine.getCoverContainer().placeCoverOnSide(
+        helper.assertTrue(shouldFail ^ machine.getCoverContainer().placeCoverOnSide(
                 direction, stack, coverDefinition, null), "failed to place cover");
         return machine.getCoverContainer().getCoverAtSide(direction);
     }
