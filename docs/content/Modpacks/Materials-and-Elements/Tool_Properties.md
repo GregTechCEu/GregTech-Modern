@@ -4,7 +4,7 @@ title: Tool Creation
 
 You can make tools out of materials you create by calling toolStats inside your material's code. 
 
-- .toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)
+- `.toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)`
 - 1. harvestSpeed is how fast the tool actually breaks blocks in world
      Takes a decimal number eg.(5.6)
 - 2. attackDamage is the amount of damage per hit you deal to mobs/players
@@ -33,19 +33,19 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
         ))
 ```
 You can also add further arguments onto your tools such as:
-- .unbreakable()
+- `.unbreakable()`
   Makes electric tools bypass durability effectively making them never break
-- .magnetic()
+- `.magnetic()`
   Makes mined blocks and mob drops teleport to player inventory
-- attackSpeed(float)
+- `attackSpeed(float)`
   Set the attack speed of a tool made from this Material (animation time).
   Takes a decimal number 
-- ignoreCraftingTools()
+- `ignoreCraftingTools()`
   Disable crafting tools being made from this Material.
-- addEnchantmentForTools(enchantment, level)
+- `addEnchantmentForTools(enchantment, level)`
   Enchantment is the default enchantment applied on tool creation
   Level is the level of said enchantment
-- enchantability(int enchantability)
+- `enchantability(int enchantability)`
   Set the base enchantability of a tool made from this Material. Iron is 14, Diamond is 10, Stone is 5.
   Takes a whole number
 
