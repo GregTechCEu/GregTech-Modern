@@ -8,15 +8,22 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.util.GsonHelper;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -87,10 +94,19 @@ public abstract class RecipeCondition {
     }
 
     public final void toNetwork(FriendlyByteBuf buf) {
-        buf.writeJsonWithCodec(CODEC, this);
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.writeJsonWithCodec to include our RegistryOps
+        DataResult<JsonElement> dataresult = CODEC.encodeStart(ops, this);
+        buf.writeUtf(new Gson().toJson((JsonElement) Util.getOrThrow(dataresult,
+                (p_261421_) -> new EncoderException("Failed to encode: " + p_261421_ + " " + String.valueOf(this)))));
     }
 
     public static RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        return buf.readJsonWithCodec(CODEC);
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.readJsonWithCodec to include our RegistryOps
+        JsonElement jsonelement = (JsonElement) GsonHelper.fromJson(new Gson(), buf.readUtf(), JsonElement.class);
+        DataResult<RecipeCondition> dataresult = CODEC.parse(ops, jsonelement);
+        return (RecipeCondition) Util.getOrThrow(dataresult,
+                (p_272382_) -> new DecoderException("Failed to decode json: " + p_272382_));
     }
 }

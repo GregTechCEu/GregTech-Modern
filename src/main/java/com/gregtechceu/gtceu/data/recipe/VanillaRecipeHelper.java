@@ -51,6 +51,12 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                         ItemStack input,
+                                         ItemStack output) {
+        addSmeltingRecipe(provider, regName, input, output, 0);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          Ingredient input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
@@ -60,6 +66,53 @@ public class VanillaRecipeHelper {
                                          TagKey<Item> input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, ItemStack input,
+                                         ItemStack output) {
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, 0.0f);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Item input,
+                                         Item output) {
+        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(), 0.0f);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Item input,
+                                         Item output, float experience) {
+        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(),
+                experience);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, ItemStack input,
+                                         ItemStack output, float experience) {
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                         ItemStack input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
+                .save(provider);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         ItemStack input, ItemStack output) {
+        addBlastingRecipe(provider, regName, Ingredient.of(input), output, 0.0f);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         ItemStack input, ItemStack output, float experience) {
+        addBlastingRecipe(provider, regName, Ingredient.of(input), output, experience);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                         ItemStack input, ItemStack output) {
+        addBlastingRecipe(provider, regName, Ingredient.of(input), output, 0.0f);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                         ItemStack input, ItemStack output, float experience) {
+        addBlastingRecipe(provider, regName, Ingredient.of(input), output, experience);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
@@ -82,6 +135,12 @@ public class VanillaRecipeHelper {
                                          TagKey<Item> input, ItemStack output, float experience) {
         new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
+    }
+
+    public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                        ItemStack input,
+                                        ItemStack output) {
+        addSmokingRecipe(provider, regName, input, output, 0.0f);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
@@ -127,6 +186,12 @@ public class VanillaRecipeHelper {
     }
 
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                         ItemStack input,
+                                         ItemStack output) {
+        addCampfireRecipe(provider, regName, input, output, 0);
+    }
+
+    public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          ItemStack input, ItemStack output, float experience) {
         new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
                 .save(provider);
@@ -145,33 +210,6 @@ public class VanillaRecipeHelper {
     public static void addCampfireRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                          TagKey<Item> input, ItemStack output, float experience) {
         new CampfireRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience)
-                .save(provider);
-    }
-
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, ItemStack input,
-                                         ItemStack output) {
-        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, 0.0f);
-    }
-
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Item input,
-                                         Item output) {
-        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(), 0.0f);
-    }
-
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Item input,
-                                         Item output, float experience) {
-        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(),
-                experience);
-    }
-
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, ItemStack input,
-                                         ItemStack output, float experience) {
-        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
-    }
-
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         ItemStack input, ItemStack output, float experience) {
-        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
 

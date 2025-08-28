@@ -77,10 +77,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
                 .or(Predicates.autoAbilities(definition.getRecipeTypes())))
         .build())
-        .workableCasingRenderer(
+        .workableCasingModel(
             "gtceu:block/casings/solid/machine_casing_inert_ptfe",
-            "gtceu:block/multiblock/large_chemical_reactor",
-            false
+            "gtceu:block/multiblock/large_chemical_reactor"
         )
 })
 ```
@@ -125,10 +124,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('i', GTMachines.ITEM_IMPORT_BUS[1], Direction.SOUTH)
             .where('0', GTMachines.ITEM_EXPORT_BUS[1], Direction.SOUTH)
         .build())
-        .workableCasingRenderer(
+        .workableCasingModel(
             "gtceu:block/casings/solid/machine_casing_inert_ptfe",
-            "gtceu:block/multiblock/large_chemical_reactor",
-            false
+            "gtceu:block/multiblock/large_chemical_reactor"
         )
 })
 ```

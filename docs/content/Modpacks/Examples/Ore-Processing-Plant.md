@@ -46,8 +46,10 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('B', Predicates.blocks('gtceu:bronze_machine_casing'))
             .where(' ', Predicates.any())
             .build())
-        .workableCasingRenderer("gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
-        "gtceu:block/multiblock/primitive_blast_furnace", false);
+        .workableCasingModel(
+            "gtceu:block/casings/solid/machine_casing_robust_tungstensteel",
+            "gtceu:block/multiblock/primitive_blast_furnace"
+        );
     })
 ```
 

@@ -114,25 +114,25 @@ ServerEvents.recipes(event => {
       Takes a numerical value representing an EU amount. Positive values will make the recipe consume energy per tick,
       negative ones will make it generate energy per tick.
 - Chanced Ingredients:
-  - Ingredients that are not consumed/produced on every run of a recipe. Can be expressed as either a fraction, or as an
-    integer chance out of 10,000.
-  - Assigning an Input ingredient with a Chance of `0` causes that ingredient to be flagged as `Non-Consumed` in EMI. 
-  This can also be done more easily using `.notConsumable()`.
-  - Recipes with chanced ingredients can also have a Chance Logic designated for each of their input/output sets, using 
-  one or more of the functions `.chancedItemInputLogic()`, `.chancedFluidInputLogic()`, `.chancedTickInputLogic()`,
-  `.chancedItemOutputLogic()`, `.chancedFluidOutputLogic()`, `.chancedTickOutputLogic()`
-  - Valid options for chanced logic are:
-    - `or` - (default) Any item/fluid which succeeds on its chance roll is produced/consumed.
-    - `and` - If _all_ items/fluids succeed on their chance roll, all are produced/consumed together. Otherwise, none are. 
-    - `xor` - Guarantees that exactly one of the chanced items/fluids will be produced/consumed on every run. 
-    Behavior was changed in 7.0.0.
-    - `first` - Makes a chance roll for each item/fluid, in order of registration. Only the first item which succeeds 
-    on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic.
+    - Ingredients that are not consumed/produced on every run of a recipe. Can be expressed as either a fraction, or as an
+      integer chance out of 10,000.
+    - Assigning an Input ingredient with a Chance of `0` causes that ingredient to be flagged as `Non-Consumed` in EMI. 
+      This can also be done more easily using `.notConsumable()`.
+    - Recipes with chanced ingredients can also have a Chance Logic designated for each of their input/output sets, using 
+      one or more of the functions `.chancedItemInputLogic()`, `.chancedFluidInputLogic()`, `.chancedTickInputLogic()`,
+      `.chancedItemOutputLogic()`, `.chancedFluidOutputLogic()`, `.chancedTickOutputLogic()`
+    - Valid options for chanced logic are:
+        - `or` - (default) Any item/fluid which succeeds on its chance roll is produced/consumed.
+        - `and` - If _all_ items/fluids succeed on their chance roll, all are produced/consumed together. Otherwise, none are. 
+        - `xor` - Guarantees that exactly one of the chanced items/fluids will be produced/consumed on every run. 
+        Behavior was changed in 7.0.0.
+        - `first` - Makes a chance roll for each item/fluid, in order of registration. Only the first item which succeeds 
+        on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic.
 - Ranged Ingredients:
-  - Item or Fluid ingredients that will be consumed or produced in a random amount within a `min, max` range (inclusive).
+    - Item or Fluid ingredients that will be consumed or produced in a random amount within a `min, max` range (inclusive).
 - Circuits
-  - Many GT recipes use a `Programmed Circuit` item with a Configuration value of `1-32` as a `Non-Consumed` input,
-  to distinguish them from other recipes in the same machine with similar ingredients. `.circuit()` adds one to a recipe.
+    - Many GT recipes use a `Programmed Circuit` item with a Configuration value of `1-32` as a `Non-Consumed` input,
+to distinguish them from other recipes in the same machine with similar ingredients. `.circuit()` adds one to a recipe.
 - More granular functionality:
     - `.perTick()`:  
       Using this will enable you to control whether a recipe input/output is consumed/produced per tick the recipe is
@@ -178,17 +178,17 @@ ServerEvents.recipes(event => {
 
 ### Rock breaker fluids
 
-!!! warning
-When adding rock breaker recipes you will need to manually define the fluids the rock breaker will use.
-(might change in the future)
+Rock breaker recipes use AdjacentFluidConditions.
+
+To add a condition, you can use the `adjacentFluid(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
 ```js title="rock_breaker.js"
 ServerEvents.recipes(event => {
     event.recipes.gtceu.rock_breaker('rhino_jank')
         .notConsumable('minecraft:dirt')
         .itemOutputs('minecraft:dirt')
-        .addDataString("fluidA", "minecraft:lava")
-        .addDataString("fluidB", "minecraft:water")
+        .adjacentFluid('minecraft:water')
+        .adjacentFluid('minecraft:lava')
         .duration(16)
         .EUt(30)
 })

@@ -26,9 +26,40 @@ Once you're happy, commit these changes and make a pull request for us to review
 If you come back to work on the docs, you can use a codespace again. You might need to `pull` to bring your codespace up to date, which you can do by pressing this button in the `Source Control` tab.
 
 ![image](https://github.com/user-attachments/assets/7d1246d2-f091-4452-bdb3-edf221902503)
-## Installing Required Dependencies
+## Installing Required Dependencies & Run Locally
 
-To install the required dependencies, please run `pip install -r requirements.txt`
+Please run all commands from this section inside the `docs` folder!
+
+**First, setup a venv for python:**
+
+```bash
+python -m venv .venv
+```
+or:
+```bash
+python3 -m venv .venv
+```
+
+**Now activate the venv:**
+
+Windows:
+```cmd
+.venv\Scripts\activate
+```
+Linux / MacOS:
+```bash
+source .venv/bin/activate
+```
+
+**Install the required dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**Run locally**:
+```bash
+mkdocs serve
+```
 
 ## MkDocs Plugins
 

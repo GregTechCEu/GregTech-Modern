@@ -756,6 +756,9 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_multiblock_tank",
                 GTMultiMachines.WOODEN_MULTIBLOCK_TANK.asStack(), " R ", "rCs", " R ", 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_multiblock_tank",
+                GTMultiMachines.BRONZE_MULTIBLOCK_TANK.asStack(), " R ", "hCw", " R ", 'R',
+                new MaterialEntry(TagPrefix.ring, GTMaterials.Bronze), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_multiblock_tank",
                 GTMultiMachines.STEEL_MULTIBLOCK_TANK.asStack(), " R ", "hCw", " R ", 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
@@ -763,6 +766,10 @@ public class MetaTileEntityLoader {
                 GTMultiMachines.WOODEN_TANK_VALVE.asStack(),
                 " R ", "rCs", " O ", 'O', new MaterialEntry(TagPrefix.rotor, GTMaterials.Copper), 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_tank_valve",
+                GTMultiMachines.BRONZE_TANK_VALVE.asStack(),
+                " R ", "hCw", " O ", 'O', new MaterialEntry(TagPrefix.rotor, GTMaterials.Bronze), 'R',
+                new MaterialEntry(TagPrefix.ring, GTMaterials.Bronze), 'C', GTBlocks.CASING_BRONZE_BRICKS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve",
                 GTMultiMachines.STEEL_TANK_VALVE.asStack(),
                 " R ", "hCw", " O ", 'O', new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel), 'R',
