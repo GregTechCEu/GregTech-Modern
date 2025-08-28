@@ -46,7 +46,8 @@ You can also add further arguments onto your tools such as:
   Enchantment is the default enchantment applied on tool creation
   Level is the level of said enchantment
 - `enchantability(int enchantability)`
-  Set the base enchantability of a tool made from this Material. Iron is 14, Diamond is 10, Stone is 5.
+  Set the base enchantability of a tool made from this Material. 
+  Iron is 14, Diamond is 10, Stone is 5.
   Takes a whole number
 
 Here is an example of using them in your material:
