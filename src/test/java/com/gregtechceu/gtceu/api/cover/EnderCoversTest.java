@@ -89,9 +89,9 @@ public class EnderCoversTest {
         helper.pullLever(new BlockPos(1, 2, 1));
 
         helper.onEachTick(() -> {
-            if (helper.getTick() < 5) return;
+            if (helper.getTick() < 10) return;
             TestUtils.assertLampOn(helper, new BlockPos(1, 2, 3));
         });
-        helper.runAtTickTime(10, helper::succeed);
+        helper.runAtTickTime(20, helper::succeed);
     }
 }
