@@ -80,7 +80,7 @@ GTCEuStartupEvents.materialModification(event => {
     }
     GTMaterials.Neutronium.setProperty($PropertyKey.TOOL, new $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
        [GTToolType.SOFT_MALLET,
-       GTToolType.DRILL_LVT
+       GTToolType.DRILL_LV
        ])
     .build());
 });
