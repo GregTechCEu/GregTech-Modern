@@ -13,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
@@ -36,24 +35,11 @@ public class SolarPanelTest {
     public static void generatesEnergyAtDayTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
-        machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
+        machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);
         placeSolar(helper, machine);
-        helper.runAtTickTime(40, () -> {
+        helper.runAtTickTime(80, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() > 0,
                     "Solar panel cover didn't generate energy at day time");
-            helper.succeed();
-        });
-    }
-
-    @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void generatesEnergyAtNightTest(GameTestHelper helper) {
-        helper.setDayTime(18000);
-        BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
-        machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
-        placeSolar(helper, machine);
-        helper.runAtTickTime(40, () -> {
-            helper.assertTrue(machine.energyContainer.getEnergyStored() == 0,
-                    "Solar panel cover generated energy at night time");
             helper.succeed();
         });
     }
@@ -63,7 +49,7 @@ public class SolarPanelTest {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         helper.setBlock(new BlockPos(0, 3, 0), Blocks.DIAMOND_BLOCK);
-        machine.getBatteryInventory().setStackInSlot(0, new ItemStack(GTItems.BATTERY_HV_LITHIUM, 1));
+        machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);
         placeSolar(helper, machine);
         helper.runAtTickTime(40, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() == 0,

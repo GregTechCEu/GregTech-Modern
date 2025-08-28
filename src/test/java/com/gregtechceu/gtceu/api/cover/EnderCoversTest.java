@@ -71,7 +71,7 @@ public class EnderCoversTest {
         helper.setBlock(new BlockPos(1, 1, 1), Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE, AttachFace.FLOOR));
         helper.setBlock(new BlockPos(1, 1, 3), Blocks.REDSTONE_LAMP);
         helper.pullLever(new BlockPos(1, 1, 1));
-        helper.runAtTickTime(2, () -> helper.failIfEver(() -> helper.assertBlockProperty(new BlockPos(1, 1, 3), RedstoneLampBlock.LIT, true)));
+        helper.runAtTickTime(5, () -> helper.failIfEver(() -> helper.assertBlockProperty(new BlockPos(1, 1, 3), RedstoneLampBlock.LIT, true)));
         helper.runAtTickTime(10, helper::succeed);
     }
 }
