@@ -32,9 +32,9 @@ public class EnderCoversTest {
 
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void fluidLinkCoverTest(GameTestHelper helper) {
-        QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 1),
+        QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_TANK[1]);
-        QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 3),
+        QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
                 GTMachines.SUPER_TANK[1]);
         EnderFluidLinkCover cover1 = (EnderFluidLinkCover) TestUtils.placeCover(helper, tank1,
                 GTItems.COVER_ENDER_FLUID_LINK.asStack(), Direction.UP);
@@ -53,9 +53,9 @@ public class EnderCoversTest {
 
     @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
     public static void itemLinkCoverTest(GameTestHelper helper) {
-        QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 1),
+        QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_CHEST[1]);
-        QuantumChestMachine chest2 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 3),
+        QuantumChestMachine chest2 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
                 GTMachines.SUPER_CHEST[1]);
         EnderItemLinkCover cover1 = (EnderItemLinkCover) TestUtils.placeCover(helper, chest1,
                 GTItems.COVER_ENDER_ITEM_LINK.asStack(), Direction.UP);
@@ -73,9 +73,9 @@ public class EnderCoversTest {
 
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void redstoneLinkCoverTest(GameTestHelper helper) {
-        QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 1),
+        QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_TANK[1]);
-        QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 0, 3),
+        QuantumTankMachine tank2 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
                 GTMachines.SUPER_TANK[1]);
         EnderRedstoneLinkCover cover1 = (EnderRedstoneLinkCover) TestUtils.placeCover(helper, tank1,
                 GTItems.COVER_ENDER_REDSTONE_LINK.asStack(), Direction.UP);
@@ -83,11 +83,15 @@ public class EnderCoversTest {
                 GTItems.COVER_ENDER_REDSTONE_LINK.asStack(), Direction.UP);
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
-        helper.setBlock(new BlockPos(1, 1, 1),
+        helper.setBlock(new BlockPos(1, 2, 1),
                 Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE, AttachFace.FLOOR));
-        helper.setBlock(new BlockPos(1, 1, 3), Blocks.REDSTONE_LAMP);
-        helper.pullLever(new BlockPos(1, 1, 1));
-        helper.runAtTickTime(5, () -> helper.failIfEver(() -> TestUtils.assertLampOn(helper, new BlockPos(1, 1, 3))));
+        helper.setBlock(new BlockPos(1, 2, 3), Blocks.REDSTONE_LAMP);
+        helper.pullLever(new BlockPos(1, 2, 1));
+
+        helper.onEachTick(() -> {
+            if (helper.getTick() < 5) return;
+            TestUtils.assertLampOn(helper, new BlockPos(1, 2, 3));
+        });
         helper.runAtTickTime(10, helper::succeed);
     }
 }
