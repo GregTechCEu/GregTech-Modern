@@ -71,16 +71,15 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
 ```
 
 You can also add more tool types to a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable (not changeable).
-```js title="example_tool_material.js"
-GTCEuStartupEvents.registry('gtceu:material', event => {
-    event.create('aluminfrost')
-        .ingot()
-        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
-        .toolStats($ToolProperty.Builder.of(1.8, 1.7, 700, 3,
-            [GTToolType.SWORD,
-            GTToolType.PICKAXE,
-            GTToolType.SHOVEL,
-            ])
-        .unbreakable()
-        .build())
+```js title="tool_replacement.js"
+GTCEuStartupEvents.materialModification(event => {
+    if (GTMaterials.Neutronium.hasProperty($PropertyKey.TOOL)) {
+        GTMaterials.Neutronium.removeProperty($PropertyKey.TOOL);
+    }
+    GTMaterials.Neutronium.setProperty($PropertyKey.TOOL, new $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
+       [GTToolType.SWORD,GTToolType.DRILL_LV,GTToolType.DRILL_MV,GTToolType.DRILL_HV,GTToolType.DRILL_EV,
+        GTToolType.DRILL_IV,GTToolType.PICKAXE, GTToolType.SHOVEL, GTToolType.AXE, GTToolType.HOE, 
+        GTToolType.WRENCH, GTToolType.HARD_HAMMER, GTToolType.SAW, GTToolType.FILE, GTToolType.SCREWDRIVER, 
+        GTToolType.WIRE_CUTTER, GTToolType.KNIFE, GTToolType.SOFT_MALLET]).build());
+});
 ```
