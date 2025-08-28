@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -168,5 +169,13 @@ public class TestUtils {
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
         MultiLineComponent component = new MultiLineComponent(text);
         helper.assertTrue(component.equalsString(s), "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
+    }
+
+    public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
+        helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, true);
+    }
+
+    public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
+        helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
     }
 }
