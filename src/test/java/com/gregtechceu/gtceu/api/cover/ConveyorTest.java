@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
-import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -18,9 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
-
-import static com.gregtechceu.gtceu.common.data.GTCovers.CONVEYORS;
-import static com.gregtechceu.gtceu.common.data.GTCovers.PUMPS;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -41,7 +37,8 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 
@@ -62,7 +59,8 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate2 to crate1
         // This shouldn't do anything, as the items are in crate1
         cover.setIo(IO.OUT);
@@ -85,7 +83,8 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(), Direction.DOWN);
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
 

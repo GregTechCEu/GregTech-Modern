@@ -40,7 +40,8 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate1 to crate2 exactly 7 items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.KEEP_EXACT);
@@ -64,7 +65,8 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate1 to crate2 exactly 7 items 2 times
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_EXACT);
@@ -88,7 +90,8 @@ public class RobotArmTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(), Direction.DOWN);
+        RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(),
+                Direction.DOWN);
         // Set the cover to import from crate1 to crate2 all items
         cover.setIo(IO.IN);
         cover.setTransferMode(TransferMode.TRANSFER_ANY);

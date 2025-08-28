@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.common.cover.detector.DetectorCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -16,6 +16,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class DetectorCoverTest {
+
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));

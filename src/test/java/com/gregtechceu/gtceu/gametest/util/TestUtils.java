@@ -21,14 +21,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -147,7 +145,8 @@ public class TestUtils {
         return type;
     }
 
-    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack, Direction direction) {
+    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+                                           Direction direction) {
         CoverDefinition coverDefinition = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
@@ -160,8 +159,7 @@ public class TestUtils {
         helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
         assert coverDefinition != null;
         helper.assertTrue(machine.getCoverContainer().placeCoverOnSide(
-                direction, stack, coverDefinition, null
-        ), "failed to place cover");
+                direction, stack, coverDefinition, null), "failed to place cover");
         return machine.getCoverContainer().getCoverAtSide(direction);
     }
 
@@ -172,7 +170,8 @@ public class TestUtils {
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
         MultiLineComponent component = new MultiLineComponent(text);
-        helper.assertTrue(component.equalsString(s), "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
+        helper.assertTrue(component.equalsString(s),
+                "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
     }
 
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
@@ -182,6 +181,7 @@ public class TestUtils {
     public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
     }
+
     /**
      * Shortcut function to retrieve a metamachine from a blockentity's
      * 
