@@ -83,7 +83,7 @@ public class ConveyorTest {
                 .getMetaMachine();
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
-        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.ELECTRIC_PUMP_LV.asStack(),
                 Direction.DOWN);
         // Set the cover to import from crate1 to crate2
         cover.setIo(IO.IN);
