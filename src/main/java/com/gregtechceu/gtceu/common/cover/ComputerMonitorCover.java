@@ -59,8 +59,10 @@ public class ComputerMonitorCover extends CoverBehavior
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
     @Persisted
+    @Getter
     private final List<String> formatStringArgs = new ArrayList<>(8);
     @Persisted
+    @Getter
     private final List<String> formatStringLines = new ArrayList<>(8);
     @Persisted
     @DescSynced

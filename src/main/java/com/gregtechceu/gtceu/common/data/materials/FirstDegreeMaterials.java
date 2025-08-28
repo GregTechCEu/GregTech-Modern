@@ -1278,7 +1278,7 @@ public class FirstDegreeMaterials {
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
                 .dust(1)
                 .color(0xffe3bc).secondaryColor(0xd4918a).iconSet(FINE)
-                .components(Potassium, 1, Aluminium, 1, Silicon, 1, Oxygen, 8)
+                .components(Potassium, 1, Aluminium, 1, Silicon, 3, Oxygen, 8)
                 .buildAndRegister();
 
         NeodymiumMagnetic = new Material.Builder(GTCEu.id("magnetic_neodymium"))

@@ -460,10 +460,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     public boolean shouldRespectDistributionMode() {
-        return getDistributionMode() != DistributionMode.INSERT_FIRST &&
-                ((io == IO.IN) ?
-                        (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
-                        (getAdjacentItemHandler() instanceof ItemPipeBlockEntity));
+        return ((io == IO.IN) ?
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()
+                        .relative(attachedSide)) instanceof ItemPipeBlockEntity));
     }
 
     //////////////////////////////////////
@@ -481,6 +481,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
                 DistributionMode.values(), distributionMode, this::setDistributionMode);
 
         distributionSelector.setVisible(shouldRespectDistributionMode());
+        group.addWidget(distributionSelector);
 
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {

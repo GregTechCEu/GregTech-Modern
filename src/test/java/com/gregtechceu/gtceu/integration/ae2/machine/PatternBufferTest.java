@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -11,6 +9,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -18,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -29,9 +27,13 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.parts.encoding.PatternEncodingTerminalPart;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -50,10 +52,6 @@ public class PatternBufferTest {
                 .outputItems(new ItemStack(Blocks.BROWN_BED))
                 .EUt(GTValues.V[GTValues.EV])
                 .duration(1).buildRawRecipe());
-    }
-
-    private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
@@ -106,9 +104,14 @@ public class PatternBufferTest {
         IGrid grid = busHolder.patternBuffer.getGrid();
 
         ICraftingService craftingService = grid.getCraftingService();
+
+        CableBusBlockEntity cbbe = (CableBusBlockEntity) helper.getBlockEntity(new BlockPos(3, 2, 1));
+        PatternEncodingTerminalPart terminal = (PatternEncodingTerminalPart) cbbe.getCableBus()
+                .getPart(Direction.NORTH);
+
         Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
                 helper.getLevel(),
-                IActionSource::empty,
+                () -> IActionSource.ofMachine(terminal),
                 AEItemKey.of(Items.STONE),
                 1,
                 CalculationStrategy.REPORT_MISSING_ITEMS);
@@ -133,8 +136,6 @@ public class PatternBufferTest {
                                 busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
             });
         });
-
-        helper.succeed();
     }
 
     // Test for checking if pattern buffers work if you set distinct
@@ -146,9 +147,14 @@ public class PatternBufferTest {
         IGrid grid = busHolder.patternBuffer.getGrid();
 
         ICraftingService craftingService = grid.getCraftingService();
+
+        CableBusBlockEntity cbbe = (CableBusBlockEntity) helper.getBlockEntity(new BlockPos(3, 2, 1));
+        PatternEncodingTerminalPart terminal = (PatternEncodingTerminalPart) cbbe.getCableBus()
+                .getPart(Direction.NORTH);
+
         Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
                 helper.getLevel(),
-                IActionSource::empty,
+                () -> IActionSource.ofMachine(terminal),
                 AEItemKey.of(Items.STONE),
                 1,
                 CalculationStrategy.REPORT_MISSING_ITEMS);
@@ -173,8 +179,6 @@ public class PatternBufferTest {
                                 busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
             });
         });
-
-        helper.succeed();
     }
 
     // Test for checking if pattern buffers work if you dye them
@@ -186,9 +190,14 @@ public class PatternBufferTest {
         IGrid grid = busHolder.patternBuffer.getGrid();
 
         ICraftingService craftingService = grid.getCraftingService();
+
+        CableBusBlockEntity cbbe = (CableBusBlockEntity) helper.getBlockEntity(new BlockPos(3, 2, 1));
+        PatternEncodingTerminalPart terminal = (PatternEncodingTerminalPart) cbbe.getCableBus()
+                .getPart(Direction.NORTH);
+
         Future<ICraftingPlan> plan = craftingService.beginCraftingCalculation(
                 helper.getLevel(),
-                IActionSource::empty,
+                () -> IActionSource.ofMachine(terminal),
                 AEItemKey.of(Items.STONE),
                 1,
                 CalculationStrategy.REPORT_MISSING_ITEMS);
@@ -205,7 +214,7 @@ public class PatternBufferTest {
 
             helper.assertTrue(result.successful(), "Could not queue crafting job");
 
-            helper.failIfEver(() -> {
+            helper.succeedWhen(() -> {
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                                 new ItemStack(Blocks.STONE)),
@@ -213,7 +222,5 @@ public class PatternBufferTest {
                                 busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
             });
         });
-
-        helper.succeed();
     }
 }

@@ -40,9 +40,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('E', Predicates.abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1))
             .build()
         )
-        .workableCasingRenderer(
+        .workableCasingModel(
             "gtceu:block/casings/solid/machine_casing_solid_steel",
-            "gtceu:block/multiblock/implosion_compressor", false
+            "gtceu:block/multiblock/implosion_compressor"
         )
 })
 ```
