@@ -2002,6 +2002,8 @@
   "cover.ender_fluid_link.tooltip.channel_name": "Set channel name with input text",
   "cover.ender_fluid_link.tooltip.clear_button": "Clear channel description",
   "cover.ender_fluid_link.tooltip.list_button": "Show channel list",
+  "cover.ender_item_link.title": "Ender Item Link",
+  "cover.ender_redstone_link.title": "Ender Redstone Link",
   "cover.filter.blacklist.disabled": "Whitelist",
   "cover.filter.blacklist.enabled": "Blacklist",
   "cover.filter.mode.filter_both": "Filter Insert/Extract",
