@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -14,17 +15,20 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -177,5 +181,33 @@ public class TestUtils {
 
     public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
+    }
+    /**
+     * Shortcut function to retrieve a metamachine from a blockentity's
+     * 
+     * @param entity The MetaMachineBlockEntity
+     * @return the machine held, if any
+     */
+    public static MetaMachine getMetaMachine(BlockEntity entity) {
+        return ((MetaMachineBlockEntity) entity).getMetaMachine();
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper GameTestHelper
+     */
+    public static void succeedAfterTest(GameTestHelper helper) {
+        succeedAfterTest(helper, 100);
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper  GameTestHelper
+     * @param timeout Ticks to wait until succeeding
+     */
+    public static void succeedAfterTest(GameTestHelper helper, long timeout) {
+        helper.runAtTickTime(timeout, helper::succeed);
     }
 }
