@@ -16,9 +16,9 @@ const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.ma
     2. attackDamage is the amount of damage per hit you deal to mobs/players.
 -      Also takes a decimal number.
     3. Durability is the number of times the tool can be used before it breaks.
--      Takes a positive whole number up to 2.147 billion (e.g 700)
--      This applies to both crafting use and in-world use
--      Crafting generally consumes 2 points of durability per use
+-      Takes a positive whole number up to 2.147 billion (e.g 700).
+-      This applies to both crafting use and in-world use.
+-      Crafting generally consumes 2 points of durability per use.
     4. harvestLevel is the tier of block it can break.
 -       Can take a number between 1-6 with 1 being wood, 6 being neutronium.
     5. GtToolType is a group of tools in an object.
