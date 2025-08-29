@@ -37,7 +37,7 @@ You can change the properties of the material by adding any combination of the f
   4. Durability is how much base durability it has.
 - Here are some examples of base gt rotors
   1. Titanium Rotor: .rotorStats(130, 115, 3.0, 1600)
-  2. HSS-S Rotor .rotorStats(250, 180, 7.0f, 3000)
+  2. HSS-S Rotor .rotorStats(250, 180, 7.0, 3000)
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. temperature -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
