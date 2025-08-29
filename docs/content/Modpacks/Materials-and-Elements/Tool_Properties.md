@@ -15,7 +15,7 @@ const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.ma
 -      Takes a decimal number eg.(5.6).
     2. attackDamage is the amount of damage per hit you deal to mobs/players.
 -      Also takes a decimal number.
-    3. Durability is the number of times the tool can be used before it breaks.
+    3. durability is the number of times the tool can be used before it breaks.
 -      Takes a positive whole number up to 2.147 billion (e.g 700).
 -      This applies to both crafting use and in-world use.
 -      Crafting generally consumes 2 points of durability per use.
