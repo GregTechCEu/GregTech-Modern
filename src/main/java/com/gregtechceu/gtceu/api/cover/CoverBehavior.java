@@ -157,6 +157,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     @Override
     public void copyConfig(CompoundTag nbt) {}
 
+    /**
+     * Should return additional items required for pasting this cover's configuration
+     * Does NOT include the cover item itself
+     */
     @Override
     public Set<ItemStack> getItemsRequiredForPaste(CompoundTag nbt) {
         return new HashSet<>();
