@@ -2,7 +2,7 @@
 title: Tool Creation
 ---
 
-You can make tools out of materials you create by calling toolStats inside your material's code. 
+Tools can be made out of materials you create by calling toolStats inside the material's code. 
 
 When working with tools you will need to load these classes at the top of your file.
 ```js
@@ -15,10 +15,10 @@ const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.ma
 -      Takes a decimal number eg.(5.6).
     2. attackDamage is the amount of damage per hit you deal to mobs/players.
 -      Also takes a decimal number.
-    3. durability is how long it takes of use to breaks.
--      This applies to the durability towards both crafting use and normal use.
-       Takes a whole number up to 2.147 billion eg.(700).
-       Going up to max integer is not recommended.
+    3. Durability is the number of times the tool can be used before it breaks.
+-      Takes a positive whole number up to 2.147 billion (e.g 700)
+-      This applies to both crafting use and in-world use
+-      Crafting generally consumes 2 points of durability per use
     4. harvestLevel is the tier of block it can break.
 -       Can take a number between 1-6 with 1 being wood, 6 being neutronium.
     5. GtToolType is a group of tools in an object.
@@ -68,6 +68,7 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
             GTToolType.SHOVEL,
             ])
         .unbreakable()
+        .addEnchantmentForTools(silk_touch, 1)
         .build())
 });
 ```
