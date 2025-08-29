@@ -714,6 +714,7 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
+        provider.add("behaviour.missing_item", "Missing %s %s to paste");
         provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
         provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
         provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");

@@ -66,6 +66,7 @@
   "behaviour.lighter.uses": "Remaining uses: %d",
   "behaviour.meta.machine.config.copy.tooltip": "§7Sneak + R-Click to copy machine configuration",
   "behaviour.meta.machine.config.paste.tooltip": "§7R-Click to paste machine configuration",
+  "behaviour.missing_item": "Missing %s %s to paste",
   "behaviour.paintspray.black.tooltip": "Can paint things in Black",
   "behaviour.paintspray.blue.tooltip": "Can paint things in Blue",
   "behaviour.paintspray.brown.tooltip": "Can paint things in Brown",

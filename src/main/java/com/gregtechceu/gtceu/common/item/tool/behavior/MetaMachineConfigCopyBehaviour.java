@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.utils.DummyCoverHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -76,6 +78,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     public static final String CIRCUIT_SLOT = "circuit_inventory";
     public static final String CIRCUIT_SLOT_ENABLED = "circuit_enabled";
     public static final String CUSTOM_TOOLTIP = "tooltip";
+    public static final String BLOCK_STATE = "blockstate";
 
     public static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
             .withStyle(ChatFormatting.GREEN);
@@ -130,9 +133,18 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             return handleCopy(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(), context.getPlayer(),
                     context.getHitResult());
         } else if (stack.getTagElement(CONFIG_DATA) != null) {
-            return handlePaste(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(),
+            Set<ItemStack> missingItems = new HashSet<>();
+            InteractionResult result = handlePaste(stack.getOrCreateTag(), context.getLevel(), context.getClickedPos(),
                     context.getPlayer() == null || context.getPlayer().isCreative() ? null :
-                            new CustomItemStackHandler(context.getPlayer().getInventory().items));
+                            new CustomItemStackHandler(context.getPlayer().getInventory().items),
+                    missingItems, false);
+            if (context.getPlayer() != null && context.getLevel().isClientSide) {
+                for (ItemStack itemStack : missingItems) {
+                    context.getPlayer().sendSystemMessage(Component.translatable("behaviour.missing_item",
+                            itemStack.getCount(), itemStack.getDisplayName()));
+                }
+            }
+            return result;
         } else return InteractionResult.SUCCESS;
     }
 
@@ -152,17 +164,22 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 return InteractionResult.SUCCESS;
             }
             tag.put(BLOCK_ITEM, state.getCloneItemStack(hitResult, level, pos, player).serializeNBT());
-            // TODO copy entire block state (should this feature even exist?)
+            tag.put(BLOCK_STATE,
+                    BlockState.CODEC.encodeStart(NbtOps.INSTANCE, state).getOrThrow(false, GTCEu.LOGGER::error));
             return InteractionResult.SUCCESS;
         } else return InteractionResult.PASS;
     }
 
     public static InteractionResult handlePaste(CompoundTag tag, Level level, BlockPos pos,
-                                                @Nullable IItemHandler itemHandler) {
+                                                @Nullable IItemHandler itemHandler, Set<ItemStack> missingItems,
+                                                boolean simulate) {
         if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBE)
-            return handleMachinePaste(tag, machineBE.getMetaMachine(), itemHandler);
+            return handleMachinePaste(tag, machineBE.getMetaMachine(), itemHandler, missingItems, simulate);
         else if (tag.contains(CUSTOM_DATA) && level.getBlockEntity(pos) instanceof ICopyable copyable) {
-            if (consumeItems(itemHandler, copyable.getItemsRequiredForPaste(tag.getCompound(CUSTOM_DATA)))) {
+            consumeItems(itemHandler, copyable.getItemsRequiredForPaste(tag.getCompound(CUSTOM_DATA)), missingItems,
+                    simulate);
+            simulate |= !missingItems.isEmpty();
+            if (simulate) {
                 copyable.pasteConfig(tag.getCompound(CUSTOM_DATA));
                 return InteractionResult.SUCCESS;
             }
@@ -170,9 +187,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         } else if (tag.contains(BLOCK_ITEM)) {
             if (!level.getBlockState(pos).isAir()) return InteractionResult.PASS;
             ItemStack stack = ItemStack.of(tag.getCompound(BLOCK_ITEM));
-            if (stack.getItem() instanceof BlockItem item && consumeItems(itemHandler, Set.of(stack))) {
-                level.setBlockAndUpdate(pos, item.getBlock().defaultBlockState());
-                // TODO paste entire block state
+            consumeItems(itemHandler, Set.of(stack), missingItems, simulate);
+            simulate |= !missingItems.isEmpty();
+            if (stack.getItem() instanceof BlockItem item && simulate) {
+                BlockState state = tag.contains(BLOCK_STATE) ?
+                        BlockState.CODEC.decode(NbtOps.INSTANCE, tag.get(BLOCK_STATE))
+                                .getOrThrow(false, GTCEu.LOGGER::error).getFirst() :
+                        item.getBlock().defaultBlockState();
+                level.setBlockAndUpdate(pos, state);
                 return InteractionResult.SUCCESS;
             } else return InteractionResult.PASS;
         } else return InteractionResult.PASS;
@@ -264,27 +286,29 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         return InteractionResult.SUCCESS;
     }
 
-    public static InteractionResult handleMachinePaste(CompoundTag tag, MetaMachine machine,
-                                                       @Nullable IItemHandler itemHandler) {
+    public static InteractionResult handleMachinePaste(CompoundTag tag, @Nullable MetaMachine machine,
+                                                       @Nullable IItemHandler itemHandler, Set<ItemStack> missingItems,
+                                                       boolean simulate) {
         if (!tag.contains(CONFIG_DATA)) return InteractionResult.PASS;
+        simulate = simulate || machine == null;
         CompoundTag configData = tag.getCompound(CONFIG_DATA);
         Direction originalFront = tagToDirection(configData.get(ORIGINAL_FRONT));
-        if (configData.contains(ITEM_CONFIG) && machine instanceof IAutoOutputItem autoOutputItem) {
+        if (!simulate && configData.contains(ITEM_CONFIG) && machine instanceof IAutoOutputItem autoOutputItem) {
             pasteOutputConfig(originalFront, machine.getFrontFacing(), machine.getUpwardsFacing(),
                     configData.getCompound(ITEM_CONFIG),
                     autoOutputItem::setOutputFacingItems, autoOutputItem::setAutoOutputItems,
                     autoOutputItem::setAllowInputFromOutputSideItems);
         }
-        if (configData.contains(FLUID_CONFIG) && machine instanceof IAutoOutputFluid autoOutputFluid) {
+        if (!simulate && configData.contains(FLUID_CONFIG) && machine instanceof IAutoOutputFluid autoOutputFluid) {
             pasteOutputConfig(originalFront, machine.getFrontFacing(), machine.getUpwardsFacing(),
                     configData.getCompound(FLUID_CONFIG),
                     autoOutputFluid::setOutputFacingFluids, autoOutputFluid::setAutoOutputFluids,
                     autoOutputFluid::setAllowInputFromOutputSideFluids);
         }
-        if (configData.contains(MUFFLED) && machine instanceof IMufflableMachine mufflableMachine) {
+        if (!simulate && configData.contains(MUFFLED) && machine instanceof IMufflableMachine mufflableMachine) {
             mufflableMachine.setMuffled(configData.getBoolean(MUFFLED));
         }
-        if (configData.contains(PARALLEL) && machine instanceof ParallelHatchPartMachine parallelHatch) {
+        if (!simulate && configData.contains(PARALLEL) && machine instanceof ParallelHatchPartMachine parallelHatch) {
             parallelHatch.setCurrentParallel(configData.getInt(PARALLEL));
         }
         if (configData.contains(COVERS)) {
@@ -292,27 +316,36 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag coverTag : covers) {
                 if (!(coverTag instanceof CompoundTag compoundTag)) continue;
                 ItemStack coverItem = ItemStack.of(compoundTag.getCompound(COVER_ITEM));
-                if (!consumeItems(itemHandler, Set.of(coverItem))) continue;
+                consumeItems(itemHandler, Set.of(coverItem), missingItems, simulate);
+                simulate |= !missingItems.isEmpty();
                 Direction originalFace = tagToDirection(compoundTag.get(ORIGINAL_COVER_SIDE));
                 Direction face = RelativeDirection
-                        .findRelativeOf(originalFront, originalFace, machine.getUpwardsFacing())
-                        .getActualDirection(machine.getFrontFacing());
+                        .findRelativeOf(originalFront, originalFace,
+                                machine == null ? Direction.NORTH : machine.getUpwardsFacing())
+                        .getActualDirection(machine == null ? Direction.NORTH : machine.getFrontFacing());
                 CoverBehavior cover = null;
                 if (coverItem.getItem() instanceof IComponentItem item) {
                     for (IItemComponent component : item.getComponents()) {
                         if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
-                            cover = coverPlaceBehavior.coverDefinition()
-                                    .createCoverBehavior(machine.getCoverContainer(), face);
-                            machine.getCoverContainer().setCoverAtSide(cover, face);
+                            if (simulate) {
+                                cover = coverPlaceBehavior.coverDefinition()
+                                        .createCoverBehavior(machine == null ? new DummyCoverHolder(null, null) :
+                                                machine.getCoverContainer(), face);
+                                if (!cover.canAttach()) cover = null;
+                            } else {
+                                machine.getCoverContainer().placeCoverOnSide(face, coverItem,
+                                        coverPlaceBehavior.coverDefinition(), null);
+                                cover = machine.getCoverContainer().getCoverAtSide(face);
+                            }
                             break;
                         }
                     }
                 }
                 if (cover == null) continue;
                 CompoundTag coverConfig = compoundTag.getCompound(COVER_CONFIG);
-                if (consumeItems(itemHandler, cover.getItemsRequiredForPaste(coverConfig))) {
-                    cover.pasteConfig(coverConfig);
-                }
+                consumeItems(itemHandler, cover.getItemsRequiredForPaste(coverConfig), missingItems, simulate);
+                simulate |= !missingItems.isEmpty();
+                if (!simulate) cover.pasteConfig(coverConfig);
             }
         }
         if (configData.contains(GHOST_CIRCUITS) && machine instanceof IHasCircuitSlot circuitSlotMachine) {
@@ -342,48 +375,47 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                         !machine.getLevel().getBlockState(pos).is(blockItem.getBlock()))
                     GTUtil.addStackToSet(requiredItems, reqItem.getDefaultInstance());
             }
-            if (consumeItems(itemHandler, requiredItems)) {
-                for (Tag part : parts) {
-                    if (!(part instanceof CompoundTag partTag)) continue;
-                    BlockPos relPos = posFromTag(partTag.get(POSITION));
-                    BlockPos.MutableBlockPos pos = new BlockPos(
-                            relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
-                            relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
-                            relPos.get(right.getAxis()) * -right.getAxisDirection().getStep()).mutable();
-                    pos.move(machine.getPos());
-                    ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
-                    if (stack.getItem() instanceof BlockItem blockItem) {
-                        if (!machine.getLevel().getBlockState(pos).isAir() &&
-                                machine.getLevel() instanceof ServerLevel serverLevel) {
-                            for (ItemStack drop : serverLevel.getBlockState(pos)
-                                    .getDrops(new LootParams.Builder(serverLevel)
-                                            .withParameter(LootContextParams.ORIGIN, pos.getCenter())
-                                            .withParameter(LootContextParams.TOOL,
-                                                    new ItemStack(Items.NETHERITE_PICKAXE)) // TODO idk what to do with
-                                                                                            // the drops (or should i
-                                                                                            // just not allow copying
-                                                                                            // when there are blocks
-                                                                                            // already)
-                                            .withOptionalParameter(LootContextParams.BLOCK_ENTITY,
-                                                    serverLevel.getBlockEntity(pos))))
-                                Block.popResource(serverLevel, machine.getPos(), drop);
-                        }
-                        machine.getLevel().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
-                        if (partTag.contains(CONFIG_DATA) &&
-                                machine.getLevel().getBlockEntity(pos) instanceof IMachineBlockEntity machineBE) {
-                            if (partTag.contains(ORIGINAL_FRONT))
-                                machineBE.getMetaMachine().setFrontFacing(
-                                        RelativeDirection.getActualDirection(
-                                                originalFront, multiblock.getFrontFacing(),
-                                                tagToDirection(partTag.get(ORIGINAL_FRONT))));
-                        }
-                        handlePaste(partTag.getCompound(CONFIG_DATA), machine.getLevel(), pos, itemHandler);
+            consumeItems(itemHandler, requiredItems, missingItems, simulate);
+            simulate |= !missingItems.isEmpty();
+            for (Tag part : parts) {
+                if (!(part instanceof CompoundTag partTag)) continue;
+                BlockPos relPos = posFromTag(partTag.get(POSITION));
+                BlockPos.MutableBlockPos pos = new BlockPos(
+                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
+                        relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
+                        relPos.get(right.getAxis()) * -right.getAxisDirection().getStep()).mutable();
+                pos.move(machine.getPos());
+                ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
+                if (stack.getItem() instanceof BlockItem blockItem) {
+                    if (!simulate && !machine.getLevel().getBlockState(pos).isAir() &&
+                            machine.getLevel() instanceof ServerLevel serverLevel) {
+                        for (ItemStack drop : serverLevel.getBlockState(pos)
+                                .getDrops(new LootParams.Builder(serverLevel)
+                                        .withParameter(LootContextParams.ORIGIN, pos.getCenter())
+                                        .withParameter(LootContextParams.TOOL, new ItemStack(Items.NETHERITE_PICKAXE))
+                                        .withOptionalParameter(LootContextParams.BLOCK_ENTITY,
+                                                serverLevel.getBlockEntity(pos))))
+                            Block.popResource(serverLevel, machine.getPos(), drop);
                     }
+                    if (!simulate) machine.getLevel().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
+                    if (!simulate && partTag.contains(CONFIG_DATA) &&
+                            machine.getLevel().getBlockEntity(pos) instanceof IMachineBlockEntity machineBE) {
+                        if (partTag.contains(ORIGINAL_FRONT))
+                            machineBE.getMetaMachine().setFrontFacing(
+                                    RelativeDirection.getActualDirection(
+                                            originalFront, multiblock.getFrontFacing(),
+                                            tagToDirection(partTag.get(ORIGINAL_FRONT))));
+                    }
+                    handlePaste(partTag.getCompound(CONFIG_DATA), machine.getLevel(), pos, itemHandler, missingItems,
+                            simulate);
                 }
             }
         }
         if (configData.contains(CUSTOM_DATA) && machine instanceof ICopyable copyable) {
-            if (consumeItems(itemHandler, copyable.getItemsRequiredForPaste(configData.getCompound(CUSTOM_DATA)))) {
+            consumeItems(itemHandler, copyable.getItemsRequiredForPaste(configData.getCompound(CUSTOM_DATA)),
+                    missingItems, simulate);
+            simulate |= !missingItems.isEmpty();
+            if (!simulate) {
                 copyable.pasteConfig(configData.getCompound(CUSTOM_DATA));
             }
         }
@@ -445,6 +477,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     tooltipComponents.add(
                             Component.Serializer.fromJson(data.getCompound(CUSTOM_DATA).getString(CUSTOM_TOOLTIP)));
                 }
+                Set<ItemStack> missingItems = new HashSet<>();
+                handleMachinePaste(data, null, new CustomItemStackHandler(), missingItems, true);
+                for (ItemStack itemStack : missingItems) tooltipComponents.add(Component
+                        .translatable("behaviour.missing_item", itemStack.getCount(), itemStack.getDisplayName()));
             }
             if (data.contains(MUFFLED)) {
                 tooltipComponents.add(Component.translatable("behaviour.setting.muffled.tooltip",
@@ -485,10 +521,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         allowInputFromOutputSide.accept(data.getBoolean(INPUT_FROM_OUTPUT_SIDE));
     }
 
-    private static boolean consumeItems(@Nullable IItemHandler itemHandler,
-                                        Set<ItemStack> requiredItems) {
-        // TODO add some feedback to the player if missing items
-        if (itemHandler == null) return true;
+    private static void consumeItems(@Nullable IItemHandler itemHandler,
+                                     Set<ItemStack> requiredItems, Set<ItemStack> missingItems, boolean simulate) {
+        if (itemHandler == null) return;
         Map<Integer, Integer> itemCountBySlot = new HashMap<>();
         for (ItemStack itemStack : requiredItems) {
             if (itemStack.isEmpty()) continue;
@@ -506,10 +541,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                             amount -= stack.getCount() - itemCountBySlot.getOrDefault(slot, 0);
                         }
             }
-            if (!foundItem) return false;
+            if (!foundItem) GTUtil.addStackToSet(missingItems, itemStack.copyWithCount(amount));
         }
-        for (Integer slot : itemCountBySlot.keySet()) itemHandler.extractItem(slot, itemCountBySlot.get(slot), false);
-        return true;
+        if (!simulate && missingItems.isEmpty()) for (Integer slot : itemCountBySlot.keySet())
+            itemHandler.extractItem(slot, itemCountBySlot.get(slot), false);
     }
 
     private static Tag posToTag(BlockPos pos) {
