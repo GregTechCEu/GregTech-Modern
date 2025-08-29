@@ -35,7 +35,7 @@ You can change the properties of the material by adding any combination of the f
      Actual efficiency: rotorEfficiency * holder Efficiency / 100
   3. Damage is the amount of damage that happens to the player when opening the ui of a running turbine's rotor holder.
   4. Durability is how much base durability it has.
-- Here are some examples of base gt rotors
+- Here are some examples of base gt rotors:
   1. Titanium Rotor: .rotorStats(130, 115, 3.0, 1600)
   2. HSS-S Rotor .rotorStats(250, 180, 7.0, 3000)
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
