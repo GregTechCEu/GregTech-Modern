@@ -9,13 +9,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -24,35 +21,53 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeFluids;
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeFluids;
 
 @NoArgsConstructor
 public class AdjacentFluidCondition extends RecipeCondition {
 
     // spotless:off
-    public static final Codec<List<HolderSet<Fluid>>> FLUID_CODEC = ExtraCodecs.lazyInitializedCodec(
-            () -> RegistryCodecs.homogeneousList(Registries.FLUID).listOf()
-    );
-
-    public static final Codec<AdjacentFluidCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
-            FLUID_CODEC.fieldOf("fluids").forGetter(AdjacentFluidCondition::getFluids)
-    ).apply(instance, AdjacentFluidCondition::new));
+    public static final Codec<AdjacentFluidCondition> CODEC =
+            RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+                    Codec.STRING.fieldOf("fluidString").forGetter(AdjacentFluidCondition::getFluidString)
+            ).apply(instance, AdjacentFluidCondition::new));
     // spotless:on
 
     @Getter
-    @Setter
-    private @NotNull List<HolderSet<Fluid>> fluids = new ArrayList<>();
+    private @NotNull String fluidString = "";
+
+    private @Nullable List<HolderSet<Fluid>> fluids = null;
+
+    public void setFluids(@NotNull List<HolderSet<Fluid>> fluids) {
+        this.fluids = fluids;
+        this.fluidString = encodeFluids(fluids);
+    }
+
+    public List<HolderSet<Fluid>> getFluids() {
+        if (fluids == null) {
+            fluids = decodeFluids(getFluidString());
+        }
+        return fluids;
+    }
 
     public AdjacentFluidCondition(@NotNull List<HolderSet<Fluid>> fluids) {
-        this.fluids.addAll(fluids);
+        this.setFluids(fluids);
+    }
+
+    public AdjacentFluidCondition(boolean isReverse, String fluidString) {
+        super(isReverse);
+        this.fluidString = fluidString;
     }
 
     public AdjacentFluidCondition(boolean isReverse, @NotNull List<HolderSet<Fluid>> fluids) {
         super(isReverse);
-        this.fluids.addAll(fluids);
+        this.setFluids(fluids);
     }
 
     public static AdjacentFluidCondition fromFluids(Collection<Fluid> fluids) {
@@ -114,7 +129,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
     }
 
     public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@NotNull GTRecipe recipe) {
-        if (this.fluids.isEmpty() || (recipe.data.contains("fluidA") && recipe.data.contains("fluidB"))) {
+        if (this.getFluids().isEmpty() || (recipe.data.contains("fluidA") && recipe.data.contains("fluidB"))) {
             List<HolderSet<Fluid>> fluids = new ArrayList<>();
 
             Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
@@ -126,9 +141,9 @@ public class AdjacentFluidCondition extends RecipeCondition {
                 fluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }
 
-            this.fluids = fluids;
+            this.setFluids(fluids);
         }
-        return this.fluids;
+        return this.getFluids();
     }
 
     @Override
