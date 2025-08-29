@@ -8,11 +8,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
 import net.darkhax.gamestages.data.GameStageSaveHandler;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -66,32 +63,5 @@ public class GameStageCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new GameStageCondition();
-    }
-
-    @Override
-    public @NotNull JsonObject serialize() {
-        var obj = super.serialize();
-        obj.addProperty("stageName", stageName);
-        return obj;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        stageName = GsonHelper.getAsString(config, "stageName");
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        stageName = buf.readUtf();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeUtf(stageName);
     }
 }

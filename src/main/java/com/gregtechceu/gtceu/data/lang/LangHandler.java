@@ -469,6 +469,8 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
+        provider.add("cover.ender_item_link.title", "Ender Item Link");
+        provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
@@ -1247,6 +1249,7 @@ public class LangHandler {
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
+        provider.add("gtceu.gui.machinemode.tab_tooltip", "Change active Machine Mode");
         provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
         provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
         provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
@@ -1571,6 +1574,18 @@ public class LangHandler {
                 "Example: {formatInt 1236457} -> 1.24M",
                 "Usage:",
                 "  {formatInt <arg>} -> string representation of the int");
+        multiLang(provider, "gtceu.placeholder_info.ender",
+                "Interacts with ender link covers",
+                "Can interact with private channels if provided with a data item bound to a player",
+                "Usage:",
+                "  {ender item <channel> [player_data_item_slot]} -> item count",
+                "  {ender fluid <channel> [player_data_item_slot]} -> fluid count",
+                "  {ender redstone <channel> [player_data_item_slot] -> redstone signal level",
+                "  {ender redstone <channel> <player_data_item_slot> <signal> -> sets the redstone signal outputed to the ender redstone link, returns empty string",
+                "The player_data_item_slot argument may be left empty (not 0, empty string)");
+        provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
+        provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
