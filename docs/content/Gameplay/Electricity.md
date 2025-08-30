@@ -68,7 +68,7 @@ Singleblock machines can only do regular overclocks.
 
 A _perfect overclock_ quadruples both the recipe's speed and EU/t usage.
 
-Some multibocks suck as the Large Chemical Reactor do perfect overclocking by default, while some have conditional perfect overclocking.
+Some multibocks such as the Large Chemical Reactor do perfect overclocking by default, while some have conditional perfect overclocking.
 
 Multiblocks with 2 Energy Hatches of the same voltage tier will overclock to 1 Amp of the next voltage tier. 
 
