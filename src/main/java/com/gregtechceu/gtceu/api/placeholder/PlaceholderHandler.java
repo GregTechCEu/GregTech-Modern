@@ -14,9 +14,12 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.LanguageDefinition;
+import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.TokenTypes;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -36,6 +39,19 @@ public class PlaceholderHandler {
     private static final char ESCAPED_NEWLINE = 'n';
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
+
+    public static final LanguageDefinition LANG_DEFINITION = new LanguageDefinition(
+            "Placeholders",
+            List.of(
+                    TokenTypes.KEYWORD.createTokenType(PlaceholderHandler.getAllPlaceholderNames().stream().toList()),
+                    TokenTypes.IDENTIFIER,
+                    TokenTypes.STRING,
+                    TokenTypes.COMMENT,
+                    TokenTypes.NUMBER,
+                    TokenTypes.OPERATOR,
+                    TokenTypes.WHITESPACE,
+                    TokenTypes.OTHER),
+            Set.of());
 
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
@@ -95,7 +111,29 @@ public class PlaceholderHandler {
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
                             MultiLineComponent result = processPlaceholder(placeholder, ctx);
-                            GTUtil.getLast(stack.peek()).append(result);
+                            if (result.isIgnoreSpaces()) {
+                                GTUtil.getLast(stack.peek()).append(result);
+                            } else {
+                                for (int i = 0; i < result.size(); i++) {
+                                    MutableComponent component = result.get(i);
+                                    component.visit((style, string) -> {
+                                        String[] split = string.split(String.valueOf(ARG_SEPARATOR));
+                                        for (int j = 0; j < split.length; j++) {
+                                            String idk = split[j];
+                                            GTUtil.getLast(stack.peek())
+                                                    .append(MultiLineComponent.literal(idk).withStyle(style));
+                                            if (j == split.length - 1) continue;
+                                            if (stack.size() == 1) {
+                                                GTUtil.getLast(stack.peek()).append(ARG_SEPARATOR);
+                                            } else {
+                                                stack.peek().add(MultiLineComponent.empty());
+                                            }
+                                        }
+                                        return Optional.empty();
+                                    }, component.getStyle());
+                                    if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
+                                }
+                            }
                         } catch (PlaceholderException e) {
                             e.setLineInfo(line, symbol);
                             exceptions.add(e);

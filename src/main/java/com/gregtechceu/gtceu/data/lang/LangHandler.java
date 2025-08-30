@@ -1357,7 +1357,8 @@ public class LangHandler {
         provider.add("gtceu.tooltip.status.trinary.true", "True");
         provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
 
-        provider.add("gtceu.tooltip.wireless_transmitter_bind", "Binding to a transmitter cover at %s %s %s facing %s");
+        provider.add("gtceu.tooltip.wireless_transmitter_bind",
+                "Binding to a transmitter cover at %s %s %s facing %s in %s");
         provider.add("gtceu.tooltip.computer_monitor_config", "Storing computer monitor cover configuration data");
         provider.add("gtceu.tooltip.computer_monitor_data", "Storing data: %s");
 
@@ -1532,7 +1533,7 @@ public class LangHandler {
         multiLang(provider, "gtceu.placeholder_info.nbt",
                 "Returns the nbt data of the item in the specified slot",
                 "Usage:",
-                "  {nbt <slot>} -> nbt data");
+                "  {nbt <slot> [key1] [key2] [key3] ...} -> item_nbt[key1][key2][key3][...]");
         multiLang(provider, "gtceu.placeholder_info.toChars",
                 "Returns the characters of the provided string with spaces between them",
                 "Example: {toChars example} -> 'e x a m p l e'",
@@ -1574,11 +1575,20 @@ public class LangHandler {
                 "Example: {formatInt 1236457} -> 1.24M",
                 "Usage:",
                 "  {formatInt <arg>} -> string representation of the int");
+        multiLang(provider, "gtceu.placeholder_info.click",
+                "Returns whether the targeted advanced monitor was clicked before the current tick",
+                "Usage:",
+                "  {click} -> \"1\" if the targeted advanced monitor was clicked, \"0\" otherwise",
+                "  {click x} -> the x position of the last click (between 0 and 1)",
+                "  {click y} -> the y position of the last click (between 0 and 1)");
         multiLang(provider, "gtceu.placeholder_info.ender",
                 "Interacts with ender link covers",
                 "Can interact with private channels if provided with a data item bound to a player",
                 "Usage:",
                 "  {ender item <channel> [player_data_item_slot]} -> item count",
+                "  {ender itemPull <channel> [player_data_item_slot]} -> pull 1 item from the ender link's buffer",
+                "  {ender itemPush <channel> [player_data_item_slot]} -> push 1 item to the ender link's buffer",
+                "  {ender itemId <channel> [player_data_item_slot]} -> the id of the item in the ender link's buffer (ex. \"26 minecraft:dirt\")",
                 "  {ender fluid <channel> [player_data_item_slot]} -> fluid count",
                 "  {ender redstone <channel> [player_data_item_slot] -> redstone signal level",
                 "  {ender redstone <channel> <player_data_item_slot> <signal> -> sets the redstone signal outputed to the ender redstone link, returns empty string",
