@@ -13,23 +13,18 @@ toolStats has the following arguments:
 
 `.toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)`
 
-- `harvestSpeed: float` is how fast the tool actually breaks blocks in world. 
+- `harvestSpeed: float` is how fast the tool actually breaks blocks in world.
 
-    Takes a decimal number (e.g. 5.6).
-
-- `attackDamage: float` is the amount of damage per hit you deal to mobs/players. 
-
-    Also takes a decimal number.
+- `attackDamage: float` is the amount of damage per hit you deal to mobs/players.
 
 - `durability: int` is the number of times the tool can be used before it breaks. 
 
-    Takes a positive whole number up to max integer, for example 700.
     This applies to both crafting use and in-world use.
     Crafting generally consumes 2 points of durability per use.
 
 - `harvestLevel: int` is the tier of block it can break.
   
-    Can take a number between 1-6 with 1 being wood, 6 being neutronium.
+    Can take an integer between 1-6 with 1 being wood, 6 being neutronium.
 
 - `types: GTToolType[]` is an array of tools in an object.
 
@@ -50,7 +45,8 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
         ))
 });
 ```
-You can also add further arguments onto your tools such as:
+Using the ToolProperties.Builder, you can also add further arguments onto your tools.
+The builder has the same arguments as the constructor, and can have chained methods such as:
 
 - `.unbreakable()`
 
@@ -60,11 +56,9 @@ You can also add further arguments onto your tools such as:
 
     Makes mined blocks and mob drops teleport to player inventory.
 
-
 - `attackSpeed(float)`
   
     Set the attack speed of a tool made from this Material (animation time).  
-    Takes a decimal number.
 
 - `ignoreCraftingTools()`
 
@@ -72,16 +66,15 @@ You can also add further arguments onto your tools such as:
 
 - `addEnchantmentForTools(enchantment, level)`
 
-    Enchantment is the default enchantment applied on tool creation.
+    Enchantment is the default enchantment applied on tool creation.  
     Level is the level of said enchantment.
 
 - `enchantability(int enchantability)`
 
     Set the base enchantability of a tool made from this Material.
     Iron is 14, Diamond is 10, Stone is 5.
-    Takes a whole number.
 
-Here is an example of using them in your material:
+Here is an example of using the builder in a material:
 ```js title="example_tool_material.js"
 GTCEuStartupEvents.registry('gtceu:material', event => {
     event.create('aluminfrost')
@@ -98,13 +91,13 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
 });
 ```
 
-You can also add more tool types to a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable (not changeable).
+You can also change the tool property of a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable.
 ```js title="tool_replacement.js"
 GTCEuStartupEvents.materialModification(event => {
     if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
         GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
     }
-    GTMaterials.Neutronium.setProperty($PropertyKey.TOOL, 
+    GTMaterials.Iron.setProperty($PropertyKey.TOOL, 
         $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
            [
               GTToolType.SOFT_MALLET,
