@@ -47,7 +47,7 @@ public class AdjacentBlockCondition extends RecipeCondition {
 
     public void setBlocks(@NotNull List<HolderSet<Block>> blocks) {
         this.blocks = blocks;
-        this.blockString = encodeHolderSets(blocks, Registries.BLOCK);
+        this.blockString = encodeHolderSets(blocks);
     }
 
     public List<HolderSet<Block>> getBlocks() {

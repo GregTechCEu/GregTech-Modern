@@ -47,7 +47,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
 
     public void setFluids(@NotNull List<HolderSet<Fluid>> fluids) {
         this.fluids = fluids;
-        this.fluidString = encodeHolderSets(fluids, Registries.FLUID);
+        this.fluidString = encodeHolderSets(fluids);
     }
 
     public List<HolderSet<Fluid>> getFluids() {

@@ -23,12 +23,10 @@ public class ConditionSerializeUtils {
      * Encode a List<HolderSet<T>> to a string encoding.
      * HolderSets are separated by '|', and elements of a direct HolderSet are separated by ','.
      *
-     * @param items       The list of HolderSet<T> to be encoded.
-     * @param registryKey The ResourceKey of the registry (e.g., Registries.FLUID, Registries.BLOCK).
+     * @param items The list of HolderSet<T> to be encoded.
      * @return A string encoding.
      */
-    public static <T> String encodeHolderSets(List<HolderSet<T>> items,
-                                              ResourceKey<? extends Registry<T>> registryKey) {
+    public static <T> String encodeHolderSets(List<HolderSet<T>> items) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
@@ -36,7 +34,7 @@ public class ConditionSerializeUtils {
             if (!first) {
                 sb.append("|");
             }
-            sb.append(encodeSingleHolderSet(holderSet, registryKey));
+            sb.append(encodeHolderSet(holderSet));
             first = false;
         }
 
@@ -48,19 +46,16 @@ public class ConditionSerializeUtils {
      * If it's a tag, it's encoded as #+location.
      * If it's a direct list, elements are separated by ','.
      *
-     * @param holderSet   The HolderSet<T> to be encoded.
-     * @param registryKey The ResourceKey of the registry.
+     * @param holderSet The HolderSet<T> to be encoded.
      * @return The encoded string.
      */
-    public static <T> String encodeSingleHolderSet(HolderSet<T> holderSet,
-                                                   ResourceKey<? extends Registry<T>> registryKey) {
-        Registry<T> vanillaRegistry = GTRegistries.builtinRegistry().registry(registryKey).get();
+    public static <T> String encodeHolderSet(HolderSet<T> holderSet) {
         return holderSet.unwrap().map(
                 // Case 1: Tag
                 tagKey -> "#" + tagKey.location(),
                 // Case 2: Direct list of holders
                 holders -> holders.stream()
-                        .map(holder -> getStringFromHolder(holder)) // Pass forgeRegistry
+                        .map(holder -> getStringFromHolder(holder))
                         .collect(Collectors.joining(",")));
     }
 
@@ -79,7 +74,7 @@ public class ConditionSerializeUtils {
 
         Optional<TagKey<T>> tagOpt = holder.tags().findFirst();
         if (tagOpt.isPresent()) {
-            return "#" + tagOpt.get().location().toString();
+            return "#" + tagOpt.get().location();
         }
         throw new RuntimeException("Could not serialize holder: " + holder);
     }
