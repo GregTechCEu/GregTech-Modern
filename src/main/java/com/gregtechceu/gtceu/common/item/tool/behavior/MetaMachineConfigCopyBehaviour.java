@@ -373,7 +373,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
                 BlockPos relPos = posFromTag(partTag.get(POSITION));
                 BlockPos.MutableBlockPos pos = new BlockPos(
-                        relPos.get(front.getAxis()),
+                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep() *
+                                originalFront.getAxisDirection().getStep(),
                         relPos.get(up.getAxis()),
                         relPos.get(right.getAxis())).mutable();
                 pos.move(machine.getPos());
@@ -391,6 +392,14 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                         relPos.get(front.getAxis()),
                         relPos.get(up.getAxis()),
                         relPos.get(right.getAxis())).mutable();
+                switch (front.getAxis()) {
+                    case X -> pos.setX(pos.getX() * front.getAxisDirection().getStep() *
+                            originalFront.getAxisDirection().getStep());
+                    case Y -> pos.setY(pos.getY() * front.getAxisDirection().getStep() *
+                            originalFront.getAxisDirection().getStep());
+                    case Z -> pos.setZ(pos.getZ() * front.getAxisDirection().getStep() *
+                            originalFront.getAxisDirection().getStep());
+                }
                 pos.move(machine.getPos());
                 ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
                 if (stack.getItem() instanceof BlockItem blockItem) {
