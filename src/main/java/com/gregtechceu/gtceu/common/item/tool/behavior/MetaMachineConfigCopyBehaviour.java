@@ -373,9 +373,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             for (Tag part : parts) if (part instanceof CompoundTag partTag) {
                 BlockPos relPos = posFromTag(partTag.get(POSITION));
                 BlockPos.MutableBlockPos pos = new BlockPos(
-                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
-                        relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
-                        relPos.get(right.getAxis()) * -right.getAxisDirection().getStep()).mutable();
+                        relPos.get(front.getAxis()),
+                        relPos.get(up.getAxis()),
+                        relPos.get(right.getAxis())).mutable();
                 pos.move(machine.getPos());
                 Item reqItem = ItemStack.of(partTag.getCompound(BLOCK_ITEM)).getItem();
                 if (!(reqItem instanceof BlockItem blockItem) ||
@@ -388,9 +388,9 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                 if (!(part instanceof CompoundTag partTag)) continue;
                 BlockPos relPos = posFromTag(partTag.get(POSITION));
                 BlockPos.MutableBlockPos pos = new BlockPos(
-                        relPos.get(front.getAxis()) * front.getAxisDirection().getStep(),
-                        relPos.get(up.getAxis()) * up.getAxisDirection().getStep(),
-                        relPos.get(right.getAxis()) * -right.getAxisDirection().getStep()).mutable();
+                        relPos.get(front.getAxis()),
+                        relPos.get(up.getAxis()),
+                        relPos.get(right.getAxis())).mutable();
                 pos.move(machine.getPos());
                 ItemStack stack = ItemStack.of(partTag.getCompound(BLOCK_ITEM));
                 if (stack.getItem() instanceof BlockItem blockItem) {
