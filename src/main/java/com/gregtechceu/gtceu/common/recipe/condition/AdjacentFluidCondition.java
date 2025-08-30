@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -26,8 +27,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeFluids;
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeFluids;
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeHolderSets;
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeHolderSets;
 
 @NoArgsConstructor
 public class AdjacentFluidCondition extends RecipeCondition {
@@ -46,12 +47,12 @@ public class AdjacentFluidCondition extends RecipeCondition {
 
     public void setFluids(@NotNull List<HolderSet<Fluid>> fluids) {
         this.fluids = fluids;
-        this.fluidString = encodeFluids(fluids);
+        this.fluidString = encodeHolderSets(fluids, Registries.FLUID);
     }
 
     public List<HolderSet<Fluid>> getFluids() {
         if (fluids == null) {
-            fluids = decodeFluids(getFluidString());
+            fluids = decodeHolderSets(getFluidString(), Registries.FLUID);
         }
         return fluids;
     }

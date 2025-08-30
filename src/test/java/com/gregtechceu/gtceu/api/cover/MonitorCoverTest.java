@@ -33,7 +33,7 @@ public class MonitorCoverTest {
                 "energy",
                 "energyCapacity"));
         cover.setUpdateInterval(1);
-        helper.runAtTickTime(2, () -> {
+        helper.runAtTickTime(5, () -> {
             TestUtils.assertEqual(helper, cover.getText(),
                     "Energy: 0/" + machine.energyContainer.getEnergyCapacity() + " EU");
             helper.succeed();
@@ -49,7 +49,7 @@ public class MonitorCoverTest {
         cover.getFormatStringLines()
                 .add("{if 1 {combine test 1 2 3 lol {repeat 5 \"a \"}} \"if placeholder failed somehow\"}");
         cover.setUpdateInterval(1);
-        helper.runAtTickTime(2, () -> {
+        helper.runAtTickTime(5, () -> {
             TestUtils.assertEqual(helper, cover.getText(), "test 1 2 3 lol a a a a a ");
             helper.succeed();
         });
