@@ -416,11 +416,12 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                     if (!simulate) machine.getLevel().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
                     if (!simulate && partTag.contains(CONFIG_DATA) &&
                             machine.getLevel().getBlockEntity(pos) instanceof IMachineBlockEntity machineBE) {
+                        Direction originalFace = tagToDirection(partTag.get(ORIGINAL_FRONT));
                         if (partTag.contains(ORIGINAL_FRONT))
-                            machineBE.getMetaMachine().setFrontFacing(
-                                    RelativeDirection.getActualDirection(
-                                            originalFront, multiblock.getFrontFacing(),
-                                            tagToDirection(partTag.get(ORIGINAL_FRONT))));
+                            machineBE.getMetaMachine().setFrontFacing(RelativeDirection
+                                    .findRelativeOf(originalFront, originalFace,
+                                            machine == null ? Direction.NORTH : machine.getUpwardsFacing())
+                                    .getActualDirection(machine == null ? Direction.NORTH : machine.getFrontFacing()));
                     }
                     handlePaste(partTag.getCompound(CONFIG_DATA), machine.getLevel(), pos, itemHandler, missingItems,
                             simulate);
