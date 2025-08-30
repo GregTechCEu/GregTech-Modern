@@ -70,6 +70,8 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         BlockState state = world.getBlockState(blockHitResult.getBlockPos());
         BlockPos pos = blockHitResult.getBlockPos();
         Set<GTToolType> toolTypes = ToolHelper.getToolTypes(itemStack);
+        // Copied and adapted from
+        // https://github.com/Creators-of-Create/Create/blob/mc1.20.1/dev/src/main/java/com/simibubi/create/content/equipment/wrench/WrenchItem.java
         if (toolTypes.contains(GTToolType.WRENCH) && GTCEu.Mods.isCreateLoaded() &&
                 state.is(CustomTags.CREATE_WRENCH_PICKUP)) {
             if (!(world instanceof ServerLevel serverLevel))
