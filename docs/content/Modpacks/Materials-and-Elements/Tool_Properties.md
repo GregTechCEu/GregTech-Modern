@@ -30,7 +30,7 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
     event.create('aluminfrost')
         .ingot()
         .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
-        .toolStats(new ToolProperty(12, 7, 3072, 6,
+        .toolStats(new ToolProperty(12.0, 7.0, 3072, 6,
             [
                 GTToolType.DRILL_LV,
                 GTToolType.MINING_HAMMER
