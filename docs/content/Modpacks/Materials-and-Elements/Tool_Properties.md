@@ -56,7 +56,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 
     Makes mined blocks and mob drops teleport to player inventory.
 
-- `attackSpeed(float)`
+- `attackSpeed(float attackSpeed)`
   
     Set the attack speed of a tool made from this Material (animation time).  
 
@@ -64,7 +64,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 
     Disable crafting tools being made from this Material.
 
-- `addEnchantmentForTools(enchantment, level)`
+- `addEnchantmentForTools(Enchantment enchantment, int level)`
 
     Enchantment is the default enchantment applied on tool creation.  
     Level is the level of said enchantment.
@@ -80,14 +80,18 @@ GTCEuStartupEvents.registry('gtceu:material', event => {
     event.create('aluminfrost')
         .ingot()
         .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
-        .toolStats($ToolProperty.Builder.of(1.8, 1.7, 700, 3,
-            [GTToolType.SWORD,
-            GTToolType.PICKAXE,
-            GTToolType.SHOVEL,
-            ])
-        .unbreakable()
-        .addEnchantmentForTools(silk_touch, 1)
-        .build())
+        .toolStats(
+            $ToolProperty.Builder.of(1.8, 1.7, 700, 3,
+                [
+                    GTToolType.SWORD,
+                    GTToolType.PICKAXE,
+                    GTToolType.SHOVEL,
+                ]
+            )
+            .unbreakable()
+            .addEnchantmentForTools(silk_touch, 1)
+            .build()
+        ) 
 });
 ```
 
