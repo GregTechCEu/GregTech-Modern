@@ -736,7 +736,7 @@ public class ConfigHolder {
 
         @Configurable
         @Configurable.Comment({ "Whether or not to display all temperatures in Kelvin instead of Celsius" })
-        public boolean temperaturesInKelvin = false;
+        public boolean temperaturesInKelvin = true;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
