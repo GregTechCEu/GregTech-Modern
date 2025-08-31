@@ -78,7 +78,7 @@ public class ExampleCondition extends RecipeCondition {
 
 Lets step through this example. This will not be in order as it is in the file, but rather in the order that makes most sense.
 
-Starting with 
+Starting with:
 ```java
     @Override
     public RecipeConditionType<?> getType() {
@@ -137,9 +137,9 @@ It consists of a few parts:
 
 - `RecordCodecBuilder.create(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.
 - `RecipeCondition.isReverse(instance)` is a helper codec that serializes the isReverse boolean of your codec.
-- `.and(` means this is the next field in the record
-- `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an INT, we want to call it "height"  in the json, and to get the value you call .height
+- `.and(` means this is the next field in the record.
+- `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an INT, we want to call it "height" in the json, and to get the value you call `.height`.
 - `.apply(instance, ExampleCondition::new)` means when deserializing back to an object, you apply these steps to get the values (in this case `bool isReverse, int height`) and call the constructor with those arguments.  
-    In this case, this would call our `new ExampleCondition(isReverse, height)` constructor we have defined earlier
+    In this case, this would call our `new ExampleCondition(isReverse, height)` constructor we have defined earlier.
 
 With this, you should have everything you need to make a custom RecipeCondition.
