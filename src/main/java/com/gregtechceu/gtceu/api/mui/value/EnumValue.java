@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.value;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IEnumValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -24,6 +24,7 @@ public class ObjectValue<T> implements IValue<T> {
     }
 
     public static class Dynamic<T> implements IValue<T> {
+
         private final Supplier<T> getter;
         private final Consumer<T> setter;
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;

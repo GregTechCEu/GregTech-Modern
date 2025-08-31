@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.widget.sizer;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;

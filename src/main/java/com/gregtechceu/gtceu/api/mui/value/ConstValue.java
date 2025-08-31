@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
+
 import lombok.Getter;
 import lombok.Setter;
 

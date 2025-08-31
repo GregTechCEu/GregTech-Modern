@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +13,10 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
@@ -102,10 +104,11 @@ public class ModularSyncManager {
 
     public void receiveWidgetUpdate(String panelName, String mapKey, int id, FriendlyByteBuf buf) {
         PanelSyncManager psm = this.panelSyncManagerMap.get(panelName);
-        if(psm != null) {
+        if (psm != null) {
             psm.receiveWidgetUpdate(mapKey, id, buf);
-        } else if(!this.panelHistory.contains(panelName)) {
-            GTCEu.LOGGER.throwing(new IllegalStateException("A packet was send to panel '\" + panelName + \"' which was not opened yet!"));
+        } else if (!this.panelHistory.contains(panelName)) {
+            GTCEu.LOGGER.throwing(new IllegalStateException(
+                    "A packet was send to panel '\" + panelName + \"' which was not opened yet!"));
         }
         // else the panel was open at some point
         // we simply discard the packet silently and assume the packet was correctly send, but the panel closed earlier

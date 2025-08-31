@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

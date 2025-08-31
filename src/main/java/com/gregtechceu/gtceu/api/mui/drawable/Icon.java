@@ -1,0 +1,169 @@
+package com.gregtechceu.gtceu.api.mui.drawable;
+
+import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
+import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.google.gson.JsonObject;
+import lombok.Getter;
+
+/**
+ * A {@link IDrawable} wrapper with a fixed size and an alignment.
+ */
+public class Icon implements IIcon, IJsonSerializable<Icon> {
+
+    private final IDrawable drawable;
+    @Getter
+    private int width = 0, height = 0;
+    @Getter
+    private Alignment alignment = Alignment.Center;
+    @Getter
+    private final Box margin = new Box();
+    private int color = 0;
+
+    public Icon(IDrawable drawable) {
+        this.drawable = drawable;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+        x += this.margin.left;
+        y += this.margin.top;
+        width -= this.margin.horizontal();
+        height -= this.margin.vertical();
+        if (this.width > 0) {
+            x += (int) (width * this.alignment.x - this.width * this.alignment.x);
+            width = this.width;
+        }
+        if (this.height > 0) {
+            y += (int) (height * this.alignment.y - this.height * this.alignment.y);
+            height = this.height;
+        }
+        if (this.color != 0 && this.color != widgetTheme.getColor()) {
+            widgetTheme = widgetTheme.withColor(this.color);
+        }
+        this.drawable.draw(context, x, y, width, height, widgetTheme);
+    }
+
+    public Icon width(int width) {
+        this.width = Math.max(0, width);
+        return this;
+    }
+
+    public Icon height(int height) {
+        this.height = Math.max(0, height);
+        return this;
+    }
+
+    public Icon size(int width, int height) {
+        return width(width).height(height);
+    }
+
+    public Icon size(int size) {
+        return width(size).height(size);
+    }
+
+    public Icon alignment(Alignment alignment) {
+        this.alignment = alignment;
+        return this;
+    }
+
+    public Icon center() {
+        return alignment(Alignment.Center);
+    }
+
+    public Icon color(int color) {
+        this.color = color;
+        return this;
+    }
+
+    public Icon margin(int left, int right, int top, int bottom) {
+        this.margin.all(left, right, top, bottom);
+        return this;
+    }
+
+    public Icon margin(int horizontal, int vertical) {
+        this.margin.all(horizontal, vertical);
+        return this;
+    }
+
+    public Icon margin(int all) {
+        this.margin.all(all);
+        return this;
+    }
+
+    public Icon marginLeft(int val) {
+        this.margin.left(val);
+        return this;
+    }
+
+    public Icon marginRight(int val) {
+        this.margin.right(val);
+        return this;
+    }
+
+    public Icon marginTop(int val) {
+        this.margin.top(val);
+        return this;
+    }
+
+    public Icon marginBottom(int val) {
+        this.margin.bottom(val);
+        return this;
+    }
+
+    @Override
+    public void loadFromJson(JsonObject json) {
+        this.width = (json.has("autoWidth") || json.has("autoSize")) &&
+                JsonHelper.getBoolean(json, true, "autoWidth", "autoSize") ? 0 :
+                        JsonHelper.getInt(json, 0, "width", "w", "size");
+        this.height = (json.has("autoHeight") || json.has("autoSize")) &&
+                JsonHelper.getBoolean(json, true, "autoHeight", "autoSize") ? 0 :
+                        JsonHelper.getInt(json, 0, "height", "h", "size");
+        this.alignment = JsonHelper.deserialize(json, Alignment.class, Alignment.Center, "alignment", "align");
+        this.margin.all(JsonHelper.getInt(json, 0, "margin"));
+        if (json.has("marginHorizontal")) {
+            this.margin.left = json.get("marginHorizontal").getAsInt();
+            this.margin.right = this.margin.left;
+        }
+        if (json.has("marginVertical")) {
+            this.margin.top = json.get("marginVertical").getAsInt();
+            this.margin.bottom = this.margin.top;
+        }
+        this.margin.top = JsonHelper.getInt(json, this.margin.top, "marginTop");
+        this.margin.bottom = JsonHelper.getInt(json, this.margin.bottom, "marginBottom");
+        this.margin.left = JsonHelper.getInt(json, this.margin.left, "marginLeft");
+        this.margin.right = JsonHelper.getInt(json, this.margin.right, "marginRight");
+    }
+
+    public static Icon ofJson(JsonObject json) {
+        return JsonHelper.deserialize(json, IDrawable.class, IDrawable.EMPTY, "drawable", "icon").asIcon();
+    }
+
+    @Override
+    public boolean saveToJson(JsonObject json) {
+        json.add("drawable", JsonHelper.serialize(this.drawable));
+        json.addProperty("width", this.width);
+        json.addProperty("height", this.height);
+        json.add("alignment", JsonHelper.serialize(this.alignment));
+        json.addProperty("marginTop", this.margin.top);
+        json.addProperty("marginBottom", this.margin.bottom);
+        json.addProperty("marginLeft", this.margin.left);
+        json.addProperty("marginRight", this.margin.right);
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + this.drawable.getClass().getSimpleName() + ")";
+    }
+}

@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 import java.util.function.*;
 

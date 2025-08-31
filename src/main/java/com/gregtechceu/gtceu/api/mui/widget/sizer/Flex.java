@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
+
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 

@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,7 +37,8 @@ import java.util.function.Predicate;
  * This class is perfectly fine for displaying drawables (although {@link IDrawable.DrawableWidget DrawableWidget}
  * is preferred) or even nothing.
  * <p>
- * References to widgets should not be stored after the screen closed. While the screen is open its usually fine to remove and a widget
+ * References to widgets should not be stored after the screen closed. While the screen is open its usually fine to
+ * remove and a widget
  * as many times as you want.
  *
  * @param <W> the type of this widget. This is used for proper return types in builder like methodsY
@@ -47,14 +49,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Nullable
     private String debugName;
     /**
-     * Returns if this widget is currently enabled. Disabled widgets (and all its children) are not rendered and can't be interacted with.
+     * Returns if this widget is currently enabled. Disabled widgets (and all its children) are not rendered and can't
+     * be interacted with.
      */
     @Getter
     @Setter
     private boolean enabled = true;
     // gui context
     /**
-     * Returns if this widget is currently part of an open panel. Only if this is true information about parent, panel and gui context can
+     * Returns if this widget is currently part of an open panel. Only if this is true information about parent, panel
+     * and gui context can
      * be obtained.
      */
     @Getter
@@ -64,7 +68,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     private ModularGuiContext context = null;
     // sizing
     /**
-     * Returns the area of this widget. This contains information such as position, size, relative position to parent, padding and margin.
+     * Returns the area of this widget. This contains information such as position, size, relative position to parent,
+     * padding and margin.
      * Even tho this is a mutable object, you should refrain from modifying the values.
      */
     @Getter
@@ -79,7 +84,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     private IResizeable resizer = this.flex;
     // syncing
     /**
-     * Returns the value handler of this widget. Value handlers can provide and update any kind of objects like numbers and strings.
+     * Returns the value handler of this widget. Value handlers can provide and update any kind of objects like numbers
+     * and strings.
      * For example text fields uses this get the current set string and updates the string after it is unfocused.
      */
     @Getter
@@ -261,8 +267,10 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Called between {@link #drawBackground(ModularGuiContext, WidgetTheme)} and {@link #drawOverlay(ModularGuiContext, WidgetTheme)}.
-     * Custom visuals should be drawn here. For example the {@link com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot ItemSlot} draws its item
+     * Called between {@link #drawBackground(ModularGuiContext, WidgetTheme)} and
+     * {@link #drawOverlay(ModularGuiContext, WidgetTheme)}.
+     * Custom visuals should be drawn here. For example the {@link com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot
+     * ItemSlot} draws its item
      * here. If a parent of this widget is disabled, this widget will not be drawn.
      *
      * @param context     gui context
@@ -289,7 +297,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Called after every widget of every panel and screen has been drawn. This is usually used to draw a tooltip, which is the default
+     * Called after every widget of every panel and screen has been drawn. This is usually used to draw a tooltip, which
+     * is the default
      * behaviour. If a parent of this widget is disabled, this widget will not be drawn.
      *
      * @param context gui context
@@ -356,7 +365,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Should be called when information which is displayed in the tooltip via {@link ITooltip#tooltipDynamic(Consumer)}.
+     * Should be called when information which is displayed in the tooltip via
+     * {@link ITooltip#tooltipDynamic(Consumer)}.
      * It will invalidate the current tooltip and be caused to rebuild.
      */
     @Override
@@ -394,7 +404,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a background override. Ideally this is set in the used theme. Also consider using {@link #overlay(IDrawable...)} instead.
+     * Sets a background override. Ideally this is set in the used theme. Also consider using
+     * {@link #overlay(IDrawable...)} instead.
      * Using {@link IDrawable#EMPTY} will make the background invisible while still overriding the widget theme.
      * Background are drawn before the widget and overlays are drawn.
      *
@@ -418,16 +429,19 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a hover background override. Ideally this is set in the used theme. Also consider using {@link #hoverOverlay(IDrawable...)} instead.
+     * Sets a hover background override. Ideally this is set in the used theme. Also consider using
+     * {@link #hoverOverlay(IDrawable...)} instead.
      * Using {@link IDrawable#EMPTY} will make the background invisible while still overriding the widget theme.
      * Background are drawn before the widget and overlays are drawn.
      * <p>
      * Following argument special cases should be considered:
      * <ul>
-     *     <li>{@code null} will fallback to {@link WidgetTheme#getHoverBackground()}</li>
-     *     <li>{@link IDrawable#EMPTY} will make the hover background invisible</li>
-     *     <li>{@link IDrawable#NONE} will use the normal background instead (which is also achieved using {@link #disableHoverBackground()})</li>
-     *     <li>multiple drawables, will result in them being drawn on top of each other in the order they are passed to the method</li>
+     * <li>{@code null} will fallback to {@link WidgetTheme#getHoverBackground()}</li>
+     * <li>{@link IDrawable#EMPTY} will make the hover background invisible</li>
+     * <li>{@link IDrawable#NONE} will use the normal background instead (which is also achieved using
+     * {@link #disableHoverBackground()})</li>
+     * <li>multiple drawables, will result in them being drawn on top of each other in the order they are passed to the
+     * method</li>
      * </ul>
      *
      * @param background hover background to use.
@@ -445,9 +459,11 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * <p>
      * Following argument special cases should be considered:
      * <ul>
-     *     <li>{@link IDrawable#EMPTY} will make the hover overlay invisible</li>
-     *     <li>{@code null} and {@link IDrawable#NONE} will use the normal overlay instead (which is also achieved using {@link #disableHoverOverlay()})</li>
-     *     <li>multiple drawables, will result in them being drawn on top of each other in the order they are passed to the method</li>
+     * <li>{@link IDrawable#EMPTY} will make the hover overlay invisible</li>
+     * <li>{@code null} and {@link IDrawable#NONE} will use the normal overlay instead (which is also achieved using
+     * {@link #disableHoverOverlay()})</li>
+     * <li>multiple drawables, will result in them being drawn on top of each other in the order they are passed to the
+     * method</li>
      * </ul>
      *
      * @param overlay hover overlay to use.
@@ -495,7 +511,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // --------------
 
     /**
-     * Called once every tick (20 times per second). Overriding is fine, but super should be called. This will be called even of the widget
+     * Called once every tick (20 times per second). Overriding is fine, but super should be called. This will be called
+     * even of the widget
      * is not enabled.
      * By default, this will invoke update listeners set via setters.
      */
@@ -508,8 +525,10 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Registers a gui action this widget can listen to. Gui action listeners can listen to several mouse and keyboard input events.
-     * The listeners are called first, before any widgets are interacted with. The listeners will always be called, even if the widget
+     * Registers a gui action this widget can listen to. Gui action listeners can listen to several mouse and keyboard
+     * input events.
+     * The listeners are called first, before any widgets are interacted with. The listeners will always be called, even
+     * if the widget
      * is disabled or not hovered!
      * <p>
      * Lambdas must be cast to the appropriate functional interface.
@@ -541,7 +560,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
 
     /**
      * Sets an update listener which is called once every tick even when this widget is disabled.
-     * If a listener is already set and {@code merge} is true, the listeners will be merged, so that both will be called on tick.
+     * If a listener is already set and {@code merge} is true, the listeners will be merged, so that both will be called
+     * on tick.
      *
      * @param listener update listener
      * @return this
@@ -561,7 +581,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a condition for when to enable/disable this widget. This register an update listener which checks the condition every tick.
+     * Sets a condition for when to enable/disable this widget. This register an update listener which checks the
+     * condition every tick.
      * Careful not to overwrite this when calling {@link #onUpdateListener(Consumer)} afterward!
      *
      * @param condition condition when to enable this widget
@@ -642,7 +663,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Returns the parent of this widget. If this is a {@link ModularPanel} this will always return null contrary to the annotation.
+     * Returns the parent of this widget. If this is a {@link ModularPanel} this will always return null contrary to the
+     * annotation.
      *
      * @return the screen of this widget
      * @throws IllegalStateException if {@link #isValid()} returns false
@@ -705,7 +727,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     /**
      * Sets a sync handler id. A sync handler with the same id must have been registered to the appropriate
      * {@link com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager PanelSyncManager} for this to work.
-     * This method is preferred over setting a sync handler directly since this does not require the widget to be defined on both sides.
+     * This method is preferred over setting a sync handler directly since this does not require the widget to be
+     * defined on both sides.
      *
      * @param name sync handler key name
      * @param id   sync handler key id
@@ -732,7 +755,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // -------------
 
     /**
-     * Disables the widget from start. Useful inside widget tree creation, where widget references are usually not stored.
+     * Disables the widget from start. Useful inside widget tree creation, where widget references are usually not
+     * stored.
      *
      * @return this
      */
@@ -742,7 +766,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a debug name. This is only used in {@link #toString()}, which is displayed in the mui debug info. Useful for identifying widgets
+     * Sets a debug name. This is only used in {@link #toString()}, which is displayed in the mui debug info. Useful for
+     * identifying widgets
      * for debugging. This has no other effect.
      *
      * @param name debug name to use

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.value;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 import java.util.function.BooleanSupplier;

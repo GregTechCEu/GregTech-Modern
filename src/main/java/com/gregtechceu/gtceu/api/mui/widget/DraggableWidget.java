@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IDraggable;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import lombok.Getter;
+
 import net.minecraft.client.gui.GuiGraphics;
+
+import lombok.Getter;
 
 /**
  * A widget that can be picked up by the cursor.

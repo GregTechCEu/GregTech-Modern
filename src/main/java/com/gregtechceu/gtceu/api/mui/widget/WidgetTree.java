@@ -15,10 +15,12 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.IExpander;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+
+import net.minecraft.client.gui.GuiGraphics;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.gui.GuiGraphics;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -233,7 +235,7 @@ public class WidgetTree {
     public static void resize(IWidget parent) {
         if (!GTCEu.isClientThread()) return;
 
-        while(!(parent instanceof ModularPanel) && (parent.getParent() instanceof ILayoutWidget ||
+        while (!(parent instanceof ModularPanel) && (parent.getParent() instanceof ILayoutWidget ||
                 parent.getParent().flex().dependsOnChildren())) {
             parent = parent.getParent();
         }

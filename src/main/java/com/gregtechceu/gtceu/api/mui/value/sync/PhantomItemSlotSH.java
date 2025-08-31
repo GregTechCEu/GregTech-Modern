@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.items.ItemHandlerHelper;
+
 import org.jetbrains.annotations.ApiStatus;
 
 /**
