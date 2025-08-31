@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
+import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
+import com.gregtechceu.gtceu.common.cover.ComputerMonitorCover;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -25,6 +29,22 @@ public class CoverHolderPeripheral implements GenericPeripheral {
         if (coverable.getCoverAtSide(direction) instanceof IPlaceholderInfoProviderCover cover) {
             cover.setDisplayTargetBufferLine(line, Component.literal(text));
             return MethodResult.of(true, "success");
+        } else return MethodResult.of(false, "invalid cover");
+    }
+
+    @LuaFunction
+    public static MethodResult parsePlaceholders(ICoverable coverable, String face, String text) {
+        Direction direction = Direction.byName(face);
+        if (direction == null) return MethodResult.of(false, "invalid face");
+        if (coverable.getCoverAtSide(direction) instanceof ComputerMonitorCover cover) {
+            return MethodResult.of(true, PlaceholderHandler.processPlaceholders(text, new PlaceholderContext(
+                    coverable.getLevel(),
+                    coverable.getPos(),
+                    direction,
+                    cover.itemStackHandler,
+                    cover,
+                    new MultiLineComponent(cover.getText()),
+                    cover.getPlaceholderUUID())));
         } else return MethodResult.of(false, "invalid cover");
     }
 }

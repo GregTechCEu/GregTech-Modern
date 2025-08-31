@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -88,22 +87,11 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         }
     }
 
-    @Override
-    public boolean beforeWorking(IWorkableMultiController controller) {
+    public void setActive(boolean active) {
         MachineRenderState state = getRenderState();
         if (state.hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(state.setValue(GTMachineModelProperties.IS_ACTIVE, true));
+            setRenderState(state.setValue(GTMachineModelProperties.IS_ACTIVE, active));
         }
-        return super.beforeWorking(controller);
-    }
-
-    @Override
-    public boolean afterWorking(IWorkableMultiController controller) {
-        MachineRenderState state = getRenderState();
-        if (state.hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(state.setValue(GTMachineModelProperties.IS_ACTIVE, false));
-        }
-        return super.afterWorking(controller);
     }
 
     @Override

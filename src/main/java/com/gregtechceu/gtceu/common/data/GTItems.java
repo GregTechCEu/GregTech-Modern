@@ -2452,7 +2452,7 @@ public class GTItems {
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
             .item("electric_jetpack",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new Jetpack(30,
+                            .setArmorLogic(new Jetpack(15,
                                     1_000_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
                                     ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
@@ -2466,7 +2466,7 @@ public class GTItems {
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
             .item("advanced_electric_jetpack",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new AdvancedJetpack(512,
+                            .setArmorLogic(new AdvancedJetpack(256,
                                     6_400_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
                                     ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))

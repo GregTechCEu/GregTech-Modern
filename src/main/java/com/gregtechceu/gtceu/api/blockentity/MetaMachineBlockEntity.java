@@ -272,6 +272,14 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
+        } else if (cap == GTCapability.CAPABILITY_CENTRAL_MONITOR) {
+            if (machine instanceof ICentralMonitor centralMonitor) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> centralMonitor));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ICentralMonitor.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
         }
         if (GTCEu.Mods.isAE2Loaded()) {
             LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
