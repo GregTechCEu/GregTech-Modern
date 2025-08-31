@@ -283,6 +283,6 @@ public class FormattingUtil {
     public static String formatTemperature(int temperature) {
         if (ConfigHolder.INSTANCE.client.temperaturesInKelvin)
             return formatNumbers(temperature) + " K";
-        else return formatNumbers(temperature - 273) + " C";
+        else return formatNumbers(temperature - 273) + " °C";
     }
 }
