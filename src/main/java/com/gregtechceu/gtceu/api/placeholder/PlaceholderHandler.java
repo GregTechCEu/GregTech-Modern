@@ -111,7 +111,7 @@ public class PlaceholderHandler {
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
                             MultiLineComponent result = processPlaceholder(placeholder, ctx);
-                            if (result.isIgnoreSpaces()) {
+                            if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {
                                 for (int i = 0; i < result.size(); i++) {

@@ -157,9 +157,14 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     if (GTStringUtils.toDouble(args.get(0)) != 0) {
-                        return args.get(1);
-                    } else if (args.size() > 2) return args.get(2);
-                    else return MultiLineComponent.empty();
+                        MultiLineComponent out = new MultiLineComponent(args.get(1));
+                        out.setIgnoreSpaces(true);
+                        return out;
+                    } else if (args.size() > 2) {
+                        MultiLineComponent out = new MultiLineComponent(args.get(2));
+                        out.setIgnoreSpaces(true);
+                        return out;
+                    } else return MultiLineComponent.empty();
                 } catch (NumberFormatException e) {
                     return args.get(1);
                 }
@@ -223,8 +228,10 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 2);
                 int count = PlaceholderUtils.toInt(args.get(0));
+                PlaceholderUtils.checkRange("n", 0, 50000, count);
                 MultiLineComponent out = MultiLineComponent.empty();
                 for (int i = 0; i < count; i++) out.append(args.get(1));
+                out.setIgnoreSpaces(true);
                 return out;
             }
         });
@@ -256,7 +263,9 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 1, true);
                 int i = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkArgs(args, i + 1, true);
-                return args.get(i + 1);
+                MultiLineComponent out = new MultiLineComponent(args.get(i + 1));
+                out.setIgnoreSpaces(true);
+                return out;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
@@ -805,6 +814,15 @@ public class GTPlaceholders {
                     }
                     default -> throw new InvalidArgsException();
                 }
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("eval") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
             }
         });
     }
