@@ -1592,6 +1592,13 @@ public class LangHandler {
                 "  {ender redstone <channel> [player_data_item_slot] -> redstone signal level",
                 "  {ender redstone <channel> <player_data_item_slot> <signal> -> sets the redstone signal outputed to the ender redstone link, returns empty string",
                 "The player_data_item_slot argument may be left empty (not 0, empty string)");
+        multiLang(provider, "gtceu.placeholder_info.eval",
+                "Returns the result of evaluating the provided string which may placeholders",
+                "Usage:",
+                "  {eval abcdefg} -> abcdefg",
+                "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
+                "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
+                "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");

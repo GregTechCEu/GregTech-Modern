@@ -9,7 +9,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.Objects;
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     @Getter
-    @Setter
     private boolean ignoreSpaces = false;
 
     public MultiLineComponent(List<MutableComponent> components) {
@@ -149,5 +147,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
         return Long.parseLong(this.get(0).getString());
+    }
+
+    public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {
+        this.ignoreSpaces = ignoreSpaces;
+        return this;
     }
 }
