@@ -1567,7 +1567,7 @@
     "gtceu.fluid_pipe.channels": "§eКаналов: §f%d",
     "gtceu.fluid_pipe.cryo_proof": "§6Может хранить криогенику",
     "gtceu.fluid_pipe.gas_proof": "§6Может хранить газы",
-    "gtceu.fluid_pipe.max_temperature": "§cМаксимальная температура: §f%d",
+    "gtceu.fluid_pipe.max_temperature": "§cМаксимальная температура: §f%s",
     "gtceu.fluid_pipe.not_gas_proof": "§4Возможна утечка газов!",
     "gtceu.fluid_pipe.plasma_proof": "§6Может хранить все виды Плазмы",
     "gtceu.fluid_solidifier": "Жидкостный отвердитель",

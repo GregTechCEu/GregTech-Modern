@@ -968,7 +968,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
-        provider.add("gtceu.fluid.temperature", "§cTemperature: %d");
+        provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");

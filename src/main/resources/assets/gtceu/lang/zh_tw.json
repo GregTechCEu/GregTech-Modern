@@ -2274,7 +2274,7 @@
     "gtceu.fluid_pipe.channels": "§e平行管道：§f%d",
     "gtceu.fluid_pipe.cryo_proof": "§6可傳輸低溫物質",
     "gtceu.fluid_pipe.gas_proof": "§6可以傳輸氣體",
-    "gtceu.fluid_pipe.max_temperature": "§c溫度上限：§f%d",
+    "gtceu.fluid_pipe.max_temperature": "§c溫度上限：§f%s",
     "gtceu.fluid_pipe.not_gas_proof": "§4氣體可能洩漏！",
     "gtceu.fluid_pipe.plasma_proof": "§6可傳輸所有電漿",
     "gtceu.fluid_solidifier": "流體固化器",

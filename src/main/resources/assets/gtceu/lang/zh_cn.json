@@ -2311,7 +2311,7 @@
     "gtceu.fluid_pipe.channels": "§e并行管道：§f%d",
     "gtceu.fluid_pipe.cryo_proof": "§6可传输低温物质",
     "gtceu.fluid_pipe.gas_proof": "§6可以传输气体",
-    "gtceu.fluid_pipe.max_temperature": "§c温度上限：§f%d",
+    "gtceu.fluid_pipe.max_temperature": "§c温度上限：§f%s",
     "gtceu.fluid_pipe.not_gas_proof": "§4气体可能泄漏！",
     "gtceu.fluid_pipe.plasma_proof": "§6可传输所有等离子体",
     "gtceu.fluid_solidifier": "流体固化器",

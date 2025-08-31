@@ -1580,7 +1580,7 @@
   "gtceu.fluid.click_to_empty": "§7Клацніть контейнером з рідиною, щоб§b спустошити§7 бак (Shift-клік для повного стосу).",
   "gtceu.fluid.amount": "§9Ємність: %d/%d мВ",
   "gtceu.fluid_pipe.capacity": "§9Місткість:§f %d мВ",
-  "gtceu.fluid_pipe.max_temperature": "§cМежа температури:§f %d",
+  "gtceu.fluid_pipe.max_temperature": "§cМежа температури:§f %s",
   "gtceu.fluid_pipe.channels": "§eКанали:§f %d",
   "gtceu.fluid.empty": "Порожньо",
   "gtceu.fluid.generic": "%s",

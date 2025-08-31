@@ -2306,7 +2306,7 @@
   "gtceu.fluid.state_gas": "§aState: Gaseous",
   "gtceu.fluid.state_liquid": "§aState: Liquid",
   "gtceu.fluid.state_plasma": "§aState: Plasma",
-  "gtceu.fluid.temperature": "§cTemperature: %d",
+  "gtceu.fluid.temperature": "§cTemperature: %s",
   "gtceu.fluid.temperature.cryogenic": "§bCryogenic! Handle with care!",
   "gtceu.fluid.type_acid.tooltip": "§6Acidic! Handle with care!",
   "gtceu.fluid_heater": "Fluid Heater",

@@ -2215,7 +2215,7 @@
   "gtceu.fluid_pipe.channels": "§eチャンネル: §f%d",
   "gtceu.fluid_pipe.cryo_proof": "§6超低温物質を扱える",
   "gtceu.fluid_pipe.gas_proof": "§6ガスを扱える",
-  "gtceu.fluid_pipe.max_temperature": "§c温度限界: §f%d",
+  "gtceu.fluid_pipe.max_temperature": "§c温度限界: §f%s",
   "gtceu.fluid_pipe.not_gas_proof": "§4ガスが漏れる可能性がある!",
   "gtceu.fluid_pipe.plasma_proof": "§6すべてのプラズマに対応",
   "gtceu.fluid_solidifier": "液体成型機",
