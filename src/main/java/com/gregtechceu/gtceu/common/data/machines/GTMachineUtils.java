@@ -615,7 +615,7 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.machine.multiblock.tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity),
                         (filter != null) ? Component.translatable("gtceu.fluid_pipe.max_temperature",
-                                filter.getMaxFluidTemperature()) : null)
+                                FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
                 .pattern(definition -> FactoryBlockPattern.start()
