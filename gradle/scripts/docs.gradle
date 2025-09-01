@@ -1,0 +1,12 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+tasks.register('mkdocsServe', Exec) {
+    description = "Serves the MkDocs documentation server."
+    group = "documentation"
+
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd.exe', '/c', 'cd docs & python -m venv .venv & .\\.venv\\Scripts\\pip.exe install -r requirements.txt & .\\.venv\\Scripts\\mkdocs.exe serve'
+    } else {
+        commandLine 'bash', '-c', 'cd docs; python3 -m venv .venv; .venv/bin/pip3 install -r requirements.txt; .venv/bin/mkdocs serve'
+    }
+}
