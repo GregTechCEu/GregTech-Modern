@@ -1,12 +1,34 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 tasks.register('mkdocsServe', Exec) {
-    description = "Serves the MkDocs documentation server."
+    description = "Serves the MkDocs server."
     group = "documentation"
 
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        commandLine 'cmd.exe', '/c', 'cd docs & python -m venv .venv & .\\.venv\\Scripts\\pip.exe install -r requirements.txt & .\\.venv\\Scripts\\mkdocs.exe serve'
+        commandLine 'cmd.exe', '/c', 'docs\\build_scripts\\mkdocs.bat serve'
     } else {
-        commandLine 'bash', '-c', 'cd docs; python3 -m venv .venv; .venv/bin/pip3 install -r requirements.txt; .venv/bin/mkdocs serve'
+        commandLine '/usr/bin/env', 'bash', '-c', 'docs/build_scripts/mkdocs.sh serve'
+    }
+}
+
+tasks.register('mkdocsBuild', Exec) {
+    description = "Builds the MkDocs server."
+    group = "documentation"
+
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd.exe', '/c', 'docs\\build_scripts\\mkdocs.bat build'
+    } else {
+        commandLine '/usr/bin/env', 'bash', '-c', 'docs/build_scripts/mkdocs.sh build'
+    }
+}
+
+tasks.register('mkdocsKill', Exec) {
+    description = "Kills the MkDocs server."
+    group = "documentation"
+
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'taskkill.exe', '/IM', '"mkdocs.exe"', '/F'
+    } else {
+        commandLine 'pkill', 'mkdocs'
     }
 }
