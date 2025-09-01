@@ -12,7 +12,7 @@ tasks.register('mkdocsServe', Exec) {
 }
 
 tasks.register('mkdocsBuild', Exec) {
-    description = "Builds the MkDocs server."
+    description = "Builds the MkDocs documentation in docs/site."
     group = "documentation"
 
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
