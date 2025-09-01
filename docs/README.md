@@ -35,8 +35,6 @@ Either in the gradle sidebar, click documentation/mkdocsServe, or run .`/gradlew
 
 Click on the link it gives you at the bottom to open the local copy, and pages will automatically update with content as you save your files.
 
-Unfortunately, it's not possible via gradle to end the mkdocs task when the build is cancelled via gradle, so either press ctrl-c in the command line or run mkdocsCleanup.
-
 You can also run documentation/mkdocsBuild. This will build the documentation in `docs/site`, which you can either host yourself or just open in a browser.
 
 ## Installing Required Dependencies & Run Locally
