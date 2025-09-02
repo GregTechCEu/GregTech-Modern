@@ -52,6 +52,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 
 === "Java"
     ```java title="MultiMachines.java"
+
     public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
             .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
             .rotationState(RotationState.NON_Y_AXIS)
@@ -69,19 +70,19 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
                 .aisle("BCCCCCB", "BCAFACB", "BCAFACB", "BCGGGCB", "BEAAAEB", "BEHHHEB")
                 .aisle("BBCCCBB", "BBCICBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
                 .where('A', Predicates.air())
-            .where('B', Predicates.any())
-            .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get()).setMinGlobalLimited(10)
-                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
-                .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
-                .or(Predicates.autoAbilities(definition.getRecipeTypes())))
-            .where('D', Predicates.blocks(GTBlocks.FIREBOX_STEEL.get()))
-            .where('E', Predicates.blocks(CASING_LAMINATED_GLASS.get()))
-            .where('F', Predicates.blocks(GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
-            .where('G', Predicates.heatingCoils())
-            .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
-            .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-            .where('I', Predicates.controller(Predicates.blocks(definition.get())))
-            .build())
+                .where('B', Predicates.any())
+                .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get()).setMinGlobalLimited(10)
+                    .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                    .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
+                    .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                .where('D', Predicates.blocks(GTBlocks.FIREBOX_STEEL.get()))
+                .where('E', Predicates.blocks(CASING_LAMINATED_GLASS.get()))
+                .where('F', Predicates.blocks(GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
+                .where('G', Predicates.heatingCoils())
+                .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
+                .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                .where('I', Predicates.controller(Predicates.blocks(definition.get())))
+                .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                  GTCEu.id("block/multiblock/pyrolyse_oven"))
             .register();
