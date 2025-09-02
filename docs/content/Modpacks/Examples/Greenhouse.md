@@ -81,7 +81,7 @@ title: "Greenhouse"
         public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
             .multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.GREENHOUSE_RECIPES)
+            .recipeType(RecipeTypes.GREENHOUSE_RECIPES)
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
