@@ -8,7 +8,6 @@ out/
 output/
 bin/
 libs/
-docs/site
 
 .classpath
 */.factorypath
