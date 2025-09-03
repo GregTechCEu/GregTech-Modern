@@ -73,6 +73,38 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
     ```
 
 
+=== "Kotlin"
+    ```kotlin title="MultiMachines.kt"
+    val HYPER_GAS_TURBINE = REGISTRATE
+        .multiblock("hyper_gas_turbine") { LargeTurbineMachine(it, 4) }
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeType(GTRecipeTypes.GAS_TURBINE_FUELS)
+        .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+        .pattern {
+            FactoryBlockPattern.start()
+                .aisle("BCCCB", "BBCBB", "BBCBB", "BBBBB", "BBBBB")
+                .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
+                .aisle("CDDDC", "CBBBC", "CEFEC", "BDDDB", "BBGBB")
+                .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
+                .aisle("BCCCB", "BBHBB", "BBCBB", "BBBBB", "BBBBB")
+                .where('B', Predicates.any())
+                .where('C', Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(10)
+                        .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(PartAbility.STEAM).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setMaxGlobalLimited(1)))
+                .where('D', Predicates.blocks(GCYMBlocks.CASING_INDUSTRIAL_STEAM.get()))
+                .where('E', Predicates.blocks(GTBlocks.BRONZE_BRICKS_HULL.get()))
+                .where('F', Predicates.blocks(GTBlocks.FIREBOX_BRONZE.get()))
+                .where('G', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
+                .where('H', Predicates.controller(Predicates.blocks(it.get())))
+                .build()
+        }
+        .workableCasingModel(
+            GTCEu.id("block/casings/steam/bronze/bottom"),
+            GTCEu.id("block/machines/compressor"))
+        .register()
+    ```
+
 ### Lang
 
 ```json title="en_us.json"

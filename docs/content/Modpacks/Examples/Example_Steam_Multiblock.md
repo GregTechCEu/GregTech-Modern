@@ -73,6 +73,38 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
             .register();
     ```
 
+=== "Kotlin"
+    ```kotlin title="MultiMachines.kt"
+    val LARGE_STEAM_COMPRESSOR = REGISTRATE
+        .multiblock("large_steam_compressor") { SteamParallelMultiblockMachine(it, 4) }
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeType(COMPRESSOR_RECIPES)
+        .recipeModifier({ machine, recipe -> SteamParallelMultiblockMachine.recipeModifier(machine, recipe)}, true)
+        .pattern {
+            FactoryBlockPattern.start()
+                .aisle("BCCCB", "BBCBB", "BBCBB", "BBBBB", "BBBBB")
+                .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
+                .aisle("CDDDC", "CBBBC", "CEFEC", "BDDDB", "BBGBB")
+                .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
+                .aisle("BCCCB", "BBHBB", "BBCBB", "BBBBB", "BBBBB")
+                .where('B', Predicates.any())
+                .where('C', Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(10)
+                    .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setMaxGlobalLimited(1))
+                    .or(Predicates.abilities(PartAbility.STEAM).setMaxGlobalLimited(1))
+                    .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setMaxGlobalLimited(1)))
+                .where('D', Predicates.blocks(GCYMBlocks.CASING_INDUSTRIAL_STEAM.get()))
+                .where('E', Predicates.blocks(GTBlocks.BRONZE_BRICKS_HULL.get()))
+                .where('F', Predicates.blocks(GTBlocks.FIREBOX_BRONZE.get()))
+                .where('G', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
+                .where('H', Predicates.controller(Predicates.blocks(it.get())))
+                .build()
+        }
+        .workableCasingModel(
+            GTCEu.id("block/casings/steam/bronze/bottom"),
+            GTCEu.id("block/machines/compressor"))
+        .register()
+    ```
+
 ### Lang
 
 ```json title="en_us.json"

@@ -26,6 +26,14 @@ title: "Ore Processing Plant"
             .setSound(GTSoundEntries.BATH);
     ```
 
+=== "Kotlin"
+    ```kotlin title="RecipeTypes.kt"
+        val ORE_PROCESSING_RECIPES = register("ore_processing_plant", MULTIBLOCK)
+            .setMaxIOSize(1, 8, 2, 1)
+            .setEUIO(IO.IN)
+            .setSound(GTSoundEntries.BATH)
+    ```
+
 
 ## Multiblock
 === "JavaScript"
@@ -69,7 +77,7 @@ title: "Ore Processing Plant"
             .recipeType(RecipeTypes.ORE_PROCESSING_PLANT)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
             .appearanceBlock(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST)
-            .pattern(definition => FactoryBlockPattern.start()
+            .pattern(definition -> FactoryBlockPattern.start()
                 .aisle(' AAA ', ' FFF ', ' FFF ', '  F  ', '     ', '     ', '     ')
                 .aisle('AFFFA', 'FG GF', 'F   F', ' F F ', ' FFF ', '  F  ', '  B  ')
                 .aisle('AFFFA', 'F P F', 'F P F', 'F P F', ' FPF ', ' FMF ', ' B B ')
@@ -84,7 +92,7 @@ title: "Ore Processing Plant"
                 .where('P', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_PIPE.get()))
                 .where('G', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_GEARBOX.get()))
                 .where('A', Predicates.blocks(GTBlocks.FIREBOX_TUNGSTENSTEEL.get()))
-                .where('B', Predicates.blocks('gtceu:bronze_machine_casing'))
+                .where('B', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
                 .where(' ', Predicates.any())
                 .build())
             .workableCasingModel(
@@ -94,6 +102,40 @@ title: "Ore Processing Plant"
             .register();
     ```
 
+=== "Kotlin"
+    ```kotlin title="MultiMachines.kt"
+        val ORE_PROCESSING_PLANT = REGISTRATE
+            .multiblock("ore_processing_plant", ::WorkableElectricMultiblockMachine)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(RecipeTypes.ORE_PROCESSING_RECIPES)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
+            .appearanceBlock(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST)
+            .pattern {
+                FactoryBlockPattern.start()
+                    .aisle(" AAA ", " FFF ", " FFF ", "  F  ", "     ", "     ", "     ")
+                    .aisle("AFFFA", "FG GF", "F   F", " F F ", " FFF ", "  F  ", "  B  ")
+                    .aisle("AFFFA", "F P F", "F P F", "F P F", " FPF ", " FMF ", " B B ")
+                    .aisle("AFFFA", "FG GF", "F   F", " F F ", " FFF ", "  F  ", "  B  ")
+                    .aisle(" AAA ", " FCF ", " FFF ", "  F  ", "     ", "     ", "     ")
+                    .where('C', Predicates.controller(Predicates.blocks(it.get())))
+                    .where('F', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
+                        .or(Predicates.autoAbilities(it.recipeTypes))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1)))
+                    .where('M', Predicates.abilities(PartAbility.MUFFLER))
+                    .where('P', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_PIPE.get()))
+                    .where('G', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_GEARBOX.get()))
+                    .where('A', Predicates.blocks(GTBlocks.FIREBOX_TUNGSTENSTEEL.get()))
+                    .where('B', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
+                    .where(' ', Predicates.any())
+                    .build()
+            }
+            .workableCasingModel(
+                GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+                GTCEu.id("block/multiblock/primitive_blast_furnace")
+            )
+            .register()
+    ```
 
 ## Lang
 
