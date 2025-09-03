@@ -38,6 +38,10 @@ item/fluid in the target is less than the set amount, and only transfer enough t
 set amount. This is useful to prevent a machine from getting completely filled with one item and having no space for a
 second required item.
 
+When attached to a Pipe, Robot Arms can export into the pipe using Transfer Exact mode, but they are unable to export using
+Keep Exact mode. However, Robot Arms *can* be attached to pipe output ends, and they will enforce the Keep Exact quantity
+for the inventory they are exporting to.
+
 ## Filters
 Logistics covers can have Filters installed in them, to specifically allow (whitelist) or disallow (blacklist) chosen 
 items or fluids to pass through those covers. Filters can be configured by right-clicking them against the air, and
