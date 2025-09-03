@@ -114,40 +114,67 @@ public class ItemNetHandler implements IItemHandlerModifiable {
      * @return remainder
      */
     private ItemStack distributeUsingWeightedPriority(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
-        Iterator<ItemRoutePath> routePathIterator = copy.listIterator();
         int inserted = 0;
         int count = stack.getCount();
-        int c = count / copy.size();
-        int m = c == 0 ? count % copy.size() : 0;
-        while (routePathIterator.hasNext()) {
-            ItemRoutePath routePath = routePathIterator.next();
+        int countRemains = count;
 
-            int amount = c;
-            if (m > 0) {
-                amount++;
-                m--;
-            }
-            amount = Math.min(amount, stack.getCount() - inserted);
-            if (amount == 0) break;
-            ItemStack toInsert = stack.copy();
-            toInsert.setCount(amount);
-            int r = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
-            if (r < amount) {
-                inserted += (amount - r);
-            }
-            if (r == 1 && c == 0 && amount == 1) {
-                m++;
-            }
-
-            if (r > 0)
-                routePathIterator.remove();
+        // All current priorities. As inventories fill up, their priorities drop to 0.
+        int[] nonNullPriorities = new int[copy.size()];
+        int i = 0, totalPriorities = 0;
+        for (ItemRoutePath routePath : copy) {
+            int priority = routePath.getProperties().getPriority();
+            nonNullPriorities[i++] = priority;
+            totalPriorities += priority;
         }
 
-        ItemStack remainder = stack.copy();
-        remainder.setCount(count - inserted);
-        if (!stack.isEmpty() && !copy.isEmpty()) remainder = distributeUsingWeightedPriority(copy, stack, simulate);
+        while (inserted < count) {
+            int j = 0;
+            for (ItemRoutePath routePath : copy) {
+                // if destination already isn't accepting more, skip
+                if (nonNullPriorities[j] == 0) {
+                    j++;
+                    continue;
+                }
 
-        return remainder;
+                double currentPriorityRatio = (1.0 - ((double) nonNullPriorities[j] / totalPriorities));
+                // minimum of how much we have left, or how much the priority ratio says we should try to send
+                int amount = Math.min(count - inserted, (int) Math.round(countRemains * currentPriorityRatio));
+
+                if (amount == 0) {
+                    totalPriorities -= nonNullPriorities[j];
+                    nonNullPriorities[j] = 0;
+                    j++;
+                    continue;
+                }
+
+                ItemStack toInsert = stack.copy();
+                toInsert.setCount(amount);
+                int r = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
+                if (r < amount) {
+                    inserted += (amount - r);
+                }
+                if (r != 0) {
+                    totalPriorities -= nonNullPriorities[j];
+                    nonNullPriorities[j] = 0;
+                }
+
+                // out of items to distribute, operation success
+                if (inserted == count) return ItemStack.EMPTY;
+
+                j++;
+            }
+            // nowhere else to send items to
+            if (totalPriorities == 0 || countRemains == (count - inserted)) break;
+
+            // didn't send all items, try again with what's left
+            countRemains = count - inserted;
+        }
+
+        // return what didn't get sent
+        ItemStack stackRemains = stack.copy();
+        stackRemains.shrink(inserted);
+
+        return stackRemains;
     }
 
     /**
