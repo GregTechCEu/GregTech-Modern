@@ -71,3 +71,13 @@ then become linked, allowing items, fluids, or redstone signals to be imported o
 
 After being assigned a channel, Ender Links have the same input/output and filter controls as a Conveyor or Pump. A single
 Ender Link cover is only one-directional though, only allowing its attached machine to Export To the ender network, or
+
+## Void Covers
+Sometimes items or fluids are unneeded or unwanted. Void Covers answer that. Any items or fluids which are exported into
+a Voiding Cover are simply deleted.
+
+Void Covers have two versions:
+
+* Simple: Voids all items/fluids that enter it. No further configuration.
+* Advanced: Allows for Filter configuration to only void specific items/fluids. Also has a Keep Exact mode, causing the
+cover to only void contents if the attached inventory contains more than the configured amount.
