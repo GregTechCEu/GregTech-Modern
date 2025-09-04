@@ -149,11 +149,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
                 ItemStack toInsert = stack.copy();
                 toInsert.setCount(amount);
-                int r = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
-                if (r < amount) {
-                    inserted += (amount - r);
-                }
-                if (r != 0) {
+                int notInserted = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
+                inserted += (amount - notInserted);
+                if (notInserted!= 0) {
                     totalPriorities -= nonNullPriorities[j];
                     nonNullPriorities[j] = 0;
                 }
