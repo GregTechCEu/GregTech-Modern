@@ -75,7 +75,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (pipeCover instanceof ConveyorCover pipeConveyor) conveyor = pipeConveyor;
         if (tileCover instanceof ConveyorCover tileConveyor) conveyor = tileConveyor;
 
-        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing);
+        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing, ITEMNETSET.FULL);
         if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
@@ -84,7 +84,14 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         switch (conveyor.getDistributionMode()) {
             case INSERT_FIRST -> stack = distributeHighestPriority(routePathsCopy, stack, simulate);
             case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, simulate);
-            case ROUND_ROBIN_PRIO -> stack = distributeUsingWeightedPriority(routePathsCopy, stack, simulate);
+            case ROUND_ROBIN_PRIO -> {
+                List<ItemRoutePath> routePathsNonRestrictiveCopy = new ArrayList<>(
+                        network.getNetData(pipe.getPipePos(), facing, ITEMNETSET.NONRESTRICTED));
+                List<ItemRoutePath> routePathsRestrictiveCopy = new ArrayList<>(
+                        network.getNetData(pipe.getPipePos(), facing, ITEMNETSET.RESTRICTED));
+                stack = distributeEquallyNoRestrictive(routePathsNonRestrictiveCopy, routePathsRestrictiveCopy, stack,
+                        simulate);
+            }
         }
 
         return stack;
@@ -181,6 +188,29 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         stackRemains.shrink(inserted);
 
         return stackRemains;
+    }
+
+    /**
+     * Distributes items evenly to multiple handlers. Attempts to exclude handlers that are behind Restrictive Pipes,
+     * unless no other routes are available.
+     * 
+     * @param copyNonRestrictive list of destinations to insert to first
+     * @param copyRestrictive    list of destinations for if all non-restrictive destinations are unavailable
+     * @param stack              the {@link ItemStack} to insert
+     * @param simulate
+     * @return any remaining items not inserted
+     */
+    private ItemStack distributeEquallyNoRestrictive(List<ItemRoutePath> copyNonRestrictive,
+                                                     List<ItemRoutePath> copyRestrictive, ItemStack stack,
+                                                     boolean simulate) {
+        // Round-robin distribute to all non-Restrictive destinations
+        ItemStack remainsNonRestricted = distributeEqually(copyNonRestrictive, stack, simulate);
+        // if anything is left, distribute to Restrictive destinations
+        if (!remainsNonRestricted.isEmpty()) {
+            return distributeEqually(copyRestrictive, remainsNonRestricted, simulate);
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     /**
