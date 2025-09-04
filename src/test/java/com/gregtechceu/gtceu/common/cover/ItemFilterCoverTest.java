@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -55,6 +56,14 @@ public class ItemFilterCoverTest {
         }
     };
 
+    private static ItemStack makeDiamondFilter() {
+        ItemStack stack = GTItems.ITEM_FILTER.asStack();
+        SimpleItemFilter filter = SimpleItemFilter.loadFilter(stack);
+        filter.getMatches()[0] = Items.DIAMOND.getDefaultInstance();
+        stack.setTag(filter.saveFilter());
+        return stack;
+    }
+
     public static void setupCrates(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
@@ -77,13 +86,13 @@ public class ItemFilterCoverTest {
         cover.setIo(IO.IN);
         // Filter to whitelist diamonds
         ItemFilterCover filterCover = (ItemFilterCover) TestUtils.placeCover(helper, crate1,
-                GTItems.ITEM_FILTER.asStack(), Direction.UP);
+                makeDiamondFilter(), Direction.UP);
         filterCover.setFilterMode(FilterMode.FILTER_EXTRACT);
-        filterCover.itemFilter = DIAMOND_FILTER;
 
-        helper.succeedOnTickWhen(40, () -> {
+        helper.succeedWhen(() -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.DIAMOND, 16));
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY);
+            helper.succeed();
         });
     }
 
@@ -104,13 +113,13 @@ public class ItemFilterCoverTest {
         cover.setIo(IO.IN);
         // Filter to whitelist diamonds
         ItemFilterCover filterCover = (ItemFilterCover) TestUtils.placeCover(helper, crate1,
-                GTItems.ITEM_FILTER.asStack(), Direction.UP);
+                makeDiamondFilter(), Direction.UP);
         filterCover.setFilterMode(FilterMode.FILTER_INSERT); // filter is for insert only, so should be ignored
-        filterCover.itemFilter = DIAMOND_FILTER;
 
-        helper.succeedOnTickWhen(40, () -> {
+        helper.succeedWhen(() -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16));
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), new ItemStack(Items.DIAMOND, 16));
+            helper.succeed();
         });
     }
 }
