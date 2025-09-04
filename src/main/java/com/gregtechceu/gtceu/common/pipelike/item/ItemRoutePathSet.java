@@ -4,7 +4,7 @@ package com.gregtechceu.gtceu.common.pipelike.item;
  * The set of {@link ItemRoutePath} connections to fetch from an {@link ItemPipeNet}: All, Non-Restrictive, or Only
  * Restrictive
  */
-public enum ItemRouthPatSet {
+public enum ItemRoutePathSet {
 
     /**
      * the full set of item pipe net routes
@@ -19,5 +19,5 @@ public enum ItemRouthPatSet {
      */
     NONRESTRICTED;
 
-    ItemRouthPatSet() {}
+    ItemRoutePathSet() {}
 }

@@ -75,7 +75,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (pipeCover instanceof ConveyorCover pipeConveyor) conveyor = pipeConveyor;
         if (tileCover instanceof ConveyorCover tileConveyor) conveyor = tileConveyor;
 
-        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing, ItemRouthPatSet.FULL);
+        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.FULL);
         if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
@@ -118,7 +118,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
                                                      boolean simulate) {
         // Round-robin distribute to all non-Restrictive destinations
         List<ItemRoutePath> routePathsNonRestrictedCopy = new ArrayList<>(
-                network.getNetData(pipe.getPipePos(), facing, ItemRouthPatSet.NONRESTRICTED));
+                network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.NONRESTRICTED));
         ItemStack remainsNonRestricted;
         if (routePathsNonRestrictedCopy.isEmpty()) {
             remainsNonRestricted = stack;
@@ -128,7 +128,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         // if anything is left, distribute to Restrictive destinations
         if (!remainsNonRestricted.isEmpty()) {
             List<ItemRoutePath> routePathsRestrictiveCopy = new ArrayList<>(
-                    network.getNetData(pipe.getPipePos(), facing, ItemRouthPatSet.RESTRICTED));
+                    network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.RESTRICTED));
             return distributeEqually(routePathsRestrictiveCopy, remainsNonRestricted, simulate);
         } else {
             return ItemStack.EMPTY;
