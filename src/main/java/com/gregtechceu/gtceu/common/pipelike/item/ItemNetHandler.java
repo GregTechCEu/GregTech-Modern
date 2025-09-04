@@ -117,13 +117,14 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         int inserted = 0;
         int count = stack.getCount();
         int countRemains = count;
+        int destinationsRemaining = copy.size();
 
-        // All current priorities. As inventories fill up, their priorities drop to 0.
-        int[] nonNullPriorities = new int[copy.size()];
+        // All initial destination priorities. Destinations that are full or not accepting drop their priority to 0.
+        int[] prioritiesOrZeroes = new int[copy.size()];
         int i = 0, totalPriorities = 0;
         for (ItemRoutePath routePath : copy) {
             int priority = routePath.getProperties().getPriority();
-            nonNullPriorities[i++] = priority;
+            prioritiesOrZeroes[i++] = priority;
             totalPriorities += priority;
         }
 
@@ -131,18 +132,18 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             int j = 0;
             for (ItemRoutePath routePath : copy) {
                 // if destination already isn't accepting more, skip
-                if (nonNullPriorities[j] == 0) {
+                if (prioritiesOrZeroes[j] == 0) {
                     j++;
                     continue;
                 }
 
-                double currentPriorityRatio = (1.0 - ((double) nonNullPriorities[j] / totalPriorities));
+                double currentPriorityRatio = (1.0 - ((double) prioritiesOrZeroes[j] / totalPriorities));
+                int tryToSend = (int) Math.ceil(countRemains * currentPriorityRatio / destinationsRemaining);
                 // minimum of how much we have left, or how much the priority ratio says we should try to send
-                int amount = Math.min(count - inserted, (int) Math.round(countRemains * currentPriorityRatio));
+                int amount = Math.min(count - inserted, tryToSend);
 
+                // priority too high and count too low to send anything, move on
                 if (amount == 0) {
-                    totalPriorities -= nonNullPriorities[j];
-                    nonNullPriorities[j] = 0;
                     j++;
                     continue;
                 }
@@ -151,9 +152,11 @@ public class ItemNetHandler implements IItemHandlerModifiable {
                 toInsert.setCount(amount);
                 int notInserted = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
                 inserted += (amount - notInserted);
-                if (notInserted!= 0) {
-                    totalPriorities -= nonNullPriorities[j];
-                    nonNullPriorities[j] = 0;
+
+                // didn't insert the full amount, therefore this destination can't accept any more
+                if (notInserted != 0) {
+                    totalPriorities -= prioritiesOrZeroes[j];
+                    prioritiesOrZeroes[j] = 0;
                 }
 
                 // out of items to distribute, operation success
@@ -166,6 +169,11 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
             // didn't send all items, try again with what's left
             countRemains = count - inserted;
+            // count how many valid destinations we have left
+            destinationsRemaining = prioritiesOrZeroes.length;
+            for (int priority : prioritiesOrZeroes) {
+                if (priority == 0) destinationsRemaining--;
+            }
         }
 
         // return what didn't get sent
