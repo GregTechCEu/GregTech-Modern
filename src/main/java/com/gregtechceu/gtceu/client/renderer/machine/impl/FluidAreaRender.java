@@ -99,22 +99,21 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             return;
         }
 
-        poseStack.pushPose();
-        var pose = poseStack.last().pose();
-
         var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
         var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
         for (RelativeDirection face : this.drawFaces) {
+            poseStack.pushPose();
+            var pose = poseStack.last().pose();
+
             var dir = face.getRelative(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
                     machine.self().isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
                     RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+            poseStack.popPose();
         }
-
-        poseStack.popPose();
     }
 
     private Optional<Fluid> getFixedFluid() {
