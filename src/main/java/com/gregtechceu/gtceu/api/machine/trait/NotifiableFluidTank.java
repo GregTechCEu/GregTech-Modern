@@ -35,6 +35,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     public final IO capabilityIO;
     @Persisted
+    @DescSynced
     @Getter
     protected final CustomFluidTank[] storages;
     @Getter

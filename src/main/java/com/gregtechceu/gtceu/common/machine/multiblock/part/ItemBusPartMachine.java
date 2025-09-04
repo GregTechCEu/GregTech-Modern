@@ -59,6 +59,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
     @Persisted
+    @DescSynced
     private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;

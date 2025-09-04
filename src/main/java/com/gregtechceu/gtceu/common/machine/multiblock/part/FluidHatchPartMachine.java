@@ -65,6 +65,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     public static final int INITIAL_TANK_CAPACITY_9X = FluidType.BUCKET_VOLUME;
 
     @Persisted
+    @DescSynced
     public final NotifiableFluidTank tank;
     private final int slots;
     @Nullable
