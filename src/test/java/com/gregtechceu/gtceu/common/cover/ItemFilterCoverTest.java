@@ -81,7 +81,7 @@ public class ItemFilterCoverTest {
         filterCover.setFilterMode(FilterMode.FILTER_EXTRACT);
         filterCover.itemFilter = DIAMOND_FILTER;
 
-        helper.succeedWhen(() -> {
+        helper.succeedOnTickWhen(40, () -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.DIAMOND, 16));
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY);
         });
@@ -108,7 +108,7 @@ public class ItemFilterCoverTest {
         filterCover.setFilterMode(FilterMode.FILTER_INSERT); // filter is for insert only, so should be ignored
         filterCover.itemFilter = DIAMOND_FILTER;
 
-        helper.succeedWhen(() -> {
+        helper.succeedOnTickWhen(40, () -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16));
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), new ItemStack(Items.DIAMOND, 16));
         });
