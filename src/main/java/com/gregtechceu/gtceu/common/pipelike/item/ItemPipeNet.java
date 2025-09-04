@@ -21,7 +21,7 @@ public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
         super(world);
     }
 
-    public List<ItemRoutePath> getNetData(BlockPos pipePos, Direction facing, ITEMNETSET ITEMNETSET) {
+    public List<ItemRoutePath> getNetData(BlockPos pipePos, Direction facing, ItemRouthPatSet ITEMNETSET) {
         List<ItemRoutePath> data = switch (ITEMNETSET) {
             case FULL -> NET_DATA.get(pipePos);
             case NONRESTRICTED -> NET_DATA_NO_RESTRICTIVE.get(pipePos);
