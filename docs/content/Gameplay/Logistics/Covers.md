@@ -16,13 +16,17 @@ or tanks, or on item or fluid pipes (respectively). On placement, they default t
 from their attached block and pushing them into the block they face. By using a Screwdriver, they can be toggled to 
 Import mode, and their transfer rate per-second or per-tick can also be configured.
 
+When connected to a Fluid Pipe, Electric Pumps will override the normal fluid transfer rate of the pipe on that side,
+and fluid will transfer according to the Pump's settings.
+
 When transporting items into an Item Pipe (either by being placed adjacent to a pipe and set to export, or placed on a
 pipe and set to import), Conveyor Modules have an additional feature: Distribution Mode. There are three options for this:
 
 * Priority: Items are sent to the closest available inventory first
 * Round Robin: Items are distributed approximately equally across all available inventories
-* Round Robin With Priority: Items are distributed across all available inventories, but the distribution ratio is based
-on priority. (e.g. a destination with half the priority of the others receives twice as many items)
+* Round Robin with Restriction: Items are distributed across all available inventories, but the distribution will ignore
+any destinations that have Restrictive Item Pipes along the route to them, unless there are no other destinations it can
+send to.
 
 ## Robot Arms and Fluid Regulators
 Robot Arms and Fluid Regulators are more advanced versions of the Conveyor and Pump. They have the same features, but 

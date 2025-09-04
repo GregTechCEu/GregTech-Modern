@@ -42,6 +42,7 @@ When items are pushed into a pipe, by default they are pushed to the "closest" i
 determined by the "Priority" value of the pipe. Larger pipes have lower priorities, smaller pipes have higher priorities,
 and items will take the path which has the smallest total priority value.
 
+### Restrictive Item Pipes
 Item Pipes have a special variant called Restrictive Item Pipes. Restrictive pipes have 100x the priority value of
 equivalent non-restrictive pipes, allowing a pipe path to be forcibly made into the "longest" path and thus the final 
 path items can choose to go down.
