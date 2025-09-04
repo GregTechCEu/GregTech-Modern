@@ -60,9 +60,9 @@ public class ItemFilterCoverTest {
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
 
-    // Test for seeing if conveyors pass items correctly
+    // Test for seeing if conveyors pass filtered items correctly
     @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void conveyorTransferFilteredItemsTest(GameTestHelper helper) {
+    public static void conveyorTransfersFilteredItemsTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -82,13 +82,35 @@ public class ItemFilterCoverTest {
         filterCover.itemFilter = DIAMOND_FILTER;
 
         helper.succeedWhen(() -> {
-            helper.assertTrue(
-                    TestUtils.isItemStackEqual(crate2.getInventory().getStackInSlot(0),
-                            new ItemStack(Items.DIAMOND, 16)),
-                    "Filter cover didn't function correctly");
-            helper.assertTrue(
-                    TestUtils.isItemStackEqual(crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY),
-                    "Filter cover didn't function correctly");
+            TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.DIAMOND, 16));
+            TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY);
+        });
+    }
+
+    // Test for seeing if conveyors pass filtered items correctly
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void conveyorTransfersUnfilteredItemsTest(GameTestHelper helper) {
+        setupCrates(helper);
+        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
+                .getMetaMachine();
+        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
+                .getMetaMachine();
+        crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
+        crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
+        // LV Cover
+        ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate2, GTItems.CONVEYOR_MODULE_LV.asStack(),
+                Direction.DOWN);
+        // Set the cover to import from crate1 to crate2
+        cover.setIo(IO.IN);
+        // Filter to whitelist diamonds
+        ItemFilterCover filterCover = (ItemFilterCover) TestUtils.placeCover(helper, crate1,
+                GTItems.ITEM_FILTER.asStack(), Direction.UP);
+        filterCover.setFilterMode(FilterMode.FILTER_INSERT); // filter is for insert only, so should be ignored
+        filterCover.itemFilter = DIAMOND_FILTER;
+
+        helper.succeedWhen(() -> {
+            TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), new ItemStack(Items.FLINT, 16));
+            TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), new ItemStack(Items.DIAMOND, 16));
         });
     }
 }

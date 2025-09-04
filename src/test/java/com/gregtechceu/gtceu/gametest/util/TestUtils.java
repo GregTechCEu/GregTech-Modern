@@ -179,6 +179,17 @@ public class TestUtils {
                 "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
     }
 
+    public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2) {
+        helper.assertTrue(isItemStackEqual(stack1, stack2),
+                "Item stacks not equal: \"%s\" != \"%s\"".formatted(stack1.toString(), stack2.toString()));
+    }
+
+    public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
+        helper.assertTrue(isFluidStackEqual(stack1, stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+                stack1.getDisplayName().getString(), stack1.getAmount(),
+                stack2.getDisplayName().getString(), stack2.getAmount()));
+    }
+
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, true);
     }
