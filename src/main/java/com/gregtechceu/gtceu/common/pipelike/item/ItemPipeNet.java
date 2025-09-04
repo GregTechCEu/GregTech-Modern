@@ -49,8 +49,8 @@ public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
             }
 
             NET_DATA.put(pipePos, data);
-            NET_DATA_NO_RESTRICTIVE.put(pipePos, restricted);
-            NET_DATA_ONLY_RESTRICTIVE.put(pipePos, nonRestricted);
+            NET_DATA_NO_RESTRICTIVE.put(pipePos, nonRestricted);
+            NET_DATA_ONLY_RESTRICTIVE.put(pipePos, restricted);
 
             data = switch (ITEMNETSET) {
                 case FULL -> NET_DATA.get(pipePos);
