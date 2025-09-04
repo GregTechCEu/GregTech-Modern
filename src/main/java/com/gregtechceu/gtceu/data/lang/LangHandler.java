@@ -415,7 +415,7 @@ public class LangHandler {
         multilineLang(provider, "cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_prio",
-                "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
+                "Distribution Mode: §bRound Robin with Restriction\n§7Tries to split items equally across connected inventories.\n§7Will not send items down Restrictive item pipes unless no other paths are available.");
         multilineLang(provider, "cover.conveyor.distribution.insert_first",
                 "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         multilineLang(provider, "cover.conveyor.blocks_input.enabled",
