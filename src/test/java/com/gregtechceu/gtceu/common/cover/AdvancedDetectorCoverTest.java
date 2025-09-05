@@ -1,0 +1,70 @@
+package com.gregtechceu.gtceu.common.cover;
+
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
+import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.gametest.util.TestUtils;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
+
+@PrefixGameTestTemplate(false)
+@GameTestHolder(GTCEu.MOD_ID)
+public class AdvancedDetectorCoverTest {
+
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedActivityDetectorCover(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        helper.runAtTickTime(40, () -> {
+            helper.assertRedstoneSignal(
+                    new BlockPos(1, 2, 1),
+                    Direction.WEST,
+                    signal -> {
+                        if (((IWorkable) machine).getProgress() > 0) return signal > 0;
+                        else return signal == 0;
+                    },
+                    () -> "incorrect activity detector redstone output (progress=" +
+                            ((IWorkable) machine).getProgress() + ")");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        AdvancedFluidDetectorCover cover = (AdvancedFluidDetectorCover) TestUtils.placeCover(helper, machine,
+                GTItems.COVER_FLUID_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        cover.setMaxValue(100000);
+        cover.setMinValue(1);
+        cover.setLatched(true);
+        helper.runAtTickTime(40, () -> {
+            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
+                GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        // cover.setMaxValue(0);
+        cover.setLatched(true);
+        helper.runAtTickTime(40, () -> {
+            TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
+            helper.succeed();
+        });
+    }
+}
