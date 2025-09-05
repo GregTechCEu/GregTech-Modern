@@ -12,6 +12,11 @@ looking at a machine with a wrench or other tool. Right-clicking with a pipe wit
 a new pipe *on that side of the existing pipe*, connected to the pipe. This allows for placing lines of pipe without
 needing to stand in the path being placed along.
 
+### Frame Boxes
+Pipes can be placed inside of Frame Boxes, and Frame Boxes can be placed over Pipes. This is primarily an aesthetic
+choice, however it also forces the pipe's collision box to take up a full block of space, and thus also provides some 
+protection from the hazards of touching a fluid pipe carrying very hot or cold fluids (see below).
+
 ## Pipe Connections
 Pipes can be right-clicked with a wrench to Connect or Disconnect the pipe from that side. This can be used to
 preemptively set pipe connections in preparation for a machine to be placed there, or to connect or disconnect pipe
