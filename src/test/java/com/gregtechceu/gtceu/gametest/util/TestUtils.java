@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -225,5 +227,9 @@ public class TestUtils {
      */
     public static void succeedAfterTest(GameTestHelper helper, long timeout) {
         helper.runAtTickTime(timeout, helper::succeed);
+    }
+
+    public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
+        helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
     }
 }
