@@ -19,7 +19,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdvancedDetectorCoverTest {
 
-    @GameTest(template = "electrolyzer", batch = "coverTests", attempts = 5)
+    @GameTest(template = "electrolyzer", batch = "coverTests", required = false) // this test is basically a randomizer
     public static void testAdvancedActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
