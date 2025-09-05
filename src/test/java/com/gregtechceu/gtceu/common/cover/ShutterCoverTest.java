@@ -28,7 +28,7 @@ public class ShutterCoverTest {
     }
 
     @GameTest(template = "empty_5x5", batch = "coverTests")
-    public static void conveyorDoesntTransferFilteredItemsTest(GameTestHelper helper) {
+    public static void shutterCoverBlocksTransferTest(GameTestHelper helper) {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -43,7 +43,7 @@ public class ShutterCoverTest {
         cover.setIo(IO.IN);
         TestUtils.placeCover(helper, crate1, GTItems.COVER_SHUTTER.asStack(), Direction.UP);
 
-        helper.succeedOnTickWhen(40, () -> {
+        helper.runAtTickTime(40, () -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), ItemStack.EMPTY);
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY);
             helper.succeed();

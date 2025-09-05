@@ -116,7 +116,7 @@ public class ItemFilterCoverTest {
                 Direction.UP);
         filterCover.setFilterMode(FilterMode.FILTER_INSERT); // filter is for insert only, so should block transfer
 
-        helper.succeedOnTickWhen(40, () -> {
+        helper.runAtTickTime(40, () -> {
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(0), ItemStack.EMPTY);
             TestUtils.assertEqual(helper, crate2.getInventory().getStackInSlot(1), ItemStack.EMPTY);
             helper.succeed();
