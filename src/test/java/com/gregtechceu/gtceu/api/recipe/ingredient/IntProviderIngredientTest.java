@@ -172,6 +172,7 @@ public class IntProviderIngredientTest {
     // TODO: SABOTAGED OUT
     // Test for singleblock machine with ranged item input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
+    // This is specifically a test for #3593 / #3594
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemOutputSabotaged(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
