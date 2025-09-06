@@ -92,6 +92,14 @@ public class ComputerRecipes {
                 .outputItems(MONITOR, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
                 .duration(1000).EUt(VA[MV])
                 .addMaterialInfo(true).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("advanced_monitor_casing")
+                .inputItems(MONITOR)
+                .inputItems(CustomTags.HV_CIRCUITS)
+                .inputItems(plate, StainlessSteel, 4)
+                .inputFluids(SolderingAlloy, L)
+                .outputItems(ADVANCED_MONITOR, 1)
+                .duration(1000).EUt(VA[HV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)

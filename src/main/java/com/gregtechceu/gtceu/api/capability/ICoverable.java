@@ -77,7 +77,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     CoverBehavior getCoverAtSide(Direction side);
 
     default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition,
-                                     ServerPlayer player) {
+                                     @Nullable ServerPlayer player) {
         CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
         if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
             return false;

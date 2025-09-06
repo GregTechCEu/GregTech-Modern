@@ -23,9 +23,21 @@ You can change the properties of the material by adding any combination of the f
 - `.iconSet(set)` gives the material an icon set.
 - `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xNNNNNN`, where `N` are digits.
 - `.secondaryColor(int colorCode)` gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
+- The secondary color is the overlay over the primary color on the material. This can be seen in the dust of a material, as the secondary color outline is visible. Rotors are another solid example.
 - `.flags(flag1, flag2, ...)` can be used to select certain properties of the material, like generating gears, or disabling decomposition.
+  Examples of use can be found in [Material Flags](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Material-Flags/)
 - `.element(element)` -> similar to `.components()`, but is used when the material represents an element.
-- `.rotorStats(speed, damage, durability)` -> this will create a turbine rotor from this material.
+- `.rotorStats(/* int */ power, /* int */ efficiency, /* float */ damage, /* int */ durability)` -> this will create a turbine rotor from this material
+  1. Power is the EU/t and fuel consumption multiplier the turbine gets when  equipped with this rotor.
+     This output varies depending on speed of turbine and rotor holder.
+  2. Efficiency is how well it handles fuel.
+     A smaller number will make it consume more fuel while a bigger number means it uses less fuel.
+     Actual efficiency: rotorEfficiency * holder Efficiency / 100
+  3. Damage is the amount of damage that happens to the player when opening the ui of a running turbine's rotor holder.
+  4. Durability is how much base durability it has.
+- Here are some examples of base gt rotors:
+  1. Titanium Rotor: .rotorStats(130, 115, 3.0, 1600)
+  2. HSS-S Rotor .rotorStats(250, 180, 7.0, 3000)
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. temperature -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
@@ -51,7 +63,6 @@ You can change the properties of the material by adding any combination of the f
     1. Voltage, amperage, loss per block
     2. Voltage, amperage, loss per block, is superconductor -> for a super conductor, set loss as 0 and is super conductor as true
     3. Voltage, amperage, loss per block, is super conductor, critical temperature
-- `.toolProperties()`
 - `.fluidPipeProperties()`
 - `.itemPipeProperties()`
 - `.addDefaultEnchant()`

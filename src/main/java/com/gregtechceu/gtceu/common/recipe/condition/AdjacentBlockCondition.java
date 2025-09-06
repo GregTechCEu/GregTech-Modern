@@ -4,63 +4,71 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeHolderSets;
+import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeHolderSets;
 
 @NoArgsConstructor
 public class AdjacentBlockCondition extends RecipeCondition {
 
     // spotless:off
-    private static final Codec<List<HolderSet<Block>>> BLOCK_CODEC = ExtraCodecs.lazyInitializedCodec(
-            () -> RegistryCodecs.homogeneousList(Registries.BLOCK).listOf()
-    );
-
-    public static final Codec<AdjacentBlockCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
-            BLOCK_CODEC.fieldOf("blocks").forGetter(AdjacentBlockCondition::getBlocks)
-    ).apply(instance, AdjacentBlockCondition::new));
+    public static final Codec<AdjacentBlockCondition> CODEC =
+            RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+                    Codec.STRING.fieldOf("blockString").forGetter(AdjacentBlockCondition::getBlockString)
+            ).apply(instance, AdjacentBlockCondition::new));
     // spotless:on
 
     @Getter
-    @Setter
-    private @NotNull List<HolderSet<Block>> blocks = new ArrayList<>();
+    private @NotNull String blockString = "";
+
+    private @Nullable List<HolderSet<Block>> blocks = null;
+
+    public void setBlocks(@NotNull List<HolderSet<Block>> blocks) {
+        this.blocks = blocks;
+        this.blockString = encodeHolderSets(blocks);
+    }
+
+    public List<HolderSet<Block>> getBlocks() {
+        if (blocks == null) {
+            blocks = decodeHolderSets(getBlockString(), Registries.BLOCK);
+        }
+        return blocks;
+    }
 
     public AdjacentBlockCondition(@NotNull List<HolderSet<Block>> blocks) {
-        this.blocks.addAll(blocks);
+        setBlocks(blocks);
     }
 
     public AdjacentBlockCondition(boolean isReverse, @NotNull List<HolderSet<Block>> blocks) {
         super(isReverse);
-        this.blocks.addAll(blocks);
+        setBlocks(blocks);
+    }
+
+    public AdjacentBlockCondition(boolean isReverse, String blockString) {
+        super(isReverse);
+        this.blockString = blockString;
     }
 
     public static AdjacentBlockCondition fromBlocks(Collection<Block> blocks) {
@@ -121,7 +129,7 @@ public class AdjacentBlockCondition extends RecipeCondition {
     }
 
     public @NotNull List<HolderSet<Block>> getOrInitBlocks(@NotNull GTRecipe recipe) {
-        if (this.blocks.isEmpty() || (recipe.data.contains("blockA") && recipe.data.contains("blockB"))) {
+        if (getBlocks().isEmpty() || (recipe.data.contains("blockA") && recipe.data.contains("blockB"))) {
             List<HolderSet<Block>> blocks = new ArrayList<>();
 
             Block blockA = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockA")));
@@ -132,48 +140,13 @@ public class AdjacentBlockCondition extends RecipeCondition {
             if (!blockB.defaultBlockState().isAir()) {
                 blocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
             }
-            this.blocks = blocks;
+            setBlocks(blocks);
         }
-        return this.blocks;
+        return getBlocks();
     }
 
     @Override
     public RecipeCondition createTemplate() {
         return new AdjacentBlockCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        JsonElement blocksJson = Util.getOrThrow(BLOCK_CODEC.encodeStart(ops, this.blocks), IllegalStateException::new);
-        config.add("blocks", blocksJson);
-
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        this.blocks = BLOCK_CODEC.parse(ops, config.get("blocks")).result().orElse(new ArrayList<>());
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
-        this.blocks = buf.readWithCodec(ops, BLOCK_CODEC);
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
-        buf.writeWithCodec(ops, BLOCK_CODEC, this.blocks);
     }
 }

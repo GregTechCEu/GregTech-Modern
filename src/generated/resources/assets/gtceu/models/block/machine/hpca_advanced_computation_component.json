@@ -8,7 +8,7 @@
         "parent": "gtceu:block/hpca_advanced_computation_component_base",
         "textures": {
           "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation",
-          "overlay_emissive": "gtceu:block/overlay/machine/hpca/advanced_computation_emissive"
+          "overlay_emissive": "gtceu:block/void"
         }
       }
     },
@@ -17,7 +17,7 @@
         "parent": "gtceu:block/hpca_advanced_computation_component_base",
         "textures": {
           "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation",
-          "overlay_emissive": "gtceu:block/overlay/machine/hpca/advanced_computation_emissive"
+          "overlay_emissive": "gtceu:block/void"
         }
       }
     },
