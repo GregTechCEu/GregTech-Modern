@@ -64,7 +64,7 @@ public class IntProviderIngredientTest {
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
-                .inputItemsRanged(new ItemStack(Items.GREEN_STAINED_GLASS), UniformInt.of(1, 9))
+                .inputItemsRanged(new ItemStack(Items.GREEN_STAINED_GLASS), UniformInt.of(0, 9))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
@@ -74,14 +74,14 @@ public class IntProviderIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(new ItemStack(Blocks.BRICK_SLAB))
-                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 9))
+                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
-                .inputItemsRanged(new ItemStack(Items.BLACK_STAINED_GLASS), UniformInt.of(1, 9))
+                .inputItemsRanged(new ItemStack(Items.BLACK_STAINED_GLASS), UniformInt.of(0, 9))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.HV])
@@ -91,14 +91,14 @@ public class IntProviderIngredientTest {
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
                 .inputItems(new ItemStack(Blocks.BRICK_STAIRS))
-                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 9))
+                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
-                .inputItemsRanged(new ItemStack(Items.LIME_STAINED_GLASS), UniformInt.of(1, 4))
+                .inputItemsRanged(new ItemStack(Items.LIME_STAINED_GLASS), UniformInt.of(0, 4))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.V[GTValues.IV])
@@ -108,7 +108,7 @@ public class IntProviderIngredientTest {
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(new ItemStack(Blocks.BRICK_WALL))
-                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(1, 4))
+                .outputItemsRanged(new ItemStack(Blocks.STONE), UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(1)
                 .buildRawRecipe());
@@ -194,7 +194,7 @@ public class IntProviderIngredientTest {
         // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemIn.getStackInSlot(0);
-            int upperLimit = 64 - (runs * 1);
+            int upperLimit = 64 - (runs * 0);
             int lowerLimit = 64 - (runs * 9);
             helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), new ItemStack(Blocks.STONE, runs)),
                     "Singleblock CR didn't complete correct number of recipes, completed [" +
@@ -258,7 +258,7 @@ public class IntProviderIngredientTest {
                             results.getCount() + "] not [" + runs + "-" + (runs * 9) + "]");
             helper.assertFalse((results.getCount() == runs * 9),
                     "Singleblock CR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == runs),
+            helper.assertFalse((results.getCount() == runs * 0),
                     "Singleblock CR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
@@ -304,7 +304,7 @@ public class IntProviderIngredientTest {
         // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemIn.getStackInSlot(0);
-            int upperLimit = 64 - (runs * 1);
+            int upperLimit = 64 - (runs * 0);
             int lowerLimit = 64 - (runs * 9);
             helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), new ItemStack(Blocks.STONE, runs)),
                     "LCR didn't complete correct number of recipes, completed [" +
@@ -364,7 +364,7 @@ public class IntProviderIngredientTest {
                             results.getCount() + "] not [" + runs + "-" + (runs * 9) + "]");
             helper.assertFalse((results.getCount() == runs * 9),
                     "LCR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == runs),
+            helper.assertFalse((results.getCount() == runs * 0),
                     "LCR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
@@ -412,7 +412,7 @@ public class IntProviderIngredientTest {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(2 * finalI, () -> {
                 ItemStack results = itemIn.getStackInSlot(0);
-                int upperLimit = 64 - (batches * parallels * 1);
+                int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
@@ -480,7 +480,7 @@ public class IntProviderIngredientTest {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(2 * finalI, () -> {
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
-                int lowerLimit = finalI * batches * parallels * 1;
+                int lowerLimit = finalI * batches * parallels * 0;
                 int upperLimit = finalI * batches * parallels * 4;
                 helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
                         "Parallel LCent didn't produce correct number of items, produced [" +
