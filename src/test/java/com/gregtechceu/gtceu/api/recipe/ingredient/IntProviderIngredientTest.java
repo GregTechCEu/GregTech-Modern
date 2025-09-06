@@ -31,6 +31,8 @@ import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 
+// spotless, stop breaking my todo comments!
+// spotless:off
 /*
  * TODO:
  *  do many passes of most tests as a safeguard against bad rolls
@@ -42,6 +44,7 @@ import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
  *  Rolls of 0
  *  Forced rolls of 0 breaking recipes
  */
+// spotless:on
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class IntProviderIngredientTest {
@@ -164,6 +167,77 @@ public class IntProviderIngredientTest {
         FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 1, 0)));
         return new BusHolder(inputBus1, inputHatch1, outputBus1, outputHatch1, controller);
+    }
+
+    // TODO: SABOTAGED OUT
+    // Test for singleblock machine with ranged item input.
+    // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    public static void singleblockRangedItemOutputSabotaged(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        int runs = 7;
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_SLAB, runs));
+        // 1t to turn on, 2t per recipe run
+        // get the result of each roll independently
+        int[] addedRolls = new int[runs];
+
+        helper.runAfterDelay(4, () -> {
+            if (machine.getRecipeLogic().getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0)
+                    .getContent() instanceof IntProviderIngredient ingredient) {
+                ingredient.setSampledCount(0);
+
+                if (ingredient.getSampledCount() != 0) {
+                    helper.fail("Singleblock Ranged Item Output sabotage failed! " +
+                            "Output count not was altered!");
+                }
+            } else {
+                helper.fail("Singleblock Ranged Item Output sabotage failed! " +
+                        "Recipe logic did not contain a Ranged Output!");
+            }
+        });
+        for (int i = 0; i < runs; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 3, () -> {
+                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
+            });
+        }
+        // check the results of all rolls together
+        helper.runAfterDelay(runs * 2 + 1, () -> {
+            ItemStack results = itemOut.getStackInSlot(0);
+            helper.assertTrue(TestUtils.isItemWithinRange(results, runs, runs * 9),
+                    "Sabotaged Singleblock CR didn't produce correct number of items, produced [" +
+                            results.getCount() + "] not [" + runs + "-" + (runs * 9) + "]");
+            helper.assertFalse((results.getCount() == runs * 9),
+                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
+            helper.assertFalse((results.getCount() == runs * 0),
+                    "Sabotaged Singleblock CR rolled min value on every roll! " +
+                            "This is the failure this sabotage was intended to induce.");
+
+            // check if all the rolls were equal, but not min/max
+            int[] rolls = new int[runs];
+            rolls[0] = addedRolls[0];
+            boolean allEqual = false;
+            for (int i = 1; i < runs; i++) {
+                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+                if (rolls[i] == rolls[i - 1]) {
+                    allEqual = true;
+                } else {
+                    allEqual = false;
+                    break;
+                }
+            }
+            helper.assertFalse(allEqual,
+                    "Sabotaged Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+            helper.succeed();
+        });
     }
 
     // TODO: IN
@@ -509,7 +583,7 @@ public class IntProviderIngredientTest {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
-                    GTCEu.LOGGER.warn("Parallel LCent ranged item output test iteration " + (i+1) + " produced [" +
+                    GTCEu.LOGGER.warn("Parallel LCent ranged item output test iteration " + (i + 1) + " produced [" +
                             rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                             "). If this message only appears once, this is likely a false positive.");
                 } else {

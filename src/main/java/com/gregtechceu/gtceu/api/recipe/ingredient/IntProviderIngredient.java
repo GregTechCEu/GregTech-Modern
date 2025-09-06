@@ -92,7 +92,7 @@ public class IntProviderIngredient extends Ingredient {
     @Override
     public ItemStack @NotNull [] getItems() {
         if (itemStacks == null) {
-            int cachedCount = getSampledCount(GTValues.RNG);
+            int cachedCount = getSampledCount();
             if (cachedCount == 0) {
                 return EMPTY_STACK_ARRAY;
             }
@@ -115,6 +115,19 @@ public class IntProviderIngredient extends Ingredient {
     public @NotNull ItemStack getMaxSizeStack() {
         if (inner.getItems().length == 0) return ItemStack.EMPTY;
         else return inner.getItems()[0].copyWithCount(countProvider.getMaxValue());
+    }
+
+    /**
+     * If this ingredient has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it and
+     * returns the roll.
+     * If it has, returns the existing roll.
+     * Passthrough method, invokes {@link IntProviderIngredient#getSampledCount(RandomSource)} using the threadsafe
+     * {@link GTValues#RNG}.
+     *
+     * @return the amount rolled
+     */
+    public int getSampledCount() {
+        return getSampledCount(GTValues.RNG);
     }
 
     /**
