@@ -30,7 +30,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @Persisted
     @DescSynced
     public final NotifiableEnergyContainer energyContainer;
-    protected TickableSubscription explosionSubs;
+    protected TickableSubscription explosionSub;
     protected ISubscription energyListener;
 
     public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
@@ -61,8 +61,10 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
         // if machine need do check explosion conditions
         if (!isRemote() && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion &&
                 shouldWeatherOrTerrainExplosion()) {
-            energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
-            updateExplosionSubscription();
+            explosionSub = subscribeServerTick(this::checkExplosion);
+            checkExplosion();
+            //explosionSub = energyContainer.addChangedListener(this::updateExplosionSubscription);
+            //updateExplosionSubscription();
         }
     }
 
@@ -73,13 +75,17 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             energyListener.unsubscribe();
             energyListener = null;
         }
+
+        if (explosionSub != null) {
+            explosionSub = null;
+        }
     }
 
     //////////////////////////////////////
     // ******** Explosion ********//
     //////////////////////////////////////
 
-    protected void updateExplosionSubscription() {
+    /*protected void updateExplosionSubscription() {
         if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion && shouldWeatherOrTerrainExplosion() &&
                 energyContainer.getEnergyStored() > 0) {
             explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
@@ -87,11 +93,13 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             explosionSubs.unsubscribe();
             explosionSubs = null;
         }
-    }
+    }*/
 
     protected void checkExplosion() {
-        checkWeatherOrTerrainExplosion(tier, tier * 10);
-        updateExplosionSubscription();
+        if (energyContainer.getEnergyStored() > 0) {
+            checkWeatherOrTerrainExplosion(tier, tier * 10);
+        }
+        //updateExplosionSubscription();
     }
 
     //////////////////////////////////////
