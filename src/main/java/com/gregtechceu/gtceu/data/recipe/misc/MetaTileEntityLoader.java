@@ -212,70 +212,70 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_radioactive_hazard",
                 GTBlocks.RADIOACTIVE_HAZARD_SIGN_BLOCK.asStack(), " YB", " M ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_bio_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_bio_hazard",
                 GTBlocks.BIO_HAZARD_SIGN_BLOCK.asStack(), " Y ", " MB", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_explosion_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_explosion_hazard",
                 GTBlocks.EXPLOSION_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", "  B", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_fire_hazard",
                 GTBlocks.FIRE_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", " B ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_acid_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_acid_hazard",
                 GTBlocks.ACID_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", "B  ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_magic_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_magic_hazard",
                 GTBlocks.MAGIC_HAZARD_SIGN_BLOCK.asStack(), " Y ", "BM ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_frost_hazard",
                 GTBlocks.FROST_HAZARD_SIGN_BLOCK.asStack(), "BY ", " M ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_noise_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_noise_hazard",
                 GTBlocks.NOISE_HAZARD_SIGN_BLOCK.asStack(), "   ", " M ", "BY ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_generic_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_generic_hazard",
                 GTBlocks.GENERIC_HAZARD_SIGN_BLOCK.asStack(), "   ", "BM ", " Y ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_high_voltage_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_high_voltage_hazard",
                 GTBlocks.HIGH_VOLTAGE_HAZARD_SIGN_BLOCK.asStack(), "B  ", " M ", " Y ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_magnetic_hazard",
                 GTBlocks.MAGNETIC_HAZARD_SIGN_BLOCK.asStack(), " B ", " M ", " Y ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_antimatter_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_antimatter_hazard",
                 GTBlocks.ANTIMATTER_HAZARD_SIGN_BLOCK.asStack(), "  B", " M ", " Y ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_high_temperature_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_high_temperature_hazard",
                 GTBlocks.HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK.asStack(), "   ", " MB", " Y ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_void_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_void_hazard",
                 GTBlocks.VOID_HAZARD_SIGN_BLOCK.asStack(), "   ", " M ", " YB", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_mob_spawner_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_mob_spawner_hazard",
                 GTBlocks.MOB_SPAWNER_HAZARD_SIGN_BLOCK.asStack(), "B  ", "YM ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_spatial_storage_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_spatial_storage_hazard",
                 GTBlocks.SPATIAL_STORAGE_HAZARD_SIGN_BLOCK.asStack(), " B ", "YM ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_laser_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_laser_hazard",
                 GTBlocks.LASER_HAZARD_SIGN_BLOCK.asStack(), "  B", "YM ", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_mob_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_mob_hazard",
                 GTBlocks.MOB_INFESTATION_HAZARD_SIGN_BLOCK.asStack(), "   ", "YMB", "   ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_boss_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_boss_hazard",
                 GTBlocks.BOSS_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", "  B", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_gregification_hazard",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_gregification_hazard",
                 GTBlocks.GREGIFICATION_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", " B ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_causality_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_causality_hazard",
                 GTBlocks.CAUSALITY_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", "B  ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_turret_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_turret_hazard",
                 GTBlocks.TURRET_HAZARD_SIGN_BLOCK.asStack(), "   ", " MY", "  B", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_high_pressure_hazard",
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, true, "warning_sign_high_pressure_hazard",
                 GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack(), "   ", " MY", " B ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
 

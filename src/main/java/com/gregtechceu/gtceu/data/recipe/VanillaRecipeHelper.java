@@ -250,6 +250,15 @@ public class VanillaRecipeHelper {
     /**
      * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
+                                             @NotNull String regName,
+                                             @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, false, regName, result, recipe);
