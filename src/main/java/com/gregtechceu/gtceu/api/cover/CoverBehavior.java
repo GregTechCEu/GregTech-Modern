@@ -112,7 +112,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
      *
      * @param itemStack the item cover was attached from
      */
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         attachItem = itemStack.copy();
         attachItem.setCount(1);
     }

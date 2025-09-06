@@ -50,6 +50,10 @@ public interface IJetpack {
         return 0.0D;
     }
 
+    default boolean removeMiningSpeedPenalty() {
+        return true;
+    }
+
     @Nullable
     default ParticleOptions getParticle() {
         return ParticleTypes.LARGE_SMOKE;

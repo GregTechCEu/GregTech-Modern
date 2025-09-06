@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
@@ -1071,6 +1072,14 @@ public class GTMachines {
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/machine/part/computer_monitor")))
             .tier(MV)
+            .register();
+    public static final MachineDefinition ADVANCED_MONITOR = REGISTRATE
+            .machine("advanced_monitor", AdvancedMonitorPartMachine::new)
+            .rotationState(RotationState.ALL)
+            .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+                    GTCEu.id("block/machine/part/computer_monitor")))
+            .tier(HV)
+            .allowExtendedFacing(true)
             .register();
 
     public static void init() {

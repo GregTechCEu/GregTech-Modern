@@ -334,11 +334,10 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             case TRANSFER_ANY:
                 return insertIntoDestination(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                if (arm.getFilterHandler().getFilter().supportsAmounts()) {
-                    count = rate - countStack(handler, stack, arm);
-                } else {
-                    count = rate;
+                if (rate == Integer.MAX_VALUE) {
+                    rate = arm.getGlobalTransferLimit();
                 }
+                count = rate - countStack(handler, stack, arm);
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insertIntoDestination(handler, stack, simulate, count, ignoreLimit);

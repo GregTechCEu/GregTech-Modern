@@ -4,4 +4,4 @@
 # Specific files requiring admin approval
 CODEOWNERS @GregTechCEu/admin
 LICENSE @GregTechCEu/admin
-README.md @GregTechCEu/admin
+/README.md @GregTechCEu/admin
