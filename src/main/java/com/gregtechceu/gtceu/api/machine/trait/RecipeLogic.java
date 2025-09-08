@@ -121,7 +121,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected int runDelay = 0;
     @Persisted
     @Setter
-    @Getter
     protected boolean suspendAfterFinish = false;
     @Getter
     protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
@@ -181,6 +180,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public double getProgressPercent() {
         return duration == 0 ? 0.0 : progress / (duration * 1.0);
+    }
+
+    // have to do this manually because Lombok can't figure out the inheritance
+    @Override
+    public boolean getSuspendAfterFinish() {
+        return this.suspendAfterFinish;
     }
 
     /**
@@ -435,7 +440,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean isWorkingEnabled() {
-        return !isSuspend() && !isSuspendAfterFinish();
+        return !isSuspend() && !getSuspendAfterFinish();
     }
 
     @Override
