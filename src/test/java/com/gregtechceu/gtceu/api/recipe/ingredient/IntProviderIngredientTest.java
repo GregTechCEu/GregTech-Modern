@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -484,11 +485,13 @@ public class IntProviderIngredientTest {
 
         int batches = 1; // unused on this test
         int parallels = 16;
+        busHolder.controller.setBatchEnabled(false);
+        busHolder.parallelHatch.setCurrentParallel(parallels);
+
         itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
         itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, parallels));
 
-        busHolder.controller.setBatchEnabled(false);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
+
 
         // 1t to turn on, 1t per recipe run
         // 16 parallels
@@ -498,6 +501,9 @@ public class IntProviderIngredientTest {
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(2 * finalI, () -> {
+
+                GTRecipe check = busHolder.controller.getRecipeLogic().getLastRecipe();
+
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
@@ -629,20 +635,23 @@ public class IntProviderIngredientTest {
 
         int batches = 16;
         int parallels = 1; // unused on this test
-        itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
-        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, parallels));
-
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
+        itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, batches));
+
         // 1t to turn on, 1t per recipe run
-        // 16 parallels
+        // 16 batches
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * finalI, () -> {
+            helper.runAfterDelay(5 * finalI, () -> {
+
+                GTRecipe check = busHolder.controller.getRecipeLogic().getLastRecipe();
+
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
@@ -662,11 +671,11 @@ public class IntProviderIngredientTest {
 
                 // reset for a rerun
                 itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
-                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, parallels));
+                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, batches));
             });
         }
 
-        helper.runAfterDelay(1 + 2 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 5 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -775,11 +784,18 @@ public class IntProviderIngredientTest {
 
         int batches = 16;
         int parallels = 16;
-        itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
-        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, parallels));
-
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        int j;
+        int stacks = batches * parallels / 64;
+
+        for (j = 0; j < stacks; j++){
+            itemIn.setStackInSlot(j, new ItemStack(Items.COBBLESTONE, (batches * parallels / stacks)));
+        }
+        for (int k=j; k < stacks+batches; k++){
+            itemIn.setStackInSlot(k, new ItemStack(Items.LIME_STAINED_GLASS, 64));
+        }
 
         // 1t to turn on, 1t per recipe run
         // 16 parallels
@@ -788,7 +804,7 @@ public class IntProviderIngredientTest {
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * finalI, () -> {
+            helper.runAfterDelay(17 * finalI, () -> {
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
@@ -807,8 +823,13 @@ public class IntProviderIngredientTest {
                 rolls[finalI - 1] = 64 - results.getCount();
 
                 // reset for a rerun
-                itemIn.setStackInSlot(0, new ItemStack(Items.LIME_STAINED_GLASS, 64));
-                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE, parallels));
+                int l;
+                for (l = 0; l < stacks; l++){
+                    itemIn.setStackInSlot(l, new ItemStack(Items.COBBLESTONE, (batches * parallels / stacks)));
+                }
+                for (int k=l; k < stacks+batches; k++){
+                    itemIn.setStackInSlot(k, new ItemStack(Items.LIME_STAINED_GLASS, 64));
+                }
             });
         }
 
@@ -848,10 +869,12 @@ public class IntProviderIngredientTest {
 
         int batches = 16;
         int parallels = 16;
-        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL, 16));
-
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        for (int j=0; j<batches; j++){
+            itemIn.setStackInSlot(j, new ItemStack(Items.BRICK_WALL, 16));
+        }
 
         // 1t to turn on, 1t per recipe run
         // 16 parallels
@@ -871,11 +894,13 @@ public class IntProviderIngredientTest {
                 addedRolls[finalI - 1] = resultCount;
 
                 // reset for a rerun
-                itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL, 16));
+                for (int j=0; j<batches; j++){
+                    itemIn.setStackInSlot(j, new ItemStack(Items.BRICK_WALL, 16));
+                }
             });
         }
 
-        helper.runAfterDelay(1 + 2 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 5 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
