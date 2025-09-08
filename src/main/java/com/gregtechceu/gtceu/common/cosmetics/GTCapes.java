@@ -55,7 +55,7 @@ public class GTCapes {
     }
 
     public static void giveDevCapes(RegisterGTCapesEvent event) {
-        // updated on 8.4.2025 - screret
+        // updated on 9.7.2025 - DilithiumThoride
         event.unlockCapeFor(UUID.fromString("a24a9108-23d2-43fc-8db7-43f809d017db"), GREGTECH_CAPE); // ALongStringOfNumbers
         event.unlockCapeFor(UUID.fromString("fbd96f69-60f9-481c-b71e-4b190cd5fc72"), GREGTECH_CAPE); // Anne-Marie
         event.unlockCapeFor(UUID.fromString("77e2129d-8f68-4025-9394-df946f1f3aee"), GREGTECH_CAPE); // Brachy84
@@ -64,6 +64,7 @@ public class GTCapes {
         event.unlockCapeFor(UUID.fromString("274846e6-1d07-4e59-8dea-f4f73e76f9fb"), GREGTECH_CAPE); // DilithiumThoride
         event.unlockCapeFor(UUID.fromString("c43b3c3d-7da6-4c2b-b335-703fce2ed795"), GREGTECH_CAPE); // Ghostipedia
         event.unlockCapeFor(UUID.fromString("88374b6a-4710-46cd-bb04-a1580905a918"), GREGTECH_CAPE); // Ghzdude
+        event.unlockCapeFor(UUID.fromString("fe4bafe8-8ea9-494a-b4e9-29397cea89fc"), GREGTECH_CAPE); // Gustavo
         event.unlockCapeFor(UUID.fromString("5d7073e3-882f-4c4a-94b3-0e5ba1c11e02"), GREGTECH_CAPE); // htmlcsjs
         event.unlockCapeFor(UUID.fromString("c18c1d7f-3174-42c6-81dc-3c7ff9f720c3"), GREGTECH_CAPE); // jurrejelle
         event.unlockCapeFor(UUID.fromString("29f1e04c-58d8-4a3b-9eff-f85be7825256"), GREGTECH_CAPE); // kross000
