@@ -12,6 +12,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 
 import lombok.Getter;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
