@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -94,7 +93,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighlight,
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
@@ -424,7 +423,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         var level = getLevel();
         if (level == null) return InteractionResult.PASS;
         var blockEntity = getLevel().getBlockEntity(getPos());
-        IControllable controllable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
+        IControllable controllable = blockEntity == null ? null :
+                blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
@@ -681,10 +681,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void animateTick(RandomSource random) {}
 
-    @Override
     @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         BlockState sourceState, BlockPos sourcePos) {
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
         if (this instanceof IMultiPart part && part.isFormed()) {

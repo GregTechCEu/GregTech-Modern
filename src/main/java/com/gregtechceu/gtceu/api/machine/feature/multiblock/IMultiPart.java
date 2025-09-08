@@ -68,9 +68,6 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
         return true;
     }
 
-    /**
-     * get part's Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
-     */
     @Nullable
     default BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
         for (IMultiController controller : getControllers()) {

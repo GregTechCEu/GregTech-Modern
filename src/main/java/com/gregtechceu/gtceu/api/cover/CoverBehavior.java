@@ -212,9 +212,6 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return null;
     }
 
-    /**
-     * get Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
-     */
     @Nullable
     public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return null;

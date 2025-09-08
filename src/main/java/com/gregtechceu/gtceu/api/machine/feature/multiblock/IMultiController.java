@@ -179,9 +179,6 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
         return true;
     }
 
-    /**
-     * get parts' Appearance. same as IForgeBlock.getAppearance() / IFabricBlock.getAppearance()
-     */
     @Nullable
     default BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState, BlockPos sourcePos) {
         if (isFormed()) {
