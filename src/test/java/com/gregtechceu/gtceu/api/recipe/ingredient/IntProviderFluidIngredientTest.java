@@ -26,10 +26,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import lombok.Getter;
+
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 /**
  * Test cases:
@@ -42,21 +45,21 @@ import lombok.Getter;
  */
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
-public class IntProviderIngredientTest {
+public class IntProviderFluidIngredientTest {
 
     private static GTRecipeType CR_RECIPE_TYPE;
     private static GTRecipeType LCR_RECIPE_TYPE;
     private static GTRecipeType CENTRIFUGE_RECIPE_TYPE;
 
     // items used in recipes. Up top here for quick replacements.
-    private static final ItemStack CR_IN = new ItemStack(Items.GREEN_STAINED_GLASS);
-    private static final ItemStack CR_OUT = new ItemStack(Items.BRICK_SLAB);
-    private static final ItemStack LCR_IN = new ItemStack(Items.BLACK_STAINED_GLASS);
-    private static final ItemStack LCR_OUT = new ItemStack(Items.BRICK_STAIRS);
-    private static final ItemStack LCENT_IN = new ItemStack(Items.LIME_STAINED_GLASS);
-    private static final ItemStack LCENT_OUT = new ItemStack(Items.BRICK_WALL);
-    private static final ItemStack COBBLE = new ItemStack(Items.COBBLESTONE);
-    private static final ItemStack STONE = new ItemStack(Items.STONE);
+    private static final FluidStack CR_IN = GTMaterials.Hydrogen.getFluid(1);
+    private static final FluidStack CR_OUT = GTMaterials.Iron.getFluid(1);
+    private static final FluidStack LCR_IN = GTMaterials.Oxygen.getFluid(1);
+    private static final FluidStack LCR_OUT = GTMaterials.Copper.getFluid(1);
+    private static final FluidStack LCENT_IN = GTMaterials.Nitrogen.getFluid(1);
+    private static final FluidStack LCENT_OUT = GTMaterials.Gold.getFluid(1);
+    private static final ItemStack COBBLE = new ItemStack(Blocks.COBBLESTONE);
+    private static final ItemStack STONE = new ItemStack(Blocks.STONE);
 
     /**
      * How many times to repeat the Batch and Parallel random roll tests to avoid false positives
@@ -73,7 +76,7 @@ public class IntProviderIngredientTest {
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
-                .inputItemsRanged(CR_IN, UniformInt.of(0, 9))
+                .inputFluidsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
                 .EUt(GTValues.V[GTValues.HV])
@@ -83,14 +86,14 @@ public class IntProviderIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(CR_OUT)
-                .outputItemsRanged(STONE, UniformInt.of(0, 9))
+                .outputFluidsRanged(STONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
-                .inputItemsRanged(LCR_IN, UniformInt.of(0, 9))
+                .inputFluidsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
                 .EUt(GTValues.V[GTValues.HV])
@@ -100,14 +103,14 @@ public class IntProviderIngredientTest {
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
                 .inputItems(LCR_OUT)
-                .outputItemsRanged(STONE, UniformInt.of(0, 9))
+                .outputFluidsRanged(STONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
-                .inputItemsRanged(LCENT_IN, UniformInt.of(0, 4))
+                .inputFluidsRanged(LCENT_IN, UniformInt.of(0, 4))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
                 .EUt(GTValues.V[GTValues.IV])
@@ -117,7 +120,7 @@ public class IntProviderIngredientTest {
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(LCENT_OUT)
-                .outputItemsRanged(STONE, UniformInt.of(0, 4))
+                .outputFluidsRanged(STONE, UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
@@ -199,7 +202,7 @@ public class IntProviderIngredientTest {
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
         int runs = 7;
-        itemIn.setStackInSlot(0, CR_OUT.copyWithCount(runs));
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_SLAB).copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -270,7 +273,7 @@ public class IntProviderIngredientTest {
 
         int runs = 7;
         itemIn.setStackInSlot(0, CR_IN.copyWithCount(64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -329,7 +332,7 @@ public class IntProviderIngredientTest {
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
         int runs = 7;
-        itemIn.setStackInSlot(0, CR_OUT.copyWithCount(runs));
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_SLAB).copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -383,7 +386,7 @@ public class IntProviderIngredientTest {
 
         int runs = 7;
         itemIn.setStackInSlot(0, LCR_IN.copyWithCount(64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -438,7 +441,7 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
 
         int runs = 7;
-        itemIn.setStackInSlot(0, LCR_OUT.copyWithCount(runs));
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_STAIRS).copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -499,7 +502,7 @@ public class IntProviderIngredientTest {
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(parallels));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(parallels));
 
         // 1t to turn on, 4t per recipe run
         // 16 parallels
@@ -528,7 +531,7 @@ public class IntProviderIngredientTest {
 
                 // reset for a rerun
                 itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
-                itemIn.setStackInSlot(1, COBBLE.copyWithCount(parallels));
+                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(parallels));
             });
         }
 
@@ -567,7 +570,7 @@ public class IntProviderIngredientTest {
 
         int batches = 1; // unused on this test
         int parallels = 16;
-        itemIn.setStackInSlot(0, LCENT_OUT.copyWithCount(16));
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
 
         busHolder.controller.setBatchEnabled(false);
         busHolder.parallelHatch.setCurrentParallel(parallels);
@@ -594,7 +597,7 @@ public class IntProviderIngredientTest {
                 addedRolls[finalI - 1] = resultCount;
 
                 // reset for a rerun
-                itemIn.setStackInSlot(0, LCENT_OUT.copyWithCount(16));
+                itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
             });
         }
 
@@ -648,7 +651,7 @@ public class IntProviderIngredientTest {
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(batches));
+        itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(batches));
 
         // 1t to turn on, 1t per recipe run
         // 16 batches
@@ -677,7 +680,7 @@ public class IntProviderIngredientTest {
 
                 // reset for a rerun
                 itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
-                itemIn.setStackInSlot(1, COBBLE.copyWithCount(batches));
+                itemIn.setStackInSlot(1, new ItemStack(Items.COBBLESTONE).copyWithCount(batches));
             });
         }
 
@@ -717,7 +720,7 @@ public class IntProviderIngredientTest {
 
         int batches = 16;
         int parallels = 1; // unused on this test
-        itemIn.setStackInSlot(0, LCENT_OUT.copyWithCount(16));
+        itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
 
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
@@ -744,7 +747,7 @@ public class IntProviderIngredientTest {
                 addedRolls[finalI - 1] = resultCount;
 
                 // reset for a rerun
-                itemIn.setStackInSlot(0, LCENT_OUT.copyWithCount(16));
+                itemIn.setStackInSlot(0, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
             });
         }
 
@@ -801,7 +804,7 @@ public class IntProviderIngredientTest {
         int stacks = batches * parallels / 64;
 
         for (j = 0; j < stacks; j++) {
-            itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
+            itemIn.setStackInSlot(j, new ItemStack(Items.COBBLESTONE).copyWithCount((batches * parallels / stacks)));
         }
         for (int k = j; k < stacks + batches; k++) {
             itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
@@ -835,7 +838,7 @@ public class IntProviderIngredientTest {
                 int l;
                 for (l = 0; l < stacks; l++) {
                     itemIn.setStackInSlot(l,
-                            COBBLE.copyWithCount((batches * parallels / stacks)));
+                            new ItemStack(Items.COBBLESTONE).copyWithCount((batches * parallels / stacks)));
                 }
                 for (int k = l; k < stacks + batches; k++) {
                     itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
@@ -883,7 +886,7 @@ public class IntProviderIngredientTest {
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         for (int j = 0; j < batches; j++) {
-            itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+            itemIn.setStackInSlot(j, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
         }
 
         // 1t to turn on, 1t per recipe run
@@ -909,7 +912,7 @@ public class IntProviderIngredientTest {
 
                 // reset for a rerun
                 for (int j = 0; j < batches; j++) {
-                    itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+                    itemIn.setStackInSlot(j, new ItemStack(Items.BRICK_WALL).copyWithCount(16));
                 }
             });
         }
