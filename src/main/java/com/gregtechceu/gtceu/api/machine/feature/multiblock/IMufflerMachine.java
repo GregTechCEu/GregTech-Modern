@@ -30,7 +30,9 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
 
         var blockEntity = self().getLevel().getBlockEntity(frontPos);
         if (blockEntity == null) return false;
-        return blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, self().getFrontFacing().getOpposite()).isPresent();
+        return blockEntity
+                .getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, self().getFrontFacing().getOpposite())
+                .isPresent();
     }
 
     default void emitPollutionParticles() {
@@ -38,7 +40,8 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
         var facing = self().getFrontFacing();
 
         var blockEntity = self().getLevel().getBlockEntity(pos.relative(facing));
-        if (blockEntity != null && blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, facing.getOpposite()).isPresent()) {
+        if (blockEntity != null &&
+                blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, facing.getOpposite()).isPresent()) {
             // do not emit particles if front face has a duct on it.
             return;
         }

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -105,7 +105,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected CustomItemStackHandler createChargerInventory(Object... args) {
         var handler = new CustomItemStackHandler(this.inventorySize);
         handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 
@@ -170,7 +171,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         List<Object> electricItems = new ArrayList<>();
         for (int i = 0; i < chargerInventory.getSlots(); i++) {
             var electricItemStack = chargerInventory.getStackInSlot(i);
-            var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+            var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                    .orElse(null);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     electricItems.add(electricItem);
@@ -268,11 +270,13 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             long energyCapacity = 0L;
             for (int i = 0; i < chargerInventory.getSlots(); i++) {
                 var electricItemStack = chargerInventory.getStackInSlot(i);
-                var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+                var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                        .orElse(null);
                 if (electricItem != null) {
                     energyCapacity += electricItem.getMaxCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-                    var energyStorage = electricItemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+                    var energyStorage = electricItemStack.getCapability(ForgeCapabilities.ENERGY).resolve()
+                            .orElse(null);
                     if (energyStorage != null) {
                         energyCapacity += FeCompat.toEu(energyStorage.getMaxEnergyStored(),
                                 FeCompat.ratio(false));
@@ -292,11 +296,13 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             long energyStored = 0L;
             for (int i = 0; i < chargerInventory.getSlots(); i++) {
                 var electricItemStack = chargerInventory.getStackInSlot(i);
-                var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+                var electricItem = electricItemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                        .orElse(null);
                 if (electricItem != null) {
                     energyStored += electricItem.getCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-                    var energyStorage = electricItemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+                    var energyStorage = electricItemStack.getCapability(ForgeCapabilities.ENERGY).resolve()
+                            .orElse(null);
                     if (energyStorage != null) {
                         energyStored += FeCompat.toEu(energyStorage.getEnergyStored(),
                                 FeCompat.ratio(false));

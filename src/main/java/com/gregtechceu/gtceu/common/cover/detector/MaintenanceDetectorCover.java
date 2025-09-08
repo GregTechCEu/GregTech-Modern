@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -20,7 +20,8 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return false;
         }
 
-        return super.canAttach() && coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, attachedSide).isPresent();
+        return super.canAttach() && coverHolder.getEntity()
+                .getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, attachedSide).isPresent();
     }
 
     @Override
@@ -29,7 +30,8 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return;
         }
 
-        IMaintenanceMachine maintenance = coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, attachedSide).resolve().orElseThrow();
+        IMaintenanceMachine maintenance = coverHolder.getEntity()
+                .getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, attachedSide).resolve().orElseThrow();
 
         int signal = getRedstoneSignalOutput();
         boolean shouldSignal = isInverted() != maintenance.hasMaintenanceProblems();

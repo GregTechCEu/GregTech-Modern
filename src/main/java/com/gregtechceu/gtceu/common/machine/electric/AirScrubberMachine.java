@@ -91,7 +91,8 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
                 BlockPos offset = getPos().relative(dir);
                 var adjacentBlockEntity = getLevel().getBlockEntity(offset);
                 if (adjacentBlockEntity == null) continue;
-                if (adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, dir.getOpposite()).isPresent()) {
+                if (adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, dir.getOpposite())
+                        .isPresent()) {
                     if (getLevel().getBlockEntity(offset) instanceof DuctPipeBlockEntity duct &&
                             !duct.isConnected(dir.getOpposite())) {
                         continue;

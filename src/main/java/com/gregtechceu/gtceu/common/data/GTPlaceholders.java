@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -85,7 +85,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
 
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IEnergyContainer energy = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, ctx.side()).resolve().orElse(null);
+                IEnergyContainer energy = blockEntity == null ? null : blockEntity
+                        .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, ctx.side()).resolve().orElse(null);
 
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
             }
@@ -98,7 +99,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
 
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IEnergyContainer energy = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, ctx.side()).resolve().orElse(null);
+                IEnergyContainer energy = blockEntity == null ? null : blockEntity
+                        .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, ctx.side()).resolve().orElse(null);
 
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);
             }
@@ -117,9 +119,9 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IItemHandler itemHandler = blockEntity == null ? null : blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, ctx.side()).resolve().orElse(null);
+                IItemHandler itemHandler = blockEntity == null ? null :
+                        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, ctx.side()).resolve().orElse(null);
 
                 if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, itemHandler));
                 if (args.size() == 1) return MultiLineComponent
@@ -144,9 +146,9 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IFluidHandler fluidHandler = blockEntity == null ? null : blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, ctx.side()).resolve().orElse(null);
+                IFluidHandler fluidHandler = blockEntity == null ? null :
+                        blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, ctx.side()).resolve().orElse(null);
 
                 if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, fluidHandler));
                 if (args.size() == 1)
@@ -308,7 +310,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
 
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IWorkable workable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
+                IWorkable workable = blockEntity == null ? null :
+                        blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
 
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.getProgress());
@@ -321,7 +324,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IWorkable workable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
+                IWorkable workable = blockEntity == null ? null :
+                        blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
 
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.getMaxProgress());
@@ -335,7 +339,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
 
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IMaintenanceMachine maintenance = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, ctx.side()).resolve().orElse(null);
+                IMaintenanceMachine maintenance = blockEntity == null ? null : blockEntity
+                        .getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, ctx.side()).resolve().orElse(null);
 
                 if (maintenance == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(maintenance.hasMaintenanceProblems() ? 1 : 0);
@@ -348,7 +353,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 var blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                IWorkable workable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
+                IWorkable workable = blockEntity == null ? null :
+                        blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, ctx.side()).resolve().orElse(null);
 
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.isActive() ? 1 : 0);

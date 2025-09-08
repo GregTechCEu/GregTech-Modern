@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.create.display;
 
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 
 import net.minecraft.core.Direction;
@@ -20,7 +20,8 @@ public class ComputerMonitorCoverDisplayTarget extends DisplayTarget {
     public void acceptText(int line, List<MutableComponent> text, DisplayLinkContext context) {
         var blockEntity = context.level().getBlockEntity(context.getSourcePos());
         if (blockEntity == null) return;
-        ICoverable coverable = blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, Direction.DOWN).resolve().orElse(null);
+        ICoverable coverable = blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, Direction.DOWN).resolve()
+                .orElse(null);
         MutableComponent component = MutableComponent.create(ComponentContents.EMPTY);
         text.forEach(component::append);
         if (coverable != null) {

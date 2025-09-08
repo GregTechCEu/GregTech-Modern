@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 
@@ -40,6 +40,7 @@ public class EnergyRoutePath implements IRoutePath<IEnergyContainer> {
     public IEnergyContainer getHandler(Level world) {
         var blockEntity = world.getBlockEntity(getTargetPipePos().relative(targetFacing));
         if (blockEntity == null) return null;
-        return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, targetFacing.getOpposite()).resolve().orElse(null);
+        return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, targetFacing.getOpposite()).resolve()
+                .orElse(null);
     }
 }

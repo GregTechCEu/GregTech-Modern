@@ -104,7 +104,8 @@ public final class CustomToolRecipes {
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {
                 if (powerUnitItems.get(tier) != null) {
                     ItemStack batteryStack = batteryItem.asStack();
-                    long maxCharge = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().get().getMaxCharge();
+                    long maxCharge = batteryStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().get()
+                            .getMaxCharge();
                     ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(),
                             maxCharge);
                     String recipeName = String.format("%s_%s",

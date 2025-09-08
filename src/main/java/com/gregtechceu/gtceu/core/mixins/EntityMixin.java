@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 
@@ -46,7 +46,8 @@ public abstract class EntityMixin implements IFireImmuneEntity {
     private int gtceu$hazardModifyMaxAir(int original) {
         if (!gtceu$isEntityInit) return original;
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return original;
-        IMedicalConditionTracker tracker = ((Entity) (Object) this).getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
+        IMedicalConditionTracker tracker = ((Entity) (Object) this)
+                .getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
         if (tracker != null && tracker.getMaxAirSupply() != -1) {
             return tracker.getMaxAirSupply();
         }

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.pipelike.optical;
 
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
@@ -52,6 +52,7 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
     public IOpticalComputationProvider getHandler(Level world) {
         var blockEntity = world.getBlockEntity(getTargetPipePos());
         if (blockEntity == null) return null;
-        return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetFacing.getOpposite()).resolve().orElse(null);
+        return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetFacing.getOpposite())
+                .resolve().orElse(null);
     }
 }

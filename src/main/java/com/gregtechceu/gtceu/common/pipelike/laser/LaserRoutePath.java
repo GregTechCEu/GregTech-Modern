@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
-import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 
@@ -46,7 +46,8 @@ public class LaserRoutePath implements IRoutePath<ILaserContainer>, IAttachData 
     public ILaserContainer getHandler(Level level) {
         var blockEntity = level.getBlockEntity(getTargetPipePos());
         if (blockEntity == null) return null;
-        return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, targetFacing.getOpposite()).resolve().orElse(null);
+        return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, targetFacing.getOpposite()).resolve()
+                .orElse(null);
     }
 
     @Override

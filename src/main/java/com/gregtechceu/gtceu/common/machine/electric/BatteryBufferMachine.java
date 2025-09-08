@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -87,7 +87,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             }
         };
         handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        item.getCapability(ForgeCapabilities.ENERGY).isPresent()));
         return handler;
     }
 
@@ -159,7 +160,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                     batteries.add(electricItem);
                 }
             } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-                IEnergyStorage energyStorage = batteryStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+                IEnergyStorage energyStorage = batteryStack.getCapability(ForgeCapabilities.ENERGY).resolve()
+                        .orElse(null);
                 if (energyStorage != null) {
                     if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
                         batteries.add(energyStorage);
@@ -232,7 +234,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             var outFacing = getFrontFacing();
             var adjacentBlockEntity = getLevel().getBlockEntity(getPos().relative(outFacing));
             if (adjacentBlockEntity == null) return;
-            var energyContainer = adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outFacing.getOpposite()).resolve().orElse(null);
+            var energyContainer = adjacentBlockEntity
+                    .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, outFacing.getOpposite()).resolve()
+                    .orElse(null);
             if (energyContainer == null) {
                 return;
             }

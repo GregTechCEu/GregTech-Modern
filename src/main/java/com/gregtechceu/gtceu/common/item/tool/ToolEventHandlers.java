@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -57,7 +57,8 @@ public class ToolEventHandlers {
             // Transfer over remaining charge to power units
             if (brokenStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).isPresent() && def.isElectric()) {
                 long remainingCharge = def.getCharge(original);
-                IElectricItem electricStack = brokenStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+                IElectricItem electricStack = brokenStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                        .orElse(null);
                 if (electricStack != null) {
                     // update the max charge of the item, if possible
                     // applies to items like power units, which can have different max charges depending on their recipe

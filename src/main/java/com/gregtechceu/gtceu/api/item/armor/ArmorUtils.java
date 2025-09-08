@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
@@ -48,7 +48,8 @@ public class ArmorUtils {
      * Check is possible to charge item
      */
     public static boolean isPossibleToCharge(ItemStack chargeable) {
-        IElectricItem container = chargeable.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        IElectricItem container = chargeable.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                .orElse(null);
         if (container != null) {
             return container.getCharge() < container.getMaxCharge() &&
                     (container.getCharge() + container.getTransferLimit()) <= container.getMaxCharge();

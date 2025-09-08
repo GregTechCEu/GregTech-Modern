@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -49,9 +49,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import lombok.Getter;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -484,7 +484,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         var blockEntity = getLevel().getBlockEntity(getPos());
         if (blockEntity == null) return InteractionResult.PASS;
 
-        var controllable = blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve().orElse(null);
+        var controllable = blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, gridSide).resolve()
+                .orElse(null);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

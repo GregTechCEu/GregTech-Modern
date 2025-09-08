@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
@@ -116,7 +116,8 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             if (blockEntity == null || blockEntity instanceof DuctPipeBlockEntity) {
                 return false;
             }
-            return blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
+            return blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite())
+                    .isPresent() ||
                     (level.getBlockEntity(relative) instanceof IMachineBlockEntity machineBlockEntity &&
                             (machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardCleaner ||
                                     machineBlockEntity.getMetaMachine() instanceof IEnvironmentalHazardEmitter));

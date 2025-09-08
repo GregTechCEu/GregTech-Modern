@@ -48,13 +48,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -135,7 +135,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             }
         };
         handler.setFilter(item -> item.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().isPresent() ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && item.getCapability(ForgeCapabilities.ENERGY).resolve().isPresent()));
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        item.getCapability(ForgeCapabilities.ENERGY).resolve().isPresent()));
         return handler;
     }
 

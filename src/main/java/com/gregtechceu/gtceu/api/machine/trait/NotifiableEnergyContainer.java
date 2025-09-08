@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -175,7 +175,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
                 var adjacentBlockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(side));
                 if (adjacentBlockEntity == null) continue;
-                var energyContainer = adjacentBlockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, oppositeSide).resolve().orElse(null);
+                var energyContainer = adjacentBlockEntity
+                        .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, oppositeSide).resolve().orElse(null);
 
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,

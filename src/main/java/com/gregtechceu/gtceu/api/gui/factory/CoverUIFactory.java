@@ -41,7 +41,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
         var side = syncData.readEnum(Direction.class);
         var blockEntity = world.getBlockEntity(pos);
         if (blockEntity != null) {
-            var coverable =  blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve();
+            var coverable = blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve();
             if (coverable.isPresent()) return coverable.get().getCoverAtSide(side);
         }
         return null;

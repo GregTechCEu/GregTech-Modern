@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
@@ -107,7 +107,8 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                     var inventoryIterator = inventoryMap.getSecond().iterator();
                     while (inventoryIterator.hasNext()) {
                         int slot = inventoryIterator.nextInt();
-                        IElectricItem chargable = inventoryMap.getFirst().get(slot).getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+                        IElectricItem chargable = inventoryMap.getFirst().get(slot)
+                                .getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
 
                         // Safety check the null, it should not actually happen. Also don't try and charge itself
                         if (chargable == null || chargable == cont) {

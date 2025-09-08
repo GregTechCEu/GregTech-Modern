@@ -173,7 +173,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
     default ItemStack get(long defaultCharge, long defaultMaxCharge) {
         ItemStack stack = get();
         if (isElectric()) {
-            ElectricItem electricItem = (ElectricItem)stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+            ElectricItem electricItem = (ElectricItem) stack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM)
+                    .resolve().orElse(null);
             if (electricItem != null) {
                 electricItem.setMaxChargeOverride(defaultMaxCharge);
                 electricItem.setCharge(defaultCharge);

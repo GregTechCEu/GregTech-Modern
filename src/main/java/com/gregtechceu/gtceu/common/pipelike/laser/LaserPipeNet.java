@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
-import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
@@ -121,7 +121,8 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
         public ILaserContainer getHandler(@NotNull Level world) {
             var blockEntity = world.getBlockEntity(getHandlerPos());
             if (blockEntity == null) return null;
-            return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, faceToHandler.getOpposite()).resolve().orElse(null);
+            return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, faceToHandler.getOpposite()).resolve()
+                    .orElse(null);
         }
     }
 }

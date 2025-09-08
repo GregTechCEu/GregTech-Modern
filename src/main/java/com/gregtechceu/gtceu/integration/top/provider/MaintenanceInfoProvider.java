@@ -29,7 +29,8 @@ public class MaintenanceInfoProvider extends CapabilityInfoProvider<IMaintenance
     protected IMaintenanceMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
         var blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity == null) return null;
-        var cap = blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, direction).resolve().orElse(null);
+        var cap = blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, direction).resolve()
+                .orElse(null);
         if (cap != null) {
             return cap;
         }

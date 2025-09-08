@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
@@ -70,7 +70,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
-        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                .orElse(null);
         if (electricItem != null) {
             var per = (electricItem.getCharge() * 7 / electricItem.getMaxCharge());
             return per / 100f;
@@ -81,7 +82,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
-        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                .orElse(null);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
@@ -129,7 +131,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static long chargeItemStack(long maxDischargeAmount, IElectricItem source, ItemStack target) {
-        IElectricItem slotElectricItem = target.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        IElectricItem slotElectricItem = target.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                .orElse(null);
         if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
             return chargeElectricItem(maxDischargeAmount, source, slotElectricItem);
         } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {

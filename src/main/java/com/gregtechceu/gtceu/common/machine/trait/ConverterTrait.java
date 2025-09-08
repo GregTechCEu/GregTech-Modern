@@ -77,7 +77,8 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         } else { // output fe
             var frontFacing = machine.getFrontFacing();
             var adjacentBlockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(frontFacing));
-            IEnergyStorage energyContainer = adjacentBlockEntity == null ? null : adjacentBlockEntity.getCapability(ForgeCapabilities.ENERGY, frontFacing.getOpposite()).resolve().orElse(null);
+            IEnergyStorage energyContainer = adjacentBlockEntity == null ? null : adjacentBlockEntity
+                    .getCapability(ForgeCapabilities.ENERGY, frontFacing.getOpposite()).resolve().orElse(null);
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);

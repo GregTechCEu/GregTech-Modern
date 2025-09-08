@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -127,9 +127,9 @@ public class BlockHighlightRenderer {
                 return;
             }
 
-
             // draw cover grid highlight
-            ICoverable coverable = blockEntity == null ? null : blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, target.getDirection()).resolve().orElse(null);
+            ICoverable coverable = blockEntity == null ? null : blockEntity
+                    .getCapability(GTCapability.CAPABILITY_COVERABLE, target.getDirection()).resolve().orElse(null);
             if (coverable != null && CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
                     coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
                 poseStack.pushPose();

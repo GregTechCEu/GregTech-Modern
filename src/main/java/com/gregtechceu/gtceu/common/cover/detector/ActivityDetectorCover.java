@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
-import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -19,7 +19,8 @@ public class ActivityDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return super.canAttach() && coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_WORKABLE, attachedSide).isPresent();
+        return super.canAttach() &&
+                coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_WORKABLE, attachedSide).isPresent();
     }
 
     @Override
@@ -28,7 +29,8 @@ public class ActivityDetectorCover extends DetectorCover {
             return;
         }
 
-        var workable = coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_WORKABLE, attachedSide).resolve().orElseThrow();
+        var workable = coverHolder.getEntity().getCapability(GTCapability.CAPABILITY_WORKABLE, attachedSide).resolve()
+                .orElseThrow();
 
         boolean isCurrentlyWorking = workable.isActive() && workable.isWorkingEnabled();
 

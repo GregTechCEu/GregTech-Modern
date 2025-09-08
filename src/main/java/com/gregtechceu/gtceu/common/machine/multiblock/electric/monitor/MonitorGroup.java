@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor;
 
-import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
@@ -107,7 +107,8 @@ public class MonitorGroup {
 
         if (blockEntity == null) return target;
 
-        IMonitorComponent component = blockEntity.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, null).resolve().orElse(null);
+        IMonitorComponent component = blockEntity.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, null)
+                .resolve().orElse(null);
         if (component != null && component.getDataItems() != null) {
             ItemStack stack = component.getDataItems().getStackInSlot(dataSlot);
             CompoundTag tag = stack.getTag();

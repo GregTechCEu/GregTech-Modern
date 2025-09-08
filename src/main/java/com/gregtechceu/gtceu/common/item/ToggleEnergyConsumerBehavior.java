@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
@@ -33,7 +33,8 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
     public InteractionResultHolder<ItemStack> use(Item item, Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+            IElectricItem electricItem = itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve()
+                    .orElse(null);
             boolean isItemActive = isItemActive(itemStack);
             if (isItemActive) {
                 setItemActive(itemStack, false);
