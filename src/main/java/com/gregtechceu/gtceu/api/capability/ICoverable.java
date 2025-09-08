@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, IAppearance {
+public interface ICoverable extends ITickSubscription {
 
     Level getLevel();
 

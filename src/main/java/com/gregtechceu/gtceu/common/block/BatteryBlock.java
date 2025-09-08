@@ -21,7 +21,7 @@ import java.util.Locale;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class BatteryBlock extends AppearanceBlock {
+public class BatteryBlock extends Block {
 
     @Getter
     private final IBatteryData data;

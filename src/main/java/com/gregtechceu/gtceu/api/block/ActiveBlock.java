@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,7 +18,7 @@ import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.AC
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends AppearanceBlock {
+public class ActiveBlock extends Block {
 
     public ActiveBlock(Properties properties) {
         super(properties);
@@ -50,8 +51,8 @@ public class ActiveBlock extends AppearanceBlock {
     }
 
     @Override
-    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         return defaultBlockState();
     }
 }
