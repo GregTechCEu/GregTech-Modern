@@ -351,7 +351,7 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
 
     @Override
     public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                        @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var machine = getMachine(level, pos);
         if (machine != null) {
             return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);

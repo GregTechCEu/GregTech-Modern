@@ -8,7 +8,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
-/// @deprecated Use normal Block class instead - replace `AppearanceBlock::getBlockAppearance` with `Block::getAppearance`
+/// @deprecated Use normal Block class instead - replace `AppearanceBlock::getBlockAppearance` with
+/// `Block::getAppearance`
 @Deprecated(forRemoval = true)
 public class AppearanceBlock extends Block implements IAppearance {
 

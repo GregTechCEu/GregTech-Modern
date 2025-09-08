@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -266,7 +265,6 @@ public interface ICoverable extends ITickSubscription {
     }
 
     @Nullable
-    @Override
     default BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                           BlockState sourceState, BlockPos sourcePos) {
         if (hasCover(side)) {
