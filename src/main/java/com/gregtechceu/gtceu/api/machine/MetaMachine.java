@@ -677,7 +677,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void animateTick(RandomSource random) {}
 
-    @Override
     @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                          BlockState sourceState, BlockPos sourcePos) {
