@@ -224,7 +224,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
-        if (!isRemote()) {
+        if (canInputFluidsFromOutputSide() && !isRemote()) {
             if (!playerIn.isShiftKeyDown()) {
                 setAllowInputFromOutputSideFluids(!isAllowInputFromOutputSideFluids());
                 playerIn.sendSystemMessage(
@@ -267,22 +267,14 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                               Direction side) {
-        if (canInputFluidsFromOutputSide()) {
-            if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-                if (side == getOutputFacingFluids()) {
-                    return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
-                }
+        if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            if (side == getOutputFacingFluids()) {
+                return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
             }
-            if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-                if (side == getOutputFacingFluids()) {
-                    return GuiTextures.TOOL_ALLOW_INPUT;
-                }
-            }
-        } else {
-            if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-                if (side == getOutputFacingFluids()) {
-                    return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
-                }
+        }
+        if (canInputFluidsFromOutputSide() && toolTypes.contains(GTToolType.SCREWDRIVER)) {
+            if (side == getOutputFacingFluids()) {
+                return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
 
