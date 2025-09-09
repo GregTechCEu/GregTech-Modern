@@ -224,56 +224,33 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
-        if (canInputFluidsFromOutputSide()) {
-            if (!isRemote()) {
-                if (!playerIn.isShiftKeyDown()) {
-                    // if can allow fluids from output side, use screwdriver to handle it.
-                    toggleAllowInputFromOutputSide(playerIn);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        } else {
-            if (!isRemote()) {
-                if (!playerIn.isShiftKeyDown()) {
-                    // otherwise, we keep the behavior as-was.
-                    toggleAutoOutput(playerIn);
-                    return InteractionResult.SUCCESS;
-                }
+        if (!isRemote()) {
+            if (!playerIn.isShiftKeyDown()) {
+                setAllowInputFromOutputSideFluids(!isAllowInputFromOutputSideFluids());
+                playerIn.sendSystemMessage(
+                        Component
+                                .translatable("gtceu.machine.basic.input_from_output_side." +
+                                        (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
+                                .append(Component.translatable("gtceu.creative.tank.fluid")));
+                return InteractionResult.SUCCESS;
             }
         }
-
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
     }
 
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        if (canInputFluidsFromOutputSide()) {
-            if (!isRemote()) {
-                if (!playerIn.isShiftKeyDown()) {
-                    // if the screwdriver is taken by 'allow input from output side', we handle the 'auto output' by
-                    // soft mallet.
-                    toggleAutoOutput(playerIn);
-                    return InteractionResult.SUCCESS;
-                }
+        if (!isRemote()) {
+            if (!playerIn.isShiftKeyDown()) {
+                setAutoOutputFluids(!isAutoOutputFluids());
+                playerIn.sendSystemMessage(
+                        Component.translatable(
+                                "gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
+                return InteractionResult.SUCCESS;
             }
         }
         return super.onSoftMalletClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    private void toggleAllowInputFromOutputSide(Player playerIn) {
-        setAllowInputFromOutputSideFluids(!isAllowInputFromOutputSideFluids());
-        playerIn.sendSystemMessage(
-                Component
-                        .translatable("gtceu.machine.basic.input_from_output_side." +
-                                (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
-                        .append(Component.translatable("gtceu.creative.tank.fluid")));
-    }
-
-    private void toggleAutoOutput(Player playerIn) {
-        setAutoOutputFluids(!isAutoOutputFluids());
-        playerIn.sendSystemMessage(
-                Component.translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
     }
 
     //////////////////////////////////////
