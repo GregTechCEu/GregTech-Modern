@@ -162,6 +162,8 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
         return false;
     }
 
+    default void setBatchEnabled(boolean batch) {}
+
     /**
      * Called from part, when part is invalid due to chunk unload or broken.
      */

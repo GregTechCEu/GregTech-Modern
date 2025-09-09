@@ -80,7 +80,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     Component.literal("" + stack.getOrCreateTag().getInt("targetX")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetY")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetZ")).withStyle(ChatFormatting.GOLD),
-                    Component.literal(stack.getOrCreateTag().getString("face")).withStyle(ChatFormatting.DARK_PURPLE)));
+                    Component.literal(stack.getOrCreateTag().getString("face")).withStyle(ChatFormatting.DARK_PURPLE),
+                    Component.literal(stack.getOrCreateTag().getString("dim")).withStyle(ChatFormatting.GREEN)));
         }
         if (stack.getOrCreateTag().contains("computer_monitor_cover_config")) {
             tooltipComponents.add(Component.translatable("gtceu.tooltip.computer_monitor_config"));
