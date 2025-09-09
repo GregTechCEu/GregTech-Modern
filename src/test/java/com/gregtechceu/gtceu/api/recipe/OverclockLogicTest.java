@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.gametest.util.TestRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -39,8 +38,8 @@ public class OverclockLogicTest {
 
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
-        CR_RECIPE_TYPE = TestRecipeType.CR_RECIPE_TYPE.getType();
-        LCR_RECIPE_TYPE = TestRecipeType.LCR_RECIPE_TYPE.getType();
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests");
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests");
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_overclock_logic"))
