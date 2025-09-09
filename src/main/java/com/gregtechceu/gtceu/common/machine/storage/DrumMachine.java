@@ -224,16 +224,16 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
-        if (canInputFluidsFromOutputSide() && !isRemote()) {
-            if (!playerIn.isShiftKeyDown()) {
+        if (!isRemote()) {
+            if (canInputFluidsFromOutputSide()) {
                 setAllowInputFromOutputSideFluids(!isAllowInputFromOutputSideFluids());
                 playerIn.sendSystemMessage(
                         Component
                                 .translatable("gtceu.machine.basic.input_from_output_side." +
                                         (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
                                 .append(Component.translatable("gtceu.creative.tank.fluid")));
-                return InteractionResult.SUCCESS;
             }
+            return InteractionResult.SUCCESS;
         }
         return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
     }
@@ -261,7 +261,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return super.shouldRenderGrid(player, pos, state, held, toolTypes) ||
-                (canInputFluidsFromOutputSide() && toolTypes.contains(GTToolType.SOFT_MALLET));
+                toolTypes.contains(GTToolType.SOFT_MALLET) ||
+                (canInputFluidsFromOutputSide() && toolTypes.contains(GTToolType.SCREWDRIVER));
     }
 
     @Override
