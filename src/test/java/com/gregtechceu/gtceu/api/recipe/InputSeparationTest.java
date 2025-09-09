@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.util.TestRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ public class InputSeparationTest {
 
     @BeforeBatch(batch = "InputSeparation")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("input_separation_tests", 3, 3, 3, 3);
+        LCR_RECIPE_TYPE = TestRecipeType.LCR_RECIPE_TYPE.getType();
         // Force insert the recipe into the manager.
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_input_separation"))

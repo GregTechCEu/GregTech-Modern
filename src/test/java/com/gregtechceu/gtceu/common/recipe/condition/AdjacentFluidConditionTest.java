@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.gametest.util.TestRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +32,7 @@ public class AdjacentFluidConditionTest {
 
     @BeforeBatch(batch = "AdjacentFluidCondition")
     public static void prepare(ServerLevel level) {
-        ROCK_BREAKER_RECIPE_TYPE = TestUtils.createRecipeType("adjacent_fluid_conditions_tests");
+        ROCK_BREAKER_RECIPE_TYPE = TestRecipeType.ROCK_BREAKER_RECIPE_TYPE.getType();
         ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))

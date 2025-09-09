@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.gametest.util.TestRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -70,9 +71,9 @@ public class IntProviderFluidIngredientTest {
 
     @BeforeBatch(batch = "RangedFluidIngredients")
     public static void prepare(ServerLevel level) {
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_cr_tests", 2, 2, 3, 2);
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_lcr_tests", 3, 3, 5, 4);
-        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_centrifuge_tests", 2, 6, 1, 6);
+        CR_RECIPE_TYPE = TestRecipeType.CR_RECIPE_TYPE.getType();
+        LCR_RECIPE_TYPE = TestRecipeType.LCR_RECIPE_TYPE.getType();
+        CENTRIFUGE_RECIPE_TYPE = TestRecipeType.CENTRIFUGE_RECIPE_TYPE.getType();
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cr"))

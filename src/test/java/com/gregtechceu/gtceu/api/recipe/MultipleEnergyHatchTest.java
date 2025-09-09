@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
+import com.gregtechceu.gtceu.gametest.util.TestRecipeType;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -42,7 +43,7 @@ public class MultipleEnergyHatchTest {
 
     @BeforeBatch(batch = "MultipleEnergyHatch")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("multiple_energy_hatch_lcr_tests");
+        LCR_RECIPE_TYPE = TestRecipeType.LCR_RECIPE_TYPE.getType();
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiple_energy_hatch_ev"))
