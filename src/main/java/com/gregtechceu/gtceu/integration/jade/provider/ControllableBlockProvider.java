@@ -33,7 +33,7 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
     @Override
     protected void write(CompoundTag data, IControllable capability) {
         data.putBoolean("WorkingEnabled", capability.isWorkingEnabled());
-        data.putBoolean("SuspendAfter", capability.getSuspendAfterFinish());
+        data.putBoolean("SuspendAfter", capability.isSuspendAfterFinish());
     }
 
     @Override
