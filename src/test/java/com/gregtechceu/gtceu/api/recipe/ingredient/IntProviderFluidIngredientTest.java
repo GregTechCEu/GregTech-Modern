@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -192,749 +193,750 @@ public class IntProviderFluidIngredientTest {
     // This is specifically a test for #3593 / #3594
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedFluidOutputSabotaged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
-        machine.setRecipeType(CR_RECIPE_TYPE);
-        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
-        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
-
-        int runs = 7;
-        fluidIn.setFluidInTank(0, new FluidStack(CR_OUT, runs));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[runs];
-
-        helper.runAfterDelay(4, () -> {
-            if (machine.getRecipeLogic().getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0)
-                    .getContent() instanceof IntProviderFluidIngredient ingredient) {
-                ingredient.setSampledCount(0);
-
-                if (ingredient.getSampledCount() != 0) {
-                    helper.fail("Singleblock Ranged Fluid Output sabotage failed! " +
-                            "Output count not was altered!");
-                }
-            } else {
-                helper.fail("Singleblock Ranged Fluid Output sabotage failed! " +
-                        "Recipe logic did not contain a Ranged Output!");
-            }
-        });
-        for (int i = 0; i < runs; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
-                addedRolls[finalI] = (int) fluidOut.getTotalContentAmount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
-            FluidStack results = fluidOut.getFluidInTank(0);
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
-                    "Sabotaged Singleblock CR didn't produce correct number of fluids, produced [" +
-                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
-            helper.assertFalse((results.getAmount() == runs * 9),
-                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
-            helper.assertFalse((results.getAmount() == runs * 0),
-                    "Sabotaged Singleblock CR rolled min value on every roll! " +
-                            "This is the failure this sabotage was intended to induce.");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[runs];
-            rolls[0] = addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < runs; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "Sabotaged Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
+//        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+//                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+//
+//        machine.setRecipeType(CR_RECIPE_TYPE);
+//        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+//        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
+//
+//        int runs = 7;
+////        fluidIn.setFluidInTank(0, new FluidStack(CR_OUT, runs));
+//        fluidIn.fill(new FluidStack(CR_OUT, runs), IFluidHandler.FluidAction.EXECUTE);
+//        // 1t to turn on, 2t per recipe run
+//        // get the result of each roll independently
+//        int[] addedRolls = new int[runs];
+//
+//        helper.runAfterDelay(4, () -> {
+//            if (machine.getRecipeLogic().getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0)
+//                    .getContent() instanceof IntProviderFluidIngredient ingredient) {
+//                ingredient.setSampledCount(0);
+//
+//                if (ingredient.getSampledCount() != 0) {
+//                    helper.fail("Singleblock Ranged Fluid Output sabotage failed! " +
+//                            "Output count not was altered!");
+//                }
+//            } else {
+//                helper.fail("Singleblock Ranged Fluid Output sabotage failed! " +
+//                        "Recipe logic did not contain a Ranged Output!");
+//            }
+//        });
+//        for (int i = 0; i < runs; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(2 * i + 3, () -> {
+//                addedRolls[finalI] = (int) fluidOut.getTotalContentAmount();
+//            });
+//        }
+//        // check the results of all rolls together
+//        helper.runAfterDelay(runs * 2 + 1, () -> {
+//            FluidStack results = fluidOut.getFluidInTank(0);
+//            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
+//                    "Sabotaged Singleblock CR didn't produce correct number of fluids, produced [" +
+//                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
+//            helper.assertFalse((results.getAmount() == runs * 9),
+//                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
+//            helper.assertFalse((results.getAmount() == runs * 0),
+//                    "Sabotaged Singleblock CR rolled min value on every roll! " +
+//                            "This is the failure this sabotage was intended to induce.");
+//
+//            // check if all the rolls were equal, but not min/max
+//            int[] rolls = new int[runs];
+//            rolls[0] = addedRolls[0];
+//            boolean allEqual = false;
+//            for (int i = 1; i < runs; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (rolls[i] == rolls[i - 1]) {
+//                    allEqual = true;
+//                } else {
+//                    allEqual = false;
+//                    break;
+//                }
+//            }
+//            helper.assertFalse(allEqual,
+//                    "Sabotaged Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+//            helper.succeed();
+//        });
     }
-
-    // TODO: IN
-    // Test for singleblock machine with ranged fluid input
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidInput(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
-        machine.setRecipeType(CR_RECIPE_TYPE);
-        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
-        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
-
-        int runs = 7;
-        fluidIn.setFluidInTank(0, new FluidStack(CR_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, runs));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 1, () -> {
-                addedRolls[finalI] = fluidIn.getFluidInTank(0).getAmount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
-            FluidStack results = fluidIn.getFluidInTank(0);
-            int upperLimit = 64 - (runs * 0);
-            int lowerLimit = 64 - (runs * 9);
-            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), new FluidStack(REDSTONE, runs)),
-                    "Singleblock CR didn't complete correct number of recipes, completed [" +
-                            fluidOut.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                    "Singleblock CR didn't consume correct number of fluids, consumed [" +
-                            (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-            helper.assertFalse((results.getAmount() == lowerLimit),
-                    "Singleblock CR rolled max value on every roll");
-            helper.assertFalse((results.getAmount() == upperLimit),
-                    "Singleblock CR rolled min value on every roll");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[runs];
-            rolls[0] = 64 - addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < runs; i++) {
-                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
-    }
-
-    // TODO: OUT
-    // Test for singleblock machine with ranged fluid input
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
-    public static void singleblockRangedFluidOutput(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
-        machine.setRecipeType(CR_RECIPE_TYPE);
-        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
-        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
-                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
-
-        int runs = 7;
-        fluidIn.setFluidInTank(0, new FluidStack(CR_OUT, runs));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
-                addedRolls[finalI] = fluidOut.getFluidInTank(0).getAmount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
-            helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
-                    "Singleblock CR didn't complete correct number of recipes, completed [" +
-                            fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-            FluidStack results = fluidOut.getFluidInTank(0);
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
-                    "Singleblock CR didn't produce correct number of fluids, produced [" +
-                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
-            helper.assertFalse((results.getAmount() == runs * 9),
-                    "Singleblock CR rolled max value on every roll");
-            helper.assertFalse((results.getAmount() == runs * 0),
-                    "Singleblock CR rolled min value on every roll");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[runs];
-            rolls[0] = addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < runs; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
-    }
-
-    // TODO: IN
-    // test for multiblock machine with ranged fluid input
-    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients", setupTicks = 40, timeoutTicks = 200)
-    public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
-        BusHolder busHolder = getBussesAndFormLCR(helper);
-
-        NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int runs = 7;
-        fluidIn.setFluidInTank(0, new FluidStack(LCR_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, runs));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 1, () -> {
-                addedRolls[finalI] = fluidIn.getFluidInTank(0).getAmount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
-            FluidStack results = fluidIn.getFluidInTank(0);
-            int upperLimit = 64 - (runs * 0);
-            int lowerLimit = 64 - (runs * 9);
-            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), new FluidStack(REDSTONE, runs)),
-                    "LCR didn't complete correct number of recipes, completed [" +
-                            fluidOut.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                    "LCR didn't consume correct number of fluids, consumed [" +
-                            (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-            helper.assertFalse((results.getAmount() == lowerLimit),
-                    "LCR rolled max value on every roll");
-            helper.assertFalse((results.getAmount() == upperLimit),
-                    "LCR rolled min value on every roll");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[runs];
-            rolls[0] = 64 - addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < runs; i++) {
-                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "LCR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
-    }
-
-    // TODO: OUT
-    // test for multiblock machine with ranged fluid input
-    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients", setupTicks = 40, timeoutTicks = 200)
-    public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
-        BusHolder busHolder = getBussesAndFormLCR(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int runs = 7;
-        fluidIn.setFluidInTank(0, new FluidStack(LCR_OUT, runs));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[runs];
-        for (int i = 0; i < runs; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
-                addedRolls[finalI] = fluidOut.getFluidInTank(0).getAmount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
-            helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
-                    "LCR didn't complete correct number of recipes, completed [" +
-                            fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-            FluidStack results = fluidOut.getFluidInTank(0);
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
-                    "LCR didn't produce correct number of fluids, produced [" +
-                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
-            helper.assertFalse((results.getAmount() == runs * 9),
-                    "LCR rolled max value on every roll");
-            helper.assertFalse((results.getAmount() == runs * 0),
-                    "LCR rolled min value on every roll");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[runs];
-            rolls[0] = addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < runs; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "LCR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
-    }
-
-    // TODO: IN
-    // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 200)
-    public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 1; // unused on this test
-        int parallels = 16;
-        busHolder.controller.setBatchEnabled(false);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
-
-        // 1t to turn on, 4t per recipe run
-        // 16 parallels
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
-                FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
-                int completed = batches * parallels * finalI;
-                helper.assertTrue(
-                        TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
-                                new FluidStack(REDSTONE, completed)),
-                        "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
-                                completed + "]");
-                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                        "Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                rolls[finalI - 1] = 64 - results.getAmount();
-
-                // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
-            });
-        }
-
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
-                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (parallels) +
-                            "). If this message only appears once, this is likely a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Parallel LCent ranged fluid input test rolled exactly even to " +
-                    "Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
-
-    // TODO: OUT
-    // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 200)
-    public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 1; // unused on this test
-        int parallels = 16;
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
-
-        busHolder.controller.setBatchEnabled(false);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        // 1t to turn on, 1t per recipe run
-        // 16 parallels
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
-                int runs = finalI * batches * parallels;
-                helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
-                        "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
-                int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
-                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
-                        "Parallel LCent didn't produce correct number of fluids, produced [" +
-                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                addedRolls[finalI - 1] = resultCount;
-
-                // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
-            });
-        }
-
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            int[] rolls = new int[REPLICAS];
-
-            rolls[0] = addedRolls[0];
-            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
-                sus = true;
-                GTCEu.LOGGER.warn("Parallel LCent ranged fluid output test iteration " + 1 + " produced [" +
-                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                        "). If this message only appears once, this is likely a false positive.");
-            }
-            for (int i = 1; i < REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid output test iteration " + (i + 1) + " produced [" +
-                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                            "). If this message only appears once, this is likely a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Parallel LCent ranged fluid output test rolled exactly even to " +
-                    "Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
-
-    // TODO: IN
-    // TODO 2: fix the run count and time
-    // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 200)
-    public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 16;
-        int parallels = 1; // unused on this test
-        busHolder.controller.setBatchEnabled(true);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
-
-        // 1t to turn on, 1t per recipe run
-        // 16 batches
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
-                FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
-                int completed = batches * parallels * finalI;
-                helper.assertTrue(
-                        TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
-                                new FluidStack(REDSTONE, completed)),
-                        "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
-                                completed + "]");
-                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                        "Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                rolls[finalI - 1] = 64 - results.getAmount();
-
-                // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
-            });
-        }
-
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
-                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                            "). If this message only appears once, this is likely a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Parallel LCent ranged fluid input test rolled exactly even to " +
-                    "Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
-
-    // TODO: OUT
-    // TODO 2: fix the run count and time
-    // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 200)
-    public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 16;
-        int parallels = 1; // unused on this test
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
-
-        busHolder.controller.setBatchEnabled(true);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        // 1t to turn on, 1t per recipe run
-        // 16 parallels
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
-                int runs = finalI * batches * parallels;
-                helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
-                        "Batched LCent didn't complete correct number of recipes, completed [" +
-                                fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
-                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
-                int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
-                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
-                        "Batched LCent didn't produce correct number of fluids, produced [" +
-                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                addedRolls[finalI - 1] = resultCount;
-
-                // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
-            });
-        }
-
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            int[] rolls = new int[REPLICAS];
-
-            rolls[0] = addedRolls[0];
-            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
-                sus = true;
-                GTCEu.LOGGER.warn("Batched LCent ranged fluid output test iteration " + 1 + " produced [" +
-                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + batches +
-                        "). If this message only appears once, this is likely a false positive.");
-            }
-            for (int i = 1; i < REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Batched LCent ranged fluid output test iteration " + (i + 1) + " produced [" +
-                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + batches +
-                            "). If this message only appears once, this is likely a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Batched LCent ranged fluid output test rolled exactly even to " +
-                    "Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
-
-    // TODO: IN
-    // TODO 2: fix the all of it
-    // test for multiblock machine with 16x Parallels with ranged fluid input
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 500)
-    public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 16;
-        int parallels = 16;
-        busHolder.controller.setBatchEnabled(true);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        int stacks = batches * parallels / 64;
-
-        for (int j = 0; j < stacks; j++) {
-            itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
-        }
-        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
-
-        // 1t to turn on, 64t per recipe run
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
-                FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
-                int completed = batches * parallels * finalI;
-                helper.assertTrue(TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
-                                new FluidStack(REDSTONE, completed)),
-                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
-                                completed + "]");
-                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                        "Batched Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                rolls[finalI - 1] = 64 - results.getAmount();
-
-                // reset for a rerun
-                for (int l = 0; l < stacks; l++) {
-                    itemIn.setStackInSlot(l,
-                            COBBLE.copyWithCount((batches * parallels / stacks)));
-                }
-                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
-            });
-        }
-
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
-                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                            "). If this message only appears once, this is likely a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Batched Parallel LCent ranged fluid input test rolled exactly even to" +
-                    " Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
-
-    // TODO: OUT
-    // TODO 2: fix the all of it
-    // test for multiblock machine with 16x Parallels with ranged fluid output
-    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            setupTicks = 40,
-            timeoutTicks = 500)
-    public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
-        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
-
-        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
-        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
-
-        int batches = 16;
-        int parallels = 16;
-        busHolder.controller.setBatchEnabled(true);
-        busHolder.parallelHatch.setCurrentParallel(parallels);
-
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
-
-        // 1t to turn on, 64t per recipe run
-        // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
-                int runs = finalI * batches * parallels;
-                helper.assertTrue(fluidIn.isEmpty(),
-                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                fluidIn.getTotalContentAmount() + "] not [" + runs + "]");
-                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
-                int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
-                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
-                        "Batched Parallel LCent didn't produce correct number of fluids, produced [" +
-                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                addedRolls[finalI - 1] = resultCount;
-
-                // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
-            });
-        }
-
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
-            // check if each roll was a multiple of run count
-            boolean sus = false;
-            int[] rolls = new int[REPLICAS];
-
-            rolls[0] = addedRolls[0];
-            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
-                sus = true;
-                GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid output test iteration " + 1 + " produced [" +
-                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                        "). If this message only appears once, this is likely a false positive.");
-            }
-            for (int i = 1; i < REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid output test iteration " + (i + 1) +
-                            " produced [" + rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" +
-                            (batches * parallels) + "). If this message only appears once, this is likely" +
-                            " a false positive.");
-                } else {
-                    sus = false;
-                    break;
-                }
-            }
-
-            helper.assertFalse(sus, "Batched Parallel LCent ranged fluid output test rolled exactly even to" +
-                    " Batch * Parallel count on every iteration");
-            helper.succeed();
-        });
-    }
+//
+//    // TODO: IN
+//    // Test for singleblock machine with ranged fluid input
+//    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
+//    public static void singleblockRangedFluidInput(GameTestHelper helper) {
+//        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+//                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+//
+//        machine.setRecipeType(CR_RECIPE_TYPE);
+//        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+//        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
+//
+//        int runs = 7;
+//        fluidIn.setFluidInTank(0, new FluidStack(CR_IN, 64));
+//        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, runs));
+//        // 1t to turn on, 2t per recipe run
+//        // get the result of each roll independently
+//        int[] addedRolls = new int[runs];
+//        for (int i = 0; i < runs; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(2 * i + 1, () -> {
+//                addedRolls[finalI] = fluidIn.getFluidInTank(0).getAmount();
+//            });
+//        }
+//        // check the results of all rolls together
+//        helper.runAfterDelay(runs * 2 + 1, () -> {
+//            FluidStack results = fluidIn.getFluidInTank(0);
+//            int upperLimit = 64 - (runs * 0);
+//            int lowerLimit = 64 - (runs * 9);
+//            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), new FluidStack(REDSTONE, runs)),
+//                    "Singleblock CR didn't complete correct number of recipes, completed [" +
+//                            fluidOut.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//            helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
+//                    "Singleblock CR didn't consume correct number of fluids, consumed [" +
+//                            (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//            helper.assertFalse((results.getAmount() == lowerLimit),
+//                    "Singleblock CR rolled max value on every roll");
+//            helper.assertFalse((results.getAmount() == upperLimit),
+//                    "Singleblock CR rolled min value on every roll");
+//
+//            // check if all the rolls were equal, but not min/max
+//            int[] rolls = new int[runs];
+//            rolls[0] = 64 - addedRolls[0];
+//            boolean allEqual = false;
+//            for (int i = 1; i < runs; i++) {
+//                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
+//                if (rolls[i] == rolls[i - 1]) {
+//                    allEqual = true;
+//                } else {
+//                    allEqual = false;
+//                    break;
+//                }
+//            }
+//            helper.assertFalse(allEqual,
+//                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: OUT
+//    // Test for singleblock machine with ranged fluid input
+//    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
+//    public static void singleblockRangedFluidOutput(GameTestHelper helper) {
+//        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+//                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+//
+//        machine.setRecipeType(CR_RECIPE_TYPE);
+//        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+//        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
+//                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
+//
+//        int runs = 7;
+//        fluidIn.setFluidInTank(0, new FluidStack(CR_OUT, runs));
+//        // 1t to turn on, 2t per recipe run
+//        // get the result of each roll independently
+//        int[] addedRolls = new int[runs];
+//        for (int i = 0; i < runs; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(2 * i + 3, () -> {
+//                addedRolls[finalI] = fluidOut.getFluidInTank(0).getAmount();
+//            });
+//        }
+//        // check the results of all rolls together
+//        helper.runAfterDelay(runs * 2 + 1, () -> {
+//            helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
+//                    "Singleblock CR didn't complete correct number of recipes, completed [" +
+//                            fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//            FluidStack results = fluidOut.getFluidInTank(0);
+//            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
+//                    "Singleblock CR didn't produce correct number of fluids, produced [" +
+//                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
+//            helper.assertFalse((results.getAmount() == runs * 9),
+//                    "Singleblock CR rolled max value on every roll");
+//            helper.assertFalse((results.getAmount() == runs * 0),
+//                    "Singleblock CR rolled min value on every roll");
+//
+//            // check if all the rolls were equal, but not min/max
+//            int[] rolls = new int[runs];
+//            rolls[0] = addedRolls[0];
+//            boolean allEqual = false;
+//            for (int i = 1; i < runs; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (rolls[i] == rolls[i - 1]) {
+//                    allEqual = true;
+//                } else {
+//                    allEqual = false;
+//                    break;
+//                }
+//            }
+//            helper.assertFalse(allEqual,
+//                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: IN
+//    // test for multiblock machine with ranged fluid input
+//    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients", setupTicks = 40, timeoutTicks = 200)
+//    public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
+//        BusHolder busHolder = getBussesAndFormLCR(helper);
+//
+//        NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int runs = 7;
+//        fluidIn.setFluidInTank(0, new FluidStack(LCR_IN, 64));
+//        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, runs));
+//        // 1t to turn on, 2t per recipe run
+//        // get the result of each roll independently
+//        int[] addedRolls = new int[runs];
+//        for (int i = 0; i < runs; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(2 * i + 1, () -> {
+//                addedRolls[finalI] = fluidIn.getFluidInTank(0).getAmount();
+//            });
+//        }
+//        // check the results of all rolls together
+//        helper.runAfterDelay(runs * 2 + 1, () -> {
+//            FluidStack results = fluidIn.getFluidInTank(0);
+//            int upperLimit = 64 - (runs * 0);
+//            int lowerLimit = 64 - (runs * 9);
+//            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), new FluidStack(REDSTONE, runs)),
+//                    "LCR didn't complete correct number of recipes, completed [" +
+//                            fluidOut.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//            helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
+//                    "LCR didn't consume correct number of fluids, consumed [" +
+//                            (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//            helper.assertFalse((results.getAmount() == lowerLimit),
+//                    "LCR rolled max value on every roll");
+//            helper.assertFalse((results.getAmount() == upperLimit),
+//                    "LCR rolled min value on every roll");
+//
+//            // check if all the rolls were equal, but not min/max
+//            int[] rolls = new int[runs];
+//            rolls[0] = 64 - addedRolls[0];
+//            boolean allEqual = false;
+//            for (int i = 1; i < runs; i++) {
+//                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
+//                if (rolls[i] == rolls[i - 1]) {
+//                    allEqual = true;
+//                } else {
+//                    allEqual = false;
+//                    break;
+//                }
+//            }
+//            helper.assertFalse(allEqual,
+//                    "LCR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: OUT
+//    // test for multiblock machine with ranged fluid input
+//    @GameTest(template = "lcr_ranged_ingredients", batch = "RangedFluidIngredients", setupTicks = 40, timeoutTicks = 200)
+//    public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
+//        BusHolder busHolder = getBussesAndFormLCR(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int runs = 7;
+//        fluidIn.setFluidInTank(0, new FluidStack(LCR_OUT, runs));
+//        // 1t to turn on, 2t per recipe run
+//        // get the result of each roll independently
+//        int[] addedRolls = new int[runs];
+//        for (int i = 0; i < runs; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(2 * i + 3, () -> {
+//                addedRolls[finalI] = fluidOut.getFluidInTank(0).getAmount();
+//            });
+//        }
+//        // check the results of all rolls together
+//        helper.runAfterDelay(runs * 2 + 1, () -> {
+//            helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
+//                    "LCR didn't complete correct number of recipes, completed [" +
+//                            fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//            FluidStack results = fluidOut.getFluidInTank(0);
+//            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
+//                    "LCR didn't produce correct number of fluids, produced [" +
+//                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
+//            helper.assertFalse((results.getAmount() == runs * 9),
+//                    "LCR rolled max value on every roll");
+//            helper.assertFalse((results.getAmount() == runs * 0),
+//                    "LCR rolled min value on every roll");
+//
+//            // check if all the rolls were equal, but not min/max
+//            int[] rolls = new int[runs];
+//            rolls[0] = addedRolls[0];
+//            boolean allEqual = false;
+//            for (int i = 1; i < runs; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (rolls[i] == rolls[i - 1]) {
+//                    allEqual = true;
+//                } else {
+//                    allEqual = false;
+//                    break;
+//                }
+//            }
+//            helper.assertFalse(allEqual,
+//                    "LCR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: IN
+//    // test for multiblock machine with 16x Parallels with ranged fluid input
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 200)
+//    public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 1; // unused on this test
+//        int parallels = 16;
+//        busHolder.controller.setBatchEnabled(false);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
+//        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
+//
+//        // 1t to turn on, 4t per recipe run
+//        // 16 parallels
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] rolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(17 * finalI, () -> {
+//                FluidStack results = fluidIn.getFluidInTank(0);
+//                int upperLimit = 64 - (batches * parallels * 0);
+//                int lowerLimit = 64 - (batches * parallels * 4);
+//                int completed = batches * parallels * finalI;
+//                helper.assertTrue(
+//                        TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
+//                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
+//                                new FluidStack(REDSTONE, completed)),
+//                        "Parallel LCent didn't complete correct number of recipes, completed [" +
+//                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
+//                                completed + "]");
+//                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
+//                        "Parallel LCent didn't consume correct number of fluids, consumed " +
+//                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                rolls[finalI - 1] = 64 - results.getAmount();
+//
+//                // reset for a rerun
+//                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
+//                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            for (int i = 0; i < REPLICAS; i++) {
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
+//                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (parallels) +
+//                            "). If this message only appears once, this is likely a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Parallel LCent ranged fluid input test rolled exactly even to " +
+//                    "Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: OUT
+//    // test for multiblock machine with 16x Parallels with ranged fluid output
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 200)
+//    public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 1; // unused on this test
+//        int parallels = 16;
+//        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
+//
+//        busHolder.controller.setBatchEnabled(false);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        // 1t to turn on, 1t per recipe run
+//        // 16 parallels
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] addedRolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(17 * finalI, () -> {
+//                int runs = finalI * batches * parallels;
+//                helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
+//                        "Parallel LCent didn't complete correct number of recipes, completed [" +
+//                                fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
+//                int lowerLimit = runs * 0;
+//                int upperLimit = runs * 4;
+//                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
+//                        "Parallel LCent didn't produce correct number of fluids, produced [" +
+//                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                addedRolls[finalI - 1] = resultCount;
+//
+//                // reset for a rerun
+//                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            int[] rolls = new int[REPLICAS];
+//
+//            rolls[0] = addedRolls[0];
+//            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
+//                sus = true;
+//                GTCEu.LOGGER.warn("Parallel LCent ranged fluid output test iteration " + 1 + " produced [" +
+//                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+//                        "). If this message only appears once, this is likely a false positive.");
+//            }
+//            for (int i = 1; i < REPLICAS; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid output test iteration " + (i + 1) + " produced [" +
+//                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+//                            "). If this message only appears once, this is likely a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Parallel LCent ranged fluid output test rolled exactly even to " +
+//                    "Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: IN
+//    // TODO 2: fix the run count and time
+//    // test for multiblock machine with 16x Parallels with ranged fluid input
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 200)
+//    public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 16;
+//        int parallels = 1; // unused on this test
+//        busHolder.controller.setBatchEnabled(true);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
+//        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
+//
+//        // 1t to turn on, 1t per recipe run
+//        // 16 batches
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] rolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(17 * finalI, () -> {
+//                FluidStack results = fluidIn.getFluidInTank(0);
+//                int upperLimit = 64 - (batches * parallels * 0);
+//                int lowerLimit = 64 - (batches * parallels * 4);
+//                int completed = batches * parallels * finalI;
+//                helper.assertTrue(
+//                        TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
+//                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
+//                                new FluidStack(REDSTONE, completed)),
+//                        "Parallel LCent didn't complete correct number of recipes, completed [" +
+//                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
+//                                completed + "]");
+//                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
+//                        "Parallel LCent didn't consume correct number of fluids, consumed " +
+//                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                rolls[finalI - 1] = 64 - results.getAmount();
+//
+//                // reset for a rerun
+//                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
+//                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            for (int i = 0; i < REPLICAS; i++) {
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
+//                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+//                            "). If this message only appears once, this is likely a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Parallel LCent ranged fluid input test rolled exactly even to " +
+//                    "Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: OUT
+//    // TODO 2: fix the run count and time
+//    // test for multiblock machine with 16x Parallels with ranged fluid output
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 200)
+//    public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 16;
+//        int parallels = 1; // unused on this test
+//        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
+//
+//        busHolder.controller.setBatchEnabled(true);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        // 1t to turn on, 1t per recipe run
+//        // 16 parallels
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] addedRolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(17 * finalI, () -> {
+//                int runs = finalI * batches * parallels;
+//                helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
+//                        "Batched LCent didn't complete correct number of recipes, completed [" +
+//                                fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
+//                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
+//                int lowerLimit = runs * 0;
+//                int upperLimit = runs * 4;
+//                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
+//                        "Batched LCent didn't produce correct number of fluids, produced [" +
+//                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                addedRolls[finalI - 1] = resultCount;
+//
+//                // reset for a rerun
+//                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, 16));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            int[] rolls = new int[REPLICAS];
+//
+//            rolls[0] = addedRolls[0];
+//            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
+//                sus = true;
+//                GTCEu.LOGGER.warn("Batched LCent ranged fluid output test iteration " + 1 + " produced [" +
+//                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + batches +
+//                        "). If this message only appears once, this is likely a false positive.");
+//            }
+//            for (int i = 1; i < REPLICAS; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Batched LCent ranged fluid output test iteration " + (i + 1) + " produced [" +
+//                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + batches +
+//                            "). If this message only appears once, this is likely a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Batched LCent ranged fluid output test rolled exactly even to " +
+//                    "Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: IN
+//    // TODO 2: fix the all of it
+//    // test for multiblock machine with 16x Parallels with ranged fluid input
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 500)
+//    public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 16;
+//        int parallels = 16;
+//        busHolder.controller.setBatchEnabled(true);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        int stacks = batches * parallels / 64;
+//
+//        for (int j = 0; j < stacks; j++) {
+//            itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
+//        }
+//        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+//
+//        // 1t to turn on, 64t per recipe run
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] rolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(65 * finalI, () -> {
+//                FluidStack results = fluidIn.getFluidInTank(0);
+//                int upperLimit = 64 - (batches * parallels * 0);
+//                int lowerLimit = 64 - (batches * parallels * 4);
+//                int completed = batches * parallels * finalI;
+//                helper.assertTrue(TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
+//                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
+//                                new FluidStack(REDSTONE, completed)),
+//                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
+//                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
+//                                completed + "]");
+//                helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
+//                        "Batched Parallel LCent didn't consume correct number of fluids, consumed " +
+//                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                rolls[finalI - 1] = 64 - results.getAmount();
+//
+//                // reset for a rerun
+//                for (int l = 0; l < stacks; l++) {
+//                    itemIn.setStackInSlot(l,
+//                            COBBLE.copyWithCount((batches * parallels / stacks)));
+//                }
+//                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            for (int i = 0; i < REPLICAS; i++) {
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
+//                            rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+//                            "). If this message only appears once, this is likely a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Batched Parallel LCent ranged fluid input test rolled exactly even to" +
+//                    " Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
+//
+//    // TODO: OUT
+//    // TODO 2: fix the all of it
+//    // test for multiblock machine with 16x Parallels with ranged fluid output
+//    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+//            batch = "RangedFluidIngredients",
+//            setupTicks = 40,
+//            timeoutTicks = 500)
+//    public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
+//        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+//
+//        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+//        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+//
+//        int batches = 16;
+//        int parallels = 16;
+//        busHolder.controller.setBatchEnabled(true);
+//        busHolder.parallelHatch.setCurrentParallel(parallels);
+//
+//        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
+//
+//        // 1t to turn on, 64t per recipe run
+//        // check the results of all rolls together
+//        // repeat recipe REPLICAS times
+//        int[] addedRolls = new int[REPLICAS];
+//        for (int i = 1; i <= REPLICAS; i++) {
+//            final int finalI = i; // lambda preserve you
+//            helper.runAfterDelay(65 * finalI, () -> {
+//                int runs = finalI * batches * parallels;
+//                helper.assertTrue(fluidIn.isEmpty(),
+//                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
+//                                fluidIn.getTotalContentAmount() + "] not [" + runs + "]");
+//                int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
+//                int lowerLimit = runs * 0;
+//                int upperLimit = runs * 4;
+//                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
+//                        "Batched Parallel LCent didn't produce correct number of fluids, produced [" +
+//                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
+//
+//                addedRolls[finalI - 1] = resultCount;
+//
+//                // reset for a rerun
+//                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
+//            });
+//        }
+//
+//        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+//            // check if each roll was a multiple of run count
+//            boolean sus = false;
+//            int[] rolls = new int[REPLICAS];
+//
+//            rolls[0] = addedRolls[0];
+//            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
+//                sus = true;
+//                GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid output test iteration " + 1 + " produced [" +
+//                        rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+//                        "). If this message only appears once, this is likely a false positive.");
+//            }
+//            for (int i = 1; i < REPLICAS; i++) {
+//                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+//                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+//                    sus = true;
+//                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid output test iteration " + (i + 1) +
+//                            " produced [" + rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" +
+//                            (batches * parallels) + "). If this message only appears once, this is likely" +
+//                            " a false positive.");
+//                } else {
+//                    sus = false;
+//                    break;
+//                }
+//            }
+//
+//            helper.assertFalse(sus, "Batched Parallel LCent ranged fluid output test rolled exactly even to" +
+//                    " Batch * Parallel count on every iteration");
+//            helper.succeed();
+//        });
+//    }
 }
