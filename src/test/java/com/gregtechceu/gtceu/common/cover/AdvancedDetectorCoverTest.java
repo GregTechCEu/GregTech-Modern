@@ -12,6 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -55,6 +57,35 @@ public class AdvancedDetectorCoverTest {
         cover.setLatched(true);
         helper.runAtTickTime(40, () -> {
             TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
+                GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        cover.setMinValue(1);
+        cover.setMaxValue(4);
+        helper.runAtTickTime(40, () -> {
+            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "electrolyzer", batch = "coverTests")
+    public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        machine.getItemHandlerCap(null, false).setStackInSlot(0, new ItemStack(Items.DIRT, 5));
+        AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
+                GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        cover.setMinValue(1);
+        cover.setMaxValue(4);
+        helper.runAtTickTime(40, () -> {
+            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
             helper.succeed();
         });
     }
