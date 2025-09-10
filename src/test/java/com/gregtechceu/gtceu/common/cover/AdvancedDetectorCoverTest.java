@@ -27,19 +27,23 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdvancedDetectorCoverTest {
 
+    @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
+    public static void BLOCKED_BY_LDLIB_WEIRDNESS_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
+        helper.pullLever(new BlockPos(2, 2, 2));
+        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        helper.runAtTickTime(30, () -> helper.assertRedstoneSignal(
+                new BlockPos(1, 2, 1),
+                Direction.WEST,
+                signal -> signal > 0,
+                () -> "expected redstone signal"));
+    }
+
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
-        /*
-         * this is commented out because I have no idea why it doesn't work, but only *SOMETIMES*
-         * helper.runAtTickTime(30, () -> helper.assertRedstoneSignal(
-         * new BlockPos(1, 2, 1),
-         * Direction.WEST,
-         * signal -> signal > 0,
-         * () -> "expected redstone signal"));
-         */
         helper.runAtTickTime(35, () -> helper.pullLever(2, 2, 2));
         helper.runAtTickTime(40, () -> {
             TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
