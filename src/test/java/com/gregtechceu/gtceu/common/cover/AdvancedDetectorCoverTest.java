@@ -17,17 +17,24 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+/**
+ * The "electrolyzer" template contains a creative tank with water,
+ * that is set to auto-output into an electrolyzer when supplied with a redstone signal
+ * The redstone lamp is connected to the covers that are placed in the tests in this class.
+ * The creative tank's rate of output is equal to the electrolyzer's rate of processing
+ */
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class AdvancedDetectorCoverTest {
 
-    @GameTest(template = "electrolyzer", batch = "coverTests", required = false) // this test is basically a randomizer
+    @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        helper.runAtTickTime(35, () -> helper.pullLever(2, 2, 2));
         helper.runAtTickTime(40, () -> {
-            TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
+            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
             helper.succeed();
         });
     }
