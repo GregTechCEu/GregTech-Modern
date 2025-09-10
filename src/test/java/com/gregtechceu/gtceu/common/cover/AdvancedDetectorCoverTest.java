@@ -32,6 +32,11 @@ public class AdvancedDetectorCoverTest {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
+        helper.runAtTickTime(40, () -> helper.assertRedstoneSignal(
+                new BlockPos(1, 2, 1),
+                Direction.WEST,
+                signal -> signal == 15,
+                () -> "expected redstone signal"));
         helper.runAtTickTime(35, () -> helper.pullLever(2, 2, 2));
         helper.runAtTickTime(40, () -> {
             TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
