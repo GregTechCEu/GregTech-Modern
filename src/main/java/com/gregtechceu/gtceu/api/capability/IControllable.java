@@ -22,7 +22,7 @@ public interface IControllable {
 
     default void setSuspendAfterFinish(boolean suspendAfterFinish) {}
 
-    default boolean getSuspendAfterFinish() {
+    default boolean isSuspendAfterFinish() {
         return false;
     }
 }
