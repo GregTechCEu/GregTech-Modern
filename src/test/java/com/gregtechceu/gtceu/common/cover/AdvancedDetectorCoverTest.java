@@ -69,7 +69,6 @@ public class AdvancedDetectorCoverTest {
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMinValue(1);
         cover.setMaxValue(4);
-        cover.setLatched(true);
         helper.runAtTickTime(40, () -> {
             TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
             helper.succeed();
