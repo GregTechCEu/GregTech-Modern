@@ -53,7 +53,6 @@ public class AdvancedDetectorCoverTest {
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
-        // cover.setMaxValue(0);
         cover.setLatched(true);
         helper.runAtTickTime(40, () -> {
             TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
