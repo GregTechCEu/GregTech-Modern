@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -12,49 +11,18 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-import java.util.function.Consumer;
-
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class ItemFilterCoverTest {
-
-    private static final ItemFilter DIAMOND_FILTER = new ItemFilter() {
-
-        @Override
-        public int testItemCount(ItemStack itemStack) {
-            return 1;
-        }
-
-        @Override
-        public WidgetGroup openConfigurator(int x, int y) {
-            return new WidgetGroup();
-        }
-
-        @Override
-        public CompoundTag saveFilter() {
-            return new CompoundTag();
-        }
-
-        @Override
-        public void setOnUpdated(Consumer<ItemFilter> onUpdated) {}
-
-        @Override
-        public boolean test(ItemStack itemStack) {
-            return itemStack.is(Items.DIAMOND);
-        }
-    };
 
     private static ItemStack makeDiamondFilter() {
         ItemStack stack = GTItems.ITEM_FILTER.asStack();
