@@ -101,7 +101,6 @@ public class GTToolType {
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE)
-                    .behaviors(ProspectingBehavior.INSTANCE))
             .toolClasses(GTToolType.PICKAXE)
             .defaultActions(ToolActions.DEFAULT_PICKAXE_ACTIONS)
             .materialAmount(6 * GTValues.M)
