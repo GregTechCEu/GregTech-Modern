@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ICopyable;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -21,6 +22,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,9 +37,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
@@ -153,6 +153,21 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     public boolean canConnectRedstone() {
         return false;
     }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {}
+
+    /**
+     * Should return additional items required for pasting this cover's configuration
+     * Does NOT include the cover item itself
+     */
+    @Override
+    public Set<ItemStack> getItemsRequiredForPaste(CompoundTag nbt) {
+        return new HashSet<>();
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {}
 
     //////////////////////////////////////
     // ******* Interaction *******//

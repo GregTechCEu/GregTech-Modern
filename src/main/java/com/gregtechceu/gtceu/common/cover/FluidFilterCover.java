@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
@@ -93,6 +94,22 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putString("filterMode", filterMode.name());
+        nbt.putString("allowFlow", allowFlow.name());
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("filterMode"))
+            filterMode = FilterMode.valueOf("filterMode");
+        if (nbt.contains("allowFlow"))
+            allowFlow = ManualIOMode.valueOf(nbt.getString("allowFlow"));
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

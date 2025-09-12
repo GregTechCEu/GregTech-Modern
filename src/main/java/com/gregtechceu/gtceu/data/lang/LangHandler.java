@@ -716,6 +716,7 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
+        provider.add("behaviour.missing_item", "Missing %s %s to paste");
         provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
         provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
         provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
@@ -1653,6 +1654,12 @@ public class LangHandler {
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
+        provider.add("gtceu.behaviour.setting.cover_side", " on %s side");
+        provider.add("gtceu.behaviour.setting.cover_list", "Covers:");
+        provider.add("gtceu.behaviour.setting.ghost_circuit", "Circuit configuration: %d");
+        provider.add("gtceu.behaviour.setting.parallel", "Parallel amount: %d");
+        provider.add("gtceu.behaviour.setting.multiblock",
+                "Storing configuration for a multiblock consisting of %d blocks");
     }
 
     /**

@@ -19,7 +19,9 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -36,6 +38,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -54,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -130,6 +134,41 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     protected @Nullable IItemHandler getAdjacentItemHandler() {
         return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
                 .resolve().orElse(null);
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putInt("transferRate", transferRate);
+        nbt.putString("distributionMode", distributionMode.name());
+        nbt.putString("manualIOMode", manualIOMode.name());
+        nbt.putString("io", io.name());
+        nbt.putBoolean("workingEnabled", isWorkingEnabled());
+        if (getFilterHandler().isFilterPresent())
+            nbt.put("filter", getFilterHandler().getFilterItem().serializeNBT());
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("transferRate")) transferRate = nbt.getInt("transferRate");
+        if (nbt.contains("distributionMode"))
+            distributionMode = DistributionMode.valueOf(nbt.getString("distributionMode"));
+        if (nbt.contains("manualIOMode")) manualIOMode = ManualIOMode.valueOf(nbt.getString("manualIOMode"));
+        if (nbt.contains("io")) io = IO.valueOf(nbt.getString("io"));
+        if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
+        if (nbt.contains("filter")) {
+            getFilterHandler().setFilter(ItemStack.of(nbt.getCompound("filter")));
+        }
+    }
+
+    @Override
+    public Set<ItemStack> getItemsRequiredForPaste(CompoundTag nbt) {
+        Set<ItemStack> out = super.getItemsRequiredForPaste(nbt);
+        if (!getFilterHandler().isFilterPresent() && nbt.contains("filter")) {
+            GTUtil.addStackToSet(out, GTItems.ITEM_FILTER.asStack());
+        }
+        return out;
     }
 
     //////////////////////////////////////

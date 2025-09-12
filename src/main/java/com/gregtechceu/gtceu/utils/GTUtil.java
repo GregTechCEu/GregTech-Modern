@@ -588,4 +588,14 @@ public class GTUtil {
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
     }
+
+    public static void addStackToSet(Set<ItemStack> itemStacks, ItemStack itemStack) {
+        for (ItemStack stack : itemStacks) {
+            if (ItemStack.isSameItemSameTags(itemStack, stack)) {
+                stack.setCount(itemStack.getCount() + stack.getCount());
+                return;
+            }
+        }
+        itemStacks.add(itemStack);
+    }
 }

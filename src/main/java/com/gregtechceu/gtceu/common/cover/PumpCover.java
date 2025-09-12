@@ -20,7 +20,9 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -33,6 +35,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -48,6 +51,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -125,6 +129,38 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
                 .resolve()
                 .orElse(null);
+    }
+
+    @Override
+    public void copyConfig(CompoundTag nbt) {
+        super.copyConfig(nbt);
+        nbt.putInt("transferRate", transferRate);
+        nbt.putString("manualIOMode", manualIOMode.name());
+        nbt.putString("io", io.name());
+        nbt.putBoolean("workingEnabled", isWorkingEnabled());
+        if (filterHandler.isFilterPresent())
+            nbt.put("filter", filterHandler.getFilterItem().serializeNBT());
+    }
+
+    @Override
+    public void pasteConfig(CompoundTag nbt) {
+        super.pasteConfig(nbt);
+        if (nbt.contains("transferRate")) transferRate = nbt.getInt("transferRate");
+        if (nbt.contains("manualIOMode")) manualIOMode = ManualIOMode.valueOf(nbt.getString("manualIOMode"));
+        if (nbt.contains("io")) io = IO.valueOf(nbt.getString("io"));
+        if (nbt.contains("workingEnabled")) setWorkingEnabled(nbt.getBoolean("workingEnabled"));
+        if (nbt.contains("filter")) {
+            filterHandler.setFilter(ItemStack.of(nbt.getCompound("filter")));
+        }
+    }
+
+    @Override
+    public Set<ItemStack> getItemsRequiredForPaste(CompoundTag nbt) {
+        Set<ItemStack> out = super.getItemsRequiredForPaste(nbt);
+        if (!filterHandler.isFilterPresent() && nbt.contains("filter")) {
+            GTUtil.addStackToSet(out, GTItems.FLUID_FILTER.asStack());
+        }
+        return out;
     }
 
     //////////////////////////////////////
