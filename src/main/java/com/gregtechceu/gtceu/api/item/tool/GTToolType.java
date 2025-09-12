@@ -100,7 +100,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE)
+                    .behaviors(AOEConfigUIBehavior.INSTANCE, TorchPlaceBehavior.INSTANCE))
             .toolClasses(GTToolType.PICKAXE)
             .defaultActions(ToolActions.DEFAULT_PICKAXE_ACTIONS)
             .materialAmount(6 * GTValues.M)

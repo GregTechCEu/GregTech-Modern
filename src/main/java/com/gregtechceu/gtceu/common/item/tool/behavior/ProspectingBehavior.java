@@ -48,12 +48,14 @@ public class ProspectingBehavior implements IToolBehavior {
                     foundFluids.add(level.getFluidState(position).getType());
                 else foundBlocks.add(level.getBlockState(position));
             }
-            if (direction.getAxis().isHorizontal())
+            if (direction.getAxis().isHorizontal()) {
                 for (BlockPos position : getSurroundingBlocks(pos.below(), direction)) {
                     if (!level.getFluidState(position).isEmpty())
                         foundFluids.add(level.getFluidState(position).getType());
                     else foundBlocks.add(level.getBlockState(position));
                 }
+            }
+            pos = pos.relative(direction.getOpposite());
         }
         List<MutableComponent> out = new ArrayList<>();
         int cnt = 0;
