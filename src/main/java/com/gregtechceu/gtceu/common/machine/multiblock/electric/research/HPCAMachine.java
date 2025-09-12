@@ -165,6 +165,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
+        this.updateActive(false);
         super.onStructureInvalid();
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.hpcaHandler.onStructureInvalidate();
@@ -209,6 +210,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             hpcaHandler.clearComputationCache();
             // passively cool (slowly) if not active
             temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
+        }
+        this.updateActive(this.getEnergyContainer().getEnergyStored() > 0);
+    }
+
+    private void updateActive(boolean active) {
+        for (var part : getParts()) {
+            if (part instanceof IHPCAComponentHatch hpcaPart) {
+                hpcaPart.setActive(active);
+            }
         }
     }
 

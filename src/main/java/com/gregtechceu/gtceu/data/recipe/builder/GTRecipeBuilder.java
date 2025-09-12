@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -91,7 +92,6 @@ public class GTRecipeBuilder {
     public ResourceLocation id;
     @Setter
     public GTRecipeType recipeType;
-    @Setter
     public int duration = 100;
     @Setter
     public boolean perTick;
@@ -213,6 +213,14 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder addCondition(RecipeCondition condition) {
         conditions.add(condition);
         recipeType.setMinRecipeConditions(conditions.size());
+        return this;
+    }
+
+    public GTRecipeBuilder duration(int duration) {
+        if (duration < 0) {
+            GTCEu.LOGGER.error("Recipe duration must be non negative, id: {}", this.id);
+        }
+        this.duration = Math.max(duration, 0);
         return this;
     }
 
@@ -1145,19 +1153,29 @@ public class GTRecipeBuilder {
         return environmentalHazard(condition, false);
     }
 
-    public GTRecipeBuilder adjacentFluid(Fluid... fluids) {
+    public final GTRecipeBuilder adjacentFluid(Fluid... fluids) {
         return adjacentFluid(false, fluids);
     }
 
-    public GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
+    public final GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
+        if (fluids.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
     }
 
-    public GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
         return adjacentFluid(false, tags);
     }
 
-    public GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
+        if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
     }
 
@@ -1166,6 +1184,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids, boolean isReverse) {
+        if (fluids.size() > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(new AdjacentFluidCondition(isReverse, new ArrayList<>(fluids)));
     }
 
@@ -1174,14 +1196,24 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder adjacentBlock(boolean isReverse, Block... blocks) {
+        if (blocks.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
     }
 
-    public GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
         return adjacentBlock(false, tags);
     }
 
-    public GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+        if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
     }
 
@@ -1190,6 +1222,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks, boolean isReverse) {
+        if (blocks.size() > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
+            return this;
+        }
         return addCondition(new AdjacentBlockCondition(isReverse, new ArrayList<>(blocks)));
     }
 

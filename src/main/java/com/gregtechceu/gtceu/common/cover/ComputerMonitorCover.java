@@ -59,8 +59,10 @@ public class ComputerMonitorCover extends CoverBehavior
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
     @Persisted
+    @Getter
     private final List<String> formatStringArgs = new ArrayList<>(8);
     @Persisted
+    @Getter
     private final List<String> formatStringLines = new ArrayList<>(8);
     @Persisted
     @DescSynced
@@ -80,10 +82,14 @@ public class ComputerMonitorCover extends CoverBehavior
     @Persisted
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @Persisted
+    @Getter
+    private final UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText);
+        placeholderUUID = UUID.randomUUID();
         for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
     }
 
@@ -94,7 +100,7 @@ public class ComputerMonitorCover extends CoverBehavior
         return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
                 new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemStackHandler,
-                        this, new MultiLineComponent(text)));
+                        this, new MultiLineComponent(text), placeholderUUID));
     }
 
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {

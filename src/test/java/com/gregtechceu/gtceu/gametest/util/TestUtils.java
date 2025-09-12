@@ -2,16 +2,37 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedstoneLampBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -110,7 +131,7 @@ public class TestUtils {
     }
 
     public static GTRecipeType createRecipeType(String name) {
-        return createRecipeType(name, 1, 1, 1, 1);
+        return createRecipeType(name, 2, 2, 2, 2);
     }
 
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
@@ -124,5 +145,91 @@ public class TestUtils {
         GTRegistries.RECIPE_CATEGORIES.freeze();
         GTRegistries.RECIPE_TYPES.freeze();
         return type;
+    }
+
+    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+                                           Direction direction) {
+        return placeCover(helper, machine, stack, direction, false);
+    }
+
+    public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
+                                           Direction direction, boolean shouldFail) {
+        CoverDefinition coverDefinition = null;
+        if (stack.getItem() instanceof IComponentItem componentItem) {
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
+                    helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
+                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                }
+            }
+        }
+        helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
+        assert coverDefinition != null;
+        helper.assertTrue(shouldFail ^ machine.getCoverContainer().placeCoverOnSide(
+                direction, stack, coverDefinition, null), "failed to place cover");
+        return machine.getCoverContainer().getCoverAtSide(direction);
+    }
+
+    public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
+        helper.setBlock(pos, machineDefinition.getBlock());
+        return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
+    }
+
+    public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
+        MultiLineComponent component = new MultiLineComponent(text);
+        helper.assertTrue(component.equalsString(s),
+                "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
+    }
+
+    public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2) {
+        helper.assertTrue(isItemStackEqual(stack1, stack2),
+                "Item stacks not equal: \"%s\" != \"%s\"".formatted(stack1.toString(), stack2.toString()));
+    }
+
+    public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
+        helper.assertTrue(isFluidStackEqual(stack1, stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+                stack1.getDisplayName().getString(), stack1.getAmount(),
+                stack2.getDisplayName().getString(), stack2.getAmount()));
+    }
+
+    public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
+        helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, true);
+    }
+
+    public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
+        helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
+    }
+
+    /**
+     * Shortcut function to retrieve a metamachine from a blockentity's
+     * 
+     * @param entity The MetaMachineBlockEntity
+     * @return the machine held, if any
+     */
+    public static MetaMachine getMetaMachine(BlockEntity entity) {
+        return ((MetaMachineBlockEntity) entity).getMetaMachine();
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper GameTestHelper
+     */
+    public static void succeedAfterTest(GameTestHelper helper) {
+        succeedAfterTest(helper, 100);
+    }
+
+    /**
+     * Helper function to succeed after the test is over
+     * 
+     * @param helper  GameTestHelper
+     * @param timeout Ticks to wait until succeeding
+     */
+    public static void succeedAfterTest(GameTestHelper helper, long timeout) {
+        helper.runAtTickTime(timeout, helper::succeed);
+    }
+
+    public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
+        helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
     }
 }

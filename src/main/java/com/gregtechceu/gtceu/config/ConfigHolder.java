@@ -779,6 +779,8 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererConfigs renderer = new RendererConfigs();
+        @Configurable
+        public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -800,6 +802,16 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class TankItemFluidPreview {
+
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
+            public boolean drum = false;
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
+            public boolean quantumTank = false;
         }
     }
 

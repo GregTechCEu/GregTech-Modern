@@ -20,24 +20,37 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
 
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        return new MonitorImageRenderer(stack.getOrCreateTag().getString("url"));
+        return new MonitorImageRenderer(getUrl(stack));
     }
 
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         TextFieldWidget textField = new TextFieldWidget(0, 0, 100, 10, null, null);
-        textField.setCurrentString(stack.getOrCreateTag().getString("url"));
+        textField.setCurrentString(getUrl(stack));
 
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
             if (!click.isRemote) return;
 
-            stack.getOrCreateTag().putString("url", textField.getCurrentString());
+            setUrl(stack, textField.getCurrentString());
             GTNetwork.sendToServer(new SCPacketMonitorGroupNBTChange(stack, group, machine));
         });
         saveButton.setButtonTexture(GuiTextures.BUTTON_CHECK);
         builder.addWidget(textField);
         builder.addWidget(saveButton);
         return builder;
+    }
+
+    @Override
+    public String getType() {
+        return "image";
+    }
+
+    public String getUrl(ItemStack stack) {
+        return stack.getOrCreateTag().getString("url");
+    }
+
+    public void setUrl(ItemStack stack, String url) {
+        stack.getOrCreateTag().putString("url", url);
     }
 }

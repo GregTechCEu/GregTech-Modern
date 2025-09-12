@@ -205,7 +205,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 outputItem = ItemRecipeCapability.CAP.of(contents.get(0).content).getItems()[0];
             }
             if (!outputItem.isEmpty()) {
-                holder.setDataItem(outputItem);
+                holder.setDataItem(outputItem.copy());
             }
             holder.setLocked(false);
             return ActionResult.SUCCESS;
