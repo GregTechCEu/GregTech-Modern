@@ -2,9 +2,12 @@
 **All** GregTech Modern blocks which contain a BlockEntity can have Covers attached to them to add additional functionality
 or alter their normal functions. Some of these covers affect item and fluid transfer.
 
-Covers can be attached to machines by right-clicking on the machine while holding the cover, or through the machine side
-configuration UI. Covers can be configured by right-clicking their side with a Screwdriver, and removed by right-clicking
-their side with a Crowbar.
+Covers can be attached, configured, or removed, through the machine side configuration UI found in all GregTech Modern
+machines and hatches. They can also be:
+
+* Attached by right-clicking the machine while holding the cover
+* Configured by right-clicking their side with a Screwdriver or shift- right-clicking with an empty hand
+* Removed by right-clicking with a Crowbar.
 
 Logistics are available at all voltage tiers starting at LV, and the maximum rate at which they transfer items and fluids 
 is based on their voltage tier. (There is an add-on mod which also adds ULV covers however those are not included in base 
@@ -70,7 +73,7 @@ needed to be separated out).
 ## Ender Links
 Independent from all these other devices, there are also another set of covers: the Ender Link Covers. These come in 
 three types: Item, Fluid, and Redstone. These covers must be configured with a screwdriver on placement, but once configured
-they become part of a Network of wirelessly connected Ender Links.
+they become part of a Network of interdimensionally wirelessly connected Ender Links.
 
 Ender Links are assigned a network using a Channel, using an 8-digit hexadecimal color code (RBGA format) and optionally
 a Description (as a text string). Every Channel has two forms: a Public form (accessible to everyone on the server), and
@@ -78,7 +81,13 @@ a Private form (accessible only to the player who placed the Link cover). All Li
 then become linked, allowing items, fluids, or redstone signals to be imported or exported between them.
 
 After being assigned a channel, Ender Links have the same input/output and filter controls as a Conveyor or Pump. A single
-Ender Link cover is only one-directional though, only allowing its attached machine to Export To the ender network, or
+Ender Link cover is only one-directional though, only allowing its attached machine to export to the ender network, or
+import from it. 
+
+Each Ender Link channel contains a single storage slot: either a single redstone value, a 160,000mB fluid tank, or a 1-
+slot inventory. Each Ender Fluid Link cover can transfer up to 160,000mB of fluid per second in or out, and each Ender
+Item Link can transfer up to 160 items per second in or out, attempting transfer every tick. Because Link Covers contain
+only a single slot, they are most efficient at teleporting only a single type of item or fluid.
 
 ## Void Covers
 Sometimes items or fluids are unneeded or unwanted. Void Covers answer that. Any items or fluids which are exported into

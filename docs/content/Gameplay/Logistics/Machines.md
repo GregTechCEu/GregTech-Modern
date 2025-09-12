@@ -1,6 +1,7 @@
 # Machine Logistics
 ## Steam Machines
 Steam Machines do not have any form of built-in logistics capability, with three exceptions:
+
 * The Primitive Water Pump is a Multiblock Machine and contains an Output Hatch. This hatch will automatically push water
   out into any connected pipe or tank.
 * The Coke Oven is also a Multiblock machine, but unlike other multiblocks its controller does contain its inventory.
@@ -18,6 +19,7 @@ standing in it.
 ## Electric Machines
 All Electric machines have the ability to automatically output their produced items, fluids, or both, into any adjacent
 machine, inventory, tank, or pipe. This can be done with a Wrench, or via the Side Configuration tab in the machine's UI.
+
 * To change auto output from outside a machine, shift-right-click on air with the wrench to choose whether to configure
   for Items, Fluids, or Both, then right click with a Wrench on the side of the machine to rotate its output face.
   * To then enable automated output, right-click the machine face with a Screwdriver.
@@ -52,6 +54,6 @@ Furthermore, as Generators cannot be placed inside the Cleanroom, to transfer po
 also be placed in the Walls or Floor, and if right-clicked with a Soft Mallet will limit how many Amps will travel through,
 cycling through 1/2/4/8/16A.
 
-Finally, Machine Hulls have a unique feature. On the one hand, they can be used as a 1A Diode and transfer a single amp
+Finally, Machine Hulls have a unique feature. On one hand, they can be used as a 1A Diode and transfer a single amp
 of power. On the other hand, they are also considered valid cables for an Applied Energistics ME Network, and thus
 ME Cables will connect to Hulls and allow an ME Network to extend into a Cleanroom.
