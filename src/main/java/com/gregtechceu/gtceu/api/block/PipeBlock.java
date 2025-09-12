@@ -471,4 +471,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
         return drops;
     }
+
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WRENCH;
+    }
 }
