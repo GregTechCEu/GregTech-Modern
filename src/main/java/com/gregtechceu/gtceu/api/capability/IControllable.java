@@ -21,4 +21,8 @@ public interface IControllable {
     void setWorkingEnabled(boolean isWorkingAllowed);
 
     default void setSuspendAfterFinish(boolean suspendAfterFinish) {}
+
+    default boolean isSuspendAfterFinish() {
+        return false;
+    }
 }
