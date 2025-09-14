@@ -65,6 +65,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
         .rotationState(RotationState.NON_Y_AXIS)
         .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
         .recipeTypes(['test_recipe_type_1', 'test_recipe_type_2'])
+        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK)]) // (2)
         .pattern(definition => FactoryBlockPattern.start()
             .aisle('CCC', 'GGG', 'CCC')
             .aisle('CCC', 'GDG', 'CSC')
@@ -86,7 +87,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 
 1. You can add tooltips to your multiblock controllers that show up when you mouseover them. Each separate call of ```.tooltips()``` will add a separate line to the controller's tooltip. ```Component.translatable()``` reads entries from .json lang files placed in ```kubejs/assets/gtceu/lang``` or supplied via a standalone resource pack. The ```Component``` class is autoloaded by KubeJS at compile time; it doesn't need to be manually loaded.
-
+2. If electric and/or multiblock machines can process your custom recipe type, ```.recipeModifiers()``` will allow you to fine-tune the behaviour of these machine when running recipes of your custom recipe type. ```GTRecipeModifiers.PARALLEL_HATCH``` will enable Multiblock Machines to parallelize recipes of your custom type via an optional Parallel Hatch, while ```ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK)```will define how your recipes overclock in electric machines and multiblocks.
 
 ### Shape Info
 
