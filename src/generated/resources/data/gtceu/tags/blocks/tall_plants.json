@@ -1,0 +1,36 @@
+{
+  "values": [
+    "minecraft:sugar_cane",
+    "minecraft:cactus",
+    "minecraft:tall_grass",
+    "minecraft:large_fern",
+    "minecraft:bamboo",
+    "minecraft:bamboo_sapling",
+    "minecraft:chorus_flower",
+    "minecraft:chorus_plant",
+    "minecraft:vine",
+    "minecraft:weeping_vines",
+    "minecraft:weeping_vines_plant",
+    "minecraft:twisting_vines",
+    "minecraft:twisting_vines_plant",
+    "minecraft:pitcher_crop",
+    "#minecraft:cave_vines",
+    "#minecraft:tall_flowers",
+    {
+      "id": "#forge:cacti",
+      "required": false
+    },
+    {
+      "id": "#forge:crops/cactus",
+      "required": false
+    },
+    {
+      "id": "#forge:crops/sugar_cane",
+      "required": false
+    },
+    {
+      "id": "#forge:reeds",
+      "required": false
+    }
+  ]
+}

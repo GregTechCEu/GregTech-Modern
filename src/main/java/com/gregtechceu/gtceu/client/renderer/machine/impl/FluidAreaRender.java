@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -98,26 +99,40 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             return;
         }
 
-        poseStack.pushPose();
-        var pose = poseStack.last().pose();
-
         var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
         var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
         for (RelativeDirection face : this.drawFaces) {
+            poseStack.pushPose();
+            var pose = poseStack.last().pose();
+
             var dir = face.getRelative(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
                     machine.self().isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
                     RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+            poseStack.popPose();
         }
-
-        poseStack.popPose();
     }
 
     private Optional<Fluid> getFixedFluid() {
         if (fixedFluid) return Optional.ofNullable(cachedFluid);
         else return Optional.empty();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(IFluidRenderMulti machine) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(IFluidRenderMulti machine) {
+        AABB box = super.getRenderBoundingBox(machine);
+        var offsets = machine.getFluidOffsets();
+        for (var offset : offsets) {
+            box = box.minmax(new AABB(offset));
+        }
+        return box.inflate(getViewDistance());
     }
 }

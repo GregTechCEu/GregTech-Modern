@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
@@ -34,6 +37,7 @@ import com.gregtechceu.gtceu.integration.map.layer.Layers;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -102,12 +106,19 @@ public class ClientProxy extends CommonProxy {
             if (item instanceof LampBlockItem) {
                 event.register(item, GTLampItemOverlayRenderer.INSTANCE);
             }
+            if (item instanceof DrumMachineItem) {
+                event.register(item, GTTankItemFluidPreview.DRUM);
+            }
+            if (item instanceof QuantumTankMachineItem) {
+                event.register(item, GTTankItemFluidPreview.QUANTUM_TANK);
+            }
         }
     }
 
     @SubscribeEvent
     public void registerKeyBindings(RegisterKeyMappingsEvent event) {
         KeyBind.onRegisterKeyBinds(event);
+        SyncedKeyMapping.onRegisterKeyBinds(event);
     }
 
     @SubscribeEvent
@@ -138,6 +149,9 @@ public class ClientProxy extends CommonProxy {
         DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
 
         DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("growing_plant"), GrowingPlantRender.TYPE);
+
+        DynamicRenderManager.register(GTCEu.id("central_monitor"), CentralMonitorRender.TYPE);
     }
 
     @SubscribeEvent

@@ -8,7 +8,17 @@
     "side"
   ],
   "variants": {
-    "": {
+    "is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/fluid_passthrough_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/opv/bottom",
+          "side": "gtceu:block/casings/voltage/opv/side",
+          "top": "gtceu:block/casings/voltage/opv/top"
+        }
+      }
+    },
+    "is_formed=true": {
       "model": {
         "parent": "gtceu:block/machine/part/fluid_passthrough_hatch",
         "textures": {

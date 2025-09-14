@@ -5101,7 +5101,7 @@
   "recipe.condition.dimension_marker.tooltip": "Вимір:",
   "recipe.condition.dimension.tooltip": "Вимір: %s",
   "recipe.condition.eu_to_start.tooltip": "EU до запуску: %d%s",
-  "recipe.condition.rock_breaker.tooltip": "Прилеглі розміщені рідини",
+  "recipe.condition.adjacent_fluid.tooltip": "Прилеглі розміщені рідини",
   "recipe.condition.rain.tooltip": "Рівень дощу: %d",
   "recipe.condition.thunder.tooltip": "Рівень грози: %d",
   "recipe.condition.pos_y.tooltip": "Рівень Y: %d <= Y <= %d",

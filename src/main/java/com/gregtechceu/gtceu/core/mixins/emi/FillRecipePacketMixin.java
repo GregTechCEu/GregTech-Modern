@@ -17,8 +17,8 @@ public abstract class FillRecipePacketMixin {
                    at = @At(value = "INVOKE",
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
                             remap = true))
-    private static boolean gtceu$toolBypass(ItemStack stack, ItemStack other, Operation<Boolean> original) {
-        if (stack.getItem() instanceof IGTTool) {
+    private static boolean gtceu$ignoreGTToolNbt(ItemStack stack, ItemStack other, Operation<Boolean> original) {
+        if (stack.getItem() instanceof IGTTool && other.getItem() instanceof IGTTool) {
             return ItemStack.isSameItem(stack, other);
         }
         return original.call(stack, other);

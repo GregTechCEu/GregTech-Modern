@@ -447,6 +447,19 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onUnequip(player);
+        }
+        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
+            armor.getArmorLogic().onEquip(player);
+        }
+    }
+
+    @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
@@ -603,6 +616,18 @@ public class ForgeCommonEventListener {
                     }
                 }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void breakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (stack.getItem() instanceof ArmorComponentItem componentItem) {
+                if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
+                    if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
+                }
+            }
         }
     }
 }

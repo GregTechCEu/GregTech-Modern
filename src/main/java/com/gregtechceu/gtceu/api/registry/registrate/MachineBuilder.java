@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -13,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -116,7 +115,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean allowExtendedFacing = false;
     @Setter
-    private boolean hasBER;
+    private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
     @Setter
     private boolean renderMultiblockWorldPreview = true;
     @Setter
@@ -239,8 +238,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
-        if (!modelProperties.containsKey(RecipeLogic.STATUS_PROPERTY)) {
-            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        if (!modelProperties.containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+            modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         }
     }
 
@@ -257,6 +256,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlayTieredHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
@@ -271,6 +271,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay,
                                                                   @Nullable String pipeOverlay,
                                                                   @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
@@ -280,22 +281,24 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return colorOverlayTieredHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay,
                                                                   @Nullable ResourceLocation pipeOverlay,
                                                                   @Nullable ResourceLocation emissiveOverlay) {
-        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlayTieredHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlaySteamHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
-        modelProperty(SteamMachine.STEEL_PROPERTY, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
+        modelProperty(GTMachineModelProperties.IS_STEEL_MACHINE, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
@@ -306,6 +309,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
@@ -321,27 +325,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay,
                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable ResourceLocation emissiveOverlay) {
-        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlaySteamHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSimpleGeneratorModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
@@ -352,7 +356,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingModel(ResourceLocation baseCasing,
                                                                ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSidedWorkableCasingMachineModel(baseCasing, workableModel));
     }
 

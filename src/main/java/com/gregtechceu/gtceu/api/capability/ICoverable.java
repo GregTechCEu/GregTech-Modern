@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -32,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, IAppearance {
+public interface ICoverable extends ITickSubscription {
 
     Level getLevel();
 
@@ -77,7 +76,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     CoverBehavior getCoverAtSide(Direction side);
 
     default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition,
-                                     ServerPlayer player) {
+                                     @Nullable ServerPlayer player) {
         CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
         if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
             return false;
@@ -212,6 +211,14 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return traceCoverSide(rayTrace);
     }
 
+    default boolean hasDynamicCovers() {
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = this.getCoverAtSide(face);
+            if (cover != null && cover.getDynamicRenderer().get() != null) return true;
+        }
+        return false;
+    }
+
     class PrimaryBoxData {
 
         public final boolean usePlacementGrid;
@@ -258,7 +265,6 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     }
 
     @Nullable
-    @Override
     default BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                           BlockState sourceState, BlockPos sourcePos) {
         if (hasCover(side)) {

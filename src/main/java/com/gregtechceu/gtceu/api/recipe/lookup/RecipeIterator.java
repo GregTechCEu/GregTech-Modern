@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,9 +40,11 @@ public class RecipeIterator implements Iterator<GTRecipe> {
         // Try each ingredient as a starting point, save current index
         GTRecipe r = null;
         while (index < ingredients.size()) {
+            BitSet skipSet = new BitSet();
+            skipSet.set(index);
             r = recipeMap.getLookup().recurseIngredientTreeFindRecipe(ingredients,
                     recipeMap.getLookup().getLookup(), canHandle,
-                    index, 0, (1L << index));
+                    index, 0, skipSet);
             ++index;
             if (r != null) break;
         }

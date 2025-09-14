@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:advanced_monitor",
+  "replaceable_textures": [
+    "all"
+  ],
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/machine/part/computer_monitor",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+        }
+      }
+    }
+  }
+}

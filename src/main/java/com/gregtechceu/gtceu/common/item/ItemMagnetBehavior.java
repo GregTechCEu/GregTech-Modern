@@ -199,9 +199,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             }
 
             if (didMoveEntity) {
-                world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP,
-                        SoundSource.PLAYERS, 0.1F,
-                        0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 2F));
+                world.playSound(null, entity, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS,
+                        0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 2F));
             }
 
             List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class,
@@ -214,9 +213,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
                             continue;
                         }
-                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                                SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F,
-                                0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
+                        world.playSound(null, entity, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS,
+                                0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
                         player.take(orb, 1);
                         player.giveExperiencePoints(orb.value);
                         orb.discard();

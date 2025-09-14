@@ -147,7 +147,7 @@ jobs:
   # After successful release, PR version bump and changelog
   bump-version-and-changelog:
     name: Bump Version and Build Changelog
-    needs: [ build, upload-release-artifacts, publish-modrinth, publish-cf]
+    needs: [ build, upload-release-artifacts ]
     if: ${{ always() && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:

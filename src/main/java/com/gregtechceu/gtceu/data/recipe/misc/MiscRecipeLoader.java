@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -88,109 +89,97 @@ public class MiscRecipeLoader {
         ROCK_BREAKER_RECIPES.recipeBuilder("cobblestone")
                 .notConsumable(Blocks.COBBLESTONE.asItem())
                 .outputItems(Blocks.COBBLESTONE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VA[ULV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("stone")
                 .notConsumable(Blocks.STONE.asItem())
                 .outputItems(Blocks.STONE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VA[ULV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("andesite")
                 .notConsumable(Blocks.ANDESITE.asItem())
                 .outputItems(Blocks.ANDESITE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("granite")
                 .notConsumable(Blocks.GRANITE.asItem())
                 .outputItems(Blocks.GRANITE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("diorite")
                 .notConsumable(Blocks.DIORITE.asItem())
                 .outputItems(Blocks.DIORITE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[MV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("obsidian")
                 .notConsumable(dust, Redstone)
                 .outputItems(Blocks.OBSIDIAN.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
                 .notConsumable(Blocks.BASALT.asItem())
                 .outputItems(Blocks.BASALT.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("blackstone")
                 .notConsumable(Blocks.BLACKSTONE.asItem())
                 .outputItems(Blocks.BLACKSTONE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("deepslate")
                 .notConsumable(Blocks.DEEPSLATE.asItem())
                 .outputItems(Blocks.DEEPSLATE.asItem())
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[EV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
                 .notConsumable(rock, Marble)
                 .outputItems(rock, Marble)
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
                 .notConsumable(rock, Basalt)
                 .outputItems(rock, Basalt)
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[HV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("red_granite")
                 .notConsumable(rock, GraniteRed)
                 .outputItems(rock, GraniteRed)
+                .adjacentFluid(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[EV])
-                .addData("fluidA", "minecraft:lava")
-                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         // Jetpacks

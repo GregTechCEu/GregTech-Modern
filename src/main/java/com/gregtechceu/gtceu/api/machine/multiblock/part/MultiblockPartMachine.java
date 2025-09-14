@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -16,7 +17,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
@@ -143,8 +146,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
         if (controllers.isEmpty()) {
             MachineRenderState renderState = getRenderState();
-            if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
-                setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, false));
+            if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+                setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
             }
         }
     }
@@ -156,8 +159,22 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         controllers.add(controller);
 
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
-            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, true));
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
         }
+    }
+
+    @Override
+    public boolean replacePartModelWhenFormed() {
+        var renderState = getRenderState();
+        return renderState.hasProperty(GTMachineModelProperties.IS_FORMED) &&
+                renderState.getValue(GTMachineModelProperties.IS_FORMED);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
+        if (!replacePartModelWhenFormed()) return null;
+        return IMultiPart.super.getFormedAppearance(sourceState, sourcePos, side);
     }
 }

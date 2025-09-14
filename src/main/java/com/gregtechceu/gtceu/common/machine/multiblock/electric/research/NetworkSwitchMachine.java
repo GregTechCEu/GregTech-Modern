@@ -141,7 +141,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
      */
 
     /** Handles computation load across multiple receivers and to multiple transmitters. */
-    private static class MultipleComputationHandler extends NotifiableComputationContainer {
+    private class MultipleComputationHandler extends NotifiableComputationContainer {
 
         // providers in the NS provide distributable computation to the NS
         private final Set<IOpticalComputationHatch> providers = new ObjectOpenHashSet<>();
@@ -151,6 +151,9 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         /** The EU/t cost of this Network Switch given the attached providers and transmitters. */
         @Getter(value = AccessLevel.PRIVATE)
         private int EUt;
+
+        private boolean tickSaturated;
+        private long timerCWUt = -1;
 
         public MultipleComputationHandler(MetaMachine machine) {
             super(machine, IO.IN, false);
@@ -175,6 +178,21 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
+
+            if (cwut == 0) return 0;
+
+            // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
+            long timer = NetworkSwitchMachine.this.getOffsetTimer();
+            if (timerCWUt == timer) {
+                if (tickSaturated) {
+                    return 0;
+                }
+            } else {
+                // First call this tick, reset saturation
+                timerCWUt = timer;
+                tickSaturated = false;
+            }
+
             Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
             int allocatedCWUt = 0;
             for (var provider : providers) {
@@ -184,6 +202,12 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 cwut -= allocated;
                 if (cwut == 0) break;
             }
+
+            if (!simulate && allocatedCWUt == 0) {
+                // No computation left to give, remember this for subsequent calls this tick
+                tickSaturated = true;
+            }
+
             return allocatedCWUt;
         }
 
