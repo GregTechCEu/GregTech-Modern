@@ -20,6 +20,9 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     @Getter
     private boolean ignoreSpaces = false;
 
+    @Getter
+    private final List<GraphicsComponent> graphics = new ArrayList<>();
+
     public MultiLineComponent(List<MutableComponent> components) {
         super();
         this.addAll(components);
@@ -151,6 +154,11 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {
         this.ignoreSpaces = ignoreSpaces;
+        return this;
+    }
+
+    public MultiLineComponent addGraphics(GraphicsComponent... graphicsComponents) {
+        this.graphics.addAll(List.of(graphicsComponents));
         return this;
     }
 }

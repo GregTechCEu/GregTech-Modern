@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
+import com.gregtechceu.gtceu.api.placeholder.GraphicsComponent;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
@@ -13,15 +15,13 @@ import net.minecraft.util.FormattedCharSequence;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import java.util.List;
-
 public class MonitorTextRenderer implements IMonitorRenderer {
 
     private static final float TEXT_SCALE = 1 / 144f;
-    private final List<Component> text;
+    private final MultiLineComponent text;
     private final float scale;
 
-    public MonitorTextRenderer(List<Component> text, double scale) {
+    public MonitorTextRenderer(MultiLineComponent text, double scale) {
         this.text = text;
         this.scale = (float) scale;
     }
@@ -30,6 +30,10 @@ public class MonitorTextRenderer implements IMonitorRenderer {
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
         try {
+            for (GraphicsComponent graphics : text.getGraphics()) {
+                graphics.renderer().get().render(machine, group, partialTick, poseStack, buffer, packedLight,
+                        packedOverlay);
+            }
             BlockPos rel = group.getRow(0, machine::toRelative).get(0);
             int row = 0;
             int columns = group.getRow(0, machine::toRelative).size();

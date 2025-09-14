@@ -1606,6 +1606,14 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.module",
+                "Renders the module in the specified slot onto the central monitor (does not work in a cover)",
+                "Usage:",
+                "  {module <slot> <x> <y>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.setImage",
+                "Sets the image URL in an image module in the specified slot",
+                "Usage:",
+                "  {setImage <slot> <url>} -> empty string");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");

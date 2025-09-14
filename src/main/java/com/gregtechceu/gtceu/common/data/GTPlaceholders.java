@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
@@ -15,6 +17,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -817,6 +820,54 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("module") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 3);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                double x = PlaceholderUtils.toDouble(args.get(1));
+                double y = PlaceholderUtils.toDouble(args.get(2));
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
+                if (stack.getItem() instanceof IComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof IMonitorModuleItem module) {
+                            return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                                    x, y,
+                                    () -> {
+                                        module.tickInPlaceholder(stack, ctx);
+                                        return module.getRenderer(stack);
+                                    }));
+                        }
+                    }
+                }
+                return MultiLineComponent.empty();
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("setImage") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                String url = args.get(1).toString();
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
+                if (stack.getItem() instanceof IComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof ImageModuleBehaviour module) {
+                            module.setUrl(stack, url);
+                        }
+                    }
+                }
+                return MultiLineComponent.empty();
             }
         });
     }
