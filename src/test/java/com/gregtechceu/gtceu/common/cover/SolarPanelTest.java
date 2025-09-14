@@ -33,7 +33,7 @@ public class SolarPanelTest {
 
     @GameTest(template = "empty_5x5", batch = "coverTests", required = false) // it doesn't fail only if running tests
                                                                               // with the command for some reason
-    public static void generatesEnergyAtDayTest(GameTestHelper helper) {
+    public static void only_works_in_game_generatesEnergyAtDayTest(GameTestHelper helper) {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = makeBatteryBuffer(helper, GTValues.HV);
         machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);

@@ -84,7 +84,7 @@ public class OverclockLogicTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
+                             WorkableMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -103,9 +103,7 @@ public class OverclockLogicTest {
                 helper.getBlockEntity(new BlockPos(2, 2, 0)));
         ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
-        return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, controller);
+        return new BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
     // Test for running HV recipe at HV
