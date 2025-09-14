@@ -19,7 +19,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes('pyrolyse_oven')
             .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT,GTRecipeModifiers.BATCH_MODE, (machine, recipe) =>
-            GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)])
+                GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)])
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition => FactoryBlockPattern.start()
                 .aisle("BBCCCBB", "BBCDCBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
