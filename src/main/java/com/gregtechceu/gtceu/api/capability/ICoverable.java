@@ -229,12 +229,13 @@ public interface ICoverable extends ITickSubscription {
     }
 
     @Nullable
-    static Direction traceCoverSide(BlockHitResult result) {
+    static Direction traceCoverSide(@Nullable BlockHitResult result) {
         return determineGridSideHit(result);
     }
 
     @Nullable
-    static Direction determineGridSideHit(BlockHitResult result) {
+    static Direction determineGridSideHit(@Nullable BlockHitResult result) {
+        if (result == null) return null;
         return GTUtil.determineWrenchingSide(result.getDirection(),
                 (float) (result.getLocation().x - result.getBlockPos().getX()),
                 (float) (result.getLocation().y - result.getBlockPos().getY()),
