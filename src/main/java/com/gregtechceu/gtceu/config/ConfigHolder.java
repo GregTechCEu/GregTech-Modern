@@ -129,6 +129,31 @@ public class ConfigHolder {
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
         public boolean enchantedTools = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether to enable macerator decomposition recycling", "Default: true" })
+        public boolean enableMaceratorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of macerator decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float maceratorRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable arc furnace decomposition recycling", "Default: true" })
+        public boolean enableArcRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of arc furnace decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float arcRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable extractor decomposition recycling", "Default: true" })
+        public boolean enableExtractorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of extractor decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float extractorRecyclingYield = 1.0f;
     }
 
     public static class CompatibilityConfigs {
@@ -553,6 +578,10 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
+        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
+        public boolean allowDrumsInputFluidsFromOutputSide = false;
+
+        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
@@ -755,6 +784,8 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererConfigs renderer = new RendererConfigs();
+        @Configurable
+        public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -776,6 +807,16 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class TankItemFluidPreview {
+
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
+            public boolean drum = false;
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
+            public boolean quantumTank = false;
         }
     }
 

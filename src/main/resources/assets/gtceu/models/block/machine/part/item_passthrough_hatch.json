@@ -2,6 +2,7 @@
     "credit": "Made with Blockbench",
     "parent": "block/block",
     "textures": {
+        "particle": "#side",
         "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
         "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
         "overlay_item_hatch_input": "gtceu:block/overlay/machine/overlay_item_hatch_input",

@@ -80,7 +80,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     Component.literal("" + stack.getOrCreateTag().getInt("targetX")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetY")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetZ")).withStyle(ChatFormatting.GOLD),
-                    Component.literal(stack.getOrCreateTag().getString("face")).withStyle(ChatFormatting.DARK_PURPLE)));
+                    Component.literal(stack.getOrCreateTag().getString("face")).withStyle(ChatFormatting.DARK_PURPLE),
+                    Component.literal(stack.getOrCreateTag().getString("dim")).withStyle(ChatFormatting.GREEN)));
         }
         if (stack.getOrCreateTag().contains("computer_monitor_cover_config")) {
             tooltipComponents.add(Component.translatable("gtceu.tooltip.computer_monitor_config"));
@@ -104,7 +105,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
         } else {
             Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
-                tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
+                tooltipComponents.add(Component.translatable("behavior.data_item.title",
+                        Component.translatable(researchData.recipeType().registryName.toLanguageKey())));
                 Collection<ItemStack> addedItems = new ObjectOpenHashSet<>();
                 Collection<FluidStack> addedFluids = new ObjectOpenHashSet<>();
                 outerItems:
@@ -118,7 +120,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     }
                     if (addedItems.add(outputItems)) {
                         tooltipComponents.add(
-                                Component.translatable("behavior.data_item.assemblyline.data",
+                                Component.translatable("behavior.data_item.data",
                                         outputItems.getDisplayName()));
                     }
                 }
@@ -133,7 +135,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     }
                     if (addedFluids.add(outputFluids)) {
                         tooltipComponents.add(
-                                Component.translatable("behavior.data_item.assemblyline.data",
+                                Component.translatable("behavior.data_item.data",
                                         outputFluids.getDisplayName()));
                     }
                 }

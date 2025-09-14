@@ -8,7 +8,10 @@
     "side"
   ],
   "variants": {
-    "": {
+    "is_formed=false": {
+      "model": "gtceu:block/machine/part/pump_hatch"
+    },
+    "is_formed=true": {
       "model": "gtceu:block/machine/part/pump_hatch"
     }
   }

@@ -5426,7 +5426,7 @@
     "recipe.condition.quest.completed.tooltip": "完成任務：%s",
     "recipe.condition.quest.not_completed.tooltip": "未完成任務：%s",
     "recipe.condition.rain.tooltip": "雨量：%d",
-    "recipe.condition.rock_breaker.tooltip": "水平相鄰方塊需要為流體源",
+    "recipe.condition.adjacent_fluid.tooltip": "水平相鄰方塊需要為流體源",
     "recipe.condition.steam_vent.tooltip": "清潔蒸汽排氣口",
     "recipe.condition.thunder.tooltip": "雷級：%d",
     "tagprefix.andesite": "安山岩%s礦",

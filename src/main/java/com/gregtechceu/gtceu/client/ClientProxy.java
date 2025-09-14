@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
@@ -102,6 +105,12 @@ public class ClientProxy extends CommonProxy {
             }
             if (item instanceof LampBlockItem) {
                 event.register(item, GTLampItemOverlayRenderer.INSTANCE);
+            }
+            if (item instanceof DrumMachineItem) {
+                event.register(item, GTTankItemFluidPreview.DRUM);
+            }
+            if (item instanceof QuantumTankMachineItem) {
+                event.register(item, GTTankItemFluidPreview.QUANTUM_TANK);
             }
         }
     }

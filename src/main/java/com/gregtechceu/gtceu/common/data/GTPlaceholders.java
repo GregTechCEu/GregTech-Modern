@@ -8,16 +8,22 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -151,9 +157,10 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     if (GTStringUtils.toDouble(args.get(0)) != 0) {
-                        return args.get(1);
-                    } else if (args.size() > 2) return args.get(2);
-                    else return MultiLineComponent.empty();
+                        return new MultiLineComponent(args.get(1)).setIgnoreSpaces(true);
+                    } else if (args.size() > 2) {
+                        return new MultiLineComponent(args.get(2)).setIgnoreSpaces(true);
+                    } else return MultiLineComponent.empty();
                 } catch (NumberFormatException e) {
                     return args.get(1);
                 }
@@ -217,9 +224,10 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 2);
                 int count = PlaceholderUtils.toInt(args.get(0));
+                PlaceholderUtils.checkRange("n", 0, 50000, count);
                 MultiLineComponent out = MultiLineComponent.empty();
                 for (int i = 0; i < count; i++) out.append(args.get(1));
-                return out;
+                return out.setIgnoreSpaces(true);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("block") {
@@ -249,8 +257,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1, true);
                 int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkArgs(args, i + 2);
-                return args.get(i + 1);
+                PlaceholderUtils.checkArgs(args, i + 1, true);
+                return new MultiLineComponent(args.get(i + 1)).setIgnoreSpaces(true);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
@@ -284,7 +292,7 @@ public class GTPlaceholders {
                 int i = PlaceholderUtils.toInt(args.get(0));
                 if (ctx.previousText() == null) throw new NotSupportedException();
                 PlaceholderUtils.checkRange("line", 1, ctx.previousText().size(), i);
-                return MultiLineComponent.of(ctx.previousText().get(i - 1));
+                return MultiLineComponent.of(ctx.previousText().get(i - 1)).setIgnoreSpaces(true);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("progress") {
@@ -401,7 +409,8 @@ public class GTPlaceholders {
                     if (GTStringUtils.equals(args.get(2), "")) args.set(2, MultiLineComponent.literal(p));
                     if (GTStringUtils.equals(args.get(0), "get"))
                         return MultiLineComponent
-                                .literal(data.getString(PlaceholderUtils.toInt(args.get(2)) % capacity));
+                                .literal(data.getString(PlaceholderUtils.toInt(args.get(2)) % capacity))
+                                .setIgnoreSpaces(true);
                     else if (args.get(0).equalsString("set")) {
                         data.set(PlaceholderUtils.toInt(args.get(2)) % capacity,
                                 StringTag.valueOf(args.get(3).toString()));
@@ -432,7 +441,7 @@ public class GTPlaceholders {
                     out.append(args.get(i));
                     if (i != args.size() - 1) out.append(" ");
                 }
-                return out;
+                return out.setIgnoreSpaces(true);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("nbt") {
@@ -440,12 +449,16 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
+                PlaceholderUtils.checkArgs(args, 1, true);
                 int slot = GTStringUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                return MultiLineComponent
-                        .literal(ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag().toString());
+                Tag tag = ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag();
+                for (int i = 1; i < args.size() - 1; i++) {
+                    if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
+                    tag = compoundTag.get(args.get(i).toString());
+                }
+                return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("toChars") {
@@ -477,7 +490,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
-                return MultiLineComponent.literal((char) PlaceholderUtils.toInt(args.get(0)));
+                return MultiLineComponent.literal((char) PlaceholderUtils.toInt(args.get(0))).setIgnoreSpaces(true);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("subList") {
@@ -493,6 +506,7 @@ public class GTPlaceholders {
                 MultiLineComponent out = MultiLineComponent.empty();
                 for (int i = l; i < r - 1; i++) out.append(args.get(i)).append(' ');
                 out.append(args.get(r - 1));
+                out.setIgnoreSpaces(true);
                 return out;
             }
         });
@@ -536,33 +550,66 @@ public class GTPlaceholders {
                 }
                 if (capacity == -1) throw new MissingItemException("any data item", slot);
                 ListTag tag = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
-                int operationsLeft = 1000;
-                int p = 0;
-                String code = args.get(1).toString();
+                int operationsLeft = 5000;
+                int p = 0, start = 0, cnt = 0;
+                String rawCode = args.get(1).toString().replaceAll("[^+\\-><\\[\\]]", "");
+                StringBuilder codeBuilder = new StringBuilder();
+                // optimize BF code ("[----[+++]-<<-]" -> "[4-[3+]1-2<1-]")
+                @Nullable
+                Character cur = null;
+                for (char i : rawCode.toCharArray()) {
+                    if (cur != null) {
+                        if (cur == i) cnt++;
+                        else {
+                            codeBuilder.append(cnt).append(cur);
+                            cur = null;
+                            cnt = 0;
+                        }
+                    }
+                    if (cur == null) {
+                        if (List.of('+', '-', '<', '>').contains(i)) {
+                            cur = i;
+                            cnt = 1;
+                        } else codeBuilder.append(i);
+                    }
+                }
+                if (cur != null) codeBuilder.append(cnt).append(cur);
+                String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
-                for (int i = 0; i < code.length() && operationsLeft > 0; i++) {
+                if (!getData(ctx).getBoolean("completed")) {
+                    p = getData(ctx).getInt("pointer");
+                    start = getData(ctx).getInt("index");
+                }
+                getData(ctx).putBoolean("completed", true);
+                int num = 0;
+                for (int i = start; i < code.length(); i++) {
+                    if (operationsLeft <= 0) {
+                        getData(ctx).putBoolean("completed", false);
+                        getData(ctx).putInt("pointer", p);
+                        getData(ctx).putInt("index", i);
+                        break;
+                    }
                     while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
                     if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
-                    try {
-                        switch (code.charAt(i)) {
-                            case '+' -> tag.set(p,
-                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) + 1)));
-                            case '-' -> tag.set(p,
-                                    StringTag.valueOf(String.valueOf(Integer.parseInt(tag.getString(p)) - 1)));
-                            case '>' -> p++;
-                            case '<' -> p--;
-                            case '[' -> loops.push(i);
-                            case ']' -> {
-                                if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
-                                else i = loops.peek();
-                            }
-                            default -> throw new PlaceholderException(Component
-                                    .translatable("gtceu.computer_monitor_cover.error.bf_invalid", i).getString());
+                    switch (code.charAt(i)) {
+                        case '+' -> tag.set(p,
+                                StringTag.valueOf(String.valueOf((Integer.parseInt(tag.getString(p)) + num) % 256)));
+                        case '-' -> {
+                            int tmp = Integer.parseInt(tag.getString(p)) - num;
+                            if (tmp < 0) tmp = (256 - ((-tmp) % 256)) % 256;
+                            tag.set(p, StringTag.valueOf(String.valueOf(tmp)));
                         }
-                    } catch (InvalidNumberException e) {
-                        throw new PlaceholderException(Component
-                                .translatable("gtceu.computer_monitor_cover.error.bf_invalid_num", p, i).getString());
+                        case '>' -> p += num;
+                        case '<' -> p -= num;
+                        case '[' -> loops.push(i);
+                        case ']' -> {
+                            if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
+                            else i = loops.peek();
+                        }
                     }
+                    if (Character.isDigit(code.charAt(i))) {
+                        num = num * 10 + code.charAt(i) - '0';
+                    } else num = 0;
                     operationsLeft--;
                 }
                 return MultiLineComponent.empty();
@@ -655,6 +702,121 @@ public class GTPlaceholders {
                     if (n >= i && max < i) max = i;
                 }
                 return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("click") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                if (!(MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof AdvancedMonitorPartMachine monitor))
+                    throw new NotSupportedException();
+                monitor.resetClicked();
+                if (args.isEmpty()) return MultiLineComponent.literal(monitor.isClicked() ? 1 : 0);
+                PlaceholderUtils.checkArgs(args, 1);
+                if (args.get(0).equalsString("x")) return MultiLineComponent.literal(monitor.getClickPosX());
+                if (args.get(0).equalsString("y")) return MultiLineComponent.literal(monitor.getClickPosY());
+                throw new InvalidArgsException();
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("ender") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 2, true);
+                String type = args.get(0).toString();
+                String channel = args.get(1).toString();
+                UUID owner = null;
+                if (args.size() > 2 && !args.get(2).toString().isEmpty()) {
+                    if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                    int slot = PlaceholderUtils.toInt(args.get(2));
+                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                    if (stack.getOrCreateTag().contains("boundPlayerUUID"))
+                        owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
+                }
+                VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
+                switch (type) {
+                    case "redstone" -> {
+                        channel = "ERLink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel))
+                            return MultiLineComponent.literal(0);
+                        if (args.size() > 4) {
+                            if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                            int slot = PlaceholderUtils.toInt(args.get(3));
+                            PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                            ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
+                            UUID uuid;
+                            if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
+                                uuid = stack.getOrCreateTag().getUUID("enderRedstoneLinkTransmitterUUID");
+                            } else {
+                                uuid = UUID.randomUUID();
+                                stack.getOrCreateTag().putUUID("enderRedstoneLinkTransmitterUUID", uuid);
+                            }
+                            int power = PlaceholderUtils.toInt(args.get(4));
+                            PlaceholderUtils.checkRange("redstone signal", 0, 15, power);
+                            ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).setSignal(uuid, power);
+                            return MultiLineComponent.empty();
+                        }
+                        return MultiLineComponent
+                                .literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
+                    }
+                    case "item" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.literal(0);
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        int count = 0;
+                        for (int i = 0; i < items.getSlots(); i++) count += items.getStackInSlot(i).getCount();
+                        return MultiLineComponent.literal(count);
+                    }
+                    case "itemId" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.literal(ItemStack.EMPTY.toString());
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (items.getSlots() == 0) return MultiLineComponent.literal(ItemStack.EMPTY.toString());
+                        return MultiLineComponent.literal(items.getStackInSlot(0).toString());
+                    }
+                    case "itemPull" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.empty();
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (ctx.itemStackHandler() != null)
+                            GTTransferUtils.transferItemsFiltered(items, ctx.itemStackHandler(), stack -> true, 1);
+                        else throw new NotSupportedException();
+                        return MultiLineComponent.empty();
+                    }
+                    case "itemPush" -> {
+                        channel = "EILink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_ITEM, channel))
+                            return MultiLineComponent.empty();
+                        IItemHandler items = ender.getEntry(owner, EntryTypes.ENDER_ITEM, channel).getHandler();
+                        if (ctx.itemStackHandler() != null)
+                            GTTransferUtils.transferItemsFiltered(ctx.itemStackHandler(), items, stack -> true, 1);
+                        else throw new NotSupportedException();
+                        return MultiLineComponent.empty();
+                    }
+                    case "fluid" -> {
+                        channel = "EFLink#" + channel;
+                        if (!ender.hasEntry(owner, EntryTypes.ENDER_FLUID, channel))
+                            return MultiLineComponent.literal(0);
+                        return MultiLineComponent.literal(
+                                ender.getEntry(owner, EntryTypes.ENDER_FLUID, channel).getFluidTank().getFluidAmount());
+                    }
+                    default -> throw new InvalidArgsException();
+                }
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("eval") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
             }
         });
     }
