@@ -2,20 +2,9 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.InputSeparationTest;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
@@ -23,17 +12,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.STD_DURATION_FACTOR_INV;
-import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.STD_VOLTAGE_FACTOR;
 import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
@@ -47,7 +32,7 @@ public class RecipeLogicTest {
     public static void prepare(ServerLevel level) {
         LCR_RECIPE_TYPE = TestUtils.createRecipeType("recipe_logic_test_lcr");
         CR_RECIPE_TYPE = TestUtils.createRecipeType("recipe_logic_test_cr");
-        // Force insert the recipe into the manager.
+
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_recipelogic"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
@@ -55,7 +40,7 @@ public class RecipeLogicTest {
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_multiblock_recipelogic"))
+                .recipeBuilder(GTCEu.id("test_multiblock_recipelogic_16_items"))
                 .inputItems(new ItemStack(Blocks.STONE, 16))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
@@ -100,7 +85,8 @@ public class RecipeLogicTest {
 
         helper.assertTrue(busHolder.controller.isFormed(), "Controller didn't form after structure check");
         helper.assertTrue(busHolder.controller.getParts().size() == 6,
-                "Controller didn't register all 6 parts after structure check, only registered " + busHolder.controller.getParts().size());
+                "Controller didn't register all 6 parts after structure check, only registered " +
+                        busHolder.controller.getParts().size());
 
         RecipeLogic recipeLogic = busHolder.controller.getRecipeLogic();
 
@@ -164,7 +150,6 @@ public class RecipeLogicTest {
         // Finish.
         helper.succeed();
     }
-
 
     // spotless:off
     // Blocked by LDLib sync issues
