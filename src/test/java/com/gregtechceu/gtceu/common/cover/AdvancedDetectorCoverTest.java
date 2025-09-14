@@ -51,7 +51,7 @@ public class AdvancedDetectorCoverTest {
         });
     }
 
-    @GameTest(template = "electrolyzer", batch = "coverTests", attempts = 10)
+    @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
@@ -59,9 +59,10 @@ public class AdvancedDetectorCoverTest {
                 GTItems.COVER_FLUID_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMaxValue(100000);
         cover.setMinValue(1);
-        cover.setLatched(true);
+        cover.setLatched(false);
+        // At t=40, 36k will be inside, giving a redstone value of 5
         helper.runAtTickTime(40, () -> {
-            TestUtils.assertLampOff(helper, new BlockPos(0, 2, 1));
+            TestUtils.assertLampOn(helper, new BlockPos(0, 2, 1));
             helper.succeed();
         });
     }
