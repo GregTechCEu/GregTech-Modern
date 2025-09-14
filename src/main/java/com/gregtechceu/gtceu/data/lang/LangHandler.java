@@ -539,6 +539,8 @@ public class LangHandler {
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
         replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, "block.gtceu.oil_medium", "Raw Oil");
+        replace(provider, "block.gtceu.oil", "Oil");
+        replace(provider, "block.gtceu.creosote", "Creosote");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");

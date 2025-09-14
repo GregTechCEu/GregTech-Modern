@@ -145,8 +145,8 @@ public class GTBucketItem extends BucketItem {
             }
 
             var fluidBlockState = material.getFluid().defaultFluidState().createLegacyBlock();
-            if (hasFluidBlock(material) && level.setBlock(pos, fluidBlockState, 11) &&
-                    level.getBlockState(pos).getFluidState().isSource()) {
+            if (hasFluidBlock(material) && level.setBlock(pos, fluidBlockState, Block.UPDATE_ALL_IMMEDIATE) &&
+                    fluidBlockState.getFluidState().isSource()) {
                 this.playEmptySound(player, level, pos);
                 return true;
             }
