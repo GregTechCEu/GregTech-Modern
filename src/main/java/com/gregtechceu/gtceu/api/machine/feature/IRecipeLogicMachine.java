@@ -145,6 +145,11 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     @Override
+    default boolean isSuspendAfterFinish() {
+        return getRecipeLogic().isSuspendAfterFinish();
+    }
+
+    @Override
     default int getProgress() {
         return getRecipeLogic().getProgress();
     }

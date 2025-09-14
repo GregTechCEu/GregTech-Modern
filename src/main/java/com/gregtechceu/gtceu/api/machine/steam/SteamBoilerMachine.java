@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -45,9 +46,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
@@ -63,7 +67,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IUIMachine, IExplosionMachine, IDataInfoProvider {
+                                         implements IUIMachine, IExplosionMachine, IDataInfoProvider,
+                                         IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamBoilerMachine.class,
             SteamWorkableMachine.MANAGED_FIELD_HOLDER);
@@ -300,6 +305,17 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        if (!isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, waterTank)) {
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.sidedSuccess(world.isClientSide);
     }
 
     //////////////////////////////////////
