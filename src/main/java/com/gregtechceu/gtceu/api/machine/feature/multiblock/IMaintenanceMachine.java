@@ -90,7 +90,8 @@ public interface IMaintenanceMachine extends IMultiPart {
         }
 
         setTimeActive(getTimeActive() + duration);
-        if (getTimeActive() >= 1000 / maintenanceMachine.getTimeMultiplier()) {
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / maintenanceMachine.getTimeMultiplier();
+        if (getTimeActive() >= rate) {
             setTimeActive(0);
             if (GTValues.RNG.nextInt(6000) == 0) {
                 causeRandomMaintenanceProblems();

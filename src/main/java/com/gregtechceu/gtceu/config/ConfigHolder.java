@@ -460,6 +460,12 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true" })
         public boolean enableMaintenance = true;
+        @Configurable
+        @Configurable.Comment({
+                "How often to check for maintenance, rolling a 1/6000 chance every X ticks (before secondary effects like Configurable Maintenance Hatch).",
+                "In default settings, this equates to a 5% chance every hour of a machine running.",
+                "Default: 1000 (ticks)" })
+        public int maintenanceCheckRate = 1000;
 
         @Configurable
         @Configurable.Comment({
