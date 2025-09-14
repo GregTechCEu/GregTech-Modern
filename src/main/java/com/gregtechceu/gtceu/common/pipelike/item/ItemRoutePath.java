@@ -31,14 +31,17 @@ public class ItemRoutePath implements IRoutePath<IItemHandler> {
     @Getter
     private final ItemPipeProperties properties;
     private final Predicate<ItemStack> filters;
+    @Getter
+    private final boolean restrictive;
 
     public ItemRoutePath(ItemPipeBlockEntity targetPipe, @NotNull Direction facing, int distance,
-                         ItemPipeProperties properties,
+                         ItemPipeProperties properties, boolean restrictive,
                          List<Predicate<ItemStack>> filters) {
         this.targetPipe = targetPipe;
         this.targetFacing = facing;
         this.distance = distance;
         this.properties = properties;
+        this.restrictive = restrictive;
         this.filters = stack -> {
             for (Predicate<ItemStack> filter : filters)
                 if (!filter.test(stack)) return false;

@@ -108,9 +108,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @Getter
     @Setter
+    @DescSynced
     protected int progress;
     @Getter
     @Persisted
+    @DescSynced
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;

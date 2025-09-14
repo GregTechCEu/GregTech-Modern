@@ -220,6 +220,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         return toolProperty == null ? 0 : toolProperty.getHarvestLevel();
     }
 
+    default int getProspectingDepth() {
+        ToolProperty toolProperty = getToolProperty();
+        return toolProperty == null ? 1 : toolProperty.getProspectingDepth();
+    }
+
     default long getMaxCharge(ItemStack stack) {
         if (isElectric()) {
             CompoundTag tag = stack.getTag();

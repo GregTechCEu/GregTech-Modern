@@ -80,20 +80,6 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     /**
-     * @param duration recipe progress time
-     * @return it's time for a new problem occurring;
-     */
-    default boolean calculateTime(int duration) {
-        setTimeActive(duration + getTimeActive());
-        var value = getTimeActive() - ConfigHolder.INSTANCE.machines.maintenanceTime;
-        if (value > 0) {
-            setTimeActive(value);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Used to calculate whether a maintenance problem should happen based on machine time active
      *
      * @param duration in ticks to add to the counter of active time
@@ -103,12 +89,22 @@ public interface IMaintenanceMachine extends IMultiPart {
             return;
         }
 
-        if (calculateTime((int) (duration * maintenanceMachine.getTimeMultiplier()))) {
-            if (GTValues.RNG.nextFloat() - 0.75f >= 0) {
+        setTimeActive(getTimeActive() + duration);
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / maintenanceMachine.getTimeMultiplier();
+        if (getTimeActive() >= rate) {
+            setTimeActive(0);
+            if (GTValues.RNG.nextInt(6000) == 0) {
                 causeRandomMaintenanceProblems();
                 maintenanceMachine.setTaped(false);
             }
         }
+    }
+
+    /**
+     * Used to calculate whether a maintenance problem should happen based on machine time active
+     */
+    default void calculateMaintenance(IMaintenanceMachine maintenanceMachine) {
+        calculateMaintenance(maintenanceMachine, 1);
     }
 
     default int getNumMaintenanceProblems() {
@@ -129,13 +125,10 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default boolean afterWorking(IWorkableMultiController controller) {
-        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-            calculateMaintenance(this, controller.getRecipeLogic().getProgress());
-            if (hasMaintenanceProblems()) {
-                controller.getRecipeLogic().markLastRecipeDirty();
-                return false;
-            }
+    default boolean onWorking(IWorkableMultiController controller) {
+        calculateMaintenance(this);
+        if (hasMaintenanceProblems()) {
+            controller.getRecipeLogic().markLastRecipeDirty();
         }
         return true;
     }

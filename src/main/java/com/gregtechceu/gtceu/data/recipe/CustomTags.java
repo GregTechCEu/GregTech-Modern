@@ -205,6 +205,8 @@ public class CustomTags {
     public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK,
             new ResourceLocation("create", "wrench_pickup"));
 
+    public static final TagKey<Block> TALL_PLANTS = TagUtil.createModBlockTag("tall_plants");
+
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
     public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");

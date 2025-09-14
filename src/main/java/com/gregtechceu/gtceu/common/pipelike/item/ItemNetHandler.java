@@ -75,7 +75,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (pipeCover instanceof ConveyorCover pipeConveyor) conveyor = pipeConveyor;
         if (tileCover instanceof ConveyorCover tileConveyor) conveyor = tileConveyor;
 
-        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing);
+        List<ItemRoutePath> routePaths = network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.FULL);
         if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
@@ -84,7 +84,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         switch (conveyor.getDistributionMode()) {
             case INSERT_FIRST -> stack = distributeHighestPriority(routePathsCopy, stack, simulate);
             case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, simulate);
-            case ROUND_ROBIN_PRIO -> stack = distributeUsingWeightedPriority(routePathsCopy, stack, simulate);
+            case ROUND_ROBIN_PRIO -> stack = distributeEquallyNoRestrictive(stack, simulate);
         }
 
         return stack;
@@ -106,48 +106,33 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     /**
-     * Distributes items to multiple handlers, distribution is weighted by priority.
+     * Distributes items evenly to multiple handlers. Attempts to exclude handlers that are behind Restrictive Pipes,
+     * unless no other routes are available.
+     * Does not take in a list of routes, pulls a copy of the routes if it needs it
      *
-     * @param copy     to insert to
-     * @param stack    to insert
-     * @param simulate simulate
-     * @return remainder
+     * @param stack    the {@link ItemStack} to insert
+     * @param simulate
+     * @return any remaining items not inserted
      */
-    private ItemStack distributeUsingWeightedPriority(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
-        Iterator<ItemRoutePath> routePathIterator = copy.listIterator();
-        int inserted = 0;
-        int count = stack.getCount();
-        int c = count / copy.size();
-        int m = c == 0 ? count % copy.size() : 0;
-        while (routePathIterator.hasNext()) {
-            ItemRoutePath routePath = routePathIterator.next();
-
-            int amount = c;
-            if (m > 0) {
-                amount++;
-                m--;
-            }
-            amount = Math.min(amount, stack.getCount() - inserted);
-            if (amount == 0) break;
-            ItemStack toInsert = stack.copy();
-            toInsert.setCount(amount);
-            int r = insertIntoTarget(routePath, toInsert, simulate, false).getCount();
-            if (r < amount) {
-                inserted += (amount - r);
-            }
-            if (r == 1 && c == 0 && amount == 1) {
-                m++;
-            }
-
-            if (r > 0)
-                routePathIterator.remove();
+    private ItemStack distributeEquallyNoRestrictive(ItemStack stack,
+                                                     boolean simulate) {
+        // Round-robin distribute to all non-Restrictive destinations
+        List<ItemRoutePath> routePathsNonRestrictedCopy = new ArrayList<>(
+                network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.NONRESTRICTED));
+        ItemStack remainsNonRestricted;
+        if (routePathsNonRestrictedCopy.isEmpty()) {
+            remainsNonRestricted = stack;
+        } else {
+            remainsNonRestricted = distributeEqually(routePathsNonRestrictedCopy, stack, simulate);
         }
-
-        ItemStack remainder = stack.copy();
-        remainder.setCount(count - inserted);
-        if (!stack.isEmpty() && !copy.isEmpty()) remainder = distributeUsingWeightedPriority(copy, stack, simulate);
-
-        return remainder;
+        // if anything is left, distribute to Restrictive destinations
+        if (!remainsNonRestricted.isEmpty()) {
+            List<ItemRoutePath> routePathsRestrictiveCopy = new ArrayList<>(
+                    network.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.RESTRICTED));
+            return distributeEqually(routePathsRestrictiveCopy, remainsNonRestricted, simulate);
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     /**

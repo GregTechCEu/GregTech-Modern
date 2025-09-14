@@ -11,18 +11,16 @@ title: Custom Recipe Type
 GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
     event.create('test_recipe_type')
         .category('test')
-        .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK)]) // (1)
         .setEUIO('in')
-        .setMaxIOSize(3, 3, 3, 3) // (2)
+        .setMaxIOSize(3, 3, 3, 3) // (1)
         .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
-        .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, FillDirection.LEFT_TO_RIGHT) // (3)
+        .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, FillDirection.LEFT_TO_RIGHT) // (2)
         .setSound(GTSoundEntries.COOLING)
 })
 ```
 
-1. If electric and/or multiblock machines can process your custom recipe type, ```.recipeModifiers()``` will allow you to fine-tune the behaviour of these machine when running recipes of your custom recipe type. ```GTRecipeModifiers.PARALLEL_HATCH``` will enable Multiblock Machines to parallelize recipes of your custom type via an optional Parallel Hatch, while ```GTRecipeModifiers.ELECTRIC_OVERCLOCK```will define how your recipes overclock in electric machines and multiblocks.
-2. Max Item Inputs, Max Item Outputs, Max Fluid Inputs, Max Fluid Outputs
-3. A list of available ```GuiTextures``` and ```FillDirection```s can be found in the GTCEu Modern Github, or in the .jar file.
+1. Max Item Inputs, Max Item Outputs, Max Fluid Inputs, Max Fluid Outputs
+2. A list of available ```GuiTextures``` and ```FillDirection```s can be found in the GTCEu Modern Github, or in the .jar file.
 
 
 ```js title="test_kinetic_recipe_type.js"
