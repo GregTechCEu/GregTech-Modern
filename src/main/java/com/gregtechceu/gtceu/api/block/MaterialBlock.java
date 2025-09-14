@@ -57,7 +57,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialBlock extends AppearanceBlock {
+public class MaterialBlock extends Block {
 
     public final TagPrefix tagPrefix;
     public final Material material;

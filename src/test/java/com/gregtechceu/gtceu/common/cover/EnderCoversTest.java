@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover;
+package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
