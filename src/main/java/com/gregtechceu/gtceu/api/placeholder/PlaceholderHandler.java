@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
+import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -19,11 +20,15 @@ import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.TokenTypes;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -39,6 +44,8 @@ public class PlaceholderHandler {
     private static final char ESCAPED_NEWLINE = 'n';
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
+    @OnlyIn(Dist.CLIENT)
+    private static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
 
     public static final LanguageDefinition LANG_DEFINITION = new LanguageDefinition(
             "Placeholders",
@@ -63,6 +70,24 @@ public class PlaceholderHandler {
 
     public static boolean placeholderExists(MultiLineComponent placeholder) {
         return placeholders.containsKey(placeholder.toString());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void addRenderer(String id, IPlaceholderRenderer renderer) {
+        renderers.put(id, renderer);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static @Nullable IMonitorRenderer getRenderer(String id, CompoundTag renderData) {
+        if (!renderers.containsKey(id)) {
+            GTCEu.LOGGER.warn("Attempt to access a placeholder renderer that doesn't exist ({})", id);
+            return null;
+        }
+        IPlaceholderRenderer renderer = renderers.get(id);
+        CompoundTag tag = renderData.copy();
+        return (machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay) -> {
+            renderer.render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay, tag);
+        };
     }
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,

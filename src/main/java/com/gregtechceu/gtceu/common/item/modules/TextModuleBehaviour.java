@@ -132,7 +132,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     public MultiLineComponent getText(ItemStack stack) {
-        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().get("text"));
     }
 
     public double getScale(ItemStack stack) {

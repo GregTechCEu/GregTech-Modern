@@ -31,7 +31,7 @@ public class MonitorTextRenderer implements IMonitorRenderer {
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
         try {
             for (GraphicsComponent graphics : text.getGraphics()) {
-                graphics.renderer().get().render(machine, group, partialTick, poseStack, buffer, packedLight,
+                graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight,
                         packedOverlay);
             }
             BlockPos rel = group.getRow(0, machine::toRelative).get(0);

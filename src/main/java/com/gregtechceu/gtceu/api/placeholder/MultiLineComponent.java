@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.placeholder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -139,18 +140,33 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     }
 
     public Tag toTag() {
+        CompoundTag compoundTag = new CompoundTag();
         ListTag tag = new ListTag();
         for (MutableComponent component : this) {
             tag.add(StringTag.valueOf(Component.Serializer.toJson(component)));
         }
+        compoundTag.put("text", tag);
+        ListTag tag2 = new ListTag();
+        for (GraphicsComponent component : this.getGraphics()) {
+            tag2.add(component.toTag());
+        }
+        compoundTag.put("graphics", tag2);
         return tag;
     }
 
-    public static MultiLineComponent fromTag(ListTag tag) {
+    public static MultiLineComponent fromTag(@Nullable Tag tag) {
         MultiLineComponent out = MultiLineComponent.empty();
         out.clear();
-        for (Tag i : tag) {
-            out.add(Component.Serializer.fromJson(i.getAsString()));
+        if (tag == null) return out;
+        if (tag instanceof ListTag listTag) {
+            for (Tag i : listTag) {
+                out.add(Component.Serializer.fromJson(i.getAsString()));
+            }
+        } else if (tag instanceof CompoundTag compoundTag) {
+            ListTag list1 = compoundTag.getList("text", Tag.TAG_STRING);
+            for (Tag i : list1) out.add(Component.Serializer.fromJson(i.getAsString()));
+            ListTag list2 = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
+            for (Tag i : list2) out.addGraphics(GraphicsComponent.fromTag(i));
         }
         return out;
     }
