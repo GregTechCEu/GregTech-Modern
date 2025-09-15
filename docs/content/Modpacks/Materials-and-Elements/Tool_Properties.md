@@ -121,10 +121,12 @@ You can also change the tool property of a GT material that already has a tool p
 === "Java"
     ```java title="tool_replacement.java"
     public static void modifyMaterials() {
-        if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
-            GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
+        if (GTMaterials.TungstenCarbide.hasProperty(PropertyKey.TOOL)) {
+            GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
         }
-        GTMaterials.Iron.addFlags(PhoenixMaterialFlags.GENERATE_NANITES);
+        TungstenCarbide.setProperty(PropertyKey.TOOL,
+                (ToolProperty.Builder.of(16, 40, 8192, 6, GTToolType.AXE).magnetic()
+                        .unbreakable().build()));
     }
     
     ```

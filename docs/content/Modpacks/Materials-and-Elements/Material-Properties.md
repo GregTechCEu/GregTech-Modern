@@ -61,8 +61,7 @@ Overrides the EBF's default behaviour for EU/t.
 ## Fluid Properties
 
 ### `Fluid Block Property`
-!!! failure "Not yet implemented"
-    Eventually you can place fluids in world! (Not yet though.)
+- Add .block() into the builder of a liquid material to allow this material to be placeable.
 
 ## `Ingot Property`
 - `.washedIn("water")`
