@@ -57,6 +57,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
@@ -354,6 +355,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);
         event.add("GTModelProperties", GTMachineModelProperties.class);
+        event.add("GTDynamicRenders", DynamicRenderHelper.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);

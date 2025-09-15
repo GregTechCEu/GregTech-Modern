@@ -2,89 +2,93 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
+
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class RecipeLogicTest {
 
-    public static NotifiableItemStackHandler getInputSlot(IRecipeLogicMachine recipeLogicMachine) {
-        RecipeHandlerList recipeHandlerList = recipeLogicMachine
-                .getCapabilitiesProxy()
-                .get(IO.IN)
-                .stream()
-                .filter(x -> x.hasCapability(ItemRecipeCapability.CAP))
-                .toList()
-                .get(0);
-        NotifiableItemStackHandler itemStackHandler = (NotifiableItemStackHandler) recipeHandlerList
-                .getCapability(ItemRecipeCapability.CAP).get(0);
-        return itemStackHandler;
-    }
+    private static GTRecipeType LCR_RECIPE_TYPE;
+    private static GTRecipeType CR_RECIPE_TYPE;
 
-    public static NotifiableItemStackHandler getOutputSlot(IRecipeLogicMachine recipeLogicMachine) {
-        RecipeHandlerList recipeHandlerList = recipeLogicMachine
-                .getCapabilitiesProxy()
-                .get(IO.OUT)
-                .stream()
-                .filter(x -> x.hasCapability(ItemRecipeCapability.CAP))
-                .toList()
-                .get(0);
-        NotifiableItemStackHandler itemStackHandler = (NotifiableItemStackHandler) recipeHandlerList
-                .getCapability(ItemRecipeCapability.CAP).get(0);
-        return itemStackHandler;
-    }
+    @BeforeBatch(batch = "RecipeLogic")
+    public static void prepare(ServerLevel level) {
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("recipe_logic_test_lcr");
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("recipe_logic_test_cr");
 
-    @GameTest(template = "lcr")
-    public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
-        BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
-        if (!(holder instanceof MetaMachineBlockEntity metaMachineBlockEntity)) {
-            helper.fail("wrong block at relative pos [1,2,0]!");
-            return;
-        }
-        MetaMachine machine = metaMachineBlockEntity.getMetaMachine();
-        if (!(machine instanceof IRecipeLogicMachine recipeLogicMachine)) {
-            helper.fail("wrong machine in MetaMachineBlockEntity!");
-            return;
-        }
-        if (!(machine instanceof MultiblockControllerMachine controller)) {
-            helper.fail("wrong machine in MetaMachineBlockEntity!");
-            return;
-        }
-        TestUtils.formMultiblock(controller);
-
-        helper.assertTrue(controller.isFormed(), "Controller didn't form after structure check");
-        helper.assertTrue(controller.getParts().size() == 4,
-                "Controller didn't register all 4 parts after structure check");
-
-        // Force insert the recipe into the manager.
-        GTRecipeType type = recipeLogicMachine.getRecipeType();
-        type.getLookup().removeAllRecipes();
-        type.getLookup().addRecipe(type
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_recipelogic"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
-                .EUt(GTValues.VA[GTValues.UV]).duration(1)
-                // NBT has a schematic in it with an UV energy input hatch
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
+                .buildRawRecipe());
+        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_multiblock_recipelogic_16_items"))
+                .inputItems(new ItemStack(Blocks.STONE, 16))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
 
-        RecipeLogic recipeLogic = recipeLogicMachine.getRecipeLogic();
+        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_singleblock_recipelogic"))
+                .inputItems(new ItemStack(Blocks.COBBLESTONE))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
+                .buildRawRecipe());
+    }
+
+    private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
+                             WorkableMultiblockMachine controller) {}
+
+    /**
+     * Retrieves the busses for this specific template and force a multiblock structure check
+     *
+     * @param helper the GameTestHelper
+     * @return the busses, in the BusHolder record.
+     */
+    private static RecipeLogicTest.BusHolder getBussesAndForm(GameTestHelper helper) {
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        TestUtils.formMultiblock(controller);
+        controller.setRecipeType(LCR_RECIPE_TYPE);
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(2, 1, 0)));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(2, 2, 0)));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+        return new RecipeLogicTest.BusHolder(inputBus1, inputBus2, outputBus1, controller);
+    }
+
+    @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
+    public static void recipeLogicMultiBlockTest(GameTestHelper helper) {
+        BlockEntity holder = helper.getBlockEntity(new BlockPos(1, 2, 0));
+
+        RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
+
+        helper.assertTrue(busHolder.controller.isFormed(), "Controller didn't form after structure check");
+        helper.assertTrue(busHolder.controller.getParts().size() == 6,
+                "Controller didn't register all 6 parts after structure check, only registered " +
+                        busHolder.controller.getParts().size());
+
+        RecipeLogic recipeLogic = busHolder.controller.getRecipeLogic();
 
         recipeLogic.findAndHandleRecipe();
 
@@ -94,11 +98,10 @@ public class RecipeLogicTest {
                 "Recipe logic has somehow found a recipe, when there should be none");
 
         // Put an item in the inventory that will trigger recipe recheck
-        NotifiableItemStackHandler inputSlots = getInputSlot(recipeLogicMachine);
-        NotifiableItemStackHandler outputSlots = getOutputSlot(recipeLogicMachine);
+        NotifiableItemStackHandler inputSlots = busHolder.inputBus1.getInventory();
+        NotifiableItemStackHandler outputSlots = busHolder.outputBus1.getInventory();
 
         inputSlots.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        inputSlots.onContentsChanged();
 
         recipeLogic.findAndHandleRecipe();
         helper.assertFalse(recipeLogic.getLastRecipe() == null,
@@ -114,7 +117,7 @@ public class RecipeLogicTest {
         recipeLogic.serverTick();
         helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
         helper.assertTrue(
-                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0),
+                TestUtils.isItemStackEqual(outputSlots.getStackInSlot(0),
                         new ItemStack(Blocks.STONE, 1)),
                 "wrong output stack.");
         helper.assertTrue(recipeLogic.isActive(), "RecipeLogic is not active, when it should be.");
@@ -140,7 +143,7 @@ public class RecipeLogicTest {
         helper.assertTrue(recipeLogic.isActive(), "RecipeLogic didn't start running again");
         recipeLogic.serverTick();
         helper.assertTrue(
-                TestUtils.isItemStackEqual(getOutputSlot(recipeLogicMachine).getStackInSlot(0),
+                TestUtils.isItemStackEqual(outputSlots.getStackInSlot(0),
                         new ItemStack(Blocks.STONE, 1)),
                 "Wrong stack.");
 
@@ -148,30 +151,22 @@ public class RecipeLogicTest {
         helper.succeed();
     }
 
-    @GameTest(template = "singleblock_chem_reactor")
+    // spotless:off
+    // Blocked by LDLib sync issues
+    /*
+    @GameTest(template = "singleblock_charged_cr", batch = "RecipeLogic")
     public static void recipeLogicSingleBlockTest(GameTestHelper helper) {
-        BlockEntity holder = helper.getBlockEntity(new BlockPos(0, 1, 0));
-        if (!(holder instanceof MetaMachineBlockEntity metaMachineBlockEntity)) {
-            helper.fail("wrong block at relative pos [0,1,0]!");
-            return;
-        }
-        MetaMachine machine = metaMachineBlockEntity.getMetaMachine();
-        if (!(machine instanceof IRecipeLogicMachine recipeLogicMachine)) {
-            helper.fail("wrong machine in MetaMachineBlockEntity!");
-            return;
-        }
+        WorkableTieredMachine machine = (WorkableTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
-        // force insert the recipe into the manager.
-        GTRecipeType type = recipeLogicMachine.getRecipeType();
-        type.getLookup().removeAllRecipes();
-        type.getLookup().addRecipe(type
-                .recipeBuilder(GTCEu.id("test_singleblock"))
-                .inputItems(new ItemStack(Blocks.COBBLESTONE))
-                .outputItems(new ItemStack(Blocks.STONE))
-                .EUt(512).duration(1)
-                .buildRawRecipe());
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler inputSlots = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler outputSlots = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        RecipeLogic recipeLogic = recipeLogicMachine.getRecipeLogic();
+
+        RecipeLogic recipeLogic = machine.getRecipeLogic();
 
         recipeLogic.findAndHandleRecipe();
 
@@ -179,10 +174,6 @@ public class RecipeLogicTest {
         helper.assertFalse(recipeLogic.isActive(), "Recipe logic is active, even when it shouldn't be");
         helper.assertTrue(recipeLogic.getLastRecipe() == null,
                 "Recipe logic has somehow found a recipe, when there should be none");
-
-        // put an item in the inventory that will trigger recipe recheck
-        NotifiableItemStackHandler inputSlots = getInputSlot(recipeLogicMachine);
-        NotifiableItemStackHandler outputSlots = getOutputSlot(recipeLogicMachine);
 
         inputSlots.insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
         inputSlots.onContentsChanged();
@@ -195,11 +186,11 @@ public class RecipeLogicTest {
         helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s)".formatted(stackCount));
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        GTRecipe prev = recipeLogic.getLastRecipe();
+        ResourceLocation prev = recipeLogic.getLastRecipe().getId();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         recipeLogic.serverTick();
-        helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
+        helper.assertTrue(recipeLogic.getLastRecipe().getId().equals(prev), "lastRecipe is wrong");
         helper.assertTrue(TestUtils.isItemStackEqual(
                 outputSlots.getStackInSlot(0),
                 new ItemStack(Blocks.STONE, 1)),
@@ -231,5 +222,22 @@ public class RecipeLogicTest {
 
         // Finish.
         helper.succeed();
+    }
+     */
+    // spotless:on
+
+    // Test for putting both ingredients in the same bus in 2 stacks.
+    @GameTest(template = "lcr_input_separation", batch = "RecipeLogicTest")
+    public static void recipeLogicInTwoStacksTest(GameTestHelper helper) {
+        RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.STONE, 10));
+        busHolder.inputBus1.getInventory().setStackInSlot(1, new ItemStack(Blocks.STONE, 6));
+        helper.succeedWhen(() -> {
+            helper.assertTrue(
+                    TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
+                            new ItemStack(Blocks.STONE)),
+                    "Crafting items in same bus failed, expected STONE but was " +
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+        });
     }
 }

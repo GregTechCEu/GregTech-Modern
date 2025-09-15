@@ -30,6 +30,22 @@ public class BlockTagLoader {
 
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
 
+        provider.addTag(CustomTags.TALL_PLANTS)
+                .add(Blocks.SUGAR_CANE, Blocks.CACTUS)
+                .add(Blocks.TALL_GRASS, Blocks.LARGE_FERN)
+                .add(Blocks.BAMBOO, Blocks.BAMBOO_SAPLING)
+                .add(Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT)
+                .add(Blocks.VINE,
+                        Blocks.WEEPING_VINES, Blocks.WEEPING_VINES_PLANT,
+                        Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT)
+                .add(Blocks.PITCHER_CROP)
+                .addTag(BlockTags.CAVE_VINES)
+                .addTag(BlockTags.TALL_FLOWERS)
+                .addOptionalTag(new ResourceLocation("forge:cacti"))
+                .addOptionalTag(new ResourceLocation("forge:crops/cactus"))
+                .addOptionalTag(new ResourceLocation("forge:crops/sugar_cane"))
+                .addOptionalTag(new ResourceLocation("forge:reeds"));
+
         provider.addTag(BlockTags.REPLACEABLE)
                 .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
                 .add(GTMaterials.OilLight.getFluid().defaultFluidState().createLegacyBlock().getBlock())

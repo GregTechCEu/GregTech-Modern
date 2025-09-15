@@ -151,7 +151,7 @@ public class GTToolType {
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(new EntityDamageBehavior(2.0F, IronGolem.class)))
+                    .behaviors(new EntityDamageBehavior(2.0F, IronGolem.class), ProspectingBehavior.INSTANCE))
             .sound(GTSoundEntries.FORGE_HAMMER)
             .symbol('h')
             .toolClasses(GTToolType.PICKAXE)

@@ -85,6 +85,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         this.tier = 0;
     }
 
+    @Override
+    public void setBatchEnabled(boolean batch) {
+        this.batchEnabled = batch;
+    }
+
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
@@ -151,7 +156,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                     this::isBatchEnabled,
-                    (cd, p) -> batchEnabled = p)
+                    (cd, p) -> setBatchEnabled(p))
                     .setTooltipsSupplier(
                             p -> List.of(
                                     Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));

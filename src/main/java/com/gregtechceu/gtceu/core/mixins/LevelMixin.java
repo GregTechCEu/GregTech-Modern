@@ -67,7 +67,7 @@ public abstract class LevelMixin implements LevelAccessor {
     @SuppressWarnings("ConstantValue")
     @Inject(method = "markAndNotifyBlock",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/level/Level;blockUpdated(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V",
+                     target = "Lnet/minecraft/world/level/Level;setBlocksDirty(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V",
                      remap = true),
             remap = false)
     private void gtceu$updateChunkMultiblocks(BlockPos pos, LevelChunk chunk,

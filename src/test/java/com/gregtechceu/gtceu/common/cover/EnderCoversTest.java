@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover;
+package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -52,7 +52,7 @@ public class EnderCoversTest {
     }
 
     @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
-    public static void itemLinkCoverTest(GameTestHelper helper) {
+    public static void only_works_in_game_itemLinkCoverTest(GameTestHelper helper) {
         QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_CHEST[1]);
         QuantumChestMachine chest2 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),

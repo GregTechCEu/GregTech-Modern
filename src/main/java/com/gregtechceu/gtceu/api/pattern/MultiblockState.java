@@ -172,6 +172,11 @@ public class MultiblockState {
                 }
             } else {
                 IMultiController controller = getController();
+                if (controller == null && error == UNLOAD_ERROR) {
+                    if (!serverLevel.isLoaded(controllerPos)) {
+                        GTCEu.LOGGER.info("Controller not loaded, pos {}", controllerPos);
+                    }
+                }
                 if (controller != null) {
                     if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
                         LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
