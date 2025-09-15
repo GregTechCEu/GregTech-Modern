@@ -66,7 +66,7 @@ public class GTValues {
     /**
      * The Voltage Tiers adjusted for cable loss, divided by 2.
      */
-    public static final int[] VHA = { 4, 16, 60, 240, 960, 3840, 15360, 61440, 245760, 983040, 3932160, 15728640,
+    public static final int[] VHA = { 3, 15, 60, 240, 960, 3840, 15360, 61440, 245760, 983040, 3932160, 15728640,
             62914560, 251658240, 1006632960 };
 
     /**
