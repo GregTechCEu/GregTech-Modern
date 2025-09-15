@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
@@ -840,6 +841,11 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
+                if (stack.getItem() instanceof IComponentItem componentItem) {
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (component instanceof IMonitorModuleItem module) module.tickInPlaceholder(stack, ctx);
+                    }
+                }
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                         x, y,
                         "module",
