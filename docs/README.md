@@ -26,7 +26,20 @@ Once you're happy, commit these changes and make a pull request for us to review
 If you come back to work on the docs, you can use a codespace again. You might need to `pull` to bring your codespace up to date, which you can do by pressing this button in the `Source Control` tab.
 
 ![image](https://github.com/user-attachments/assets/7d1246d2-f091-4452-bdb3-edf221902503)
+
+## Running in Gradle
+
+To run mkdocs locally, run the mkdocsServe task in gradle.  
+
+Either in the gradle sidebar, click documentation/mkdocsServe, or run .`/gradlew mkdocsServe`.  
+
+Click on the link it gives you at the bottom to open the local copy, and pages will automatically update with content as you save your files.
+
+You can also run documentation/mkdocsBuild. This will build the documentation in `docs/site`, which you can either host yourself or just open in a browser.
+
 ## Installing Required Dependencies & Run Locally
+
+If you want to manually install and go through the steps to run locally, you can follow the steps below.
 
 Please run all commands from this section inside the `docs` folder!
 

@@ -487,9 +487,10 @@ public class ConfigHolder {
         public boolean enableMaintenance = true;
         @Configurable
         @Configurable.Comment({
-                "Time in ticks between when Multiblocks can require Maintenance. By default, 48 hours.",
-                "Default: 3456000" })
-        public int maintenanceTime = 3456000;
+                "How often to check for maintenance, rolling a 1/6000 chance every X ticks (before secondary effects like Configurable Maintenance Hatch).",
+                "In default settings, this equates to a 5% chance every hour of a machine running.",
+                "Default: 1000 (ticks)" })
+        public int maintenanceCheckRate = 1000;
 
         @Configurable
         @Configurable.Comment({
@@ -575,6 +576,10 @@ public class ConfigHolder {
                 "Default: 8"
         })
         public int steamMultiParallelAmount = 8;
+
+        @Configurable
+        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
+        public boolean allowDrumsInputFluidsFromOutputSide = false;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
@@ -841,6 +846,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
         public boolean renderFluids = true;
+
+        @Configurable
+        @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
+        public boolean renderGrowingPlants = true;
 
         @Configurable
         @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
