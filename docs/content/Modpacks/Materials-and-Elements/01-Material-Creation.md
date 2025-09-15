@@ -6,7 +6,7 @@ title: Material Creation
 Materials are in-game items or fluids. They can be dusts, ingots, gems, fluids and all their derivatives.
 To make a new material, write an `event.create()` call in the registering function, like in the examples.
 Write inside the parentheses the name of the material inside `''` or `""`.
-(**NOTE**: to add a material that is present on the periodic table, but doesn't have any in-game items/fluids, look at the [material modification page](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Modifying-Existing-Materials/))
+(**NOTE**: to add a material that is present on the periodic table, but doesn't have any in-game items/fluids, look at the [material modification page](./Modifying-Existing-Materials.md))
 
 You can change the properties of the material by adding any combination of the following calls:
 
@@ -19,10 +19,10 @@ You can change the properties of the material by adding any combination of the f
 - `.plasma()` will make the material have a plasma (fluid) form with plasma properties.
 - `.polymer()` will make the material have a dust form with polymer properties.
 - `.ore()` will create an ore from the material.
-  - Optionally you can add any of these sets of parameters: 
-    1. is emissive -> `true` for emissive textures
-    2. ore multiplier and byproduct multiplier -> how many crushed ores will be given from one raw ore and how many byproducts dusts will be given throughout the ore processing 
-    3. ore multiplier, byproduct multiplier, is emissive
+    - Optionally you can add any of these sets of parameters: 
+        1. is emissive -> `true` for emissive textures
+        2. ore multiplier and byproduct multiplier -> how many crushed ores will be given from one raw ore and how many byproducts dusts will be given throughout the ore processing 
+        3. ore multiplier, byproduct multiplier, is emissive
 - `.burnTime(int burnTime)` will turn the material into a furnace fuel.
 - `.fluidBurnTime(int burnTime)` defines how long the fluid of the material will burn.
 - `.components(component1, component2, ...)` describes the composition. The components are a list of elements of the following form: `'Kx material_name'`, where `K` is a positive integer.
@@ -30,7 +30,7 @@ You can change the properties of the material by adding any combination of the f
 - `.iconSet(set)` gives the material an icon set.
 - `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xRRGGBB`.
 - `.secondaryColor(int colorCode)` gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
-- The secondary color is the overlay over the primary color on the material. This can be seen in the dust of a material, as the secondary color outline is visible. Rotors are another solid example.
+    - The secondary color is the overlay over the primary color on the material. This can be seen in the dust of a material, as the secondary color outline is visible. Rotors are another solid example.
 - `.addDefaultEnchant(string EnchantName, int level)` gives the material a default enchant. 
 
 !!! tip "Harvest Level & Burn Time"
@@ -41,9 +41,13 @@ You can change the properties of the material by adding any combination of the f
 
 !!! tip "Choosing EU/t"
     GT has some builtin constants to ease choosing the required EU/t:
+
     - `GTValues.V` for a full amp of power at the selected tier
+
     - `GTValues.VA` for a full amp, adjusted for cable loss
+
     - `GTValues.VH` for half an amp
+
     - `GTValues.VHA` for half an amp, adjusted for cable loss
 
     These values are arrays containing the respective EU/t values for each tier.  
@@ -70,7 +74,7 @@ You can change the properties of the material by adding any combination of the f
     })
     ```
 === "Java"
-    ```java title="ingot.java"
+    ```java title="Ingot.java"
     public static Material ANDESITE_ALLOY;
     public static void register() {
         ANDESITE_ALLOY = new Material.Builder(
@@ -95,7 +99,7 @@ You can change the properties of the material by adding any combination of the f
     ```
 
 === "Java"
-    ```java title="dust.java"
+    ```java title="Dust.java"
     public static Material MYSTERIOUS_DUST;
     public static void register() {
         MYSTERIOUS_DUST = new Material.Builder(
@@ -121,7 +125,7 @@ You can change the properties of the material by adding any combination of the f
     ```
 
 === "Java"
-    ```java title="gem.java"
+    ```java title="Gem.java"
     public static Material PURPLE_COAL;
     public static void register() {
         PURPLE_COAL = new Material.Builder(
@@ -146,7 +150,7 @@ You can change the properties of the material by adding any combination of the f
     ```
 
 === "Java"
-    ```java title="fluid.java"
+    ```java title="Fluid.java"
     public static Material MYSTERIOUS_OOZE;
     public static void register() {
         MYSTERIOUS_OOZE = new Material.Builder(
@@ -161,10 +165,10 @@ You can change the properties of the material by adding any combination of the f
 !!! tip "Further Material Information"
     For more information on more fine grained material control, check out the pages below!
 
-For a full list of the flags, check out the [material flags page](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Material-Flags/).
+For a full list of the flags, check out the [material flags page](./Material-Flags.md).
 
-For a full list of material properties, check out the [material properties page](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Material-Properties/).
+For a full list of material properties, check out the [material properties page](./Material-Properties.md).
 
-For an explanation of tools, check out the [tool creation page](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Tool_Properties/).
+For an explanation of tools, check out the [tool creation page](./Tool_Properties.md).
 
-For an explanation of custom icon sets and a list of existing ones, check out the [icon set page](https://gregtechceu.github.io/GregTech-Modern/Modpacks/Materials-and-Elements/Material-Icon-Sets/).
+For an explanation of custom icon sets and a list of existing ones, check out the [icon set page](./Material-Icon-Sets.md).
