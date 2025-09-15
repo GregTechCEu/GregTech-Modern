@@ -28,7 +28,7 @@ You can change the properties of the material by adding any combination of the f
 - `.components(component1, component2, ...)` describes the composition. The components are a list of elements of the following form: `'Kx material_name'`, where `K` is a positive integer.
 - `.element(element)` -> similar to `.components()`, but is used when the material represents an element.
 - `.iconSet(set)` gives the material an icon set.
-- `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xNNNNNN`, where `N` are digits.
+- `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xRRGGBB`.
 - `.secondaryColor(int colorCode)` gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
 - The secondary color is the overlay over the primary color on the material. This can be seen in the dust of a material, as the secondary color outline is visible. Rotors are another solid example.
 - `.addDefaultEnchant(string EnchantName, int level)` gives the material a default enchant. 
