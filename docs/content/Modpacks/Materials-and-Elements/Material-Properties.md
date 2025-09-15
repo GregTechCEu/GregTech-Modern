@@ -59,6 +59,7 @@ Overrides the EBF's default behaviour for EU/t.
     4. Is Superconductor: Whether this Material is a Superconductor. If so, Cables will NOT be generated and the Wires will have zero cable loss, ignoring the loss parameter.
 
 ## Fluid Properties
+- Add .block() into the builder of a liquid material to allow this material to be placeable.
 
 ### `Fluid Block Property`
 - Add .block() into the builder of a liquid material to allow this material to be placeable.
@@ -80,10 +81,10 @@ Overrides the EBF's default behaviour for EU/t.
   1. ingotSmeltInto is what is obtained when smelting a material's ingot.
 
 ## `Ore Property`
-- `.addOreByproducts()` is a "open" list of extra byproduct materials.
+- `.addOreByproducts()` is an "open" list of extra byproduct materials.
   1. Is the material when going crushed -> impure in macerator, or impure dust to dust in centrifuge
   2. Is the material when going crushed->refined in thermal centrifuge, or crushed to dust in macerator, or pure dust to dust in centrifuge
-  3. Is the material when going  refined to dust in macerator,
+  3. Is the material when going from refined to dust in macerator,
   4. Is the material when going from crushed ore to purified or in chem bath(works only if you have a getWashedIn material)
   
 

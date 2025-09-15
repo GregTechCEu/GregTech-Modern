@@ -50,7 +50,7 @@ can influence how the material behaves, as well as which items are generated for
     - Description: Adding this flag means you cant smelt that material(it wont generate a ebf recipe/furnace recipe) also disables impossion compressor recipes like explosive does.
 
 - `STICKY`
-    - Description: Add to material if it is sticky (Changes the viscosity of the placed fluid, which has not been implemented yet).
+    - Description: Add to material if it is sticky (Changes the viscosity of the placed fluid. Only the oils and creosote have a placeable state by default).
 
 - `PHOSPHORESCENT`
     - Description: Adding this flag onto a material gives liquids a luminosity of 15, no matter the fluid state(liquid, gas, plasma) otherwise they default to 10 for specifically liquid state.
