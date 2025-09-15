@@ -14,6 +14,7 @@ You can change the properties of the material by adding any combination of the f
 - `.dust()` will make the material have a dust form. Don't use this together with `.ingot()`.
 - `.gem()` will make the material have both a gem form and a dust form. Don't use those together with `.dust()` or `.ingot()`
 - `.liquid()` will make the material have a liquid (fluid) form with liquid properties.
+- `.block()` will make the material have a placeable (block) fluid form. Requires .liquid().
 - `.gas()` will make the material have a gas (fluid) form with gas properties.
 - `.plasma()` will make the material have a plasma (fluid) form with plasma properties.
 - `.polymer()` will make the material have a dust form with polymer properties.
