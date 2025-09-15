@@ -59,6 +59,7 @@ Overrides the EBF's default behaviour for EU/t.
     4. Is Superconductor: Whether this Material is a Superconductor. If so, Cables will NOT be generated and the Wires will have zero cable loss, ignoring the loss parameter.
 
 ## Fluid Properties
+- Add .block() into the builder of a liquid material to allow this material to be placeable.
 
 ### `Fluid Block Property`
 !!! failure "Not yet implemented"
