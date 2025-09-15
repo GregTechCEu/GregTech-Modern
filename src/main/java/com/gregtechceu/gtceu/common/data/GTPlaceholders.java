@@ -840,7 +840,9 @@ public class GTPlaceholders {
                             return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                                     x, y,
                                     () -> {
-                                        module.tickInPlaceholder(stack, ctx);
+                                        try {
+                                            module.tickInPlaceholder(stack, ctx);
+                                        } catch (StackOverflowError ignored) {}
                                         return module.getRenderer(stack);
                                     }));
                         }
