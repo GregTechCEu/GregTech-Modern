@@ -933,13 +933,17 @@ public class GTPlaceholders {
                             VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
                             Matrix4f pose = poseStack.last().pose();
 
-                            consumer.vertex(pose, x1, y1, 0).color(color1).uv(0, 1).uv2(LightTexture.FULL_BRIGHT)
+                            consumer.vertex(pose, (float) x1, (float) y1, 0).color(color1).uv(0, 1)
+                                    .uv2(LightTexture.FULL_BRIGHT)
                                     .endVertex();
-                            consumer.vertex(pose, x2, y2, 0).color(color2).uv(1, 1).uv2(LightTexture.FULL_BRIGHT)
+                            consumer.vertex(pose, (float) x2, (float) y2, 0).color(color2).uv(1, 1)
+                                    .uv2(LightTexture.FULL_BRIGHT)
                                     .endVertex();
-                            consumer.vertex(pose, x3, y3, 0).color(color3).uv(1, 0).uv2(LightTexture.FULL_BRIGHT)
+                            consumer.vertex(pose, (float) x3, (float) y3, 0).color(color3).uv(1, 0)
+                                    .uv2(LightTexture.FULL_BRIGHT)
                                     .endVertex();
-                            consumer.vertex(pose, x4, y4, 0).color(color4).uv(0, 0).uv2(LightTexture.FULL_BRIGHT)
+                            consumer.vertex(pose, (float) x4, (float) y4, 0).color(color4).uv(0, 0)
+                                    .uv2(LightTexture.FULL_BRIGHT)
                                     .endVertex();
                             poseStack.popPose();
                         }));
