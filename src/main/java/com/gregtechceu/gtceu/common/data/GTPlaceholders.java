@@ -837,14 +837,14 @@ public class GTPlaceholders {
                 if (stack.getItem() instanceof IComponentItem componentItem) {
                     for (IItemComponent component : componentItem.getComponents()) {
                         if (component instanceof IMonitorModuleItem module) {
+                            try {
+                                module.tickInPlaceholder(stack, ctx);
+                            } catch (StackOverflowError e) {
+                                throw new PlaceholderException("infinite recursion");
+                            }
                             return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                                     x, y,
-                                    () -> {
-                                        try {
-                                            module.tickInPlaceholder(stack, ctx);
-                                        } catch (StackOverflowError ignored) {}
-                                        return module.getRenderer(stack);
-                                    }));
+                                    () -> module.getRenderer(stack)));
                         }
                     }
                 }
