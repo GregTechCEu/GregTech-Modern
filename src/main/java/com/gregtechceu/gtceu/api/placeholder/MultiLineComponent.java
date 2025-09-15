@@ -151,7 +151,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             tag2.add(component.toTag());
         }
         compoundTag.put("graphics", tag2);
-        return tag;
+        return compoundTag;
     }
 
     public static MultiLineComponent fromTag(@Nullable Tag tag) {
@@ -174,7 +174,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public long toLong() {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
-        return Long.parseLong(this.get(0).getString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0b")) return Long.parseLong(s.substring(2), 2);
+        if (s.startsWith("0x")) return Long.parseLong(s.substring(2), 16);
+        return Long.parseLong(s);
     }
 
     public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {

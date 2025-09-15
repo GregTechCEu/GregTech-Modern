@@ -91,7 +91,7 @@ public class GTPlaceholders {
     }
 
     public static void initPlaceholders() {
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
             @Override
@@ -886,7 +886,7 @@ public class GTPlaceholders {
                 renderData.putDouble("y", y);
                 renderData.putDouble("width", PlaceholderUtils.toDouble(args.get(2)));
                 renderData.putDouble("height", PlaceholderUtils.toDouble(args.get(3)));
-                renderData.putInt("color", PlaceholderUtils.toInt(args.get(4)));
+                renderData.putInt("color", 0xFF000000 + PlaceholderUtils.toInt(args.get(4)));
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                         x, y,
                         "rect",
@@ -910,10 +910,10 @@ public class GTPlaceholders {
                 renderData.putDouble("y3", PlaceholderUtils.toDouble(args.get(5)));
                 renderData.putDouble("x4", PlaceholderUtils.toDouble(args.get(6)));
                 renderData.putDouble("y4", PlaceholderUtils.toDouble(args.get(7)));
-                renderData.putInt("color1", PlaceholderUtils.toInt(args.get(8)));
-                renderData.putInt("color2", PlaceholderUtils.toInt(args.get(9)));
-                renderData.putInt("color3", PlaceholderUtils.toInt(args.get(10)));
-                renderData.putInt("color4", PlaceholderUtils.toInt(args.get(11)));
+                renderData.putInt("color1", 0xFF000000 + PlaceholderUtils.toInt(args.get(8)));
+                renderData.putInt("color2", 0xFF000000 + PlaceholderUtils.toInt(args.get(9)));
+                renderData.putInt("color3", 0xFF000000 + PlaceholderUtils.toInt(args.get(10)));
+                renderData.putInt("color4", 0xFF000000 + PlaceholderUtils.toInt(args.get(11)));
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                         x1, y1,
                         "quad",

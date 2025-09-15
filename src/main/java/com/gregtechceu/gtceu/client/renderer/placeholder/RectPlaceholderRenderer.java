@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.placeholder;
 
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderRenderer;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,20 +19,18 @@ public class RectPlaceholderRenderer implements IPlaceholderRenderer {
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay, CompoundTag tag) {
         poseStack.pushPose();
-        VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
+        poseStack.translate(0, 0, -.001);
+        VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
         float minX = 0, maxX = (float) tag.getDouble("width");
         float minY = 0, maxY = (float) tag.getDouble("height");
         int color = tag.getInt("color");
-
-        consumer.vertex(pose, minX, maxY, 0).color(color).uv(0, 1).uv2(LightTexture.FULL_BRIGHT)
-                .endVertex();
-        consumer.vertex(pose, maxX, maxY, 0).color(color).uv(1, 1).uv2(LightTexture.FULL_BRIGHT)
-                .endVertex();
-        consumer.vertex(pose, maxX, minY, 0).color(color).uv(1, 0).uv2(LightTexture.FULL_BRIGHT)
-                .endVertex();
-        consumer.vertex(pose, minX, minY, 0).color(color).uv(0, 0).uv2(LightTexture.FULL_BRIGHT)
-                .endVertex();
+        // spotless: off
+        consumer.vertex(pose, minX, maxY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, maxX, maxY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, maxX, minY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, minX, minY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
         poseStack.popPose();
+        // spotless: on
     }
 }

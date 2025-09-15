@@ -30,14 +30,14 @@ public class MonitorTextRenderer implements IMonitorRenderer {
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
         try {
-            for (GraphicsComponent graphics : text.getGraphics()) {
-                graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight,
-                        packedOverlay);
-            }
             BlockPos rel = group.getRow(0, machine::toRelative).get(0);
             int row = 0;
             int columns = group.getRow(0, machine::toRelative).size();
             poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
+            for (GraphicsComponent graphics : text.getGraphics()) {
+                graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight,
+                        packedOverlay);
+            }
             poseStack.scale(TEXT_SCALE * scale, TEXT_SCALE * scale, TEXT_SCALE * scale);
             float y = 9;
             for (Component s : text) {
