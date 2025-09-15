@@ -78,7 +78,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public int toInt() {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
-        return Integer.parseInt(this.get(0).getString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0x")) return Integer.parseInt(s.substring(2), 16);
+        if (s.startsWith("0b")) return Integer.parseInt(s.substring(2), 2);
+        return Integer.parseInt(s);
     }
 
     public void append(@Nullable String s) {
@@ -99,6 +102,12 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         }
         this.remove(this.size() - 1);
         return this;
+    }
+
+    public MultiLineComponent append(MultiLineComponent multiLineComponent) {
+        if (multiLineComponent == null) return this;
+        this.addGraphics(multiLineComponent.getGraphics().toArray(graphics.toArray(new GraphicsComponent[0])));
+        return this.append(multiLineComponent.toImmutable());
     }
 
     public void appendNewline() {

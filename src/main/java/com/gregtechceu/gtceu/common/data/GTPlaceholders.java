@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
@@ -43,8 +45,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.*;
 
@@ -870,6 +874,75 @@ public class GTPlaceholders {
                     }
                 }
                 return MultiLineComponent.empty();
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("rect") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 5);
+                double x = PlaceholderUtils.toDouble(args.get(0));
+                double y = PlaceholderUtils.toDouble(args.get(1));
+                double width = PlaceholderUtils.toDouble(args.get(2));
+                double height = PlaceholderUtils.toDouble(args.get(3));
+                int color = PlaceholderUtils.toInt(args.get(4));
+                return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                        x, y,
+                        () -> (machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay) -> {
+                            poseStack.pushPose();
+                            VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
+                            Matrix4f pose = poseStack.last().pose();
+                            float minX = 0, maxX = (float) width;
+                            float minY = 0, maxY = (float) height;
+
+                            consumer.vertex(pose, minX, maxY, 0).color(color).uv(0, 1).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, maxX, maxY, 0).color(color).uv(1, 1).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, maxX, minY, 0).color(color).uv(1, 0).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, minX, minY, 0).color(color).uv(0, 0).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            poseStack.popPose();
+                        }));
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("quad") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 12);
+                double x1 = PlaceholderUtils.toDouble(args.get(0));
+                double y1 = PlaceholderUtils.toDouble(args.get(1));
+                double x2 = PlaceholderUtils.toDouble(args.get(2));
+                double y2 = PlaceholderUtils.toDouble(args.get(3));
+                double x3 = PlaceholderUtils.toDouble(args.get(4));
+                double y3 = PlaceholderUtils.toDouble(args.get(5));
+                double x4 = PlaceholderUtils.toDouble(args.get(6));
+                double y4 = PlaceholderUtils.toDouble(args.get(7));
+                int color1 = PlaceholderUtils.toInt(args.get(8));
+                int color2 = PlaceholderUtils.toInt(args.get(9));
+                int color3 = PlaceholderUtils.toInt(args.get(10));
+                int color4 = PlaceholderUtils.toInt(args.get(11));
+                return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
+                        x1, y1,
+                        () -> (machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay) -> {
+                            poseStack.pushPose();
+                            VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
+                            Matrix4f pose = poseStack.last().pose();
+
+                            consumer.vertex(pose, x1, y1, 0).color(color1).uv(0, 1).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, x2, y2, 0).color(color2).uv(1, 1).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, x3, y3, 0).color(color3).uv(1, 0).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            consumer.vertex(pose, x4, y4, 0).color(color4).uv(0, 0).uv2(LightTexture.FULL_BRIGHT)
+                                    .endVertex();
+                            poseStack.popPose();
+                        }));
             }
         });
     }
