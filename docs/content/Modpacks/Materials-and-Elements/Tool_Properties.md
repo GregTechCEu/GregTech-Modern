@@ -4,7 +4,7 @@ title: Tool Creation
 
 Tools can be made out of materials you create by calling toolStats inside the material's code.
 
-When working with tools you will need to load these classes at the top of your file.
+When working with tools in kubejs you will need to load these classes at the top of your file.
 ```js
 const $PropertyKey = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey');
 const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty');
@@ -25,19 +25,31 @@ toolStats has the following arguments:
       This argument can be left out if you want your material to apply to all tool types.
 
 An example of this being used is included below
-```js title="example_tool_material.js"
-GTCEuStartupEvents.registry('gtceu:material', event => {
-    event.create('aluminfrost')
-        .ingot()
-        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
-        .toolStats(new ToolProperty(12.0, 7.0, 3072, 6,
-            [
-                GTToolType.DRILL_LV,
-                GTToolType.MINING_HAMMER
-            ]
-        ))
-});
-```
+=== "JavaScript"
+    ```js title="example_tool_material.js"
+    GTCEuStartupEvents.registry('gtceu:material', event => {
+        event.create('aluminfrost')
+            .ingot()
+            .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
+            .toolStats(new ToolProperty(12.0, 7.0, 3072, 6,
+                [
+                    GTToolType.DRILL_LV,
+                    GTToolType.MINING_HAMMER
+                ]
+            ))
+    });
+    ```
+=== "Java"
+    ```java title="example_tool_material.java"
+            public static Material ALUMINFROST;
+            ALUMINFROST = new Material.Builder(
+                your_mod_id.id("aluminfrost"))
+                .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
+                .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
+                        .types(GTToolType.DRILL_LV, GTToolType.MINING_HAMMER)
+                        .build())
+                .buildAndRegister();
+    ```
 Using the ToolProperties.Builder, you can also add further arguments onto your tools.
 The builder has the same arguments as the constructor, and can have chained methods such as:
 
@@ -58,41 +70,65 @@ The builder has the same arguments as the constructor, and can have chained meth
       Iron is 14, Diamond is 10, Stone is 5.
 
 Here is an example of using the builder in a material:
-```js title="example_tool_material.js"
-GTCEuStartupEvents.registry('gtceu:material', event => {
-    event.create('aluminfrost')
-        .ingot()
-        .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
-        .toolStats(
-            $ToolProperty.Builder.of(1.8, 1.7, 700, 3,
-                [
-                    GTToolType.SWORD,
-                    GTToolType.PICKAXE,
-                    GTToolType.SHOVEL,
-                ]
-            )
-            .unbreakable()
-            .addEnchantmentForTools(silk_touch, 1)
-            .build()
-        ) 
-});
-```
+=== "JavaScript"
+    ```js title="example_tool_material.js"
+    GTCEuStartupEvents.registry('gtceu:material', event => {
+        event.create('aluminfrost')
+            .ingot()
+            .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
+            .toolStats(
+                $ToolProperty.Builder.of(1.8, 1.7, 700, 3,
+                    [
+                        GTToolType.SWORD,
+                        GTToolType.PICKAXE,
+                        GTToolType.SHOVEL,
+                    ]
+                )
+                .unbreakable()
+                .addEnchantmentForTools(silk_touch, 1)
+                .build()
+            ) 
+    });
+    ```
+=== "Java"
+    ```java title="example_tool_material.java"
+            public static Material ALUMINFROST;
+            ALUMINFROST = new Material.Builder(
+                your_mod_id.id("aluminfrost"))
+                .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
+                .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
+                        .types(GTToolType.AXE, GTToolType.DRILL_EV)
+                        .unbreakable().enchantability(21).enchantment(SILK_TOUCH, 1).build())
+                .buildAndRegister();
+    ```
 
 You can also change the tool property of a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable.
-```js title="tool_replacement.js"
-GTCEuStartupEvents.materialModification(event => {
-    if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
-        GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
+=== "JavaScript"
+    ```js title="tool_replacement.js"
+    GTCEuStartupEvents.materialModification(event => {
+        if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
+            GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
+        }
+        GTMaterials.Iron.setProperty($PropertyKey.TOOL, 
+            $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
+            [
+                GTToolType.SOFT_MALLET,
+                GTToolType.DRILL_LV
+            ]
+        ).build());
+    });
+    ```
+=== "Java"
+    ```java title="tool_replacement.java"
+    public static void modifyMaterials() {
+        if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
+            GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
+        }
+        GTMaterials.Iron.addFlags(PhoenixMaterialFlags.GENERATE_NANITES);
     }
-    GTMaterials.Iron.setProperty($PropertyKey.TOOL, 
-        $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
-           [
-              GTToolType.SOFT_MALLET,
-              GTToolType.DRILL_LV
-           ]
-       ).build());
-});
-```
+    
+    ```
+
 Here is a list of all the GtToolTypes
 
 - SWORD
