@@ -16,7 +16,7 @@ title: Material Properties
     3. (optional) EU per tick -> the recipe voltage
     4. (optional) duration in ticks -> how long the recipe should take
 !!! tip "ABS Recipe Generation"
-    For an ABS recipe to actually generate from your material, you must set .componets().
+    For an ABS recipe to actually generate from your material, you must set `.components()`.
  
 ### `BlastProperty.durationOverride(int duration)`
 Overrides the EBF's default behaviour for recipe durations.
