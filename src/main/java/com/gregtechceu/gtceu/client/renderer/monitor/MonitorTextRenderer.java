@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.GraphicsComponent;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
@@ -43,7 +42,6 @@ public class MonitorTextRenderer implements IMonitorRenderer {
                 if (maxX == Math.floor(maxX)) maxX--;
                 if (maxY == Math.floor(maxY)) maxY--;
                 BlockPos relativePos = rel.mutable().move((int) Math.floor(maxX), (int) -Math.floor(maxY), 0);
-                GTCEu.LOGGER.info("maxX = {}, maxY = {}, pos = {}", maxX, maxY, relativePos);
                 if (!group.getMonitorPositions().stream().map(machine::toRelative).toList().contains(relativePos))
                     continue;
                 poseStack.pushPose();

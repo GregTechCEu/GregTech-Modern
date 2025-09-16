@@ -174,7 +174,8 @@ public class PlaceholderHandler {
         }
         if (exceptions.isEmpty())
             return stack.peek().stream().reduce(MultiLineComponent.empty(), MultiLineComponent::append);
-        MultiLineComponent out = MultiLineComponent.empty();
+        MultiLineComponent out = MultiLineComponent.literal("Exceptions:");
+        out.appendNewline();
         exceptions.forEach(exception -> {
             out.append(exception.getMessage());
             out.appendNewline();

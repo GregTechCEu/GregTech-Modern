@@ -588,20 +588,27 @@ public class GTPlaceholders {
                 if (cur != null) codeBuilder.append(cnt).append(cur);
                 String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
+                if (!getData(ctx).contains(String.valueOf(ctx.index()))) {
+                    getData(ctx).put(String.valueOf(ctx.index()), new CompoundTag());
+                }
                 CompoundTag data = getData(ctx).getCompound(String.valueOf(ctx.index()));
+                int num = 0;
                 if (!data.getBoolean("completed")) {
                     p = data.getInt("pointer");
                     start = data.getInt("index");
+                    num = data.getInt("num");
                 }
                 data.putBoolean("completed", true);
-                int num = 0;
                 for (int i = start; i < code.length(); i++) {
                     if (operationsLeft <= 0) {
                         data.putBoolean("completed", false);
                         data.putInt("pointer", p);
                         data.putInt("index", i);
+                        data.putInt("num", num);
                         break;
                     }
+                    if (p > capacity) p = p % capacity;
+                    if (p < 0) p = (capacity - ((-p) % capacity)) % capacity;
                     while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
                     if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
                     switch (code.charAt(i)) {
@@ -617,7 +624,7 @@ public class GTPlaceholders {
                         case '[' -> loops.push(i);
                         case ']' -> {
                             if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
-                            else i = loops.peek();
+                            else i = loops.peek() + 1;
                         }
                     }
                     if (Character.isDigit(code.charAt(i))) {
