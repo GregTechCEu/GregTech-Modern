@@ -35,8 +35,13 @@ public class MonitorTextRenderer implements IMonitorRenderer {
             int columns = group.getRow(0, machine::toRelative).size();
             poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
             for (GraphicsComponent graphics : text.getGraphics()) {
-                graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight,
-                        packedOverlay);
+                if (graphics.x() < 0 || graphics.y() < 0) continue;
+                if (!group.contains(new BlockPos(rel.mutable().move((int) graphics.x2(), (int) graphics.y2(), 0))))
+                    continue;
+                poseStack.pushPose();
+                poseStack.translate(graphics.x(), graphics.y(), 0);
+                graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
+                poseStack.popPose();
             }
             poseStack.scale(TEXT_SCALE * scale, TEXT_SCALE * scale, TEXT_SCALE * scale);
             float y = 9;

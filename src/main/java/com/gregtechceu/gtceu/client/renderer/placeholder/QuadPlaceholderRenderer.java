@@ -23,7 +23,6 @@ public class QuadPlaceholderRenderer implements IPlaceholderRenderer {
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
 
-        // spotless: off
         consumer.vertex(pose, (float) tag.getDouble("x1"), (float) tag.getDouble("y1"), 0).color(tag.getInt("color1"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
         consumer.vertex(pose, (float) tag.getDouble("x2"), (float) tag.getDouble("y2"), 0).color(tag.getInt("color2"))
@@ -33,6 +32,5 @@ public class QuadPlaceholderRenderer implements IPlaceholderRenderer {
         consumer.vertex(pose, (float) tag.getDouble("x4"), (float) tag.getDouble("y4"), 0).color(tag.getInt("color4"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
         poseStack.popPose();
-        // spotless: on
     }
 }

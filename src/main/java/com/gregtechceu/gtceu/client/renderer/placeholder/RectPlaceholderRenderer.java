@@ -25,12 +25,11 @@ public class RectPlaceholderRenderer implements IPlaceholderRenderer {
         float minX = 0, maxX = (float) tag.getDouble("width");
         float minY = 0, maxY = (float) tag.getDouble("height");
         int color = tag.getInt("color");
-        // spotless: off
+
         consumer.vertex(pose, minX, maxY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
         consumer.vertex(pose, maxX, maxY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
         consumer.vertex(pose, maxX, minY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
         consumer.vertex(pose, minX, minY, 0).color(color).uv2(LightTexture.FULL_BRIGHT).endVertex();
         poseStack.popPose();
-        // spotless: on
     }
 }

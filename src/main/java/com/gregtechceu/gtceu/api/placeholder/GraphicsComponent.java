@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.function.Supplier;
 
-public record GraphicsComponent(double x, double y, String rendererId, CompoundTag renderData)
+public record GraphicsComponent(double x, double y, double x2, double y2, String rendererId, CompoundTag renderData)
         implements Supplier<IMonitorRenderer> {
 
     @Override
@@ -37,6 +37,8 @@ public record GraphicsComponent(double x, double y, String rendererId, CompoundT
         CompoundTag tag = new CompoundTag();
         tag.putDouble("x", x);
         tag.putDouble("y", y);
+        tag.putDouble("x2", x2);
+        tag.putDouble("y2", y2);
         tag.putString("rendererId", rendererId);
         tag.put("renderData", renderData);
         return tag;
@@ -47,6 +49,8 @@ public record GraphicsComponent(double x, double y, String rendererId, CompoundT
         return new GraphicsComponent(
                 compoundTag.getDouble("x"),
                 compoundTag.getDouble("y"),
+                compoundTag.getDouble("x2"),
+                compoundTag.getDouble("y2"),
                 compoundTag.getString("rendererId"),
                 compoundTag.getCompound("renderData"));
     }
