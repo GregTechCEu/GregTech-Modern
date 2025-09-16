@@ -6,7 +6,8 @@ title: Material Creation
 Materials are in-game items or fluids. They can be dusts, ingots, gems, fluids and all their derivatives.
 To make a new material, write an `event.create()` call in the registering function, like in the examples.
 Write inside the parentheses the name of the material inside `''` or `""`.
-(**NOTE**: to add a material that is present on the periodic table, but doesn't have any in-game items/fluids, look at the [material modification page](./Modifying-Existing-Materials.md))
+!!! note
+    To add a material that is present on the periodic table, but doesn't have any in-game items/fluids, look at the [material modification page](./Modifying-Existing-Materials.md).
 
 You can change the properties of the material by adding any combination of the following calls:
 
@@ -58,7 +59,7 @@ You can change the properties of the material by adding any combination of the f
     ```
 
 ??? tip "Color Pickers"
-    To chose a color for your material, you can checkout https://www.w3schools.com/colors/colors_picker.asp
+    To chose a color for your material, you can checkout the [color picker](https://www.w3schools.com/colors/colors_picker.asp).
     After you select a color with the above tool, copy the 6 digits that follow the # under the color preview.
 
 ## Creating an Ingot
@@ -80,7 +81,7 @@ You can change the properties of the material by adding any combination of the f
         ANDESITE_ALLOY = new Material.Builder(
                 your_mod_id.id("andesite_alloy"))
                 .ingot()
-                .components('1x andesite', '1x iron')
+                .components("1x andesite", "1x iron")
                 .color(0xFF0000).secondaryColor(0x840707).iconSet(GTMaterialIconSet.DULL)
                 .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR)
                 .buildAndRegister();
@@ -103,7 +104,7 @@ You can change the properties of the material by adding any combination of the f
     public static Material MYSTERIOUS_DUST;
     public static void register() {
         MYSTERIOUS_DUST = new Material.Builder(
-            your_mod_id.id('mysterious_dust'))
+            your_mod_id.id("mysterious_dust"))
             .dust() // The haverst level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
             .buildAndRegister();
@@ -129,7 +130,7 @@ You can change the properties of the material by adding any combination of the f
     public static Material PURPLE_COAL;
     public static void register() {
         PURPLE_COAL = new Material.Builder(
-            your_mod_id.id('purple_coal'))
+            your_mod_id.id("purple_coal"))
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3) 
@@ -154,7 +155,7 @@ You can change the properties of the material by adding any combination of the f
     public static Material MYSTERIOUS_OOZE;
     public static void register() {
         MYSTERIOUS_OOZE = new Material.Builder(
-            your_mod_id.id('mysterious_ooze'))
+            your_mod_id.id("mysterious_ooze"))
             .fluid() // Or .liquid(Int Temperature)
             .color(0x500bbf)
             .buildAndRegister();
@@ -165,10 +166,10 @@ You can change the properties of the material by adding any combination of the f
 !!! tip "Further Material Information"
     For more information on more fine grained material control, check out the pages below!
 
-For a full list of the flags, check out the [material flags page](./Material-Flags.md).
+For a full list of the flags, check out the [Material Flags page](./Material-Flags.md).
 
-For a full list of material properties, check out the [material properties page](./Material-Properties.md).
+For a full list of material properties, check out the [Material Properties page](./Material-Properties.md).
 
-For an explanation of tools, check out the [tool creation page](./Tool_Properties.md).
+For an explanation of tools, check out the [Tool Creation page](./Tool_Properties.md).
 
-For an explanation of custom icon sets and a list of existing ones, check out the [icon set page](./Material-Icon-Sets.md).
+For an explanation of custom icon sets and a list of existing ones, check out the [Icon Set page](./Material-Icon-Sets.md).
