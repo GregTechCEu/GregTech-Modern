@@ -20,9 +20,9 @@ You can change the properties of the material by adding any combination of the f
 - `.polymer()` will make the material have a dust form with polymer properties.
 - `.ore()` will create an ore from the material.
     - Optionally you can add any of these sets of parameters: 
-        1. is emissive -> `true` for emissive textures
-        2. ore multiplier and byproduct multiplier -> how many crushed ores will be given from one raw ore and how many byproducts dusts will be given throughout the ore processing 
-        3. ore multiplier, byproduct multiplier, is emissive
+        1. `boolean isEmissive` -> `true` for emissive textures
+        2. `int oreMultiplier, int byproductMultiplier` -> how many crushed ores will be given from one raw ore and how many byproducts dusts will be given throughout the ore processing 
+        3. `int oreMultiplier, int byproductMultiplier, boolean isEmissive` -> see previous points
 - `.burnTime(int burnTime)` will turn the material into a furnace fuel.
 - `.fluidBurnTime(int burnTime)` defines how long the fluid of the material will burn.
 - `.components(component1, component2, ...)` describes the composition. The components are a list of elements of the following form: `'Kx material_name'`, where `K` is a positive integer.
