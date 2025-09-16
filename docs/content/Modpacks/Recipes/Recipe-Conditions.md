@@ -61,7 +61,7 @@ public class ExampleCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.literal("Should be ran at least at height %d", height);
+        return Component.literal(String.format("Should be ran at least at height %d", height));
     }
 
     @Override
@@ -87,7 +87,7 @@ Starting with:
 
     @Override
     public Component getTooltips() {
-        return Component.literal("Should be ran at least at height %d", height);
+        return Component.literal(String.format("Should be ran at least at height %d", height));
     }
 ```
 This part is quite simple, and just returns the type and tooltip for the condition. The tooltip is what gets added in the recipe viewer's screen if this condition is present.
