@@ -94,7 +94,7 @@ You can change the properties of the material by adding any combination of the f
     ```js title="dust.js"
     GTCEuStartupEvents.registry('gtceu:material', event => {
         event.create('mysterious_dust')
-            .dust() // The haverst level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
+            .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
     })
     ```
@@ -105,7 +105,7 @@ You can change the properties of the material by adding any combination of the f
     public static void register() {
         MYSTERIOUS_DUST = new Material.Builder(
             your_mod_id.id("mysterious_dust"))
-            .dust() // The haverst level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
+            .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
             .buildAndRegister();
     }
