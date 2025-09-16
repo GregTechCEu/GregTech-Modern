@@ -17,4 +17,19 @@ public record PlaceholderContext(Level level,
                                  @Nullable ItemStackHandler itemStackHandler,
                                  @Nullable CoverBehavior cover,
                                  @Nullable MultiLineComponent previousText,
-                                 UUID uuid) {}
+                                 UUID uuid, int index) {
+
+    public PlaceholderContext(Level level,
+                              BlockPos pos,
+                              Direction side,
+                              @Nullable ItemStackHandler itemStackHandler,
+                              @Nullable CoverBehavior cover,
+                              @Nullable MultiLineComponent previousText,
+                              UUID uuid) {
+        this(level, pos, side, itemStackHandler, cover, previousText, uuid, 0);
+    }
+
+    public PlaceholderContext withIndex(int index) {
+        return new PlaceholderContext(level, pos, side, itemStackHandler, cover, previousText, uuid, index);
+    }
+}

@@ -15,8 +15,6 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.LanguageDefinition;
-import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.TokenTypes;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -24,6 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -47,18 +47,7 @@ public class PlaceholderHandler {
     @OnlyIn(Dist.CLIENT)
     private static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
 
-    public static final LanguageDefinition LANG_DEFINITION = new LanguageDefinition(
-            "Placeholders",
-            List.of(
-                    TokenTypes.KEYWORD.createTokenType(PlaceholderHandler.getAllPlaceholderNames().stream().toList()),
-                    TokenTypes.IDENTIFIER,
-                    TokenTypes.STRING,
-                    TokenTypes.COMMENT,
-                    TokenTypes.NUMBER,
-                    TokenTypes.OPERATOR,
-                    TokenTypes.WHITESPACE,
-                    TokenTypes.OTHER),
-            Set.of());
+    public static Object2IntOpenHashMap<String> indexes = new Object2IntOpenHashMap<>();
 
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
@@ -94,7 +83,9 @@ public class PlaceholderHandler {
                                                         PlaceholderContext context) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
-        return placeholders.get(placeholder.get(0).toString()).apply(context,
+        String name = placeholder.get(0).toString();
+        indexes.addTo(name, 1);
+        return placeholders.get(name).apply(context.withIndex(indexes.getInt(name)),
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -102,6 +93,7 @@ public class PlaceholderHandler {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
+        indexes.clear();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
