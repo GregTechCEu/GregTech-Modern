@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.GraphicsComponent;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
@@ -34,15 +35,24 @@ public class MonitorTextRenderer implements IMonitorRenderer {
             int row = 0;
             int columns = group.getRow(0, machine::toRelative).size();
             poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
+            int layer = 0;
             for (GraphicsComponent graphics : text.getGraphics()) {
                 if (graphics.x() < 0 || graphics.y() < 0) continue;
-                if (!group.contains(new BlockPos(rel.mutable().move((int) graphics.x2(), (int) graphics.y2(), 0))))
+                double maxX = graphics.x2();
+                double maxY = graphics.y2();
+                if (maxX == Math.floor(maxX)) maxX--;
+                if (maxY == Math.floor(maxY)) maxY--;
+                BlockPos relativePos = rel.mutable().move((int) Math.floor(maxX), (int) -Math.floor(maxY), 0);
+                GTCEu.LOGGER.info("maxX = {}, maxY = {}, pos = {}", maxX, maxY, relativePos);
+                if (!group.getMonitorPositions().stream().map(machine::toRelative).toList().contains(relativePos))
                     continue;
                 poseStack.pushPose();
-                poseStack.translate(graphics.x(), graphics.y(), 0);
+                poseStack.translate(graphics.x(), graphics.y(), layer * .001);
                 graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                 poseStack.popPose();
+                layer++;
             }
+            poseStack.translate(0, 0, layer * .001);
             poseStack.scale(TEXT_SCALE * scale, TEXT_SCALE * scale, TEXT_SCALE * scale);
             float y = 9;
             for (Component s : text) {

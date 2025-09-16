@@ -19,7 +19,6 @@ public class RectPlaceholderRenderer implements IPlaceholderRenderer {
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay, CompoundTag tag) {
         poseStack.pushPose();
-        poseStack.translate(0, 0, -.001);
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
         float minX = 0, maxX = (float) tag.getDouble("width");

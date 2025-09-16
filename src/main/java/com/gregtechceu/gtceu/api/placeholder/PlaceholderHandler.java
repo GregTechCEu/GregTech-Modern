@@ -47,8 +47,6 @@ public class PlaceholderHandler {
     @OnlyIn(Dist.CLIENT)
     private static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
 
-    public static Object2IntOpenHashMap<String> indexes = new Object2IntOpenHashMap<>();
-
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
             if (placeholders.get(placeholder.getName()).getPriority() <= placeholder.getPriority()) {
@@ -74,13 +72,17 @@ public class PlaceholderHandler {
         }
         IPlaceholderRenderer renderer = renderers.get(id);
         CompoundTag tag = renderData.copy();
-        return (machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay) -> {
-            renderer.render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay, tag);
-        };
+        return (machine, group,
+                partialTick, poseStack, buffer,
+                packedLight, packedOverlay) -> renderer.render(
+                        machine, group,
+                        partialTick, poseStack, buffer,
+                        packedLight, packedOverlay, tag);
     }
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                        PlaceholderContext context) throws PlaceholderException {
+                                                        PlaceholderContext context,
+                                                        Object2IntOpenHashMap<String> indexes) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
@@ -93,7 +95,7 @@ public class PlaceholderHandler {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
-        indexes.clear();
+        Object2IntOpenHashMap<String> indexes = new Object2IntOpenHashMap<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
@@ -127,7 +129,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indexes);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {

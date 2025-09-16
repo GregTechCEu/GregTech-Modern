@@ -558,6 +558,9 @@ public class GTPlaceholders {
                     }
                 }
                 if (capacity == -1) throw new MissingItemException("any data item", slot);
+                if (!stack.getOrCreateTag().contains("computer_monitor_cover_data")) {
+                    stack.getOrCreateTag().put("computer_monitor_cover_data", new ListTag());
+                }
                 ListTag tag = stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING);
                 int operationsLeft = 5000;
                 int p = 0, start = 0, cnt = 0;
@@ -585,17 +588,18 @@ public class GTPlaceholders {
                 if (cur != null) codeBuilder.append(cnt).append(cur);
                 String code = codeBuilder.toString();
                 Stack<Integer> loops = new Stack<>();
-                if (!getData(ctx).getBoolean("completed")) {
-                    p = getData(ctx).getInt("pointer");
-                    start = getData(ctx).getInt("index");
+                CompoundTag data = getData(ctx).getCompound(String.valueOf(ctx.index()));
+                if (!data.getBoolean("completed")) {
+                    p = data.getInt("pointer");
+                    start = data.getInt("index");
                 }
-                getData(ctx).putBoolean("completed", true);
+                data.putBoolean("completed", true);
                 int num = 0;
                 for (int i = start; i < code.length(); i++) {
                     if (operationsLeft <= 0) {
-                        getData(ctx).putBoolean("completed", false);
-                        getData(ctx).putInt("pointer", p);
-                        getData(ctx).putInt("index", i);
+                        data.putBoolean("completed", false);
+                        data.putInt("pointer", p);
+                        data.putInt("index", i);
                         break;
                     }
                     while (tag.size() <= p) tag.add(StringTag.valueOf("0"));
