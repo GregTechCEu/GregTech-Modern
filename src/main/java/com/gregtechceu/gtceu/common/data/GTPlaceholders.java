@@ -256,9 +256,7 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.cover() instanceof IPlaceholderInfoProviderCover cover)
-                    return MultiLineComponent.literal(cover.getTicksSincePlaced());
-                throw new NotSupportedException();
+                return MultiLineComponent.literal(ctx.level().getGameTime());
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("select") {
