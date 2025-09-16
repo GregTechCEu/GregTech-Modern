@@ -52,6 +52,10 @@ public class ExampleCondition extends RecipeCondition {
 
     public ExampleCondition(int height) {
         this(false, height);
+    }    
+    
+    public ExampleCondition() {
+        this(false, 0);
     }
 
     @Override
@@ -102,8 +106,11 @@ This part is quite simple, and just returns the type and tooltip for the conditi
         this(false, height);
     }
 
+    public ExampleCondition() {
+        this(false, 0);
+    }
 ```
-These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run.
+These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run. Furthermore, a no-arg constructor is required for (de)serialization.
 
 ```java
     @Override
