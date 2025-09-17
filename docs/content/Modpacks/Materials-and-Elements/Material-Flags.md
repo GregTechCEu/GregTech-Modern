@@ -96,7 +96,7 @@ can influence how the material behaves, as well as which items are generated for
     - Required Properties: `PropertyKey.DUST`.
 
 - `EXCLUDE_BLOCK_CRAFTING_RECIPES`
-    - Description: This will prevent material from creating Shapeless recipes for dust to block and vice versa. Also preventing extruding and alloy smelting recipes via SHAPE_EXTRUDING/MOLD_BLOCK.
+    - Description: This will prevent material from creating Shapeless recipes for dust to block and vice versa. Also preventing extruding and alloy smelting recipes via `SHAPE_EXTRUDING`/`MOLD_BLOCK`.
     - Required Properties: `PropertyKey.DUST`.
 
 - `EXCLUDE_PLATE_COMPRESSOR_RECIPE`
