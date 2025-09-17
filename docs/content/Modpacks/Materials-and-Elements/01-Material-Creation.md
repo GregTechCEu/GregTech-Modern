@@ -168,6 +168,6 @@ For a full list of the flags, check out the [Material Flags page](./Material-Fla
 
 For a full list of material properties, check out the [Material Properties page](./Material-Properties.md).
 
-For an explanation of tools, check out the [Tool Creation page](./Tool_Properties.md).
+For an explanation of tools, check out the [Tool Creation page](./Tool-Creation.md).
 
 For an explanation of custom icon sets and a list of existing ones, check out the [Icon Set page](./Material-Icon-Sets.md).
