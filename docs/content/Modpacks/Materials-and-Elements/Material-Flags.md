@@ -35,10 +35,10 @@ can influence how the material behaves, as well as which items are generated for
     - Description: Add to material to disable it's unification fully.
     
 - `DECOMPOSITION_BY_ELECTROLYZING`
-    - Description: Enables electrolyzer decomposition recipe generation (Requires componets to be set).
+    - Description: Enables electrolyzer decomposition recipe generation Requires `.components(...)` to be set.
 
 - `DECOMPOSITION_BY_CENTRIFUGING`
-    - Description: Enables centrifuge decomposition recipe generation (Requires componets to be set).
+    - Description: Enables centrifuge decomposition recipe generation. Requires `.components(...)` to be set.
 
 - `DISABLE_DECOMPOSITION`
     - Description: Disables decomposition recipe generation for this material.
