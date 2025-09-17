@@ -4,8 +4,6 @@ title: Material Creation
 
 
 Materials are in-game items or fluids. They can be dusts, ingots, gems, fluids and all their derivatives.
-To make a new material, write an `event.create()` call in the registering function, like in the examples.
-Write inside the parentheses the name of the material inside `''` or `""`.
 !!! note
     To add a material that is present on the periodic table, but doesn't have any in-game items/fluids, look at the [material modification page](./Modifying-Existing-Materials.md).
 
