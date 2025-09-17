@@ -4,11 +4,6 @@ title: Tool Creation
 
 Tools can be made out of materials you create by calling toolStats inside the material's code.
 
-When working with tools in kubejs you will need to load these classes at the top of your file.
-```js
-const $PropertyKey = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey');
-const $ToolProperty = Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty');
-```
 toolStats has the following arguments:
 
 `.toolStats(float harvestSpeed, float attackDamage, int durability, int harvestLevel, GTToolType[] types)`
@@ -24,9 +19,12 @@ toolStats has the following arguments:
     - Must pass these as an array, using the [] notation.  
       This argument can be left out if you want your material to apply to all tool types.
 
-An example of this being used is included below
+An example of this being used is included below.
 === "JavaScript"
     ```js title="example_tool_material.js"
+    // When working with tools in kubejs you will need to load these classes at the top of your file.
+    Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey');
+    Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty');
     GTCEuStartupEvents.registry('gtceu:material', event => {
         event.create('aluminfrost')
             .ingot()
@@ -40,7 +38,7 @@ An example of this being used is included below
     });
     ```
 === "Java"
-    ```java title="example_tool_material.java"
+    ```java title="ExampleToolMaterial.java"
             public static Material ALUMINFROST;
             ALUMINFROST = new Material.Builder(
                 your_mod_id.id("aluminfrost"))
@@ -77,7 +75,7 @@ Here is an example of using the builder in a material:
             .ingot()
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
             .toolStats(
-                $ToolProperty.Builder.of(1.8, 1.7, 700, 3,
+                ToolProperty.Builder.of(1.8, 1.7, 700, 3,
                     [
                         GTToolType.SWORD,
                         GTToolType.PICKAXE,
@@ -91,7 +89,7 @@ Here is an example of using the builder in a material:
     });
     ```
 === "Java"
-    ```java title="example_tool_material.java"
+    ```java title="ExampleToolMaterial.java"
             public static Material ALUMINFROST;
             ALUMINFROST = new Material.Builder(
                 your_mod_id.id("aluminfrost"))
@@ -106,11 +104,11 @@ You can also change the tool property of a GT material that already has a tool p
 === "JavaScript"
     ```js title="tool_replacement.js"
     GTCEuStartupEvents.materialModification(event => {
-        if (GTMaterials.Iron.hasProperty($PropertyKey.TOOL)) {
-            GTMaterials.Iron.removeProperty($PropertyKey.TOOL);
+        if (GTMaterials.TungstenCarbide.hasProperty(PropertyKey.TOOL)) {
+            GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
         }
-        GTMaterials.Iron.setProperty($PropertyKey.TOOL, 
-            $ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
+        GTMaterials.TungstenCarbide.setProperty(PropertyKey.TOOL, 
+            ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
             [
                 GTToolType.SOFT_MALLET,
                 GTToolType.DRILL_LV
@@ -119,7 +117,7 @@ You can also change the tool property of a GT material that already has a tool p
     });
     ```
 === "Java"
-    ```java title="tool_replacement.java"
+    ```java title="ToolReplacement.java"
     public static void modifyMaterials() {
         if (GTMaterials.TungstenCarbide.hasProperty(PropertyKey.TOOL)) {
             GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
@@ -131,7 +129,7 @@ You can also change the tool property of a GT material that already has a tool p
     
     ```
 
-Here is a list of all the GtToolTypes
+Here is a list of all the GtToolTypes.
 
 - SWORD
 - PICKAXE
