@@ -47,7 +47,7 @@ can influence how the material behaves, as well as which items are generated for
     - Description: Any material with this flag wont have implosion compression recipes, and it will give ash when you arc furnace recycle it instead of that material.
 
 - `FLAMMABLE`
-    - Description: Adding this flag means you cant smelt that material (it wont generate a ebf recipe/furnace recipe) also disables impossion compressor recipes like explosive does.
+    - Description: Adding this flag means you cant smelt that material and thus wont generate an ebf recipe/furnace recipe. Also disables implosion compressor recipes like `EXPLOSIVE` does.
 
 - `STICKY`
     - Description: Add to material if it is sticky (Changes the viscosity of the placed fluid. Only the oils and creosote have a placeable state by default).
