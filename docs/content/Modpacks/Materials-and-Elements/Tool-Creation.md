@@ -43,9 +43,8 @@ An example of this being used is included below.
             ALUMINFROST = new Material.Builder(
                 your_mod_id.id("aluminfrost"))
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
-                .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
-                        .types(GTToolType.DRILL_LV, GTToolType.MINING_HAMMER)
-                        .build())
+                .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
+                        new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
                 .buildAndRegister();
     ```
 Using the ToolProperties.Builder, you can also add further arguments onto your tools.
@@ -90,13 +89,19 @@ Here is an example of using the builder in a material:
     ```
 === "Java"
     ```java title="ExampleToolMaterial.java"
-            public static Material ALUMINFROST;
-            ALUMINFROST = new Material.Builder(
+        public static Material ALUMINFROST;
+        ALUMINFROST = new Material.Builder(
                 your_mod_id.id("aluminfrost"))
+                .ingot()
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
-                .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
-                        .types(GTToolType.AXE, GTToolType.DRILL_EV)
-                        .unbreakable().enchantability(21).enchantment(SILK_TOUCH, 1).build())
+                .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)
+                        .types(
+                                GTToolType.SWORD,
+                                GTToolType.PICKAXE,
+                                GTToolType.SHOVEL)
+                        .unbreakable()
+                        .enchantment(SILK_TOUCH, 1)
+                        .build())
                 .buildAndRegister();
     ```
 
