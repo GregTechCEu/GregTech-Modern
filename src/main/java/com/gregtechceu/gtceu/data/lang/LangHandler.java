@@ -1623,6 +1623,10 @@ public class LangHandler {
                 "Draws a quad (must specify parameters for all 4 vertices)",
                 "Usage:",
                 "  {quad <x1> <y1> <x2> <y2> <x3> <y3> <x4> <y4> <color1> <color2> <color3> <color4>} -> empty string");
+        multiLang(provider, "gtceu.placeholder_info.item",
+                "Returns the amount and id of the item in a specified slot",
+                "Usage:",
+                "  {item <slot>} -> \"31 minecraft:diamond\" (for example)");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");

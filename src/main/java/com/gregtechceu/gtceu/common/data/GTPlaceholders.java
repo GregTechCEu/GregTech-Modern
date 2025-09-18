@@ -941,6 +941,18 @@ public class GTPlaceholders {
                         renderData));
             }
         });
+        PlaceholderHandler.addPlaceholder(new Placeholder("item") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                PlaceholderUtils.checkArgs(args, 1);
+                int slot = PlaceholderUtils.toInt(args.get(0));
+                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                return MultiLineComponent.literal(ctx.itemStackHandler().getStackInSlot(slot - 1).toString());
+            }
+        });
     }
 
     @OnlyIn(Dist.CLIENT)
