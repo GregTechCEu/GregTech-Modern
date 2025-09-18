@@ -2,6 +2,7 @@
 title: Ambiguous Methods
 ---
 
+## Ambiguous Methods
 Sometimes in KJS, you run into ambiguous methods when calling functions. 
 This happens when there's multiple overloads (e.g. methods with the same name but different types) and KubeJS isn't sure which function to call with your arguments.
 
@@ -52,5 +53,48 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ```
 
 Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so you can just keep chaning your functions afterward, since it's just a "normal" builder method, just called in a more specific way.
+
+## Ambiguous Constructors
+This same problem can occur when trying to call a constructor.
+for example, when you do
+```js
+GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+  event.create("unboxinator")
+    .setProgressBar(
+      new ResourceTexture("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
+      FillDirection.LEFT_TO_RIGHT
+    )
+    // Rest of the recipe type
+})
+```
+You'd get the following error:
+```
+dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.lowdragmc.lowdraglib.gui.texture.ResourceTexture matching JavaScript argument types (string) is ambiguous; candidate constructors are: 
+    ResourceTexture(net.minecraft.resources.ResourceLocation)
+    ResourceTexture(java.lang.String) (startup_scripts:example.js#17)
+```
+
+You would want to select one of the two, and this can be done in the following way:
+```js
+GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+  event.create("unboxinator")
+    .setProgressBar(
+      ResourceTexture["(java.lang.String)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
+      FillDirection.LEFT_TO_RIGHT
+    )
+    // Rest of the recipe type
+})
+```
+or
+```js
+GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+  event.create("unboxinator")
+    .setProgressBar(
+      ResourceTexture["(net.minecraft.resources.ResourceLocation)"](new ResourceLocation("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png")),
+      FillDirection.LEFT_TO_RIGHT
+    )
+    // Rest of the recipe type
+})
+```
 !!! Note
     Generics don't exist in compiled code, so e.g. a call to `memoize(Supplier<T> delegate)` would turn into `["memoize(Supplier)"](...)`
