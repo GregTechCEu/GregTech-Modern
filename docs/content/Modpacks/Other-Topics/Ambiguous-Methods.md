@@ -55,8 +55,8 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so you can just keep chaning your functions afterward, since it's just a "normal" builder method, just called in a more specific way.
 
 ## Ambiguous Constructors
-This same problem can occur when trying to call a constructor.
-for example, when you do
+This same problem can occur when trying to call a constructor.  
+For example, when you do
 ```js
 GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
