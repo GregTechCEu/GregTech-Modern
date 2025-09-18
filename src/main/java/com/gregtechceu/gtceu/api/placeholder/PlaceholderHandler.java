@@ -44,8 +44,12 @@ public class PlaceholderHandler {
     private static final char ESCAPED_NEWLINE = 'n';
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
+
     @OnlyIn(Dist.CLIENT)
-    private static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
+    private static final class RendererHolder {
+
+        public static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
+    }
 
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
@@ -61,16 +65,16 @@ public class PlaceholderHandler {
 
     @OnlyIn(Dist.CLIENT)
     public static void addRenderer(String id, IPlaceholderRenderer renderer) {
-        renderers.put(id, renderer);
+        RendererHolder.renderers.put(id, renderer);
     }
 
     @OnlyIn(Dist.CLIENT)
     public static @Nullable IMonitorRenderer getRenderer(String id, CompoundTag renderData) {
-        if (!renderers.containsKey(id)) {
+        if (!RendererHolder.renderers.containsKey(id)) {
             GTCEu.LOGGER.warn("Attempt to access a placeholder renderer that doesn't exist ({})", id);
             return null;
         }
-        IPlaceholderRenderer renderer = renderers.get(id);
+        IPlaceholderRenderer renderer = RendererHolder.renderers.get(id);
         CompoundTag tag = renderData.copy();
         return (machine, group,
                 partialTick, poseStack, buffer,
