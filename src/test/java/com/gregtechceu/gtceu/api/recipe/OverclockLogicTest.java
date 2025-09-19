@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
@@ -37,8 +38,8 @@ public class OverclockLogicTest {
 
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests");
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests", GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests", GTRecipeTypes.CHEMICAL_RECIPES);
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_overclock_logic"))

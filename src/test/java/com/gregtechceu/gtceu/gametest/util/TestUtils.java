@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.gametest.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -128,8 +130,8 @@ public class TestUtils {
     /**
      * Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
      */
-    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name) {
-        GTRecipeType type = createRecipeType(name);
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
+        GTRecipeType type = createRecipeType(name, original);
         type.getLookup().addRecipe(type
                 .recipeBuilder(GTCEu.id("test_recipe"))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
@@ -141,6 +143,14 @@ public class TestUtils {
 
     public static GTRecipeType createRecipeType(String name) {
         return createRecipeType(name, 2, 2, 2, 2);
+    }
+
+    public static GTRecipeType createRecipeType(String name, GTRecipeType original) {
+        return createRecipeType(name,
+                original.getMaxInputs(ItemRecipeCapability.CAP),
+                original.getMaxOutputs(ItemRecipeCapability.CAP),
+                original.getMaxInputs(FluidRecipeCapability.CAP),
+                original.getMaxOutputs(FluidRecipeCapability.CAP));
     }
 
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
