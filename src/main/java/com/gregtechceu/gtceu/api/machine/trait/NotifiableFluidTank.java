@@ -36,7 +36,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public final IO capabilityIO;
     @Persisted
     @Getter
-    @DescSynced
     protected final CustomFluidTank[] storages;
     @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
