@@ -1906,6 +1906,7 @@
   "config.jade.plugin_gtceu.auto_output_info": "[GTCEu] Auto Output Info",
   "config.jade.plugin_gtceu.cable_info": "[GTCEu] Cable Info",
   "config.jade.plugin_gtceu.controllable_provider": "[GTCEu] Controllable",
+  "config.jade.plugin_gtceu.data_bank": "[GTCEu] Data Bank Info",
   "config.jade.plugin_gtceu.electric_container_provider": "[GTCEu] Electric Container",
   "config.jade.plugin_gtceu.energy_converter_provider": "[GTCEu] Energy Converter Mode",
   "config.jade.plugin_gtceu.exhaust_vent_info": "[GTCEu] Exhaust Vent Info",
