@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -80,7 +81,7 @@ public class IntProviderFluidIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cr"))
                 .inputFluidsRanged(CR_IN, UniformInt.of(0, 9))
-                .inputFluids(RUBBER)
+                .inputItems(COBBLE)
                 .outputFluids(REDSTONE)
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
@@ -269,6 +270,8 @@ public class IntProviderFluidIngredientTest {
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
 
         machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
         NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
                 .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
         NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
@@ -276,7 +279,7 @@ public class IntProviderFluidIngredientTest {
 
         int runs = 7;
         fluidIn.setFluidInTank(0, new FluidStack(CR_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, runs));
+        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -287,7 +290,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
         // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
+        helper.runAfterDelay(runs * 2 + 2, () -> {
             FluidStack results = fluidIn.getFluidInTank(0);
             int upperLimit = 64 - (runs * 0);
             int lowerLimit = 64 - (runs * 9);
@@ -403,7 +406,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
         // check the results of all rolls together
-        helper.runAfterDelay(runs * 2 + 1, () -> {
+        helper.runAfterDelay(runs * 2 + 2, () -> {
             FluidStack results = fluidIn.getFluidInTank(0);
             int upperLimit = 64 - (runs * 0);
             int lowerLimit = 64 - (runs * 9);
@@ -502,6 +505,7 @@ public class IntProviderFluidIngredientTest {
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
         final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
 
@@ -510,8 +514,8 @@ public class IntProviderFluidIngredientTest {
         busHolder.controller.setBatchEnabled(false);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
+        itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
+        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
 
         // 1t to turn on, 4t per recipe run
         // 16 parallels
@@ -539,8 +543,8 @@ public class IntProviderFluidIngredientTest {
                 rolls[finalI - 1] = 64 - results.getAmount();
 
                 // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, parallels));
+                itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
+                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
             });
         }
 
@@ -651,16 +655,17 @@ public class IntProviderFluidIngredientTest {
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
         final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
         final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
 
         int batches = 16;
-        int parallels = 1; // unused on this test
+        int parallels = 1;
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-        fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
+        itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
+        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
 
         // 1t to turn on, 1t per recipe run
         // 16 batches
@@ -688,8 +693,8 @@ public class IntProviderFluidIngredientTest {
                 rolls[finalI - 1] = 64 - results.getAmount();
 
                 // reset for a rerun
-                fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, 64));
-                fluidIn.setFluidInTank(1, new FluidStack(RUBBER, batches));
+                itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
+                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
             });
         }
 
