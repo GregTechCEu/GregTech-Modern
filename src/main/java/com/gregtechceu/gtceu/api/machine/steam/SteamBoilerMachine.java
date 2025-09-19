@@ -315,7 +315,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 
     //////////////////////////////////////
