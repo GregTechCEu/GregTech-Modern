@@ -1,5 +1,5 @@
 ---
-title: "Superheated Pyrolyzing Oven"
+title: "Example Coil Multiblock"
 ---
 
 ### Superheated Pyrolyzing Oven Multiblock (by Phoenixvine)
@@ -101,7 +101,6 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     "block.gtceu.superheated_pyrolyzing_oven": "Superheated Pyrolyzing Oven",
 }
 ```
-
 
 
 
