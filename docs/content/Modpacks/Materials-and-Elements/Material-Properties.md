@@ -1,4 +1,3 @@
-
 ---
 title: Material Properties
 ---
@@ -6,9 +5,29 @@ title: Material Properties
 
 # Material Properties
 
-## Blast Furnace Properties
+Properties go on a material to decide how they behave. To apply them to a material, see below.
 
-### `BlastProperty.blastTemp()`
+=== "Javascript"
+    ```js
+    GTCEuStartupEvents.registry('gtceu:material', event => {
+        event.create('my_material')
+            // ...
+            .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
+    })
+    ```
+=== "Java"
+    ```java
+    public static Material MY_MATERIAL;
+    public static void register() {
+       MY_MATERIAL = new Material.Builder(
+            your_mod_id.id('my_material'))
+            // ...
+            .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
+            .buildAndRegister();
+        }
+    ```
+
+## `Blast Furnace Properties`
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. `int temperature` -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
@@ -17,13 +36,13 @@ title: Material Properties
     3. (optional) `long EUPerTick` -> the recipe voltage
     4. (optional) `int durationInTicks` -> how long the recipe should take
 !!! tip "ABS Recipe Generation"
-    For an ABS recipe to actually generate from your material, you must set `.components()`.
+    For an ABS recipe to actually generate from your material, you must set `.components()`. To disable the alloy blast smelter recipes from generating while `.components` and `.blastTemp` are set, check out [DISABLE_ALLOY_BLAST](./Material-Flags.md#dust-flags)
  
-### `BlastProperty.durationOverride(int duration)`
-`int duration` -> Overrides the EBF's default behaviour for recipe durations.
+- `.durationOverride(int duration)`
+    - `int duration` -> Overrides the EBF's default behaviour for recipe durations.
 
-### `BlastProperty.eutOverride(int EU/t)`
-`int EU/t` -> Overrides the EBF's default behaviour for EU/t.
+- `.eutOverride(int EU/t)`
+    - `int EU/t` -> Overrides the EBF's default behaviour for EU/t.
 
 ## `Fluid Pipe Property`
 - `.fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof)` -> this will create an fluid pipe from this material
