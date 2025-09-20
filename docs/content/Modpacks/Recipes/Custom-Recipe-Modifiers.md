@@ -21,7 +21,7 @@ function TemperatureModifier(machine, recipe) {
         let temp = machine.getCoilType().getCoilTemperature() // (3)
 
         let recipeTemp = recipe.data.getInt("RequiredTemp") // (4)
-        if ((recipeTemp > temp)) {
+        if (recipeTemp > temp) {
             return ModifierFunction.NULL
         }
         return ModifierFunction.IDENTITY // (2)
