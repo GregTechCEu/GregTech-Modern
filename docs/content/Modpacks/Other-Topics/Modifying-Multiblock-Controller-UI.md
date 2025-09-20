@@ -3,8 +3,10 @@ title: Modifying Multiblock Controller UI
 ---
 # Modifying Multiblock Controller UI
 
-## Adding text component
-To add text component to the UI, you need to use `.additionalDisplay` in multiblock code, e.g.:
+## Adding text component  
+To add text component to the UI, you need to use `.additionalDisplay` in the multiblock registration builder.  
+`.additionalDisplay` takes a lambda that takes 2 arguments: the `IMultiController` machine that the components are being added to, and the  `List<Component>` of existing components.  
+An example of using it would be:  
 
 ```js title="ui_modified_multiblock.js"
 GTCEuStartupEvents.registry('gtceu:machine', event => {
@@ -28,8 +30,8 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 		.workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel", "gtceu:block/multiblock/blast_furnace")
 		.additionalDisplay((machine, components) => {	
 			if (machine.isFormed()) { // (1)
-				components.add(Component.literal("Muhehehe, i'm text!"))
-                components.add(Component.literal("And I am his brother! ^^^")) // (2)
+				components.add(Component.literal("I am text component #1"))
+                components.add(Component.literal("I am text component #2")) // (2)
 			}
 		}) // (3)
 });
