@@ -2,9 +2,6 @@
   "parent": "block/block",
   "textures": {
     "particle": "#side",
-    "bottom": "gtceu:block/casings/voltage/lv/bottom",
-    "top": "gtceu:block/casings/voltage/lv/top",
-    "side": "gtceu:block/casings/voltage/lv/side",
 
     "pipe": "gtceu:block/overlay/machine/overlay_pipe",
     "pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
@@ -29,8 +26,8 @@
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#pipe_in",  "rotation": 0,   "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#pipe_out", "rotation": 0,   "cullface": "south" },
-        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 0,   "cullface": "up"    },
-        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 180, "cullface": "down"  },
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 180,   "cullface": "up"    },
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 0, "cullface": "down"  },
         "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 90,  "cullface": "west"  },
         "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay",  "rotation": 270, "cullface": "east"  }
       }
@@ -49,8 +46,8 @@
       "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 0,   "cullface": "up",    "tintindex": -101 },
-        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",  "tintindex": -101 },
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 180,   "cullface": "up",    "tintindex": -101 },
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 0, "cullface": "down",  "tintindex": -101 },
         "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101 },
         "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101 },
         "north": { "uv": [0, 0, 16, 16], "texture": "#pipe_in",                           "cullface": "north", "tintindex": -101 },
