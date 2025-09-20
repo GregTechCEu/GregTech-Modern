@@ -30,8 +30,8 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 		.workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel", "gtceu:block/multiblock/blast_furnace")
 		.additionalDisplay((machine, components) => {	
 			if (machine.isFormed()) { // (1)
-				components.add(Component.literal("I am text component #1"))
-                components.add(Component.literal("I am text component #2")) // (2)
+				components.add(Component.literal("I am text component #1")) // (2)
+                components.add(Component.literal("I am text component #2"))
 			}
 		}) // (3)
 });
