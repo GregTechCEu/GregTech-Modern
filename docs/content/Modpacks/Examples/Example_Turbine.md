@@ -15,12 +15,42 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('hyper_gas_turbine', 'multiblock')
-            .machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV))
+            .machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes("gas_turbine")
-            .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE])
+            .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, (machine, recipe) => GTRecipeModifiers.LargeTurbineMachine(machine, recipe)])
             .appearanceBlock(GTBlocks.CASING_TITANIUM_STABLE)
             .pattern(definition => FactoryBlockPattern.start()
+                    .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
+                    .aisle("BBBCBBB", "BBCACBB", "BBCFCBB", "BBCACBB", "BBBCBBB")
+                    .aisle("BBCCCBB", "BCAAACB", "BCAFACB", "BCAFACB", "BBCCCBB")
+                    .aisle("BCCCCCB", "CAAFAAC", "CFFFFFC", "CAFFFAC", "BCCECCB")
+                    .aisle("BBCCCBB", "BCAAACB", "BCAFACB", "BCAFACB", "BBCCCBB")
+                    .aisle("BBBCBBB", "BBCACBB", "BBCFCBB", "BBCACBB", "BBBCBBB")
+                    .aisle("BBBBBBB", "BBBCBBB", "BBBGBBB", "BBBCBBB", "BBBBBBB")
+                .where("A", Predicates.blocks("minecraft:air"))
+                .where("B", Predicates.any())
+                .where("C", Predicates.blocks("gtceu:stainless_steel_turbine_casing")
+                    .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                    .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                .where("D", Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
+                .where("E", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
+                .where("F", Predicates.blocks("gtceu:stainless_steel_frame"))
+                .where("G", Predicates.controller(Predicates.blocks(definition.get())))
+                .build())
+            .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
+                "gtceu:block/multiblock/generator/large_gas_turbine")
+    });
+    ```
+
+=== "Java"
+    ```java title="MultiMachines.java"
+    public static final MultiblockMachineDefinition HYPER_GAS_TURBINE = REGISTRATE
+            .multiblock("hyper_gas_turbine", (holder) -> new LargeTurbineMachine(holder, GTValues.LuV, 4)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.GAS_TURBINE_FUELS)
+            .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+            .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
                 .aisle("BBBCBBB", "BBCACBB", "BBCECBB", "BBCACBB", "BBBCBBB")
                 .aisle("BBCCCBB", "BCAAACB", "BCAEACB", "BCAEACB", "BBCCCBB")
@@ -37,35 +67,6 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
                 .where("F", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
                 .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
                 .where("G", Predicates.controller(Predicates.blocks(definition.get())))
-                .build())
-            .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
-                "gtceu:block/multiblock/generator/large_gas_turbine")
-    });
-    ```
-
-=== "Java"
-    ```java title="MultiMachines.java"
-    public static final MultiblockMachineDefinition HYPER_GAS_TURBINE = REGISTRATE
-            .multiblock("hyper_gas_turbine", (holder) -> new LargeTurbineMachine(holder, 4))
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.GAS_TURBINE_FUELS)
-            .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("BCCCB", "BBCBB", "BBCBB", "BBBBB", "BBBBB")
-                    .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
-                    .aisle("CDDDC", "CBBBC", "CEFEC", "BDDDB", "BBGBB")
-                    .aisle("CDDDC", "BDBDB", "BDEDB", "BBDBB", "BBBBB")
-                    .aisle("BCCCB", "BBHBB", "BBCBB", "BBBBB", "BBBBB")
-                    .where('B', Predicates.any())
-                    .where('C', Predicates.blocks(GTBlocks.CASING_BRONZE_BRICKS.get()).setMinGlobalLimited(10)
-                            .or(Predicates.abilities(PartAbility.STEAM_IMPORT_ITEMS).setMaxGlobalLimited(1))
-                            .or(Predicates.abilities(PartAbility.STEAM).setMaxGlobalLimited(1))
-                            .or(Predicates.abilities(PartAbility.STEAM_EXPORT_ITEMS).setMaxGlobalLimited(1)))
-                    .where('D', Predicates.blocks(GCYMBlocks.CASING_INDUSTRIAL_STEAM.get()))
-                    .where('E', Predicates.blocks(GTBlocks.BRONZE_BRICKS_HULL.get()))
-                    .where('F', Predicates.blocks(GTBlocks.FIREBOX_BRONZE.get()))
-                    .where('G', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
-                    .where('H', Predicates.controller(Predicates.blocks(definition.get())))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/steam/bronze/bottom"),
                     GTCEu.id("block/machines/compressor"))
@@ -80,6 +81,12 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
     "block.gtceu.hyper_gas_turbine": "Hyper Gas Turbine",
 }
 ```
+
+
+
+
+
+
 
 
 
