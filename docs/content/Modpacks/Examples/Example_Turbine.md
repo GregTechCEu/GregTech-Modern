@@ -49,7 +49,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
             .multiblock("hyper_gas_turbine", (holder) -> new LargeTurbineMachine(holder, GTValues.LuV, 4)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.GAS_TURBINE_FUELS)
-            .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, LargeTurbineMachine::recipeModifier)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
                 .aisle("BBBCBBB", "BBCACBB", "BBCECBB", "BBCACBB", "BBBCBBB")
