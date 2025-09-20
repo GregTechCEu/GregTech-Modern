@@ -52,6 +52,10 @@ public class ExampleCondition extends RecipeCondition {
 
     public ExampleCondition(int height) {
         this(false, height);
+    }    
+    
+    public ExampleCondition() {
+        this(false, 0);
     }
 
     @Override
@@ -61,7 +65,7 @@ public class ExampleCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.literal("Should be ran at least at height %d", height);
+        return Component.literal(String.format("Should be ran at least at height %d", height));
     }
 
     @Override
@@ -87,7 +91,7 @@ Starting with:
 
     @Override
     public Component getTooltips() {
-        return Component.literal("Should be ran at least at height %d", height);
+        return Component.literal(String.format("Should be ran at least at height %d", height));
     }
 ```
 This part is quite simple, and just returns the type and tooltip for the condition. The tooltip is what gets added in the recipe viewer's screen if this condition is present.
@@ -102,8 +106,11 @@ This part is quite simple, and just returns the type and tooltip for the conditi
         this(false, height);
     }
 
+    public ExampleCondition() {
+        this(false, 0);
+    }
 ```
-These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run.
+These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run. Furthermore, a no-arg constructor is required for (de)serialization.
 
 ```java
     @Override
