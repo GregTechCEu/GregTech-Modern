@@ -58,7 +58,7 @@ Properties can be applied on a material to decide how they behave. An example of
       1. `int priority` -> Priority of this Item Pipe, used for the standard routing mode.
       2. `int stacksPerSecond` ->  How many stacks of items can be moved per second (20 ticks).
 
-## `RotorProperty`
+## `Rotor Property`
 - `.rotorStats(int power, int efficiency, float damage, int durability)` -> this will create a turbine rotor from this material
     1. `int power` -> Power is the EU/t and fuel consumption multiplier the turbine gets when  equipped with this rotor.
      This output varies depending on speed of turbine and rotor holder.
