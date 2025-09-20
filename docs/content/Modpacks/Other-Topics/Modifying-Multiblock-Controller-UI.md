@@ -28,12 +28,12 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 			.where(' ', Predicates.any())
 			.build())
 		.workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel", "gtceu:block/multiblock/blast_furnace")
-		.additionalDisplay((machine, components) => {	
+		.additionalDisplay((machine, components) => { // (3)
 			if (machine.isFormed()) { // (1)
 				components.add(Component.literal("I am text component #1")) // (2)
                 components.add(Component.literal("I am text component #2"))
 			}
-		}) // (3)
+		})
 });
 ```
 
