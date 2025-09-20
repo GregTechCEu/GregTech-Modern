@@ -1598,7 +1598,7 @@ public class FirstDegreeMaterials {
         CalciumCarbonate = new Material.Builder(GTCEu.id("calcium_carbonate"))
                 .dust()
                 .color(0xd9ca9c).secondaryColor(0xad913b)
-                .components(Calcium, 2, Carbon, 1, Oxygen, 3)
+                .components(Calcium, 1, Carbon, 1, Oxygen, 3)
                 .buildAndRegister();
 
         PotassiumCyanide = new Material.Builder(GTCEu.id("potassium_cyanide"))
