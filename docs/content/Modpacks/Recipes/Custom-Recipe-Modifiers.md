@@ -4,8 +4,8 @@ title: Custom Recipe Modifiers
 
 # Custom Recipe Modifiers / Data Logic
 
-## Adding Modifier
-Custom recipe modifiers in KubeJS are done through a function. For an example, we will make multiblock that requires temperature for recipes. (Like EBF does)
+## Adding a Modifier
+Custom recipe modifiers in KubeJS are done through a function. For this example, we will make multiblock that requires temperature for recipes, like the EBF does.
 ```js title="temperature_recipe_modifier.js"
 const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
 const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
@@ -29,8 +29,8 @@ function TemperatureModifier(machine, recipe) {
 }
 ```
 
-1. ``ModifierFunction.NULL`` Stops recipe.
-2. ``ModifierFunction.IDENTITY`` Starts recipe.
+1. `ModifierFunction.NULL` Stops recipe.
+2. `ModifierFunction.IDENTITY` Starts recipe.
 3. Getting the coil temperature, multiblock **must** contain ``.heatingCoils()`` in any of its keys.
 4. Checking if coil temperature is high enough.
 
@@ -77,9 +77,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 1. Making multiblock **coilMachine**, without it our modifier won't work.
 2. Using our modifier.
 3. Display our data in EMI.
-4. Getting ``RequiredTemp`` data from our recipe.
+4. Getting `RequiredTemp` data from our recipe.
 
-## Using our modifier in recipe
+## Using our Modifier in a Recipe
 To use our modifier in recipe, you need to add data to it.
 ```js title="example_smelting.js"
 ServerEvents.recipes(event => {
