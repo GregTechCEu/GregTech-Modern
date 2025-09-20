@@ -5,7 +5,7 @@ title: Material Properties
 
 # Material Properties
 
-Properties go on a material to decide how they behave. To apply them to a material, see below.
+Properties can be applied on a material to decide how they behave. An example of this can be seen below:
 
 === "Javascript"
     ```js
