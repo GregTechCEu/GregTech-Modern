@@ -242,7 +242,8 @@ public class ToolHelper {
                     }
                     if (user != null) {
                         user.breakItem(stack);
-                        user.broadcastBreakEvent(user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND);
+                        user.broadcastBreakEvent(
+                                user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND);
                     }
                     stack.shrink(1);
                 }
