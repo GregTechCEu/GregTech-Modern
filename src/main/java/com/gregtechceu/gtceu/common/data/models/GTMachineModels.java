@@ -281,11 +281,20 @@ public class GTMachineModels {
 
     // region per-machine models
 
-    // spotless:off
+    public static final String OVERLAY_FLUID_HATCH_INPUT = "overlay_fluid_hatch_input";
+    public static final String OVERLAY_FLUID_HATCH_OUTPUT = "overlay_fluid_hatch_output";
+    public static final String OVERLAY_ITEM_HATCH_INPUT = "overlay_item_hatch_input";
+    public static final String OVERLAY_ITEM_HATCH_OUTPUT = "overlay_item_hatch_output";
+
+    // @deprecated use {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_FLUID_HATCH_INPUT} or {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_FLUID_HATCH_OUTPUT} instead.
+    @Deprecated
     public static final String OVERLAY_FLUID_HATCH_TEX = "overlay_fluid_hatch";
+    // @deprecated use {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_FLUID_HATCH_INPUT} or {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_FLUID_HATCH_OUTPUT} instead.
+    @Deprecated
     public static final String OVERLAY_FLUID_HATCH_HALF_PX_TEX = "overlay_fluid_hatch_half_px_out";
+    // @deprecated use {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_ITEM_HATCH_INPUT} or {@link com.gregtechceu.gtceu.common.data.models.GTMachineModels.OVERLAY_ITEM_HATCH_OUTPUT} instead.
+    @Deprecated
     public static final String OVERLAY_ITEM_HATCH = "overlay_item_hatch";
-    // spotless:on
 
     public static final ResourceLocation GENERATOR_MODEL = GTCEu.id("block/machine/template/generator_machine");
 
