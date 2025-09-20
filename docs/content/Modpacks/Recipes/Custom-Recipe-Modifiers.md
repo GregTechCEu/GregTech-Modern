@@ -11,18 +11,18 @@ const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
 const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
 
 function TemperatureModifier(machine, recipe) {
-    if (!(machine instanceof $MetaMachine)) return ModifierFunction.NULL
+    if (!(machine instanceof $MetaMachine)) return ModifierFunction.NULL // (1)
     if (!(recipe instanceof $GTRecipe)) return ModifierFunction.NULL
     
     if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
         return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
     } else {
 
-        let Temp = machine.getCoilType().getCoilTemperature() // (3)
+        let temp = machine.getCoilType().getCoilTemperature() // (3)
 
         let recipeTemp = recipe.data.getInt("RequiredTemp") // (4)
-        if (!(Temp > recipeTemp)) {
-            return ModifierFunction.NULL // (1)
+        if ((recipeTemp > temp)) {
+            return ModifierFunction.NULL
         }
         return ModifierFunction.IDENTITY // (2)
     }
@@ -48,11 +48,11 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
 
-GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
-	`Temperature: ${data.getInt("RequiredTemp")}K` // (4)
-)) // (3)
+	GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
+		`Temperature: ${data.getInt("RequiredTemp")}K` // (4)
+	)) // (3)
 
-event.create('example_smelter', 'multiblock')
+	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
 		.machine((holder) => new $CoilWorkableElectricMultiblockMachine(holder)) // (1)
 		.recipeType('alchemy')
@@ -70,7 +70,7 @@ event.create('example_smelter', 'multiblock')
 			.where('H', Predicates.heatingCoils())
 			.where(' ', Predicates.any())
 			.build())
-		.workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel", "kubejs:block/multiblock/blast_furnace")
+		.workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel", "gtceu:block/multiblock/blast_furnace")
 })
 ```
 
@@ -83,7 +83,7 @@ event.create('example_smelter', 'multiblock')
 To use our modifier in recipe, you need to add data to it.
 ```js title="example_smelting.js"
 ServerEvents.recipes(event => {
-event.recipes.gtceu.example_smelting('example:diamondirt')
+	event.recipes.gtceu.example_smelting('example:diamondirt')
         .itemInputs('minecraft:dirt')
         .itemOutputs('gtceu:raw_diamond')
         .addData("RequiredTemp", 1000) // (1)
