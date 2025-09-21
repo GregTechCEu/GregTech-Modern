@@ -43,7 +43,7 @@ public class GTToolType {
     private static final Map<String, GTToolType> types = new HashMap<>();
 
     public static final GTToolType SWORD = GTToolType.builder("sword")
-            .toolTag(ItemTags.SWORDS)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.SWORDS)
             .harvestTag(BlockTags.SWORD_EFFICIENT)
             .toolStats(b -> b.attacking().attackDamage(3.0F).attackSpeed(-2.4F))
             .constructor(GTSwordItem::new)
@@ -52,7 +52,7 @@ public class GTToolType {
             .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
-            .toolTag(ItemTags.PICKAXES)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.PICKAXES)
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)
@@ -62,7 +62,7 @@ public class GTToolType {
             .materialAmount(3 * GTValues.M)
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
-            .toolTag(ItemTags.SHOVELS)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.SHOVELS)
             .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F)
                     .behaviors(GrassPathBehavior.INSTANCE, DouseCampfireBehavior.INSTANCE))
@@ -72,7 +72,7 @@ public class GTToolType {
             .materialAmount(GTValues.M)
             .build();
     public static final GTToolType AXE = GTToolType.builder("axe")
-            .toolTag(ItemTags.AXES)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.AXES)
             .harvestTag(BlockTags.MINEABLE_WITH_AXE)
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
@@ -85,7 +85,7 @@ public class GTToolType {
             .defaultActions(ToolActions.AXE_DIG)
             .build();
     public static final GTToolType HOE = GTToolType.builder("hoe")
-            .toolTag(ItemTags.HOES)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.HOES)
             .harvestTag(BlockTags.MINEABLE_WITH_HOE)
             .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F).behaviors(HoeGroundBehavior.INSTANCE))
             .constructor(GTHoeItem::new)
@@ -95,7 +95,7 @@ public class GTToolType {
             .build();
 
     public static final GTToolType MINING_HAMMER = GTToolType.builder("mining_hammer")
-            .toolTag(CustomTags.MINING_HAMMERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.MINING_HAMMERS)
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
@@ -106,7 +106,7 @@ public class GTToolType {
             .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType SPADE = GTToolType.builder("spade")
-            .toolTag(CustomTags.SPADES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SPADES)
             .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
@@ -118,7 +118,7 @@ public class GTToolType {
             .materialAmount(3 * GTValues.M)
             .build();
     public static final GTToolType SCYTHE = GTToolType.builder("scythe")
-            .toolTag(CustomTags.SCYTHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SCYTHES)
             .harvestTag(BlockTags.MINEABLE_WITH_HOE)
             .toolStats(b -> b.blockBreaking().attacking()
                     .attackDamage(5.0F).attackSpeed(-3.0F).durabilityMultiplier(3.0F)
@@ -133,8 +133,8 @@ public class GTToolType {
             .build();
 
     public static final GTToolType SAW = GTToolType.builder("saw")
-            .toolTag(CustomTags.CRAFTING_SAWS)
-            .toolTag(CustomTags.SAWS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SAWS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SAWS)
             .harvestTag(CustomTags.MINEABLE_WITH_SAW)
             .toolStats(b -> b.crafting().damagePerCraftingAction(2)
                     .attackDamage(-1.0F).attackSpeed(-2.6F)
@@ -145,8 +145,8 @@ public class GTToolType {
             .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
-            .toolTag(CustomTags.CRAFTING_HAMMERS)
-            .toolTag(CustomTags.HAMMERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_HAMMERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.HAMMERS)
             .harvestTag(CustomTags.MINEABLE_WITH_HAMMER)
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
@@ -160,8 +160,8 @@ public class GTToolType {
             .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType SOFT_MALLET = GTToolType.builder("mallet")
-            .toolTag(CustomTags.CRAFTING_MALLETS)
-            .toolTag(CustomTags.MALLETS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_MALLETS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.MALLETS)
             .toolStats(b -> b.crafting().cannotAttack().attackSpeed(-2.4F).sneakBypassUse()
                     .behaviors(ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.SOFT_MALLET_TOOL)
@@ -170,9 +170,9 @@ public class GTToolType {
             .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType WRENCH = GTToolType.builder("wrench")
-            .toolTag(CustomTags.CRAFTING_WRENCHES)
-            .toolTag(CustomTags.WRENCHES)
-            .toolTag(CustomTags.WRENCH)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCH)
             .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F).attackSpeed(-2.8F)
@@ -184,8 +184,8 @@ public class GTToolType {
             .materialAmount(4 * GTValues.M)
             .build();
     public static final GTToolType FILE = GTToolType.builder("file")
-            .toolTag(CustomTags.CRAFTING_FILES)
-            .toolTag(CustomTags.FILES)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_FILES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.FILES)
             .toolStats(b -> b.crafting().damagePerCraftingAction(4)
                     .cannotAttack().attackSpeed(-2.4F))
             .sound(GTSoundEntries.FILE_TOOL)
@@ -193,8 +193,8 @@ public class GTToolType {
             .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType CROWBAR = GTToolType.builder("crowbar")
-            .toolTag(CustomTags.CRAFTING_CROWBARS)
-            .toolTag(CustomTags.CROWBARS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_CROWBARS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.CROWBARS)
             .harvestTag(CustomTags.MINEABLE_WITH_CROWBAR)
             .toolStats(b -> b.blockBreaking().crafting()
                     .attackDamage(2.0F).attackSpeed(-2.4F)
@@ -205,8 +205,8 @@ public class GTToolType {
             .materialAmount(3 * GTValues.M / 2)
             .build();
     public static final GTToolType SCREWDRIVER = GTToolType.builder("screwdriver")
-            .toolTag(CustomTags.CRAFTING_SCREWDRIVERS)
-            .toolTag(CustomTags.SCREWDRIVERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SCREWDRIVERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SCREWDRIVERS)
             .toolStats(b -> b.crafting().damagePerCraftingAction(4).sneakBypassUse()
                     .attackDamage(-1.0F).attackSpeed(3.0F)
                     .behaviors(new EntityDamageBehavior(3.0F, Spider.class)))
@@ -216,16 +216,16 @@ public class GTToolType {
             .materialAmount(GTValues.M)
             .build();
     public static final GTToolType MORTAR = GTToolType.builder("mortar")
-            .toolTag(CustomTags.CRAFTING_MORTARS)
-            .toolTag(CustomTags.MORTARS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_MORTARS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.MORTARS)
             .toolStats(b -> b.crafting().damagePerCraftingAction(2).cannotAttack().attackSpeed(-2.4F))
             .sound(GTSoundEntries.MORTAR_TOOL)
             .symbol('m')
             .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType WIRE_CUTTER = GTToolType.builder("wire_cutter")
-            .toolTag(CustomTags.CRAFTING_WIRE_CUTTERS)
-            .toolTag(CustomTags.WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
@@ -235,8 +235,8 @@ public class GTToolType {
             .materialAmount(4 * GTValues.M) // 3 plates + 2 rods
             .build();
     public static final GTToolType KNIFE = GTToolType.builder("knife")
-            .toolTag(CustomTags.CRAFTING_KNIVES)
-            .toolTag(CustomTags.KNIVES)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_KNIVES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.KNIVES)
             .harvestTag(CustomTags.MINEABLE_WITH_KNIFE)
             .toolStats(b -> b.crafting().attacking().attackSpeed(3.0F))
             .constructor(GTSwordItem::new)
@@ -246,7 +246,7 @@ public class GTToolType {
             .materialAmount(GTValues.M)
             .build();
     public static final GTToolType BUTCHERY_KNIFE = GTToolType.builder("butchery_knife")
-            .toolTag(CustomTags.BUTCHERY_KNIVES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.BUTCHERY_KNIVES)
             .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F)
                     .defaultEnchantment(Enchantments.MOB_LOOTING, 3))
             .constructor(GTSwordItem::new)
@@ -255,20 +255,20 @@ public class GTToolType {
     // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
     // GTCEu.id("item/tools/hammer"));
     public static final GTToolType PLUNGER = GTToolType.builder("plunger")
-            .toolTag(CustomTags.PLUNGERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.PLUNGERS)
             .toolStats(b -> b.cannotAttack().attackSpeed(-2.4F).sneakBypassUse()
                     .behaviors(PlungerBehavior.INSTANCE))
             .sound(GTSoundEntries.PLUNGER_TOOL)
             .build();
     public static final GTToolType SHEARS = GTToolType.builder("shears")
-            .toolTag(CustomTags.SHEARS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SHEARS)
             .harvestTag(CustomTags.MINEABLE_WITH_SHEARS)
             .toolStats(b -> b)
             .defaultActions(ToolActions.DEFAULT_SHEARS_ACTIONS)
             .build();
     public static final GTToolType DRILL_LV = GTToolType.builder("lv_drill")
             .idFormat("lv_%s_drill")
-            .toolTag(CustomTags.DRILLS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.DRILLS)
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.SHOVELS)
             .toolTag(ItemTags.HOES)
@@ -287,7 +287,7 @@ public class GTToolType {
             .build();
     public static final GTToolType DRILL_MV = GTToolType.builder("mv_drill")
             .idFormat("mv_%s_drill")
-            .toolTag(CustomTags.DRILLS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.DRILLS)
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.SHOVELS)
             .toolTag(ItemTags.HOES)
@@ -306,7 +306,7 @@ public class GTToolType {
             .build();
     public static final GTToolType DRILL_HV = GTToolType.builder("hv_drill")
             .idFormat("hv_%s_drill")
-            .toolTag(CustomTags.DRILLS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.DRILLS)
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.SHOVELS)
             .toolTag(ItemTags.HOES)
@@ -325,7 +325,7 @@ public class GTToolType {
             .build();
     public static final GTToolType DRILL_EV = GTToolType.builder("ev_drill")
             .idFormat("ev_%s_drill")
-            .toolTag(CustomTags.DRILLS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.DRILLS)
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.SHOVELS)
             .toolTag(ItemTags.HOES)
@@ -344,7 +344,7 @@ public class GTToolType {
             .build();
     public static final GTToolType DRILL_IV = GTToolType.builder("iv_drill")
             .idFormat("iv_%s_drill")
-            .toolTag(CustomTags.DRILLS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.DRILLS)
             .toolTag(ItemTags.PICKAXES)
             .toolTag(ItemTags.SHOVELS)
             .toolTag(ItemTags.HOES)
@@ -363,8 +363,8 @@ public class GTToolType {
             .build();
     public static final GTToolType CHAINSAW_LV = GTToolType.builder("lv_chainsaw")
             .idFormat("lv_%s_chainsaw")
-            .toolTag(ItemTags.AXES)
-            .toolTag(CustomTags.CHAINSAWS)
+            .toolTag(ToolItemTagType.MATCH, ItemTags.AXES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.CHAINSAWS)
             .harvestTag(BlockTags.MINEABLE_WITH_AXE)
             .harvestTag(BlockTags.SWORD_EFFICIENT)
             .harvestTag(BlockTags.MINEABLE_WITH_HOE)
@@ -382,9 +382,9 @@ public class GTToolType {
             .build();
     public static final GTToolType WRENCH_LV = GTToolType.builder("lv_wrench")
             .idFormat("lv_%s_wrench")
-            .toolTag(CustomTags.CRAFTING_WRENCHES)
-            .toolTag(CustomTags.WRENCHES)
-            .toolTag(CustomTags.WRENCH)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCH)
             .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(2.0F)
@@ -399,9 +399,9 @@ public class GTToolType {
             .build();
     public static final GTToolType WRENCH_HV = GTToolType.builder("hv_wrench")
             .idFormat("hv_%s_wrench")
-            .toolTag(CustomTags.CRAFTING_WRENCHES)
-            .toolTag(CustomTags.WRENCHES)
-            .toolTag(CustomTags.WRENCH)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCH)
             .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(3.0F)
@@ -416,9 +416,9 @@ public class GTToolType {
             .build();
     public static final GTToolType WRENCH_IV = GTToolType.builder("iv_wrench")
             .idFormat("iv_%s_wrench")
-            .toolTag(CustomTags.CRAFTING_WRENCHES)
-            .toolTag(CustomTags.WRENCHES)
-            .toolTag(CustomTags.WRENCH)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCHES)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WRENCH)
             .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F)
@@ -434,8 +434,8 @@ public class GTToolType {
 
     public static final GTToolType WIRE_CUTTER_LV = GTToolType.builder("lv_wirecutter")
             .idFormat("lv_%s_wire_cutter")
-            .toolTag(CustomTags.CRAFTING_WIRE_CUTTERS)
-            .toolTag(CustomTags.WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
@@ -448,8 +448,8 @@ public class GTToolType {
 
     public static final GTToolType WIRE_CUTTER_HV = GTToolType.builder("hv_wirecutter")
             .idFormat("hv_%s_wire_cutter")
-            .toolTag(CustomTags.CRAFTING_WIRE_CUTTERS)
-            .toolTag(CustomTags.WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
@@ -462,8 +462,8 @@ public class GTToolType {
 
     public static final GTToolType WIRE_CUTTER_IV = GTToolType.builder("iv_wirecutter")
             .idFormat("iv_%s_wire_cutter")
-            .toolTag(CustomTags.CRAFTING_WIRE_CUTTERS)
-            .toolTag(CustomTags.WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_WIRE_CUTTERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
@@ -474,9 +474,9 @@ public class GTToolType {
             .defaultActions(GTToolActions.DEFAULT_WIRE_CUTTER_ACTIONS)
             .build();
     public static final GTToolType BUZZSAW = GTToolType.builder("buzzsaw")
-            .toolTag(CustomTags.CRAFTING_SAWS)
-            .toolTag(CustomTags.SAWS)
-            .toolTag(CustomTags.BUZZSAWS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SAWS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SAWS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.BUZZSAWS)
             .toolStats(b -> b.crafting().attackDamage(1.5F).attackSpeed(-3.2F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.CHAINSAW_TOOL, true)
@@ -485,8 +485,8 @@ public class GTToolType {
             .build();
     public static final GTToolType SCREWDRIVER_LV = GTToolType.builder("lv_screwdriver")
             .idFormat("lv_%s_screwdriver")
-            .toolTag(CustomTags.CRAFTING_SCREWDRIVERS)
-            .toolTag(CustomTags.SCREWDRIVERS)
+            .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_SCREWDRIVERS)
+            .toolTag(ToolItemTagType.MATCH, CustomTags.SCREWDRIVERS)
             .toolStats(b -> b.crafting().sneakBypassUse()
                     .attackDamage(-1.0F).attackSpeed(3.0F)
                     .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
@@ -501,6 +501,8 @@ public class GTToolType {
     public final String idFormat;
     // at least one has to be set. first one MUST be the main tag.
     public final List<TagKey<Item>> itemTags;
+    public final List<TagKey<Item>> matchTags;
+    public final List<TagKey<Item>> craftingTags;
     public final List<TagKey<Block>> harvestTags;
     public final Set<ToolAction> defaultAbilities;
     public final ResourceLocation modelLocation;
@@ -517,7 +519,8 @@ public class GTToolType {
 
     public GTToolType(String name, String idFormat, char symbol,
                       Set<GTToolType> toolClasses, ToolConstructor constructor, IGTToolDefinition toolDefinition,
-                      List<TagKey<Item>> itemTags, List<TagKey<Block>> harvestTags, Set<ToolAction> defaultAbilities,
+                      List<TagKey<Item>> itemTags, List<TagKey<Item>> matchTags, List<TagKey<Item>> craftingTags,
+                      List<TagKey<Block>> harvestTags, Set<ToolAction> defaultAbilities,
                       Set<String> toolClassNames, ResourceLocation modelLocation,
                       @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy,
                       int electricTier, long materialAmount) {
@@ -529,6 +532,8 @@ public class GTToolType {
         this.toolDefinition = toolDefinition;
         this.constructor = constructor;
         this.itemTags = itemTags;
+        this.matchTags = matchTags;
+        this.craftingTags = craftingTags;
         this.harvestTags = harvestTags;
         this.defaultAbilities = defaultAbilities;
         this.modelLocation = modelLocation;
@@ -547,6 +552,12 @@ public class GTToolType {
 
     public String getUnlocalizedName() {
         return "item.gtceu.tool." + name;
+    }
+
+    public enum ToolItemTagType {
+        NONE,
+        MATCH,
+        CRAFTING;
     }
 
     @FunctionalInterface
@@ -568,6 +579,8 @@ public class GTToolType {
         private String idFormat;
 
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
+        private final List<TagKey<Item>> matchTags = new ArrayList<>();
+        private final List<TagKey<Item>> craftingTags = new ArrayList<>();
         private final List<TagKey<Block>> harvestTags = new ArrayList<>();
         private final Set<ToolAction> defaultAbilities = Sets.newIdentityHashSet();
         @Setter
@@ -596,7 +609,18 @@ public class GTToolType {
 
         @SafeVarargs
         public final Builder toolTag(TagKey<Item>... tags) {
+            return toolTag(ToolItemTagType.NONE, tags);
+        }
+
+        @SafeVarargs
+        public final Builder toolTag(ToolItemTagType tagType, TagKey<Item>... tags) {
             itemTags.addAll(Arrays.asList(tags));
+            if (tagType == ToolItemTagType.MATCH) {
+                matchTags.addAll(Arrays.asList(tags));
+            }
+            if (tagType == ToolItemTagType.CRAFTING) {
+                craftingTags.addAll(Arrays.asList(tags));
+            }
             return this;
         }
 
@@ -658,7 +682,7 @@ public class GTToolType {
         private GTToolType get() {
             return new GTToolType(name, idFormat, symbol,
                     toolClasses, constructor, toolStats,
-                    itemTags, harvestTags, defaultAbilities,
+                    itemTags, matchTags, craftingTags, harvestTags, defaultAbilities,
                     toolClassNames, modelLocation,
                     sound, playSoundOnBlockDestroy,
                     tier, materialAmount);
