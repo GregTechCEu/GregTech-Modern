@@ -303,7 +303,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay) {
-        return colorOverlaySteamHullModel(overlay, null, null);
+        return colorOverlaySteamHullModel(overlay, (String) null, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
+                                                                 @Nullable String pipeOverlay,
+                                                                 @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+        ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+        return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
