@@ -135,8 +135,9 @@ public class TestUtils {
 
     /**
      * Creates a dummy recipe type. Safe for use in recipe lookup.
-     * DO NOT USE THIS FOR MACHINE RECIPES.
+     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeType)} for that.
      */
+    @Deprecated
     public static GTRecipeType createRecipeType(String name) {
         return createRecipeType(name, 2, 2, 2, 2);
     }
