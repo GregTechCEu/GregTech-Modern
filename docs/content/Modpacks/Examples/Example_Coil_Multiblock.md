@@ -20,8 +20,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
             .recipeTypes('pyrolyse_oven')
             .recipeModifiers(
                 [
-                    GTRecipeModifiers.PARALLEL_HATCH, 
-                    GTRecipeModifiers.BATCH_MODE, 
+                    GTRecipeModifiers.PARALLEL_HATCH,  
                     (machine, recipe) => GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)
                 ]
             )
@@ -99,10 +98,5 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     "block.gtceu.superheated_pyrolyzing_oven": "Superheated Pyrolyzing Oven",
 }
 ```
-
-
-
-
-
 
 
