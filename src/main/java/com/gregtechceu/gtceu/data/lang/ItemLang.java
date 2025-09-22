@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
+import static com.gregtechceu.gtceu.data.lang.LangHandler.replace;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ItemLang {
@@ -24,7 +25,7 @@ public class ItemLang {
         }
 
         // Recipe Categories
-        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Plasma Scrapping");
+        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Arc Scrapping");
         provider.add("gtceu.recipe.category.macerator_recycling", "Part Grinding");
         provider.add("gtceu.recipe.category.extractor_recycling", "Scrap Remelting");
         provider.add("gtceu.recipe.category.ore_crushing", "Ore Grinding");
@@ -53,27 +54,16 @@ public class ItemLang {
         provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {}
+    private static void initItemNames(RegistrateLangProvider provider) {
+        replace(provider, "item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
+    }
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
-        provider.add("item.gtceu.copper_credit.tooltip", "§70.125 Credits");
-        provider.add("item.gtceu.cupronickel_credit.tooltip", "§71 Credit");
-        provider.add("item.gtceu.silver_credit.tooltip", "§78 Credits");
-        provider.add("item.gtceu.gold_credit.tooltip", "§764 Credits");
-        provider.add("item.gtceu.platinum_credit.tooltip", "§7512 Credits");
-        provider.add("item.gtceu.osmium_credit.tooltip", "§74096 Credits");
-        provider.add("item.gtceu.naquadah_credit.tooltip", "§732768 Credits");
-        provider.add("item.gtceu.neutronium_credit.tooltip", "§7262144 Credits");
-        provider.add("item.gtceu.ancient_gold_coin.tooltip", "§7Found in ancient Ruins");
-        provider.add("item.gtceu.doge_coin.tooltip",
-                "§7wow much coin how monyey so cwypto pwz minye v wich vewy cuwwency wow");
-        provider.add("item.gtceu.chocolate_coin.tooltip", "§7Wrapped in Gold");
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
         provider.add("item.gtceu.nano_saber.tooltip", "§7Ryujin no ken wo kurae!");
         provider.add("item.gtceu.plate_casting_mold.tooltip", "§7Mold for making Plates");
         provider.add("item.gtceu.casing_casting_mold.tooltip", "§7Mold for making Item Casings");
         provider.add("item.gtceu.gear_casting_mold.tooltip", "§7Mold for making Gears");
-        provider.add("item.gtceu.credit_casting_mold.tooltip", "§7Secure Mold for making Coins (Don't lose it!)");
         provider.add("item.gtceu.bottle_casting_mold.tooltip", "§7Mold for making Bottles");
         provider.add("item.gtceu.ingot_casting_mold.tooltip", "§7Mold for making Ingots");
         provider.add("item.gtceu.ball_casting_mold.tooltip", "§7Mold for making Balls");
@@ -85,6 +75,11 @@ public class ItemLang {
                 "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)");
         provider.add("item.gtceu.gear_casting_mold.small.tooltip", "§7Mold for making small Gears");
         provider.add("item.gtceu.rotor_casting_mold.tooltip", "§7Mold for making Rotors");
+        provider.add("item.gtceu.pipe.tiny_casting_mold.tooltip", "§7Mold for making tiny Pipes");
+        provider.add("item.gtceu.pipe.small_casting_mold.tooltip", "§7Mold for making small Pipes");
+        provider.add("item.gtceu.pipe.normal_casting_mold.tooltip", "§7Mold for making Pipes");
+        provider.add("item.gtceu.pipe.large_casting_mold.tooltip", "§7Mold for making large Pipes");
+        provider.add("item.gtceu.pipe.huge_casting_mold.tooltip", "§7Mold for making full Block Pipes");
         provider.add("item.gtceu.plate_extruder_mold.tooltip", "§7Extruder Shape for making Plates");
         provider.add("item.gtceu.rod_extruder_mold.tooltip", "§7Extruder Shape for making Rods");
         provider.add("item.gtceu.bolt_extruder_mold.tooltip", "§7Extruder Shape for making Bolts");
@@ -127,9 +122,7 @@ public class ItemLang {
         provider.add("item.gtceu.zpm_battery_hull.tooltip", "§7An empty §fZPM §7Battery Hull");
         provider.add("item.gtceu.uv_battery_hull.tooltip", "§7An empty §3UV §7Battery Hull");
         provider.add("item.gtceu.battery.charge_time", "§aHolds %s %s of Power (%s)");
-        provider.add("item.gtceu.battery.charge_detailed.0", "§a%s/%s EU§7 - Tier %s §7(§a%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.1", "§e%s/%s EU§7 - Tier %s §7(§e%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.2", "§c%s/%s EU§7 - Tier %s §7(§c%s/%s %s remaining§7)");
+        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s %s remaining§7)");
         provider.add("item.gtceu.battery.charge_unit.second", "seconds");
         provider.add("item.gtceu.battery.charge_unit.minute", "minutes");
         provider.add("item.gtceu.battery.charge_unit.hour", "hours");

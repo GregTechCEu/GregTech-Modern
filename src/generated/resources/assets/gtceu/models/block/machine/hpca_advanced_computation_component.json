@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hpca_advanced_computation_component",
+  "variants": {
+    "active=false,hpca_part_damaged=false,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation",
+          "overlay_emissive": "gtceu:block/void"
+        }
+      }
+    },
+    "active=false,hpca_part_damaged=false,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation",
+          "overlay_emissive": "gtceu:block/void"
+        }
+      }
+    },
+    "active=false,hpca_part_damaged=true,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/damaged_advanced",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_advanced_emissive"
+        }
+      }
+    },
+    "active=false,hpca_part_damaged=true,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/damaged_advanced",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_advanced_emissive"
+        }
+      }
+    },
+    "active=true,hpca_part_damaged=false,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation_active",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/advanced_computation_active_emissive"
+        }
+      }
+    },
+    "active=true,hpca_part_damaged=false,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/advanced_computation_active",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/advanced_computation_active_emissive"
+        }
+      }
+    },
+    "active=true,hpca_part_damaged=true,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/damaged_advanced_active",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_advanced_active_emissive"
+        }
+      }
+    },
+    "active=true,hpca_part_damaged=true,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/hpca_advanced_computation_component_base",
+        "textures": {
+          "overlay": "gtceu:block/overlay/machine/hpca/damaged_advanced_active",
+          "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_advanced_active_emissive"
+        }
+      }
+    }
+  }
+}

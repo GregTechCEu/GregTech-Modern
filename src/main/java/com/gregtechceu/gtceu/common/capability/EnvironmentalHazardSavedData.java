@@ -104,7 +104,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             hazardZones.remove(pos);
             if (this.serverLevel.hasChunk(pos.x, pos.z)) {
                 LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
-                GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(pos), chunk);
+                GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(pos));
             }
         }
 
@@ -137,7 +137,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
                 hazardZones.remove(pos);
                 if (this.serverLevel.hasChunk(pos.x, pos.z)) {
                     LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
-                    GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(pos), chunk);
+                    GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(pos));
                 }
             }
             this.setDirty();
@@ -210,7 +210,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
         this.hazardZones.remove(chunkPos);
         if (this.serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
             LevelChunk chunk = this.serverLevel.getChunk(chunkPos.x, chunkPos.z);
-            GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(chunkPos), chunk);
+            GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(chunkPos));
         }
     }
 
@@ -323,14 +323,14 @@ public class EnvironmentalHazardSavedData extends SavedData {
     public void sendAddZonePacket(ChunkPos pos, HazardZone zone) {
         if (this.serverLevel.hasChunk(pos.x, pos.z)) {
             LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
-            GTNetwork.NETWORK.sendToTrackingChunk(new SPacketAddHazardZone(pos, zone), chunk);
+            GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketAddHazardZone(pos, zone));
         }
     }
 
     public void sendSyncZonePacket(ChunkPos pos, HazardZone zone) {
         if (this.serverLevel.hasChunk(pos.x, pos.z)) {
             LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
-            GTNetwork.NETWORK.sendToTrackingChunk(new SPacketSyncHazardZoneStrength(pos, zone.strength()), chunk);
+            GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketSyncHazardZoneStrength(pos, zone.strength()));
         }
     }
 }

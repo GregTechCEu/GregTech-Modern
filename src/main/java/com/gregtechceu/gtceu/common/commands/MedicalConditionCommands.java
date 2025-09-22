@@ -20,8 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.Commands.*;
 
 public class MedicalConditionCommands {
 
@@ -30,58 +29,61 @@ public class MedicalConditionCommands {
     private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
             Component.translatable("commands.effect.give.failed"));
 
+    // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("medical_condition")
                         .then(literal("query")
-                                .executes(context -> queryMedicalConditions(
-                                        context.getSource().getPlayerOrException()))
+                                .executes(ctx -> {
+                                    return queryMedicalConditions(ctx.getSource().getPlayerOrException());
+                                })
                                 .then(argument("target", EntityArgument.player())
-                                        .requires(source -> source.hasPermission(2))
-                                        .executes(context -> queryMedicalConditions(
-                                                EntityArgument.getPlayer(context, "target")))))
+                                        .requires(source -> source.hasPermission(LEVEL_GAMEMASTERS))
+                                        .executes(context -> {
+                                            return queryMedicalConditions(EntityArgument.getPlayer(context, "target"));
+                                        })))
                         .then(literal("clear")
-                                .requires(source -> source.hasPermission(2))
-                                .executes(context -> clearMedicalConditions(
-                                        Collections.singleton(context.getSource().getPlayerOrException()),
-                                        null))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
+                                .executes(ctx -> {
+                                    return clearMedicalConditions(
+                                            Collections.singleton(ctx.getSource().getPlayerOrException()), null);
+                                })
                                 .then(argument("targets", EntityArgument.players())
-                                        .executes(context -> clearMedicalConditions(
-                                                EntityArgument.getPlayers(context, "targets"), null))
-                                        .then(argument("condition",
-                                                MedicalConditionArgument.medicalCondition())
-                                                .executes(context -> {
-                                                    Collection<ServerPlayer> targets = EntityArgument
-                                                            .getPlayers(context, "targets");
+                                        .executes(ctx -> {
+                                            return clearMedicalConditions(EntityArgument.getPlayers(ctx, "targets"),
+                                                    null);
+                                        })
+                                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                                                .executes(ctx -> {
+                                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx,
+                                                            "targets");
                                                     MedicalCondition condition = MedicalConditionArgument
-                                                            .getCondition(context, "condition");
+                                                            .getCondition(ctx, "condition");
                                                     return clearMedicalConditions(targets, condition);
                                                 }))))
                         .then(literal("apply")
-                                .requires(source -> source.hasPermission(2))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                 .then(argument("targets", EntityArgument.players())
-                                        .then(argument("condition",
-                                                MedicalConditionArgument.medicalCondition())
-                                                .executes(context -> {
+                                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                                                .executes(ctx -> {
                                                     MedicalCondition condition = MedicalConditionArgument
-                                                            .getCondition(context, "condition");
-                                                    Collection<ServerPlayer> players = EntityArgument
-                                                            .getPlayers(context, "targets");
+                                                            .getCondition(ctx, "condition");
+                                                    Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx,
+                                                            "targets");
                                                     return applyMedicalConditions(players, condition, 1);
-                                                }).then(argument("progression_multiplier",
-                                                        FloatArgumentType.floatArg(0))
-                                                        .executes(context -> {
+                                                })
+                                                .then(argument("progression_multiplier", FloatArgumentType.floatArg(0))
+                                                        .executes(ctx -> {
                                                             MedicalCondition condition = MedicalConditionArgument
-                                                                    .getCondition(context, "condition");
+                                                                    .getCondition(ctx, "condition");
                                                             Collection<ServerPlayer> players = EntityArgument
-                                                                    .getPlayers(context, "targets");
-                                                            float strength = FloatArgumentType.getFloat(
-                                                                    context,
+                                                                    .getPlayers(ctx, "targets");
+                                                            float strength = FloatArgumentType.getFloat(ctx,
                                                                     "progression_multiplier");
-                                                            return applyMedicalConditions(players,
-                                                                    condition, strength);
+                                                            return applyMedicalConditions(players, condition, strength);
                                                         }))))));
     }
+    // spotless:off
 
     private static int queryMedicalConditions(ServerPlayer target) throws CommandSyntaxException {
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);

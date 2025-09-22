@@ -12,17 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/13
- * @implNote ItemRecipeHandler
- */
 public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
 
     @Getter
@@ -35,13 +29,12 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName,
-                                              boolean simulate) {
+    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
         return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         List<ItemStack> ingredients = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); ++i) {
             ItemStack stack = storage.getStackInSlot(i);
@@ -49,7 +42,7 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
                 ingredients.add(stack);
             }
         }
-        return Arrays.asList(ingredients.toArray());
+        return new ArrayList<>(ingredients);
     }
 
     @Override

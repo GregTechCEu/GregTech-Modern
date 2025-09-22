@@ -2,11 +2,6 @@ package com.gregtechceu.gtceu.api.machine;
 
 import lombok.Getter;
 
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote TickableSubscription
- */
 public class TickableSubscription {
 
     private final Runnable runnable;

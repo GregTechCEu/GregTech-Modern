@@ -30,16 +30,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote MachineCoverContainer
- */
 public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineCoverContainer.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    @Getter
     private final MetaMachine machine;
     @DescSynced
     @Persisted

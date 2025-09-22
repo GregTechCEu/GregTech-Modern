@@ -1,0 +1,172 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uiv_diode",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "amp_mode=16a,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_16a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_16a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=16a,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_16a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_16a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_16a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_16a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=1a,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=1a,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_1a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=2a,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_2a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_2a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=2a,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_2a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_2a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_2a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=4a,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_4a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_4a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=4a,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_4a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_4a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_4a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_4a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=8a,is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_8a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_8a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    },
+    "amp_mode=8a,is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/transformer_like_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_8a_in",
+          "overlay_in_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_in_emissive",
+          "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
+          "overlay_out_io": "gtceu:block/overlay/machine/overlay_energy_8a_out",
+          "overlay_out_io_emissive": "gtceu:block/overlay/machine/overlay_energy_8a_out_emissive",
+          "overlay_out_tinted": "gtceu:block/overlay/machine/overlay_energy_8a_tinted",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    }
+  }
+}

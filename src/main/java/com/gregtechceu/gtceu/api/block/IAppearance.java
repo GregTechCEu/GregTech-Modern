@@ -7,11 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/3/27
- * @implNote IAppearanceBlock
- */
+@Deprecated(forRemoval = true)
 public interface IAppearance {
 
     /**

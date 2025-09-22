@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/uiv_cutter",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/uiv_cutter"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/uiv_cutter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/uiv_cutter",
+      "y": 270
+    }
+  }
+}

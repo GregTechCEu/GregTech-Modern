@@ -23,6 +23,7 @@ public class GCYMMaterials {
                 .buildAndRegister();
 
         HSLASteel = new Material.Builder(GTCEu.id("hsla_steel"))
+                .langValue("HSLA Steel")
                 .ingot(3).fluid()
                 .color(0x686868).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME, GENERATE_SPRING)
@@ -41,6 +42,7 @@ public class GCYMMaterials {
                 .buildAndRegister();
 
         Zeron100 = new Material.Builder(GTCEu.id("zeron_100"))
+                .langValue("Zeron-100")
                 .ingot(5).fluid()
                 .color(0x294972).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE)
@@ -59,6 +61,7 @@ public class GCYMMaterials {
                 .buildAndRegister();
 
         IncoloyMA956 = new Material.Builder(GTCEu.id("incoloy_ma_956"))
+                .langValue("Incoloy MA-956")
                 .ingot(5).fluid()
                 .color(0x2D9B66).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_ROD, GENERATE_FRAME)
@@ -86,6 +89,7 @@ public class GCYMMaterials {
                 .buildAndRegister();
 
         Stellite100 = new Material.Builder(GTCEu.id("stellite_100"))
+                .langValue("Stellite-100")
                 .ingot(4).fluid()
                 .color(0xCFCFEE).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE)
@@ -113,6 +117,7 @@ public class GCYMMaterials {
                 .buildAndRegister();
 
         HastelloyC276 = new Material.Builder(GTCEu.id("hastelloy_c_276"))
+                .langValue("Hastelloy C-276")
                 .ingot(6).fluid()
                 .color(0xAB2F2F).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_FRAME)

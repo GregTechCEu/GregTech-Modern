@@ -9,11 +9,6 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTFluidBuilder
- */
 public interface IGTFluidBuilder {
 
     IGTFluidBuilder temperature(int temperature);

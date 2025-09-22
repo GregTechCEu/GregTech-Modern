@@ -25,7 +25,7 @@ public class GTClientCommands {
                                 .executes(ctx -> {
                                     Player player = EntityArgument.getPlayer(ctx, "player");
                                     Thread sendThread = new Thread(new ProspectingShareTask(
-                                            ctx.getSource().getPlayer().getUUID(), player.getUUID()));
+                                            ctx.getSource().getPlayerOrException().getUUID(), player.getUUID()));
                                     sendThread.start();
                                     return 1;
                                 }))));
@@ -47,7 +47,7 @@ public class GTClientCommands {
         public void run() {
             boolean first = true;
             for (ClientCacheManager.ProspectionInfo info : prospectionData) {
-                GTNetwork.NETWORK.sendToServer(new SCPacketShareProspection(sender, reciever, info.cacheName, info.key,
+                GTNetwork.sendToServer(new SCPacketShareProspection(sender, reciever, info.cacheName, info.key,
                         info.isDimCache, info.dim, info.data, first));
                 first = false;
 

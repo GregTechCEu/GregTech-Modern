@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.common.unification.material;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class MaterialRegistryImpl extends MaterialRegistry {
 
@@ -17,7 +17,8 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     private final java.lang.String modid;
 
     private boolean isRegistryClosed = false;
-    private Material fallbackMaterial = null;
+    @NotNull
+    private Material fallbackMaterial = GTMaterials.NULL;
 
     protected MaterialRegistryImpl(@NotNull java.lang.String modid) {
         super(modid);
@@ -44,7 +45,7 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     @NotNull
     @Override
     public Collection<Material> getAllMaterials() {
-        return Collections.unmodifiableCollection(this.registry.values());
+        return this.values();
     }
 
     @Override
@@ -55,7 +56,7 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     @NotNull
     @Override
     public Material getFallbackMaterial() {
-        if (this.fallbackMaterial == null) {
+        if (this.fallbackMaterial.isNull()) {
             this.fallbackMaterial = MaterialRegistryManager.getInstance().getDefaultFallback();
         }
         return this.fallbackMaterial;

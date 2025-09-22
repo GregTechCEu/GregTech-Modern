@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
@@ -43,11 +44,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableBlock
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, LevelEnergyNet> {
@@ -57,12 +53,11 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
-                      @Nullable BlockPos blockPos, int index) {
+    public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
         if (pipeType.isCable && index == 0) {
             return 0x404040;
         }
-        return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
+        return super.tinted(state, level, pos, index);
     }
 
     @Override
@@ -127,7 +122,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != null) {
+        if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
@@ -138,7 +133,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
-            if (cable != null && cable.getFrameMaterial() == null && cable.getNodeData().getLossPerBlock() > 0) {
+            if (cable != null && cable.getFrameMaterial().isNull() &&
+                    cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();
                 double amperage = cable.getAverageAmperage();
                 if (voltage > 0L && amperage > 0L) {
@@ -151,5 +147,10 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                 }
             }
         }
+    }
+
+    @Override
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WIRE_CUTTER;
     }
 }

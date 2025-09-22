@@ -41,15 +41,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote LargeBoilerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
@@ -63,8 +57,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     @Persisted
     @Getter
     private int currentTemperature, throttle;
-    @Getter
-    private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
     private int steamGenerated;
@@ -86,12 +78,28 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     //////////////////////////////////////
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-
+    public void onStructureFormed() {
+        super.onStructureFormed();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
         }
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        if (temperatureSubs != null) {
+            temperatureSubs.unsubscribe();
+            temperatureSubs = null;
+        }
+        super.onUnload();
     }
 
     protected void updateSteamSubscription() {
@@ -114,32 +122,19 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             currentTemperature -= getCoolDownRate();
         }
 
-        if (getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
-            // drain water
+        if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
-            var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
-            List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
-            if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
-                inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));
-            }
-            if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                inputTanks
-                        .addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-            }
             if (currentTemperature < 100) {
                 steamGenerated = 0;
+            } else if (maxDrain > 0) { // if maxDrain is 0 because throttle is too low, skip trying to make steam
+                // drain water
+                var drainWater = List.of(FluidIngredient.of(Fluids.WATER, maxDrain));
+                List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
+                inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
+                inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
-                    this.hasNoWater = !(drainWater == null || drainWater.isEmpty() ||
-                            drainWater.get(0).getAmount() > 0);
-                    if (!this.hasNoWater) {
-                        break;
-                    }
-                }
-            } else {
-                for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater == null || drainWater.isEmpty()) {
                         break;
                     }
@@ -147,29 +142,22 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
                         maxDrain - drainWater.get(0).getAmount();
 
-                boolean hasDrainedWater = drained > 0;
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
-                if (hasDrainedWater) {
+                if (drained > 0) {
                     // fill steam
                     var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
-                    if (getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
-                        outputTanks.addAll(
-                                Objects.requireNonNull(getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP)));
-                    }
-                    if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                        outputTanks.addAll(
-                                Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-                    }
+                    outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
+                    outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
-                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
+                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
                         if (fillSteam == null) break;
                     }
                 }
 
                 // check explosion
-                if (this.hasNoWater && hasDrainedWater) {
+                if (drained < maxDrain) {
                     doExplosion(2f);
                     var center = getPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
@@ -182,8 +170,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                             }
                         }
                     }
-                } else {
-                    this.hasNoWater = !hasDrainedWater;
                 }
             }
         }

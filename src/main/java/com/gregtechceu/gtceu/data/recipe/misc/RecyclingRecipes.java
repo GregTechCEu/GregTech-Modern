@@ -7,24 +7,24 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,15 +40,12 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 
 public class RecyclingRecipes {
 
-    // TODO - Fix recipe order with some things (noticed Hermetic Casings)
-    // TODO - Figure out solution to LuV+ components
-    // TODO - (to remember) Do NOT calculate any material component lists for circuits, they are simply totally lost
     // TODO - Work on durations and EUt's
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        for (Entry<ItemStack, ItemMaterialInfo> entry : ChemicalHelper.getAllItemInfos()) {
-            ItemStack itemStack = entry.getKey();
-            ItemMaterialInfo materialInfo = entry.getValue();
+        for (var entry : ChemicalHelper.getAllItemInfos()) {
+            ItemStack itemStack = entry.getFirst();
+            ItemMaterialInfo materialInfo = entry.getSecond();
             ArrayList<MaterialStack> materialStacks = new ArrayList<>(materialInfo.getMaterials());
             registerRecyclingRecipes(provider, itemStack, materialStacks, false, null);
         }
@@ -73,10 +70,10 @@ public class RecyclingRecipes {
         // Calculate the voltage multiplier based on if a Material has a Blast Property
         int voltageMultiplier = calculateVoltageMultiplier(components);
 
-        if (prefix != TagPrefix.dust) {
+        if (prefix != TagPrefix.dust && ConfigHolder.INSTANCE.recipes.enableMaceratorRecycling) {
             registerMaceratorRecycling(provider, input, components, voltageMultiplier);
         }
-        if (prefix != null) {
+        if (prefix != null && ConfigHolder.INSTANCE.recipes.enableExtractorRecycling) {
             registerExtractorRecycling(provider, input, components, voltageMultiplier, prefix);
         }
         if (ignoreArcSmelting) return;
@@ -101,25 +98,29 @@ public class RecyclingRecipes {
                 return;
             }
         }
-        registerArcRecycling(provider, input, components, prefix);
+        if (ConfigHolder.INSTANCE.recipes.enableArcRecycling) {
+            registerArcRecycling(provider, input, components, prefix);
+        }
     }
 
     private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input,
                                                    List<MaterialStack> materials, int multiplier) {
         // Finalize the output list.
+        final float maceratorYield = ConfigHolder.INSTANCE.recipes.maceratorRecyclingYield;
         List<ItemStack> outputs = finalizeOutputs(
                 materials,
                 GTRecipeTypes.MACERATOR_RECIPES.getMaxOutputs(ItemRecipeCapability.CAP),
-                ChemicalHelper::getDust);
+                ChemicalHelper::getDust, maceratorYield);
 
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.tagPrefix.unificationEnabled()) {
-            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        if (!entry.isEmpty() && entry.material().isNull() &&
+                entry.tagPrefix().unificationEnabled()) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Exit if no valid Materials exist for this recycling Recipe.
-        if (outputs.size() == 0) return;
+        if (outputs.isEmpty()) return;
 
         // Build the final Recipe.
         ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
@@ -135,7 +136,7 @@ public class RecyclingRecipes {
         }
 
         boolean recycle = true;
-        if (entry != null && entry.tagPrefix == TagPrefix.ingot) {
+        if (!entry.isEmpty() && entry.tagPrefix() == TagPrefix.ingot) {
             recycle = false;
         }
 
@@ -149,16 +150,16 @@ public class RecyclingRecipes {
     private static void registerExtractorRecycling(Consumer<FinishedRecipe> provider, ItemStack input,
                                                    List<MaterialStack> materials, int multiplier,
                                                    @Nullable TagPrefix prefix) {
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null) {
-            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        if (!entry.isEmpty() && !entry.material().isNull()) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
-            MaterialStack ms = ChemicalHelper.getMaterial(input);
-            if (ms == null || ms.material() == null) {
+            MaterialStack ms = ChemicalHelper.getMaterialStack(input);
+            if (ms.isEmpty() || ms.material().isNull()) {
                 return;
             }
             Material m = ms.material();
@@ -171,10 +172,10 @@ public class RecyclingRecipes {
             if (prefix == TagPrefix.dust && m.hasProperty(PropertyKey.BLAST)) {
                 return;
             }
-
+            final float yield = ConfigHolder.INSTANCE.recipes.extractorRecyclingYield;
             ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
             GTRecipeBuilder builder = GTRecipeTypes.EXTRACTOR_RECIPES.recipeBuilder("extract_" + itemPath.getPath())
-                    .outputFluids(m.getFluid((int) (ms.amount() * L / M)))
+                    .outputFluids(m.getFluid((int) (ms.amount() * yield * L / M)))
                     .duration((int) Math.max(1, ms.amount() * ms.material().getMass() / M))
                     .EUt((long) GTValues.VA[GTValues.LV] * multiplier)
                     .category(GTRecipeCategories.EXTRACTOR_RECYCLING);
@@ -228,9 +229,6 @@ public class RecyclingRecipes {
         if (itemMs != null) {
             ItemStack outputStack = ChemicalHelper.getIngotOrDust(itemMs);
             if (!outputStack.isEmpty()) extractorBuilder.outputItems(outputStack);
-            // TagPrefix outputPrefix = itemMs.material().hasProperty(PropertyKey.INGOT) ? TagPrefix.ingot :
-            // TagPrefix.dust;
-            // extractorBuilder.outputItems(outputPrefix, itemMs.material(), (int) (itemMs.amount() / M));
         }
 
         extractorBuilder.save(provider);
@@ -238,18 +236,18 @@ public class RecyclingRecipes {
 
     private static void registerArcRecycling(Consumer<FinishedRecipe> provider, ItemStack input,
                                              List<MaterialStack> materials, @Nullable TagPrefix prefix) {
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null) {
-            inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+        if (!entry.isEmpty() && !entry.material().isNull()) {
+            inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Block dusts from being arc'd instead of EBF'd
-        MaterialStack ms = ChemicalHelper.getMaterial(input);
-        if (prefix == TagPrefix.dust && ms != null && ms.material().hasProperty(PropertyKey.BLAST)) {
+        MaterialStack ms = ChemicalHelper.getMaterialStack(input);
+        if (prefix == TagPrefix.dust && !ms.isEmpty() && ms.material().hasProperty(PropertyKey.BLAST)) {
             return;
         } else if (prefix == TagPrefix.block) {
-            if (ms != null && !ms.material().hasProperty(PropertyKey.GEM)) {
+            if (!ms.isEmpty() && !ms.material().hasProperty(PropertyKey.GEM)) {
                 ItemStack output = ChemicalHelper.get(TagPrefix.ingot,
                         ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(),
                         (int) (TagPrefix.block.getMaterialAmount(ms.material()) / GTValues.M));
@@ -282,13 +280,14 @@ public class RecyclingRecipes {
                 .collect(Collectors.toList()));
 
         // Finalize the output List
+        final float arcYield = ConfigHolder.INSTANCE.recipes.arcRecyclingYield;
         List<ItemStack> outputs = finalizeOutputs(
                 materials,
                 GTRecipeTypes.ARC_FURNACE_RECIPES.getMaxOutputs(ItemRecipeCapability.CAP),
-                RecyclingRecipes::getArcIngotOrDust);
+                RecyclingRecipes::getArcIngotOrDust, arcYield);
 
         // Exit if no valid outputs exist for this recycling Recipe.
-        if (outputs.size() == 0) return;
+        if (outputs.isEmpty()) return;
 
         // Build the final Recipe.
         ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
@@ -309,15 +308,15 @@ public class RecyclingRecipes {
         builder.save(provider);
     }
 
-    private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @Nullable MaterialStack inputStack,
+    private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @NotNull MaterialStack inputStack,
                                                   @NotNull List<ItemStack> outputs) {
         if (prefix == TagPrefix.nugget || prefix == TagPrefix.ingot || prefix == TagPrefix.block) {
             if (outputs.size() == 1) {
-                UnificationEntry entry = ChemicalHelper.getUnificationEntry(outputs.get(0).getItem());
-                if (entry != null && inputStack != null) {
+                MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.get(0).getItem());
+                if (!entry.isEmpty()) {
                     Material mat = inputStack.material();
                     if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
-                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material;
+                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material();
                     }
                 }
             }
@@ -352,7 +351,7 @@ public class RecyclingRecipes {
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
             Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
-            if (arcSmelt != null) {
+            if (!arcSmelt.isNull()) {
                 return new MaterialStack(arcSmelt, amount);
             }
         }
@@ -424,8 +423,8 @@ public class RecyclingRecipes {
     private static int calculateDuration(List<ItemStack> materials) {
         long duration = 0;
         for (ItemStack is : materials) {
-            MaterialStack ms = ChemicalHelper.getMaterial(is);
-            if (ms != null) duration += ms.amount() * ms.material().getMass() * is.getCount();
+            MaterialStack ms = ChemicalHelper.getMaterialStack(is);
+            if (!ms.isEmpty()) duration += ms.amount() * ms.material().getMass() * is.getCount();
         }
         return (int) Math.max(1L, duration / M);
     }
@@ -435,30 +434,30 @@ public class RecyclingRecipes {
      */
     private static List<MaterialStack> combineStacks(List<MaterialStack> rawList) {
         // Combine any stacks in the List that have the same Item.
-        Map<Material, Long> materialStacksExploded = new HashMap<>();
+        Object2LongOpenHashMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
         for (MaterialStack ms : rawList) {
-            long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
-            materialStacksExploded.put(ms.material(), ms.amount() + amount);
+            materialStacksExploded.addTo(ms.material(), ms.amount());
         }
-        return materialStacksExploded.entrySet().stream()
-                .map(e -> new MaterialStack(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+        return materialStacksExploded.object2LongEntrySet()
+                .stream()
+                .map(e -> new MaterialStack(e.getKey(), e.getLongValue()))
+                .toList();
     }
 
     private static List<ItemStack> finalizeOutputs(List<MaterialStack> materials, int maxOutputs,
-                                                   Function<MaterialStack, ItemStack> toItemStackMapper) {
+                                                   Function<MaterialStack, ItemStack> toItemStackMapper, float yield) {
         // Map of ItemStack, Long to properly sort by the true material amount for outputs
-        List<Tuple<ItemStack, MaterialStack>> outputs = new ArrayList<>();
+        List<Pair<ItemStack, MaterialStack>> outputs = new ArrayList<>();
 
         for (MaterialStack ms : materials) {
             ms = new MaterialStack(ms.material().hasFlag(IS_MAGNETIC) ?
                     ms.material().getProperty(PropertyKey.INGOT).getMacerateInto() : ms.material(), ms.amount());
-            ItemStack stack = toItemStackMapper.apply(ms);
+            ItemStack stack = toItemStackMapper.apply(ms.multiply(yield));
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {
-                UnificationEntry entry = ChemicalHelper.getUnificationEntry(stack.getItem());
-                if (entry != null) { // should always be true
-                    TagPrefix prefix = entry.tagPrefix;
+                MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
+                if (!entry.isEmpty()) { // should always be true
+                    TagPrefix prefix = entry.tagPrefix();
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),
                     // so simply split the stacks and continue.
@@ -467,21 +466,23 @@ public class RecyclingRecipes {
                     } else {
                         // Attempt to split and to shrink the stack, and choose the option that creates the
                         // "larger" single stack, in terms of raw material amount.
-                        List<Tuple<ItemStack, MaterialStack>> split = new ArrayList<>();
-                        List<Tuple<ItemStack, MaterialStack>> shrink = new ArrayList<>();
+                        List<Pair<ItemStack, MaterialStack>> split = new ArrayList<>();
+                        List<Pair<ItemStack, MaterialStack>> shrink = new ArrayList<>();
                         splitStacks(split, stack, entry);
                         shrinkStacks(shrink, stack, entry);
 
-                        if (split.get(0).getB().amount() > shrink.get(0).getB().amount()) {
+                        if (split.get(0).getSecond().amount() > shrink.get(0).getSecond().amount()) {
                             outputs.addAll(split);
                         } else outputs.addAll(shrink);
                     }
                 }
-            } else outputs.add(new Tuple<>(stack, ms));
+            } else {
+                outputs.add(new Pair<>(stack, ms));
+            }
         }
 
         // Sort the List by total material amount descending.
-        outputs.sort(Comparator.comparingLong(e -> -e.getB().amount()));
+        outputs.sort(Comparator.comparingLong(e -> -e.getSecond().amount()));
 
         // Sort "duplicate" outputs to the end.
         // For example, if there are blocks of Steel and nuggets of Steel, and the nuggets
@@ -490,26 +491,26 @@ public class RecyclingRecipes {
         //
         // There is probably a better way to do this.
         Map<MaterialStack, ItemStack> temp = new HashMap<>();
-        for (Tuple<ItemStack, MaterialStack> t : outputs) {
+        for (Pair<ItemStack, MaterialStack> t : outputs) {
             boolean isInMap = false;
             for (MaterialStack ms : temp.keySet()) {
-                if (ms.material() == t.getB().material()) {
+                if (ms.material() == t.getSecond().material()) {
                     isInMap = true;
                     break;
                 }
             }
-            if (!isInMap) temp.put(t.getB(), t.getA());
+            if (!isInMap) temp.put(t.getSecond(), t.getFirst());
         }
         temp.putAll(outputs.stream()
-                .filter(t -> !temp.containsKey(t.getB()))
-                .collect(Collectors.toMap(Tuple::getB, Tuple::getA)));
+                .filter(t -> !temp.containsKey(t.getSecond()))
+                .collect(Collectors.toMap(Pair::getSecond, Pair::getFirst)));
 
         // Filter Ash to the very end of the list, after all others
         List<ItemStack> ashStacks = temp.entrySet().stream()
                 .filter(e -> isAshMaterial(e.getKey()))
                 .sorted(Comparator.comparingLong(e -> -e.getKey().amount()))
                 .map(Entry::getValue)
-                .collect(Collectors.toList());
+                .toList();
 
         List<ItemStack> returnValues = temp.entrySet().stream()
                 .sorted(Comparator.comparingLong(e -> -e.getKey().amount()))
@@ -524,27 +525,27 @@ public class RecyclingRecipes {
         return returnValues;
     }
 
-    private static void splitStacks(List<Tuple<ItemStack, MaterialStack>> list, ItemStack originalStack,
-                                    UnificationEntry entry) {
+    private static void splitStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
+                                    MaterialEntry entry) {
         int amount = originalStack.getCount();
         while (amount > 64) {
-            list.add(new Tuple<>(GTUtil.copyAmount(64, originalStack),
-                    new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * 64)));
+            list.add(new Pair<>(originalStack.copyWithCount(64),
+                    new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * 64)));
             amount -= 64;
         }
-        list.add(new Tuple<>(GTUtil.copyAmount(amount, originalStack),
-                new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * amount)));
+        list.add(new Pair<>(originalStack.copyWithCount(amount),
+                new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * amount)));
     }
 
-    private static final List<TagPrefix> DUST_ORDER = ImmutableList.of(TagPrefix.dust, TagPrefix.dustSmall,
+    private static final List<TagPrefix> DUST_ORDER = List.of(TagPrefix.dust, TagPrefix.dustSmall,
             TagPrefix.dustTiny);
-    private static final List<TagPrefix> INGOT_ORDER = ImmutableList.of(TagPrefix.block, TagPrefix.ingot,
+    private static final List<TagPrefix> INGOT_ORDER = List.of(TagPrefix.block, TagPrefix.ingot,
             TagPrefix.nugget);
 
-    private static void shrinkStacks(List<Tuple<ItemStack, MaterialStack>> list, ItemStack originalStack,
-                                     UnificationEntry entry) {
-        Material material = entry.material;
-        long materialAmount = originalStack.getCount() * entry.tagPrefix.getMaterialAmount(material);
+    private static void shrinkStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
+                                     MaterialEntry entry) {
+        Material material = entry.material();
+        long materialAmount = originalStack.getCount() * entry.tagPrefix().getMaterialAmount(material);
 
         // noinspection ConstantConditions
         final List<TagPrefix> chosenList = material.hasProperty(PropertyKey.INGOT) ? INGOT_ORDER : DUST_ORDER;
@@ -569,7 +570,7 @@ public class RecyclingRecipes {
             splitStacks(list,
                     ChemicalHelper.get(chosenList.get(0), ms.material(),
                             (int) (ms.amount() / prefix.getMaterialAmount(material))),
-                    new UnificationEntry(prefix, material));
+                    new MaterialEntry(prefix, material));
         }
 
         TagPrefix mediumPrefix = chosenList.get(1); // dustSmall or ingot
@@ -581,7 +582,7 @@ public class RecyclingRecipes {
         if (mediumMS != null && smallestMS != null) {
             long singleStackAmount = mediumMS.amount() + smallestMS.amount();
             if (singleStackAmount / smallestPrefix.getMaterialAmount(material) <= 64) {
-                list.add(new Tuple<>(
+                list.add(new Pair<>(
                         ChemicalHelper.get(smallestPrefix, material,
                                 (int) (singleStackAmount / smallestPrefix.getMaterialAmount(material))),
                         new MaterialStack(material, singleStackAmount)));
@@ -590,12 +591,12 @@ public class RecyclingRecipes {
         }
 
         // Otherwise simply add the stacks to the List if they exist
-        if (mediumMS != null) list.add(new Tuple<>(
+        if (mediumMS != null) list.add(new Pair<>(
                 ChemicalHelper.get(mediumPrefix, material,
                         (int) (mediumMS.amount() / mediumPrefix.getMaterialAmount(material))),
                 new MaterialStack(material, mediumMS.amount())));
 
-        if (smallestMS != null) list.add(new Tuple<>(
+        if (smallestMS != null) list.add(new Pair<>(
                 ChemicalHelper.get(smallestPrefix, material,
                         (int) (smallestMS.amount() / smallestPrefix.getMaterialAmount(material))),
                 new MaterialStack(material, smallestMS.amount())));

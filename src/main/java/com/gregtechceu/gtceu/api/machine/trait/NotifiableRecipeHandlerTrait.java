@@ -8,15 +8,11 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/27
- * @implNote NotifiableTrait
- */
 public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait implements IRecipeHandlerTrait<T> {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
@@ -26,6 +22,7 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
     @Persisted
     @DescSynced
     @Getter
+    @Setter
     protected boolean isDistinct;
 
     public NotifiableRecipeHandlerTrait(MetaMachine machine) {
@@ -45,10 +42,5 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
 
     public void notifyListeners() {
         listeners.forEach(Runnable::run);
-    }
-
-    public void setDistinct(boolean distinct) {
-        isDistinct = distinct;
-        notifyListeners();
     }
 }

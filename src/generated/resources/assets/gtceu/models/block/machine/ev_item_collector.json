@@ -1,0 +1,55 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:ev_item_collector",
+  "variants": {
+    "active=false,working_enabled=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+          "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "active=false,working_enabled=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+          "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "active=true,working_enabled=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+          "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    },
+    "active=true,working_enabled=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+          "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    }
+  }
+}

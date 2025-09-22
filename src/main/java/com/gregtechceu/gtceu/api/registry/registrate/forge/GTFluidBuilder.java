@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -13,7 +14,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Items;
@@ -57,11 +57,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTFluidBuilderImpl
- */
 @Accessors(chain = true, fluent = true)
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -202,6 +197,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         return getOwner().<B, GTFluidBuilder<P>>block(this, sourceName, p -> factory.apply(supplier, p))
                 .properties(p -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable())
                 .properties(p -> p.lightLevel(blockState -> fluidType.get().getLightLevel()))
+                .properties(p -> p.mapColor(GTUtil.determineMapColor(material.getMaterialRGB())))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().getBuilder(sourceName)
                         .texture("particle", stillTexture)))
@@ -239,7 +235,6 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
         return getOwner().item(this, bucketName, p -> new GTBucketItem(this.source, p, this.material, this.langKey))
                 .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
-                .tag(ItemTags.create(new ResourceLocation("ae2", "p2p_attunements/fluid_p2p_tunnel")))
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())

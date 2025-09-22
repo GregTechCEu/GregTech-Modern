@@ -7,11 +7,6 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.math.NumberUtils;
 
-/**
- * @author KilaBash
- * @date 2022/06/22
- * @implNote SerializerLong
- */
 public class SerializerLong implements IContentSerializer<Long> {
 
     public static SerializerLong INSTANCE = new SerializerLong();
@@ -53,6 +48,11 @@ public class SerializerLong implements IContentSerializer<Long> {
     @Override
     public Long defaultValue() {
         return 0L;
+    }
+
+    @Override
+    public Class<Long> contentClass() {
+        return Long.class;
     }
 
     @Override

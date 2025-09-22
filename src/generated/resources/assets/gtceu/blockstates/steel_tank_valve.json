@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/steel_tank_valve",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/steel_tank_valve",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/steel_tank_valve"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/steel_tank_valve",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/steel_tank_valve",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/steel_tank_valve",
+      "y": 270
+    }
+  }
+}

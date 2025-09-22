@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 @SuppressWarnings({ "UnusedReturnValue", "BooleanMethodIsAlwaysInverted" })
 @Accessors(fluent = true, chain = true)
@@ -78,24 +77,13 @@ public class CuboidVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
-        top.target.map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, top.layers)));
-        middle.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, middle.layers)));
-        bottom.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, bottom.layers)));
-        spread.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, 1)));
-        return result;
+    public List<VeinEntry> getAllEntries() {
+        List<VeinEntry> entries = new ArrayList<>(top.size() + middle.size() + bottom.size() + spread.size());
+        VeinGenerator.mapTarget(top.target, top.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(middle.target, middle.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(bottom.target, bottom.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(spread.target, 1).forEach(entries::add);
+        return entries;
     }
 
     @Override

@@ -1,0 +1,114 @@
+{
+  "variants": {
+    "facing=down,upwards_facing=east": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 90
+    },
+    "facing=down,upwards_facing=north": {
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 90
+    },
+    "facing=down,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 90
+    },
+    "facing=down,upwards_facing=west": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 90
+    },
+    "facing=east,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 90
+    },
+    "facing=east,upwards_facing=north": {
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 90
+    },
+    "facing=east,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 90
+    },
+    "facing=east,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 90
+    },
+    "facing=north,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer"
+    },
+    "facing=north,upwards_facing=north": {
+      "model": "gtceu:block/machine/vacuum_freezer"
+    },
+    "facing=north,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer"
+    },
+    "facing=north,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer"
+    },
+    "facing=south,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 180
+    },
+    "facing=south,upwards_facing=north": {
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 180
+    },
+    "facing=south,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 180
+    },
+    "facing=south,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 180
+    },
+    "facing=up,upwards_facing=east": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 270
+    },
+    "facing=up,upwards_facing=north": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 270
+    },
+    "facing=up,upwards_facing=south": {
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 270
+    },
+    "facing=up,upwards_facing=west": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "x": 270
+    },
+    "facing=west,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 270
+    },
+    "facing=west,upwards_facing=north": {
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 270
+    },
+    "facing=west,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 270
+    },
+    "facing=west,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/vacuum_freezer",
+      "y": 270
+    }
+  }
+}

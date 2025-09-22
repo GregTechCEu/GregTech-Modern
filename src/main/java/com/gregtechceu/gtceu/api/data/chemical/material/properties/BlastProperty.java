@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -114,17 +119,31 @@ public class BlastProperty implements IMaterialProperty {
     public enum GasTier {
 
         // Tiers used by GTCEu
-        LOW,
-        MID,
-        HIGH,
+        LOW(() -> FluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000)),
+        MID(() -> FluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100)),
+        HIGH(() -> FluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50)),
 
         // Tiers reserved for addons
-        HIGHER,
-        HIGHEST;
+        HIGHER(() -> FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
+        HIGHEST(() -> FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
 
         public static final GasTier[] VALUES = values();
+        private Supplier<FluidIngredient> fluid;
+
+        GasTier(Supplier<FluidIngredient> fluid) {
+            this.fluid = Suppliers.memoize(fluid);
+        }
+
+        public void setFluid(Supplier<FluidIngredient> fluid) {
+            this.fluid = Suppliers.memoize(fluid);
+        }
+
+        public FluidIngredient getFluid() {
+            return fluid.get().copy();
+        }
     }
 
+    @SuppressWarnings("unused") // API, need to treat all of these as used
     public static class Builder {
 
         private int temp;
@@ -136,33 +155,69 @@ public class BlastProperty implements IMaterialProperty {
 
         public Builder() {}
 
+        /**
+         * Set the EBF temperature of this Material.
+         * <br>
+         * <br>
+         * If the temperature is above <strong>1750K</strong>, it will automatically add a Vacuum Freezer recipe and Hot
+         * Ingot.<br>
+         * If the temperature is below <strong>1000K</strong>, it will automatically add a PBF recipe in addition to the
+         * EBF recipe.
+         *
+         * @param temperature The temperature of the recipe in the EBF.
+         */
         public Builder temp(int temperature) {
             this.temp = temperature;
             return this;
         }
 
+        /**
+         * Set the EBF temperature and gas tier of this Material.
+         * <br>
+         * <br>
+         * If the temperature is above <strong>1750K</strong>, it will automatically add a Vacuum Freezer recipe and Hot
+         * Ingot.<br>
+         * If the temperature is below <strong>1000K</strong>, it will automatically add a PBF recipe in addition to the
+         * EBF recipe.
+         *
+         * @param temperature The temperature of the recipe in the EBF.
+         * @param gasTier     The {@link GasTier} of the Recipe. Will generate a second EBF recipe
+         *                    using the specified gas of the tier for a speed bonus.
+         */
         public Builder temp(int temperature, GasTier gasTier) {
             this.temp = temperature;
             this.gasTier = gasTier;
             return this;
         }
 
+        /**
+         * Set the EU/t of the EBF recipe for this Material.
+         */
         public Builder blastStats(int eutOverride) {
             this.eutOverride = eutOverride;
             return this;
         }
 
+        /**
+         * Set the EU/t and duration of the EBF recipe for this Material.
+         */
         public Builder blastStats(int eutOverride, int durationOverride) {
             this.eutOverride = eutOverride;
             this.durationOverride = durationOverride;
             return this;
         }
 
+        /**
+         * Set the EU/t of the Vacuum Freezer recipe for the Hot Ingot of this Material.
+         */
         public Builder vacuumStats(int eutOverride) {
             this.vacuumEUtOverride = eutOverride;
             return this;
         }
 
+        /**
+         * Set the EU/t and duration of the Vacuum Freezer recipe for the Hot Ingot of this Material.
+         */
         public Builder vacuumStats(int eutOverride, int durationOverride) {
             this.vacuumEUtOverride = eutOverride;
             this.vacuumDurationOverride = durationOverride;

@@ -5,11 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote IRecipeHandlerTrait
- */
 public interface IRecipeHandlerTrait<K> extends IRecipeHandler<K> {
 
     IO getHandlerIO();

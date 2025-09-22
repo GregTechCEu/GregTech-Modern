@@ -1,0 +1,60 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:ulv_input_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false,is_painted=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    },
+    "is_formed=false,is_painted=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=false": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    },
+    "is_formed=true,is_painted=true": {
+      "model": {
+        "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
+      }
+    }
+  }
+}

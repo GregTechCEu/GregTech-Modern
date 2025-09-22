@@ -15,11 +15,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote InfiniteWaterCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class InfiniteWaterCover extends CoverBehavior {
@@ -32,7 +27,8 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     @Override
     public boolean canAttach() {
-        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
+        return super.canAttach() &&
+                FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
     }
 
     @Override

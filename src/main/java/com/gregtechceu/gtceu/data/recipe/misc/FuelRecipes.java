@@ -46,12 +46,12 @@ public class FuelRecipes {
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
-                .duration(600 * 12)
+                .duration(100 * 12)
                 .save(provider);
 
         STEAM_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(600 * 12)
+                .duration(250 * 12)
                 .save(provider);
 
         // semi-fluid fuels, like creosote
@@ -320,10 +320,24 @@ public class FuelRecipes {
                 .EUt(-V[EV])
                 .save(provider);
 
+        PLASMA_GENERATOR_FUELS.recipeBuilder("argon")
+                .inputFluids(Argon.getFluid(FluidStorageKeys.PLASMA, 1))
+                .outputFluids(Argon.getFluid(1))
+                .duration(96)
+                .EUt(-V[EV])
+                .save(provider);
+
         PLASMA_GENERATOR_FUELS.recipeBuilder("iron")
                 .inputFluids(Iron.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Iron.getFluid(1))
-                .duration(96)
+                .duration(112)
+                .EUt(-V[EV])
+                .save(provider);
+
+        PLASMA_GENERATOR_FUELS.recipeBuilder("tin")
+                .inputFluids(Tin.getFluid(FluidStorageKeys.PLASMA, 1))
+                .outputFluids(Tin.getFluid(1))
+                .duration(128)
                 .EUt(-V[EV])
                 .save(provider);
 
@@ -331,6 +345,13 @@ public class FuelRecipes {
                 .inputFluids(Nickel.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Nickel.getFluid(1))
                 .duration(192)
+                .EUt(-V[EV])
+                .save(provider);
+
+        PLASMA_GENERATOR_FUELS.recipeBuilder("americium")
+                .inputFluids(Americium.getFluid(FluidStorageKeys.PLASMA, 1))
+                .outputFluids(Americium.getFluid(1))
+                .duration(320)
                 .EUt(-V[EV])
                 .save(provider);
     }

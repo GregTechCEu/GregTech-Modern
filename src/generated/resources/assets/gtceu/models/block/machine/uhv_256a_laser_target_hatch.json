@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uhv_256a_laser_target_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/laser_target_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uhv/bottom",
+          "side": "gtceu:block/casings/voltage/uhv/side",
+          "top": "gtceu:block/casings/voltage/uhv/top"
+        }
+      }
+    },
+    "is_formed=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/laser_target_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uhv/bottom",
+          "side": "gtceu:block/casings/voltage/uhv/side",
+          "top": "gtceu:block/casings/voltage/uhv/top"
+        }
+      }
+    }
+  }
+}

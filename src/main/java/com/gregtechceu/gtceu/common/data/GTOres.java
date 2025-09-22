@@ -34,11 +34,6 @@ import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGe
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/20
- * @implNote GTOres
- */
 @SuppressWarnings("unused")
 public class GTOres {
 
@@ -160,7 +155,7 @@ public class GTOres {
             .biomes(BiomeTags.IS_NETHER)
             .veinedVeinGenerator(generator -> generator
                     .oreBlock(new VeinBlockDefinition(Goethite, 3))
-                    .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
+                    .oreBlock(new VeinBlockDefinition(Limonite, 2))
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .rareBlock(new VeinBlockDefinition(Gold, 1))
                     .rareBlockChance(0.075f)
@@ -182,7 +177,7 @@ public class GTOres {
             .dikeVeinGenerator(generator -> generator
                     .withBlock(new DikeBlockDefinition(Beryllium, 3, 5, 30))
                     .withBlock(new DikeBlockDefinition(Emerald, 2, 5, 19))
-                    .withBlock(new DikeBlockDefinition(Emerald, 2, 16, 30)))
+                    .withBlock(new DikeBlockDefinition(Thorium, 1, 16, 30)))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Beryllium)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
@@ -467,7 +462,7 @@ public class GTOres {
             .biomes(BiomeTags.IS_OVERWORLD)
             .veinedVeinGenerator(generator -> generator
                     .oreBlock(new VeinBlockDefinition(Goethite, 5))
-                    .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
+                    .oreBlock(new VeinBlockDefinition(Limonite, 2))
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .oreBlock(new VeinBlockDefinition(Malachite, 1))
                     .veininessThreshold(0.01f)
@@ -664,7 +659,7 @@ public class GTOres {
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(3).mat(Bentonite).size(2, 4))
-                            .layer(l -> l.weight(2).mat(Magnetite).size(1, 1))
+                            .layer(l -> l.weight(2).mat(Magnesite).size(1, 1))
                             .layer(l -> l.weight(2).mat(Olivine).size(1, 1))
                             .layer(l -> l.weight(1).mat(GlauconiteSand).size(1, 1))
                             .build()))

@@ -78,7 +78,14 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
         this.panel = machineUI.getConfiguratorPanel();
 
-        group.addWidget(slotWidget = new SlotWidget(handler, 0, 19, 0)
+        group.addWidget(slotWidget = new SlotWidget(handler, 0, 19, 0) {
+
+            @Override
+            public boolean canPutStack(ItemStack stack) {
+                return super.canPutStack(stack) && CoverPlaceBehavior.isCoverBehaviorItem(stack, () -> false,
+                        def -> def.createCoverBehavior(machine, side).canAttach());
+            }
+        }
                 .setChangeListener(this::coverItemChanged)
                 .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY)));
         group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab,

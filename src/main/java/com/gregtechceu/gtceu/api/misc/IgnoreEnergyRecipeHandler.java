@@ -5,22 +5,22 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
+public class IgnoreEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
-                                        boolean simulate) {
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
         return null;
     }
 
     @Override
-    public List<Object> getContents() {
-        return List.of(Long.MAX_VALUE);
+    public @NotNull List<Object> getContents() {
+        return List.of(EnergyStack.MAX);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public RecipeCapability<Long> getCapability() {
+    public RecipeCapability<EnergyStack> getCapability() {
         return EURecipeCapability.CAP;
     }
 }

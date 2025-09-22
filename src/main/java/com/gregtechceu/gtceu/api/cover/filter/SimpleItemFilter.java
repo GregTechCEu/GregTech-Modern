@@ -20,11 +20,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilterHandler
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
@@ -161,7 +156,8 @@ public class SimpleItemFilter implements ItemFilter {
         for (var candidate : matches) {
             if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
-            } else if (ItemStack.isSameItemSameTags(candidate, itemStack)) {
+            }
+            if (!ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

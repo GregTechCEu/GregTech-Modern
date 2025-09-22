@@ -4,11 +4,6 @@ import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- * @implNote IAutoOutputItem
- */
 public interface IAutoOutputItem extends IMachineFeature {
 
     boolean isAutoOutputItems();

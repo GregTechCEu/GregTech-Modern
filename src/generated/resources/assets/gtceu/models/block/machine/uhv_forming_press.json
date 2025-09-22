@@ -1,0 +1,59 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uhv_forming_press",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/forming_press/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/forming_press/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/forming_press/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/forming_press/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/forming_press/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/forming_press/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/forming_press/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/forming_press/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/forming_press/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/forming_press/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/forming_press/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/forming_press/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/forming_press/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/forming_press/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/forming_press/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/forming_press/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/forming_press/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/forming_press/overlay_top_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/forming_press/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/forming_press/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/forming_press/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/forming_press/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/forming_press/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/forming_press/overlay_top_active_emissive"
+        }
+      }
+    }
+  }
+}

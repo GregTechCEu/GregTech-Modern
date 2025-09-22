@@ -20,13 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MultiblockState {
@@ -41,9 +40,9 @@ public class MultiblockState {
     @Getter
     private final PatternMatchContext matchContext;
     @Getter
-    private Map<SimplePredicate, Integer> globalCount;
+    private Object2IntOpenHashMap<SimplePredicate> globalCount;
     @Getter
-    private Map<SimplePredicate, Integer> layerCount;
+    private Object2IntOpenHashMap<SimplePredicate> layerCount;
     public TraceabilityPredicate predicate;
     public IO io;
     public PatternError error;
@@ -64,14 +63,14 @@ public class MultiblockState {
         this.matchContext = new PatternMatchContext();
     }
 
-    protected void clean() {
+    public void clean() {
         this.matchContext.reset();
-        this.globalCount = new HashMap<>();
-        this.layerCount = new HashMap<>();
+        this.globalCount = new Object2IntOpenHashMap<>();
+        this.layerCount = new Object2IntOpenHashMap<>();
         cache = new LongOpenHashSet();
     }
 
-    protected boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
+    public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
         this.pos = posIn;
         this.blockState = null;
         this.tileEntity = null;
@@ -158,7 +157,7 @@ public class MultiblockState {
     }
 
     public Collection<BlockPos> getCache() {
-        return cache.stream().map(BlockPos::of).collect(Collectors.toList());
+        return cache.longStream().mapToObj(BlockPos::of).collect(Collectors.toSet());
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState state) {
@@ -173,6 +172,11 @@ public class MultiblockState {
                 }
             } else {
                 IMultiController controller = getController();
+                if (controller == null && error == UNLOAD_ERROR) {
+                    if (!serverLevel.isLoaded(controllerPos)) {
+                        GTCEu.LOGGER.info("Controller not loaded, pos {}", controllerPos);
+                    }
+                }
                 if (controller != null) {
                     if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
                         LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());

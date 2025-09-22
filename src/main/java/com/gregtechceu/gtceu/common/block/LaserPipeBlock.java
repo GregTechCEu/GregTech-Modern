@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
@@ -49,7 +50,7 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
         return (blockState, level, blockPos, index) -> {
             if (blockPos != null && level != null &&
                     level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                if (pipe.getFrameMaterial() != null) {
+                if (!pipe.getFrameMaterial().isNull()) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();
                     } else if (index == 4) {
@@ -111,5 +112,10 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     public boolean canPipeConnectToBlock(IPipeNode<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
+    }
+
+    @Override
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WIRE_CUTTER;
     }
 }
