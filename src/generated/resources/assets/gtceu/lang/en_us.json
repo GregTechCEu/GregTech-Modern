@@ -2990,6 +2990,7 @@
   "gtceu.machine.miner.multi.modes": "Has Silk Touch and Chunk Aligned Modes.",
   "gtceu.machine.miner.multi.production": "Produces §f3x§7 more crushed ore than a §fMacerator§7.",
   "gtceu.machine.miner.per_block": "§7takes §f%ds §7per Block",
+  "gtceu.machine.miner.progress": "Progress: %d/%d",
   "gtceu.machine.miner.radius": "Radius: %d",
   "gtceu.machine.miner.startx": "sX: %d",
   "gtceu.machine.miner.starty": "sY: %d",

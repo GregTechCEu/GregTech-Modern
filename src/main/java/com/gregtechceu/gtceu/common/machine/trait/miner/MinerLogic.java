@@ -68,6 +68,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Getter
     public ItemStack pickaxeTool;
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
+    private int blocksToMineOriginalCount = 0;
     @Getter
     @Persisted
     protected int x = Integer.MAX_VALUE;
@@ -483,8 +484,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * Checks whether there are any more blocks to mine, if there are currently none queued
      */
     public void checkBlocksToMine() {
-        if (blocksToMine.isEmpty())
+        if (blocksToMine.isEmpty()) {
             blocksToMine.addAll(getBlocksToMine());
+            blocksToMineOriginalCount = blocksToMine.size();
+        }
     }
 
     /**
@@ -621,5 +624,17 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 pos = pos.relative(dir);
             }
         }
+    }
+
+    @Override
+    public boolean hasCustomProgressLine() {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomProgressLine() {
+        return Component.translatable("gtceu.machine.miner.progress", blocksToMineOriginalCount - blocksToMine.size(),
+                blocksToMineOriginalCount);
     }
 }
