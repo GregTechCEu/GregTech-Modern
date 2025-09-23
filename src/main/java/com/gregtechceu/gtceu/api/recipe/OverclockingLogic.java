@@ -141,7 +141,7 @@ public interface OverclockingLogic {
             eut = potentialEUt;
             ocLevel++;
         }
-        return new OCResult(Math.pow(voltageFactor, ocLevel), Math.pow(durationFactor, ocLevel), ocLevel, 1, 1);
+        return new OCResult(Math.pow(voltageFactor, ocLevel), Math.pow(durationFactor, ocLevel), ocLevel, 1);
     }
 
     /**
@@ -191,7 +191,7 @@ public interface OverclockingLogic {
             ocLevel++;
         }
 
-        return new OCResult(eutMultiplier, durationMultiplier, ocLevel, 1, 1);
+        return new OCResult(eutMultiplier, durationMultiplier, ocLevel, 1);
     }
 
     /**
@@ -246,7 +246,7 @@ public interface OverclockingLogic {
             ocLevel++;
         }
 
-        return new OCResult(Math.pow(voltageFactor, ocLevel), durationMultiplier, ocLevel, 1, (int) parallel);
+        return new OCResult(Math.pow(voltageFactor, ocLevel), durationMultiplier, ocLevel, (int) parallel);
     }
 
     /**
@@ -310,7 +310,7 @@ public interface OverclockingLogic {
             ocLevel++;
         }
 
-        return new OCResult(Math.pow(STD_VOLTAGE_FACTOR, ocLevel), durationMultiplier, ocLevel, 1, (int) parallel);
+        return new OCResult(Math.pow(STD_VOLTAGE_FACTOR, ocLevel), durationMultiplier, ocLevel, (int) parallel);
     }
 
     /**
@@ -340,17 +340,15 @@ public interface OverclockingLogic {
 
     record OCParams(long eut, int duration, int ocAmount, int maxParallels) {}
 
-    record OCResult(double eutMultiplier, double durationMultiplier, int ocLevel, int parallels, int subtickParallels) {
+    record OCResult(double eutMultiplier, double durationMultiplier, int ocLevel, int parallels) {
 
         public ModifierFunction toModifier() {
             return ModifierFunction.builder()
                     .modifyAllContents(ContentModifier.multiplier(parallels))
-                    .modifyAllContents(ContentModifier.multiplier(subtickParallels))
                     .eutMultiplier(eutMultiplier)
                     .durationMultiplier(durationMultiplier)
                     .addOCs(ocLevel)
-                    .parallels(parallels)
-                    .subtickParallels(subtickParallels)
+                    .subtickParallels(parallels)
                     .build();
         }
     }

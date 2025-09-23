@@ -228,6 +228,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return new EnergyStack(v, a);
     }
 
+    public int getTotalRuns() {
+        return parallels * subtickParallels * batchParallels;
+    }
+
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.
     // If this doesn't work, fix.
     @Override

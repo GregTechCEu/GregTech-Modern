@@ -46,7 +46,7 @@ public class ParallelProvider implements IProbeInfoProvider {
                     parallel = rlm.getRecipeLogic().getLastRecipe().parallels;
                     batch = rlm.getRecipeLogic().getLastRecipe().batchParallels;
                     subtickParallel = rlm.getRecipeLogic().getLastRecipe().subtickParallels;
-                    totalRuns = parallel * batch * subtickParallel;
+                    totalRuns = rlm.getRecipeLogic().getLastRecipe().getTotalRuns();
                     exact = true;
                 } else {
                     parallel = controller.getParallelHatch()
@@ -55,7 +55,7 @@ public class ParallelProvider implements IProbeInfoProvider {
                 }
             }
 
-            if (!exact) {
+            if (!exact && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";

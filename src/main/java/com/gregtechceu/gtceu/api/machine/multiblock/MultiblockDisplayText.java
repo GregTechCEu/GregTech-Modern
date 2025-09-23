@@ -379,7 +379,7 @@ public class MultiblockDisplayText {
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
-                int runs = recipe.parallels * recipe.batchParallels * recipe.subtickParallels;
+                int runs = recipe.getTotalRuns();
 
                 for (var item : itemOutputs) {
                     boolean rounded = false;

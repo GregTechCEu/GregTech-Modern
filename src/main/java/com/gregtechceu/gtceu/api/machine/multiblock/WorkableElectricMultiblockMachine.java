@@ -99,13 +99,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         int numParallels;
         int subtickParallels;
         int batchParallels;
-        int totalCopiedRuns;
+        int totalRuns;
         boolean exact = false;
         if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
             numParallels = recipeLogic.getLastRecipe().parallels;
             subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
             batchParallels = recipeLogic.getLastRecipe().batchParallels;
-            totalCopiedRuns = numParallels * subtickParallels * batchParallels;
+            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
             exact = true;
         } else {
             numParallels = getParallelHatch()
@@ -113,7 +113,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                     .orElse(0);
             subtickParallels = 0;
             batchParallels = 0;
-            totalCopiedRuns = 0;
+            totalRuns = 0;
         }
 
         MultiblockDisplayText.builder(textList, isFormed())
@@ -121,7 +121,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
-                .addTotalRunsLine(totalCopiedRuns)
+                .addTotalRunsLine(totalRuns)
                 .addParallelsLine(numParallels, exact)
                 .addSubtickParallelsLine(subtickParallels)
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
