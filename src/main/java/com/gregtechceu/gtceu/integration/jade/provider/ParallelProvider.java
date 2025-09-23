@@ -33,7 +33,7 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
                 int batch = blockAccessor.getServerData().getInt("batch");
                 int subtickParallel = blockAccessor.getServerData().getInt("subtickParallel");
                 int totalRuns = parallel * batch * subtickParallel;
-                if (totalRuns == 0) return;
+                if (totalRuns == 1) return;
                 Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.total_runs";
