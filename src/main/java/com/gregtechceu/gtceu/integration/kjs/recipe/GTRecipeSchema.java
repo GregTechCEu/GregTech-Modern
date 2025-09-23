@@ -899,11 +899,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
         }
 
-        public GTRecipeJS adjacentFluid(ResourceLocation... tagNames) {
-            return adjacentFluid(false, tagNames);
+        public GTRecipeJS adjacentFluidTag(ResourceLocation... tagNames) {
+            return adjacentFluidTag(false, tagNames);
         }
 
-        public GTRecipeJS adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
+        public GTRecipeJS adjacentFluidTag(boolean isReverse, ResourceLocation... tagNames) {
             List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
                     .map(id -> TagKey.create(Registries.FLUID, id))
                     .toList();
