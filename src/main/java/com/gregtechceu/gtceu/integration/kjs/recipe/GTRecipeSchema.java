@@ -918,11 +918,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
         }
 
-        public GTRecipeJS adjacentBlock(ResourceLocation... tagNames) {
-            return adjacentBlock(false, tagNames);
+        public GTRecipeJS adjacentBlockTag(ResourceLocation... tagNames) {
+            return adjacentBlockTag(false, tagNames);
         }
 
-        public GTRecipeJS adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
+        public GTRecipeJS adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
             List<TagKey<Block>> tags = Arrays.stream(tagNames)
                     .map(id -> TagKey.create(Registries.BLOCK, id))
                     .toList();

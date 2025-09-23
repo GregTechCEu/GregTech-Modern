@@ -1166,12 +1166,12 @@ public class GTRecipeBuilder {
     }
 
     @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
-        return adjacentFluid(false, tags);
+    public final GTRecipeBuilder adjacentFluidTag(TagKey<Fluid>... tags) {
+        return adjacentFluidTag(false, tags);
     }
 
     @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
+    public final GTRecipeBuilder adjacentFluidTag(boolean isReverse, TagKey<Fluid>... tags) {
         if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
             GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
             return this;
@@ -1204,12 +1204,12 @@ public class GTRecipeBuilder {
     }
 
     @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
-        return adjacentBlock(false, tags);
+    public final GTRecipeBuilder adjacentBlockTag(TagKey<Block>... tags) {
+        return adjacentBlockTag(false, tags);
     }
 
     @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+    public final GTRecipeBuilder adjacentBlockTag(boolean isReverse, TagKey<Block>... tags) {
         if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
             GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
             return this;
