@@ -317,33 +317,18 @@ public class MultiblockDisplayText {
         }
 
         /**
-         * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
-         * <br>
-         * Added if structure is formed and the machine is active.
-         *
-         * @param currentDuration The current duration of the recipe in ticks
-         * @param maxDuration     The max duration of the recipe in ticks
-         * @param progressPercent Progress formatted as a range of [0,1] representing the progress of the recipe.
-         * @deprecated Use {@link #addProgressTimeLine(double, double, double)} instead.
-         */
-        @Deprecated
-        public Builder addProgressLine(double currentDuration, double maxDuration, double progressPercent) {
-            return this.addProgressTimeLine(currentDuration, maxDuration, progressPercent);
-        }
-
-        /**
          * Adds a progress line based on the recipe logic.
          *
          * @param recipeLogic The recipe logic that provides the progress info
          *
-         * @see #addProgressTimeLine(double, double, double)
+         * @see #addProgressLine(double, double, double)
          * @see #addCustomProgressLine(RecipeLogic)
          */
         public Builder addProgressLine(RecipeLogic recipeLogic) {
             if (recipeLogic.hasCustomProgressLine()) {
                 return this.addCustomProgressLine(recipeLogic);
             } else {
-                return this.addProgressTimeLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
+                return this.addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent());
             }
         }
@@ -357,7 +342,7 @@ public class MultiblockDisplayText {
          * @param maxDuration     The max duration of the recipe in ticks
          * @param progressPercent Progress formatted as a range of [0,1] representing the progress of the recipe.
          */
-        public Builder addProgressTimeLine(double currentDuration, double maxDuration, double progressPercent) {
+        public Builder addProgressLine(double currentDuration, double maxDuration, double progressPercent) {
             if (!isStructureFormed || !isActive)
                 return this;
             int currentProgress = (int) (progressPercent * 100);
