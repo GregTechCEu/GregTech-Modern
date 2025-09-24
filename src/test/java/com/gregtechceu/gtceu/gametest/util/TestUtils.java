@@ -129,6 +129,7 @@ public class TestUtils {
 
     /**
      * Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
+     * Requires a {@link GTRecipeType} to inherit I/O counts from
      */
     public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
         GTRecipeType type = createRecipeType(name, original);
@@ -141,10 +142,19 @@ public class TestUtils {
         return type;
     }
 
+    /**
+     * Creates a dummy recipe type. Safe for use in recipe lookup.
+     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeType)} for that.
+     */
+    @Deprecated
     public static GTRecipeType createRecipeType(String name) {
         return createRecipeType(name, 2, 2, 2, 2);
     }
 
+    /**
+     * Creates a recipe type for writing test cases.
+     * Requires a {@link GTRecipeType} to inherit I/O counts from.
+     */
     public static GTRecipeType createRecipeType(String name, GTRecipeType original) {
         return createRecipeType(name,
                 original.getMaxInputs(ItemRecipeCapability.CAP),
@@ -153,6 +163,11 @@ public class TestUtils {
                 original.getMaxOutputs(FluidRecipeCapability.CAP));
     }
 
+    /**
+     * Creates a recipe type for writing test cases.
+     * Requires setting I/O counts manually.
+     * You probably want to be using {@link #createRecipeType(String, GTRecipeType)}
+     */
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
         GTRegistries.RECIPE_TYPES.unfreeze();
