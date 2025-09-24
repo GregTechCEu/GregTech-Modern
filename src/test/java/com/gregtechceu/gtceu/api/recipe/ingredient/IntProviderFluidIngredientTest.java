@@ -80,7 +80,7 @@ public class IntProviderFluidIngredientTest {
 
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cr"))
-                .inputFluidsRanged(CR_IN, UniformInt.of(0, 9))
+                .inputFluidsRanged(CR_IN, UniformInt.of(1, 9))
                 .inputItems(COBBLE)
                 .outputFluids(REDSTONE)
                 .EUt(GTValues.V[GTValues.HV])
@@ -90,14 +90,14 @@ public class IntProviderFluidIngredientTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cr"))
                 .inputFluids(CR_OUT)
-                .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
+                .outputFluidsRanged(REDSTONE, UniformInt.of(1, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_lcr"))
-                .inputFluidsRanged(LCR_IN, UniformInt.of(0, 9))
+                .inputFluidsRanged(LCR_IN, UniformInt.of(1, 9))
                 .inputFluids(RUBBER)
                 .outputFluids(REDSTONE)
                 .EUt(GTValues.V[GTValues.HV])
@@ -107,14 +107,14 @@ public class IntProviderFluidIngredientTest {
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_lcr"))
                 .inputFluids(LCR_OUT)
-                .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
+                .outputFluidsRanged(REDSTONE, UniformInt.of(1, 9))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
 
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cent"))
-                .inputFluidsRanged(LCENT_IN, UniformInt.of(0, 4))
+                .inputFluidsRanged(LCENT_IN, UniformInt.of(1, 40))
                 .inputItems(COBBLE)
                 .outputFluids(REDSTONE)
                 .EUt(GTValues.V[GTValues.IV])
@@ -124,7 +124,7 @@ public class IntProviderFluidIngredientTest {
         CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cent"))
                 .inputFluids(LCENT_OUT)
-                .outputFluidsRanged(REDSTONE, UniformInt.of(0, 4))
+                .outputFluidsRanged(REDSTONE, UniformInt.of(1, 40))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
@@ -279,7 +279,7 @@ public class IntProviderFluidIngredientTest {
 
         int runs = 7;
         fluidIn.setFluidInTank(0, new FluidStack(CR_IN, 64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
+        itemIn.setStackInSlot(0, COBBLE.copyWithCount(runs));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
@@ -511,11 +511,12 @@ public class IntProviderFluidIngredientTest {
 
         int batches = 1; // unused on this test
         int parallels = 16;
+        final int amount = 40 * batches * parallels;
         busHolder.controller.setBatchEnabled(false);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
-        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, amount));
 
         // 1t to turn on, 4t per recipe run
         // 16 parallels
@@ -526,8 +527,8 @@ public class IntProviderFluidIngredientTest {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(17 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
+                int upperLimit = amount - (batches * parallels * 0);
+                int lowerLimit = amount - (batches * parallels * 40);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
@@ -538,13 +539,13 @@ public class IntProviderFluidIngredientTest {
                                 completed + "]");
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
                         "Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+                                (amount - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
 
-                rolls[finalI - 1] = 64 - results.getAmount();
+                rolls[finalI - 1] = amount - results.getAmount();
 
                 // reset for a rerun
                 itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
-                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 40 * batches * parallels));
             });
         }
 
@@ -602,7 +603,7 @@ public class IntProviderFluidIngredientTest {
                                 fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
                 int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
+                int upperLimit = runs * 40;
                 helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
                         "Parallel LCent didn't produce correct number of fluids, produced [" +
                                 resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -661,11 +662,12 @@ public class IntProviderFluidIngredientTest {
 
         int batches = 16;
         int parallels = 1;
+        final int amount = 40 * batches * parallels;
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
-        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, amount));
 
         // 1t to turn on, 1t per recipe run
         // 16 batches
@@ -676,25 +678,25 @@ public class IntProviderFluidIngredientTest {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(17 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
+                int upperLimit = amount - (batches * parallels * 0);
+                int lowerLimit = amount - (batches * parallels * 40);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
                                 ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
-                        "Parallel LCent didn't complete correct number of recipes, completed [" +
+                        "Batched LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
                                 completed + "]");
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
-                        "Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+                        "Batched LCent didn't consume correct number of fluids, consumed " +
+                                (amount - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
 
-                rolls[finalI - 1] = 64 - results.getAmount();
+                rolls[finalI - 1] = amount - results.getAmount();
 
                 // reset for a rerun
                 itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
-                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, amount));
             });
         }
 
@@ -704,7 +706,7 @@ public class IntProviderFluidIngredientTest {
             for (int i = 0; i < REPLICAS; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
-                    GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
+                    GTCEu.LOGGER.warn("Batched LCent ranged fluid input test iteration " + i + " consumed [" +
                             rolls[i] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                             "). If this message only appears once, this is likely a false positive.");
                 } else {
@@ -713,7 +715,7 @@ public class IntProviderFluidIngredientTest {
                 }
             }
 
-            helper.assertFalse(sus, "Parallel LCent ranged fluid input test rolled exactly even to " +
+            helper.assertFalse(sus, "Batched LCent ranged fluid input test rolled exactly even to " +
                     "Batch * Parallel count on every iteration");
             helper.succeed();
         });
@@ -753,7 +755,7 @@ public class IntProviderFluidIngredientTest {
                                 fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs + "]");
                 int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
+                int upperLimit = runs * 40;
                 helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
                         "Batched LCent didn't produce correct number of fluids, produced [" +
                                 resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -812,6 +814,7 @@ public class IntProviderFluidIngredientTest {
 
         int batches = 16;
         int parallels = 16;
+        final int amount = batches * parallels * 40;
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
@@ -820,7 +823,7 @@ public class IntProviderFluidIngredientTest {
         for (int j = 0; j < stacks; j++) {
             itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
         }
-        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+        fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, amount));
 
         // 1t to turn on, 64t per recipe run
         // check the results of all rolls together
@@ -830,8 +833,8 @@ public class IntProviderFluidIngredientTest {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(65 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
+                int upperLimit = amount - (batches * parallels * 0);
+                int lowerLimit = amount - (batches * parallels * 40);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
                         ((int) Math.round(fluidOut.getTotalContentAmount()))),
@@ -841,7 +844,7 @@ public class IntProviderFluidIngredientTest {
                                 completed + "]");
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
                         "Batched Parallel LCent didn't consume correct number of fluids, consumed " +
-                                (64 - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+                                (amount - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
 
                 rolls[finalI - 1] = 64 - results.getAmount();
 
@@ -850,7 +853,7 @@ public class IntProviderFluidIngredientTest {
                     itemIn.setStackInSlot(l,
                             COBBLE.copyWithCount((batches * parallels / stacks)));
                 }
-                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 4 * batches * parallels));
+                fluidIn.setFluidInTank(1, new FluidStack(LCENT_IN, 40 * batches * parallels));
             });
         }
 
@@ -908,7 +911,7 @@ public class IntProviderFluidIngredientTest {
                                 fluidIn.getTotalContentAmount() + "] not [" + runs + "]");
                 int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
-                int upperLimit = runs * 4;
+                int upperLimit = runs * 40;
                 helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
                         "Batched Parallel LCent didn't produce correct number of fluids, produced [" +
                                 resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
