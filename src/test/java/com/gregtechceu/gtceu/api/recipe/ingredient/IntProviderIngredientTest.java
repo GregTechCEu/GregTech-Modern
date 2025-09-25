@@ -300,7 +300,7 @@ public class IntProviderIngredientTest {
             rolls[0] = 64 - addedRolls[0];
             boolean allEqual = false;
             for (int i = 1; i < runs; i++) {
-                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
+                rolls[i] = addedRolls[i - 1] - addedRolls[i];
                 if (rolls[i] == rolls[i - 1]) {
                     allEqual = true;
                 } else {
@@ -413,7 +413,7 @@ public class IntProviderIngredientTest {
             rolls[0] = 64 - addedRolls[0];
             boolean allEqual = false;
             for (int i = 1; i < runs; i++) {
-                rolls[i] = 64 - (addedRolls[i] - addedRolls[i - 1]);
+                rolls[i] = addedRolls[i - 1] - addedRolls[i];
                 if (rolls[i] == rolls[i - 1]) {
                     allEqual = true;
                 } else {
