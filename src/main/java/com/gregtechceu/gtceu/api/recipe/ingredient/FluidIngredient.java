@@ -106,10 +106,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (this.nbt != null && !this.nbt.equals(stack.getTag())) {
             return false;
         }
-        FluidStack[] testStacks = (this instanceof IntProviderFluidIngredient ipfi ?
-                new FluidStack[] { ipfi.getMaxSizeStack() } :
-                this.getStacks());
-        for (FluidStack fluidStack : testStacks) {
+        for (FluidStack fluidStack : this.getStacks()) {
             if (fluidStack.getFluid() != stack.getFluid()) continue;
             return true;
         }
