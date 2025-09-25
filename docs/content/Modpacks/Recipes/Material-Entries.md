@@ -32,7 +32,7 @@ ChemicalHelper.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
 
 In 7.0, a system was introduced to automatically detect the inputs of a recipe and use that information when generating a decomposition recipe for the resulting items.
 
-You can tell recipes to generate recycling information using either `.addMaterialInfo(true)` for item inputs ONLY or `addMaterialInfo(true, true)` for item and fluid inputs. You can also remove existing ItemMaterialInfo from an output item using `.removePreviousMaterialInfo()`, which will tell GT to not generate recycling recipes for the item output in that recipe.
+You can tell recipes to generate recycling information using either `.addMaterialInfo()` for item inputs ONLY or `addMaterialInfo(true, true)` for item and fluid inputs. You can also remove existing ItemMaterialInfo from an output item using `.removePreviousMaterialInfo()`, which will tell GT to not generate recycling recipes for the item output in that recipe.
 
 In KubeJS, adding decomposition info to a recipe would look as follows:
 

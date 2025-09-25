@@ -32,6 +32,9 @@ title: "Greenhouse"
 ## Multiblock
 === "JavaScript"
     ```js title="greenhouse_multiblock.js"
+    const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.RecipeLogic')
+    const $List = Java.loadClass('java.util.List')
+
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('greenhouse', 'multiblock')
             .rotationState(RotationState.NON_Y_AXIS)
@@ -39,7 +42,7 @@ title: "Greenhouse"
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition => FactoryBlockPattern.start()
                 .aisle('CCC', 'CGC', 'CGC', 'CLC', 'CCC')
-                .aisle('CMC', 'GSG', 'G#G', 'LIL', 'COC')
+                .aisle('CMC', 'G#G', 'G#G', 'LIL', 'COC')
                 .aisle('CKC', 'CGC', 'CGC', 'CLC', 'CNC')
                 .where('K', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('M', Predicates.blocks('moss_block')
@@ -47,17 +50,6 @@ title: "Greenhouse"
                     .or(Predicates.blocks('grass_block'))
                 )
                 .where('G', Predicates.blocks('ae2:quartz_glass'))
-                .where('S', Predicates.blocks('oak_sapling')
-                    .or(Predicates.blocks('dark_oak_sapling'))
-                    .or(Predicates.blocks('spruce_sapling'))
-                    .or(Predicates.blocks('birch_sapling'))
-                    .or(Predicates.blocks('jungle_sapling'))
-                    .or(Predicates.blocks('acacia_sapling'))
-                    .or(Predicates.blocks('azalea'))
-                    .or(Predicates.blocks('flowering_azalea'))
-                    .or(Predicates.blocks('mangrove_propagule'))
-                    .or(Predicates.blocks('gtceu:rubber_sapling'))
-                )
                 .where('I', Predicates.blocks('glowstone'))
                 .where('L', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
                 .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
@@ -70,9 +62,9 @@ title: "Greenhouse"
                 .where('#', Predicates.air())
                 .build()
             )
-            .workableCasingModel(
-                "gtceu:block/casings/solid/machine_casing_solid_steel",
-                "gtceu:block/multiblock/implosion_compressor"
+            .modelProperty(GTModelProperties.RECIPE_LOGIC_STATUS, $RecipeLogic.Status.IDLE)
+            .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
+                ["andThen(java.util.function.Consumer)"](b => b.addDynamicRenderer(() => GTDynamicRenders.makeGrowingPlantRender($List.of(new Vector3f(0, 1, -1)))))
             )
     })
     ```
@@ -85,23 +77,13 @@ title: "Greenhouse"
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
-                    .aisle("CMC", "GSG", "G#G", "LIL", "COC")
+                    .aisle("CMC", "G#G", "G#G", "LIL", "COC")
                     .aisle("CKC", "CGC", "CGC", "CLC", "CNC")
                     .where('K', Predicates.controller(Predicates.blocks(definition.get())))
                     .where('M', Predicates.blocks(Blocks.MOSS_BLOCK)
                             .or(Predicates.blocks(Blocks.DIRT))
                             .or(Predicates.blocks(Blocks.GRASS_BLOCK)))
                     .where('G', Predicates.blocks(AEBlocks.QUARTZ_GLASS.block()))
-                    .where('S', Predicates.blocks(Blocks.OAK_SAPLING)
-                            .or(Predicates.blocks(Blocks.DARK_OAK_SAPLING))
-                            .or(Predicates.blocks(Blocks.SPRUCE_SAPLING))
-                            .or(Predicates.blocks(Blocks.BIRCH_SAPLING))
-                            .or(Predicates.blocks(Blocks.JUNGLE_SAPLING))
-                            .or(Predicates.blocks(Blocks.ACACIA_SAPLING))
-                            .or(Predicates.blocks(Blocks.AZALEA))
-                            .or(Predicates.blocks(Blocks.FLOWERING_AZALEA))
-                            .or(Predicates.blocks(Blocks.MANGROVE_PROPAGULE))
-                            .or(Predicates.blocks(GTBlocks.RUBBER_SAPLING.get())))
                     .where('I', Predicates.blocks(Blocks.GLOWSTONE))
                     .where('L', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
                     .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
@@ -111,9 +93,9 @@ title: "Greenhouse"
                     .where('N', Predicates.abilities(PartAbility.MAINTENANCE))
                     .where('#', Predicates.air())
                     .build())
-            .workableCasingModel(
-                    GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
-                    GTCEu.id("gtceu:block/multiblock/implosion_compressor"))
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
+                .andThen(b -> b.addDynamicRenderer(() -> GTDynamicRenders.makeGrowingPlantRender(List.of(new Vector3f(0, 1, -1))))))
             .register();
     ```
 

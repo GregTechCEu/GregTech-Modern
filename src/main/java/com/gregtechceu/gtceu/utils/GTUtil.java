@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
@@ -59,6 +60,7 @@ import org.lwjgl.glfw.GLFW;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -77,6 +79,17 @@ public class GTUtil {
     });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
+
+    private static final MapColor[] MAP_COLORS;
+
+    static {
+        int maxId = MapColor.GLOW_LICHEN.id;
+        MAP_COLORS = new MapColor[maxId];
+        for (int i = 0; i < maxId; i++) {
+            // Skip MapColor.NONE
+            MAP_COLORS[i] = MapColor.byId(i + 1);
+        }
+    }
 
     /**
      * Convenience method to get from VN -> Tier
@@ -390,18 +403,29 @@ public class GTUtil {
      * Determines dye color nearest to specified RGB color
      */
     public static DyeColor determineDyeColor(int rgbColor) {
+        return closestColor(rgbColor, DyeColor.values(), DyeColor::getTextColor);
+    }
+
+    /**
+     * Determines map color nearest to specified RGB color
+     */
+    public static MapColor determineMapColor(int rgbColor) {
+        return closestColor(rgbColor, MAP_COLORS, c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+    }
+
+    private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
         double min = Double.MAX_VALUE;
-        DyeColor minColor = null;
-        for (DyeColor dyeColor : DyeColor.values()) {
-            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
+        T minColor = null;
+        for (T color : colors) {
+            float[] c2 = GradientUtil.getRGB(extractRgbColor.apply(color));
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            if (Double.compare(min, distance) < 0) {
-                minColor = dyeColor;
+            if (Double.compare(min, distance) > 0) {
+                minColor = color;
                 min = distance;
             }
         }
