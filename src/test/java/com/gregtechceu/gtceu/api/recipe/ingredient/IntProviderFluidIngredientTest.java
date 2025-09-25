@@ -37,7 +37,7 @@ import lombok.Getter;
 
 /**
  * Test cases:
- * do many passes of most tests as a safeguard against bad rolls
+ * Do many passes of most tests as a safeguard against bad rolls
  * Same output more than once
  * Out of bounds
  * Output a multiple of batchparallels
