@@ -19,6 +19,7 @@ import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
@@ -160,6 +161,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient of(FluidStack inner, int min, int max) {
         return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
+    }
+
+    @Override
+    public boolean test(@Nullable FluidStack stack) {
+        return inner.test(stack);
     }
 
     /**
