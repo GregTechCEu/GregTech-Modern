@@ -182,7 +182,6 @@ public class IntProviderIngredientTest {
         return new BusHolderBatchParallel(inputBus1, inputHatch1, outputBus1, outputHatch1, controller, parallelHatch);
     }
 
-    // TODO: SABOTAGED OUT
     // Test for singleblock machine with ranged item input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594
@@ -254,7 +253,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: IN
     // Test for singleblock machine with ranged item input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInput(GameTestHelper helper) {
@@ -314,7 +312,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: OUT
     // Test for singleblock machine with ranged item input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemOutput(GameTestHelper helper) {
@@ -371,7 +368,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: IN
     // test for multiblock machine with ranged item input
     @GameTest(template = "lcr_ranged_ingredients", batch = "RangedIngredients", setupTicks = 40, timeoutTicks = 200)
     public static void multiblockLCRRangedItemInput(GameTestHelper helper) {
@@ -427,7 +423,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: OUT
     // test for multiblock machine with ranged item input
     @GameTest(template = "lcr_ranged_ingredients", batch = "RangedIngredients", setupTicks = 40, timeoutTicks = 200)
     public static void multiblockLCRRangedItemOutput(GameTestHelper helper) {
@@ -480,7 +475,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: IN
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
@@ -552,7 +546,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: OUT
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
@@ -628,8 +621,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: IN
-    // TODO 2: fix the run count and time
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
@@ -701,8 +692,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: OUT
-    // TODO 2: fix the run count and time
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
@@ -778,8 +767,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: IN
-    // TODO 2: fix the all of it
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
@@ -863,8 +850,6 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // TODO: OUT
-    // TODO 2: fix the all of it
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",

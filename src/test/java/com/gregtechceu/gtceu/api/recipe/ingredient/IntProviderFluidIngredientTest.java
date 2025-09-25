@@ -190,7 +190,6 @@ public class IntProviderFluidIngredientTest {
         return new BusHolderBatchParallel(inputBus1, inputHatch1, outputBus1, outputHatch1, controller, parallelHatch);
     }
 
-    // TODO: SABOTAGED OUT
     // Test for singleblock machine with ranged fluid input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594
@@ -262,8 +261,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-
-    // TODO: IN
     // Test for singleblock machine with ranged fluid input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedFluidInput(GameTestHelper helper) {
@@ -325,8 +322,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-
-    // TODO: OUT
     // Test for singleblock machine with ranged fluid input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedFluidOutput(GameTestHelper helper) {
@@ -383,7 +378,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: IN
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
               batch = "RangedFluidIngredients",
@@ -442,7 +436,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: OUT
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
               batch = "RangedFluidIngredients",
@@ -498,7 +491,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: IN
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
@@ -572,7 +564,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: OUT
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
@@ -648,8 +639,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: IN
-    // TODO 2: fix the run count and time
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
@@ -723,8 +712,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: OUT
-    // TODO 2: fix the run count and time
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
@@ -800,8 +787,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: IN
-    // TODO 2: fix the all of it
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
@@ -836,8 +821,10 @@ public class IntProviderFluidIngredientTest {
             helper.runAfterDelay(65 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
                 int completed = batches * parallels * finalI;
-                helper.assertTrue(TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0), fluidOut.getFluidInTank(0).getAmount()),
-                        new FluidStack(REDSTONE, completed)),
+                helper.assertTrue(
+                        TestUtils.isFluidStackEqual(
+                                new FluidStack(fluidOut.getFluidInTank(0), fluidOut.getFluidInTank(0).getAmount()),
+                                new FluidStack(REDSTONE, completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 (fluidOut.getFluidInTank(0).getAmount()) + "] not [" + completed + "]");
                 int upperLimit = amount - (batches * parallels * 0);
@@ -878,8 +865,6 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
-    // TODO: OUT
-    // TODO 2: fix the all of it
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedFluidIngredients",
