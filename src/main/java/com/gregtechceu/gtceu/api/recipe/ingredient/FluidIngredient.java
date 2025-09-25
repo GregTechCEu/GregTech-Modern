@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.lowdragmc.lowdraglib.syncdata.managed.IManagedVar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -106,7 +107,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (this.nbt != null && !this.nbt.equals(stack.getTag())) {
             return false;
         }
-        for (FluidStack fluidStack : this.getStacks()) {
+        FluidStack[] testStacks = (this instanceof IntProviderFluidIngredient ipfi ?
+                new FluidStack[]{ipfi.getMaxSizeStack()} :
+                this.getStacks());
+        for (FluidStack fluidStack : testStacks) {
             if (fluidStack.getFluid() != stack.getFluid()) continue;
             return true;
         }
