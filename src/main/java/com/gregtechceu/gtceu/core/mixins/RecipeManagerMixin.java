@@ -51,7 +51,7 @@ public abstract class RecipeManagerMixin {
             if (recipesByID == null) {
                 continue;
             }
-            RecipeManagerHandler.addToLookup(recipesByID, gtRecipeType);
+            RecipeManagerHandler.addRecipesToLookup(recipesByID, gtRecipeType);
         }
     }
 }

@@ -530,15 +530,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             gtRecipeType.getProxyRecipes().forEach((type, list) -> {
                 RecipeManagerHandler.addProxyRecipesToLookup(recipesByName, gtRecipeType, type, list);
             });
-            RecipeManagerHandler.addToLookup(recipesByName, gtRecipeType);
+            RecipeManagerHandler.addRecipesToLookup(recipesByName, gtRecipeType);
         }
     }
 
     private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
-        GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.type.id);
+        GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
         if (gtRecipeType == null) {
-            // should not happen
+            GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: {}", gtRecipe.getType());
             return;
         }
 

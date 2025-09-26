@@ -57,8 +57,8 @@ public final class RecipeManagerHandler {
      * @param recipesByID  the recipes stored by their ID
      * @param gtRecipeType the recipe type to add recipes to
      */
-    public static void addToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
-                                   @NotNull GTRecipeType gtRecipeType) {
+    public static void addRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
+                                          @NotNull GTRecipeType gtRecipeType) {
         var lookup = gtRecipeType.getLookup();
         for (var r : recipesByID.values()) {
             if (r.getType() != gtRecipeType) {
