@@ -538,7 +538,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
         GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
         if (gtRecipeType == null) {
-            GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: {}", gtRecipe.getType());
+            GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: '{}' with type '{}'", gtRecipe.getId(),
+                    gtRecipe.getType());
             return;
         }
 
