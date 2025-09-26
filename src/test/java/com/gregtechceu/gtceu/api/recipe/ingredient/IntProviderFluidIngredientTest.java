@@ -261,6 +261,39 @@ public class IntProviderFluidIngredientTest {
         });
     }
 
+    // Failure Test for singleblock machine with ranged fluid input
+    // Provides too little input fluid, should not run recipes.
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    public static void singleblockRangedFluidInputFailure(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
+                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
+                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
+
+        int runs = 10;
+        fluidIn.setFluidInTank(0, new FluidStack(CR_IN, 8));
+        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
+        // 1t to turn on, 2t per non-recipe run
+        helper.runAfterDelay(runs * 2 + 1, () -> {
+            FluidStack results = fluidIn.getFluidInTank(0);
+
+            helper.assertTrue(fluidOut.isEmpty(),
+                    "Singleblock CR should not have run, ran [" +
+                            fluidOut.getFluidInTank(0).getAmount() + "] times");
+            helper.assertTrue(TestUtils.isFluidStackEqual(results, new FluidStack(CR_IN, 8)),
+                    "Singleblock CR should not have consumed items, consumed [" +
+                            (8 - results.getAmount()) + "]");
+
+            helper.succeed();
+        });
+    }
+
     // Test for singleblock machine with ranged fluid input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedFluidInput(GameTestHelper helper) {

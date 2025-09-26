@@ -253,6 +253,37 @@ public class IntProviderIngredientTest {
         });
     }
 
+    // Failure Test for singleblock machine with ranged item input
+    // Provides too few input items, should not run recipes.
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    public static void singleblockRangedItemInputFailure(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        int runs = 10;
+        itemIn.setStackInSlot(0, CR_IN.copyWithCount(8));
+        itemIn.setStackInSlot(1, COBBLE.copyWithCount(runs));
+        // 1t to turn on, 2t per non- recipe run
+        helper.runAfterDelay(runs * 2 + 1, () -> {
+            ItemStack results = itemIn.getStackInSlot(0);
+
+            helper.assertTrue(itemOut.isEmpty(),
+                    "Singleblock CR should not have run, ran [" +
+                            itemOut.getStackInSlot(0).getCount() + "] times");
+            helper.assertTrue(TestUtils.isItemStackEqual(results, CR_IN.copyWithCount(8)),
+                    "Singleblock CR should not have consumed items, consumed [" +
+                            (8 - results.getCount()) + "]");
+
+            helper.succeed();
+        });
+    }
+
     // Test for singleblock machine with ranged item input
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInput(GameTestHelper helper) {
@@ -312,7 +343,7 @@ public class IntProviderIngredientTest {
         });
     }
 
-    // Test for singleblock machine with ranged item input
+    // Test for singleblock machine with ranged item output
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemOutput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
