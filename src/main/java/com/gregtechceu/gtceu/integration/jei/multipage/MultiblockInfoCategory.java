@@ -9,7 +9,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
