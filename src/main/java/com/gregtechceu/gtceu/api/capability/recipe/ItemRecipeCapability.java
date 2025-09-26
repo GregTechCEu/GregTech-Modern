@@ -46,6 +46,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     @Override
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
             if (item instanceof Ingredient ingredient) {
