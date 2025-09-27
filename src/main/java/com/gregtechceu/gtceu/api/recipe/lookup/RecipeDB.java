@@ -193,9 +193,7 @@ public final class RecipeDB {
                                                  @NotNull Branch branch, @NotNull Predicate<GTRecipe> predicate,
                                                  int index, int count, @NotNull BitSet skip) {
         // loop through all ingredients, wrapping around the end until all are tried.
-        int i;
-        do {
-            i = (index + 1) % ingredients.size();
+        for (int i = (index + 1) % ingredients.size(); i != index; i = (i + 1) % ingredients.size()) {
             if (skip.get(i)) {
                 continue;
             }
@@ -208,7 +206,7 @@ public final class RecipeDB {
                 return r;
             }
             skip.clear(i);
-        } while (i != index);
+        }
         return null;
     }
 
