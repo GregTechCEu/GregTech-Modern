@@ -176,8 +176,8 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 ```
 
 ## Creating the NotifiableHatch
-```java title="NotifiableBonkHatch"
-public class NotifiableBonkHatch extends NotifiableRecipeHandlerTrait<BonkIngredient>
+```java title="NotifiableBonkHandler"
+public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
 
     @Getter
@@ -188,11 +188,11 @@ public class NotifiableBonkHatch extends NotifiableRecipeHandlerTrait<BonkIngred
     @Getter
     private int bonk;
 
-    public NotifiableBonkHatch(MetaMachine machine, IO io) {
+    public NotifiableBonkHandler(MetaMachine machine, IO io) {
         this(machine, io, io);
     }
 
-    public NotifiableBonkHatch(MetaMachine machine, IO handlerIO, IO capabilityIO) {
+    public NotifiableBonkHandler(MetaMachine machine, IO handlerIO, IO capabilityIO) {
         super(machine);
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
@@ -254,19 +254,19 @@ public class NotifiableBonkHatch extends NotifiableRecipeHandlerTrait<BonkIngred
 public class BonkHatchPartMachine extends TieredIOPartMachine {
     
     @Persisted
-    public NotifiableBonkHatch bonkHatch;
+    public NotifiableBonkHandler bonkHandler;
 
 
     public BonkHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        // On creation the NotifiableBonkHatch attaches itself to the machine
-        this.bonkHatch = new NotifiableBonkHatch(this, io);
+        // On creation the NotifiableBonkHandler attaches itself to the machine
+        this.bonkHandler = new NotifiableBonkHandler(this, io);
     }
 
     @Override
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if(isRemote()) return InteractionResult.SUCCESS;
-        if(bonkHatch.addBonk(1, false)){
+        if(bonkHandler.addBonk(1, false)){
             playerIn.sendSystemMessage(Component.literal("Bonk! Total bonk stored: " + bonkHatch.getBonk()));
             return InteractionResult.CONSUME;
         }
