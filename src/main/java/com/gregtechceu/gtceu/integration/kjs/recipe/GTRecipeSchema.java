@@ -891,12 +891,31 @@ public interface GTRecipeSchema {
             return environmentalHazard(condition, false);
         }
 
+        public GTRecipeJS adjacentFluids(Fluid... fluids) {
+            return adjacentFluids(false, fluids);
+        }
+
+        public GTRecipeJS adjacentFluids(boolean isReverse, Fluid... fluids) {
+            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+        }
+
         public GTRecipeJS adjacentFluid(Fluid... fluids) {
             return adjacentFluid(false, fluids);
         }
 
         public GTRecipeJS adjacentFluid(boolean isReverse, Fluid... fluids) {
             return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentFluid(ResourceLocation... tagNames) {
+            return adjacentFluid(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.FLUID, id))
+                    .toList();
+            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
         }
 
         public GTRecipeJS adjacentFluidTag(ResourceLocation... tagNames) {
@@ -908,6 +927,14 @@ public interface GTRecipeSchema {
                     .map(id -> TagKey.create(Registries.FLUID, id))
                     .toList();
             return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlocks(Block... blocks) {
+            return adjacentBlocks(false, blocks);
+        }
+
+        public GTRecipeJS adjacentBlocks(boolean isReverse, Block... blocks) {
+            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
         }
 
         public GTRecipeJS adjacentBlock(Block... blocks) {
@@ -923,6 +950,17 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Block>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.BLOCK, id))
+                    .toList();
+            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlock(ResourceLocation... tagNames) {
+            return adjacentBlock(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
             List<TagKey<Block>> tags = Arrays.stream(tagNames)
                     .map(id -> TagKey.create(Registries.BLOCK, id))
                     .toList();
