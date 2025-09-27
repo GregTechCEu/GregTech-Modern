@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.gametest.framework.BeforeBatch;
@@ -107,30 +107,26 @@ public class NBTItemStackMapIngredientLookupTest {
     public static void NBTItemStackMapIngredientMatchingPartialTag1Test(GameTestHelper helper) {
         // Partial tag 1 fits in Partial tag 1
         GTRecipe resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.RED_BED, tag1))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.RED_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == PARTIAL_TAG_1,
                 "GT Recipe should be PARTIAL_TAG_1, instead was " + resultRecipe);
 
         // Partial tag 2 fits in Partial tag 1
         resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.RED_BED, tag2))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.RED_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == PARTIAL_TAG_1,
                 "GT Recipe should be PARTIAL_TAG_1, instead was " + resultRecipe);
 
         // Strict tag 1 and 2 should never fit in partial tag 1
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.RED_BED, tag1))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.RED_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.RED_BED, tag2))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.RED_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
         helper.succeed();
@@ -140,29 +136,25 @@ public class NBTItemStackMapIngredientLookupTest {
     public static void NBTItemStackMapIngredientMatchingPartialTag2Test(GameTestHelper helper) {
         // Partial tag 1 should not fit in partial tag 2
         GTRecipe resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BROWN_BED, tag1))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BROWN_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         // Partial tag 2 fits in Partial tag 2
         resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BROWN_BED, tag2))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BROWN_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == PARTIAL_TAG_2,
                 "GT Recipe should be PARTIAL_TAG_2, instead was " + resultRecipe);
 
         // Strict tag 1 and 2 should never fit in partial tag 2
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BROWN_BED, tag1))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BROWN_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BROWN_BED, tag2))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BROWN_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
         helper.succeed();
@@ -172,29 +164,25 @@ public class NBTItemStackMapIngredientLookupTest {
     public static void NBTItemStackMapIngredientMatchingStrictTag1Test(GameTestHelper helper) {
         // Partial tag 1 and 2 should not fit in strict tag 1
         GTRecipe resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.GREEN_BED, tag1))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.GREEN_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.GREEN_BED, tag2))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.GREEN_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         // Strict tag 1 should fit in strict tag 1
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.GREEN_BED, tag1))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.GREEN_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == STRICT_TAG_1,
                 "GT Recipe should be STRICT_TAG_1, instead was " + resultRecipe);
 
         // Strict tag 2 should not fit in strict tag 1
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.GREEN_BED, tag2))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.GREEN_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
         helper.succeed();
@@ -204,28 +192,24 @@ public class NBTItemStackMapIngredientLookupTest {
     public static void NBTItemStackMapIngredientMatchingStrictTag2Test(GameTestHelper helper) {
         // Partial tag 1 and 2 should not fit in strict tag 2
         GTRecipe resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BLUE_BED, tag1))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BLUE_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         resultRecipe = DB.find(
-                List.of(
-                        PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BLUE_BED, tag2))),
+                List.of(PartialNBTItemStackMapIngredient.from(PartialNBTIngredient.of(Items.BLUE_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         // Strict tag 1 should not fit in strict tag 2
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BLUE_BED, tag1))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BLUE_BED, tag1))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be null, instead was " + resultRecipe);
 
         // Strict tag 2 should fit in strict tag 2
         resultRecipe = DB.find(
-                List.of(
-                        StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BLUE_BED, tag2))),
+                List.of(StrictNBTItemStackMapIngredient.from(createStrictTaggedIngredient(Items.BLUE_BED, tag2))),
                 ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == STRICT_TAG_2,
                 "GT Recipe should be STRICT_TAG_2, instead was " + resultRecipe);
