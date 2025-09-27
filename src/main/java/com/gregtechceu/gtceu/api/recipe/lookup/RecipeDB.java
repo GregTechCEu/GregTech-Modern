@@ -15,12 +15,12 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -75,7 +75,8 @@ public final class RecipeDB {
      */
     @ApiStatus.Internal
     @VisibleForTesting
-    public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list, @NotNull Predicate<GTRecipe> predicate) {
+    public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list,
+                                   @NotNull Predicate<GTRecipe> predicate) {
         return findRecursive(list, predicate);
     }
 
@@ -86,7 +87,8 @@ public final class RecipeDB {
      * @param predicate the predicate to determine recipe validity
      * @return the recipe
      */
-    public @Nullable GTRecipe find(@NotNull Map<RecipeCapability<?>, List<Object>> inputs, @NotNull Predicate<GTRecipe> predicate) {
+    public @Nullable GTRecipe find(@NotNull Map<RecipeCapability<?>, List<Object>> inputs,
+                                   @NotNull Predicate<GTRecipe> predicate) {
         List<List<AbstractMapIngredient>> list = new ArrayList<>();
         inputs.forEach((cap, content) -> {
             if (!cap.isRecipeSearchFilter()) {
@@ -107,7 +109,8 @@ public final class RecipeDB {
      * @param predicate the predicate to determine recipe validity
      * @return an iterator
      */
-    public @Nullable RecipeDB.RecipeIterator iterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> predicate) {
+    public @Nullable RecipeDB.RecipeIterator iterator(@NotNull IRecipeCapabilityHolder holder,
+                                                      @NotNull Predicate<GTRecipe> predicate) {
         List<List<AbstractMapIngredient>> list = fromHolder(holder);
         if (list == null) {
             return null;
