@@ -31,12 +31,20 @@ import java.util.function.Predicate;
 
 @ApiStatus.Internal
 @RequiredArgsConstructor
-public final class RecipeDB {
+final class RecipeDB {
 
+    @Getter
     private final @NotNull GTRecipeType recipeType;
 
     @Getter
     private final Branch rootBranch = new Branch();
+
+    /**
+     * Clear the DB
+     */
+    public void clear() {
+        rootBranch.clear();
+    }
 
     /**
      * Find a GT Recipe

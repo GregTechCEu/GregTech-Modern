@@ -69,4 +69,8 @@ public final class RecipeManagerHandler {
             }
         }
     }
+
+    public static void finalizeLookup(@NotNull GTRecipeType gtRecipeType) {
+        GTRecipeLookup lookup = gtRecipeType.getLookup();
+    }
 }

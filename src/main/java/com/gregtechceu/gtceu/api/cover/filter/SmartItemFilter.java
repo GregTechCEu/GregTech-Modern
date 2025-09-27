@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -91,8 +90,8 @@ public class SmartItemFilter implements ItemFilter {
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
         var ingredients = MapIngredientTypeManager.getFrom(copy, ItemRecipeCapability.CAP);
-        var recipe = filterMode.lookup.recurseIngredientTreeFindRecipe(List.of(ingredients),
-                filterMode.lookup.getLookup(), r -> true);
+        var recipe = filterMode.recipeType.getLookup().recurseIngredientTreeFindRecipe(List.of(ingredients),
+                filterMode.recipeType.getLookup().getLookup(), r -> true);
         if (recipe == null) return 0;
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
             var stacks = ItemRecipeCapability.CAP.of(content.getContent()).getItems();
@@ -121,13 +120,13 @@ public class SmartItemFilter implements ItemFilter {
 
         private static final SmartFilteringMode[] VALUES = values();
         private final String localeName;
-        private final GTRecipeLookup lookup;
+        private final GTRecipeType recipeType;
         private final Object2IntOpenCustomHashMap<ItemStack> cache = new Object2IntOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
 
         SmartFilteringMode(String localeName, GTRecipeType type) {
             this.localeName = localeName;
-            this.lookup = type.getLookup();
+            this.recipeType = type;
         }
 
         @Override

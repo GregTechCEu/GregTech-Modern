@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+@ApiStatus.Internal
 @RequiredArgsConstructor
 public class GTRecipeLookup {
 
@@ -455,8 +456,7 @@ public class GTRecipeLookup {
      */
     @ApiStatus.Internal
     public void removeAllRecipes() {
-        this.lookup.getNodes().clear();
-        this.lookup.getSpecialNodes().clear();
+        lookup.clear();
         this.recipeType.getCategoryMap().clear();
     }
 

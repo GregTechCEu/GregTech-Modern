@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
+@ApiStatus.Internal
 public class Branch {
 
     // Keys on this have *(should)* have unique hashcodes.
@@ -59,5 +61,13 @@ public class Branch {
             specialNodes = new Object2ObjectOpenHashMap<>(2);
         }
         return specialNodes;
+    }
+
+    /**
+     * Removes all nodes in the branch
+     */
+    public void clear() {
+        this.specialNodes = null;
+        this.nodes = null;
     }
 }
