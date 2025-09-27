@@ -66,7 +66,7 @@ This NotifiableHandler has a few important methods:
     - `boolean simulate`: whether this is a simulate run (for e.g. recipe checking) or to actually modify the contents of the item
     - returns `List<Ingredient>` a list of remaining ingredients, aka what could not be inserted / extracted.
 
-In this case it's an `NotifiableRecipeHandlerTrait<Ingredient>` (where `Ingredient` is a wrapper around `ItemStack` to help account for ranged inputs/outputs), but a recipe handle can take anything.
+In this case it's an `NotifiableRecipeHandlerTrait<Ingredient>` (where `Ingredient` is a wrapper around `ItemStack` to help account for ranged inputs/outputs), but a recipe handler can take anything.
 
 To actually store this `Ingredient`, we need something that can be handled properly by our RecipeLookup. To do this, we wrap the `Ingredient` in another object, called an `ItemStackMapIngredient`. 
 This class extends AbstractMapIngredient, which most importantly has a correct `.hash()` and `.equals()` function.  

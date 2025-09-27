@@ -252,7 +252,8 @@ public class NotifiableBonkHatch extends NotifiableRecipeHandlerTrait<BonkIngred
 ## Creating the MultiPart
 ```java title="BonkHatchPartMachine"
 public class BonkHatchPartMachine extends TieredIOPartMachine {
-
+    
+    @Persisted
     public NotifiableBonkHatch bonkHatch;
 
 

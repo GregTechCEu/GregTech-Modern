@@ -2,9 +2,9 @@
 title: "Recipe Logic"
 ---
 
-Any `WorkableMachine` has a `RecipeLogic` as a trait. These machines have a `TickableSubscription` that calls `recipeLogic.ServerTick`.
-A (slightly simplified) version of recipeLogic.serverTick can be seen below:
-```java
+Any `WorkableMachine` has a `RecipeLogic` as a trait. These machines have a `TickableSubscription` that calls `recipeLogic.serverTick`.
+A (slightly simplified) version of `recipeLogic.serverTick` can be seen below:
+```java title="RecipeLogic.java"
 public void serverTick() {
     if (!isSuspend()) {
         if (!isIdle() && lastRecipe != null) {
@@ -26,4 +26,4 @@ public void serverTick() {
 }
 ```
 
-For the recipe checking (aka `findAndHandleRecipe`), 
+We will dissect this method in [Recipe Searching](./Recipe-Searching.md) and [Recipe Execution](./Recipe-Execution.md).
