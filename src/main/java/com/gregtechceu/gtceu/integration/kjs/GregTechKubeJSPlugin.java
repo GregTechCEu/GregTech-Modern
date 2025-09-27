@@ -53,6 +53,7 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -533,6 +534,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             RecipeManagerHandler.addRecipesToLookup(recipesByName, gtRecipeType);
             gtRecipeType.getAdditionHandler().completeStaging();
         }
+        MapIngredientPool.clear();
     }
 
     private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
