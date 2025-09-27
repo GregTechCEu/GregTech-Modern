@@ -47,14 +47,16 @@ public class RecipeLogicTest {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
+        LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
 
+        CR_RECIPE_TYPE.getAdditionHandler().beginStaging();
         CR_RECIPE_TYPE.getAdditionHandler().addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_singleblock_recipelogic"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
-        LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
+        CR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
