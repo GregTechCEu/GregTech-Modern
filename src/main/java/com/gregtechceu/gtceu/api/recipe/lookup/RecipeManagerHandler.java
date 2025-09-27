@@ -29,7 +29,6 @@ public final class RecipeManagerHandler {
      *
      * @param recipesByID  the recipes stored by their ID
      * @param gtRecipeType the recipe type to add the recipes to, which owns the proxy recipes
-     * @param proxyType    the recipeType for the proxy recipes
      * @param proxyRecipes the list of proxy recipes to populate
      */
     public static void addProxyRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
@@ -62,10 +61,7 @@ public final class RecipeManagerHandler {
         var lookup = gtRecipeType.getLookup();
         for (var r : recipesByID.values()) {
             if (r.getType() != gtRecipeType) {
-                // should not happen
-                GTCEu.LOGGER.warn("Recipe '{}' with RecipeType '{}' did not match GTRecipeType '{}'.",
-                        r.getId(), ForgeRegistries.RECIPE_TYPES.getKey(r.getType()),
-                        gtRecipeType.registryName);
+                // do not add recipes of incompatible type
                 continue;
             }
             if (r instanceof GTRecipe recipe) {
