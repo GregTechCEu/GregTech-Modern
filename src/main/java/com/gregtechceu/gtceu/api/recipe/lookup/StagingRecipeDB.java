@@ -121,6 +121,9 @@ public final class StagingRecipeDB {
      */
     private static void buildInputsByCap(@NotNull Map<RecipeCapability<?>, List<Content>> map,
                                          @NotNull RecipeCapability<?> cap, @NotNull List<Content> list) {
+        if (!cap.isRecipeSearchFilter()) {
+            return;
+        }
         map.compute(cap, (k, v) -> {
             if (v == null) {
                 return new ArrayList<>(list);
