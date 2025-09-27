@@ -9,39 +9,14 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.stream.Stream;
 
 @ApiStatus.Internal
-public class Branch {
+final class Branch {
 
     // Keys on this have *(should)* have unique hashcodes.
     private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> nodes;
     // Keys on this have collisions, and must be differentiated by equality.
     private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> specialNodes;
-
-    public Stream<GTRecipe> getRecipes(boolean filterHidden) {
-        Stream<GTRecipe> stream = null;
-        if (nodes != null) {
-            stream = nodes.values().stream()
-                    .flatMap(either -> either.map(Stream::of, right -> right.getRecipes(filterHidden)));
-        }
-        if (specialNodes != null) {
-            if (stream == null) {
-                stream = specialNodes.values().stream()
-                        .flatMap(either -> either.map(Stream::of, right -> right.getRecipes(filterHidden)));
-            } else {
-                stream = Stream.concat(stream, specialNodes.values().stream()
-                        .flatMap(either -> either.map(Stream::of, right -> right.getRecipes(filterHidden))));
-            }
-        }
-        if (stream == null) {
-            return Stream.empty();
-        }
-        if (filterHidden) {
-            // stream = stream.filter(t -> !t.isHidden());
-        }
-        return stream;
-    }
 
     public boolean isEmptyBranch() {
         return (nodes == null || nodes.isEmpty()) && (specialNodes == null || specialNodes.isEmpty());

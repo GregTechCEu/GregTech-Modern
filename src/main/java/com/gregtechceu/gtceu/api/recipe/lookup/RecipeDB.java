@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -15,33 +15,28 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-@ApiStatus.Internal
-@RequiredArgsConstructor
-final class RecipeDB {
+/**
+ * Data structure storing recipes by their input ingredients
+ */
+public final class RecipeDB {
 
-    @Getter
-    private final @NotNull GTRecipeType recipeType;
-
-    @Getter
-    private final Branch rootBranch = new Branch();
+    private final @NotNull Branch rootBranch = new Branch();
 
     /**
      * Clear the DB
      */
+    @ApiStatus.Internal
     public void clear() {
         rootBranch.clear();
     }
@@ -63,12 +58,61 @@ final class RecipeDB {
      * @param predicate the predicate to determine recipe validity
      * @return the recipe
      */
-    private @Nullable GTRecipe find(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> predicate) {
+    public @Nullable GTRecipe find(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> predicate) {
         List<List<AbstractMapIngredient>> list = fromHolder(holder);
         if (list == null) {
             return null;
         }
         return findRecursive(list, predicate);
+    }
+
+    /**
+     * Find a GT Recipe
+     *
+     * @param list      the ingredients to search
+     * @param predicate the predicate to determine recipe validity
+     * @return the recipe
+     */
+    @ApiStatus.Internal
+    @VisibleForTesting
+    public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list, @NotNull Predicate<GTRecipe> predicate) {
+        return findRecursive(list, predicate);
+    }
+
+    /**
+     * Find a GT Recipe
+     *
+     * @param inputs    the input capabilities and their associated contents to search with
+     * @param predicate the predicate to determine recipe validity
+     * @return the recipe
+     */
+    public @Nullable GTRecipe find(@NotNull Map<RecipeCapability<?>, List<Object>> inputs, @NotNull Predicate<GTRecipe> predicate) {
+        List<List<AbstractMapIngredient>> list = new ArrayList<>();
+        inputs.forEach((cap, content) -> {
+            if (!cap.isRecipeSearchFilter()) {
+                return;
+            }
+            var compressed = cap.compressIngredients(content);
+            for (var ingredient : compressed) {
+                list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
+            }
+        });
+        return findRecursive(list, predicate);
+    }
+
+    /**
+     * Create an iterator for a search space
+     *
+     * @param holder    the holder to search
+     * @param predicate the predicate to determine recipe validity
+     * @return an iterator
+     */
+    public @Nullable RecipeDB.RecipeIterator iterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> predicate) {
+        List<List<AbstractMapIngredient>> list = fromHolder(holder);
+        if (list == null) {
+            return null;
+        }
+        return new RecipeIterator(this, list, predicate);
     }
 
     /**
@@ -180,18 +224,17 @@ final class RecipeDB {
         // the initial capacity is a "feel-good" value because it's faster to just grow the list
         // than to calculate an accurate value.
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(handlerMap.size() * 8);
-        for (var entry : handlerMap.entrySet()) {
-            var cap = entry.getKey();
+        handlerMap.forEach((cap, handlers) -> {
             if (!cap.isRecipeSearchFilter()) {
-                continue;
+                return;
             }
-            for (var handler : entry.getValue()) {
+            for (var handler : handlers) {
                 var compressed = cap.compressIngredients(handler.getContents());
                 for (var ingredient : compressed) {
                     list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
                 }
             }
-        }
+        });
         if (list.isEmpty()) {
             return null;
         }
@@ -222,7 +265,7 @@ final class RecipeDB {
      */
     boolean add(@NotNull GTRecipe recipe, @NotNull List<@Unmodifiable List<AbstractMapIngredient>> ingredients) {
         // Add combustion fuels to the Powerless Jetpack
-        if (recipeType == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
+        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
             FluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
             PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
@@ -265,7 +308,7 @@ final class RecipeDB {
                         if (ConfigHolder.INSTANCE.dev.debug || GTCEu.isDev()) {
                             GTCEu.LOGGER.warn(
                                     "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
-                                    ForgeRegistries.RECIPE_TYPES.getKey(this.recipeType));
+                                    ForgeRegistries.RECIPE_TYPES.getKey(recipe.getType()));
                             if (v.left().isPresent()) {
                                 GTCEu.LOGGER.warn("Attempted to add GTRecipe: {}, which conflicts with {}",
                                         recipe.getId(), v.left().get().getId());
@@ -312,5 +355,40 @@ final class RecipeDB {
             }
         }
         return true;
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class RecipeIterator implements Iterator<GTRecipe> {
+
+        private final @NotNull RecipeDB db;
+        private final @NotNull List<List<AbstractMapIngredient>> ingredients;
+        private final @NotNull Predicate<GTRecipe> predicate;
+        private int index;
+
+        @Override
+        public boolean hasNext() {
+            return index < ingredients.size();
+        }
+
+        @Override
+        public @Nullable GTRecipe next() {
+            while (index < ingredients.size()) {
+                BitSet skipSet = new BitSet(ingredients.size());
+                skipSet.set(index);
+                GTRecipe r = db.findRecursive(ingredients, db.rootBranch, predicate, index, 0, skipSet);
+                index++;
+                if (r != null) {
+                    return r;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Reset the iterator
+         */
+        public void reset() {
+            this.index = 0;
+        }
     }
 }

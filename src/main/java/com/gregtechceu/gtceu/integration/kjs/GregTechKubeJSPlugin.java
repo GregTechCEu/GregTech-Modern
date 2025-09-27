@@ -526,11 +526,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }
-            gtRecipeType.getLookup().removeAllRecipes();
+            gtRecipeType.getAdditionHandler().beginStaging();
             gtRecipeType.getProxyRecipes().forEach((type, list) -> {
                 RecipeManagerHandler.addProxyRecipesToLookup(recipesByName, gtRecipeType, type, list);
             });
             RecipeManagerHandler.addRecipesToLookup(recipesByName, gtRecipeType);
+            gtRecipeType.getAdditionHandler().completeStaging();
         }
     }
 

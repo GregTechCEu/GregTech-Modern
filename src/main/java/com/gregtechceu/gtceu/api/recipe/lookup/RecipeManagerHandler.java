@@ -25,7 +25,7 @@ import java.util.Map;
 public final class RecipeManagerHandler {
 
     /**
-     * Adds proxy recipes to an {@link GTRecipeType}'s {@link GTRecipeLookup} and adds them to a list.
+     * Adds proxy recipes to an {@link GTRecipeType}'s {@link RecipeAdditionHandler} and adds them to a list.
      *
      * @param recipesByID  the recipes stored by their ID
      * @param gtRecipeType the recipe type to add the recipes to, which owns the proxy recipes
@@ -34,7 +34,7 @@ public final class RecipeManagerHandler {
     public static void addProxyRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
                                                @NotNull GTRecipeType gtRecipeType, @NotNull RecipeType<?> proxyType,
                                                @NotNull List<GTRecipe> proxyRecipes) {
-        var lookup = gtRecipeType.getLookup();
+        var lookup = gtRecipeType.getAdditionHandler();
         proxyRecipes.clear();
         recipesByID.forEach((id, recipe) -> {
             if (recipe.getType() != proxyType) {
@@ -46,31 +46,27 @@ public final class RecipeManagerHandler {
             }
             GTRecipe gtRecipe = gtRecipeType.toGTrecipe(id, recipe);
             proxyRecipes.add(gtRecipe);
-            lookup.addRecipe(gtRecipe);
+            lookup.addStaging(gtRecipe);
         });
     }
 
     /**
-     * Adds recipes to an {@link GTRecipeType}'s {@link GTRecipeLookup}
+     * Adds recipes to an {@link GTRecipeType}'s {@link RecipeAdditionHandler}
      *
      * @param recipesByID  the recipes stored by their ID
      * @param gtRecipeType the recipe type to add recipes to
      */
     public static void addRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
                                           @NotNull GTRecipeType gtRecipeType) {
-        var lookup = gtRecipeType.getLookup();
+        var lookup = gtRecipeType.getAdditionHandler();
         for (var r : recipesByID.values()) {
             if (r.getType() != gtRecipeType) {
                 // do not add recipes of incompatible type
                 continue;
             }
             if (r instanceof GTRecipe recipe) {
-                lookup.addRecipe(recipe);
+                lookup.addStaging(recipe);
             }
         }
-    }
-
-    public static void finalizeLookup(@NotNull GTRecipeType gtRecipeType) {
-        GTRecipeLookup lookup = gtRecipeType.getLookup();
     }
 }
