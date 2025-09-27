@@ -1,30 +1,30 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.*;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 
 @ApiStatus.Internal
-@RequiredArgsConstructor
-final class StagingRecipeDB {
+public final class StagingRecipeDB {
 
-    private final ObjectOpenHashSet<GTRecipe> recipes = new ObjectOpenHashSet<>();
-    private final @NotNull GTRecipeType recipeType;
+    private final @NotNull ObjectOpenHashSet<GTRecipe> recipes = new ObjectOpenHashSet<>();
 
+    /**
+     * Add a recipe to the DB
+     *
+     * @param recipe the recipe
+     * @return if successful
+     */
     public boolean add(@NotNull GTRecipe recipe) {
         return recipes.add(recipe);
     }
@@ -43,7 +43,6 @@ final class StagingRecipeDB {
      * @param db the db to populate
      */
     public void populateDB(@NotNull RecipeDB db) {
-        Preconditions.checkArgument(db.getRecipeType() == recipeType, "cannot populate RecipeDB with incompatible RecipeTypes");
         var frequencies = inputFrequencies();
         for (GTRecipe recipe : recipes) {
             List<Pair<RecipeCapability<?>, Object>> flattedContent = flattenedContent(recipe);
@@ -83,7 +82,7 @@ final class StagingRecipeDB {
 
     /**
      * @param list the list of content
-     * @param cap the RecipeCapability for the content
+     * @param cap  the RecipeCapability for the content
      * @return the compressed ingredient form of the content
      */
     private static @NotNull List<Object> compressedContent(@NotNull List<Content> list,

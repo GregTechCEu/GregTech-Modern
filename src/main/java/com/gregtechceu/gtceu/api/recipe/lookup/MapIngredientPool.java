@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+/**
+ * Pool for {@link AbstractMapIngredient} to save memory
+ */
 @ApiStatus.Internal
 final class MapIngredientPool {
 
