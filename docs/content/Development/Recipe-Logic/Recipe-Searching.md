@@ -124,7 +124,7 @@ These are used by our GTRecipeLookup to find the correct ingredients inside our 
 ```
 
 When our GTRecipeLookup scans the machine for inputs (via the handlers' `.getContents()` methods), it then converts these to MapIngredients.
-This is the `List<List<AbstractMapIngredient>>` input. The reason it's a double list is that e.g. one written book can become: a `ItemStackMapIngredient`, an `ItemTagMapIngredient`, a `PartialNBTItemStackMapIngredient`, a `StrictNBTItemStackMapIngredient`, and potentially others based on addons / registration.
+This is the `List<List<AbstractMapIngredient>>` input. The reason it's a double list is that one `Content` can be turned into multiple `Ingredient`s. e.g. one written book can become: a `ItemStackMapIngredient`, an `ItemTagMapIngredient`, a `PartialNBTItemStackMapIngredient`, a `StrictNBTItemStackMapIngredient`, and potentially others based on addons / registration.
 So for every content from `.getContents()`, a `List<AbstractMapIngredient>` gets made. See this excerpt from the `.fromHolder` method: 
 ```java
 var compressed = cap.compressIngredients(handler.getContents());
