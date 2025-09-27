@@ -55,7 +55,7 @@ During recipe handling, the `RecipeHandlerList`s get split up in groups during `
 
 ## RecipeRunner.handleContents
 This is a very big function, so we will go through it in steps:
-```java
+```java title="RecipeRunner.java"
 private ActionResult handleContents() {
     if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
     if (!capabilityProxies.containsKey(io)) {
@@ -77,7 +77,7 @@ private ActionResult handleContents() {
 This  takes care of fetching the `RecipeHandlerList`s of a machine, and dividing them up into groups
 we take care of the grouping `RecipeHandlerList`s by their respective group, and dividing them up.
 
-```java
+```java title="RecipeRunner.java"
     // Specifically check distinct handlers first
     for (RecipeHandlerList handler : handlerGroups.getOrDefault(BUS_DISTINCT, Collections.emptyList())) {
         // Handle the contents of this handler and also all the bypassed handlers
@@ -113,7 +113,7 @@ Then, if the list of remaining items is not empty yet, we check the `RecipeHandl
 If it is empty, then the simulation is a success. If `simulated` is false, we can run the code again, this time actually consuming the recipe contents. 
 If it's not empty, we continue to the next distinct bus.
 
-```java
+```java title="RecipeRunner.java"
     // Check the other groups.
     for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
         if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
@@ -185,7 +185,7 @@ This is how the logic for RecipeHelper.handleRecipeIO works. The same can be sai
 ## The rest of RecipeLogic
 To recap, this is what happens during `RecipeLogic.setupRecipe(recipe)` after the recipe is found.
 Then, if that returns a success, a bunch of RecipeLogic related variables are set, like:
-```java
+```java title="RecipeLogic.java"
     var handledIO = handleRecipeIO(recipe, IO.IN);
     if (handledIO.isSuccess()) {
         recipeDirty = false;
@@ -197,8 +197,8 @@ Then, if that returns a success, a bunch of RecipeLogic related variables are se
     }
 ```
 This is all that happens in this tick (see [RecipeLogic.serverTick](./Recipe-Logic.md)).
-Then, on the next tick, we call `recipeLogic.handleRecipeWorking()`, which does the following:
-```java
+Then, on the next tick, we call `recipeLogic.handleRecipeWorking()`, which calls the following:
+```java title="RecipeLogic.java"
 public ActionResult handleTickRecipe(GTRecipe recipe) {
     if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
