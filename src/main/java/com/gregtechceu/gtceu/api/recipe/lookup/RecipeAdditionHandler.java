@@ -54,7 +54,6 @@ public final class RecipeAdditionHandler {
         db.clear();
         stagingDB.populateDB(db);
         stagingDB.clear();
-        MapIngredientPool.clear();
         this.isStaging = false;
     }
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
@@ -54,5 +55,6 @@ public abstract class RecipeManagerMixin {
             RecipeManagerHandler.addRecipesToLookup(recipesByID, gtRecipeType);
             gtRecipeType.getAdditionHandler().completeStaging();
         }
+        MapIngredientPool.clear();
     }
 }

@@ -14,7 +14,7 @@ import java.util.WeakHashMap;
  * Pool for {@link AbstractMapIngredient} to save memory
  */
 @ApiStatus.Internal
-final class MapIngredientPool {
+public final class MapIngredientPool {
 
     private static final Map<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> pool = new WeakHashMap<>();
 
@@ -44,7 +44,7 @@ final class MapIngredientPool {
     /**
      * Clear the ingredient pool
      */
-    static void clear() {
+    public static void clear() {
         pool.clear();
     }
 }
