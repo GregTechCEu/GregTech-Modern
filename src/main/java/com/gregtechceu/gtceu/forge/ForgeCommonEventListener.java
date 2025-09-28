@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -68,7 +69,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
@@ -80,7 +80,6 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -108,7 +107,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -376,15 +374,13 @@ public class ForgeCommonEventListener {
         }
     }
 
-    public static final UUID BLOCK_SPEED_BOOST = UUID.fromString("b14c1720-b06f-40f6-98fd-625af4ed1076");
-
     @SubscribeEvent
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
-            var speedMod = speedAttrib.getModifier(BLOCK_SPEED_BOOST);
+            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
 
             float speedBoost = 0.0f;
             if (!player.onGround() || player.isInWater() || player.isCrouching()) {
@@ -392,67 +388,28 @@ public class ForgeCommonEventListener {
             } else {
                 var state = player.level().getBlockState(player.getOnPos());
                 if (state.is(CustomTags.SPEED_CONCRETES)) {
-                    speedBoost = (float) speedAttrib.getBaseValue() * 0.6f; // value that is added to the base MC speed
+                    speedBoost = 0.6f; // value that is added to the base MC speed
                 } else if (state.is(CustomTags.SPEED_STUDS)) {
-                    speedBoost = (float) speedAttrib.getBaseValue() * 0.25f; // slower to walk on studs
+                    speedBoost = 0.25f; // slower to walk on studs
                 } else if (state.is(CustomTags.SLOW_FRAMES)) {
-                    speedBoost = (float) speedAttrib.getBaseValue() * -0.20f; // slower on frames
+                    speedBoost = -0.20f; // slower on frames
                 }
             }
             if (speedMod != null) {
-                if (speedBoost == speedMod.getAmount())
+                if (speedBoost == speedMod.getAmount()) {
                     return;
-                else
-                    speedAttrib.removeModifier(BLOCK_SPEED_BOOST);
+                } else {
+                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                }
             } else {
                 if (speedBoost == 0.0f) return;
             }
             if (speedBoost != 0.0f) {
-                speedAttrib.addTransientModifier(new AttributeModifier(BLOCK_SPEED_BOOST, "GT Block Speed Boost",
-                        speedBoost, AttributeModifier.Operation.ADDITION));
+                speedAttrib.addTransientModifier(
+                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
+                                speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void updateFOV(ComputeFovModifierEvent event) {
-        Player player = event.getPlayer();
-
-        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (moveSpeed == null || moveSpeed.getModifier(BLOCK_SPEED_BOOST) == null) return;
-        float originalFov = player.getAbilities().flying ? 1.1F : 1.0F;
-
-        originalFov *= ((float) moveSpeed.getBaseValue() / player.getAbilities().getWalkingSpeed() + 1.0F) / 2.0F;
-        if (player.getAbilities().getWalkingSpeed() == 0.0F || Float.isNaN(originalFov) ||
-                Float.isInfinite(originalFov)) {
-            return;
-        }
-
-        float newFov = player.getAbilities().flying ? 1.1F : 1.0F;
-        newFov *= ((float) getValueWithoutWalkingBoost(moveSpeed) / player.getAbilities().getWalkingSpeed() + 1.0F) /
-                2.0F;
-
-        event.setNewFovModifier(originalFov / newFov * event.getNewFovModifier());
-    }
-
-    private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
-        double base = attrib.getBaseValue();
-
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.ADDITION)) {
-            base += mod.getAmount();
-        }
-
-        double applied = base;
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_BASE)) {
-            applied += base * mod.getAmount();
-        }
-
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_TOTAL)) {
-            if (mod.getId() == BLOCK_SPEED_BOOST) continue;
-            applied *= 1 + mod.getAmount();
-        }
-
-        return attrib.getAttribute().sanitizeValue(applied);
     }
 
     @SubscribeEvent
