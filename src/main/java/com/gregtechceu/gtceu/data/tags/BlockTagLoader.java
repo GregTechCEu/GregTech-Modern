@@ -42,7 +42,7 @@ public class BlockTagLoader {
             speedConcretes.add(block.get());
         });
 
-        var studs = provider.addTag(CustomTags.STUDS);
+        var studs = provider.addTag(CustomTags.SPEED_STUDS);
         GTBlocks.STUDS.forEach((color, block) -> {
             studs.add(block.get());
         });

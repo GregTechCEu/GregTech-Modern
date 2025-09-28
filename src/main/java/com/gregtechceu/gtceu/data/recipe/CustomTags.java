@@ -199,7 +199,7 @@ public class CustomTags {
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
     public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");
     public static final TagKey<Block> SPEED_CONCRETES = TagUtil.createBlockTag("speed_concretes");
-    public static final TagKey<Block> STUDS = TagUtil.createBlockTag("slow_studs");
+    public static final TagKey<Block> SPEED_STUDS = TagUtil.createBlockTag("speed_studs");
     public static final TagKey<Block> SLOW_FRAMES = TagUtil.createBlockTag("slow_frames");
     public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powders");
     public static final TagKey<Block> CLEANROOM_FLOORS = TagUtil.createModBlockTag("cleanroom_floors");
