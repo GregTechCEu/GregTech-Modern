@@ -1749,6 +1749,7 @@
   "config.gtceu.option.coloredTieredMachineOutline": "coloredTieredMachineOutline",
   "config.gtceu.option.coloredWireOutline": "coloredWireOutline",
   "config.gtceu.option.compat": "compat",
+  "config.gtceu.option.createCompat": "createCompat",
   "config.gtceu.option.debug": "debug",
   "config.gtceu.option.debugWorldgen": "debugWorldgen",
   "config.gtceu.option.defaultPaintingColor": "defaultPaintingColor",
