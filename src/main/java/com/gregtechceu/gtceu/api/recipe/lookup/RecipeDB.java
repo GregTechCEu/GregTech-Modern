@@ -118,6 +118,15 @@ public final class RecipeDB {
         return new RecipeIterator(this, list, predicate);
     }
 
+    public @Nullable RecipeDB.DFSRecipeIterator DFSiterator(@NotNull IRecipeCapabilityHolder holder,
+                                                            @NotNull Predicate<GTRecipe> predicate) {
+        List<List<AbstractMapIngredient>> list = fromHolder(holder);
+        if (list == null) {
+            return null;
+        }
+        return new DFSRecipeIterator(this, list, predicate);
+    }
+
     /**
      * Recursively finds a recipe.
      *
@@ -358,7 +367,7 @@ public final class RecipeDB {
         return true;
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
     public static class RecipeIterator implements Iterator<GTRecipe> {
 
         private final @NotNull RecipeDB db;
@@ -390,6 +399,92 @@ public final class RecipeDB {
          */
         public void reset() {
             this.index = 0;
+        }
+    }
+
+    private static class SearchFrame {
+
+        int index;           // ingredient slot we’re exploring
+        int ingredientIndex; // position within ingredients[index]
+        Branch branch;       // branch in the recipe DB
+
+        public SearchFrame(int index, Branch branch) {
+            this.index = index;
+            this.ingredientIndex = 0;
+            this.branch = branch;
+        }
+    }
+
+    public static class DFSRecipeIterator implements Iterator<GTRecipe> {
+
+        private final @NotNull RecipeDB db;
+        private final @NotNull List<List<AbstractMapIngredient>> ingredients;
+        private final @NotNull Predicate<GTRecipe> predicate;
+
+        private final Deque<SearchFrame> stack = new ArrayDeque<>();
+
+        public DFSRecipeIterator(@NotNull RecipeDB db,
+                                 @NotNull List<List<AbstractMapIngredient>> ingredients,
+                                 @NotNull Predicate<GTRecipe> predicate) {
+            this.db = db;
+            this.ingredients = ingredients;
+            this.predicate = predicate;
+
+            for (int i = ingredients.size() - 1; i >= 0; i--) {
+                stack.push(new SearchFrame(i, db.rootBranch));
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !stack.isEmpty();
+        }
+
+        @Override
+        public GTRecipe next() {
+            while (!stack.isEmpty()) {
+                // We stay on one frame until all ingredients have been checked
+                SearchFrame frame = stack.peek();
+
+                if (frame.ingredientIndex >= ingredients.get(frame.index).size()) {
+                    stack.pop();
+                    continue;
+                }
+
+                List<AbstractMapIngredient> ingredientList = ingredients.get(frame.index);
+                AbstractMapIngredient ingredient = ingredientList.get(frame.ingredientIndex);
+                // Increment candidate pos for next iteration
+                frame.ingredientIndex++;
+                var nodes = nodesForIngredient(ingredient, frame.branch);
+                var result = nodes.get(ingredient);
+                if (result == null) {
+                    continue;
+                }
+
+                // Option 1: It's a recipe
+                GTRecipe recipe = result.map(
+                        r -> predicate.test(r) ? r : null,
+                        b -> null);
+                if (recipe != null) {
+                    return recipe;
+                }
+
+                // Option 2: It's a branch, dive deeper
+                result.ifRight(b -> {
+                    for (int j = ingredients.size() - 1; j >= 0; j--) {
+                        stack.push(new SearchFrame(j, b));
+                    }
+                });
+            }
+
+            return null; // no more recipes
+        }
+
+        public void reset() {
+            stack.clear();
+            for (int i = ingredients.size() - 1; i >= 0; i--) {
+                stack.push(new SearchFrame(i, db.rootBranch));
+            }
         }
     }
 }
