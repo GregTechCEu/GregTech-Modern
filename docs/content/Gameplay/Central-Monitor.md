@@ -10,6 +10,7 @@ title: The Central Monitor & Placeholder System
 The Central Monitor is a multiblock that allows you to insert modules into it to render images and text.<br>
 Images update every 120 seconds, text update rate depends on the voltage provided to the multiblock.
 Guide on how to use the central monitor:
+
 1. Right-click the controller
 2. In the UI, you will see a grid of monitors, the controller, energy hatch and (optionally) a data hatch
 3. Select some of the monitors (in any configuration) by left-clicking on them

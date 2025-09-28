@@ -49,38 +49,7 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
     }
     ```
 
-### Placeholders
-Placeholders can be used by players in the monitor text module, or in the computer monitor cover (though a bit more limited).
-For example, a player may write something like this in a text module:
-```
-Hello on day {calc {tick} / 20000}!
-Current energy buffer: {formatInt {energy}}/{formatInt {energyCapacity}} EU\
-{if {cmp {energy} < 5000000} {color red "\nLOW ENERGY!"}}
-Here's some random stuff:
-{repeat 5 {repeat {random 2 10} {block}}
-```
-And something like this would be displayed:
-```
-Hello on day 420!
-Current energy buffer: 4.2M/6.9M EU
-LOW ENERGY!
-Here's some random stuff:
-███████
-██
-█████
-████
-██████████
-```
-This system is turing-complete (i.e. if the player really wanted to play Doom on the Central Monitor, they could).<br>
-All placeholders work on strings (or, more specifically, `Component`s to allow text formatting), so when you write `{calc {calc 2 + 4} * 3}`,
-first `{calc 2 + 4}` will be evaluated into `6`, then it will be converted to a string and back to an int, and then it will be passed into the second placeholder
-to evaluate `{calc 6 * 3}` into `18`, which will be turned into a string again. That also allows for things like `{calc 3 + 1}2`, which will evaluate into `42`,
-since outside of placeholders text is simply concatenated. Placeholder arguments are separated by spaces, which may be a bit annoying, when wanting to pass a string
-with a space into a placeholder, for example `{if 1 string with spaces}`, which will cause an error. In these cases, double quotes can be used: `{if 1 "string with spaces"}`
-will work perfectly fine. There are placeholders that need reference items, to achieve that, there are 8 slots in the text module's UI on the left.
-Items can be inserted/extracted from these slots automatically using the `ender` placeholder by interacting with Ender Item Links.<br>
-
-!!! tip "The full list of placeholders with explanations on what they do and usage examples can be found in-game in the text module or computer monitor UI on the left."
+!!! info "For info on the placeholder system itself, see [the gameplay wiki page](../../Gameplay/Central-Monitor.md)"
 
 ### Adding custom placeholders
 
