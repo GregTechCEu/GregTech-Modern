@@ -16,7 +16,7 @@ If you want to make a custom ingredient, you need to do the following things
 7. Create a RecipeType so we can test with it
 8. Register all these things
 
-## Creating the ingredient
+## Creating the Ingredient
 For our example, we will be using a simple ingredient called Bonk that simply holds how often you right clicked the hatch with a hard hammer.
 
 For our first step, we will be creating the ingredient:
@@ -368,7 +368,7 @@ public class BonkRecipes {
 }
 ```
 
-## Registering everything
+## Registering Everything
 
 ```java title="BonkRecipeCapabilities.java"
 public class BonkRecipeCapabilities {
