@@ -316,7 +316,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(machine, r -> matchRecipe(r).isSuccess());
+        return machine.getRecipeType().searchRecipe(machine, r -> true);
     }
 
     public void findAndHandleRecipe() {
