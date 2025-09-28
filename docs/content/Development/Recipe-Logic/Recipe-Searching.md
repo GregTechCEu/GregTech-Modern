@@ -52,9 +52,17 @@ With this, we have arrived at the function that actually does the searching of t
 Before we can dive into the actual function, we need to understand how Ingredients work.
 
 ## From Machine to Ingredient
-A machine can have multiple attached IRecipeHandler traits. These are abstractions around for example the itemslots and circuit slot of an input bus, or the energy buffer of a singleblock.  
+A trait is a type of object that gets stored on the machine on creation, e.g. 
+```java
+    public MachineTrait(MetaMachine machine) {
+        // ...
+        machine.attachTraits(this);
+    }
+```
+A machine can have many different traits. One of these is `IRecipeHandler`. This trait is used when collecting the inputs/outputs for `RecipeLogic`. 
+`IRecipeHandler`s are abstractions around for example the item slots and circuit slot of an input bus, or the energy buffer of a singleblock.
 
-An example of one of these would be an `new NotifiableItemStackHandler(machine, slots, IO)`. On creation, it attaches itself to the machine.  
+An example of one of these would be an `new NotifiableItemStackHandler(machine, slots, IO)`. On creation, it attaches itself to the machine, so you don't have to link it to the `RecipeLogic` in any way. The WorkableMachine takes care of that.  
 
 This NotifiableHandler has a few important methods:
 
