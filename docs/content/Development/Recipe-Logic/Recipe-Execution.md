@@ -40,7 +40,7 @@ This dictates what `RecipeHandlerGroup` a `RecipeHandlerList` is put in:
 
  - If the `RecipeHandlerList` has a `RecipeHandler` whose `RecipeCapability` has `.shouldBypassDistinct()` return true, it gets put in the `BYPASS_DISTINCT` group. These busses (for example Energy Hatches) are global and should interact with every combination, regardless of distinctness, color, etc.
  - If the `RecipeHandlerList` is set to distinct, it will get put in the `BUS_DISTINCT` group.
- - If the `RecipeHanlderList` is undyed, it gets put in the `UNDYED` group
+ - If the `RecipeHandlerList` is undyed, it gets put in the `UNDYED` group
  - Otherwise, the `RecipeHandlerList` gets put in a group specific to its color.
 
 It's important to note that, during grouping, UNDYED groups get added to every other color group as well. This is because our recipe handling logic works the following way:
@@ -177,7 +177,7 @@ If it's not empty, we continue to the next distinct bus.
 
 This is the same loop of logic as we had before, but a little more complicated. 
 Instead of checking each `RecipeHandlerList` individually like we did for `BUS_DISTINCT`, we check all the busses in each group at once. 
-There's also the caveat of `BYPASS_DISTINCT` having to be checked with every group, but not with itself, so there's aditional logic in place for that.
+There's also the caveat of `BYPASS_DISTINCT` having to be checked with every group, but not with itself, so there's additional logic in place for that.
 The rest is relatively the same.
 
 This is how the logic for RecipeHelper.handleRecipeIO works. The same can be said for tick ingredients, except the tick inputs are passed in, as well as the sorting step in the start. The rest remains the same.

@@ -34,7 +34,7 @@ During the `RecipeLogic.serverTick` method (see [Recipe Logic](./Recipe-Logic.md
 This checks if the `lastRecipe` is set, and if it can be matched, runs it again.
 If it can't be matched, it calls `handleSearchingRecipes(searchRecipe())`
 
-`searchRecipe()` is  the actual recipe searching logic. In big lines, it finds what ingredients are currently available in the machine, groups those, and traverses the `RecipeLookup` to create an iterator of recipes that are available.  
+`searchRecipe()` is the actual recipe searching logic. In big lines, it finds what ingredients are currently available in the machine, groups those, and traverses the `RecipeLookup` to create an iterator of recipes that are available.  
 `handleSearchingRecipes()` then goes through that iterator, and for every recipe it runs the recipe modifier, checks if this machine can run it, if the inputs are there, if it has enough output space etc.  
 
 The actual code for searchRecipe is:
@@ -60,11 +60,11 @@ This NotifiableHandler has a few important methods:
 
  - a `List<Ingredient> getContents()` method, which is where the ingredient list is retrieved for recipe search
  - a `List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate)` method, which is where the I/O magic of the handler happens
-    - `IO io`:  whether the recipe is trying to input or output into the handler
-    - `GTRecipe recipe`: the recipe that's being ran
-    - `List<Ingredient> left`: the remaining items to put into / otake out of the handler
-    - `boolean simulate`: whether this is a simulate run (for e.g. recipe checking) or to actually modify the contents of the item
-    - returns `List<Ingredient>` a list of remaining ingredients, aka what could not be inserted / extracted.
+    - `IO io`:  whether the recipe is trying to input or output into the world (e.g. IO.IN takes stuff from the handler, IO.OUT puts stuff in the handler)
+    - `GTRecipe recipe`: the recipe that's being run
+    - `List<Ingredient> left`: the remaining items to put into / take out of the handler
+    - `boolean simulate`: whether this is a simulate run (for e.g. recipe checking) or to actually modify the contents of the handler
+    - returns `List<Ingredient>` a list of remaining ingredients, aka what could not be inserted / extracted. Note that if no contents are left, `null` should be returned.
 
 In this case it's an `NotifiableRecipeHandlerTrait<Ingredient>` (where `Ingredient` is a wrapper around `ItemStack` to help account for ranged inputs/outputs), but a recipe handler can take anything.
 
