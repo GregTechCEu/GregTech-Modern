@@ -396,7 +396,7 @@ public class ForgeCommonEventListener {
                 } else if (state.is(CustomTags.STUDS)) {
                     speedBoost = (float) speedAttrib.getBaseValue() * 0.25f; // slower to walk on studs
                 } else if (state.is(CustomTags.SLOW_FRAMES)) {
-                    speedBoost = -0.025f; // slower on frames
+                    speedBoost = (float) speedAttrib.getBaseValue() * -0.20f; // slower on frames
                 }
             }
             if (speedMod != null) {
