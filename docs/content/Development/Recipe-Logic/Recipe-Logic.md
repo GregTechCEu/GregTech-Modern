@@ -9,18 +9,14 @@ public void serverTick() {
     if (!isSuspend()) {
         if (!isIdle() && lastRecipe != null) {
             if (progress < duration) {
-                if (runDelay > 0) {
-                    runDelay--;
-                } else {
-                    handleRecipeWorking();
-                }
+                handleRecipeWorking();
             }
             if (progress >= duration) {
                 onRecipeFinish();
             }
-        } else if (lastRecipe != null) {
+        } else {
             findAndHandleRecipe();
-        } // Code for rechecking
+        } // Code for re-doing previous recipe
     }
     // Logic for unsubscribing if needed
 }
