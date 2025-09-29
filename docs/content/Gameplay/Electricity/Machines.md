@@ -21,7 +21,7 @@ machines:
     * The voltage which can be safely input to the machine. A machine which receives an amp of power from a voltage above
     its tier will **explode**.
     * The tier of recipes the machine can run. Many recipes have a minimum required voltage tier.
-    * The tier of **overclock** the machine runs at. Higher-voltage machines running lower-voltage recipes will Overclock
+    * The tier of **Overclock** the machine runs at. Higher-voltage machines running lower-voltage recipes will Overclock
   the recipes. And Overclocked recipe consumes power as if it were a tier up (4x EU/t), and be completed in 1/2 the time.
   This does mean that overclocked machines are less energy efficient (4x voltage, 1/2 time, 2x total energy usage), 
   however such is the cost of technology, speed, and industrialization.
@@ -44,6 +44,8 @@ These behaviors mean that a Battery can be used to stabilize the power feed to a
 have sufficient power to run continuously, counteract Powerstalling, and allow the machine to buffer enough power to 
 run for short bursts and finish important recipes.
 
+In the ancient days of IndustrialCraft 2, Redstone Dust could be placed in a machine's battery slot to provide 1000 EU
+to the machine. This is *not* a feature in GregTech Modern.
 
 ## Multiblock Machines
 Starting from the Electric Blast Furnace as the gateway to MV, and expanding greatly in HV and IV, Multiblock Machines 

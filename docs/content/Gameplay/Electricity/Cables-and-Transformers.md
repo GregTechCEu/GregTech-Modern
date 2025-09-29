@@ -8,6 +8,11 @@ are not directional in how they allow power to flow. Cable connections can be ad
 Wire Cutters are also the tool used to break and retrieve cable blocks.
 * Maximum Voltage. Every cable has a maximum voltage of energy it can carry. Sending EU of too high a voltage down a 
 cable will cause the cable to catch fire and be destroyed.
+    * If a cable attempts to carry an amp of too high a voltage, the cable will *reduce the carried voltage to its own
+  safe limit* before being destroyed. This means that, if a high-voltage generator is inadvertently connected to a low-
+  voltage cable, the cable will act as a sacrificial fuse and be destroyed, but the lower-voltage machines further down 
+  the line will be protected and not explode. As such, it is generally much less safe to directly power machines using
+  cables that carry a higher voltage tier than the machine.
 * Maximum Amperage. Similar to Voltage, every cable has a maximum Amperage it can safely carry. However, sending too many
 Amps down a cable will not cause an instant failure. Instead, over-amping a cable will cause it to very briefly heat up.
 If the cable heats up too much, its Insulation layer will burn off, and if it continues heating, it will eventually
