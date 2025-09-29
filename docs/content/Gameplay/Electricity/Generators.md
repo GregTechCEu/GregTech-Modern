@@ -14,8 +14,19 @@ EMI can display a list of all valid fuels a generator can consume. This fuel dis
     * The generation rate. Any generator which consumes this fuel must be of a power tier at or above this rate.
     * The total EU produced by one cycle. This is equal to the burn time x the generation rate.
 * Produce EU every tick. All singleblock generators produce and output EU equal to 1A @ their tier voltage.
-* Output EU every tick. All generators have one output side which provides 1A @ tier voltage to either a Cable or an
-adjacent Machine.
+* Output EU every tick. All generators have one output side, marked with a colored dot, which provides 1A @ tier voltage
+to either a Cable or an adjacent Machine.
+    * Generators do not output "partial" amps or partial voltage. Generators will always output power in exact packets
+    of 1A @ tier voltage.
+
+Singleblock generators come in several variants, each accepting different fuels.
+
+* Steam Turbines produce EU from large volumes of Steam. The EMI display for Steam Turbines shows that they also
+output Distilled Water; this is a feature of the multiblock Large Steam Turbine (discussed below) but not the basic
+singleblock turbines
+* Gas Turbines produce EU from combustible gasses such as Methane and Benzene.
+* Combustion Engines produce EU from liquid oils and biodiesels. Combustion Engines benefit very heavily from refining 
+fuel before burning it.
 
 Singleblock generators are simple to operate, but are relatively expensive, often more expensive than the machines they
 give power to. While it is possible to directly feed machines with generators, it is often preferable to build a small
@@ -60,13 +71,13 @@ Large Combustion Engines are expensive structures to build but are fairly low-ma
 tier combustion fuels such as Gasoline are quite energy dense.
 
 ### Large Turbines
-The Large Steam, Gas, and Plasma turbine are more complex generators but which accept a wider range of fuels.
+The Large Steam, Gas, and Plasma turbine are more complex generators which accept a wider range of fuels.
 
 * Large Steam Turbines consume extremely large volumes of Steam to produce EU. LSTs also output Distilled Water, allowing
 for setups that loop back their own feed water or providing free distilled water to use elsewhere.
 * Large Gas Turbines consume large volumes of Gas Turbine fuels such as Benzene to produce EU.
 * Large Plasma Turbines consume small volumes of Plasma, produced by Fusion Reactors, to produce large amounts of EU.
-LPTs also output the liquid or gas of the plasma that was consumed as fuel.
+LPTs also output the liquid or gas form of the plasma that was consumed as fuel.
 
 Large Turbines are significantly cheaper to construct than Large Combustion Engines. However, they require an additional
 component: A **Rotor**. The Rotor is an expensive item with a finite durability (measured in seconds), that determines
