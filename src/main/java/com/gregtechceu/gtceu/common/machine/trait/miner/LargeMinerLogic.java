@@ -29,6 +29,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LargeMinerLogic extends MinerLogic {
 
@@ -149,7 +150,7 @@ public class LargeMinerLogic extends MinerLogic {
         fortunePick.enchant(fortuneHolder, getDropCountMultiplier());
         LootParams params = builder.withParameter(LootContextParams.TOOL, fortunePick)
                 .create(LootContextParamSets.BLOCK);
-        LootContext context = new LootContext.Builder(params).create(null);
+        LootContext context = new LootContext.Builder(params).create(Optional.empty());
 
         for (ItemStack outputStack : outputs) {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
