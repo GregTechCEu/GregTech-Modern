@@ -267,7 +267,7 @@ public class BonkHatchPartMachine extends TieredIOPartMachine {
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if(isRemote()) return InteractionResult.SUCCESS;
         if(bonkHandler.addBonk(1, false)){
-            playerIn.sendSystemMessage(Component.literal("Bonk! Total bonk stored: " + bonkHatch.getBonk()));
+            playerIn.sendSystemMessage(Component.literal("Bonk! Total bonk stored: " + bonkHandler.getBonk()));
             return InteractionResult.CONSUME;
         }
         return super.onHardHammerClick(playerIn, hand, gridSide, hitResult);
