@@ -17,7 +17,7 @@ Carrying or receiving unsafe Voltages can be highly destructive.
     * Tiers are referred to using a two or three letter abbreviation. In order, the full list of tiers is:
         * ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX 
     * Each successive voltage tier is 4x the voltage of the previous. (LV = 32V, MV = 128V, HV = 512V . . .)
-    * Transformers can be used to convert power at a voltage tier into the voltage above or below. 
+    * Transformers can be used to convert power at a voltage tier into the voltage above, or vice-versa. 
 * Amperage (A) is how many Voltage packets are being carried at the same time in parallel.
 * Voltage x Amperage results in **EU/t**. EU/t x Time results in **Total EU**.
 * Blocks that emit EU will only emit EU from a single designated output side, usually marked with a large colored dot. 
