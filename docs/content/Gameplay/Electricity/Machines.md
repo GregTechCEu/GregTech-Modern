@@ -30,16 +30,19 @@ machines:
     * Every singleblock machine accepts 1 Amp of power at its voltage tier to fill its buffer.
     * When running a recipe, the machine accepts amps equal to the amperage of the recipe.
     * When below 50% energy buffer and running a recipe, the machine accepts 1 additional Amp.
-        * This last aspect means that singleblock machines will, in general, accept either 1 or 2 Amps of power from any
-      connected generators. While it is possible to create recipes consuming multiple amps of power, there are currently
-      no recipes in GregTech Modern that do this.
-* Contain a Battery Slot. Batteries will be discussed more in [**Storage**](./Energy-Storage.md), however Batteries placed inside Machines
-will:
+
+This last aspect means that singleblock machines will, in general, accept either 1 or 2 Amps of power from any
+connected generators. While it is possible to create recipes consuming multiple amps of power, there are currently
+no recipes in GregTech Modern that do this.
+
+* Contain a Battery Slot, marked with a lightning bolt. Batteries will be discussed more in [Energy Storage](./Energy-Storage.md#batteries), 
+however Batteries placed inside Machines will:
     * Charge themselves when the machine's buffer is more than 2/3s full
     * Discharge themselves to power the machine when the machine's buffer is less than 1/3 full
-    * These behaviors mean that a Battery can be used to stabilize the power feed to a machine that may otherwise not
-  have sufficient power to run continuously, counteract Powerstalling, and allow the machine to buffer enough power to 
-  run for short bursts and finish important recipes.
+
+These behaviors mean that a Battery can be used to stabilize the power feed to a machine that may otherwise not
+have sufficient power to run continuously, counteract Powerstalling, and allow the machine to buffer enough power to 
+run for short bursts and finish important recipes.
 
 
 ## Multiblock Machines
@@ -75,11 +78,12 @@ Items, Fluids, Energy, and other interactions are done with the multiblock struc
     * Add-on mods may also define other types of Hatches to input or output other special types of recipe ingredients.
 * Consume EU from Energy Hatches. Unlike with singleblock machines, multiblock machines do not have an inherent voltage
 tier. Instead, multiblock machines operate at a voltage tier equal to the combined input of all of their energy hatches.
-    * Standard Energy Hatches accept 2 Amps of power on-tier, and provide this power to their associated Controller. 
+    * Standard Energy Hatches accept 2 Amps of power on-tier, and provide this power to their associated Controller.
+  An Energy Hatch which receives an amp of power of a voltage above its tier will **explode**.
     * Most multiblock machines can accept multiple energy hatches, allowing them to be either uptiered or overclocked
   using lower-tier components. This is immediately used on the Electric Blast Furnace, which requires MV power to run
   most recipes but can only be initially built using LV Energy Hatches. As such, a player's first EBF must be constructed
-  using two LV Energy Hatches, and fed by four LV Generators (or a [4x Battery Buffer](./Energy-Storage.md)).
+  using two LV Energy Hatches, and fed by four LV Generators (or a [4x Battery Buffer](./Energy-Storage.md#battery-buffers)).
     * The power tier of a multiblock machine is also used to determine Overclocks. Almost all multiblock machines use
   the same Overclocking rules as normal machines (4x EU/t, 1/2 recipe time), with three notable exceptions:
         * The **Large Chemical Reactor** uses "Perfect Overclocks": recipes run at 4x EU/t but **1/4th** recipe time,
@@ -121,8 +125,6 @@ The GCYM Multiblocks have all the above properties of normal Multiblock machines
 combining their inputs, outputs, and EU/t cost. If a machine does not have enough energy input to run its Hatch-allowed 
 parallels at full overclocked speed, it will reduce its overclock tier to compensate, improving energy efficiency but 
 (because of the parallel runs) not sacrificing recipe throughput volume.
-* Can use High-Amp Energy Hatches and Laser Hatches.
+* Can use High-Amp Energy Hatches.
     * Normal energy hatches accept 2 Amps of power. GCYM machines can accept 4A or 16A Energy Hatches, allowing for
   running higher parallel counts at higher overclock tiers.
-    * Laser Hatches do not connect to standard power cables. Instead, they connect to [Laser Pipes](./Cables.md), which 
-  transmit huge voltages and amperages from hatches on a [Power Substation](./Energy-Storage.md) to a machine.

@@ -18,6 +18,9 @@ EMI can display a list of all valid fuels a generator can consume. This fuel dis
 to either a Cable or an adjacent Machine.
     * Generators do not output "partial" amps or partial voltage. Generators will always output power in exact packets
     of 1A @ tier voltage.
+* Cannot be placed inside **Cleanrooms**. Placing a Generator inside a Cleanroom will block the Cleanroom controller from
+activating.
+    * To transfer power into a Cleanroom, use a [Diode](./Cables-and-Transformers.md#diodes).
 
 Singleblock generators come in several variants, each accepting different fuels.
 
@@ -31,10 +34,10 @@ fuel before burning it.
 Singleblock generators are simple to operate, but are relatively expensive, often more expensive than the machines they
 give power to. While it is possible to directly feed machines with generators, it is often preferable to build a small
 number of generators along with some form of [Energy Storage](./Energy-Storage.md) to power a large number of machines, 
-given that most of those machines will not be running simultaneously and most will not consume a full amp of power.
+given that most of those machines will not consume a full amp of power, or will not be running simultaneously.
 
-MV and HV machines consume additional fuel to produce power at higher voltages. They do not do this by altering fuel burn
-time; they do this by consuming multiple cycles of fuel simultaneously (which is sometimes displayed as "running [X] 
+MV and HV generators consume additional fuel to produce power at higher voltages. They do not do this by altering fuel 
+burn time; they do this by consuming multiple cycles of fuel simultaneously (which is sometimes displayed as "running [X] 
 recipes in parallel"), multiplying both their EU/t and fuel consumption rate.
 
 ## Multiblock Generators
