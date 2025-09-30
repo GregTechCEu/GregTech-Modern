@@ -52,6 +52,11 @@ All Multiblock Generators:
 one side of the generator. The Dynamo Hatch used determines the maximum output of the generator. Dynamo Hatches come in
 several variants, with different Voltage *and Amperage* output values, allowing a single multiblock generator to produce
 multiple Amps of power at their voltage. This helps compensate for their large size.
+    * A Dynamo Hatch determines the Voltage and the Maximum Amperage output by the generator. This is **not** the same as
+  the amount of EU the generator produces per tick. While using an undersized Dynamo Hatch will limit the maximum
+  output of the generator, using an oversized Dynamo Hatch will result in a generator which awakens from idle and 
+  emits a much higher amperage than its on-paper sustained power generation for a few seconds, until the Dynamo's internal
+  energy buffer drains.
 * Have efficiency boosts. Depending on their configuration, multiblock generators can produce significantly more EU per 
 mB of fuel than singleblock generators. This further compensates for their size, allowing larger and more powerful 
 machinery to be operated using a smaller fuel source.
