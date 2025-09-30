@@ -35,7 +35,7 @@ can influence how the material behaves, as well as which items are generated for
     - Description: Add to material to disable it's unification fully.
 
 - `DISABLE_MATERIAL_RECIPES`
-  - Description: Add to material to disable it's unification fully. This replaces NO_UNIFICATION.
+  - Description: Add to material to disable automatic recipe generation for it fully. This replaces NO_UNIFICATION.
     
 - `DECOMPOSITION_BY_ELECTROLYZING`
     - Description: Enables electrolyzer decomposition recipe generation Requires `.components(...)` to be set.
