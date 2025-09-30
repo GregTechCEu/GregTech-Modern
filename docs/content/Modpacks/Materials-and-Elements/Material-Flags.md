@@ -32,7 +32,7 @@ can influence how the material behaves, as well as which items are generated for
 # Generic Flags
 
 - `NO_UNIFICATION`
-    - Description: Add to material to disable it's unification fully.
+    - Description: Add to material to disable all recipes.
     
 - `DECOMPOSITION_BY_ELECTROLYZING`
     - Description: Enables electrolyzer decomposition recipe generation Requires `.components(...)` to be set.
