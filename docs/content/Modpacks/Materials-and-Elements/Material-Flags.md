@@ -32,7 +32,7 @@ can influence how the material behaves, as well as which items are generated for
 # Generic Flags
 
 - `NO_UNIFICATION`
-    - Description: Add to material to disable it's unification fully.
+    - Description: Add to material to disable automatic recipe generation for it fully. This flag is deprecated, please use DISABLE_MATERIAL_RECIPES instead.
 
 - `DISABLE_MATERIAL_RECIPES`
   - Description: Add to material to disable automatic recipe generation for it fully. This replaces NO_UNIFICATION.
