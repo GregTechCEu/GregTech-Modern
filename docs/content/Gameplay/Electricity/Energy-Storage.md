@@ -20,7 +20,7 @@ have a dedicated Battery slot, marked with a lightning bolt. A Battery placed in
     * Charge from the machine's energy buffer, if the machine's buffer is above 2/3s full
     * Discharge to feed the machine's buffer, if the buffer is below 1/3 full
 * Batteries held in a player's inventory will use their held charge to recharge electric tools or Armor that the player
-is holding or wearing. This behavior can be deactivated by shift-right-clicking while holding the battery.
+is holding or wearing. This behavior can be (de)activated by shift-right-clicking while holding the battery.
 * Batteries can be placed in Turbochargers to rapidly recharge them. A Turbocharger will accept up to 4 Amps of power
 per electric item contained (Batteries, Tools, Armor), and distribute that power among their contained batteries.
 * Batteries can be placed in Battery Buffers, which will be discussed next.

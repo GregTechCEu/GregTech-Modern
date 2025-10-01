@@ -1,12 +1,12 @@
 # Electricity
-The vast majority of GregTech Modern machines run on Electricity, also known as EU ("energy units"). Electricity and
+The vast majority of GregTech Modern machines run on Electricity, also known as EU ("Energy Units"). Electricity and
 Electric machines share several common safety and behavior rules.
 
 ## General concepts of EU
-* EU is produced by [**Generators**](./Generators.md) every tick
-* [**Electric Machines**](./Machines.md) consume EU every tick while operating
-* Batteries and Battery Buffers act as EU [**Storage**](./Energy-Storage.md)
-* [**Cables and Transformers**](./Cables-and-Transformers.md) transport EU between generators, storage, and machines
+* EU is produced by [**Generators**](./Generators.md) every tick.
+* [**Electric Machines**](./Machines.md) consume EU every tick while operating.
+* Batteries and Battery Buffers act as EU [**Storage**](./Energy-Storage.md).
+* [**Cables and Transformers**](./Cables-and-Transformers.md) transport EU between generators, storage, and machines.
 
 Batteries and Machines store EU in an internal buffer, but all EU transportation is done using **Voltage** and **Amperage**.
 

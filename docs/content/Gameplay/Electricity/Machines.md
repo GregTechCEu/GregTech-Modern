@@ -53,7 +53,7 @@ are the answer to needing more processing speed and volume, or doing processes w
 run in singleblock machines. All multiblock electric machines:
 
 * Perform recipes to produce or convert items or fluids.
-    * Multiblock machines have an additional operating mode called Batch Mode. Batch Mode is enabled via a toggle button
+    * Some Multiblock machines have an additional operating mode called Batch Mode. Batch Mode is enabled via a toggle button
   in the multiblock's Controller. Batch Mode has no effect on recipes that take longer than 2.5 seconds (after overclocks).
   However, for any recipes shorter than 2.5 seconds, the machine will attempt to combine together multiple recipe runs
   into a single large batch, completing as many recipes as possible within 5 second periods, combining their inputs and
