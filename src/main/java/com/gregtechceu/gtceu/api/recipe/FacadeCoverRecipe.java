@@ -108,9 +108,8 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryManager) {
-        ItemStack result = GTItems.COVER_FACADE.asStack();
+        ItemStack result = GTItems.COVER_FACADE.asStack(6);
         FacadeItemBehaviour.setFacadeState(result, Blocks.STONE.defaultBlockState());
-        result.setCount(6);
         return result;
     }
 
