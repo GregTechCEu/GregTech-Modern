@@ -28,8 +28,8 @@ Singleblock generators come in several variants, each accepting different fuels.
 output Distilled Water; this is a feature of the multiblock Large Steam Turbine (discussed below) but not the basic
 singleblock turbines
 * Gas Turbines produce EU from combustible gasses such as Methane and Benzene.
-* Combustion Engines produce EU from Petrochemicals and Biofuels. Combustion Engines benefit very heavily from refining 
-fuel before burning it.
+* Combustion Engines produce EU from liquid Oils, Diesels, Gasolines, and Biofuels. Combustion Engines benefit very 
+heavily from refining fuel before burning it.
 
 Singleblock generators are simple to operate, but are relatively expensive, often more expensive than the machines they
 give power to. While it is possible to directly feed machines with generators, it is often preferable to build a small
@@ -66,8 +66,8 @@ machinery to be operated using a smaller fuel source.
 There are two primary types of Multiblock Generators: the Large Combustion Engine, and Large Turbines.
 
 ### Large Combustion Engines
-The Large Combustion Engine (EV) and Extreme Combustion Engine (IV) are the simpler of the large generator types. They consume 
-Combustion Engine fuels to produce EU. They also passively consume Lubricant to operate.
+The Large Combustion Engine (EV) and Extreme Combustion Engine (IV) are the simpler of the large generator types. They 
+consume Combustion Engine fuels to produce EU. They also passively consume Lubricant to operate.
 
 The output and energy efficiency of an LCE/ECE can be significantly increased by feeding the generator with Oxygen (LCE)
 or Liquid Oxygen (ECE). This boost doubles the fuel consumption of the generator, but triples (LCE) or quadruples (ECE)

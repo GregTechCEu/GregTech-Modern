@@ -1,8 +1,8 @@
 # Electric Energy Storage
-Generators are expensive. It's often useful to make a small bank of generators to power a large array of machines,
-understanding that the machines will not usually all be operating at full power at the same time. This becomes especially
-true at EV and beyond, when singleblock generators are no longer an option. To answer these concerns and give power stability,
-Energy storage.
+[Generators](./Generators.md) are expensive machines. While it is possible to build a generator to power every machine, 
+it's much less expensive to build a small number of generators, and a means to store the generated EU, allowing a small 
+number of generators to power a large array of machines. This becomes especially applicable in EV and beyond, where 
+singleblock generators are no longer available.
 
 GregTech Modern contains three primary forms of energy storage: Batteries, Battery Buffers, and the Power Substation.
 
@@ -19,8 +19,9 @@ Batteries can be used in four ways:
 have a dedicated Battery slot, marked with a lightning bolt. A Battery placed in this slot will:
     * Charge from the machine's energy buffer, if the machine's buffer is above 2/3s full
     * Discharge to feed the machine's buffer, if the buffer is below 1/3 full
-* Batteries held in a player's inventory will use their held charge to recharge electric tools or Armor that the player
-is holding or wearing. This behavior can be (de)activated by shift-right-clicking while holding the battery.
+* Batteries carried in a player's inventory will use their held charge to recharge electric tools or Armor that the player
+is holding or wearing, at a rate of 1 Amp per tick. This behavior can be (de)activated by shift-right-clicking while 
+holding the battery.
 * Batteries can be placed in Turbochargers to rapidly recharge them. A Turbocharger will accept up to 4 Amps of power
 per electric item contained (Batteries, Tools, Armor), and distribute that power among their contained batteries.
 * Batteries can be placed in Battery Buffers, which will be discussed next.
@@ -34,7 +35,7 @@ bulk energy storage and power supply stabilization from LV through mid EV.
 In early EV, Battery Buffers also have an important further usage. A Battery Buffer can have an Energy Detector or
 Advanced Energy Detector Cover attached, to read the total energy contained within their held batteries. This readout
 is emitted as a Redstone Signal, which can be fed to a Machine Controller cover placed on a [Large Steam, Gas, or Plasma
-Turbine](./Generators.md#large-turbines). This setup can then be used to automatically turn the Turbine on when the 
+Turbine](./Generators.md#large-turbines). This setup can then be used to automatically turn the Turbine On when the 
 batteries run low, and Off when the batteries fill, greatly saving fuel and ensuring that full power is available at all
 times, regardless of if the Turbines are spun up or not.
 

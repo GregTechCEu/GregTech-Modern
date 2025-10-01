@@ -53,7 +53,7 @@ are the answer to needing more processing speed and volume, or doing processes w
 run in singleblock machines. All multiblock electric machines:
 
 * Perform recipes to produce or convert items or fluids.
-    * Some Multiblock machines have an additional operating mode called Batch Mode. Batch Mode is enabled via a toggle button
+    * Most Multiblock machines have an additional operating mode called Batch Mode. Batch Mode is enabled via a toggle button
   in the multiblock's Controller. Batch Mode has no effect on recipes that take longer than 2.5 seconds (after overclocks).
   However, for any recipes shorter than 2.5 seconds, the machine will attempt to combine together multiple recipe runs
   into a single large batch, completing as many recipes as possible within 5 second periods, combining their inputs and
@@ -82,7 +82,7 @@ Items, Fluids, Energy, and other interactions are done with the multiblock struc
 tier. Instead, multiblock machines operate at a voltage tier equal to the combined input of all of their energy hatches.
     * Standard Energy Hatches accept 2 Amps of power on-tier, and provide this power to their associated Controller.
   An Energy Hatch which receives an amp of power of a voltage above its tier will **explode**.
-    * Most multiblock machines can accept multiple energy hatches, allowing them to be either uptiered or overclocked
+    * Most multiblock machines can accept multiple energy hatches, allowing them to run recipes at higher tiers
   using lower-tier components. This is immediately used on the Electric Blast Furnace, which requires MV power to run
   most recipes but can only be initially built using LV Energy Hatches. As such, a player's first EBF must be constructed
   using two LV Energy Hatches, and fed by four LV Generators (or a [4x Battery Buffer](./Energy-Storage.md#battery-buffers)).
