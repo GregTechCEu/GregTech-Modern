@@ -62,11 +62,11 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     }
 
     public static long getVoltage(RecipeLogic capability) {
-        long tier = -1;
+        long voltage = -1;
         if (capability.machine instanceof SimpleTieredMachine machine) {
-            tier = GTValues.V[machine.getTier()];
+            voltage = GTValues.V[machine.getTier()];
         } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
-            tier = machine.getParts().stream()
+            voltage = machine.getParts().stream()
                     .filter(EnergyHatchPartMachine.class::isInstance)
                     .map(EnergyHatchPartMachine.class::cast)
                     .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
@@ -74,8 +74,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     .orElse(-1);
         }
         // default display as LV, this shouldn't happen because a machine is either electric or steam
-        if (tier == -1) tier = 32;
-        return tier;
+        if (voltage == -1) voltage = 32;
+        return voltage;
     }
 
     @Override
