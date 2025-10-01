@@ -49,11 +49,10 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
-            long voltage = getVoltage(capability);
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
             recipeInfo.putLong("EUt", EUt.getTotalEU());
-            recipeInfo.putLong("voltage", voltage);
+            recipeInfo.putLong("voltage", getVoltage(capability));
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
