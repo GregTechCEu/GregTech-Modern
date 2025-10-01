@@ -70,13 +70,9 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
             for (Object part : machine.getParts()) { // multiblock generator tier is set by constructor not hatches
                 if (part instanceof EnergyHatchPartMachine dynamo) {
-                    if (dynamo.getIo() == IO.OUT) {
-                        tier = GTValues.V[dynamo.getTier()];
-                    }
+                    long newtier = GTValues.V[dynamo.getTier()];
+                    if (newtier > tier) tier = newtier;
                 }
-            }
-            if (tier == -1) { // multiblock machine tier is set by energy hatches
-                tier = GTValues.V[machine.getTier()];
             }
         }
         // default display as LV, this shouldn't happen because a machine is either electric or steam
