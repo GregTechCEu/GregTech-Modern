@@ -4,10 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -46,16 +50,38 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
+            long voltage = getVoltage(capability);
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
             recipeInfo.putLong("EUt", EUt.getTotalEU());
-            recipeInfo.putLong("voltage", EUt.voltage());
+            recipeInfo.putLong("voltage", voltage);
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+    }
+
+    public static long getVoltage(RecipeLogic capability) {
+        long tier = -1;
+        if (capability.machine instanceof SimpleTieredMachine machine) {
+            tier = GTValues.V[machine.getTier()];
+        } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
+            for (Object part : machine.getParts()) { // multiblock generator tier is set by constructor not hatches
+                if (part instanceof EnergyHatchPartMachine dynamo) {
+                    if (dynamo.getIo() == IO.OUT) {
+                        tier = GTValues.V[dynamo.getTier()];
+                    }
+                }
+            }
+            if (tier == -1) { // multiblock machine tier is set by energy hatches
+                tier = GTValues.V[machine.getTier()];
+            }
+        }
+        // default display as LV, this shouldn't happen because a machine is either electric or steam
+        if (tier == -1) tier = 32;
+        return tier;
     }
 
     @Override
@@ -88,7 +114,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
                         var tier = GTUtil.getTierByVoltage(voltage);
-                        float minAmperage = (float) EUt / GTValues.V[tier];
+                        float minAmperage = (float) EUt / voltage;
 
                         text = Component
                                 .translatable("gtceu.jade.amperage_use",
