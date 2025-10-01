@@ -248,7 +248,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (!result.isSuccess()) return result;
 
         if (config.orderedAssemblyLineFluids) {
-            result = consumeFluidContents(copyWithItems, isTick);
+            result = consumeFluidContents(copyWithFluids, isTick);
         } else {
             result = isTick ?
                     RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN, chanceCaches) :
