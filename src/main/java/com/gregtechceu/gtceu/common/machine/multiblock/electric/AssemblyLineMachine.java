@@ -75,8 +75,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                         .map(ItemStack.class::cast)
                         .filter(s -> !s.isEmpty())
                         .findFirst())
-
-                .dropWhile(Optional::isEmpty)
                 .limit(inputsSize)
                 .map(o -> o.orElse(ItemStack.EMPTY))
                 .toList();
@@ -148,7 +146,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                         .map(FluidStack.class::cast)
                         .filter(f -> !f.isEmpty())
                         .findFirst())
-                .dropWhile(Optional::isEmpty)
                 .limit(inputsSize)
                 .map(o -> o.orElse(FluidStack.EMPTY))
                 .toList();
