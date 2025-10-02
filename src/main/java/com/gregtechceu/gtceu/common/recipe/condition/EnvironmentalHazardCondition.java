@@ -47,9 +47,9 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
     public Component getTooltips() {
         return isReverse ?
                 Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                        Component.translatable("gtceu.medical_condition." + condition.name)) :
+                        Component.translatable("medical_condition.gtceu." + condition.name)) :
                 Component.translatable("gtceu.recipe.environmental_hazard",
-                        Component.translatable("gtceu.medical_condition." + condition.name));
+                        Component.translatable("medical_condition.gtceu." + condition.name));
     }
 
     @Override

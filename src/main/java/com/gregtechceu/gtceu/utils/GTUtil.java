@@ -525,15 +525,15 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.medical_condition.description_shift"));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
             tooltipComponents.add(Component
-                    .translatable("gtceu.medical_condition." + material.getProperty(HAZARD).condition.name));
-            tooltipComponents.add(Component.translatable("gtceu.hazard_trigger.description"));
+                    .translatable("medical_condition.gtceu." + material.getProperty(HAZARD).condition.id));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
             tooltipComponents.add(Component
-                    .translatable("gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
+                    .translatable("tooltip.gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
             return;
         }
-        tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
+        tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description"));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

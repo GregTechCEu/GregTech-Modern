@@ -144,33 +144,34 @@ public class LangHandler {
         provider.add("command.gtceu.cape.use.success", "%s is now using cape %s");
         provider.add("command.gtceu.cape.use.success.none", "%s is no longer using a cape");
 
-        provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
-        provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
-        provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
-        provider.add("gtceu.medical_condition.poison", "§2Poisonous");
-        provider.add("gtceu.medical_condition.weak_poison", "§aWeakly poisonous");
-        provider.add("gtceu.medical_condition.irritant", "§6Irritant");
-        provider.add("gtceu.medical_condition.nausea", "§3Nauseating");
-        provider.add("gtceu.medical_condition.carcinogen", "§eCarcinogenic");
-        provider.add("gtceu.medical_condition.asbestosis", "§dAsbestosis");
-        provider.add("gtceu.medical_condition.arsenicosis", "§bArsenicosis");
-        provider.add("gtceu.medical_condition.silicosis", "§1Silicosis");
-        provider.add("gtceu.medical_condition.berylliosis", "§5Berylliosis");
-        provider.add("gtceu.medical_condition.methanol_poisoning", "§6Methanol Poisoning");
-        provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
-        provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
-        provider.add("gtceu.hazard_trigger.description", "Caused by:");
-        provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
-        provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
-        provider.add("gtceu.hazard_trigger.any", "Any contact");
+        provider.add("tooltip.gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
+        provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
+        provider.add("medical_condition.gtceu.poison", "§2Poisonous");
+        provider.add("medical_condition.gtceu.weak_poison", "§aWeakly poisonous");
+        provider.add("medical_condition.gtceu.irritant", "§6Irritant");
+        provider.add("medical_condition.gtceu.nausea", "§3Nauseating");
+        provider.add("medical_condition.gtceu.carcinogen", "§eCarcinogenic");
+        provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
+        provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
+        provider.add("medical_condition.gtceu.silicosis", "§1Silicosis");
+        provider.add("medical_condition.gtceu.berylliosis", "§5Berylliosis");
+        provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
+        provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
+        provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
 
-        provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
-        provider.add("gtceu.hazard_trigger.none", "Nothing");
-        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
-        provider.add("gtceu.medical_condition.antidote.description.effect_removed",
+        provider.add("tooltip.gtceu.hazard_trigger", "Caused by:");
+        provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");
+        provider.add("tooltip.gtceu.hazard_trigger.inhalation", "Inhalation");
+        provider.add("tooltip.gtceu.hazard_trigger.any", "Any contact");
+        provider.add("tooltip.gtceu.hazard_trigger.skin_contact", "Skin contact");
+        provider.add("tooltip.gtceu.hazard_trigger.none", "Nothing");
+
+        provider.add("tooltip.gtceu.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("tooltip.gtceu.antidote.description_shift", "§aCures these conditions:");
+        provider.add("tooltip.gtceu.antidote.description.effect_removed",
                 "Removes %s%% of current conditions' effects");
-        provider.add("gtceu.medical_condition.antidote.description.effect_removed.all",
+        provider.add("tooltip.gtceu.antidote.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
         provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
@@ -192,7 +193,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
-        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§Firefighter: §fDowses Campfires");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§6Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
         provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
         provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
