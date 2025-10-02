@@ -10,6 +10,8 @@ import net.minecraft.world.effect.MobEffect;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public interface IMedicalConditionTracker {
 
     /**
@@ -35,6 +37,10 @@ public interface IMedicalConditionTracker {
     void heal(MedicalCondition condition, int progression);
 
     void setMobEffect(MobEffect effect, int amplifier);
+
+    default void setMobEffect(Supplier<MobEffect> effect, int amplifier) {
+        this.setMobEffect(effect.get(), amplifier);
+    }
 
     void removeMedicalCondition(MedicalCondition condition);
 }

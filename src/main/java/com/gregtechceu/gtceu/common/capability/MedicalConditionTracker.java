@@ -96,27 +96,26 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
                 }
                 symptom.symptom.tick(this, condition, symptom, stage);
 
-                Optional<Symptom.ConfiguredSymptom> currentSymptomOptional = activeSymptoms.keySet()
+                Optional<Symptom.ConfiguredSymptom> maybeExistingSymptom = activeSymptoms.keySet()
                         .stream()
-                        .filter(symptom1 -> symptom1.symptom == symptom.symptom)
+                        .filter(configured -> configured.symptom == symptom.symptom)
                         .findFirst();
-                if (currentSymptomOptional.isEmpty()) {
+                if (maybeExistingSymptom.isEmpty()) {
                     activeSymptoms.put(symptom, stage);
                     symptom.symptom.applyProgression(this, condition, null, stage);
                     continue;
                 }
-                Symptom.ConfiguredSymptom currentSymptom = currentSymptomOptional.get();
-                if (currentSymptom == symptom && stage > activeSymptoms.getOrDefault(symptom, 0)) {
-                    symptom.symptom.applyProgression(this, condition, symptom,
-                            activeSymptoms.getOrDefault(symptom, 0));
+                Symptom.ConfiguredSymptom currentSymptom = maybeExistingSymptom.get();
+                int lastStage = activeSymptoms.getOrDefault(symptom, 0);
+                if (currentSymptom == symptom && stage > lastStage) {
+                    // symptom.symptom.applyProgression(this, condition, symptom, lastStage);
                     activeSymptoms.replace(symptom, stage);
                     symptom.symptom.applyProgression(this, condition, symptom, stage);
                     continue;
                 }
-                if (symptom.relativeHarshness * stage >
-                        currentSymptom.relativeHarshness * activeSymptoms.getOrDefault(currentSymptom, 0)) {
-                    currentSymptom.symptom.applyProgression(this, condition, symptom,
-                            activeSymptoms.getOrDefault(currentSymptom, 0));
+                lastStage = activeSymptoms.getOrDefault(currentSymptom, 0);
+                if (symptom.relativeHarshness * stage > currentSymptom.relativeHarshness * lastStage) {
+                    // currentSymptom.symptom.applyProgression(this, condition, symptom, lastStage);
                     activeSymptoms.removeInt(currentSymptom);
                     activeSymptoms.put(symptom, stage);
                     symptom.symptom.applyProgression(this, condition, symptom, stage);

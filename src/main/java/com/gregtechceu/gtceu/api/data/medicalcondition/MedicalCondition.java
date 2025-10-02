@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
@@ -26,6 +27,7 @@ import java.util.function.Consumer;
 public class MedicalCondition {
 
     public static final Codec<MedicalCondition> CODEC = GTRegistries.MEDICAL_CONDITIONS.codec();
+    public static final String AFFECTED_SUFFIX = ".affected";
 
     @Getter
     public final ResourceLocation id;
@@ -37,45 +39,41 @@ public class MedicalCondition {
     public final float idleProgressionRate;
     public final boolean canBePermanent;
     /**
-     * This should mirror the {@link AirScrubberRecipes} recipe's outputs for this condition.
+     * This should mirror the associated {@linkplain AirScrubberRecipes air scrubber recipe's} outputs for this
+     * condition.
      */
     @Getter
     @Setter
     @NotNull
     public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
 
-    public MedicalCondition(ResourceLocation id, int color, int maxProgression, IdleProgressionType idleProgressionType,
-                            float idleProgressionRate, boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
+    public MedicalCondition(ResourceLocation id, int color,
+                            int maxProgression, IdleProgressionType progressionType, float progressionRate,
+                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
         this.id = id;
         this.color = color;
         this.maxProgression = maxProgression;
         this.damageTypeData = new DamageTypeData.Builder()
                 .simpleId(id.withPrefix("medical_condition/"))
                 .scaling(DamageScaling.NEVER)
-                .tag(DamageTypeTags.BYPASSES_ARMOR)
+                // all medical conditions' damage types MUST have the bypasses_invulnerability tag
+                // so the death symptom works properly
+                .tag(DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_INVULNERABILITY,
+                        DamageTypeTags.BYPASSES_RESISTANCE)
                 .build();
 
         this.symptoms.addAll(Arrays.asList(symptoms));
-        this.idleProgressionType = idleProgressionType;
-        this.idleProgressionRate = idleProgressionRate;
+        this.idleProgressionType = progressionType;
+        this.idleProgressionRate = progressionRate;
         this.canBePermanent = canBePermanent;
     }
 
-    public MedicalCondition(ResourceLocation id, int color, int maxProgression, IdleProgressionType progressionType,
-                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        this(id, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
-    }
-
-    public MedicalCondition(ResourceLocation id, int color, int maxProgression, Symptom.ConfiguredSymptom... symptoms) {
-        this(id, color, maxProgression, IdleProgressionType.NONE, 0, false, symptoms);
-    }
-
     public DamageSource getDamageSource(MedicalConditionTracker tracker) {
-        return damageTypeData.source(tracker.getPlayer().level());
+        return this.damageTypeData.source(tracker.getPlayer().level());
     }
 
     public DamageSource getDamageSource(Level level) {
-        return damageTypeData.source(level);
+        return this.damageTypeData.source(level);
     }
 
     public String getTranslationKey() {
@@ -83,7 +81,16 @@ public class MedicalCondition {
     }
 
     public Component getTranslatableName() {
-        return Component.translatable(getTranslationKey());
+        return Component.translatable(this.getTranslationKey()).withStyle(style -> style.withColor(this.color));
+    }
+
+    public Component getAffectedName() {
+        String key = this.getTranslationKey();
+        String affectedKey = key + AFFECTED_SUFFIX;
+        if (Language.getInstance().has(affectedKey)) {
+            key = affectedKey;
+        }
+        return Component.translatable(key).withStyle(style -> style.withColor(this.color));
     }
 
     public enum IdleProgressionType {

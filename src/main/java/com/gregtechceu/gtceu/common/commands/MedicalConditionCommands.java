@@ -106,7 +106,7 @@ public class MedicalConditionCommands {
             }
             float time = entry.getFloatValue();
             target.sendSystemMessage(
-                    Component.translatable(langKey, entry.getKey().getTranslatableName(),
+                    Component.translatable(langKey, entry.getKey().getAffectedName(),
                             (int) (time / 60), (int) (time % 60)));
         }
         return count;

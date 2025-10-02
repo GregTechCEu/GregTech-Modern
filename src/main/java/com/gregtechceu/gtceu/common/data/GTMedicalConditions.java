@@ -19,7 +19,8 @@ public class GTMedicalConditions {
     }
 
     // General Conditions
-    public static final MedicalCondition NONE = register("none", 0xffffff, 0);
+    public static final MedicalCondition NONE = register("none", 0xffffff, 0,
+            MedicalCondition.IdleProgressionType.NONE, 0, false);
     public static final MedicalCondition CHEMICAL_BURNS = register("chemical_burns", 0xbc305a, 200,
             MedicalCondition.IdleProgressionType.HEAL, 2, false,
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS))
@@ -108,48 +109,27 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(1000)));
 
-    public static MedicalCondition register(ResourceLocation id, int color, int maxProgression,
-                                            MedicalCondition.IdleProgressionType progressionType, float progressionRate,
-                                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
+    public static MedicalCondition register(ResourceLocation id, int color,
+                                            int maxProgression, MedicalCondition.IdleProgressionType progressionType,
+                                            float progressionRate, boolean canBePermanent,
+                                            Symptom.ConfiguredSymptom... symptoms) {
         var condition = new MedicalCondition(id, color, maxProgression,
                 progressionType, progressionRate, canBePermanent, symptoms);
         GTRegistries.MEDICAL_CONDITIONS.register(id, condition);
         return condition;
     }
 
-    public static MedicalCondition register(ResourceLocation id, int color, int maxProgression,
-                                            MedicalCondition.IdleProgressionType progressionType,
-                                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        return register(id, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
-    }
-
-    public static MedicalCondition register(ResourceLocation id, int color, int maxProgression,
-                                            Symptom.ConfiguredSymptom... symptoms) {
-        return register(id, color, maxProgression, MedicalCondition.IdleProgressionType.NONE, 0, false, symptoms);
-    }
-
-    // private variants of the above methods that skip having to write `register(GTCEu.id(...`
-    private static MedicalCondition register(String id, int color, int maxProgress,
-                                            MedicalCondition.IdleProgressionType progressType, float progressRate,
-                                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        var condition = new MedicalCondition(GTCEu.id(id), color, maxProgress, progressType, progressRate, canBePermanent, symptoms);
-        GTRegistries.MEDICAL_CONDITIONS.register(condition.getId(), condition);
-        return condition;
-    }
-
-    private static MedicalCondition register(String id, int color, int maxProgression,
-                                            MedicalCondition.IdleProgressionType progressionType,
-                                            boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        return register(id, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
-    }
-
-    private static MedicalCondition register(String id, int color, int maxProgression,
-                                            Symptom.ConfiguredSymptom... symptoms) {
-        return register(id, color, maxProgression, MedicalCondition.IdleProgressionType.NONE, 0, false, symptoms);
+    // internal variant of the above that skips having to write `register(GTCEu.id(...`
+    private static MedicalCondition register(String id, int color,
+                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType,
+                                             float progressionRate, boolean canBePermanent,
+                                             Symptom.ConfiguredSymptom... symptoms) {
+        return register(GTCEu.id(id), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms);
     }
 
     public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
+        ModLoader.get()
+                .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
         GTRegistries.MEDICAL_CONDITIONS.freeze();
     }
 }

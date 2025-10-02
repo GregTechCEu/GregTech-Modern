@@ -24,18 +24,20 @@ public class Symptom {
     public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("b3ac6b40-2d30-419f-9cac-5b2cf998ad72");
 
     public static final Symptom DEATH = new Symptom(defaultKey("death"), 1, 1,
-            ((medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
-                if (modifier > 0) {
-                    Player player = medicalConditionTracker.getPlayer();
-                    player.hurt(condition.getDamageSource(medicalConditionTracker), Float.MAX_VALUE);
+            (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
+                if (stage > 0) {
+                    Player player = tracker.getPlayer();
+                    // this should replicate the logic in LivingEntity#kill, but
+                    // with the medical condition's damage type instead of `generic_kill`.
+                    player.hurt(condition.getDamageSource(tracker), Float.MAX_VALUE);
                 }
-            }));
+            });
     public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 10, 1,
-            (medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {},
-            (medicalConditionTracker, condition, configuredSymptom, baseSymptom, modifier) -> {
+            (tracker, condition, configuredSymptom, baseSymptom, stage) -> {},
+            (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
                 int stages = configuredSymptom != null ? configuredSymptom.stages : baseSymptom.defaultStages;
-                if (modifier > 0 && GTValues.RNG.nextInt(stages * 500 / modifier) == 0) {
-                    medicalConditionTracker.getPlayer().hurt(condition.getDamageSource(medicalConditionTracker), 0.5f);
+                if (stage > 0 && tracker.getPlayer().getRandom().nextInt(stages * 500 / stage) == 0) {
+                    tracker.getPlayer().hurt(condition.getDamageSource(tracker), 0.5f);
                 }
             });
     public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"), 10, 1, 1,
@@ -47,18 +49,15 @@ public class Symptom {
     public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"), 7, 1, .005f, Attributes.MOVEMENT_SPEED,
             SYMPTOM_SLOWNESS_UUID);
     public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"), 10, 1,
-            (hazardEffectTracker, damageSource, configuredSymptom, baseSymptom, modifier) -> hazardEffectTracker
-                    .setMaxAirSupply(300 - 10 * modifier));
+            (tracker, damageSource, configuredSymptom, baseSymptom, stage) -> tracker
+                    .setMaxAirSupply(300 - 10 * stage));
     public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"), 10, 0, MobEffects.BLINDNESS);
     public static final Symptom NAUSEA = new Symptom(defaultKey("nausea"), 10, 0, MobEffects.CONFUSION);
     public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 1,
             MobEffects.DIG_SLOWDOWN);
-    public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1,
-            MobEffects.WITHER);
-    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10,
-            1, GTMobEffects.WEAK_POISON::get);
-    public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10,
-            1, MobEffects.POISON);
+    public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1, MobEffects.WITHER);
+    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10, 1, GTMobEffects.WEAK_POISON);
+    public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10, 1, MobEffects.POISON);
     public static final Symptom HUNGER = new Symptom(defaultKey("hunger"), 5, 1, MobEffects.HUNGER);
 
     public final String name;
@@ -91,21 +90,23 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier,
                    Attribute attribute, UUID uuid) {
         this(name, defaultStages, defaultProgressionThreshold,
-                ((medicalConditionTracker, $1, $2, $3, modifier) -> {
-                    if (!medicalConditionTracker.getPlayer().getAttributes().hasAttribute(attribute)) {
+                (tracker, $1, $2, $3, stage) -> {
+                    Player player = tracker.getPlayer();
+                    AttributeInstance instance = player.getAttribute(attribute);
+                    if (instance == null) {
                         return;
                     }
-                    medicalConditionTracker.getPlayer().getAttribute(attribute).removeModifier(uuid);
-                    if (modifier != 0) {
-                        medicalConditionTracker.getPlayer().getAttribute(attribute).addPermanentModifier(
-                                new AttributeModifier(uuid, name, -modifier * multiplier,
-                                        AttributeModifier.Operation.ADDITION));
+                    instance.removeModifier(uuid);
+
+                    if (stage != 0) {
+                        instance.addPermanentModifier(new AttributeModifier(uuid, name,
+                                -stage * multiplier, AttributeModifier.Operation.ADDITION));
                     }
                     // re-set the health data value so the max health change is applied immediately
                     if (attribute == Attributes.MAX_HEALTH) {
                         medicalConditionTracker.getPlayer().setHealth(medicalConditionTracker.getPlayer().getHealth());
                     }
-                }));
+                });
     }
 
     /**
@@ -115,8 +116,7 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect,
                    int amplifierMultiplier) {
         this(name, defaultStages, defaultProgressionThreshold,
-                (medicalConditionTracker, $1, $2, $3, modifier) -> medicalConditionTracker.setMobEffect(mobEffect,
-                        amplifierMultiplier * modifier));
+                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, amplifierMultiplier * stage));
     }
 
     /**
@@ -126,8 +126,7 @@ public class Symptom {
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect,
                    int amplifierMultiplier) {
         this(name, defaultStages, defaultProgressionThreshold,
-                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
-                        amplifierMultiplier * modifier));
+                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, amplifierMultiplier * stage));
     }
 
     /**
@@ -135,7 +134,7 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold,
-                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect, modifier));
+                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, stage));
     }
 
     /**
@@ -143,18 +142,17 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect) {
         this(name, defaultStages, defaultProgressionThreshold,
-                (hazardEffectTracker, $1, $2, $3, modifier) -> hazardEffectTracker.setMobEffect(mobEffect.get(),
-                        modifier));
+                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, stage));
     }
 
     public void applyProgression(MedicalConditionTracker subject, MedicalCondition condition,
-                                 @Nullable ConfiguredSymptom symptom, int modifier) {
-        progressionEffect.apply(subject, condition, symptom, this, modifier);
+                                 @Nullable ConfiguredSymptom symptom, int stage) {
+        progressionEffect.apply(subject, condition, symptom, this, stage);
     }
 
     public void tick(MedicalConditionTracker subject, MedicalCondition condition,
-                     @Nullable ConfiguredSymptom symptom, int modifier) {
-        tickEffect.apply(subject, condition, symptom, this, modifier);
+                     @Nullable ConfiguredSymptom symptom, int stage) {
+        tickEffect.apply(subject, condition, symptom, this, stage);
     }
 
     public static class ConfiguredSymptom {
@@ -188,7 +186,7 @@ public class Symptom {
     public interface Effect {
 
         void apply(MedicalConditionTracker tracker, MedicalCondition condition,
-                   @Nullable ConfiguredSymptom configuredSymptom, Symptom baseSymptom, int amplifier);
+                   @Nullable ConfiguredSymptom configuredSymptom, Symptom baseSymptom, int stage);
     }
 
     private static String defaultKey(String name) {
