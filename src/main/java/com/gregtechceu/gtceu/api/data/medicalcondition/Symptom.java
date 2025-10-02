@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.data.medicalcondition;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -40,8 +40,25 @@ public class Symptom {
                     tracker.getPlayer().hurt(condition.getDamageSource(tracker), 0.5f);
                 }
             });
-    public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"), 10, 1, 1,
-            Attributes.MAX_HEALTH, SYMPTOM_HEALTH_DEBUFF_UUID);
+    // the health debuff stage is a special case because it has to resync the player's current health to the client
+    public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"), 10, 1,
+            (tracker, $1, $2, symptom, stage) -> {
+                Player player = tracker.getPlayer();
+                AttributeInstance instance = player.getAttribute(Attributes.MAX_HEALTH);
+                if (instance == null) {
+                    return;
+                }
+                instance.removeModifier(SYMPTOM_HEALTH_DEBUFF_UUID);
+
+                if (stage != 0) {
+                    instance.addPermanentModifier(new AttributeModifier(SYMPTOM_HEALTH_DEBUFF_UUID, symptom.name,
+                            -stage, AttributeModifier.Operation.ADDITION));
+                }
+                // reset the health data value so the max health change is applied immediately
+                if (player.getHealth() > player.getMaxHealth()) {
+                    player.setHealth(player.getHealth());
+                }
+            });
     public static final Symptom ATTACK_SPEED_DEBUFF = new Symptom(defaultKey("attack_speed_debuff"), 10, 1, .2f,
             Attributes.ATTACK_SPEED, SYMPTOM_ATTACK_SPEED_DEBUFF_UUID);
     public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"), 10, 1, .1f, Attributes.ATTACK_DAMAGE,
@@ -101,10 +118,6 @@ public class Symptom {
                     if (stage != 0) {
                         instance.addPermanentModifier(new AttributeModifier(uuid, name,
                                 -stage * multiplier, AttributeModifier.Operation.ADDITION));
-                    }
-                    // re-set the health data value so the max health change is applied immediately
-                    if (attribute == Attributes.MAX_HEALTH) {
-                        medicalConditionTracker.getPlayer().setHealth(medicalConditionTracker.getPlayer().getHealth());
                     }
                 });
     }
