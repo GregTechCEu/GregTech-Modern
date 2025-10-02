@@ -592,7 +592,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTargets.isEmpty()) {
-                        if (selectedTargets.get(0) == component) {
+                        if (selectedTargets.get(0).getPos() == component.getPos()) {
                             selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
