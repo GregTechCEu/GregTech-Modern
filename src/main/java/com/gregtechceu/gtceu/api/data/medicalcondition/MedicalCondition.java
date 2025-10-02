@@ -29,6 +29,17 @@ public class MedicalCondition {
     public static final Codec<MedicalCondition> CODEC = GTRegistries.MEDICAL_CONDITIONS.codec();
     public static final String AFFECTED_SUFFIX = ".affected";
 
+    /**
+     * The ID of this medical condition in the registry.<br>
+     * The tooltip text is derived from this in the form of {@code "medical_condition.<namespace>.<path>"}
+     * <p>
+     * If the name of this medical condition is queried in the context of affecting a player, and a language key
+     * {@code "medical_condition.<namespace>.<path>.affected"} exists, it'll be used instead of the generic one.<br>
+     * For example, the {@code gtceu:carcinogenic} medical condition's tooltip name is "Carcinogenic".
+     * When a player with cancer checks their status with {@code /medical_condition query},
+     * the command will display "Player &lt;player&gt; has cancer" instead of "... has Carcinogenic"
+     * </p>
+     */
     @Getter
     public final ResourceLocation id;
     public final int color;
