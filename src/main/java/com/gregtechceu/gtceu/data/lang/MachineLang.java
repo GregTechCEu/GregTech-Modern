@@ -581,7 +581,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_turbine.description",
                 "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
         provider.add("gtceu.multiblock.assembly_line.description",
-                "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's large Assembling Machine, used for creating advanced crafting components.");
+                "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's a large Assembling Machine, used for creating advanced crafting components.");
         provider.add("gtceu.multiblock.luv_fusion_reactor.description",
                 "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
         provider.add("gtceu.multiblock.zpm_fusion_reactor.description",
