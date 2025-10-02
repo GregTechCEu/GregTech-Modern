@@ -888,8 +888,7 @@ public class GTMachineUtils {
     }
 
     public static Component environmentRequirement(MedicalCondition condition) {
-        return Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                Component.translatable("medical_condition.gtceu." + condition.name));
+        return Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName());
     }
 
     public static Component defaultEnvironmentRequirement() {

@@ -526,11 +526,9 @@ public class GTUtil {
 
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
-            tooltipComponents.add(Component
-                    .translatable("medical_condition.gtceu." + material.getProperty(HAZARD).condition.id));
+            tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
             tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
-            tooltipComponents.add(Component
-                    .translatable("tooltip.gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
+            tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
         tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description"));

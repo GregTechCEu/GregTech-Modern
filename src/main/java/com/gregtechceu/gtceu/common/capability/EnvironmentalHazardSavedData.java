@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.common.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
@@ -285,7 +287,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             zoneTag.putFloat("strength", strength);
             zoneTag.putBoolean("can_spread", canSpread);
             zoneTag.putString("trigger", trigger.name());
-            zoneTag.putString("condition", condition.name);
+            zoneTag.putString("condition", condition.id.toString());
 
             return zoneTag;
         }
@@ -296,8 +298,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition.CONDITIONS
-                    .get(zoneTag.getString("condition"));
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(zoneTag.getString("condition")));
 
             return new HazardZone(source, strength, canSpread, trigger, condition);
         }
@@ -307,7 +308,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             buf.writeFloat(strength);
             buf.writeBoolean(canSpread);
             buf.writeUtf(trigger.name());
-            buf.writeUtf(condition.name);
+            buf.writeResourceLocation(condition.id);
         }
 
         public static HazardZone fromNetwork(FriendlyByteBuf buf) {
@@ -315,7 +316,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(buf.readUtf());
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(buf.readResourceLocation());
             return new HazardZone(source, strength, canSpread, trigger, condition);
         }
     }

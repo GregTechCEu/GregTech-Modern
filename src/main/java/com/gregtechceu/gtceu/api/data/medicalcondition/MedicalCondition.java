@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.data.medicalcondition;
 
 import com.gregtechceu.gtceu.api.data.damagesource.DamageTypeData;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,12 +25,10 @@ import java.util.function.Consumer;
 @Accessors(chain = true)
 public class MedicalCondition {
 
-    public static final Map<String, MedicalCondition> CONDITIONS = new HashMap<>();
-    public static final Codec<MedicalCondition> CODEC = Codec.STRING.xmap(MedicalCondition.CONDITIONS::get,
-            MedicalCondition::getName);
+    public static final Codec<MedicalCondition> CODEC = GTRegistries.MEDICAL_CONDITIONS.codec();
 
     @Getter
-    public final String name;
+    public final ResourceLocation id;
     public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached
     public final Set<Symptom.ConfiguredSymptom> symptoms = new HashSet<>();
@@ -43,13 +44,13 @@ public class MedicalCondition {
     @NotNull
     public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
 
-    public MedicalCondition(String name, int color, int maxProgression, IdleProgressionType idleProgressionType,
+    public MedicalCondition(ResourceLocation id, int color, int maxProgression, IdleProgressionType idleProgressionType,
                             float idleProgressionRate, boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        this.name = name;
+        this.id = id;
         this.color = color;
         this.maxProgression = maxProgression;
         this.damageTypeData = new DamageTypeData.Builder()
-                .simpleId("medical_condition/" + name)
+                .simpleId(id.withPrefix("medical_condition/"))
                 .scaling(DamageScaling.NEVER)
                 .tag(DamageTypeTags.BYPASSES_ARMOR)
                 .build();
@@ -58,17 +59,15 @@ public class MedicalCondition {
         this.idleProgressionType = idleProgressionType;
         this.idleProgressionRate = idleProgressionRate;
         this.canBePermanent = canBePermanent;
-
-        CONDITIONS.put(name, this);
     }
 
-    public MedicalCondition(String name, int color, int maxProgression, IdleProgressionType progressionType,
+    public MedicalCondition(ResourceLocation id, int color, int maxProgression, IdleProgressionType progressionType,
                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        this(name, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
+        this(id, color, maxProgression, progressionType, 1, canBePermanent, symptoms);
     }
 
-    public MedicalCondition(String name, int color, int maxProgression, Symptom.ConfiguredSymptom... symptoms) {
-        this(name, color, maxProgression, IdleProgressionType.NONE, 0, false, symptoms);
+    public MedicalCondition(ResourceLocation id, int color, int maxProgression, Symptom.ConfiguredSymptom... symptoms) {
+        this(id, color, maxProgression, IdleProgressionType.NONE, 0, false, symptoms);
     }
 
     public DamageSource getDamageSource(MedicalConditionTracker tracker) {
@@ -77,6 +76,14 @@ public class MedicalCondition {
 
     public DamageSource getDamageSource(Level level) {
         return damageTypeData.source(level);
+    }
+
+    public String getTranslationKey() {
+        return GTRegistries.MEDICAL_CONDITIONS.getKey(this).toLanguageKey("medical_condition");
+    }
+
+    public Component getTranslatableName() {
+        return Component.translatable(getTranslationKey());
     }
 
     public enum IdleProgressionType {

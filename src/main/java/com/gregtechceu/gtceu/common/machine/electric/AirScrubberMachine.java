@@ -56,7 +56,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             return;
         }
 
-        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.name + "_autogen")
+        GTRecipeBuilder builder = GTRecipeTypes.AIR_SCRUBBER_RECIPES.recipeBuilder(condition.id.withSuffix("_autogen"))
                 .duration(200).EUt(VHA[LV]);
         condition.recipeModifier.accept(builder);
         this.recipeLogic.checkMatchedRecipeAvailable(builder.buildRawRecipe());

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.common.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -194,7 +196,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         ListTag effectsTag = new ListTag();
         for (var entry : medicalConditions.object2FloatEntrySet()) {
             CompoundTag medicalConditionTag = new CompoundTag();
-            medicalConditionTag.putString("condition", entry.getKey().name);
+            medicalConditionTag.putString("condition", entry.getKey().id.toString());
             medicalConditionTag.putFloat("progression", entry.getFloatValue());
             effectsTag.add(medicalConditionTag);
         }
@@ -202,7 +204,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
         ListTag permanentsTag = new ListTag();
         for (MedicalCondition condition : permanentConditions) {
-            permanentsTag.add(StringTag.valueOf(condition.name));
+            permanentsTag.add(StringTag.valueOf(condition.id.toString()));
         }
         tag.put("permanent_conditions", permanentsTag);
 
@@ -214,7 +216,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(compoundTag.getString("condition"));
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(compoundTag.getString("condition")));
             float progression = compoundTag.getFloat("progression");
 
             medicalConditions.put(condition, progression);
@@ -222,7 +224,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            permanentConditions.add(MedicalCondition.CONDITIONS.get(permanentConditionsTag.getString(i)));
+            permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(permanentConditionsTag.getString(i))));
         }
     }
 }
