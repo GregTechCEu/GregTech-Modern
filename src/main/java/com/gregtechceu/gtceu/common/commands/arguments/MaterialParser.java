@@ -71,12 +71,14 @@ public class MaterialParser {
 
     private void readMaterial() throws CommandSyntaxException {
         int i = this.reader.getCursor();
-        ResourceLocation resourceLocation = ResourceLocation.read(this.reader);
-        Material material = this.materials.getRegistry(resourceLocation.getNamespace()).get(resourceLocation.getPath());
-        this.result = Optional.ofNullable(material).orElseThrow(() -> {
+        ResourceLocation id = ResourceLocation.read(this.reader);
+
+        Material material = this.materials.getRegistry(id.getNamespace()).get(id.getPath());
+        if (material == null || material.isNull()) {
             this.reader.setCursor(i);
-            return ERROR_UNKNOWN_ITEM.createWithContext(this.reader, resourceLocation);
-        });
+            throw  ERROR_UNKNOWN_ITEM.createWithContext(this.reader, id);
+        }
+        this.result = material;
     }
 
     private void parse() throws CommandSyntaxException {
