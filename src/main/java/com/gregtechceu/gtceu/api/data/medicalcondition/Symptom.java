@@ -74,7 +74,8 @@ public class Symptom {
     public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 1,
             MobEffects.DIG_SLOWDOWN);
     public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1, MobEffects.WITHER);
-    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10, 1, GTMobEffects.WEAK_POISON);
+    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10, 1,
+            GTMobEffects.WEAK_POISON);
     public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10, 1, MobEffects.POISON);
     public static final Symptom HUNGER = new Symptom(defaultKey("hunger"), 5, 1, MobEffects.HUNGER);
 

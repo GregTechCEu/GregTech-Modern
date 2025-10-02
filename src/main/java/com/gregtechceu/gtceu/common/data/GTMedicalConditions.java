@@ -124,7 +124,8 @@ public class GTMedicalConditions {
                                              int maxProgression, MedicalCondition.IdleProgressionType progressionType,
                                              float progressionRate, boolean canBePermanent,
                                              Symptom.ConfiguredSymptom... symptoms) {
-        return register(GTCEu.id(id), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms);
+        return register(GTCEu.id(id), color, maxProgression, progressionType, progressionRate, canBePermanent,
+                symptoms);
     }
 
     public static void init() {

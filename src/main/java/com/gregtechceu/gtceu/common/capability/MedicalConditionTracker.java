@@ -215,7 +215,8 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(compoundTag.getString("condition")));
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS
+                    .get(GTCEu.id(compoundTag.getString("condition")));
             float progression = compoundTag.getFloat("progression");
 
             medicalConditions.put(condition, progression);
