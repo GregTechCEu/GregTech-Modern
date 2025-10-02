@@ -123,8 +123,8 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
-        provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
-        provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
+        provider.add("command.gtceu.medical_condition.get", "Player %s has");
+        provider.add("command.gtceu.medical_condition.get.empty", "Player %s is perfectly healthy.");
         provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s minutes %s seconds");
         provider.add("command.gtceu.medical_condition.get.element.permanent",
                 "Condition %s§r: %s minutes %s seconds (permanent)");
@@ -148,10 +148,15 @@ public class LangHandler {
         provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
         provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
         provider.add("medical_condition.gtceu.poison", "§2Poisonous");
+        provider.add("medical_condition.gtceu.poison.affected", "§2Poisoning");
         provider.add("medical_condition.gtceu.weak_poison", "§aWeakly poisonous");
+        provider.add("medical_condition.gtceu.weak_poison.affected", "§aMinor poisoning");
         provider.add("medical_condition.gtceu.irritant", "§6Irritant");
+        provider.add("medical_condition.gtceu.irritant.affected", "§6Irritation");
         provider.add("medical_condition.gtceu.nausea", "§3Nauseating");
+        provider.add("medical_condition.gtceu.nausea.affected", "§3Nausea");
         provider.add("medical_condition.gtceu.carcinogen", "§eCarcinogenic");
+        provider.add("medical_condition.gtceu.carcinogen.affected", "§eCancer");
         provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
         provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
         provider.add("medical_condition.gtceu.silicosis", "§1Silicosis");
@@ -159,6 +164,7 @@ public class LangHandler {
         provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
         provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
+        provider.add("medical_condition.gtceu.none.affected", "§2Nothing?");
 
         provider.add("tooltip.gtceu.hazard_trigger", "Caused by:");
         provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");
