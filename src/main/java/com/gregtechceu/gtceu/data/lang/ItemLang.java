@@ -343,7 +343,7 @@ public class ItemLang {
                 "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("item.gtceu.gelled_toluene.tooltip", "§7Raw Explosive");
         provider.add("item.gtceu.bottle.purple.drink.tooltip",
-                "§7How about Lemonade. Or some Ice Tea? I got Purple Drink!");
+                "§7Do you want some Lemonade or some Iced Tea? I got Purple Drink!");
         multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
                 "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
