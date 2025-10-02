@@ -413,9 +413,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -471,9 +469,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -526,9 +522,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -559,7 +553,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
@@ -599,9 +593,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -674,9 +666,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -707,7 +697,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
@@ -747,9 +737,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 200)
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -822,9 +810,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 500)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 500)
     public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -900,9 +887,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              setupTicks = 40,
-              timeoutTicks = 500)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 500)
     public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
