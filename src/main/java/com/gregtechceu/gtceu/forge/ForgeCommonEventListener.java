@@ -220,6 +220,31 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onItemUseFinished(LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) {
+            return;
+        }
+
+        ItemStack usedItem = event.getItem();
+        if (!usedItem.isEdible()) {
+            return;
+        }
+        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (tracker == null) {
+            return;
+        }
+
+        Material material = HazardProperty.getValidHazardMaterial(usedItem);
+        if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
+            return;
+        }
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+        if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
+            tracker.progressRelatedCondition(material);
+        }
+    }
+
+    @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
         if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&

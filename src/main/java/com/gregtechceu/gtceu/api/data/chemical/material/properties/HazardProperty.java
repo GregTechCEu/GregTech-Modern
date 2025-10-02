@@ -59,6 +59,8 @@ public class HazardProperty implements IMaterialProperty {
         public static final HazardTrigger SKIN_CONTACT = new HazardTrigger("skin_contact", ProtectionType.HANDS,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
         public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
+        // special trigger that's activated when the player eats an item with a condition and this trigger
+        public static final HazardTrigger CONSUMPTION = new HazardTrigger("consumption", ProtectionType.NONE);
 
         public HazardTrigger {
             ALL_TRIGGERS.put(name, this);
