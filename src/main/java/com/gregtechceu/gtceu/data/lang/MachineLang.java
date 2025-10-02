@@ -527,13 +527,13 @@ public class MachineLang {
                 "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
 
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
-        provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
+        provider.add("gtceu.multiblock.central_monitor.height", "Screen Height: %d");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
         multiLang(provider, "gtceu.multiblock.central_monitor.tooltip",
                 "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
                 "You can build the central monitor screen from 3X2 to %dX%d (width X height).",
-                "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
+                "The default height is 3 blocks. You can adjust the screen height in the GUI before the structure is formed.",
                 "Energy consumption: %d EU/s for each screen.");
         multiLang(provider, "gtceu.multiblock.monitor_screen.tooltip",
                 "The GUI can be opened with a right-click of a screwdriver.",
