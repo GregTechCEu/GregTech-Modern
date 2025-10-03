@@ -40,9 +40,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
     private final Set<MedicalCondition> flaggedForRemoval = new HashSet<>();
 
-    @Setter
-    private int maxAirSupply = -1;
-
     @Getter
     private final Player player;
 
@@ -191,11 +188,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
             return;
         }
         medicalConditions.replace(condition, medicalConditions.getOrDefault(condition, 0) - progression);
-    }
-
-    @Override
-    public int getMaxAirSupply() {
-        return maxAirSupply;
     }
 
     public void setMobEffect(MobEffect effect, int amplifier) {
