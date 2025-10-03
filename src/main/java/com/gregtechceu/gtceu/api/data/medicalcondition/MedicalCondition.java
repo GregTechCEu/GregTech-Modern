@@ -66,10 +66,10 @@ public class MedicalCondition {
         this.damageTypeData = new DamageTypeData.Builder()
                 .simpleId(id.withPrefix("medical_condition/"))
                 .scaling(DamageScaling.NEVER)
-                // all medical conditions' damage types MUST have the bypasses_invulnerability tag
-                // so the death symptom works properly
-                .tag(DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_INVULNERABILITY,
-                        DamageTypeTags.BYPASSES_RESISTANCE)
+                // all medical conditions' damage types MUST have the bypasses_invulnerability and bypasses_cooldown
+                // tags so the death symptom works properly
+                .tag(DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_RESISTANCE,
+                        DamageTypeTags.BYPASSES_INVULNERABILITY, DamageTypeTags.BYPASSES_COOLDOWN)
                 .build();
 
         for (Symptom.ConfiguredSymptom symptom : symptoms) {
