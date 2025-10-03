@@ -38,10 +38,7 @@ public final class RecipeManagerHandler {
         proxyRecipes.clear();
         recipesByID.forEach((id, recipe) -> {
             if (recipe.getType() != proxyType) {
-                // should not happen
-                GTCEu.LOGGER.warn("Proxy Recipe '{}' with RecipeType '{}' did not match GTRecipeType '{}'.",
-                        recipe.getId(), ForgeRegistries.RECIPE_TYPES.getKey(recipe.getType()),
-                        gtRecipeType.registryName);
+                // do not add recipes of incompatible type
                 return;
             }
             GTRecipe gtRecipe = gtRecipeType.toGTrecipe(id, recipe);
