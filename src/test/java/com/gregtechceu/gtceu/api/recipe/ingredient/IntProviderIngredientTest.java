@@ -202,12 +202,12 @@ public class IntProviderIngredientTest {
         var stacks = ingredient.getItems();
         helper.assertTrue(stacks.length == 1, "IntProviderIngredient should only return 1 item when made with 1 item");
         helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with");
-        helper.assertTrue(Arrays.equals(stacks, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getStacks calls");
+        helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getStacks calls");
         ingredient.reroll();
-        helper.assertFalse(Arrays.equals(stacks, ingredient.getItems()), "IntProviderIngredient.getItems should have changed after rerolling");
+        helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()), "IntProviderIngredient.getItems should have changed after rerolling");
         helper.succeed();
     }
-/*
+
     // test for IntProviderIngredient.toJson()
     @GameTest(template = "empty", batch = "RangedIngredients")
     public static void rangedIngredientJsonTest(GameTestHelper helper){
@@ -228,11 +228,11 @@ public class IntProviderIngredientTest {
         helper.assertTrue(stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length, "IntProviderIngredient should only return 1 item when made with 1 item, even after serializing");
         helper.assertTrue(stacksDeserializedPreRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with after serializing");
         helper.assertTrue(stacksDeserializedPostRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with after serializing");
-        helper.assertFalse(Arrays.equals(stacksDeserializedPreRoll, ingredient.getItems()), "IntProviderIngredient.getItems should be different if it wasn't rolled before serializing");
-        helper.assertTrue(Arrays.equals(stacksDeserializedPostRoll, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getStacks calls if it was rolled before serializing");
+        helper.assertFalse(TestUtils.areItemStacksEqual(stacksDeserializedPreRoll, ingredient.getItems()), "IntProviderIngredient.getItems should be different if it wasn't rolled before serializing");
+        helper.assertTrue(TestUtils.areItemStacksEqual(stacksDeserializedPostRoll, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getItems calls if it was rolled before serializing");
         helper.succeed();
     }
- */
+
     // Test for singleblock machine with ranged item input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594

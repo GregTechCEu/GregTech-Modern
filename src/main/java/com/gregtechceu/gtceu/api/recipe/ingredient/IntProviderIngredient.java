@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
@@ -57,6 +58,13 @@ public class IntProviderIngredient extends Ingredient {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
+    }
+
+    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider, int sampledCount) {
+        super(Stream.empty());
+        this.inner = inner;
+        this.countProvider = countProvider;
+        this.sampledCount = sampledCount;
     }
 
     /**
@@ -152,6 +160,14 @@ public class IntProviderIngredient extends Ingredient {
         return ((countProvider.getMaxValue() + countProvider.getMinValue()) / 2.0);
     }
 
+    /**
+     * Resets the random roll on this ingredient
+     */
+    public void reroll(){
+        sampledCount = -1;
+        itemStacks = null;
+    }
+
     @Override
     public @NotNull IntList getStackingIds() {
         return inner.getStackingIds();
@@ -195,6 +211,7 @@ public class IntProviderIngredient extends Ingredient {
         json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("ingredient", inner.toJson());
+        json.addProperty("sampledCount", sampledCount);
         return json;
     }
 
@@ -202,17 +219,20 @@ public class IntProviderIngredient extends Ingredient {
 
         @Override
         public @NotNull IntProviderIngredient parse(FriendlyByteBuf buffer) {
-            IntProvider amount = IntProvider.CODEC.parse(NbtOps.INSTANCE, buffer.readNbt().get("provider"))
+            var nbt = buffer.readNbt();
+            IntProvider provider = IntProvider.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
-            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), amount);
+            int sampledCount = nbt.getInt("sampledCount");
+            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount);
         }
 
         @Override
         public @NotNull IntProviderIngredient parse(JsonObject json) {
-            IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, json.get("count_provider"))
+            IntProvider provider = IntProvider.CODEC.parse(JsonOps.INSTANCE, json.get("count_provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
             Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
-            return new IntProviderIngredient(inner, amount);
+            int sampledCount = json.getAsJsonPrimitive("sampledCount").getAsInt();
+            return new IntProviderIngredient(inner, provider, sampledCount);
         }
 
         @Override
@@ -220,6 +240,7 @@ public class IntProviderIngredient extends Ingredient {
             CompoundTag wrapper = new CompoundTag();
             wrapper.put("provider", IntProvider.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
                     .getOrThrow(false, GTCEu.LOGGER::error));
+            wrapper.putInt("sampledCount", ingredient.sampledCount);
             buffer.writeNbt(wrapper);
             ingredient.inner.toNetwork(buffer);
         }
