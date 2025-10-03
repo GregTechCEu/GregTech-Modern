@@ -73,6 +73,21 @@ public class TestUtils {
     }
 
     /**
+     * Compares two itemstack[]s' items and amounts
+     * Necessary because itemStack does not implement .equals()
+     */
+    public static boolean areItemStacksEqual(ItemStack[] stack1, ItemStack[] stack2){
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i=0; i<stack1.length; i++) {
+            if (!isItemStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Compares two fluidstacks' fluids and amounts
      * DOES NOT CHECK TAGS OR NBT ETC!
      *
@@ -89,6 +104,21 @@ public class TestUtils {
      */
     public static boolean isFluidStackWithinRange(FluidStack stack1, FluidStack stack2, int min, int max) {
         return stack1.isFluidEqual(stack2) && isFluidWithinRange(stack2, min, max);
+    }
+
+    /**
+     * Compares two fluidstack[]s' fluids and amounts
+     * Necessary because fluidStack's implementation of .equals() does not check amounts
+     */
+    public static boolean areFluidStacksEqual(FluidStack[] stack1, FluidStack[] stack2){
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i=0; i<stack1.length; i++) {
+            if (!isFluidStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -221,7 +251,7 @@ public class TestUtils {
     }
 
     public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
-        helper.assertTrue(isFluidStackEqual(stack1, stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+        helper.assertTrue(stack1.isFluidStackIdentical(stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
                 stack1.getDisplayName().getString(), stack1.getAmount(),
                 stack2.getDisplayName().getString(), stack2.getAmount()));
     }
