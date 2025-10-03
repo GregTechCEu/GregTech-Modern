@@ -1,27 +1,32 @@
 package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -41,11 +46,12 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
     @Getter
     private final Player player;
 
+    private final LazyOptional<MedicalConditionTracker> holder = LazyOptional.of(() -> this);
+
     public MedicalConditionTracker(Player player) {
         this.player = player;
     }
 
-    @Override
     public void tick() {
         if (player.isCreative()) return;
 
@@ -142,15 +148,24 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         flaggedForRemoval.clear();
     }
 
-    @Override
     public void removeMedicalCondition(MedicalCondition condition) {
         flaggedForRemoval.add(condition);
         permanentConditions.remove(condition);
     }
 
-    private int calculateStage(MedicalCondition condition, Symptom.ConfiguredSymptom symptom) {
-        return (int) Math.floor(Math.min(medicalConditions.getFloat(condition), condition.maxProgression) /
-                (symptom.progressionThreshold * condition.maxProgression * symptom.stages));
+    private int calculateStage(MedicalCondition condition, ConfiguredSymptom symptom) {
+        float minThreshold = symptom.getMinProgressionThreshold();
+        float maxThreshold = symptom.getMaxProgressionThreshold();
+        float progression = medicalConditions.getFloat(condition);
+
+        if (progression < minThreshold) {
+            return 0;
+        }
+        if (progression >= maxThreshold) {
+            return symptom.getStages();
+        }
+        float delta = Mth.inverseLerp(Math.min(progression, condition.maxProgression), minThreshold, maxThreshold);
+        return (int) (delta * symptom.getStages());
     }
 
     // removes MedicalConditions without progression
@@ -169,7 +184,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
      * @param condition   MedicalCondition to heal
      * @param progression amount of progression to decrease
      */
-    @Override
     public void heal(MedicalCondition condition, int progression) {
         if (progression >= medicalConditions.getOrDefault(condition, 0)) {
             medicalConditions.removeFloat(condition);
@@ -184,7 +198,6 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         return maxAirSupply;
     }
 
-    @Override
     public void setMobEffect(MobEffect effect, int amplifier) {
         if (amplifier <= 0) {
             activeMobEffects.removeInt(effect);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -11,19 +12,21 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
-import org.jetbrains.annotations.Nullable;
+import com.google.common.base.Preconditions;
+import lombok.Getter;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class Symptom {
 
+    // spotless:off
     public static final UUID SYMPTOM_HEALTH_DEBUFF_UUID = UUID.fromString("607aa6d9-a7e4-4919-9962-f007104c4be8");
     public static final UUID SYMPTOM_ATTACK_SPEED_DEBUFF_UUID = UUID.fromString("f2378ee6-3427-45b5-8440-4b797f7b664a");
     public static final UUID SYMPTOM_WEAKNESS_UUID = UUID.fromString("482e64e0-de77-49cd-b9bc-96b7e7eb16db");
     public static final UUID SYMPTOM_SLOWNESS_UUID = UUID.fromString("b3ac6b40-2d30-419f-9cac-5b2cf998ad72");
 
-    public static final Symptom DEATH = new Symptom(defaultKey("death"), 1, 1,
+    public static final Symptom DEATH = new Symptom(defaultKey("death"), 1, 1.0f,
             (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
                 if (stage > 0) {
                     Player player = tracker.getPlayer();
@@ -32,16 +35,17 @@ public class Symptom {
                     player.hurt(condition.getDamageSource(tracker), Float.MAX_VALUE);
                 }
             });
-    public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 10, 1,
-            (tracker, condition, configuredSymptom, baseSymptom, stage) -> {},
+    public static final Symptom RANDOM_DAMAGE = new Symptom(defaultKey("random_damage"), 10, 0.2f, 1.0f,
+            Effect.NO_OP,
             (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
-                int stages = configuredSymptom != null ? configuredSymptom.stages : baseSymptom.defaultStages;
+                int stages = configuredSymptom.getStages();
                 if (stage > 0 && tracker.getPlayer().getRandom().nextInt(stages * 500 / stage) == 0) {
                     tracker.getPlayer().hurt(condition.getDamageSource(tracker), 0.5f);
                 }
             });
+    // default is 20, stage 10 result will be 10
     // the health debuff stage is a special case because it has to resync the player's current health to the client
-    public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"), 10, 1,
+    public static final Symptom HEALTH_DEBUFF = new Symptom(defaultKey("health_debuff"), 10, 0.0f, 1.0f,
             (tracker, $1, $2, symptom, stage) -> {
                 Player player = tracker.getPlayer();
                 AttributeInstance instance = player.getAttribute(Attributes.MAX_HEALTH);
@@ -59,46 +63,82 @@ public class Symptom {
                     player.setHealth(player.getHealth());
                 }
             });
-    public static final Symptom ATTACK_SPEED_DEBUFF = new Symptom(defaultKey("attack_speed_debuff"), 10, 1, .2f,
-            Attributes.ATTACK_SPEED, SYMPTOM_ATTACK_SPEED_DEBUFF_UUID);
-    public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"), 10, 1, .1f, Attributes.ATTACK_DAMAGE,
-            SYMPTOM_WEAKNESS_UUID);
-    public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"), 7, 1, .005f, Attributes.MOVEMENT_SPEED,
-            SYMPTOM_SLOWNESS_UUID);
-    public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"), 10, 1,
-            (tracker, damageSource, configuredSymptom, baseSymptom, stage) -> tracker
-                    .setMaxAirSupply(300 - 10 * stage));
-    public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"), 10, 0, MobEffects.BLINDNESS);
-    public static final Symptom DARKNESS = new Symptom(defaultKey("darkness"), 10, 0, MobEffects.DARKNESS);
-    public static final Symptom NAUSEA = new Symptom(defaultKey("nausea"), 10, 0, MobEffects.CONFUSION);
-    public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 1,
-            MobEffects.DIG_SLOWDOWN);
-    public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1, MobEffects.WITHER);
-    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10, 1,
-            GTMobEffects.WEAK_POISON);
-    public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10, 1, MobEffects.POISON);
-    public static final Symptom HUNGER = new Symptom(defaultKey("hunger"), 5, 1, MobEffects.HUNGER);
+    // default is 4, stage 10 result will be 1.6
+    public static final Symptom MINING_FATIGUE = new Symptom(defaultKey("mining_fatigue"), 10, 0.0f, 1.0f, 0.04f, Attributes.ATTACK_SPEED, SYMPTOM_ATTACK_SPEED_DEBUFF_UUID);
+    // default is 2, stage 10 result will be 0.5
+    public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"), 10, 0.0f, 1.0f, 0.025f, Attributes.ATTACK_DAMAGE, SYMPTOM_WEAKNESS_UUID);
+    // default is 0.7, stage 7 result will be 0.392
+    public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"), 7, 0.0f, 1.0f, 0.08f, Attributes.MOVEMENT_SPEED, SYMPTOM_SLOWNESS_UUID);
+    // default is 300, stage 10 result will be 200
+    public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"), 10, 0.0f, 1.0f,
+            (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
+                tracker.getPlayer().gtceu$setMaxAirSupply(tracker.getPlayer().gtceu$getOriginalMaxAirSupply() - 10 * stage);
+            });
+
+    public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"), 10, 0.0f, 1.0f, MobEffects.BLINDNESS);
+    public static final Symptom DARKNESS = new Symptom(defaultKey("darkness"), 10, 0.0f, 1.0f, MobEffects.DARKNESS);
+    public static final Symptom NAUSEA = new Symptom(defaultKey("nausea"), 1, 0.95f, 1.0f, MobEffects.CONFUSION);
+    public static final Symptom WITHER = new Symptom(defaultKey("wither"), 1, 1.0f, 1.0f, MobEffects.WITHER);
+    public static final Symptom WEAK_POISONING = new Symptom(defaultKey("weak_poisoning"), 10, 0.0f, 1.0f, GTMobEffects.WEAK_POISON);
+    public static final Symptom POISONING = new Symptom(defaultKey("poisoning"), 10, 0.0f, 1.0f, MobEffects.POISON);
+    public static final Symptom HUNGER = new Symptom(defaultKey("hunger"), 5, 0.0f, 1.0f, MobEffects.HUNGER);
+    // spotless:on
 
     public final String name;
     public final int defaultStages;
-    public final float defaultProgressionThreshold;
+    /**
+     * The (relative) threshold this symptom will start occurring at.<br>
+     * The range is [0.0,1.0], with 0.0 meaning "as soon as the player gains the condition"
+     * and 1.0 meaning "at the condition's max progress value".
+     * <p>
+     * If this symptom's {@link #defaultStages} is >0, the symptom will start occurring at
+     * {@link #minProgressionThreshold} and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+     * </p>
+     * <p>
+     * For example: The relative minimum threshold of this symptom is 0.5 and the condition's maximum progress is 200 seconds.
+     * This symptom will start occurring when the player has had the condition for 100 seconds.
+     * </p>
+     */
+    public final float minProgressionThreshold;
+    /**
+     * The (relative) threshold at which this symptom will be reach its maximum potential.<br>
+     * The range is [0.0,1.0], with 0.0 meaning "as soon as the player gains the condition"
+     * and 1.0 meaning "at the condition's max progress value".
+     * <p>
+     * If this symptom's {@link #defaultStages} is >0, the symptom will start occurring at
+     * {@link #minProgressionThreshold} and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+     * </p>
+     * <p>
+     * For example: tThe relative maximum threshold of this symptom is 0.75 and the condition's maximum progress is 200 seconds.
+     * This symptom will reach its peak when the player has had the condition for 150 seconds.
+     * </p>
+     */
+    public final float maxProgressionThreshold;
 
-    // integer corresponds to symptom stage, if integer is 0 symptom effects should be removed
     private final Effect progressionEffect;
     private final Effect tickEffect;
 
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold,
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
                    Effect progressionEffect, Effect tickEffect) {
         this.name = name;
         this.defaultStages = defaultStages;
-        this.defaultProgressionThreshold = defaultProgressionThreshold;
+        this.minProgressionThreshold = minProgressionThreshold;
+        this.maxProgressionThreshold = maxProgressionThreshold;
         this.progressionEffect = progressionEffect;
         this.tickEffect = tickEffect;
     }
 
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Effect progressionEffect) {
-        this(name, defaultStages, defaultProgressionThreshold, progressionEffect,
-                (tracker, condition, configuredSymptom, baseSymptom, amplifier) -> {});
+    public Symptom(String name, int defaultStages, float minProgressionThreshold,
+                   Effect progressionEffect, Effect tickEffect) {
+        this(name, defaultStages, minProgressionThreshold, 1.0f, progressionEffect, tickEffect);
+    }
+
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, Effect progressionEffect) {
+        this(name, defaultStages, minProgressionThreshold, progressionEffect, Effect.NO_OP);
+    }
+
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, Effect progressionEffect) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, progressionEffect, Effect.NO_OP);
     }
 
     /**
@@ -106,9 +146,9 @@ public class Symptom {
      * @param attribute  Attribute to modify
      * @param uuid       AttributeModifier UUID
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, float multiplier,
-                   Attribute attribute, UUID uuid) {
-        this(name, defaultStages, defaultProgressionThreshold,
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   float multiplier, Attribute attribute, UUID uuid) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold,
                 (tracker, $1, $2, $3, stage) -> {
                     Player player = tracker.getPlayer();
                     AttributeInstance instance = player.getAttribute(attribute);
@@ -119,7 +159,9 @@ public class Symptom {
 
                     if (stage != 0) {
                         instance.addPermanentModifier(new AttributeModifier(uuid, name,
-                                -stage * multiplier, AttributeModifier.Operation.ADDITION));
+                                -stage * multiplier, AttributeModifier.Operation.MULTIPLY_BASE));
+                    } else {
+                        instance.removeModifier(uuid);
                     }
                 });
     }
@@ -128,80 +170,160 @@ public class Symptom {
      * @param mobEffect           MobEffect to apply
      * @param amplifierMultiplier amplifier added to MobEffect every progression
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect,
-                   int amplifierMultiplier) {
-        this(name, defaultStages, defaultProgressionThreshold,
-                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, amplifierMultiplier * stage));
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   MobEffect mobEffect, int amplifierMultiplier) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, () -> mobEffect, amplifierMultiplier);
     }
 
     /**
      * @param mobEffect           MobEffect to apply
      * @param amplifierMultiplier amplifier added to MobEffect every progression
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect,
-                   int amplifierMultiplier) {
-        this(name, defaultStages, defaultProgressionThreshold,
-                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, amplifierMultiplier * stage));
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   Supplier<MobEffect> mobEffect, int amplifierMultiplier) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold,
+                (tracker, $1, $2, $3, stage) -> {
+                    MobEffect effect = mobEffect.get();
+                    tracker.setMobEffect(effect, amplifierMultiplier * stage);
+                    if (stage == 0) {
+                        tracker.getPlayer().removeEffect(effect);
+                    }
+                });
     }
 
     /**
      * @param mobEffect MobEffect to apply
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, MobEffect mobEffect) {
-        this(name, defaultStages, defaultProgressionThreshold,
-                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, stage));
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, MobEffect mobEffect) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, () -> mobEffect);
     }
 
     /**
      * @param mobEffect MobEffect to apply
      */
-    public Symptom(String name, int defaultStages, float defaultProgressionThreshold, Supplier<MobEffect> mobEffect) {
-        this(name, defaultStages, defaultProgressionThreshold,
-                (tracker, $1, $2, $3, stage) -> tracker.setMobEffect(mobEffect, stage));
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, Supplier<MobEffect> mobEffect) {
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, mobEffect, 1);
     }
 
     public void applyProgression(MedicalConditionTracker subject, MedicalCondition condition,
-                                 @Nullable ConfiguredSymptom symptom, int stage) {
+                                 ConfiguredSymptom symptom, int stage) {
         progressionEffect.apply(subject, condition, symptom, this, stage);
     }
 
     public void tick(MedicalConditionTracker subject, MedicalCondition condition,
-                     @Nullable ConfiguredSymptom symptom, int stage) {
+                     ConfiguredSymptom symptom, int stage) {
         tickEffect.apply(subject, condition, symptom, this, stage);
     }
 
     public static class ConfiguredSymptom {
 
-        public final Symptom symptom;
-        public final int stages;
-        public final float progressionThreshold;
-        public final float relativeHarshness;
+        @Getter
+        private final Symptom symptom;
+        @Getter
+        private final int stages;
+        @Getter
+        private final float relativeHarshness;
+        /**
+         * The threshold this symptom will start occurring at.
+         * <p>
+         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minProgressionThreshold}
+         * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+         * </p>
+         * <p>
+         * For example: The minimum threshold of this symptom is 100 and the condition's maximum progress is 200 seconds.
+         * This symptom will start occurring when the player has had the condition for 100 seconds.
+         * </p>
+         */
+        @Getter
+        private float minProgressionThreshold;
+        /**
+         * The threshold at which this symptom will be reach its maximum potential.
+         * <p>
+         * If this symptom's {@link #stages} is >0, the symptom will start occurring at {@link #minProgressionThreshold}
+         * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
+         * </p>
+         * <p>
+         * For example: The maximum threshold of this symptom is 150 and the condition's maximum progress is 200 seconds.
+         * This symptom will reach its peak when the player has had the condition for 150 seconds.
+         * </p>
+         */
+        @Getter
+        private float maxProgressionThreshold;
 
-        public ConfiguredSymptom(Symptom symptom, int stages, float progressionThreshold) {
+        /**
+         * Whether this {@code ConfiguredSymptom} uses the default progression thresholds for its {@link #symptom}
+         * and should recalculate an absolute progression value for the {@linkplain MedicalCondition} it's a part of
+         */
+        private boolean isMinRelative, isMaxRelative;
+
+        public ConfiguredSymptom(Symptom symptom, int stages, float minProgressionThreshold, float maxProgressionThreshold) {
             this.symptom = symptom;
             this.stages = stages;
-            this.progressionThreshold = progressionThreshold;
             this.relativeHarshness = (float) stages / symptom.defaultStages;
+
+            this.minProgressionThreshold = minProgressionThreshold;
+            this.maxProgressionThreshold = maxProgressionThreshold;
         }
 
-        public ConfiguredSymptom(Symptom symptom) {
-            this(symptom, symptom.defaultStages, symptom.defaultProgressionThreshold);
+        public ConfiguredSymptom(Symptom symptom, float minProgressionThreshold, float maxProgressionThreshold) {
+            this(symptom, symptom.defaultStages, minProgressionThreshold, maxProgressionThreshold);
+        }
+
+        public ConfiguredSymptom(Symptom symptom, float minProgressionThreshold) {
+            this(symptom, symptom.defaultStages, minProgressionThreshold, symptom.maxProgressionThreshold);
+            this.isMaxRelative = true;
         }
 
         public ConfiguredSymptom(Symptom symptom, int stages) {
-            this(symptom, stages, symptom.defaultProgressionThreshold);
+            this(symptom, stages, symptom.minProgressionThreshold, symptom.maxProgressionThreshold);
+            this.isMinRelative = true;
         }
 
-        public ConfiguredSymptom(Symptom symptom, float progressionThreshold) {
-            this(symptom, symptom.defaultStages, progressionThreshold);
+        public ConfiguredSymptom(Symptom symptom) {
+            this(symptom, symptom.defaultStages);
+        }
+
+        /**
+         * Update the stored progression threshold values based on the passed condition's
+         * {@link MedicalCondition#maxProgression maxProgression} value
+         * @param condition the medical condition that the threshold values will be based on
+         * @param index the index in the condition's symptom list this symptom will be added to
+         */
+        public void addedToCondition(MedicalCondition condition, int index) {
+            if (this.isMinRelative) {
+                this.isMinRelative = false;
+                this.minProgressionThreshold = this.minProgressionThreshold * condition.maxProgression;
+            }
+            if (this.isMaxRelative) {
+                this.isMaxRelative = false;
+                this.maxProgressionThreshold = this.maxProgressionThreshold * condition.maxProgression;
+            }
+
+            this.minProgressionThreshold = Mth.clamp(this.minProgressionThreshold, 0.0f, condition.maxProgression);
+            this.maxProgressionThreshold = Mth.clamp(this.maxProgressionThreshold, 0.0f, condition.maxProgression);
+
+            Preconditions.checkArgument(minProgressionThreshold <= maxProgressionThreshold,
+                    "minProgressThreshold must be <= maxProgressThreshold for symptom %s (%s) of condition %s",
+                    index, symptom.name, condition.getId().toString());
         }
     }
 
     @FunctionalInterface
     public interface Effect {
 
+        Effect NO_OP = (tracker, condition, configuredSymptom, baseSymptom, amplifier) -> {};
+
+        /**
+         * If {@code stage} is 0, any effects should be removed.
+         *
+         * @param tracker the medical condition tracker processing this effect
+         * @param condition the medical condition this symptom belongs to
+         * @param configuredSymptom the symptom this effect belongs to
+         * @param baseSymptom the unconfigured symptom
+         * @param stage the stage of this symptom
+         */
         void apply(MedicalConditionTracker tracker, MedicalCondition condition,
-                   @Nullable ConfiguredSymptom configuredSymptom, Symptom baseSymptom, int stage);
+                   ConfiguredSymptom configuredSymptom, Symptom baseSymptom, int stage);
     }
 
     private static String defaultKey(String name) {

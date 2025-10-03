@@ -73,7 +73,10 @@ public class MedicalCondition {
                         DamageTypeTags.BYPASSES_RESISTANCE)
                 .build();
 
-        this.symptoms.addAll(Arrays.asList(symptoms));
+        for (Symptom.ConfiguredSymptom symptom : symptoms) {
+            symptom.addedToCondition(this, this.symptoms.size());
+            this.symptoms.add(symptom);
+        }
         this.idleProgressionType = progressionType;
         this.idleProgressionRate = progressionRate;
         this.canBePermanent = canBePermanent;
@@ -88,7 +91,7 @@ public class MedicalCondition {
     }
 
     public String getTranslationKey() {
-        return GTRegistries.MEDICAL_CONDITIONS.getKey(this).toLanguageKey("medical_condition");
+        return this.id.toLanguageKey("medical_condition");
     }
 
     public Component getTranslatableName() {
