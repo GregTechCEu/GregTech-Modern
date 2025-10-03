@@ -95,7 +95,8 @@ public class Symptom {
      * {@link #minProgressionThreshold} and the maximum stage will be reached at {@link #maxProgressionThreshold}.
      * </p>
      * <p>
-     * For example: The relative minimum threshold of this symptom is 0.5 and the condition's maximum progress is 200 seconds.
+     * For example: The relative minimum threshold of this symptom is 0.5 and
+     * the condition's maximum progress is 200 seconds.
      * This symptom will start occurring when the player has had the condition for 100 seconds.
      * </p>
      */
@@ -109,7 +110,8 @@ public class Symptom {
      * {@link #minProgressionThreshold} and the maximum stage will be reached at {@link #maxProgressionThreshold}.
      * </p>
      * <p>
-     * For example: tThe relative maximum threshold of this symptom is 0.75 and the condition's maximum progress is 200 seconds.
+     * For example: tThe relative maximum threshold of this symptom is 0.75 and the
+     * condition's maximum progress is 200 seconds.
      * This symptom will reach its peak when the player has had the condition for 150 seconds.
      * </p>
      */
@@ -137,7 +139,8 @@ public class Symptom {
         this(name, defaultStages, minProgressionThreshold, progressionEffect, Effect.NO_OP);
     }
 
-    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, Effect progressionEffect) {
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   Effect progressionEffect) {
         this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, progressionEffect, Effect.NO_OP);
     }
 
@@ -172,7 +175,8 @@ public class Symptom {
      */
     public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
                    MobEffect mobEffect, int amplifierMultiplier) {
-        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, () -> mobEffect, amplifierMultiplier);
+        this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, () -> mobEffect,
+                amplifierMultiplier);
     }
 
     /**
@@ -194,14 +198,16 @@ public class Symptom {
     /**
      * @param mobEffect MobEffect to apply
      */
-    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, MobEffect mobEffect) {
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   MobEffect mobEffect) {
         this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, () -> mobEffect);
     }
 
     /**
      * @param mobEffect MobEffect to apply
      */
-    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold, Supplier<MobEffect> mobEffect) {
+    public Symptom(String name, int defaultStages, float minProgressionThreshold, float maxProgressionThreshold,
+                   Supplier<MobEffect> mobEffect) {
         this(name, defaultStages, minProgressionThreshold, maxProgressionThreshold, mobEffect, 1);
     }
 
@@ -230,7 +236,8 @@ public class Symptom {
          * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
          * </p>
          * <p>
-         * For example: The minimum threshold of this symptom is 100 and the condition's maximum progress is 200 seconds.
+         * For example: The minimum threshold of this symptom is 100 and
+         * the condition's maximum progress is 200 seconds.
          * This symptom will start occurring when the player has had the condition for 100 seconds.
          * </p>
          */
@@ -243,7 +250,8 @@ public class Symptom {
          * and the maximum stage will be reached at {@link #maxProgressionThreshold}.
          * </p>
          * <p>
-         * For example: The maximum threshold of this symptom is 150 and the condition's maximum progress is 200 seconds.
+         * For example: The maximum threshold of this symptom is 150 and
+         * the condition's maximum progress is 200 seconds.
          * This symptom will reach its peak when the player has had the condition for 150 seconds.
          * </p>
          */
@@ -256,7 +264,8 @@ public class Symptom {
          */
         private boolean isMinRelative, isMaxRelative;
 
-        public ConfiguredSymptom(Symptom symptom, int stages, float minProgressionThreshold, float maxProgressionThreshold) {
+        public ConfiguredSymptom(Symptom symptom, int stages, float minProgressionThreshold,
+                                 float maxProgressionThreshold) {
             this.symptom = symptom;
             this.stages = stages;
             this.relativeHarshness = (float) stages / symptom.defaultStages;
@@ -286,8 +295,9 @@ public class Symptom {
         /**
          * Update the stored progression threshold values based on the passed condition's
          * {@link MedicalCondition#maxProgression maxProgression} value
+         * 
          * @param condition the medical condition that the threshold values will be based on
-         * @param index the index in the condition's symptom list this symptom will be added to
+         * @param index     the index in the condition's symptom list this symptom will be added to
          */
         public void addedToCondition(MedicalCondition condition, int index) {
             if (this.isMinRelative) {
@@ -304,7 +314,7 @@ public class Symptom {
 
             Preconditions.checkArgument(minProgressionThreshold <= maxProgressionThreshold,
                     "minProgressThreshold must be <= maxProgressThreshold for symptom %s (%s) of condition %s",
-                    index, symptom.name, condition.getId().toString());
+                    index, symptom.name, condition.id.toString());
         }
     }
 
@@ -316,11 +326,11 @@ public class Symptom {
         /**
          * If {@code stage} is 0, any effects should be removed.
          *
-         * @param tracker the medical condition tracker processing this effect
-         * @param condition the medical condition this symptom belongs to
+         * @param tracker           the medical condition tracker processing this effect
+         * @param condition         the medical condition this symptom belongs to
          * @param configuredSymptom the symptom this effect belongs to
-         * @param baseSymptom the unconfigured symptom
-         * @param stage the stage of this symptom
+         * @param baseSymptom       the unconfigured symptom
+         * @param stage             the stage of this symptom
          */
         void apply(MedicalConditionTracker tracker, MedicalCondition condition,
                    ConfiguredSymptom configuredSymptom, Symptom baseSymptom, int stage);

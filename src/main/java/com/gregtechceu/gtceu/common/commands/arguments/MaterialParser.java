@@ -14,7 +14,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -76,7 +75,7 @@ public class MaterialParser {
         Material material = this.materials.getRegistry(id.getNamespace()).get(id.getPath());
         if (material == null || material.isNull()) {
             this.reader.setCursor(i);
-            throw  ERROR_UNKNOWN_ITEM.createWithContext(this.reader, id);
+            throw ERROR_UNKNOWN_ITEM.createWithContext(this.reader, id);
         }
         this.result = material;
     }
