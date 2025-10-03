@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
@@ -154,22 +155,27 @@ public class ForgeCommonEventListener {
         if (inventory == null) {
             return;
         }
+
+        // apply progression every second
+        if (player.level().getGameTime() % 20 != 0) {
+            return;
+        }
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            Material material = HazardProperty.getValidHazardMaterial(stack);
-            if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
+            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
+            if (entry.material().isNull()) {
                 continue;
             }
-            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(material);
+            tracker.progressRelatedCondition(entry, stack.getCount());
         }
     }
 
@@ -207,13 +213,13 @@ public class ForgeCommonEventListener {
             return;
         }
 
-        Material material = HazardProperty.getValidHazardMaterial(usedItem);
-        if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
+        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
+        if (entry.material().isNull()) {
             return;
         }
-        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(material);
+            tracker.progressRelatedCondition(entry, 1);
         }
     }
 

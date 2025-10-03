@@ -2,14 +2,12 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -180,32 +178,27 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    public static Material getValidHazardMaterial(ItemStack item) {
-        Material material = GTMaterials.NULL;
-        TagPrefix prefix = TagPrefix.NULL_PREFIX;
+    public static MaterialEntry getValidHazardMaterial(ItemStack item) {
+        MaterialEntry entry = MaterialEntry.NULL_ENTRY;
         boolean isFluid = false;
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
-            material = prefixItem.material;
-            prefix = prefixItem.tagPrefix;
+            entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
         } else if (item.getItem() instanceof BucketItem bucket) {
             if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
-                material = ChemicalHelper.getMaterial(bucket.getFluid());
+                entry = new MaterialEntry(TagPrefix.NULL_PREFIX, ChemicalHelper.getMaterial(bucket.getFluid()));
                 isFluid = true;
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (!entry.isEmpty()) {
-                material = entry.material();
-                prefix = entry.tagPrefix();
-            }
+            entry = ChemicalHelper.getMaterialEntry(item.getItem());
         }
-        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+
+        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
         if (property == null) {
-            return GTMaterials.NULL;
+            return MaterialEntry.NULL_ENTRY;
         }
-        if (!isFluid && !property.hazardTrigger.isAffected(prefix)) {
-            return GTMaterials.NULL;
+        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
+            return MaterialEntry.NULL_ENTRY;
         }
-        return material;
+        return entry;
     }
 }

@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition.IdleProgressionType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
@@ -58,30 +58,30 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
             player.addEffect(new MobEffectInstance(entry.getKey(), 100, entry.getIntValue()));
         }
 
-        if (player.level().getGameTime() % 20 == 0) { // apply idle progression every second
-            for (MedicalCondition condition : medicalConditions.keySet()) {
-                if (condition.idleProgressionType == IdleProgressionType.NONE ||
-                        condition.idleProgressionRate == 0.0f) {
-                    continue;
-                }
-                if (permanentConditions.contains(condition) &&
-                        condition.idleProgressionType == IdleProgressionType.HEAL) {
-                    // can't automatically heal permanent conditions.
-                    continue;
-                }
-                int multiplier = (condition.idleProgressionType == IdleProgressionType.HEAL) ? -1 : 1;
-                medicalConditions.addTo(condition, condition.idleProgressionRate * multiplier);
-                evaluateMedicalCondition(condition);
+        for (MedicalCondition condition : medicalConditions.keySet()) {
+            if (condition.idleProgressionType == IdleProgressionType.NONE ||
+                    condition.idleProgressionRate == 0.0f) {
+                continue;
             }
-            if (!medicalConditions.isEmpty()) {
-                updateActiveSymptoms();
+            if (permanentConditions.contains(condition) &&
+                    condition.idleProgressionType == IdleProgressionType.HEAL) {
+                // can't automatically heal permanent conditions.
+                continue;
             }
+            int multiplier = (condition.idleProgressionType == IdleProgressionType.HEAL) ? -1 : 1;
+            medicalConditions.addTo(condition, condition.idleProgressionRate * multiplier);
+            evaluateMedicalCondition(condition);
+        }
+        if (!medicalConditions.isEmpty()) {
+            updateActiveSymptoms();
         }
     }
 
-    public void progressRelatedCondition(@NotNull Material material) {
-        HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
-        progressCondition(materialHazard.condition, materialHazard.progressionMultiplier);
+    public void progressRelatedCondition(@NotNull MaterialEntry materialEntry, int count) {
+        HazardProperty materialHazard = materialEntry.material().getProperty(PropertyKey.HAZARD);
+        float strength = (float) (materialEntry.getMaterialAmount() / GTValues.M) * count *
+                materialHazard.progressionMultiplier;
+        progressCondition(materialHazard.condition, strength);
     }
 
     public void progressCondition(@NotNull MedicalCondition condition, float strength) {
