@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
@@ -163,7 +162,7 @@ public class IntProviderIngredient extends Ingredient {
     /**
      * Resets the random roll on this ingredient
      */
-    public void reroll(){
+    public void reroll() {
         sampledCount = -1;
         itemStacks = null;
     }

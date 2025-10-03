@@ -190,34 +190,40 @@ public class IntProviderFluidIngredientTest {
         return new BusHolderBatchParallel(inputBus1, inputHatch1, outputBus1, outputHatch1, controller, parallelHatch);
     }
 
-
     // test for IntProviderFluidIngredient.test()
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedFluidIngredientTestEqualTest(GameTestHelper helper){
+    public static void rangedFluidIngredientTestEqualTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 5);
-        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(3)), "IntProviderFluidIngredient.test doesn't match when it should have");
+        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(3)),
+                "IntProviderFluidIngredient.test doesn't match when it should have");
         // This should work since test only tries the fluid type.
-        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(64)), "IntProviderFluidIngredient.test doesn't match when it should have with value outside bounds");
-        helper.assertFalse(ingredient.test(GTMaterials.Lava.getFluid(3)), "IntProviderFluidIngredient.test shouldn't match with different fluids");
+        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(64)),
+                "IntProviderFluidIngredient.test doesn't match when it should have with value outside bounds");
+        helper.assertFalse(ingredient.test(GTMaterials.Lava.getFluid(3)),
+                "IntProviderFluidIngredient.test shouldn't match with different fluids");
         helper.succeed();
     }
 
     // test for IntProviderFluidIngredient.getStacks()
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper){
+    public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
         var stacks = ingredient.getStacks();
-        helper.assertTrue(stacks.length == 1, "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
-        helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)), "IntProviderFluidIngredient should have fluid equal to what it was made with");
-        helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]), "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
+        helper.assertTrue(stacks.length == 1,
+                "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
+        helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
+                "IntProviderFluidIngredient should have fluid equal to what it was made with");
+        helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
+                "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
         ingredient.reroll();
-        helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]), "IntProviderFluidIngredient.getStacks should have changed after rerolling");
+        helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
+                "IntProviderFluidIngredient.getStacks should have changed after rerolling");
         helper.succeed();
     }
 
     // test for IntProviderFluidIngredient.toJson()
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedIngredientJsonTest(GameTestHelper helper){
+    public static void rangedIngredientJsonTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
 
         // serialize/deserialize before rolling count
@@ -232,14 +238,19 @@ public class IntProviderFluidIngredientTest {
         var ingredientDeserializedPostRoll = IntProviderFluidIngredient.fromJson(jsonPostRoll);
         var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getStacks();
 
-        helper.assertTrue(stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length, "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid, even after serializing");
-        helper.assertTrue(stacksDeserializedPreRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)), "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-        helper.assertTrue(stacksDeserializedPostRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)), "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-        helper.assertFalse(TestUtils.areFluidStacksEqual(stacksDeserializedPreRoll, ingredient.getStacks()), "IntProviderFluidIngredient.getStacks should be different if it wasn't rolled before serializing");
-        helper.assertTrue(TestUtils.areFluidStacksEqual(stacksDeserializedPostRoll, ingredient.getStacks()), "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls if it was rolled before serializing");
+        helper.assertTrue(
+                stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length,
+                "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid, even after serializing");
+        helper.assertTrue(stacksDeserializedPreRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
+                "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
+        helper.assertTrue(stacksDeserializedPostRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
+                "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
+        helper.assertFalse(TestUtils.areFluidStacksEqual(stacksDeserializedPreRoll, ingredient.getStacks()),
+                "IntProviderFluidIngredient.getStacks should be different if it wasn't rolled before serializing");
+        helper.assertTrue(TestUtils.areFluidStacksEqual(stacksDeserializedPostRoll, ingredient.getStacks()),
+                "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls if it was rolled before serializing");
         helper.succeed();
     }
-
 
     // Test for singleblock machine with ranged fluid input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
@@ -464,7 +475,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-            batch = "RangedFluidIngredients")
+              batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -520,7 +531,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-            batch = "RangedFluidIngredients")
+              batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -573,7 +584,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients", timeoutTicks = 200)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -604,7 +616,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
@@ -644,7 +656,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients", timeoutTicks = 200)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -717,7 +730,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients", timeoutTicks = 200)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -748,7 +762,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
@@ -788,7 +802,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients", timeoutTicks = 200)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -861,8 +876,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            timeoutTicks = 500)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 500)
     public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -938,8 +953,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients",
-            timeoutTicks = 500)
+              batch = "RangedFluidIngredients",
+              timeoutTicks = 500)
     public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 

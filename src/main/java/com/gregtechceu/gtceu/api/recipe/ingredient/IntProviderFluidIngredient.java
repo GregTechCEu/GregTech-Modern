@@ -161,7 +161,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * Resets the random roll on this ingredient
      */
-    public void reroll(){
+    public void reroll() {
         sampledCount = -1;
         fluidStacks = null;
     }

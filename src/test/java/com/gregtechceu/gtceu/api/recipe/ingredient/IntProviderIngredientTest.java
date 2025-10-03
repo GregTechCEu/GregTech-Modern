@@ -30,8 +30,6 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-
 /**
  * Test cases:
  * do many passes of most tests as a safeguard against bad rolls
@@ -186,32 +184,38 @@ public class IntProviderIngredientTest {
 
     // test for IntProviderIngredient.test()
     @GameTest(template = "empty", batch = "RangedIngredients")
-    public static void rangedIngredientTestEqualTest(GameTestHelper helper){
-        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1,5));
-        helper.assertTrue(ingredient.test(new ItemStack(Items.BRICK, 3)), "IntProviderIngredient.test doesn't match when it should have");
+    public static void rangedIngredientTestEqualTest(GameTestHelper helper) {
+        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5));
+        helper.assertTrue(ingredient.test(new ItemStack(Items.BRICK, 3)),
+                "IntProviderIngredient.test doesn't match when it should have");
         // This should work since test only tries the item type.
-        helper.assertTrue(ingredient.test(new ItemStack(Items.BRICK, 64)), "IntProviderIngredient.test doesn't match when it should have with value outside bounds");
-        helper.assertFalse(ingredient.test(new ItemStack(Items.COBBLESTONE, 3)), "IntProviderIngredient.test shouldn't match with different items");
+        helper.assertTrue(ingredient.test(new ItemStack(Items.BRICK, 64)),
+                "IntProviderIngredient.test doesn't match when it should have with value outside bounds");
+        helper.assertFalse(ingredient.test(new ItemStack(Items.COBBLESTONE, 3)),
+                "IntProviderIngredient.test shouldn't match with different items");
         helper.succeed();
     }
 
     // test for IntProviderIngredient.getStacks()
     @GameTest(template = "empty", batch = "RangedIngredients")
-    public static void rangedIngredientGetStacksTest(GameTestHelper helper){
-        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1,5000));
+    public static void rangedIngredientGetStacksTest(GameTestHelper helper) {
+        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
         var stacks = ingredient.getItems();
         helper.assertTrue(stacks.length == 1, "IntProviderIngredient should only return 1 item when made with 1 item");
-        helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with");
-        helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getStacks calls");
+        helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),
+                "IntProviderIngredient should have item equal to what it was made with");
+        helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
+                "IntProviderIngredient.getItems shouldn't change between getStacks calls");
         ingredient.reroll();
-        helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()), "IntProviderIngredient.getItems should have changed after rerolling");
+        helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
+                "IntProviderIngredient.getItems should have changed after rerolling");
         helper.succeed();
     }
 
     // test for IntProviderIngredient.toJson()
     @GameTest(template = "empty", batch = "RangedIngredients")
-    public static void rangedIngredientJsonTest(GameTestHelper helper){
-        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1,5000));
+    public static void rangedIngredientJsonTest(GameTestHelper helper) {
+        var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
 
         // serialize/deserialize before rolling count
         var jsonPreRoll = ingredient.toJson();
@@ -225,11 +229,17 @@ public class IntProviderIngredientTest {
         var ingredientDeserializedPostRoll = IntProviderIngredient.fromJson(jsonPostRoll);
         var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getItems();
 
-        helper.assertTrue(stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length, "IntProviderIngredient should only return 1 item when made with 1 item, even after serializing");
-        helper.assertTrue(stacksDeserializedPreRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with after serializing");
-        helper.assertTrue(stacksDeserializedPostRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()), "IntProviderIngredient should have item equal to what it was made with after serializing");
-        helper.assertFalse(TestUtils.areItemStacksEqual(stacksDeserializedPreRoll, ingredient.getItems()), "IntProviderIngredient.getItems should be different if it wasn't rolled before serializing");
-        helper.assertTrue(TestUtils.areItemStacksEqual(stacksDeserializedPostRoll, ingredient.getItems()), "IntProviderIngredient.getItems shouldn't change between getItems calls if it was rolled before serializing");
+        helper.assertTrue(
+                stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length,
+                "IntProviderIngredient should only return 1 item when made with 1 item, even after serializing");
+        helper.assertTrue(stacksDeserializedPreRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()),
+                "IntProviderIngredient should have item equal to what it was made with after serializing");
+        helper.assertTrue(stacksDeserializedPostRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()),
+                "IntProviderIngredient should have item equal to what it was made with after serializing");
+        helper.assertFalse(TestUtils.areItemStacksEqual(stacksDeserializedPreRoll, ingredient.getItems()),
+                "IntProviderIngredient.getItems should be different if it wasn't rolled before serializing");
+        helper.assertTrue(TestUtils.areItemStacksEqual(stacksDeserializedPostRoll, ingredient.getItems()),
+                "IntProviderIngredient.getItems shouldn't change between getItems calls if it was rolled before serializing");
         helper.succeed();
     }
 
@@ -559,7 +569,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients", timeoutTicks = 200)
+              batch = "RangedIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedItemInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -588,7 +599,7 @@ public class IntProviderIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
@@ -628,7 +639,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients", timeoutTicks = 200)
+              batch = "RangedIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedItemOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -701,7 +713,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients", timeoutTicks = 200)
+              batch = "RangedIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedItemInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -730,7 +743,7 @@ public class IntProviderIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
@@ -770,7 +783,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients", timeoutTicks = 200)
+              batch = "RangedIngredients",
+              timeoutTicks = 200)
     public static void multiblockLCentRangedItemOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -843,8 +857,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients",
-            timeoutTicks = 500)
+              batch = "RangedIngredients",
+              timeoutTicks = 500)
     public static void multiblockLCentRangedItemInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -879,8 +893,8 @@ public class IntProviderIngredientTest {
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
-                                STONE.copyWithCount(completed)),
+                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                        STONE.copyWithCount(completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
                                 completed + "]");
@@ -925,8 +939,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients",
-            timeoutTicks = 500)
+              batch = "RangedIngredients",
+              timeoutTicks = 500)
     public static void multiblockLCentRangedItemOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 

@@ -76,11 +76,11 @@ public class TestUtils {
      * Compares two itemstack[]s' items and amounts
      * Necessary because itemStack does not implement .equals()
      */
-    public static boolean areItemStacksEqual(ItemStack[] stack1, ItemStack[] stack2){
+    public static boolean areItemStacksEqual(ItemStack[] stack1, ItemStack[] stack2) {
         if (stack1.length != stack2.length)
             return false;
 
-        for (int i=0; i<stack1.length; i++) {
+        for (int i = 0; i < stack1.length; i++) {
             if (!isItemStackEqual(stack1[i], stack2[i]))
                 return false;
         }
@@ -110,11 +110,11 @@ public class TestUtils {
      * Compares two fluidstack[]s' fluids and amounts
      * Necessary because fluidStack's implementation of .equals() does not check amounts
      */
-    public static boolean areFluidStacksEqual(FluidStack[] stack1, FluidStack[] stack2){
+    public static boolean areFluidStacksEqual(FluidStack[] stack1, FluidStack[] stack2) {
         if (stack1.length != stack2.length)
             return false;
 
-        for (int i=0; i<stack1.length; i++) {
+        for (int i = 0; i < stack1.length; i++) {
             if (!isFluidStackEqual(stack1[i], stack2[i]))
                 return false;
         }
@@ -251,9 +251,10 @@ public class TestUtils {
     }
 
     public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
-        helper.assertTrue(stack1.isFluidStackIdentical(stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
-                stack1.getDisplayName().getString(), stack1.getAmount(),
-                stack2.getDisplayName().getString(), stack2.getAmount()));
+        helper.assertTrue(stack1.isFluidStackIdentical(stack2),
+                "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+                        stack1.getDisplayName().getString(), stack1.getAmount(),
+                        stack2.getDisplayName().getString(), stack2.getAmount()));
     }
 
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
