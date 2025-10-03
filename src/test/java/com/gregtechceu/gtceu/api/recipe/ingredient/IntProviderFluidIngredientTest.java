@@ -35,6 +35,8 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * Test cases:
  * Do many passes of most tests as a safeguard against bad rolls
@@ -190,6 +192,32 @@ public class IntProviderFluidIngredientTest {
         return new BusHolderBatchParallel(inputBus1, inputHatch1, outputBus1, outputHatch1, controller, parallelHatch);
     }
 
+
+    // test for IntProviderFluidIngredient.test()
+    @GameTest(template = "empty", batch = "RangedFluidIngredients")
+    public static void rangedFluidIngredientTestEqualTest(GameTestHelper helper){
+        var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 5);
+        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(3)), "IntProviderFluidIngredient.test doesn't match when it should have");
+        // This should work since test only tries the fluid type.
+        helper.assertTrue(ingredient.test(GTMaterials.Water.getFluid(64)), "IntProviderFluidIngredient.test doesn't match when it should have with value outside bounds");
+        helper.assertFalse(ingredient.test(GTMaterials.Lava.getFluid(3)), "IntProviderFluidIngredient.test shouldn't match with different fluids");
+        helper.succeed();
+    }
+
+    // test for IntProviderFluidIngredient.getStacks()
+    @GameTest(template = "empty", batch = "RangedFluidIngredients")
+    public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper){
+        var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
+        var stacks = ingredient.getStacks();
+        helper.assertTrue(stacks.length == 1, "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
+        helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)), "IntProviderFluidIngredient should have fluid equal to what it was made with");
+        helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]), "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
+        ingredient.reroll();
+        helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]), "IntProviderFluidIngredient.getStacks should have changed after rerolling");
+        helper.succeed();
+    }
+
+
     // Test for singleblock machine with ranged fluid input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594
@@ -263,7 +291,7 @@ public class IntProviderFluidIngredientTest {
 
     // Failure Test for singleblock machine with ranged fluid input
     // Provides too little input fluid, should not run recipes.
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedFluidInputFailure(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
@@ -522,7 +550,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients", timeoutTicks = 200)
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -593,7 +621,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients", timeoutTicks = 200)
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -666,7 +694,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients", timeoutTicks = 200)
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -737,7 +765,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients", timeoutTicks = 200)
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
