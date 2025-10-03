@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSerializable<CompoundTag> {
+public class MedicalConditionTracker implements ICapabilitySerializable<CompoundTag> {
 
     @Getter
     private final Object2FloatMap<MedicalCondition> medicalConditions = new Object2FloatOpenHashMap<>();
@@ -72,6 +72,11 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
                 updateActiveSymptoms();
             }
         }
+    }
+
+    public void progressRelatedCondition(@NotNull Material material) {
+        HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
+        progressCondition(materialHazard.condition, materialHazard.progressionMultiplier);
     }
 
     public void progressCondition(@NotNull MedicalCondition condition, float strength) {
@@ -226,5 +231,10 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
             permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(permanentConditionsTag.getString(i))));
         }
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER.orEmpty(cap, this.holder);
     }
 }

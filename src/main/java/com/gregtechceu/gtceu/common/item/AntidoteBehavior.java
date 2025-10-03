@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -39,7 +39,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
         ItemStack itemstack = IInteractionItem.super.finishUsingItem(stack, level, livingEntity);
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(livingEntity);
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(livingEntity);
         if (tracker == null) {
             return itemstack;
         }

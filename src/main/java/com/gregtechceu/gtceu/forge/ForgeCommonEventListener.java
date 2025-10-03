@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -57,9 +55,7 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -77,10 +73,7 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -101,8 +94,6 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,25 +117,7 @@ public class ForgeCommonEventListener {
     public static void registerEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player entity) {
             final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
-            event.addCapability(GTCEu.id("medical_condition_tracker"), new ICapabilitySerializable<CompoundTag>() {
-
-                @Override
-                public CompoundTag serializeNBT() {
-                    return tracker.serializeNBT();
-                }
-
-                @Override
-                public void deserializeNBT(CompoundTag arg) {
-                    tracker.deserializeNBT(arg);
-                }
-
-                @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
-                                                                  @Nullable Direction arg) {
-                    return GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER.orEmpty(capability,
-                            LazyOptional.of(() -> tracker));
-                }
-            });
+            event.addCapability(GTCEu.id("medical_condition_tracker"), tracker);
         }
     }
 
@@ -166,7 +139,7 @@ public class ForgeCommonEventListener {
         }
 
         Player player = event.player;
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (tracker == null) {
             return;
         }
@@ -229,7 +202,7 @@ public class ForgeCommonEventListener {
         if (!usedItem.isEdible()) {
             return;
         }
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (tracker == null) {
             return;
         }
@@ -412,7 +385,7 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             if (tracker == null) {
                 return;
             }
