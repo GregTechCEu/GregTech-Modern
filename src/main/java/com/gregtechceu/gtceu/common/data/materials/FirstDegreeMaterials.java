@@ -887,7 +887,6 @@ public class FirstDegreeMaterials {
                 .color(0xf2f2f2).secondaryColor(0xb2c4c7).iconSet(QUARTZ)
                 .flags(NO_SMASHING, NO_SMELTING)
                 .components(Silicon, 1, Oxygen, 2)
-                .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.SILICOSIS, false)
                 .buildAndRegister();
 
         MagnesiumChloride = new Material.Builder(GTCEu.id("magnesium_chloride"))

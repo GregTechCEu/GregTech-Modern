@@ -77,20 +77,6 @@ public class GTMedicalConditions {
             //new Symptom.ConfiguredSymptom(Symptom.HUNGER, 2, .2f))
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Arsenic, 4));
-    public static final MedicalCondition SILICOSIS = register("silicosis", 0x5d6c91, 15000,
-            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
-            new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, 4, .75f),
-            new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .6f))
-            .setRecipeModifier(builder -> builder
-                    .outputItems(dust, SiliconDioxide, 4));
-    public static final MedicalCondition BERYLLIOSIS = register("berylliosis", 0x0c6539, 10000,
-            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
-            new Symptom.ConfiguredSymptom(Symptom.WITHER),
-            new Symptom.ConfiguredSymptom(Symptom.RANDOM_DAMAGE, 1, .7f),
-            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
-            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .4f))
-            .setRecipeModifier(builder -> builder
-                    .outputItems(dust, Beryllium, 4));
     public static final MedicalCondition METHANOL_POISONING = register("methanol_poisoning", 0xaa8800, 600,
             MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.POISONING),

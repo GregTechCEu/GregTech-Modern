@@ -230,11 +230,19 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
     @Override
     public void deserializeNBT(CompoundTag arg) {
+        // ensure the medical condition map(s) is actually empty before loading.
+        // IDK if this actually happens, but better be safe than sorry.
+        medicalConditions.clear();
+        permanentConditions.clear();
+
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS
-                    .get(GTCEu.id(compoundTag.getString("condition")));
+            ResourceLocation id = GTCEu.id(compoundTag.getString("condition"));
+            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+                continue;
+            }
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
             float progression = compoundTag.getFloat("progression");
 
             medicalConditions.put(condition, progression);
@@ -242,7 +250,11 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(permanentConditionsTag.getString(i))));
+            ResourceLocation id = GTCEu.id(permanentConditionsTag.getString(i));
+            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+                continue;
+            }
+            permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(id));
         }
     }
 

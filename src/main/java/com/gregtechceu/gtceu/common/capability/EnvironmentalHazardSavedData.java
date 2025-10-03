@@ -17,6 +17,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -72,6 +73,9 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
             ChunkPos source = new ChunkPos(zoneTag.getLong("pos"));
             HazardZone zone = HazardZone.deserializeNBT(zoneTag);
+            if (zone == null) {
+                continue;
+            }
 
             this.hazardZones.put(source, zone);
         }
@@ -291,13 +295,17 @@ public class EnvironmentalHazardSavedData extends SavedData {
             return zoneTag;
         }
 
-        public static HazardZone deserializeNBT(CompoundTag zoneTag) {
+        public static @Nullable HazardZone deserializeNBT(CompoundTag zoneTag) {
             BlockPos source = NbtUtils.readBlockPos(zoneTag.getCompound("source"));
             float strength = zoneTag.getFloat("strength");
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(zoneTag.getString("condition")));
+            ResourceLocation id = GTCEu.id(zoneTag.getString("condition"));
+            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+                return null;
+            }
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
 
             return new HazardZone(source, strength, canSpread, trigger, condition);
         }

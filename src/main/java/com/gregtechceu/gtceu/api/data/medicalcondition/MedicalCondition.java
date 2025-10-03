@@ -40,7 +40,6 @@ public class MedicalCondition {
      * the command will display "Player &lt;player&gt; has cancer" instead of "... has Carcinogenic"
      * </p>
      */
-    @Getter
     public final ResourceLocation id;
     public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached
