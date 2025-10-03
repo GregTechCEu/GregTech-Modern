@@ -72,7 +72,7 @@ public class MedicalConditionCommands {
                                                             "targets");
                                                     return applyMedicalConditions(players, condition, 1);
                                                 })
-                                                .then(argument("progression_multiplier", FloatArgumentType.floatArg(0))
+                                                .then(argument("progression_multiplier", FloatArgumentType.floatArg())
                                                         .executes(ctx -> {
                                                             MedicalCondition condition = MedicalConditionArgument
                                                                     .getCondition(ctx, "condition");
@@ -121,7 +121,7 @@ public class MedicalConditionCommands {
                 continue;
             }
             if (condition == null) {
-                count += tracker.getMedicalConditions().keySet().size();
+                count += tracker.getMedicalConditions().size();
                 for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                     tracker.removeMedicalCondition(medicalCondition);
                 }
