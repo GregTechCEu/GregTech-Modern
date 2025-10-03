@@ -180,15 +180,15 @@ ServerEvents.recipes(event => {
 
 Rock breaker recipes use AdjacentFluidConditions.
 
-To add a condition, you can use the `adjacentFluid(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
+To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
 ```js title="rock_breaker.js"
 ServerEvents.recipes(event => {
     event.recipes.gtceu.rock_breaker('rhino_jank')
         .notConsumable('minecraft:dirt')
         .itemOutputs('minecraft:dirt')
-        .adjacentFluid('minecraft:water')
-        .adjacentFluid('minecraft:lava')
+        .adjacentFluids('minecraft:water')
+        .adjacentFluids('minecraft:lava')
         .duration(16)
         .EUt(30)
 })

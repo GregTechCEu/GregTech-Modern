@@ -47,13 +47,13 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
@@ -92,7 +92,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
@@ -105,6 +104,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPaths;
@@ -133,7 +133,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
@@ -523,39 +522,29 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
 
         // clone vanilla recipes for stuff like electric furnaces, etc
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                gtRecipeType.getLookup().removeAllRecipes();
-
-                var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
-                    var type = entry.getKey();
-                    var recipes = entry.getValue();
-                    recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream()
-                            .filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
-                    }
-                }
-
-                Stream.concat(
-                        recipesByName.values().stream()
-                                .filter(recipe -> recipe.getType() == gtRecipeType),
-                        proxyRecipes.entrySet().stream()
-                                .flatMap(entry -> entry.getValue().stream()))
-                        .filter(GTRecipe.class::isInstance)
-                        .map(GTRecipe.class::cast)
-                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+        for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
+            if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
+                continue;
             }
+            gtRecipeType.getLookup().removeAllRecipes();
+            gtRecipeType.getProxyRecipes().forEach((type, list) -> {
+                RecipeManagerHandler.addProxyRecipesToLookup(recipesByName, gtRecipeType, type, list);
+            });
+            RecipeManagerHandler.addRecipesToLookup(recipesByName, gtRecipeType);
         }
     }
 
     private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
-        // get the recipe ID without the leading type path
-        GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
-                .recipeBuilder(gtRecipe.idWithoutType());
+        GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
+        if (gtRecipeType == null) {
+            GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: '{}' with type '{}'", gtRecipe.getId(),
+                    gtRecipe.getType());
+            return;
+        }
 
+        // get the recipe ID without the leading type path
+        GTRecipeBuilder builder = gtRecipeType.recipeBuilder(gtRecipe.idWithoutType());
         if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
             builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
         }
