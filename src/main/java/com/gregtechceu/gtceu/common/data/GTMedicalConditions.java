@@ -63,8 +63,6 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(50)));
     /**
-     * takes (a total of) 10 hours of having radioactive items in the player's inventory for them to die.<br>
-     * <p>
      * All effects:
      * <ul>
      * <li>After an hour, the player's attack damage and mining speed will start lowering.</li>
