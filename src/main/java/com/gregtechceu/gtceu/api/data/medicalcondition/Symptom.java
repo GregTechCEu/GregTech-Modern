@@ -72,7 +72,11 @@ public class Symptom {
     // default is 300, stage 10 result will be 200
     public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"), 10, 0.0f, 1.0f,
             (tracker, condition, configuredSymptom, baseSymptom, stage) -> {
-                tracker.getPlayer().gtceu$setMaxAirSupply(tracker.getPlayer().gtceu$getOriginalMaxAirSupply() - 10 * stage);
+                if (stage != 0) {
+                    tracker.getPlayer().gtceu$setMaxAirSupply(tracker.getPlayer().gtceu$getOriginalMaxAirSupply() - 10 * stage);
+                } else {
+                    tracker.getPlayer().gtceu$setMaxAirSupply(-1);
+                }
             });
 
     public static final Symptom BLINDNESS = new Symptom(defaultKey("blindness"), 10, 0.0f, 1.0f, MobEffects.BLINDNESS);
@@ -163,8 +167,6 @@ public class Symptom {
                     if (stage != 0) {
                         instance.addPermanentModifier(new AttributeModifier(uuid, name,
                                 -stage * multiplier, AttributeModifier.Operation.MULTIPLY_BASE));
-                    } else {
-                        instance.removeModifier(uuid);
                     }
                 });
     }
@@ -286,6 +288,7 @@ public class Symptom {
         public ConfiguredSymptom(Symptom symptom, int stages) {
             this(symptom, stages, symptom.minProgressionThreshold, symptom.maxProgressionThreshold);
             this.isMinRelative = true;
+            this.isMaxRelative = true;
         }
 
         public ConfiguredSymptom(Symptom symptom) {
@@ -313,8 +316,8 @@ public class Symptom {
             this.maxProgressionThreshold = Mth.clamp(this.maxProgressionThreshold, 0.0f, condition.maxProgression);
 
             Preconditions.checkArgument(minProgressionThreshold <= maxProgressionThreshold,
-                    "minProgressThreshold must be <= maxProgressThreshold for symptom %s (%s) of condition %s",
-                    index, symptom.name, condition.id.toString());
+                    "minProgressThreshold must be <= maxProgressThreshold for symptom %s (%s) of condition %s (min %s > max %s)",
+                    index, symptom.name, condition.id.toString(), minProgressionThreshold, maxProgressionThreshold);
         }
     }
 

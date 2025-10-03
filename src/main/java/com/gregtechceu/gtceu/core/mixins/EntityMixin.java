@@ -43,10 +43,7 @@ public abstract class EntityMixin implements IFireImmuneEntity, IBreathingEntity
 
     @ModifyReturnValue(method = "getMaxAirSupply", at = @At("RETURN"))
     private int gtceu$limitGetMaxAirSupply(int original) {
-        if (gtceu$modifiedMaxAirSupply != -1 && gtceu$modifiedMaxAirSupply < original) {
-            return gtceu$modifiedMaxAirSupply;
-        }
-        return original;
+        return gtceu$limitAirSupply(original);
     }
 
     @ModifyVariable(method = "setAirSupply", at = @At("HEAD"), argsOnly = true)
