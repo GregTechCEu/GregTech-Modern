@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -135,12 +136,18 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
             return;
         }
         for (MedicalCondition condition : flaggedForRemoval) {
+            Set<ConfiguredSymptom> toRemove = new HashSet<>();
             activeSymptoms.keySet().stream()
                     .filter(condition.symptoms::contains)
                     .forEach(symptom -> {
                         // reset all symptom effects for this condition
                         symptom.getSymptom().applyProgression(this, condition, symptom, 0);
+                        toRemove.add(symptom);
                     });
+            for (ConfiguredSymptom symptom : toRemove) {
+                activeSymptoms.removeInt(symptom);
+            }
+
             medicalConditions.removeFloat(condition);
         }
         flaggedForRemoval.clear();
