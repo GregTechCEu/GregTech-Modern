@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.MaceratorLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -353,19 +356,36 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         ItemStack oreDrop = new ItemStack(blockState.getBlock());
         if (oreDrop.isEmpty()) return false;
 
-        // create dummy recipe handler
-        inputItemHandler.storage.setStackInSlot(0, oreDrop);
         outputItemHandler.storage.clear();
 
-        var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
+        GTRecipe recipe = null;
+        if (oreDrop.getItem() instanceof MaterialBlockItem blockItem) { // use our gt ores
+            var oreTag = blockItem.tagPrefix;
+            var mat = blockItem.material;
 
-        while (matches.hasNext()) {
-            GTRecipe match = matches.next();
-            if (match == null) continue;
+            var oreProperty = mat.getProperty(PropertyKey.ORE);
 
-            long eut = match.getInputEUt().getTotalEU();
+            recipe = MaceratorLogic.buildOreRecipe("macerate_", oreDrop, mat, oreTag, oreProperty);
+        }
+
+        if (recipe == null) { // attempt ore block that has a static gt recipe
+            // create dummy recipe handler
+            inputItemHandler.storage.setStackInSlot(0, oreDrop);
+
+            var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
+
+            while (matches.hasNext()) {
+                GTRecipe match = matches.next();
+                if (match == null) continue;
+                recipe = match;
+                break;
+            }
+        }
+
+        if (recipe != null) {
+            long eut = recipe.getInputEUt().getTotalEU();
             if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
-                if (RecipeHelper.handleRecipeIO(this, match, IO.OUT, this.chanceCaches).isSuccess()) {
+                if (RecipeHelper.handleRecipeIO(this, recipe, IO.OUT, this.chanceCaches).isSuccess()) {
                     blockDrops.clear();
                     var result = new ArrayList<ItemStack>();
                     for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {

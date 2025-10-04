@@ -46,9 +46,9 @@ public final class OreRecipeHandler {
         }
 
         for (TagPrefix ore : ORES.keySet()) {
-            if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
+            //if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
                 processOre(provider, ore, property, material);
-            }
+            //}
         }
 
         processRawOre(provider, property, material);
@@ -105,6 +105,7 @@ public final class OreRecipeHandler {
         crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
+        /*
         if (!crushedStack.isEmpty()) {
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
@@ -118,9 +119,9 @@ public final class OreRecipeHandler {
             } else {
                 builder.outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * oreTypeMultiplier));
             }
-            builder.save(provider);
+            builder.save(provider);*/
 
-            builder = MACERATOR_RECIPES
+            /*builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
                             Ingredient.of(orePrefix.getItemParentTags()[0])))
@@ -137,14 +138,15 @@ public final class OreRecipeHandler {
                 }
             }
 
-            builder.save(provider);
-        }
+            builder.save(provider);*/
+        //}
 
         // do not try to add smelting recipes for materials which require blast furnace
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+
                     IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
                             Ingredient.of(orePrefix.getItemParentTags()[0])),
                     ingotStack, xp);
@@ -207,12 +209,13 @@ public final class OreRecipeHandler {
                     .category(GTRecipeCategories.ORE_CRUSHING)
                     .duration(400);
 
-            for (MaterialStack secondaryMaterial : ore.secondaryMaterials()) {
+            // TODO: figure out why any raw ore gives stone dust when macerated
+            /*for (MaterialStack secondaryMaterial : ore.secondaryMaterials()) {
                 if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
                     ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
                     builder.chancedOutput(dustStack, 6700, 0);
                 }
-            }
+            }*/
 
             builder.save(provider);
         }
