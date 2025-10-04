@@ -276,7 +276,6 @@ public class SecondDegreeMaterials {
         Zeolite = new Material.Builder(GTCEu.id("zeolite"))
                 .dust().ore(3, 1)
                 .color(0xf2e3e0).secondaryColor(0xeabeb4)
-                .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 2, Aluminium, 2, Silicon, 3, Oxygen, 10, Water, 2)
                 .buildAndRegister();
 

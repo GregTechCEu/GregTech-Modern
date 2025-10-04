@@ -324,7 +324,7 @@ public class FirstDegreeMaterials {
                 .color(0x2836f1).secondaryColor(0x183ca3).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_ROD,
                         DECOMPOSITION_BY_ELECTROLYZING)
-                .components(Sodium, 2, Calcium, 2, Aluminium, 3, Silicon, 3, Oxygen, 12)
+                .components(Aluminium, 6, Silicon, 6, Calcium, 8, Sodium, 8)
                 .buildAndRegister();
 
         Magnalium = new Material.Builder(GTCEu.id("magnalium"))
@@ -565,7 +565,7 @@ public class FirstDegreeMaterials {
                 .color(0x3d54ff).secondaryColor(0x210d78).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, GENERATE_ROD, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE,
                         DECOMPOSITION_BY_ELECTROLYZING)
-                .components(Sodium, 4, Aluminium, 3, Silicon, 3, Oxygen, 12, Chlorine, 1)
+                .components(Aluminium, 3, Silicon, 3, Sodium, 4, Chlorine, 1)
                 .buildAndRegister();
 
         AluminiumSulfite = new Material.Builder(GTCEu.id("aluminium_sulfite"))
@@ -1059,7 +1059,7 @@ public class FirstDegreeMaterials {
         GlauconiteSand = new Material.Builder(GTCEu.id("glauconite_sand"))
                 .dust().ore(3, 1)
                 .color(0x1da351).secondaryColor(0x1a6e8f).iconSet(SAND)
-                .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water)
+                .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water, 1)
                 .buildAndRegister();
 
         Malachite = new Material.Builder(GTCEu.id("malachite"))
