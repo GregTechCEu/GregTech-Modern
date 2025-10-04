@@ -145,10 +145,10 @@ public class GTPlaceholders {
                         .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
                 if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    if (ctx.itemStackHandler() == null)
+                        throw new NotSupportedException();
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     try {
-                        if (ctx.itemStackHandler() == null)
-                            throw new NotSupportedException();
                         return MultiLineComponent.literal(countItems(
                                 ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
                     } catch (NullPointerException e) {
@@ -410,8 +410,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                     int capacity = -1;
                     if (stack.getItem() instanceof ComponentItem componentItem) {
@@ -472,8 +472,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1, true);
                 int slot = GTStringUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 Tag tag = ctx.itemStackHandler().getStackInSlot(slot - 1).getOrCreateTag();
                 for (int i = 1; i < args.size() - 1; i++) {
                     if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
@@ -557,8 +557,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 2);
                 int slot = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                 int capacity = -1;
                 if (stack.getItem() instanceof ComponentItem componentItem) {
@@ -655,7 +655,7 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                 int slot = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                 if (!stack.getOrCreateTag().contains("boundPlayerPermLevel"))
                     throw new MissingItemException("any data item bound to player", slot);
@@ -763,7 +763,7 @@ public class GTPlaceholders {
                 if (args.size() > 2 && !args.get(2).toString().isEmpty()) {
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                     int slot = PlaceholderUtils.toInt(args.get(2));
-                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                    PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                     if (stack.getOrCreateTag().contains("boundPlayerUUID"))
                         owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
@@ -777,7 +777,7 @@ public class GTPlaceholders {
                         if (args.size() > 4) {
                             if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                             int slot = PlaceholderUtils.toInt(args.get(3));
-                            PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                            PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                             ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
                             UUID uuid;
                             if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
@@ -860,8 +860,8 @@ public class GTPlaceholders {
                 int slot = PlaceholderUtils.toInt(args.get(0));
                 double x = PlaceholderUtils.toDouble(args.get(1));
                 double y = PlaceholderUtils.toDouble(args.get(2));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
                 if (stack.getItem() instanceof IComponentItem componentItem) {
                     for (IItemComponent component : componentItem.getComponents()) {
@@ -882,8 +882,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2);
                 int slot = PlaceholderUtils.toInt(args.get(0));
                 String url = args.get(1).toString();
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot);
                 if (stack.getItem() instanceof IComponentItem componentItem) {
                     for (IItemComponent component : componentItem.getComponents()) {
@@ -960,8 +960,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 int slot = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                 if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                 return MultiLineComponent.literal(ctx.itemStackHandler().getStackInSlot(slot - 1).toString());
             }
         });
