@@ -55,15 +55,6 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     public @Nullable GTRecipe search(ItemStack stack) {
-        if (stack.getItem() instanceof MaterialBlockItem blockItem) {
-            var oreTag = blockItem.tagPrefix;
-            var mat = blockItem.material;
-
-            var oreProperty = mat.getProperty(PropertyKey.ORE);
-
-            return buildOreRecipe("macerate_", stack, mat, oreTag, oreProperty);
-        }
-
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         if (turbineBehaviour != null) {
             float durability = 1.f - (float) turbineBehaviour.getPartDamage(stack) /
@@ -109,7 +100,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         return builder.buildRawRecipe();
     }
 
-    public static @Nullable GTRecipe buildOreRecipe(String id, ItemStack inputStack, Material material,
+    /*public static @Nullable GTRecipe buildOreRecipe(String id, ItemStack inputStack, Material material,
                                              TagPrefix stoneTypePrefix, OreProperty property) {
         Material byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
@@ -155,7 +146,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
 
         return recipe.buildRawRecipe();
     }
-
+*/
     @Override
     public void buildRepresentativeRecipes() {
         ItemStack stack = GTItems.TURBINE_ROTOR.asStack();
@@ -186,7 +177,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         MACERATOR_RECYCLING.addRecipe(pickaxeRecipe);
         MACERATOR_RECYCLING.addRecipe(rotorRecipe);
 
-        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+        /*for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             for(var stoneType : ORES.keySet()) {
                 if (!material.shouldGenerateRecipesFor(stoneType)) {
                     continue;
@@ -202,6 +193,6 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
                 oreRecipe.setId(oreRecipe.getId().withPrefix("/"));
                 ORE_CRUSHING.addRecipe(oreRecipe);
             }
-        }
+        }*/
     }
 }

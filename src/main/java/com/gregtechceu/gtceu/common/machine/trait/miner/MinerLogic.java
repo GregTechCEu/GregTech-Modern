@@ -358,28 +358,17 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
         outputItemHandler.storage.clear();
 
-        GTRecipe recipe = null;
-        if (oreDrop.getItem() instanceof MaterialBlockItem blockItem) { // use our gt ores
-            var oreTag = blockItem.tagPrefix;
-            var mat = blockItem.material;
+        GTRecipe recipe = null; // attempt ore block that has a static gt recipe
+        // create dummy recipe handler
+        inputItemHandler.storage.setStackInSlot(0, oreDrop);
 
-            var oreProperty = mat.getProperty(PropertyKey.ORE);
+        var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
 
-            recipe = MaceratorLogic.buildOreRecipe("macerate_", oreDrop, mat, oreTag, oreProperty);
-        }
-
-        if (recipe == null) { // attempt ore block that has a static gt recipe
-            // create dummy recipe handler
-            inputItemHandler.storage.setStackInSlot(0, oreDrop);
-
-            var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
-
-            while (matches.hasNext()) {
-                GTRecipe match = matches.next();
-                if (match == null) continue;
-                recipe = match;
-                break;
-            }
+        while (matches.hasNext()) {
+            GTRecipe match = matches.next();
+            if (match == null) continue;
+            recipe = match;
+            break;
         }
 
         if (recipe != null) {
