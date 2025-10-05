@@ -1862,6 +1862,7 @@
   "config.gtceu.option.renderGrowingPlants": "renderGrowingPlants",
   "config.gtceu.option.renderer": "renderer",
   "config.gtceu.option.replaceMinedBlocksWith": "replaceMinedBlocksWith",
+  "config.gtceu.option.replaceWithCobbleVersion": "replaceWithCobbleVersion",
   "config.gtceu.option.requireGTToolsForBlocks": "requireGTToolsForBlocks",
   "config.gtceu.option.rngDamageElectricTools": "rngDamageElectricTools",
   "config.gtceu.option.rubberTreeSpawnChance": "rubberTreeSpawnChance",
