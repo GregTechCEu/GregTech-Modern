@@ -296,8 +296,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_HAMMER, UP_TO_DOWN)
             .setIconSupplier(() -> GTMachines.FORGE_HAMMER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_HAMMER_STEAM, UP_TO_DOWN)
-            .setSound(GTSoundEntries.FORGE_HAMMER)
-            .addCustomRecipeLogic(ForgeHammerLogic.INSTANCE);
+            .setSound(GTSoundEntries.FORGE_HAMMER);
 
     public final static GTRecipeType FORMING_PRESS_RECIPES = register("forming_press", ELECTRIC)
             .setMaxIOSize(6, 1, 0, 0).setEUIO(IO.IN)

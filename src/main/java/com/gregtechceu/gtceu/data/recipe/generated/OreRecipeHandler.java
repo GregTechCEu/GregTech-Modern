@@ -19,8 +19,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jetbrains.annotations.NotNull;
@@ -201,14 +199,6 @@ public final class OreRecipeHandler {
                     .EUt(2)
                     .category(GTRecipeCategories.ORE_CRUSHING)
                     .duration(400);
-
-            // TODO: figure out why any raw ore gives stone dust when macerated
-            /*for (MaterialStack secondaryMaterial : ore.secondaryMaterials()) {
-                if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
-                    ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
-                    builder.chancedOutput(dustStack, 6700, 0);
-                }
-            }*/
 
             builder.save(provider);
         }

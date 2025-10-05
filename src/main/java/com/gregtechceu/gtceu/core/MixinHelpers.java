@@ -269,11 +269,6 @@ public class MixinHelpers {
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    /*if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
-                        block = ChemicalHelper.getBlock(orePrefix, material);
-                    }*/
-
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
