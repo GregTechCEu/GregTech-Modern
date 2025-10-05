@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.function.ToIntFunction;
 

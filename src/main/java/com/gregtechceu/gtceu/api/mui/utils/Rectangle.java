@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
+import net.minecraft.client.renderer.Rect2i;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.renderer.Rect2i;
 
 public class Rectangle {
 

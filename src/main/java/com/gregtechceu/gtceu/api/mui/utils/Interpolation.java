@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
+
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 
 /**

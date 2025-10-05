@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
+import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
+
 import com.google.common.base.CaseFormat;
 import com.google.gson.*;
-import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.lang.reflect.Type;

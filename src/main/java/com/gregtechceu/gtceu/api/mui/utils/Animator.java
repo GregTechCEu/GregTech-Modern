@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

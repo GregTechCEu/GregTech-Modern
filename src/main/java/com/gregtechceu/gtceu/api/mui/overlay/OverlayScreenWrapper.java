@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.mui.overlay;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
-import lombok.Getter;
+
 import net.minecraft.client.gui.screens.Screen;
+
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 
 /**

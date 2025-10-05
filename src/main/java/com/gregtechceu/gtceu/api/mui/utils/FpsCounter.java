@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
-import lombok.Getter;
 import net.minecraft.Util;
+
+import lombok.Getter;
 
 public class FpsCounter {
 

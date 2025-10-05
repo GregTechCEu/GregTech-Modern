@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.theme;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
+
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 

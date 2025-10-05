@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.lwjgl.glfw.GLFW;
 
 public record KeyboardData(Dist side, int keyCode, int scanCode, int modifiers) {

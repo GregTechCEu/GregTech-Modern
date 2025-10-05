@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.api.mui.overlay;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
