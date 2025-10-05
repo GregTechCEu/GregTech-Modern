@@ -18,7 +18,9 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
@@ -33,12 +35,28 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
+        List<GTRecipeCategory> subCategories = new ArrayList<>();
+        // run main categories first
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
-            if (category == type.getCategory()) type.buildRepresentativeRecipes();
+            if (category == type.getCategory()) {
+                type.buildRepresentativeRecipes();
+            } else {
+                subCategories.add(category);
+                continue;
+            }
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
             type.getRecipesInCategory(category).stream()
+                    .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
+                    .forEach(registry::addRecipe);
+        }
+        // run subcategories
+        for (var subCategory : subCategories) {
+            if (!subCategory.shouldRegisterDisplays()) continue;
+            var type = subCategory.getRecipeType();
+            EmiRecipeCategory emiCategory = CATEGORIES.apply(subCategory);
+            type.getRecipesInCategory(subCategory).stream()
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
         }

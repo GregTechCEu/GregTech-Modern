@@ -23,6 +23,8 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
@@ -45,12 +47,28 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
+        List<GTRecipeCategory> subCategories = new ArrayList<>();
+        // run main categories first
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
-            if (category == type.getCategory()) type.buildRepresentativeRecipes();
+            if (category == type.getCategory()) {
+                type.buildRepresentativeRecipes();
+            } else {
+                subCategories.add(category);
+                continue;
+            }
             var identifier = CATEGORIES.apply(category);
             type.getRecipesInCategory(category).stream()
+                    .map(r -> new GTRecipeDisplay(r, identifier))
+                    .forEach(registry::add);
+        }
+        // run subcategories
+        for (GTRecipeCategory subCategory : subCategories) {
+            if (!subCategory.shouldRegisterDisplays()) continue;
+            var type = subCategory.getRecipeType();
+            var identifier = CATEGORIES.apply(subCategory);
+            type.getRecipesInCategory(subCategory).stream()
                     .map(r -> new GTRecipeDisplay(r, identifier))
                     .forEach(registry::add);
         }
