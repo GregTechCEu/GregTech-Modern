@@ -6,7 +6,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public sealed interface FluidEntryList extends EntryList<FluidStack> permits FluidStackList, FluidTagList, FluidHolderSetList {
+public sealed interface FluidEntryList extends EntryList<FluidStack>
+                                       permits FluidStackList, FluidTagList, FluidHolderSetList {
 
     List<FluidStack> getStacks();
 
