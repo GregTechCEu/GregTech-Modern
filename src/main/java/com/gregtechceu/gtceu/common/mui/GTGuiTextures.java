@@ -47,7 +47,7 @@ public class GTGuiTextures {
     // BACKGROUNDS
     public static final UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
-            .imageSize(176, 166)
+            .imageSize(16, 16)
             .adaptable(3)
             .name(IDs.STANDARD_BACKGROUND)
             .canApplyTheme()
@@ -90,21 +90,19 @@ public class GTGuiTextures {
     // DISPLAYS
     public static final UITexture DISPLAY = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/display.png")
-            .imageSize(143, 75)
-            .adaptable(2)
+            .imageSize(182, 117)
             .canApplyTheme()
             .build();
 
     public static final UITexture DISPLAY_BRONZE = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/display_bronze.png")
-            .imageSize(143, 75)
-            .adaptable(2)
+            .imageSize(162, 121)
             .build();
 
     public static final UITexture DISPLAY_STEEL = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/display_steel.png")
-            .imageSize(143, 75)
-            .adaptable(2)
+            .imageSize(162, 121)
+            .adaptable(1)
             .build();
 
     // todo primitive display?
@@ -322,7 +320,7 @@ public class GTGuiTextures {
 
     public static final UITexture BUTTON = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/button.png")
-            .imageSize(18, 18)
+            .imageSize(32, 32)
             .adaptable(2)
             .name(IDs.STANDARD_BUTTON)
             .canApplyTheme()
