@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,6 +91,18 @@ public interface IToolBehavior {
      */
     default InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return InteractionResult.PASS;
+    }
+
+    /**
+     * Queries if an item can perform the given action.
+     * See {@link ToolActions} for a description of each stock action and {@link GTToolActions} for GTCEu's ones
+     *
+     * @param stack  The stack being used
+     * @param action The action being queried
+     * @return {@code true} if the stack can perform the action
+     */
+    default boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return false;
     }
 
     /**

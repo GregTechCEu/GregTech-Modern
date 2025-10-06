@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
@@ -22,6 +23,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -575,11 +577,11 @@ public class GTMultiMachines {
                     .where('F', Predicates.frames(GTMaterials.TreatedWood))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
-                                    .or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))
+                                    .or(blocks(FLUID_EXPORT_HATCH[ULV].get(), FLUID_EXPORT_HATCH[LV].get())))
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
-            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createSidedWorkableCasingMachineModel(GTCEu.id("block/casings/pump_deck"),
                     GTCEu.id("block/multiblock/primitive_pump"))
                     .andThen(builder -> {
@@ -636,7 +638,7 @@ public class GTMultiMachines {
                     .where('F', blocks(FIREBOX_BRONZE.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
-            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(
@@ -730,7 +732,7 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
                             .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender)))
@@ -793,14 +795,14 @@ public class GTMultiMachines {
                             .where('#', any())
                             .build())
                     .allowExtendedFacing(true)
-                    .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(
                             MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner"))
                             .andThen((ctx, prov, modelBuilder) -> {
                                 // replace the parent model for the formed large miner
                                 modelBuilder.replaceForAllStates((state, models) -> {
-                                    if (!state.getValue(LargeMinerMachine.IS_FORMED_PROPERTY)) {
+                                    if (!state.getValue(GTMachineModelProperties.IS_FORMED)) {
                                         return models;
                                     }
 
@@ -1114,6 +1116,17 @@ public class GTMultiMachines {
             new PropertyFluidFilter(340, false, false, false, false),
             (builder, overlay) -> builder.sidedWorkableCasingModel(GTCEu.id("block/casings/wood_wall"), overlay));
 
+    public static final MachineDefinition BRONZE_TANK_VALVE = GTMachineUtils.registerTankValve(
+            "bronze_tank_valve", "Bronze Tank Valve", true,
+            (builder, overlay) -> builder
+                    .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), overlay));
+    public static final MultiblockMachineDefinition BRONZE_MULTIBLOCK_TANK = registerMultiblockTank(
+            "bronze_multiblock_tank", "Bronze Multiblock Tank", 500 * 1000,
+            CASING_BRONZE_BRICKS, BRONZE_TANK_VALVE::getBlock,
+            new PropertyFluidFilter(1696, true, false, false, false),
+            (builder, overlay) -> builder
+                    .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), overlay));
+
     public static final MachineDefinition STEEL_TANK_VALVE = GTMachineUtils.registerTankValve(
             "steel_tank_valve", "Steel Tank Valve", true,
             (builder, overlay) -> builder.workableCasingModel(
@@ -1124,6 +1137,24 @@ public class GTMultiMachines {
             null,
             (builder, overlay) -> builder.workableCasingModel(
                     GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay));
+
+    public static final MultiblockMachineDefinition CENTRAL_MONITOR = REGISTRATE
+            .multiblock("central_monitor", CentralMonitorMachine::new)
+            .rotationState(RotationState.ALL)
+            .recipeType(DUMMY_RECIPES)
+            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
+            .pattern((definition) -> FactoryBlockPattern.start()
+                    .aisle("BCB", "BBB", "BBB", "BBB")
+                    .where('C', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('B', CentralMonitorMachine.getMultiPredicate())
+                    .build())
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(
+                    GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+                    GTCEu.id("block/multiblock/central_monitor"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
+            .hasBER(true)
+            .register();
 
     public static void init() {}
 }

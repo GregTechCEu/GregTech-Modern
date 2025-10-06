@@ -55,6 +55,7 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new MachineModeProvider());
         oneProbe.registerProvider(new StainedColorProvider());
         oneProbe.registerProvider(new PrimitivePumpProvider());
+        oneProbe.registerProvider(new DataBankInfoProvider());
         oneProbe.registerProvider(new CoverProvider());
         oneProbe.registerProvider(new HazardCleanerInfoProvider());
         oneProbe.registerProvider(new TransformerInfoProvider());

@@ -46,6 +46,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredItemHandlerWrapper itemFilterWrapper;
+    @Persisted
     @Setter
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
@@ -87,7 +88,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
     }
 

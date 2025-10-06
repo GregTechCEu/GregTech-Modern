@@ -2,6 +2,7 @@
     "credit": "Made with Blockbench",
     "parent": "block/block",
     "textures": {
+        "particle": "#side",
         "overlay_laser": "gtceu:block/overlay/machine/overlay_laser_base",
         "overlay_laser_source": "gtceu:block/overlay/machine/overlay_laser_source",
         "overlay_laser_source_emissive": "gtceu:block/overlay/machine/overlay_laser_source_emissive"

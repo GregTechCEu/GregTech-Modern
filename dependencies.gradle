@@ -37,6 +37,11 @@ dependencies {
     modCompileOnly(forge.ae2)
     modCompileOnly(forge.ae2wtlib)
 
+    // Create
+    modCompileOnly(forge.ponder)
+    modCompileOnly(variantOf(forge.create) { classifier("slim") })
+    modCompileOnly(forge.flywheel.forge.api)
+
     // KJS
     modCompileOnly(forge.kubejs)
     modCompileOnly(forge.architectury)
@@ -93,7 +98,7 @@ dependencies {
     modExtraLocalRuntime(forge.trenzalore)
     modExtraLocalRuntime(forge.curios)
 //    modExtraLocalRuntime(forge.worldstripper)
-    modExtraLocalRuntime(forge.cc.tweaked.forge.impl)
+//    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
     modExtraLocalRuntime(forge.bundles.kjs)
 
@@ -114,7 +119,8 @@ dependencies {
 
     modExtraLocalRuntime(forge.kotlinforforge)
     modExtraLocalRuntime(forge.observable)
-    //////////////////////////
 
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    modExtraLocalRuntime(forge.ponder)
+    modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
+    modExtraLocalRuntime(forge.flywheel.forge)
 }

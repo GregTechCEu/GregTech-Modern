@@ -24,6 +24,9 @@ import it.unimi.dsi.fastutil.booleans.BooleanBooleanMutablePair;
 import java.util.*;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated Use {@link SyncedKeyMappings} instead
+ */
 @Deprecated
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public enum KeyBind {

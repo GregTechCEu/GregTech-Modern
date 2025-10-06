@@ -30,6 +30,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             .xmap(FluidIngredient::fromJson, FluidIngredient::toJson);
 
     public static final FluidIngredient EMPTY = new FluidIngredient(new Value[0], 0, null);
+    public static final FluidStack[] EMPTY_STACK_ARRAY = new FluidStack[0];
     public FluidIngredient.Value[] values;
     @Nullable
     public FluidStack[] stacks;

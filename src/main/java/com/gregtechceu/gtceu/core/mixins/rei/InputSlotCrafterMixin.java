@@ -17,33 +17,26 @@ public class InputSlotCrafterMixin {
                    at = @At(value = "INVOKE",
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
                             remap = true))
-    private static boolean gtceu$modifyFindSlotMatcherREI(ItemStack stack, ItemStack other,
-                                                          Operation<Boolean> original) {
-        if (stack.getItem() instanceof IGTTool) {
+    private static boolean gtceu$ignoreGTToolNbt(ItemStack stack, ItemStack other, Operation<Boolean> original) {
+        if (stack.getItem() instanceof IGTTool && other.getItem() instanceof IGTTool) {
             return ItemStack.isSameItem(stack, other);
         }
         return original.call(stack, other);
     }
 
     @WrapOperation(method = "takeInventoryStack",
-                   at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z",
-                            remap = true))
-    private boolean gtceu$damagedToolBypass(ItemStack instance, Operation<Boolean> original) {
-        if (instance.getItem() instanceof IGTTool) {
+                   at = {
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z",
+                               remap = true),
+                           @At(value = "INVOKE",
+                               target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z",
+                               remap = true),
+                   })
+    private boolean gtceu$ignoreGTToolDamageAndEnchants(ItemStack stack, Operation<Boolean> original) {
+        if (stack.getItem() instanceof IGTTool) {
             return false;
         }
-        return original.call(instance);
-    }
-
-    @WrapOperation(method = "takeInventoryStack",
-                   at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z",
-                            remap = true))
-    private boolean gtceu$enchantedToolBypass(ItemStack instance, Operation<Boolean> original) {
-        if (instance.getItem() instanceof IGTTool) {
-            return false;
-        }
-        return original.call(instance);
+        return original.call(stack);
     }
 }

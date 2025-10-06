@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,9 +31,15 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
     protected HarvestCropsBehavior() {/**/}
 
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == GTToolActions.HOE_HARVEST;
+    }
+
     @NotNull
     @Override
     public InteractionResult onItemUse(UseOnContext context) {
+        Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
@@ -51,7 +59,13 @@ public class HarvestCropsBehavior implements IToolBehavior {
             harvested |= harvestBlockRoutine(blockPos, context);
             if (stack.isEmpty()) break;
         }
-        return harvested ? InteractionResult.sidedSuccess(context.getLevel().isClientSide) : InteractionResult.PASS;
+
+        if (harvested) {
+            BlockState state = level.getBlockState(pos);
+            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        return InteractionResult.PASS;
     }
 
     private static boolean isBlockCrops(UseOnContext context) {
@@ -86,7 +100,6 @@ public class HarvestCropsBehavior implements IToolBehavior {
                     Block.popResource(level, pos, drop);
                 }
             }
-            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
             level.setBlock(pos, cropBlock.getStateForAge(0), Block.UPDATE_ALL_IMMEDIATE);
             ToolHelper.damageItem(stack, player);
             return true;

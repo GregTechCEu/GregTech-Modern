@@ -2,11 +2,16 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.utils.math.ParseResult;
 
+import com.gregtechceu.gtceu.utils.math.ParseResult;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.Nullable;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.jetbrains.annotations.Nullable;
 import org.mariuszgromada.math.mxparser.Constant;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -42,13 +47,33 @@ public class GTMath {
     public static final Constant z = new Constant("z", 1e-21);
     public static final Constant y = new Constant("y", 1e-24);
 
+    public static int lerpInt(double delta, int start, int end) {
+        return start + Mth.floor(delta * (end - start));
+    }
+
     public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
-        int count = saturatedCast(amount);
-        int fullStacks = count / 64;
-        int rem = count % 64;
+        int fullStacks = (int) (amount / Integer.MAX_VALUE);
+        int rem = (int) (amount % Integer.MAX_VALUE);
         List<ItemStack> stacks = new ObjectArrayList<>(fullStacks + 1);
-        if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(64)));
+        if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(Integer.MAX_VALUE)));
         if (rem > 0) stacks.add(stack.copyWithCount(rem));
+        return stacks;
+    }
+
+    public static List<FluidStack> splitFluidStacks(FluidStack stack, long amount) {
+        int fullStacks = (int) (amount / Integer.MAX_VALUE);
+        int rem = (int) (amount % Integer.MAX_VALUE);
+        List<FluidStack> stacks = new ObjectArrayList<>(fullStacks + 1);
+        if (fullStacks > 0) {
+            var copy = stack.copy();
+            copy.setAmount(Integer.MAX_VALUE);
+            stacks.addAll(Collections.nCopies(fullStacks, copy));
+        }
+        if (rem > 0) {
+            var copy = stack.copy();
+            copy.setAmount(rem);
+            stacks.add(copy);
+        }
         return stacks;
     }
 
@@ -80,6 +105,15 @@ public class GTMath {
 
     public static float ratio(BigInteger a, BigInteger b) {
         return new BigDecimal(a).divide(new BigDecimal(b), MathContext.DECIMAL32).floatValue();
+    }
+
+    public static int ceilDiv(int x, int y) {
+        final int q = x / y;
+        // if the signs are the same and modulo not zero, round up
+        if ((x ^ y) >= 0 && (q * y != x)) {
+            return q + 1;
+        }
+        return q;
     }
 
     public static ParseResult parseExpression(@Nullable String expression) {

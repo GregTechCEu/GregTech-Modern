@@ -33,6 +33,9 @@ public class ParallelProvider implements IProbeInfoProvider {
         BlockEntity blockEntity = level.getBlockEntity(iProbeHitData.getPos());
         if (blockEntity instanceof MetaMachineBlockEntity machineBlockEntity) {
             int parallel = 0;
+            int batch = 0;
+            int subtickParallel = 0;
+            int totalRuns = 0;
             boolean exact = false;
             if (machineBlockEntity.getMetaMachine() instanceof IParallelHatch parallelHatch) {
                 parallel = parallelHatch.getCurrentParallel();
@@ -41,6 +44,9 @@ public class ParallelProvider implements IProbeInfoProvider {
                         rlm.getRecipeLogic().isActive() &&
                         rlm.getRecipeLogic().getLastRecipe() != null) {
                     parallel = rlm.getRecipeLogic().getLastRecipe().parallels;
+                    batch = rlm.getRecipeLogic().getLastRecipe().batchParallels;
+                    subtickParallel = rlm.getRecipeLogic().getLastRecipe().subtickParallels;
+                    totalRuns = rlm.getRecipeLogic().getLastRecipe().getTotalRuns();
                     exact = true;
                 } else {
                     parallel = controller.getParallelHatch()
@@ -48,12 +54,36 @@ public class ParallelProvider implements IProbeInfoProvider {
                             .orElse(0);
                 }
             }
-            if (parallel > 1) {
+
+            if (!exact && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";
-                if (exact) key += ".exact";
                 iProbeInfo.text(Component.translatable(key, parallels));
+            } else if (totalRuns > 1) {
+                Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.total_runs";
+                iProbeInfo.text(Component.translatable(key, runs));
+
+                if (parallel > 1) {
+                    Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keyParallel = "gtceu.multiblock.parallel.exact";
+                    iProbeInfo.text(Component.translatable(keyParallel, parallels));
+                }
+                if (batch > 1) {
+                    Component batches = Component.literal(FormattingUtil.formatNumbers(batch))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keyBatch = "gtceu.multiblock.batch_enabled";
+                    iProbeInfo.text(Component.translatable(keyBatch, batches));
+                }
+                if (subtickParallel > 1) {
+                    Component subticks = Component.literal(FormattingUtil.formatNumbers(subtickParallel))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String keySubtick = "gtceu.multiblock.subtick_parallels";
+                    iProbeInfo.text(Component.translatable(keySubtick, subticks));
+                }
             }
         }
     }

@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -41,13 +40,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -63,6 +62,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.data.recipe.CustomTags.HPCA_COOLANTS;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -164,6 +165,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
+        this.updateActive(false);
         super.onStructureInvalid();
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.hpcaHandler.onStructureInvalidate();
@@ -208,6 +210,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             hpcaHandler.clearComputationCache();
             // passively cool (slowly) if not active
             temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
+        }
+        this.updateActive(this.getEnergyContainer().getEnergyStored() > 0);
+    }
+
+    private void updateActive(boolean active) {
+        for (var part : getParts()) {
+            if (part instanceof IHPCAComponentHatch hpcaPart) {
+                hpcaPart.setActive(active);
+            }
         }
     }
 
@@ -478,50 +489,44 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
             if (forceCoolWithActive || maxActiveCooling <= temperatureChange) {
                 // try to fully utilize active coolers
-                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
-                        getCoolantStack(maxCoolantDrain), IFluidHandler.FluidAction.EXECUTE);
-                if (!coolantStack.isEmpty()) {
-                    long coolantDrained = coolantStack.getAmount();
-                    if (coolantDrained == maxCoolantDrain) {
-                        // coolant requirement was fully met
-                        temperatureChange -= maxActiveCooling;
-                    } else {
-                        // coolant requirement was only partially met, cool proportional to fluid amount drained
-                        // a * (b / c)
-                        temperatureChange -= maxActiveCooling * (1.0 * coolantDrained / maxCoolantDrain);
-                    }
+                int remainingCoolant = maxCoolantDrain;
+                for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(HPCA_COOLANTS)) {
+                    FluidStack drained = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                            new FluidStack(fluid.get(), remainingCoolant), IFluidHandler.FluidAction.EXECUTE);
+                    remainingCoolant -= drained.getAmount();
+                    if (remainingCoolant <= 0) break;
+                }
+                if (remainingCoolant <= 0) {
+                    // coolant requirement was fully met
+                    temperatureChange -= maxActiveCooling;
+                } else {
+                    // coolant requirement was only partially met, cool proportional to fluid amount drained
+                    // a * (b / c)
+                    int coolantDrained = maxCoolantDrain - remainingCoolant;
+                    temperatureChange -= maxActiveCooling * (1.0 * coolantDrained / maxCoolantDrain);
                 }
             } else if (temperatureChange > 0) {
                 // try to partially utilize active coolers to stabilize to zero
                 double temperatureToDecrease = Math.min(temperatureChange, maxActiveCooling);
                 int coolantToDrain = Math.max(1, (int) (maxCoolantDrain * (temperatureToDecrease / maxActiveCooling)));
-                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
-                        getCoolantStack(coolantToDrain), IFluidHandler.FluidAction.EXECUTE);
-                if (!coolantStack.isEmpty()) {
-                    int coolantDrained = coolantStack.getAmount();
-                    if (coolantDrained == coolantToDrain) {
-                        // successfully stabilized to zero
-                        return 0;
-                    } else {
-                        // coolant requirement was only partially met, cool proportional to fluid amount drained
-                        // a * (b / c)
-                        temperatureChange -= temperatureToDecrease * (1.0 * coolantDrained / coolantToDrain);
-                    }
+                int remainingCoolant = coolantToDrain;
+                for (var fluid : BuiltInRegistries.FLUID.getTagOrEmpty(HPCA_COOLANTS)) {
+                    FluidStack drained = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                            new FluidStack(fluid.get(), remainingCoolant), IFluidHandler.FluidAction.EXECUTE);
+                    remainingCoolant -= drained.getAmount();
+                    if (remainingCoolant <= 0) break;
+                }
+                if (remainingCoolant <= 0) {
+                    // successfully stabilized to zero
+                    return 0;
+                } else {
+                    // coolant requirement was only partially met, cool proportional to fluid amount drained
+                    // a * (b / c)
+                    int coolantDrained = (coolantToDrain - remainingCoolant);
+                    temperatureChange -= temperatureToDecrease * (1.0 * coolantDrained / coolantToDrain);
                 }
             }
             return temperatureChange;
-        }
-
-        /**
-         * Get the coolant stack for this HPCA. Eventually this could be made more diverse with different
-         * coolants from different Active Cooler components, but currently it is just a fixed Fluid.
-         */
-        public FluidStack getCoolantStack(int amount) {
-            return new FluidStack(getCoolant(), amount);
-        }
-
-        private Fluid getCoolant() {
-            return GTMaterials.PCBCoolant.getFluid();
         }
 
         /**
@@ -546,6 +551,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         /** Allocate computation on a given request. Allocates for one tick. */
         public int allocateCWUt(int cwut, boolean simulate) {
+            if (cwut == 0) return 0;
             int maxCWUt = getMaxCWUt();
             int availableCWUt = maxCWUt - this.allocatedCWUt;
             int toAllocate = Math.min(cwut, availableCWUt);

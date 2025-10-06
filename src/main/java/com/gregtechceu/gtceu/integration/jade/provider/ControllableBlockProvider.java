@@ -33,13 +33,17 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
     @Override
     protected void write(CompoundTag data, IControllable capability) {
         data.putBoolean("WorkingEnabled", capability.isWorkingEnabled());
+        data.putBoolean("SuspendAfter", capability.isSuspendAfterFinish());
     }
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.contains("WorkingEnabled") && !capData.getBoolean("WorkingEnabled")) {
-            tooltip.add(Component.translatable("gtceu.top.working_disabled").withStyle(ChatFormatting.YELLOW));
+        if (capData.contains("SuspendAfter") && capData.getBoolean("SuspendAfter")) {
+            tooltip.add(
+                    Component.translatable("behaviour.soft_hammer.disabled_cycle").withStyle(ChatFormatting.YELLOW));
+        } else if (capData.contains("WorkingEnabled") && !capData.getBoolean("WorkingEnabled")) {
+            tooltip.add(Component.translatable("behaviour.soft_hammer.disabled").withStyle(ChatFormatting.YELLOW));
         }
     }
 }

@@ -35,6 +35,9 @@ public final class SyncedKeyMapping {
     @OnlyIn(Dist.CLIENT)
     private KeyMapping keyMapping;
     @OnlyIn(Dist.CLIENT)
+    private Supplier<Supplier<KeyMapping>> keyMappingGetter;
+    private final boolean needsRegister;
+    @OnlyIn(Dist.CLIENT)
     private int keyCode;
     @OnlyIn(Dist.CLIENT)
     private boolean isKeyDown;
@@ -47,22 +50,29 @@ public final class SyncedKeyMapping {
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         if (GTCEu.isClientSide()) {
-            this.keyMapping = mcKeyMapping.get().get();
+            this.keyMappingGetter = mcKeyMapping;
         }
+        // Does not need to be registered, will be registered by MC
+        this.needsRegister = false;
+
         KEYMAPPINGS.put(syncIndex++, this);
     }
 
     private SyncedKeyMapping(int keyCode) {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             this.keyCode = keyCode;
         }
+        // Does not need to be registered, is not a configurable key mapping
+        this.needsRegister = false;
+
         KEYMAPPINGS.put(syncIndex++, this);
     }
 
-    private SyncedKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode) {
-        if (GTCEu.isClientSide()) {
-            this.keyMapping = (KeyMapping) createKeyMapping(nameKey, ctx, keyCode);
+    private SyncedKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode, String category) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
+            this.keyMapping = (KeyMapping) createKeyMapping(nameKey, ctx, keyCode, category);
         }
+        this.needsRegister = true;
         KEYMAPPINGS.put(syncIndex++, this);
     }
 
@@ -87,19 +97,33 @@ public final class SyncedKeyMapping {
 
     /**
      * Create a new SyncedKeyMapping with server held and pressed syncing to server.<br>
-     * Will automatically create a keymapping entry in the MC options page.
+     * Will automatically create a keymapping entry in the MC options page under the GregTechCEu category.
      *
      * @param nameKey Translation key for the keymapping name.
      * @param ctx     Conflict context for the keymapping options category.
      * @param keyCode The key code, from {@link InputConstants}.
      */
     public static SyncedKeyMapping createConfigurable(String nameKey, IKeyConflictContext ctx, int keyCode) {
-        return new SyncedKeyMapping(nameKey, ctx, keyCode);
+        return createConfigurable(nameKey, ctx, keyCode, GTCEu.NAME);
+    }
+
+    /**
+     * Create a new SyncedKeyMapping with server held and pressed syncing to server.<br>
+     * Will automatically create a keymapping entry in the MC options page under the specified category.
+     *
+     * @param nameKey  Translation key for the keymapping name.
+     * @param ctx      Conflict context for the keymapping options category.
+     * @param keyCode  The key code, from {@link InputConstants}.
+     * @param category The category in the MC options page.
+     */
+    public static SyncedKeyMapping createConfigurable(String nameKey, IKeyConflictContext ctx, int keyCode,
+                                                      String category) {
+        return new SyncedKeyMapping(nameKey, ctx, keyCode, category);
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Object createKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode) {
-        return new KeyMapping(nameKey, ctx, InputConstants.Type.KEYSYM, keyCode, GTCEu.NAME);
+    private Object createKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode, String category) {
+        return new KeyMapping(nameKey, ctx, InputConstants.Type.KEYSYM, keyCode, category);
     }
 
     /**
@@ -137,11 +161,13 @@ public final class SyncedKeyMapping {
 
     public static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
         for (SyncedKeyMapping value : KEYMAPPINGS.values()) {
-            if (value.keyMapping != null) {
+            if (value.keyMappingGetter != null) {
+                value.keyMapping = value.keyMappingGetter.get().get();
+                value.keyMappingGetter = null;
+            }
+            if (value.keyMapping != null && value.needsRegister) {
                 event.register(value.keyMapping);
             }
-            // no need to register keycode only keybinds?
-            // dont think they would show up in the binds menu
         }
     }
 

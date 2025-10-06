@@ -10,11 +10,15 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
+import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -59,8 +63,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = EnumProperty.create("recipe_logic_status",
-            RecipeLogic.Status.class);
+    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
@@ -105,9 +108,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @Getter
     @Setter
+    @DescSynced
     protected int progress;
     @Getter
     @Persisted
+    @DescSynced
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
@@ -271,13 +276,29 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setWaiting(handleTick.reason());
 
                 // Machine isn't getting enough power, suspend after 5 attempts.
-                if (conditionResult.io() == IO.IN && conditionResult.capability() == EURecipeCapability.CAP) {
+                if (handleTick.io() == IO.IN && handleTick.capability() == EURecipeCapability.CAP) {
                     runAttempt++;
-                    if (runAttempt > 5) {
-                        runAttempt = 0;
-                        setStatus(Status.SUSPEND);
+                    runAttempt = (int) GTMath.clamp(runAttempt, 0, 5);
+                    if (runAttempt == 5) {
+                        boolean preventPowerFail = false;
+                        if (machine.self() instanceof IMultiController) {
+                            var covers = machine.self().getCoverContainer().getCovers();
+                            for (var cover : covers) {
+                                if (cover instanceof MachineControllerCover mcc) {
+                                    if (mcc.preventPowerFail()) {
+                                        preventPowerFail = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (machine.self() instanceof IMultiController && !preventPowerFail) {
+                            runAttempt = 0;
+                            setStatus(Status.SUSPEND);
+                        }
                     }
-                    runDelay = runAttempt * 10;
+                    runDelay = runAttempt * 60;
                 }
             }
         } else {
@@ -377,7 +398,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
-            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
@@ -421,12 +442,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        setSuspendAfterFinish(!isWorkingAllowed);
-        if (isWorkingAllowed) {
-            if (lastRecipe != null && duration > 0) {
-                setStatus(Status.WORKING);
-            } else {
-                setStatus(Status.IDLE);
+        if (!isWorkingAllowed && getStatus() == Status.IDLE) {
+            setStatus(Status.SUSPEND);
+        } else {
+            setSuspendAfterFinish(!isWorkingAllowed);
+            if (isWorkingAllowed) {
+                if (lastRecipe != null && duration > 0) {
+                    setStatus(Status.WORKING);
+                } else {
+                    setStatus(Status.IDLE);
+                }
             }
         }
     }
@@ -447,6 +472,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             runDelay = 0;
             consecutiveRecipes++;
             handleRecipeIO(lastRecipe, IO.OUT);
+            // Don't ready the next recipe after finish if suspend is set
+            // so that the modifiers won't be applied until re-starting.
+            if (suspendAfterFinish) {
+                setStatus(Status.SUSPEND);
+                consecutiveRecipes = 0;
+                progress = 0;
+                duration = 0;
+                isActive = false;
+                // Force a recipe recheck.
+                lastRecipe = null;
+                return;
+            }
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
@@ -461,16 +498,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             // try it again
             var recipeCheck = checkRecipe(lastRecipe);
-            if (!recipeDirty && !suspendAfterFinish && recipeCheck.isSuccess()) {
+            if (!recipeDirty && recipeCheck.isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
-                if (suspendAfterFinish) {
-                    setStatus(Status.SUSPEND);
-                } else {
-                    setStatus(Status.IDLE);
-                    if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
-                        waitingReason = recipeCheck.reason();
-                    }
+                setStatus(Status.IDLE);
+                if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
+                    waitingReason = recipeCheck.reason();
                 }
                 consecutiveRecipes = 0;
                 progress = 0;

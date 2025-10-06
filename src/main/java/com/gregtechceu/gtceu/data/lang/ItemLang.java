@@ -75,6 +75,11 @@ public class ItemLang {
                 "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)");
         provider.add("item.gtceu.gear_casting_mold.small.tooltip", "§7Mold for making small Gears");
         provider.add("item.gtceu.rotor_casting_mold.tooltip", "§7Mold for making Rotors");
+        provider.add("item.gtceu.pipe.tiny_casting_mold.tooltip", "§7Mold for making tiny Pipes");
+        provider.add("item.gtceu.pipe.small_casting_mold.tooltip", "§7Mold for making small Pipes");
+        provider.add("item.gtceu.pipe.normal_casting_mold.tooltip", "§7Mold for making Pipes");
+        provider.add("item.gtceu.pipe.large_casting_mold.tooltip", "§7Mold for making large Pipes");
+        provider.add("item.gtceu.pipe.huge_casting_mold.tooltip", "§7Mold for making full Block Pipes");
         provider.add("item.gtceu.plate_extruder_mold.tooltip", "§7Extruder Shape for making Plates");
         provider.add("item.gtceu.rod_extruder_mold.tooltip", "§7Extruder Shape for making Rods");
         provider.add("item.gtceu.bolt_extruder_mold.tooltip", "§7Extruder Shape for making Bolts");
@@ -326,7 +331,7 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.advanced_item_voiding_cover.tooltip",
                 "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         multilineLang(provider, "item.gtceu.facade_cover.tooltip",
-                "§7Decorative Outfit §fCover§7.\n§7Crafted using 3 Iron Plates and any block");
+                "§7Decorative Outfit §fCover§7.\n§7Crafted using an Iron Plate and any block");
         provider.add("item.gtceu.computer_monitor_cover.tooltip", "§7Displays §fData§7 as §fCover§7.");
         provider.add("item.gtceu.shutter_module_cover.tooltip",
                 "§fBlocks Transfer§7 through attached Side as §fCover§7.");

@@ -73,7 +73,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
-        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends AppearanceBlock
+        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
                                implements EntityBlock, IBlockRendererProvider, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
@@ -444,15 +444,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var pipe = getPipeTile(level, pos);
         if (pipe != null) {
             var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState,
                     sourcePos);
             if (appearance != null) return appearance;
         }
-        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        return super.getAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
     @Override
@@ -470,5 +470,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             }
         }
         return drops;
+    }
+
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WRENCH;
     }
 }

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -20,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BUS_DISTINCT;
+import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BYPASS_DISTINCT;
 import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
 public class RecipeRunner {
@@ -84,16 +85,17 @@ public class RecipeRunner {
 
                 if (cont.chance >= cont.maxChance) {
                     contentList.add(cont.content);
-                } else {
+                } else if (cont.chance > 0 || cont.tierChanceBoost > 0) {
                     chancedContents.add(cont);
                 }
+                // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
             }
 
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
                 chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
-                        recipe.parallels * recipe.batchParallels);
+                        recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
                     contentList.add(cont.content);
@@ -105,19 +107,14 @@ public class RecipeRunner {
     }
 
     private ActionResult handleContents() {
-        var result = handleContentsInternal(io);
-        return result;
-    }
-
-    private ActionResult handleContentsInternal(IO capIO) {
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
-        if (!capabilityProxies.containsKey(capIO)) {
+        if (!capabilityProxies.containsKey(io)) {
             return ActionResult.FAIL_NO_CAPABILITIES;
         }
 
-        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
+        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && capIO.support(IO.OUT)) {
+        if (!isTick && io.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
 
@@ -126,25 +123,42 @@ public class RecipeRunner {
             addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
         }
         // Specifically check distinct handlers first
-        for (RecipeHandlerList handler : handlerGroups.getOrDefault(RecipeHandlerGroupDistinctness.BUS_DISTINCT,
-                Collections.emptyList())) {
+        for (RecipeHandlerList handler : handlerGroups.getOrDefault(BUS_DISTINCT, Collections.emptyList())) {
+            // Handle the contents of this handler and also all the bypassed handlers
             var res = handler.handleRecipe(io, recipe, searchRecipeContents, true);
+            if (!res.isEmpty()) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    res = bypassHandler.handleRecipe(io, recipe, res, true);
+                    if (res.isEmpty()) break;
+                }
+            }
             if (res.isEmpty()) {
                 if (!simulated) {
-                    handler.handleRecipe(io, recipe, recipeContents, false);
+                    // Actually consume the contents of this handler and also all the bypassed handlers
+                    recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+                    if (!recipeContents.isEmpty()) {
+                        for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                                Collections.emptyList())) {
+                            recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                            if (recipeContents.isEmpty()) break;
+                        }
+                    }
                 }
                 recipeContents.clear();
                 return ActionResult.SUCCESS;
             }
         }
 
-        // Check the others
+        // Check the other groups. For every group, try consuming the ingredients,
+        // see if it succeeds.
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
-            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
+            if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
             boolean found = false;
+
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
                 if (copiedRecipeContents.isEmpty()) {
@@ -152,22 +166,45 @@ public class RecipeRunner {
                     break;
                 }
             }
+            // If we're already in the bypass_distinct group, don't check it twice.
+            if (!handlerListEntry.getKey().equals(BYPASS_DISTINCT)) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
+                    if (copiedRecipeContents.isEmpty()) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
             if (!found) continue;
             if (simulated) return ActionResult.SUCCESS;
-            // Start actually removing items, keep track of the remaining items for this RecipeHandlerGroup
-            copiedRecipeContents = recipeContents;
+            // Start actually removing items.
+            // Keep track of the remaining items for this RecipeHandlerGroup
+            // First go through the handlers of the group
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
-                copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, false);
-                if (copiedRecipeContents.isEmpty()) {
-                    recipeContents.clear();
+                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+                if (recipeContents.isEmpty()) {
                     return ActionResult.SUCCESS;
+                }
+            }
+            // Then go through the handlers that bypass the distinctness system and empty those
+            // If we're already in the bypass_distinct group, don't check it twice.
+            if (!handlerListEntry.getKey().equals(BYPASS_DISTINCT)) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                    if (recipeContents.isEmpty()) {
+                        return ActionResult.SUCCESS;
+                    }
                 }
             }
         }
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return ActionResult.fail(null, entry.getKey(), capIO);
+                return ActionResult.fail(null, entry.getKey(), io);
             }
         }
 

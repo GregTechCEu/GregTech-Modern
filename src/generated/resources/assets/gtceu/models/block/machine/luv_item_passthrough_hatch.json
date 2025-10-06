@@ -8,7 +8,17 @@
     "side"
   ],
   "variants": {
-    "": {
+    "is_formed=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/item_passthrough_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/luv/bottom",
+          "side": "gtceu:block/casings/voltage/luv/side",
+          "top": "gtceu:block/casings/voltage/luv/top"
+        }
+      }
+    },
+    "is_formed=true": {
       "model": {
         "parent": "gtceu:block/machine/part/item_passthrough_hatch",
         "textures": {

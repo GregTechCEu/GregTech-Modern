@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -32,8 +33,10 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
@@ -235,8 +238,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
         for (IMultiPart part : getParts()) {
             MachineRenderState state = part.self().getRenderState();
-            if (state.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
-                part.self().setRenderState(state.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
+            if (state.hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+                part.self().setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
             }
         }
     }
@@ -295,5 +298,18 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
+    }
+
+    /**
+     * Sets a recipe type of the machine.
+     * FOR INTERNAL / TESTING USE ONLY!
+     * NOT SUPPORTED FOR PRODUCTION USE!
+     *
+     * @param newType The new recipe type
+     */
+    @ApiStatus.Internal
+    @VisibleForTesting
+    public void setRecipeType(GTRecipeType newType) {
+        recipeTypes[activeRecipeType] = newType;
     }
 }
