@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.mui.base.layout;
 
-import com.gregtechceu.gtceu.api.mui.base.widget.INotifyEnabled;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 
 /**
  * This is responsible for laying out widgets.
  */
-public interface ILayoutWidget extends INotifyEnabled {
+public interface ILayoutWidget {
 
     /**
      * Called after the children tried to calculate their size.

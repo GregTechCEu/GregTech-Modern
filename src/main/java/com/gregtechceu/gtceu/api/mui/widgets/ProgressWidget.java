@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import net.minecraft.util.Mth;
 
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.function.DoubleSupplier;
@@ -22,7 +21,6 @@ public class ProgressWidget extends Widget<ProgressWidget> {
 
     private final UITexture[] fullTexture = new UITexture[4];
     private UITexture emptyTexture;
-    @Setter
     private Direction direction = Direction.RIGHT;
     private int imageSize = -1;
 

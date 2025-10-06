@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 
 import net.minecraft.commands.Commands;
 
@@ -744,6 +745,8 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererConfigs renderer = new RendererConfigs();
+        @Configurable
+        public UIConfigs ui = new UIConfigs();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -768,12 +771,48 @@ public class ConfigHolder {
         }
     }
 
+    public static class UIConfigs {
+
+        @Configurable
+        @Configurable.Comment("If progress bar should step in texture pixels or screen pixels. (Screen pixels are way smaller and therefore smoother)")
+        public boolean smoothProgressBar = true;
+        @Configurable
+        @Configurable.Comment("Duration of UI animations in 1/60 sec.")
+        @Configurable.Range(min = 1)
+        public int animationTime = 8;
+        @Configurable
+        @Configurable.Comment("Default tooltip position around the widget or its panel.")
+        public RichTooltip.Pos tooltipPos = RichTooltip.Pos.VERTICAL;
+
+        @Configurable
+        @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
+                "16777215 (#FFFFFF) is no coloring (like GTCE) (default).",
+                "13819135 (#D2DCFF in decimal) is the classic blue from GT5." })
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+        @Configurable.Gui.ColorValue
+        public String defaultUIColor = "#FFFFFF";
+
+        @Configurable
+        @Configurable.Comment("If true, pressing ESC key in the text field will restore the last text instead of confirming current one.")
+        public boolean escRestoreLastText = false;
+        @Configurable
+        @Configurable.Comment("If true and not specified otherwise, screens will try to use the 'vanilla_dark' theme.")
+        public boolean useDarkThemeByDefault = false;
+
+        public int getDefaultUIColor() {
+            return Long.decode(ConfigHolder.INSTANCE.client.ui.defaultUIColor).intValue() | 0xFF000000;
+        }
+    }
+
     public static class DeveloperConfigs {
 
         @Configurable
         @Configurable.Comment({ "Debug general events? (will print recipe conficts etc. to server's debug.log)",
                 "Default: false" })
         public boolean debug = false;
+        @Configurable
+        @Configurable.Comment({ "Debug UI? (Will draw widget outlines and widget information)", "Default: false" })
+        public boolean debugUI = GTCEu.isDev();
         @Configurable
         @Configurable.Comment({ "Debug ore vein placement? (will print placed veins to server's debug.log)",
                 "Default: false (no placement printout in debug.log)" })

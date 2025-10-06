@@ -567,14 +567,14 @@ public class GTMachines {
     public static final MachineDefinition[] SUPER_TANK = registerQuantumTanks("super_tank", LOW_TIERS);
     public static final MachineDefinition[] QUANTUM_TANK = registerQuantumTanks("quantum_tank", HIGH_TIERS);
 
-    public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
-    public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
-    public static MachineDefinition STEEL_CRATE = registerCrate(GTMaterials.Steel, 72, "Steel Crate");
-    public static MachineDefinition ALUMINIUM_CRATE = registerCrate(GTMaterials.Aluminium, 90, "Aluminium Crate");
-    public static MachineDefinition STAINLESS_STEEL_CRATE = registerCrate(GTMaterials.StainlessSteel, 108,
+    public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, 9, "Wooden Crate");
+    public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, 9, "Bronze Crate");
+    public static MachineDefinition STEEL_CRATE = registerCrate(GTMaterials.Steel, 72, 9, "Steel Crate");
+    public static MachineDefinition ALUMINIUM_CRATE = registerCrate(GTMaterials.Aluminium, 90, 10, "Aluminium Crate");
+    public static MachineDefinition STAINLESS_STEEL_CRATE = registerCrate(GTMaterials.StainlessSteel, 108, 12,
             "Stainless Steel Crate");
-    public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, "Titanium Crate");
-    public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144,
+    public static MachineDefinition TITANIUM_CRATE = registerCrate(GTMaterials.Titanium, 126, 14, "Titanium Crate");
+    public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144, 16,
             "Tungstensteel Crate");
 
     public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, (16 * FluidType.BUCKET_VOLUME),

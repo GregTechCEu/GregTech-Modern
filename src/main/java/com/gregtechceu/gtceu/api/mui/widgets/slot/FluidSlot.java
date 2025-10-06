@@ -67,7 +67,7 @@ public class FluidSlot extends Widget<FluidSlot>
             if (fluid != null) {
                 tooltip.addLine(IKey.lang(fluid.getDisplayName())).spaceLine(2);
             }
-            if (this.syncHandler.isPhantom()) {
+            if (this.syncHandler.phantom()) {
                 if (fluid != null) {
                     if (this.syncHandler.controlsAmount()) {
                         tooltip.addLine(IKey.lang("modularui.fluid.phantom.amount",
@@ -193,7 +193,7 @@ public class FluidSlot extends Widget<FluidSlot>
             return Result.ACCEPT;
         }
         ItemStack cursorStack = Minecraft.getInstance().player.containerMenu.getCarried();
-        if (this.syncHandler.isPhantom() ||
+        if (this.syncHandler.phantom() ||
                 (!cursorStack.isEmpty() &&
                         cursorStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).isPresent())) {
             MouseData mouseData = MouseData.create(button);
@@ -204,7 +204,7 @@ public class FluidSlot extends Widget<FluidSlot>
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-        if (this.syncHandler.isPhantom()) {
+        if (this.syncHandler.phantom()) {
             if ((delta > 0 && !this.syncHandler.canFillSlot()) || (delta < 0 && !this.syncHandler.canDrainSlot())) {
                 return false;
             }
@@ -237,7 +237,7 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     public IFluidTank getFluidTank() {
-        return this.syncHandler == null ? EMPTY : this.syncHandler.getFluidTank();
+        return this.syncHandler == null ? EMPTY : this.syncHandler.fluidTank();
     }
 
     /**
@@ -283,14 +283,14 @@ public class FluidSlot extends Widget<FluidSlot>
 
     @Override
     public void setGhostIngredient(@NotNull FluidStack ingredient) {
-        if (this.syncHandler.isPhantom()) {
+        if (this.syncHandler.phantom()) {
             this.syncHandler.setValue(ingredient);
         }
     }
 
     @Override
     public @Nullable FluidStack castGhostIngredientIfValid(@NotNull Object ingredient) {
-        return areAncestorsEnabled() && this.syncHandler.isPhantom() && ingredient instanceof FluidStack fluidStack ?
+        return areAncestorsEnabled() && this.syncHandler.phantom() && ingredient instanceof FluidStack fluidStack ?
                 fluidStack : null;
     }
 

@@ -2,17 +2,22 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -38,7 +43,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
+public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLife,
                           IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
@@ -56,6 +61,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     @Getter
     private final int inventorySize;
     @Getter
+    private final int rowLength;
+    @Getter
     @RequireRerender
     @Persisted
     @DescSynced
@@ -64,37 +71,63 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     @Persisted
     public final NotifiableItemStackHandler inventory;
 
-    public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize) {
+    public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize, int rowLength) {
         super(holder);
         this.material = material;
         this.inventorySize = inventorySize;
+        this.rowLength = rowLength;
         this.inventory = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH);
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        int xOffset = inventorySize >= 90 ? 162 : 0;
-        int yOverflow = xOffset > 0 ? 18 : 9;
-        int yOffset = inventorySize > 3 * yOverflow ?
-                (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-        var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2,
-                        82 + yOffset, true));
-        int x = 0;
-        int y = 0;
-        for (int slot = 0; slot < inventorySize; slot++) {
-            modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
-                    .setBackgroundTexture(GuiTextures.SLOT));
-            x++;
-            if (x == yOverflow) {
-                x = 0;
-                y++;
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        syncManager.registerSlotGroup("item_inv", inventorySize);
+
+        int rows = inventorySize / rowLength;
+        ParentWidget<?> slots = new ParentWidget<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < this.rowLength; j++) {
+                int index = i * rowLength + j;
+                slots.child(new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(inventory, index).slotGroup("item_inv"))
+                        .left(18 * j)
+                        .top(18 * i));
             }
         }
-        return modularUI;
+
+        return GTGuis.createPanel(this, rowLength * 18 + 14, 18 + 4 * 18 + 5 + 14 + 18 * rows)
+                .background(GTGuiTextures.BACKGROUND_STEEL)
+                .child(IKey.lang(getBlockState().getBlock().getName()).asWidget().pos(5, 5))
+                .child(slots.top(18).left(7).right(7).height(rows * 18))
+                .bindPlayerInventory();
     }
+
+    /*
+     * @Override
+     * public ModularUI createUI(Player entityPlayer) {
+     * int xOffset = inventorySize >= 90 ? 162 : 0;
+     * int yOverflow = xOffset > 0 ? 18 : 9;
+     * int yOffset = inventorySize > 3 * yOverflow ?
+     * (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
+     * var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
+     * .background(GuiTextures.BACKGROUND)
+     * .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
+     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2,
+     * 82 + yOffset, true));
+     * int x = 0;
+     * int y = 0;
+     * for (int slot = 0; slot < inventorySize; slot++) {
+     * modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
+     * .setBackgroundTexture(GuiTextures.SLOT));
+     * x++;
+     * if (x == yOverflow) {
+     * x = 0;
+     * y++;
+     * }
+     * }
+     * return modularUI;
+     * }
+     */
 
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,

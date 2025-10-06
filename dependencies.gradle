@@ -10,6 +10,10 @@ dependencies {
     // Configuration
     jarJar(modApi(forge.configuration.get()))
 
+    // Math Parser
+    jarJar(implementation(libs.mxparser.get()))
+    additionalRuntimeClasspath(libs.mxparser.get())
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     compileOnly(annotationProcessor(forge.mixinExtras.common.get()))

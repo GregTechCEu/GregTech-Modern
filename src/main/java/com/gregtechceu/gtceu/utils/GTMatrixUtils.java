@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
@@ -9,10 +10,15 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.Contract;
 import org.joml.*;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.Math;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
@@ -161,5 +167,102 @@ public class GTMatrixUtils {
 
     public static Vector3fc getDirectionAxis(Direction dir) {
         return Objects.requireNonNull(directionAxises.get(dir));
+    }
+
+    /**
+     * This is in essence the same code as in gluLookAt, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     */
+    public static Matrix4f lookAt(Vector3f eyePos, Vector3f lookAt) {
+        Vector3f dir = new Vector3f(lookAt);
+        dir.sub(eyePos);
+
+        Vector3f up = new Vector3f(0, 1f, 0);
+        dir.normalize();
+
+        var right = new Vector3f(dir);
+        right.cross(up);
+        right.normalize();
+
+        up = new Vector3f(right);
+        up.cross(dir);
+        up.normalize();
+
+        var viewMatrix = new Matrix4f();
+        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
+                right.x(),
+                right.y(),
+                right.z(),
+                0.0f,
+
+                up.x(),
+                up.y(),
+                up.z(),
+                0.0f,
+
+                -dir.x(),
+                -dir.y(),
+                -dir.z(),
+                0.0f,
+
+                0.0f,
+                0.0f,
+                0.0f,
+                1.0f,
+        }));
+
+        viewMatrix.translate(-eyePos.x(), -eyePos.y(), -eyePos.z());
+        return viewMatrix;
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3f worldPos) {
+        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
+        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
+        Vector4f v = new Matrix4f(projectionMatrix).mul(modelViewMatrix).transform(new Vector4f(worldPos, 1.0f));
+
+        float windowX = Minecraft.getInstance().getWindow().getWidth() * (v.x() + 1) / 2;
+        float windowY = Minecraft.getInstance().getWindow().getHeight() * (v.y() + 1) / 2;
+        float windowZ = (v.z() + 1) / 2;
+        return new Vector3f(windowX, windowY, windowZ);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     */
+    public static Vector3f projectScreenToWorld(int viewX, int viewY) {
+        return projectScreenToWorld(viewX, viewY, true);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     */
+    public static Vector3f projectScreenToWorld(int viewX, int viewY, boolean checkDepth) {
+        float depth = 1.0f;
+        if (checkDepth) {
+            ByteBuffer depthBuffer = GlUtil.allocateMemory(4);
+            RenderSystem.readPixels(viewX, viewY, 1, 1,
+                    GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, depthBuffer);
+            depth = depthBuffer.asFloatBuffer().get();
+            GlUtil.freeMemory(depthBuffer);
+        }
+
+        int viewW = Minecraft.getInstance().getWindow().getWidth();
+        int viewH = Minecraft.getInstance().getWindow().getHeight();
+        Vector4f coords = new Vector4f(2.0f * viewX / viewW - 1, 2.0f * viewY / viewH - 1, 2.0f * depth - 1, 1);
+
+        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
+        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
+        Matrix4f inverse = new Matrix4f(projectionMatrix).mul(modelViewMatrix).invert();
+        inverse.transform(coords);
+
+        return new Vector3f(coords.x(), coords.y(), coords.z());
     }
 }
