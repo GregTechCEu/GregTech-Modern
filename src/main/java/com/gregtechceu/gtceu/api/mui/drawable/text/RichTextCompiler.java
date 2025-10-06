@@ -79,7 +79,12 @@ public class RichTextCompiler {
 
             }
             if (text != null) {
-                compileString(text.getString());
+                if(text.getStyle() != Style.EMPTY) {
+                    addLineElement(text);
+                }
+                else {
+                    compileString(text.getString());
+                }
                 continue;
             }
             if (!(o instanceof IIcon)) {
