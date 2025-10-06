@@ -79,10 +79,9 @@ public class RichTextCompiler {
 
             }
             if (text != null) {
-                if(text.getStyle() != Style.EMPTY) {
+                if (text.getStyle() != Style.EMPTY) {
                     addLineElement(text);
-                }
-                else {
+                } else {
                     compileString(text.getString());
                 }
                 continue;
