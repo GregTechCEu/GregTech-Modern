@@ -251,6 +251,11 @@ public class RichTextCompiler {
             o = styleBuilder.toString() + o;
             this.formatting.parseFrom(s2); // parse formatting from current string
         }
+        if (o instanceof Component c) {
+            x += fr.width(c.getString());
+            h = Math.max(h, fr.lineHeight);
+        }
+
         this.currentLine.add(o);
     }
 
