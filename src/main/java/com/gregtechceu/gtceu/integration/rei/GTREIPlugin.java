@@ -21,8 +21,6 @@ import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockOreDisplayCategory
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
-import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
-import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.alchemy.Potion;
@@ -34,6 +32,8 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.comparison.FluidComparatorRegistry;
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;

@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 
 public class GTGuis {

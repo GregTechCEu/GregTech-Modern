@@ -36,7 +36,6 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
-import lombok.Getter;
 import net.minecraft.client.Timer;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -53,6 +52,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import lombok.Getter;
 
 public class ClientProxy extends CommonProxy {
 

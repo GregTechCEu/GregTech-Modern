@@ -7,14 +7,16 @@ import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.utils.GTMath;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

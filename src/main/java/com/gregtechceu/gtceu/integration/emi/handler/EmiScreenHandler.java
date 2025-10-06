@@ -5,6 +5,11 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
+
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
+
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.EmiExclusionArea;
 import dev.emi.emi.api.EmiStackProvider;
@@ -14,9 +19,6 @@ import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.screen.EmiScreenManager;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

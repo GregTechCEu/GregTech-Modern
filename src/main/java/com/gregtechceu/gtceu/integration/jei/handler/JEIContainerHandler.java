@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.client.mui.screen.ContainerScreenWrapper;
 import com.gregtechceu.gtceu.integration.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
+
+import net.minecraft.client.renderer.Rect2i;
+
 import lombok.Getter;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.runtime.IClickableIngredient;
-import net.minecraft.client.renderer.Rect2i;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

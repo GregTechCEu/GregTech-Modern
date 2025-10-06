@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.WritableLevelData;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class DummyLevelData implements WritableLevelData {
 

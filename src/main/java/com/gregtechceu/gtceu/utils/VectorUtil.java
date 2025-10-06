@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;

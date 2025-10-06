@@ -1,13 +1,7 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
-import com.google.common.collect.AbstractIterator;
 import com.gregtechceu.gtceu.GTCEu;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.chars.CharArraySet;
-import it.unimi.dsi.fastutil.chars.CharSet;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +10,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+
+import com.google.common.collect.AbstractIterator;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharArraySet;
+import it.unimi.dsi.fastutil.chars.CharSet;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.NotNull;
 

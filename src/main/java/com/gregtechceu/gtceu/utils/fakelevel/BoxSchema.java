@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import lombok.Getter;
 
 import java.util.function.BiPredicate;
 

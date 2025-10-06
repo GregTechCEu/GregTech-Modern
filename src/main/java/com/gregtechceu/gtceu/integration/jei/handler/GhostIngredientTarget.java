@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.integration.jei.handler;
 
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
-import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+
 import net.minecraft.client.renderer.Rect2i;
+
+import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class GhostIngredientTarget<I> implements IGhostIngredientHandler.Target<I> {

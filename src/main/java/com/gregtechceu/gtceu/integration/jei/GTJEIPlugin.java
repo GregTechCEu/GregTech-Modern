@@ -23,20 +23,20 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.jei.subtype.PotionFluidSubtypeInterpreter;
 
-import lombok.Getter;
-import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.fluids.FluidStack;
 
+import lombok.Getter;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.registration.*;
+import mezz.jei.api.runtime.IJeiRuntime;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
