@@ -74,7 +74,7 @@ public class RichTextCompiler {
                 text = key.getFormatted();
             } else if (!(o instanceof IDrawable)) {
                 if (o instanceof MutableComponent component) {
-                    text = component.copy().withStyle(component.getStyle());
+                    text = component.copy();
                 }
 
             }
