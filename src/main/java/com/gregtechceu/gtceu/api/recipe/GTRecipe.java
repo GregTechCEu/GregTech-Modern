@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -229,6 +231,98 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             a += stack.amperage();
         }
         return new EnergyStack(v, a);
+    }
+
+
+
+    public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        // TODO: roll for chances, modify input/output maps
+//        var chancedContents = getFullContents()
+//                .map(Content::getContent)
+//                .map(Content.class::cast)
+//                .filter(Content::isChanced);
+
+        var chancedInputMap = new HashMap<RecipeCapability<?>, Content[]>();
+        for (var entry : inputs.entrySet()) {
+            RecipeCapability<?> cap = entry.getKey();
+            if (!cap.doMatchInRecipe()) continue;
+            if (entry.getValue().isEmpty()) continue;
+            Content[] ingredients = new Content[entry.getValue().size()];
+            int i=0;
+            for (var ingredient : entry.getValue()){
+                if (ingredient.isChanced()){
+                    ingredients[i] = ingredient;
+                }
+                i++;
+            }
+            chancedInputMap.put(cap, ingredients);
+        }
+        var chancedOutputMap = new HashMap<RecipeCapability<?>, Content[]>();
+        for (var entry : inputs.entrySet()) {
+            RecipeCapability<?> cap = entry.getKey();
+            if (!cap.doMatchInRecipe()) continue;
+            if (entry.getValue().isEmpty()) continue;
+            Content[] ingredients = new Content[entry.getValue().size()];
+            int i=0;
+            for (var ingredient : entry.getValue()){
+                if (ingredient.isChanced()){
+                    ingredients[i] = ingredient;
+                }
+                i++;
+            }
+            chancedOutputMap.put(cap, ingredients);
+        }
+
+
+        prerollChances(chancedInputMap, chancedOutputMap, chanceCaches);
+    }
+
+    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches){
+        // TODO: copy and roll tick chances, flatmap
+        var chancedTickContents = getFullTickContents()
+                .map(Content::getContent)
+                .map(Content.class::cast)
+                .filter(Content::isChanced)
+                .toList();
+
+        prerollTickChances(chancedTickContents);
+    }
+
+    private void prerollChances(HashMap<RecipeCapability<?>, Content[]> chancedInputMap, HashMap<RecipeCapability<?>, Content[]> chancedOutputMap, IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+
+        for (var entry: chancedInputMap.entrySet()){
+            RecipeCapability<?> cap = entry.getKey();
+            ChanceLogic logic = this.getChanceLogicForCapability(cap, IO.IN, false);
+            // TODO: this also breaks, logic.roll() cannot have nulls
+            // TODO: examine AssemblyLineMachine.checkItemInputs()
+            var chancedContents = logic.roll(cap, List.of(entry.getValue()), chanceCaches.get(cap), this.getTotalRuns());
+//            entry.setValue(chancedContents); //TODO: THIS BREAKS UNCHANCED OUTPUTS
+        }
+        for (var entry: chancedOutputMap.entrySet()){
+            RecipeCapability<?> cap = entry.getKey();
+            ChanceLogic logic = this.getChanceLogicForCapability(cap, IO.OUT, false);
+            var chancedContents = logic.roll(cap, List.of(entry.getValue()), chanceCaches.get(cap), this.getTotalRuns());
+//            entry.setValue(chancedContents); //TODO: THIS BREAKS UNCHANCED OUTPUTS
+        }
+
+    }
+
+    private void prerollTickChances(List<Content> chancedTickContents) {
+//        ChanceLogic logic = this.getChanceLogicForCapability(cap, this.io, true);
+    }
+
+    public Stream<Content> getFullContents(){
+        return Stream.concat(
+                        inputs.values().stream(),
+                        outputs.values().stream())
+                .flatMap(List::stream);
+    }
+
+    public Stream<Content> getFullTickContents(){
+        return Stream.concat(
+                        tickInputs.values().stream(),
+                        tickOutputs.values().stream())
+                .flatMap(List::stream);
     }
 
     public int getTotalRuns() {
