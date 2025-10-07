@@ -258,6 +258,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
                     textRenderer.setPos(1, 1);
                     RenderSystem.disableDepthTest();
                     RenderSystem.disableBlend();
+                    context.getGraphics().pose().translate(0, 0, 100 + z);
                     textRenderer.draw(context.getGraphics(), amountText);
                     RenderSystem.enableDepthTest();
                     RenderSystem.enableBlend();
