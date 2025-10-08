@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
+import com.gregtechceu.gtceu.api.mui.factory.IMuiFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 
 import net.minecraft.core.BlockPos;
@@ -46,8 +47,19 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
         GuiManager.open(this, data, (ServerPlayer) player);
     }
 
+    public void open(ServerPlayer player, BlockPos pos, IMuiFactory factory) {
+        Objects.requireNonNull(player);
+        Objects.requireNonNull(factory);
+        PosGuiData data = new PosGuiData(player, pos);
+        GuiManager.open(this, data, player);
+    }
+
     @Override
     public @NotNull IUIHolder<PosGuiData> getGuiHolder(PosGuiData data) {
+        MetaMachine machine = getMachine(data);
+        if (machine.getDefinition().getUI() != null) {
+            return machine.getDefinition().getUI();
+        }
         return Objects.requireNonNull(castUIHolder(getMachine(data)), "Found MetaMachine is not a gui holder!");
     }
 

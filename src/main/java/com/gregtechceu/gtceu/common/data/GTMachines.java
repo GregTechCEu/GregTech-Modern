@@ -1098,7 +1098,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI((a, b, c) -> {
+            .UI((a, b, c, d) -> {
                 return new ModularPanel("test").size(64, 64);
             })
             .register();
