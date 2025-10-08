@@ -254,7 +254,7 @@ public class ModularGuiContext extends GuiContext {
     public void dropDraggable() {
         this.draggable.applyMatrix(this);
         this.draggable.getElement()
-                .onDragEnd(this.draggable.getElement().canDropHere(getMouseX(), getMouseY(), this.hovered));
+                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), this.hovered));
         this.draggable.getElement().setMoving(false);
         this.draggable.unapplyMatrix(this);
         this.draggable = null;
@@ -306,9 +306,9 @@ public class ModularGuiContext extends GuiContext {
     @ApiStatus.Internal
     public void onFrameUpdate() {
         IWidget hovered = this.screen.getPanelManager().getTopWidget();
-        if (hasDraggable() && (this.lastDragX != getMouseX() || this.lastDragY != getMouseY())) {
-            this.lastDragX = getMouseX();
-            this.lastDragY = getMouseY();
+        if (hasDraggable() && (this.lastDragX != getAbsMouseX() || this.lastDragY != getAbsMouseY())) {
+            this.lastDragX = getAbsMouseX();
+            this.lastDragY = getAbsMouseY();
             this.draggable.applyMatrix(this);
             this.draggable.getElement().onDrag(this.lastButton, this.lastClickTime);
             this.draggable.unapplyMatrix(this);

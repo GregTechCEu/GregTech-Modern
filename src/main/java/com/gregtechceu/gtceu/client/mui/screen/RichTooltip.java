@@ -108,7 +108,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         }
         Area screen = context.getScreenArea();
         this.maxWidth = Math.min(this.maxWidth, screen.width);
-        int mouseX = context.getMouseX(), mouseY = context.getMouseY();
+        int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         TextRenderer renderer = TextRenderer.SHARED;
         // this only turns the text and not any drawables into strings
         List<Either<FormattedText, TooltipComponent>> textLines = this.text.getStringRepresentation().stream()

@@ -337,7 +337,8 @@ public class ClientScreenHandler {
     }
 
     public static void dragSlot(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        getMCScreen().mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        ModularGuiContext ctx = currentScreen.getContext();
+        getMCScreen().mouseDragged(ctx.getAbsMouseX(), ctx.getAbsMouseY(), button, dragX, dragY);
     }
 
     public static void clickSlot(ModularScreen ms, Slot slot) {
@@ -351,7 +352,7 @@ public class ClientScreenHandler {
                 acc.setChildren(Collections.emptyList());
                 // set clicked slot to make sure the container clicks the desired slot
                 clickableScreen.gtceu$setClickedSlot(slot);
-                screen.mouseClicked(ctx.getMouseX(), ctx.getMouseY(), ctx.getMouseButton());
+                screen.mouseClicked(ctx.getAbsMouseX(), ctx.getAbsMouseY(), ctx.getMouseButton());
             } finally {
                 // undo modifications
                 clickableScreen.gtceu$setClickedSlot(null);
@@ -363,7 +364,7 @@ public class ClientScreenHandler {
     public static void releaseSlot() {
         if (hasScreen() && getMCScreen() != null) {
             ModularGuiContext ctx = currentScreen.getContext();
-            getMCScreen().mouseReleased(ctx.getMouseX(), ctx.getMouseY(), ctx.getMouseButton());
+            getMCScreen().mouseReleased(ctx.getAbsMouseX(), ctx.getAbsMouseY(), ctx.getMouseButton());
         }
     }
 
@@ -523,7 +524,7 @@ public class ClientScreenHandler {
         ModularGuiContext context = muiScreen.getContext();
         Matrix4f pose = graphics.pose().last().pose();
 
-        int mouseX = context.getMouseX(), mouseY = context.getMouseY();
+        int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         int screenH = muiScreen.getScreenArea().height;
         int color = Color.argb(180, 40, 115, 220);
         int lineY = screenH - 13;

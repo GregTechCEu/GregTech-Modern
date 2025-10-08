@@ -55,20 +55,22 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
-        this.lastMouseX = getContext().getMouseX();
-        this.lastMouseY = getContext().getMouseY();
+        this.lastMouseX = getContext().getAbsMouseX();
+        this.lastMouseY = getContext().getAbsMouseY();
         return Result.SUCCESS;
     }
 
     @Override
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        float dx = (float) mouseX - lastMouseX;
-        float dy = (float) mouseY - lastMouseY;
-        if (mouseX == 0 && this.enableRotation) {
+        int mX = getContext().getAbsMouseX();
+        int mY = getContext().getAbsMouseY();
+        float dx = (float) mX - lastMouseX;
+        float dy = (float) mY - lastMouseY;
+        if (button == 0 && this.enableRotation) {
             float moveScale = 0.025f;
             yaw = (yaw + dx * moveScale + TWO_PI) % TWO_PI;
             pitch = Mth.clamp(pitch + dy * moveScale, -TWO_PI / 4 + 0.001f, TWO_PI / 4 - 0.001f);
-        } else if (mouseX == 2 && this.enableTranslation) {
+        } else if (button == 2 && this.enableTranslation) {
             // the idea is to construct a vector which points upwards from the camera pov (y-axis on screen)
             // this vector determines the amount of z offset from mouse movement in y
             float y = (float) Math.cos(pitch);
@@ -82,8 +84,8 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
             float z = (float) Math.sin(phi);
             offset.add(dx * x * moveScale, 0, dx * z * moveScale);
         }
-        this.lastMouseX = (float) mouseX;
-        this.lastMouseY = (float) mouseY;
+        this.lastMouseX = (float) mX;
+        this.lastMouseY = (float) mY;
     }
 
     public SchemaWidget scale(double scale) {

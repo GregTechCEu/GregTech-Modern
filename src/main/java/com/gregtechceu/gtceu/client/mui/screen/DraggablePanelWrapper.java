@@ -38,8 +38,8 @@ public class DraggablePanelWrapper implements IDraggable {
             ModularGuiContext context = this.panel.getContext();
             this.movingArea.x = context.transformX(0, 0);
             this.movingArea.y = context.transformY(0, 0);
-            this.relativeClickX = context.getMouseX() - this.movingArea.x;
-            this.relativeClickY = context.getMouseY() - this.movingArea.y;
+            this.relativeClickX = context.getAbsMouseX() - this.movingArea.x;
+            this.relativeClickY = context.getAbsMouseY() - this.movingArea.y;
             return true;
         }
         return false;
@@ -48,8 +48,8 @@ public class DraggablePanelWrapper implements IDraggable {
     @Override
     public void onDragEnd(boolean successful) {
         if (successful) {
-            float y = this.panel.getContext().getMouseY() - this.relativeClickY;
-            float x = this.panel.getContext().getMouseX() - this.relativeClickX;
+            float y = this.panel.getContext().getAbsMouseY() - this.relativeClickY;
+            float x = this.panel.getContext().getAbsMouseX() - this.relativeClickX;
             y = y / (this.panel.getScreen().getScreenArea().height - this.panel.getArea().height);
             x = x / (this.panel.getScreen().getScreenArea().width - this.panel.getArea().width);
             this.panel.flex().resetPosition();
@@ -62,8 +62,8 @@ public class DraggablePanelWrapper implements IDraggable {
 
     @Override
     public void onDrag(int mouseButton, double timeSinceLastClick) {
-        this.movingArea.x = this.panel.getContext().getMouseX() - this.relativeClickX;
-        this.movingArea.y = this.panel.getContext().getMouseY() - this.relativeClickY;
+        this.movingArea.x = this.panel.getContext().getAbsMouseX() - this.relativeClickX;
+        this.movingArea.y = this.panel.getContext().getAbsMouseY() - this.relativeClickY;
     }
 
     @Override

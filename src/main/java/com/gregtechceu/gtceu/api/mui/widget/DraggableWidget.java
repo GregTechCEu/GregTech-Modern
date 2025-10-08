@@ -40,8 +40,8 @@ public class DraggableWidget<W extends DraggableWidget<W>> extends Widget<W> imp
             this.realY = getContext().transformY(0, 0) - getParentArea().y;
             this.movingArea.x = this.realX;
             this.movingArea.y = this.realY;
-            this.relativeClickX = getContext().getMouseX() - this.realX;
-            this.relativeClickY = getContext().getMouseY() - this.realY;
+            this.relativeClickX = getContext().getAbsMouseX() - this.realX;
+            this.relativeClickY = getContext().getAbsMouseY() - this.realY;
             return true;
         }
         return false;
@@ -50,8 +50,8 @@ public class DraggableWidget<W extends DraggableWidget<W>> extends Widget<W> imp
     @Override
     public void onDragEnd(boolean successful) {
         if (successful) {
-            flex().top(getContext().getMouseY() - this.relativeClickY)
-                    .left(getContext().getMouseX() - this.relativeClickX);
+            flex().top(getContext().getAbsMouseY() - this.relativeClickY)
+                    .left(getContext().getAbsMouseX() - this.relativeClickX);
             this.movingArea.x = getArea().x;
             this.movingArea.y = getArea().y;
             WidgetTree.resize(this);
@@ -60,8 +60,8 @@ public class DraggableWidget<W extends DraggableWidget<W>> extends Widget<W> imp
 
     @Override
     public void onDrag(int mouseButton, double timeSinceLastClick) {
-        this.movingArea.x = getContext().getMouseX() - this.relativeClickX;
-        this.movingArea.y = getContext().getMouseY() - this.relativeClickY;
+        this.movingArea.x = getContext().getAbsMouseX() - this.relativeClickX;
+        this.movingArea.y = getContext().getAbsMouseY() - this.relativeClickY;
     }
 
     @Override

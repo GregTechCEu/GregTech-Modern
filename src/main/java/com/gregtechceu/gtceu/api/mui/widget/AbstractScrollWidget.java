@@ -111,7 +111,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     @Override
     public void onUpdate() {
         super.onUpdate();
-        this.scroll.drag(getContext().getMouseX(), getContext().getMouseY());
+        this.scroll.drag(getContext().getAbsMouseX(), getContext().getAbsMouseY());
     }
 
     @Override

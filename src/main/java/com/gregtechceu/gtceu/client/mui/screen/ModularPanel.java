@@ -197,9 +197,9 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         stack.pushViewport(null, getScreen().getScreenArea());
         stack.pushViewport(this, getArea());
         transform(stack);
-        getSelfAt(stack, widgetList, getContext().getMouseX(), getContext().getMouseY());
+        getSelfAt(stack, widgetList, getContext().getAbsMouseX(), getContext().getAbsMouseY());
         transformChildren(stack);
-        getWidgetsAt(stack, widgetList, getContext().getMouseX(), getContext().getMouseY());
+        getWidgetsAt(stack, widgetList, getContext().getAbsMouseX(), getContext().getAbsMouseY());
         stack.popViewport(this);
         stack.popViewport(null);
     }

@@ -38,16 +38,8 @@ public class GuiContext extends GuiViewportStack {
     private GuiGraphics graphics = null;
 
     /* Mouse states */
-    /**
-     * Absolute X coordinate of the mouse without the scrolling areas applied
-     */
-    @Getter
-    private int absMouseX;
-    /**
-     * Absolute Y coordinate of the mouse without the scrolling areas applied
-     */
-    @Getter
-    private int absMouseY;
+    private int mouseX;
+    private int mouseY;
     @Getter
     private int mouseButton;
     @Getter
@@ -84,13 +76,13 @@ public class GuiContext extends GuiViewportStack {
      * @return true the mouse is anywhere above the area
      */
     public boolean isMouseAbove(Area area) {
-        return area.isInside(this.absMouseX, this.absMouseY);
+        return area.isInside(this.mouseX, this.mouseY);
     }
 
     @ApiStatus.Internal
     public void updateState(int mouseX, int mouseY, float partialTicks) {
-        this.absMouseX = mouseX;
-        this.absMouseY = mouseY;
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
         this.partialTicks = partialTicks;
     }
 
@@ -144,11 +136,27 @@ public class GuiContext extends GuiViewportStack {
     }
 
     public int getMouseX() {
-        return unTransformX(this.absMouseX, this.absMouseY);
+        return unTransformX(this.mouseX, this.mouseY);
     }
 
     public int getMouseY() {
-        return unTransformY(this.absMouseX, this.absMouseY);
+        return unTransformY(this.mouseX, this.mouseY);
+    }
+
+    /**
+     * Get absolute X coordinate of the mouse without the
+     * scrolling areas applied
+     */
+    public int getAbsMouseX() {
+        return this.mouseX;
+    }
+
+    /**
+     * Get absolute Y coordinate of the mouse without the
+     * scrolling areas applied
+     */
+    public int getAbsMouseY() {
+        return this.mouseY;
     }
 
     public int getMouse(GuiAxis axis) {
@@ -156,7 +164,7 @@ public class GuiContext extends GuiViewportStack {
     }
 
     public int getAbsMouse(GuiAxis axis) {
-        return axis.isHorizontal() ? getMouseX() : getMouseY();
+        return axis.isHorizontal() ? getAbsMouseX() : getAbsMouseY();
     }
 
     public boolean isMuiContext() {
