@@ -338,7 +338,33 @@ public class MultiblockDisplayText {
 
         public Builder addBatchModeLine(boolean batchEnabled, int batchAmount) {
             if (batchEnabled && batchAmount > 0) {
-                textList.add(Component.translatable("gtceu.multiblock.batch_enabled", batchAmount));
+                Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.batch_enabled";
+                textList.add(Component.translatable(key, runs)
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            return this;
+        }
+
+        public Builder addSubtickParallelsLine(int subtickParallels) {
+            if (subtickParallels > 1) {
+                Component runs = Component.literal(FormattingUtil.formatNumbers(subtickParallels))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.subtick_parallels";
+                textList.add(Component.translatable(key, runs)
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            return this;
+        }
+
+        public Builder addTotalRunsLine(int totalRuns) {
+            if (totalRuns > 1) {
+                Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.total_runs";
+                textList.add(Component.translatable(key, runs)
+                        .withStyle(ChatFormatting.GRAY));
             }
             return this;
         }
@@ -353,7 +379,7 @@ public class MultiblockDisplayText {
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
-                int runs = recipe.parallels * recipe.batchParallels;
+                int runs = recipe.getTotalRuns();
 
                 for (var item : itemOutputs) {
                     boolean rounded = false;

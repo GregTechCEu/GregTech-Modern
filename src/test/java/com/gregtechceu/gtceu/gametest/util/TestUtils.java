@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.gametest.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -41,7 +43,7 @@ public class TestUtils {
     /**
      * Compares two itemstacks' items and amounts
      * DOES NOT CHECK TAGS OR NBT ETC!
-     * 
+     *
      * @return {@code true} if items and amounts are equal
      */
     public static boolean isItemStackEqual(ItemStack stack1, ItemStack stack2) {
@@ -50,7 +52,7 @@ public class TestUtils {
 
     /**
      * Compares two itemstacks and a range.
-     * 
+     *
      * @return {@code true} if items are equal, and if stack2's amount is within range.
      */
     public static boolean isItemStackWithinRange(ItemStack stack1, ItemStack stack2, int min, int max) {
@@ -63,7 +65,7 @@ public class TestUtils {
      * multiplied.
      * This test can trigger false positives from bad luck and should be run more than once to reduce the odds of bad
      * luck.
-     * 
+     *
      * @return {@code true} if the size is an exact multiple of the total run count. TRUE INDICATES FAILURE.
      */
     public static boolean isStackSizeExactlyEvenMultiple(int size, int batches, int parallels, int runs) {
@@ -71,9 +73,24 @@ public class TestUtils {
     }
 
     /**
+     * Compares two itemstack[]s' items and amounts
+     * Necessary because itemStack does not implement .equals()
+     */
+    public static boolean areItemStacksEqual(ItemStack[] stack1, ItemStack[] stack2) {
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i = 0; i < stack1.length; i++) {
+            if (!isItemStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Compares two fluidstacks' fluids and amounts
      * DOES NOT CHECK TAGS OR NBT ETC!
-     * 
+     *
      * @return {@code true} if fluids and amounts are equal
      */
     public static boolean isFluidStackEqual(FluidStack stack1, FluidStack stack2) {
@@ -82,7 +99,7 @@ public class TestUtils {
 
     /**
      * Compares two fluidstacks and a range.
-     * 
+     *
      * @return {@code true} if items are equal, and if stack2's amount is within range.
      */
     public static boolean isFluidStackWithinRange(FluidStack stack1, FluidStack stack2, int min, int max) {
@@ -90,8 +107,23 @@ public class TestUtils {
     }
 
     /**
+     * Compares two fluidstack[]s' fluids and amounts
+     * Necessary because fluidStack's implementation of .equals() does not check amounts
+     */
+    public static boolean areFluidStacksEqual(FluidStack[] stack1, FluidStack[] stack2) {
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i = 0; i < stack1.length; i++) {
+            if (!isFluidStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Compares an ItemStack with a range
-     * 
+     *
      * @return {@code true} if the ItemStack's count is within range
      */
     public static boolean isItemWithinRange(ItemStack stack, int min, int max) {
@@ -100,11 +132,20 @@ public class TestUtils {
 
     /**
      * Compares a FluidStack with a range
-     * 
+     *
      * @return {@code true} if the FluidStack's amount is within range
      */
     public static boolean isFluidWithinRange(FluidStack stack, int min, int max) {
         return stack.getAmount() <= max && stack.getAmount() >= min;
+    }
+
+    /**
+     * compares an integer with a range
+     *
+     * @return {@code true} if the integer count is within range
+     */
+    public static boolean isCountWithinRange(int stack, int min, int max) {
+        return stack <= max && stack >= min;
     }
 
     /**
@@ -118,9 +159,10 @@ public class TestUtils {
 
     /**
      * Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
+     * Requires a {@link GTRecipeType} to inherit I/O counts from
      */
-    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name) {
-        GTRecipeType type = createRecipeType(name);
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
+        GTRecipeType type = createRecipeType(name, original);
         type.getLookup().addRecipe(type
                 .recipeBuilder(GTCEu.id("test_recipe"))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
@@ -130,10 +172,32 @@ public class TestUtils {
         return type;
     }
 
+    /**
+     * Creates a dummy recipe type. Safe for use in recipe lookup.
+     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeType)} for that.
+     */
+    @Deprecated
     public static GTRecipeType createRecipeType(String name) {
         return createRecipeType(name, 2, 2, 2, 2);
     }
 
+    /**
+     * Creates a recipe type for writing test cases.
+     * Requires a {@link GTRecipeType} to inherit I/O counts from.
+     */
+    public static GTRecipeType createRecipeType(String name, GTRecipeType original) {
+        return createRecipeType(name,
+                original.getMaxInputs(ItemRecipeCapability.CAP),
+                original.getMaxOutputs(ItemRecipeCapability.CAP),
+                original.getMaxInputs(FluidRecipeCapability.CAP),
+                original.getMaxOutputs(FluidRecipeCapability.CAP));
+    }
+
+    /**
+     * Creates a recipe type for writing test cases.
+     * Requires setting I/O counts manually.
+     * You probably want to be using {@link #createRecipeType(String, GTRecipeType)}
+     */
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
         GTRegistries.RECIPE_TYPES.unfreeze();
@@ -187,9 +251,10 @@ public class TestUtils {
     }
 
     public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
-        helper.assertTrue(isFluidStackEqual(stack1, stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
-                stack1.getDisplayName().getString(), stack1.getAmount(),
-                stack2.getDisplayName().getString(), stack2.getAmount()));
+        helper.assertTrue(stack1.isFluidStackIdentical(stack2),
+                "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+                        stack1.getDisplayName().getString(), stack1.getAmount(),
+                        stack2.getDisplayName().getString(), stack2.getAmount()));
     }
 
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
@@ -202,7 +267,7 @@ public class TestUtils {
 
     /**
      * Shortcut function to retrieve a metamachine from a blockentity's
-     * 
+     *
      * @param entity The MetaMachineBlockEntity
      * @return the machine held, if any
      */
@@ -212,7 +277,7 @@ public class TestUtils {
 
     /**
      * Helper function to succeed after the test is over
-     * 
+     *
      * @param helper GameTestHelper
      */
     public static void succeedAfterTest(GameTestHelper helper) {
@@ -221,7 +286,7 @@ public class TestUtils {
 
     /**
      * Helper function to succeed after the test is over
-     * 
+     *
      * @param helper  GameTestHelper
      * @param timeout Ticks to wait until succeeding
      */

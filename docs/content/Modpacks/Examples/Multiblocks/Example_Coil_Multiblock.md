@@ -1,5 +1,5 @@
 ---
-title: "Superheated Pyrolyzing Oven"
+title: "Example Coil Multiblock"
 ---
 
 ### Superheated Pyrolyzing Oven Multiblock (by Phoenixvine)
@@ -18,8 +18,12 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
             .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes('pyrolyse_oven')
-            .recipeModifiers([GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.OC_PERFECT,GTRecipeModifiers.BATCH_MODE, (machine, recipe) =>
-            GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)])
+            .recipeModifiers(
+                [
+                    GTRecipeModifiers.PARALLEL_HATCH,  
+                    (machine, recipe) => GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe)
+                ]
+            )
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition => FactoryBlockPattern.start()
                 .aisle("BBCCCBB", "BBCDCBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
@@ -58,7 +62,6 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK),
                 (machine, recipe) -> GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe))
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -95,8 +98,5 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     "block.gtceu.superheated_pyrolyzing_oven": "Superheated Pyrolyzing Oven",
 }
 ```
-
-
-
 
 

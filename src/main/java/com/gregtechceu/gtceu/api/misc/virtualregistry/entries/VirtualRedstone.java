@@ -24,10 +24,8 @@ public class VirtualRedstone extends VirtualEntry {
         return members.values().intStream().max().orElse(0);
     }
 
-    public UUID addMember() {
-        UUID uuid = UUID.randomUUID();
+    public void addMember(UUID uuid) {
         members.put(uuid, (short) 0);
-        return uuid;
     }
 
     public void setSignal(UUID uuid, int signal) {

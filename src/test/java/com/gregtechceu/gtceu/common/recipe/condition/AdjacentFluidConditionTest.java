@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -31,12 +32,13 @@ public class AdjacentFluidConditionTest {
 
     @BeforeBatch(batch = "AdjacentFluidCondition")
     public static void prepare(ServerLevel level) {
-        ROCK_BREAKER_RECIPE_TYPE = TestUtils.createRecipeType("adjacent_fluid_conditions_tests");
+        ROCK_BREAKER_RECIPE_TYPE = TestUtils.createRecipeType("adjacent_fluid_conditions_tests",
+                GTRecipeTypes.ROCK_BREAKER_RECIPES);
         ROCK_BREAKER_RECIPE_TYPE.getLookup().addRecipe(ROCK_BREAKER_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions"))
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
-                .adjacentFluid(FluidTags.WATER)
+                .adjacentFluidTag(FluidTags.WATER)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .buildRawRecipe());
@@ -45,7 +47,7 @@ public class AdjacentFluidConditionTest {
                 .recipeBuilder(GTCEu.id("test_adjacent_fluid_conditions_multiple_fluids"))
                 .inputItems(new ItemStack(Blocks.OAK_WOOD))
                 .outputItems(new ItemStack(Items.CHARCOAL))
-                .adjacentFluid(FluidTags.WATER, FluidTags.LAVA)
+                .adjacentFluidTag(FluidTags.WATER, FluidTags.LAVA)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(8)
                 .buildRawRecipe());
