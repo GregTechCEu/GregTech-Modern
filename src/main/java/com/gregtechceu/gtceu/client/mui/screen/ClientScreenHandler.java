@@ -379,7 +379,8 @@ public class ClientScreenHandler {
             int color = 0x101010;
             int startAlpha = 0xc0;
             int endAlpha = 0xd0;
-            GuiDraw.drawVerticalGradientRect(guiGraphics, 0, 0, screen.width, screen.height,
+            // we need to use normal render type, not overlay here
+            guiGraphics.fillGradient(0, 0, screen.width, screen.height,
                     Color.withAlpha(color, (int) (startAlpha * alpha)),
                     Color.withAlpha(color, (int) (endAlpha * alpha)));
             MinecraftForge.EVENT_BUS.post(new ScreenEvent.BackgroundRendered(screen, guiGraphics));
