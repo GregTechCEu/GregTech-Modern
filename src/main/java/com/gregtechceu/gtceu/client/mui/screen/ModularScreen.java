@@ -483,8 +483,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * Interactable#onCharTyped(char, int)} on every
      * widget under the mouse after gui action listeners have been called.
      *
-     * @param codePoint the character of the pressed key
-     * @param modifiers the key modifiers of the pressed key (see modifiers at {@link InputConstants})
+     * @param codePoint the code point of the typed character
+     * @param modifiers the key modifiers of the typed character (see modifiers at {@link InputConstants})
      * @return true if the action was consumed and further processing should be canceled
      */
     @Override
@@ -509,8 +509,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * Interactable#onMouseScrolled(double, double, double)} on every widget under
      * the mouse after gui action listeners have been called.
      *
-     * @param mouseX mouse x-coordinate
-     * @param mouseY mouse y-coordinate
+     * @param mouseX current mouse X coordinate relative to the screen
+     * @param mouseY current mouse Y coordinate relative to the screen
      * @param delta  the direction and speed of the scroll
      * @return true if the action was consumed and further processing should be canceled
      */
@@ -536,12 +536,12 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * Interactable#onMouseDrag(double, double, int, double, double)} on every widget
      * under the mouse after gui action listeners have been called.
      *
-     * @param mouseX starting mouse x-coordinate
-     * @param mouseY starting mouse y-coordinate
-     * @param button mouse button that is held down (0 = left button, 1 = right button, 2 = scroll button, 4 and 5 =
-     *               side buttons)
-     * @param dragX  ending mouse y-coordinate
-     * @param dragY  ending mouse y-coordinate
+     * @param mouseX current mouse X coordinate relative to the screen
+     * @param mouseY current mouse Y coordinate relative to the screen
+     * @param button mouse button that is held down
+     *               (0 = left button, 1 = right button, 2 = scroll button, 4 and 5 = side buttons)
+     * @param dragX  the X distance of the drag
+     * @param dragY  the Y distance of the drag
      * @return true if the action was consumed and further processing should be canceled
      */
     @Override

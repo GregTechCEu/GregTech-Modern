@@ -135,11 +135,12 @@ public interface Interactable {
     /**
      * Called when this widget was clicked and mouse is now dragging.
      *
-     * @param mouseX the X coordinate of the mouse.
-     * @param mouseY the Y coordinate of the mouse.
-     * @param button mouse button that drags
-     * @param dragX
-     * @param dragY
+     * @param mouseX current mouse X coordinate relative to the screen
+     * @param mouseY current mouse Y coordinate relative to the screen
+     * @param button mouse button that is held down
+     *               (0 = left button, 1 = right button, 2 = scroll button, 4 and 5 = side buttons)
+     * @param dragX  amount of drag on the X axis (e.g. the distance that has been dragged)
+     * @param dragY  amount of drag on the Y axis (e.g. the distance that has been dragged)
      */
     default void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {}
 
