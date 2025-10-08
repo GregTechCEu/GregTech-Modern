@@ -8,6 +8,6 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 @FunctionalInterface
 public interface PanelEditor {
 
-    ModularPanel editUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                        MetaMachine machine, ModularPanel panel);
+    void editUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                MetaMachine machine, ModularPanel panel);
 }

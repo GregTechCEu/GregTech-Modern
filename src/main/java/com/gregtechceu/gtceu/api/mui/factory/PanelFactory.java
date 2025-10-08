@@ -40,10 +40,12 @@ public interface PanelFactory extends IUIHolder<PosGuiData> {
         }
     }
 
-    default PanelFactory andThen(PanelEditor edit) {
+    default PanelFactory andThen(PanelEditor... edits) {
         return (data, syncManager, settings, machine) -> {
             var panel = this.buildUIFunction(data, syncManager, settings, machine);
-            edit.editUI(data, syncManager, settings, machine, panel);
+            for (PanelEditor edit : edits) {
+                edit.editUI(data, syncManager, settings, machine, panel);
+            }
             return panel;
         };
     }
