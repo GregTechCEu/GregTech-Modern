@@ -155,6 +155,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         renderer.setPos(area.x, area.y);
+        context.getGraphics().pose().translate(0, 0, 400);
         this.text.compileAndDraw(renderer, context, false);
 
         // MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(stack, textLines, area.x, area.y,

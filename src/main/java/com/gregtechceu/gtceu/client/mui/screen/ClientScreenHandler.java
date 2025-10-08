@@ -316,7 +316,7 @@ public class ClientScreenHandler {
     private static boolean keyPressed(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
-        if (keyCode == 'c' &&
+        if (keyCode == 'C' &&
                 (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 &&
                 (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 &&
                 (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
