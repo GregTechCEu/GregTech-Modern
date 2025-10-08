@@ -316,7 +316,9 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
         }
         if (shouldOpenUi &&
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
-            if (machine instanceof IMuiMachine muiMachine) {
+            if (machine.getDefinition().getUI() != null) {
+                return machine.getDefinition().getUI().tryToOpenUI(player, hand, hit);
+            } else if (machine instanceof IMuiMachine muiMachine) {
                 return muiMachine.tryToOpenUI(player, hand, hit);
             } else if (machine instanceof IUIMachine uiMachine) {
                 return uiMachine.tryToOpenUI(player, hand, hit);

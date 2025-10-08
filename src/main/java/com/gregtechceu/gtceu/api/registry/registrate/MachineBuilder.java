@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.factory.IMuiFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -171,6 +172,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Getter
     @Setter
     private boolean regressWhenWaiting = true;
+    @Setter
+    @Getter
+    private IMuiFactory UI = null;
 
     @Setter
     private boolean allowCoverOnFront = false;
@@ -563,6 +567,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
         var blockEntity = blockEntityBuilder.register();
+        if (this.UI != null) {
+            definition.setUI(UI);
+        }
         definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
