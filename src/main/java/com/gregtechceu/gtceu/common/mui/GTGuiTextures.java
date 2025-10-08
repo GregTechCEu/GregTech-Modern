@@ -575,6 +575,14 @@ public class GTGuiTextures {
             .name("mc_button")
             .build();
 
+    public static final UITexture CYCLE_BUTTON = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/button_distribution_mode.png")
+            .imageSize(20, 60)
+            .uv(0f, 0f, 1f, 1 / 3f)
+            .name("cycle")
+            .build();
+    // 16, 48, 16, 16, true);
+
     public static final UITexture MC_BUTTON_PRESSED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
             .imageSize(16, 32)

@@ -108,6 +108,6 @@ public class GTNetwork {
         register(SCPacketShareProspection.class, SCPacketShareProspection::new, null);
 
         register(OpenGuiPacket.class, OpenGuiPacket::new, NetworkDirection.PLAY_TO_CLIENT);
-        register(SyncHandlerPacket.class, SyncHandlerPacket::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(SyncHandlerPacket.class, SyncHandlerPacket::new, null);
     }
 }
