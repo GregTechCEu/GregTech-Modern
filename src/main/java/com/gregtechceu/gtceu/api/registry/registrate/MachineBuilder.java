@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.mui.factory.IMuiFactory;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -174,7 +174,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private boolean regressWhenWaiting = true;
     @Setter
     @Getter
-    private IMuiFactory UI = null;
+    private PanelFactory UI = null;
 
     @Setter
     private boolean allowCoverOnFront = false;

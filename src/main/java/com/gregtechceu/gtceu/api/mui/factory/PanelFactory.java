@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
 @FunctionalInterface
-public interface IMuiFactory extends IUIHolder<PosGuiData> {
+public interface PanelFactory extends IUIHolder<PosGuiData> {
 
     @Override
     default ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -38,5 +38,13 @@ public interface IMuiFactory extends IUIHolder<PosGuiData> {
         } else {
             return InteractionResult.PASS;
         }
+    }
+
+    default PanelFactory andThen(PanelEditor edit) {
+        return (data, syncManager, settings, machine) -> {
+            var panel = this.buildUIFunction(data, syncManager, settings, machine);
+            edit.editUI(data, syncManager, settings, machine, panel);
+            return panel;
+        };
     }
 }

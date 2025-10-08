@@ -14,6 +14,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -1098,9 +1101,12 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI((a, b, c, d) -> {
+            .UI(((PanelFactory) (a, b, c, d) -> {
                 return new ModularPanel("test").size(64, 64);
-            })
+            }).andThen(
+                    (a, b, c, d, e) -> {
+                        return e.child(new TextWidget(new StringKey("test")).color(0xff0000));
+                    }))
             .register();
 
     public static void init() {
