@@ -50,7 +50,7 @@ public class GTGuiTextures {
     public static final UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
             .imageSize(16, 16)
-            .adaptable(3)
+            .adaptable(4)
             .name(IDs.STANDARD_BACKGROUND)
             .canApplyTheme()
             .build();
@@ -338,7 +338,7 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_X = fullImage("textures/gui/widget/button_x_overlay.png", true);
     public static final UITexture BUTTON_CLEAR_GRID = fullImage("textures/gui/widget/button_clear_grid.png", false);
 
-    public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_cross.png");
+    public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
     public static final UITexture BUTTON_REDSTONE_ON = fullImage("textures/gui/widget/button_redstone_on.png");
     public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");

@@ -158,6 +158,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     // ******* Interaction *******//
     //////////////////////////////////////
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+        if (this instanceof IMuiCover muiCover) {
+            if (playerIn instanceof ServerPlayer serverPlayer) {
+                com.gregtechceu.gtceu.common.mui.factory.CoverUIFactory.INSTANCE.open(serverPlayer, muiCover);
+            }
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+        }
         if (this instanceof IUICover) {
             if (playerIn instanceof ServerPlayer serverPlayer) {
                 CoverUIFactory.INSTANCE.openUI(this, serverPlayer);

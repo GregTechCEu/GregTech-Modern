@@ -97,7 +97,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
         }
 
         return GTGuis.createPanel(this, rowLength * 18 + 14, 18 + 4 * 18 + 5 + 14 + 18 * rows)
-                .background(GTGuiTextures.BACKGROUND_STEEL)
+                .background(GTGuiTextures.BACKGROUND)
                 .child(IKey.lang(getBlockState().getBlock().getName()).asWidget().pos(5, 5))
                 .child(slots.top(18).left(7).right(7).height(rows * 18))
                 .bindPlayerInventory();
