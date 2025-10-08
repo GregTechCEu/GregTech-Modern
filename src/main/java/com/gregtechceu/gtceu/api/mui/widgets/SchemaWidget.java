@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.drawable.SchemaRenderer;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.VectorUtil;
 import com.gregtechceu.gtceu.utils.fakelevel.ISchema;
 
@@ -145,7 +145,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         public LayerButton(ISchema schema, int minLayer, int maxLayer) {
             this.minLayer = minLayer;
             this.maxLayer = maxLayer;
-            background(GuiTextures.MC_BACKGROUND);
+            background(GTGuiTextures.BACKGROUND);
             overlay(IKey.dynamic(() -> currentLayer > Integer.MIN_VALUE ?
                     Component.literal(Integer.toString(currentLayer)) : Component.literal("ALL")).scale(0.5f));
 

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.theme;
 
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
 import com.google.gson.JsonObject;
@@ -16,7 +16,7 @@ public class WidgetTextFieldTheme extends WidgetTheme {
     private final int hintColor;
 
     public WidgetTextFieldTheme(int markedColor, int hintColor) {
-        super(GuiTextures.DISPLAY_SMALL, null, Color.WHITE.main, Color.WHITE.main, false);
+        super(GTGuiTextures.MUI_DISPLAY_SMALL, null, Color.WHITE.main, Color.WHITE.main, false);
         this.markedColor = markedColor;
         this.hintColor = hintColor;
     }

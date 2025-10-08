@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IValueWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.widget.DraggableWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -122,7 +122,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         public Item(T value) {
             this.value = value;
             flex().widthRel(1f).height(18);
-            background(GuiTextures.BUTTON_CLEAN);
+            background(GTGuiTextures.BUTTON);
         }
 
         @Override

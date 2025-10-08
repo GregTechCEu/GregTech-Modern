@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.common.mui;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.TabTexture;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
 import org.jetbrains.annotations.NotNull;
@@ -326,19 +328,6 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    public static final UITexture MC_BUTTON = new UITexture.Builder()
-            .location("modularui", "gui/widgets/mc_button.png") // todo
-            .imageSize(16, 32)
-            .uv(0.0f, 0.0f, 1.0f, 0.5f)
-            .adaptable(2)
-            .build();
-
-    public static final UITexture MC_BUTTON_DISABLED = new UITexture.Builder()
-            .location("modularui", "gui/widgets/mc_button_disabled.png") // todo
-            .imageSize(16, 16)
-            .adaptable(2)
-            .build();
-
     // BUTTON OVERLAYS
 
     public static final UITexture BUTTON_ITEM_OUTPUT = fullImage("textures/gui/widget/button_item_output_overlay.png");
@@ -499,6 +488,155 @@ public class GTGuiTextures {
             "textures/gui/progress_bar/progress_bar_turbine_rotor_durability.png", 62, 14);
     public static final UITexture PROGRESS_BAR_FLUID_RIG_DEPLETION = progressBar(
             "textures/gui/progress_bar/progress_bar_fluid_rig_depletion.png", 190, 14);
+
+    // BASE MUI2
+
+    public static final UITexture GEAR = fullImage("textures/gui/icon/mui2/gear.png");
+    public static final UITexture MORE = fullImage("textures/gui/icon/mui2/more.png");
+    public static final UITexture SAVED = fullImage("textures/gui/icon/mui2/saved.png");
+    public static final UITexture SAVE = fullImage("textures/gui/icon/mui2/save.png");
+    public static final UITexture ADD = fullImage("textures/gui/icon/mui2/add.png");
+    public static final UITexture DUPE = fullImage("textures/gui/icon/mui2/dupe.png");
+    public static final UITexture REMOVE = fullImage("textures/gui/icon/mui2/remove.png");
+    public static final UITexture POSE = fullImage("textures/gui/icon/mui2/pose.png");
+    public static final UITexture FILTER = fullImage("textures/gui/icon/mui2/filter.png");
+    public static final UITexture MOVE_UP = fullImage("textures/gui/icon/mui2/move_up.png");
+    public static final UITexture MOVE_DOWN = fullImage("textures/gui/icon/mui2/move_down.png");
+    public static final UITexture LOCKED = fullImage("textures/gui/icon/mui2/locked.png");
+    public static final UITexture UNLOCKED = fullImage("textures/gui/icon/mui2/unlocked.png");
+    public static final UITexture COPY = fullImage("textures/gui/icon/mui2/copy.png");
+    public static final UITexture PASTE = fullImage("textures/gui/icon/mui2/paste.png");
+    public static final UITexture CUT = fullImage("textures/gui/icon/mui2/cut.png");
+    public static final UITexture REFRESH = fullImage("textures/gui/icon/mui2/refresh.png");
+
+    public static final UITexture DOWNLOAD = fullImage("textures/gui/icon/mui2/download.png");
+    public static final UITexture UPLOAD = fullImage("textures/gui/icon/mui2/upload.png");
+    public static final UITexture SERVER = fullImage("textures/gui/icon/mui2/server.png");
+    public static final UITexture FOLDER = fullImage("textures/gui/icon/mui2/folder.png");
+    public static final UITexture IMAGE = fullImage("textures/gui/icon/mui2/image.png");
+    public static final UITexture EDIT = fullImage("textures/gui/icon/mui2/edit.png");
+    public static final UITexture MATERIAL = fullImage("textures/gui/icon/mui2/material.png");
+    public static final UITexture CLOSE = fullImage("textures/gui/icon/mui2/close.png");
+    public static final UITexture LIMB = fullImage("textures/gui/icon/mui2/limb.png");
+    public static final UITexture CODE = fullImage("textures/gui/icon/mui2/code.png");
+    public static final UITexture MOVE_LEFT = fullImage("textures/gui/icon/mui2/move_left.png");
+    public static final UITexture MOVE_RIGHT = fullImage("textures/gui/icon/mui2/move_right.png");
+    public static final UITexture HELP = fullImage("textures/gui/icon/mui2/help.png");
+    public static final UITexture LEFT_HANDLE = fullImage("textures/gui/icon/mui2/left_handle.png");
+    public static final UITexture MAIN_HANDLE = fullImage("textures/gui/icon/mui2/main_handle.png");
+    public static final UITexture RIGHT_HANDLE = fullImage("textures/gui/icon/mui2/right_handle.png");
+    public static final UITexture REVERSE = fullImage("textures/gui/icon/mui2/reverse.png");
+    public static final UITexture BLOCK = fullImage("textures/gui/icon/mui2/block.png");
+
+    public static final UITexture FAVORITE = fullImage("textures/gui/icon/mui2/favorite.png");
+    public static final UITexture VISIBLE = fullImage("textures/gui/icon/mui2/visible.png");
+    public static final UITexture INVISIBLE = fullImage("textures/gui/icon/mui2/invisible.png");
+    public static final UITexture PLAY = fullImage("textures/gui/icon/mui2/play.png");
+    public static final UITexture PAUSE = fullImage("textures/gui/icon/mui2/pause.png");
+    public static final UITexture MAXIMIZE = fullImage("textures/gui/icon/mui2/maximize.png");
+    public static final UITexture MINIMIZE = fullImage("textures/gui/icon/mui2/minimize.png");
+    public static final UITexture STOP = fullImage("textures/gui/icon/mui2/stop.png");
+    public static final UITexture FULLSCREEN = fullImage("textures/gui/icon/mui2/fullscreen.png");
+    public static final UITexture ALL_DIRECTIONS = fullImage("textures/gui/icon/mui2/all_directions.png");
+    public static final UITexture SPHERE = fullImage("textures/gui/icon/mui2/sphere.png");
+    public static final UITexture SHIFT_TO = fullImage("textures/gui/icon/mui2/shift_to.png");
+    public static final UITexture SHIFT_FORWARD = fullImage("textures/gui/icon/mui2/shift_forward.png");
+    public static final UITexture SHIFT_BACKWARD = fullImage("textures/gui/icon/mui2/shift_backward.png");
+    public static final UITexture MOVE_TO = fullImage("textures/gui/icon/mui2/move_to.png");
+    public static final UITexture GRAPH = fullImage("textures/gui/icon/mui2/graph.png");
+
+    public static final UITexture WRENCH = fullImage("textures/gui/icon/mui2/wrench.png");
+    public static final UITexture EXCLAMATION = fullImage("textures/gui/icon/mui2/exclamation.png");
+    public static final UITexture LEFTLOAD = fullImage("textures/gui/icon/mui2/leftload.png");
+    public static final UITexture RIGHTLOAD = fullImage("textures/gui/icon/mui2/rightload.png");
+    public static final UITexture BUBBLE = fullImage("textures/gui/icon/mui2/bubble.png");
+    public static final UITexture FILE = fullImage("textures/gui/icon/mui2/file.png");
+    public static final UITexture PROCESSOR = fullImage("textures/gui/icon/mui2/processor.png");
+    public static final UITexture MAZE = fullImage("textures/gui/icon/mui2/maze.png");
+    public static final UITexture BOOKMARK = fullImage("textures/gui/icon/mui2/bookmark.png");
+    public static final UITexture SOUND = fullImage("textures/gui/icon/mui2/sound.png");
+    public static final UITexture SEARCH = fullImage("textures/gui/icon/mui2/search.png");
+
+    public static final UITexture CHECKBOARD = fullImage("textures/gui/icon/mui2/checkboard.png");
+    public static final UITexture DISABLED = fullImage("textures/gui/icon/mui2/disabled.png");
+    public static final UITexture CURSOR = fullImage("textures/gui/icon/mui2/cursor.png");
+
+    public static final UITexture MUI_LOGO = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/icon/modular_ui_logo.png")
+            .imageSize(603, 603)
+            .name("logo")
+            .build();
+
+    public static final UITexture MC_BUTTON = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
+            .imageSize(16, 32) // texture is 32x64, but this looks nicer
+            .uv(0f, 0f, 1f, 0.5f)
+            .adaptable(2).tiled()
+            .name("mc_button")
+            .build();
+
+    public static final UITexture MC_BUTTON_PRESSED = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
+            .imageSize(16, 32)
+            .uv(0f, 0.5f, 1f, 1f)
+            .adaptable(2).tiled()
+            .name("mc_button_pressed")
+            .build();
+
+    public static final UITexture MC_BUTTON_HOVERED = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
+            .imageSize(16, 32)
+            .uv(0f, 0f, 1f, 0.5f)
+            .adaptable(2).tiled()
+            .name("mc_button_hovered")
+            .build();
+
+    public static final UITexture MC_BUTTON_HOVERED_PRESSED = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
+            .imageSize(16, 32)
+            .uv(0f, 0.5f, 1f, 1f)
+            .adaptable(2).tiled()
+            .name("mc_button_hovered_pressed")
+            .build();
+
+    public static final UITexture MC_BUTTON_DISABLED = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_disabled.png")
+            .imageSize(16, 16)
+            .uv(0f, 0f, 1f, 0.5f)
+            .adaptable(1).tiled()
+            .name("mc_button_disabled")
+            .build();
+
+    public static final UITexture MUI_DISPLAY = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/base/mui_display.png")
+            .imageSize(143, 75)
+            .adaptable(2)
+            .name("display")
+            .build();
+
+    public static final UITexture MUI_DISPLAY_SMALL = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/base/mui_display_small.png")
+            .imageSize(18, 18)
+            .adaptable(1)
+            .name("display_small")
+            .build();
+
+    public static final UITexture CHECK_BOX = fullImage("textures/gui/icon/mui2/toggle_config.png");
+    public static final UITexture CROSS = fullImage("textures/gui/icon/mui2/cross.png");
+    public static final UITexture CROSS_TINY = fullImage("textures/gui/icon/mui2/cross_tiny.png");
+
+    public static final TabTexture TAB_TOP = TabTexture.of(fullImage("textures/gui/tab/tabs_top.png", true), GuiAxis.Y,
+            false,
+            28, 32, 4);
+    public static final TabTexture TAB_BOTTOM = TabTexture.of(fullImage("textures/gui/tab/tabs_bottom.png", true),
+            GuiAxis.Y,
+            true, 28, 32, 4);
+    public static final TabTexture TAB_LEFT = TabTexture.of(fullImage("textures/gui/tab/tabs_left.png", true),
+            GuiAxis.X, false,
+            32, 28, 4);
+    public static final TabTexture TAB_RIGHT = TabTexture.of(fullImage("textures/gui/tab/tabs_right.png", true),
+            GuiAxis.X, true,
+            32, 28, 4);
 
     // MISC
 

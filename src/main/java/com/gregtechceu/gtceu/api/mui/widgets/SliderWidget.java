@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Unit;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.util.Mth;
 
@@ -29,7 +29,7 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
 
     private IDoubleValue<?> doubleValue;
     private IDrawable stopperDrawable = new Rectangle().setColor(Color.withAlpha(Color.WHITE.main, 0.4f));
-    private IDrawable handleDrawable = GuiTextures.BUTTON_CLEAN;
+    private IDrawable handleDrawable = GTGuiTextures.BUTTON;
     private GuiAxis axis = GuiAxis.X;
     private DoubleList stopper;
     private int stopperWidth = 2, stopperHeight = 4;
