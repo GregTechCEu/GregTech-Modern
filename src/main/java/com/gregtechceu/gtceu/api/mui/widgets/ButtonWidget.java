@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public class ButtonWidget<W extends ButtonWidget<W>> extends SingleChildWidget<W
 
     public static ButtonWidget<?> panelCloseButton() {
         ButtonWidget<?> buttonWidget = new ButtonWidget<>();
-        return buttonWidget.overlay(GuiTextures.CROSS_TINY)
+        return buttonWidget.overlay(GTGuiTextures.CROSS_TINY)
                 .size(10).top(4).right(4)
                 .onMousePressed((mouseX, mouseY, button) -> {
                     if (button == 0 || button == 1) {

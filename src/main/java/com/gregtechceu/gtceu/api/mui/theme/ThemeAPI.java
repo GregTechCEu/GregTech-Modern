@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.mui.theme;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
 
@@ -32,22 +32,22 @@ public class ThemeAPI implements IThemeApi {
 
     private ThemeAPI() {
         registerWidgetTheme(Theme.PANEL,
-                new WidgetTheme(GuiTextures.MC_BACKGROUND, null, Color.WHITE.main, 0xFF404040, false),
+                new WidgetTheme(GTGuiTextures.BACKGROUND, null, Color.WHITE.main, 0xFF404040, false),
                 WidgetTheme::new);
-        registerWidgetTheme(Theme.BUTTON, new WidgetTheme(GuiTextures.MC_BUTTON, GuiTextures.MC_BUTTON_HOVERED,
+        registerWidgetTheme(Theme.BUTTON, new WidgetTheme(GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_HOVERED,
                 Color.WHITE.main, Color.WHITE.main, true), WidgetTheme::new);
         registerWidgetTheme(Theme.ITEM_SLOT,
-                new WidgetSlotTheme(GuiTextures.SLOT_ITEM, Color.withAlpha(Color.WHITE.main, 0x60)),
+                new WidgetSlotTheme(GTGuiTextures.SLOT, Color.withAlpha(Color.WHITE.main, 0x60)),
                 WidgetSlotTheme::new);
         registerWidgetTheme(Theme.FLUID_SLOT,
-                new WidgetSlotTheme(GuiTextures.SLOT_FLUID, Color.withAlpha(Color.WHITE.main, 0x60)),
+                new WidgetSlotTheme(GTGuiTextures.FLUID_SLOT, Color.withAlpha(Color.WHITE.main, 0x60)),
                 WidgetSlotTheme::new);
         registerWidgetTheme(Theme.TEXT_FIELD, new WidgetTextFieldTheme(0xFF2F72A8, 0xFF5F5F5F),
                 (parent, json, fallback) -> new WidgetTextFieldTheme(parent, fallback, json));
         registerWidgetTheme(Theme.TOGGLE_BUTTON,
-                new WidgetThemeSelectable(GuiTextures.MC_BUTTON, GuiTextures.MC_BUTTON_HOVERED, Color.WHITE.main,
+                new WidgetThemeSelectable(GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_HOVERED, Color.WHITE.main,
                         Color.WHITE.main, true,
-                        GuiTextures.MC_BUTTON_DISABLED, IDrawable.NONE, Color.WHITE.main, Color.WHITE.main, true),
+                        GTGuiTextures.MC_BUTTON_DISABLED, IDrawable.NONE, Color.WHITE.main, Color.WHITE.main, true),
                 WidgetThemeSelectable::new);
     }
 

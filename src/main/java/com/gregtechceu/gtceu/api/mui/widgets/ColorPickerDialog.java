@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.api.mui.drawable.HueBar;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import java.util.function.Consumer;
 
@@ -42,7 +42,7 @@ public class ColorPickerDialog extends Dialog<Integer> {
         this.alpha = Color.getAlpha(startColor);
         updateColor(startColor);
         this.controlAlpha = controlAlpha;
-        size(140, controlAlpha ? 106 : 94).background(GuiTextures.MC_BACKGROUND);
+        size(140, controlAlpha ? 106 : 94).background(GTGuiTextures.BACKGROUND);
         IWidget alphaSlider = controlAlpha ? new Row()
                 .widthRel(1f).height(12)
                 .child(IKey.str("A: ").asWidget().heightRel(1f))
@@ -81,7 +81,7 @@ public class ColorPickerDialog extends Dialog<Integer> {
                                         updateColor(Integer.decode(val));
                                     } catch (NumberFormatException ignored) {}
                                 })))
-                        .child(this.preview.asWidget().background(GuiTextures.CHECKBOARD).size(10, 10).margin(1)))
+                        .child(this.preview.asWidget().background(GTGuiTextures.CHECKBOARD).size(10, 10).margin(1)))
                 .child(new PagedWidget<>()
                         .left(5).right(5)
                         .expanded()
