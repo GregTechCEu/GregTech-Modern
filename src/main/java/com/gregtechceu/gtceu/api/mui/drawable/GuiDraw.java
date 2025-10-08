@@ -375,7 +375,7 @@ public class GuiDraw {
 
     public static void drawFluidTexture(GuiGraphics graphics, FluidStack content,
                                         float x0, float y0, float width, float height, float z) {
-        if (content == null) {
+        if (content == null || content.isEmpty()) {
             return;
         }
         Fluid fluid = content.getFluid();

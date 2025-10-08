@@ -142,7 +142,7 @@ public class FluidSlot extends Widget<FluidSlot>
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
         IFluidTank fluidTank = getFluidTank();
         FluidStack content = this.syncHandler.getValue();
-        if (content != null) {
+        if (content != null && !content.isEmpty()) {
             float y = this.contentOffsetY;
             float height = getArea().height - y * 2;
             if (!this.alwaysShowFull) {
