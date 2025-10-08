@@ -338,7 +338,7 @@ public class ClientScreenHandler {
 
     public static void dragSlot(double mouseX, double mouseY, int button, double dragX, double dragY) {
         ModularGuiContext ctx = currentScreen.getContext();
-        getMCScreen().mouseDragged(ctx.getAbsMouseX(), ctx.getAbsMouseY(), button, dragX, dragY);
+        getMCScreen().mouseDragged(ctx.getMouseX(), ctx.getMouseY(), button, dragX, dragY);
     }
 
     public static void clickSlot(ModularScreen ms, Slot slot) {
@@ -352,7 +352,7 @@ public class ClientScreenHandler {
                 acc.setChildren(Collections.emptyList());
                 // set clicked slot to make sure the container clicks the desired slot
                 clickableScreen.gtceu$setClickedSlot(slot);
-                screen.mouseClicked(ctx.getAbsMouseX(), ctx.getAbsMouseY(), ctx.getMouseButton());
+                screen.mouseClicked(ctx.getMouseX(), ctx.getMouseY(), ctx.getMouseButton());
             } finally {
                 // undo modifications
                 clickableScreen.gtceu$setClickedSlot(null);

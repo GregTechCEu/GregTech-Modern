@@ -55,8 +55,8 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
-        this.lastMouseX = getContext().getAbsMouseX();
-        this.lastMouseY = getContext().getAbsMouseY();
+        this.lastMouseX = getContext().getMouseX();
+        this.lastMouseY = getContext().getMouseY();
         return Result.SUCCESS;
     }
 

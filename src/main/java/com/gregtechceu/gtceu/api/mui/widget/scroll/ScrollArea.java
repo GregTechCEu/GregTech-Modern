@@ -60,7 +60,7 @@ public class ScrollArea extends Area {
 
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(GuiContext context) {
-        return this.mouseClicked(context.getAbsMouseX(), context.getAbsMouseY());
+        return this.mouseClicked(context.getMouseX(), context.getMouseY());
     }
 
     /**
@@ -78,7 +78,7 @@ public class ScrollArea extends Area {
 
     @OnlyIn(Dist.CLIENT)
     public boolean mouseScroll(GuiContext context) {
-        return this.mouseScroll(context.getAbsMouseX(), context.getAbsMouseY(), context.getMouseScrollDelta(),
+        return this.mouseScroll(context.getMouseX(), context.getMouseY(), context.getMouseScrollDelta(),
                 Screen.hasShiftDown());
     }
 
@@ -123,7 +123,7 @@ public class ScrollArea extends Area {
 
     @OnlyIn(Dist.CLIENT)
     public void mouseReleased(GuiContext context) {
-        this.mouseReleased(context.getAbsMouseX(), context.getAbsMouseY());
+        this.mouseReleased(context.getMouseX(), context.getMouseY());
     }
 
     /**

@@ -130,8 +130,8 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
         int p = this.axis.isHorizontal() ?
-                getContext().unTransformX(getContext().getAbsMouseX(), getContext().getAbsMouseY()) :
-                getContext().unTransformY(getContext().getAbsMouseX(), getContext().getAbsMouseY());
+                getContext().unTransformX(getContext().getMouseX(), getContext().getMouseY()) :
+                getContext().unTransformY(getContext().getMouseX(), getContext().getMouseY());
         setValue(posToValue(p), true);
         this.dragging = true;
         return Result.SUCCESS;
