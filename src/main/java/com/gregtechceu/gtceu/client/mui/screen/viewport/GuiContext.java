@@ -52,6 +52,8 @@ public class GuiContext extends GuiViewportStack {
     private int scanCode;
     @Getter
     private int modifiers;
+    @Getter
+    private int codePoint;
 
     /* Render states */
     @Getter
@@ -100,6 +102,12 @@ public class GuiContext extends GuiViewportStack {
     public void updateLatestKey(int keyCode, int scanCode, int modifiers) {
         this.keyCode = keyCode;
         this.scanCode = scanCode;
+        this.modifiers = modifiers;
+    }
+
+    @ApiStatus.Internal
+    public void updateLatestTypedChar(int codePoint, int modifiers) {
+        this.codePoint = codePoint;
         this.modifiers = modifiers;
     }
 
