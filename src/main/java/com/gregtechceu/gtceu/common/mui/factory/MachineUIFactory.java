@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
-import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 
 import net.minecraft.core.BlockPos;
@@ -45,13 +44,6 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
         Objects.requireNonNull(pos);
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, (ServerPlayer) player);
-    }
-
-    public void open(ServerPlayer player, BlockPos pos, PanelFactory factory) {
-        Objects.requireNonNull(player);
-        Objects.requireNonNull(factory);
-        PosGuiData data = new PosGuiData(player, pos);
-        GuiManager.open(this, data, player);
     }
 
     @Override

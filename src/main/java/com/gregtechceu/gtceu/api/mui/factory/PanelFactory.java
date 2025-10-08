@@ -32,7 +32,7 @@ public interface PanelFactory extends IUIHolder<PosGuiData> {
     default InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         if (this.shouldOpenUI(player, hand, hit)) {
             if (player instanceof ServerPlayer serverPlayer) {
-                MachineUIFactory.INSTANCE.open(serverPlayer, hit.getBlockPos(), this);
+                MachineUIFactory.INSTANCE.open(serverPlayer, hit.getBlockPos());
             }
             return InteractionResult.sidedSuccess(player.level().isClientSide);
         } else {
