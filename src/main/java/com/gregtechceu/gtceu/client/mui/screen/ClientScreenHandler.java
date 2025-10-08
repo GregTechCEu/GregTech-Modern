@@ -364,7 +364,7 @@ public class ClientScreenHandler {
     public static void releaseSlot() {
         if (hasScreen() && getMCScreen() != null) {
             ModularGuiContext ctx = currentScreen.getContext();
-            getMCScreen().mouseReleased(ctx.getAbsMouseX(), ctx.getAbsMouseY(), ctx.getMouseButton());
+            getMCScreen().mouseReleased(ctx.getMouseX(), ctx.getMouseY(), ctx.getMouseButton());
         }
     }
 
