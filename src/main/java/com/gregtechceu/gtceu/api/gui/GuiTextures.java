@@ -407,8 +407,6 @@ public class GuiTextures {
             "gtceu:textures/gui/progress_bar/progress_bar_boiler_heat.png");
     public static final ResourceTexture PROGRESS_BAR_CANNER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_canner.png");
-    public static final ResourceTexture PROGRESS_BAR_CIRCUIT = new ResourceTexture(
-            "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT_ASSEMBLER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_COKE_OVEN = new ResourceTexture(
