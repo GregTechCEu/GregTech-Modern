@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.mui.drawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import net.minecraft.world.entity.Entity;
+
 import net.minecraft.world.entity.LivingEntity;
 
 public class EntityDrawable implements IDrawable {
