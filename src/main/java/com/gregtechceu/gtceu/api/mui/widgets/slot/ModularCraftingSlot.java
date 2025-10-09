@@ -82,6 +82,13 @@ public class ModularCraftingSlot extends ModularSlot {
     }
 
     @Override
+    public void onCraftShiftClick(Player playerIn, ItemStack itemStack) {
+        if (!itemStack.isEmpty()) {
+            playerIn.drop(itemStack, false);
+        }
+    }
+
+    @Override
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(player);
@@ -108,6 +115,7 @@ public class ModularCraftingSlot extends ModularSlot {
                 }
             }
         }
+        craftMatrix.notifyContainer();
     }
 
     public void updateResult(ItemStack stack) {

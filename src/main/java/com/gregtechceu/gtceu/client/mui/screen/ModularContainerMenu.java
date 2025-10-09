@@ -284,7 +284,11 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     return;
                 }
                 // simpler code, but effectively no difference
-                quickMoveStack(player, slotId);
+                ItemStack remainder;
+                do {
+                    remainder = quickMoveStack(player, slotId);
+                    returnable = remainder.copy();
+                } while (!remainder.isEmpty() && ItemHandlerHelper.canItemStacksStack(fromSlot.getItem(), remainder));
             } else {
                 Slot clickedSlot = getSlot(slotId);
 
@@ -406,6 +410,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         if (!slot.isPhantom()) {
             ItemStack stack = slot.getItem();
             if (!stack.isEmpty()) {
+                ItemStack copy = stack.copy();
                 stack = stack.copy();
                 int base = 0;
                 if (stack.getCount() > stack.getMaxStackSize()) {
@@ -413,9 +418,13 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     stack.setCount(stack.getMaxStackSize());
                 }
                 ItemStack remainder = transferItem(slot, stack.copy());
+                if (ItemStack.isSameItemSameTags(remainder, stack)) return ItemStack.EMPTY;
                 if (base == 0 && remainder.isEmpty()) stack = ItemStack.EMPTY;
                 else stack.setCount(base + remainder.getCount());
                 slot.set(stack);
+                slot.onQuickCraft(remainder, copy);
+                slot.onTake(playerIn, remainder);
+                slot.onCraftShiftClick(playerIn, remainder);
                 return ItemStack.EMPTY;
             }
         }

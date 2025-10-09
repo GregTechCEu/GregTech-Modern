@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.utils.EqualityTest;
+import com.gregtechceu.gtceu.utils.ICopy;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufDeserializer;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufSerializer;
@@ -21,43 +22,74 @@ public class GenericSyncValue<T> extends ValueSyncHandler<T> {
     private final IByteBufDeserializer<T> deserializer;
     private final IByteBufSerializer<T> serializer;
     private final EqualityTest<T> equals;
+    private final ICopy<T> copy;
     private T cache;
 
     public GenericSyncValue(@NotNull Supplier<T> getter,
                             @Nullable Consumer<T> setter,
                             @NotNull IByteBufAdapter<T> adapter) {
-        this(getter, setter, adapter, adapter, adapter);
+        this(getter, setter, adapter, adapter, adapter, null);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @Nullable Consumer<T> setter,
+                            @NotNull IByteBufAdapter<T> adapter,
+                            @Nullable ICopy<T> copy) {
+        this(getter, setter, adapter, adapter, adapter, copy);
     }
 
     public GenericSyncValue(@NotNull Supplier<T> getter,
                             @Nullable Consumer<T> setter,
                             @NotNull IByteBufDeserializer<T> deserializer,
                             @NotNull IByteBufSerializer<T> serializer) {
-        this(getter, setter, deserializer, serializer, null);
-    }
-
-    public GenericSyncValue(@NotNull Supplier<T> getter,
-                            @NotNull IByteBufAdapter<T> adapter) {
-        this(getter, null, adapter, adapter, adapter);
-    }
-
-    public GenericSyncValue(@NotNull Supplier<T> getter,
-                            @NotNull IByteBufDeserializer<T> deserializer,
-                            @NotNull IByteBufSerializer<T> serializer) {
-        this(getter, null, deserializer, serializer, null);
+        this(getter, setter, deserializer, serializer, null, null);
     }
 
     public GenericSyncValue(@NotNull Supplier<T> getter,
                             @Nullable Consumer<T> setter,
                             @NotNull IByteBufDeserializer<T> deserializer,
                             @NotNull IByteBufSerializer<T> serializer,
-                            @Nullable EqualityTest<T> equals) {
+                            @Nullable ICopy<T> copy) {
+        this(getter, setter, deserializer, serializer, null, copy);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @NotNull IByteBufAdapter<T> adapter) {
+        this(getter, null, adapter, adapter, adapter, null);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @NotNull IByteBufAdapter<T> adapter,
+                            @Nullable ICopy<T> copy) {
+        this(getter, null, adapter, adapter, adapter, copy);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @NotNull IByteBufDeserializer<T> deserializer,
+                            @NotNull IByteBufSerializer<T> serializer) {
+        this(getter, null, deserializer, serializer, null, null);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @NotNull IByteBufDeserializer<T> deserializer,
+                            @NotNull IByteBufSerializer<T> serializer,
+                            @Nullable ICopy<T> copy) {
+        this(getter, null, deserializer, serializer, null, copy);
+    }
+
+    public GenericSyncValue(@NotNull Supplier<T> getter,
+                            @Nullable Consumer<T> setter,
+                            @NotNull IByteBufDeserializer<T> deserializer,
+                            @NotNull IByteBufSerializer<T> serializer,
+                            @Nullable EqualityTest<T> equals,
+                            @Nullable ICopy<T> copy) {
         this.getter = Objects.requireNonNull(getter);
         this.cache = getter.get();
         this.setter = setter;
         this.deserializer = Objects.requireNonNull(deserializer);
         this.serializer = Objects.requireNonNull(serializer);
         this.equals = equals == null ? Objects::equals : EqualityTest.wrapNullSafe(equals);
+        this.copy = copy == null ? ICopy.ofSerializer(serializer, deserializer) : copy;
     }
 
     @Override
@@ -67,7 +99,7 @@ public class GenericSyncValue<T> extends ValueSyncHandler<T> {
 
     @Override
     public void setValue(T value, boolean setSource, boolean sync) {
-        this.cache = value;
+        this.cache = this.copy.createDeepCopy(value);
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }

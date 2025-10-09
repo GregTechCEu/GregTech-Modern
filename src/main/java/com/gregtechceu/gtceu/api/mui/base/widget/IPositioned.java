@@ -382,6 +382,14 @@ public interface IPositioned<W extends IPositioned<W>> {
         return alignX(alignment).alignY(alignment);
     }
 
+    default W horizontalCenter() {
+        return alignX(Alignment.CENTER);
+    }
+
+    default W verticalCenter() {
+        return alignY(Alignment.CENTER);
+    }
+
     default W center() {
         return align(Alignment.Center);
     }

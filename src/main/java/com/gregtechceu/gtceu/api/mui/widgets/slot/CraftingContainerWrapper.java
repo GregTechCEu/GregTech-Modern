@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -24,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class CraftingContainerWrapper extends TransientCraftingContainer {
 
     @Getter
-    private final IItemHandler delegate;
+    private final IItemHandlerModifiable delegate;
     private final int size;
     @Getter
     private final int startIndex;
@@ -43,7 +42,6 @@ public class CraftingContainerWrapper extends TransientCraftingContainer {
         for (int i = 0; i < size - 1; i++) {
             ItemStack stack = this.delegate.getStackInSlot(i + this.startIndex);
             updateSnapshot(i, stack);
-            getBackingList().set(i, stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
         }
     }
 

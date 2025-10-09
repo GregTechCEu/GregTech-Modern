@@ -25,6 +25,10 @@ public class Alignment {
     public static final Alignment BottomCenter = new Alignment(0.5f, 1, "BottomCenter");
     public static final Alignment BottomRight = new Alignment(1, 1, "BottomRight");
 
+    public static final Alignment START = TopLeft;
+    public static final Alignment CENTER = Center;
+    public static final Alignment END = BottomRight;
+
     public static final Alignment[] ALL = {
             TopLeft, TopCenter, TopRight,
             CenterLeft, Center, CenterRight,
