@@ -48,6 +48,8 @@ public class TextRenderer {
     @Getter
     protected float lastWidth = 0, lastHeight = 0;
     protected float lastX = 0, lastY = 0;
+    @Setter
+    protected boolean hardWrapOnBorder = true;
     protected boolean scrollOnOverflow = false;
 
     public void setAlignment(Alignment alignment, float maxWidth) {
@@ -70,7 +72,7 @@ public class TextRenderer {
     }
 
     public void draw(GuiGraphics graphics, Component text) {
-        if (this.maxWidth <= 0 && !text.getString().contains("\n'")) {
+        if ((this.maxWidth <= 0 || !this.hardWrapOnBorder) && !text.getString().contains("\n'")) {
             drawSimple(graphics, text);
         } else {
             draw(graphics, Collections.singletonList(text));
@@ -117,8 +119,12 @@ public class TextRenderer {
     public List<Line> measureLines(List<Component> lines) {
         List<Line> measuredLines = new ArrayList<>();
         for (Component line : lines) {
-            for (FormattedCharSequence subLine : wrapLine(line)) {
-                measuredLines.add(line(subLine));
+            if(this.hardWrapOnBorder) {
+                for (FormattedCharSequence subLine : wrapLine(line)) {
+                    measuredLines.add(line(subLine));
+                }
+            } else {
+                measuredLines.add(line(line.getVisualOrderText()));
             }
         }
         return measuredLines;

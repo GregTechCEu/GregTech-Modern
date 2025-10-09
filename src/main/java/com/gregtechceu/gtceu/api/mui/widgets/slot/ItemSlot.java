@@ -237,32 +237,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
                 if (amount < 0) {
                     amount = slotStack.getCount();
                 }
-                // render the amount overlay
-                if (amount > 1 || format != null) {
-                    String amountText = FormattingUtil.formatNumberReadable(amount, false);
-                    if (format != null) {
-                        amountText = format + amountText;
-                    }
-                    float scale = 1f;
-                    if (amountText.length() == 3) {
-                        scale = 0.8f;
-                    } else if (amountText.length() == 4) {
-                        scale = 0.6f;
-                    } else if (amountText.length() > 4) {
-                        scale = 0.5f;
-                    }
-                    textRenderer.setShadow(true);
-                    textRenderer.setScale(scale);
-                    textRenderer.setColor(Color.WHITE.main);
-                    textRenderer.setAlignment(Alignment.BottomRight, getArea().width - 1, getArea().height - 1);
-                    textRenderer.setPos(1, 1);
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.disableBlend();
-                    context.getGraphics().pose().translate(0, 0, 100 + z);
-                    textRenderer.draw(context.getGraphics(), amountText);
-                    RenderSystem.enableDepthTest();
-                    RenderSystem.enableBlend();
-                }
+                GuiDraw.drawStandardSlotAmountText(context, amount, format, getArea(), z);
 
                 int cachedCount = slotStack.getCount();
                 slotStack.setCount(1); // required to not render the amount overlay

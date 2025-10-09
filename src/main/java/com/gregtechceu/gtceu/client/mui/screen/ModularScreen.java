@@ -223,22 +223,43 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         }
     }
 
+    /**
+     * Called when another screen opens, but this screen is still open or this screen an overlay is and the gui screen parent closes.
+     */
+    @ApiStatus.Internal
     public final void onCloseParent() {
-        if (this.panelManager.closeAll()) {
-            onClose();
-        }
+        this.panelManager.closeAll();
     }
 
+    /**
+     * Called after the screen is opened, but before the screen and all widgets are resized.
+     */
     @ApiStatus.OverrideOnly
     public void onOpen() {}
 
+    /**
+     * Called after the last panel (always the main panel) closes which closes the screen.
+     */
     @ApiStatus.OverrideOnly
     public void onClose() {}
 
+    /**
+     * Gently closes all open panels and this screen. If NeverEnoughAnimations is installed and open/close is enabled this will play the
+     * animation for all open panels and closes the screen after the animation is finished.
+     */
     public void close() {
         close(false);
     }
 
+    /**
+     * Closes all open panels and this screen. If {@code force} is true, the screen will immediately close and skip all lifecycle steps to
+     * properly close panels and this screen. <b>This should be avoided in most situations</b>.
+     * If {@code force} is false, the panels are gently closed. If NeverEnoughAnimations is installed and open/close is enabled this will
+     * play the animation for all open panels and closes the screen after the animation is finished.
+     *
+     * @param force true if the screen should be closed immediately without going through remaining lifecycle steps.
+     */
+    @ApiStatus.Internal
     public void close(boolean force) {
         if (isActive()) {
             if (force) {

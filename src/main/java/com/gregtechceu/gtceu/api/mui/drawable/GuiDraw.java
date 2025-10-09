@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.drawable;
 
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -33,6 +37,8 @@ import org.joml.Vector3d;
 import java.util.List;
 
 public class GuiDraw {
+
+    private static final TextRenderer textRenderer = new TextRenderer();
 
     public static final double TWO_PI = Math.PI * 2;
     public static final double HALF_PI = Math.PI / 2;
@@ -389,6 +395,39 @@ public class GuiDraw {
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(),
                 sprite.contents().width(), sprite.contents().height(), z);
         graphics.setColor(1f, 1f, 1f, 1f);
+    }
+
+    public static void drawStandardSlotAmountText(ModularGuiContext context, int amount, String format, Area area, float z) {
+        drawAmountText(context, amount, format, 1, 1, area.width - 1, area.height - 1, Alignment.BottomRight, z);
+    }
+
+    public static void drawAmountText(ModularGuiContext context, int amount, String format, int x, int y, int width, int height, Alignment alignment, float z) {
+        // render the amount overlay
+        if (amount > 1 || format != null) {
+            String amountText = FormattingUtil.formatNumberReadable(amount, false);
+            if (format != null) {
+                amountText = format + amountText;
+            }
+            float scale = 1f;
+            if (amountText.length() == 3) {
+                scale = 0.8f;
+            } else if (amountText.length() == 4) {
+                scale = 0.6f;
+            } else if (amountText.length() > 4) {
+                scale = 0.5f;
+            }
+            textRenderer.setShadow(true);
+            textRenderer.setScale(scale);
+            textRenderer.setColor(Color.WHITE.main);
+            textRenderer.setAlignment(alignment, width, height);
+            textRenderer.setPos(x, y);
+            RenderSystem.disableDepthTest();
+            RenderSystem.disableBlend();
+            context.getGraphics().pose().translate(0, 0, 100 + z);
+            textRenderer.draw(context.getGraphics(), amountText);
+            RenderSystem.enableDepthTest();
+            RenderSystem.enableBlend();
+        }
     }
 
     public static void drawSprite(Matrix4f pose, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
