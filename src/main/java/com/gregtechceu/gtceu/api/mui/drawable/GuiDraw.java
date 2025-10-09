@@ -4,15 +4,21 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -28,6 +34,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.List;
@@ -361,6 +368,27 @@ public class GuiDraw {
         }
 
         tesselator.end();
+    }
+
+    public static void drawLivingEntity(GuiGraphics graphics, LivingEntity entity, int x, int y, float width, float height, int z) {
+        int scale = 16;
+        Quaternionf pose = new Quaternionf(0.707f, 0.0f, -0.707f, 0.0f);
+        graphics.pose().pushPose();
+        graphics.pose().translate((double)x + width / 2, (double)y + height, 50.0D);
+        graphics.pose().mulPoseMatrix((new Matrix4f()).scaling((float)width/2, (float)height/2, (float)(-scale)));
+        graphics.pose().mulPose(pose);
+        Lighting.setupForEntityInInventory();
+
+        EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
+        erd.setRenderShadow(false);
+
+        RenderSystem.runAsFancy(() -> {
+            erd.render(entity, 0.0d, 0.0d, 0.0d, 0.0f, 1.0f, graphics.pose(), graphics.bufferSource(), LightTexture.FULL_BRIGHT);
+        });
+        graphics.flush();
+        erd.setRenderShadow(true);
+        graphics.pose().popPose();
+        Lighting.setupFor3DItems();
     }
 
     public static void drawItem(GuiGraphics graphics, ItemStack item, int x, int y, float width, float height, int z) {
