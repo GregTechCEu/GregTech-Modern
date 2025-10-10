@@ -14,6 +14,7 @@ public class AnimatorManager {
     private static final List<IAnimator> animators = new ArrayList<>(16);
     private static final List<IAnimator> queuedAnimators = new ArrayList<>(8);
     private static long lastTime = 0;
+    private static boolean waitClearAnimators = false;
 
     static void startAnimation(IAnimator animator) {
         if (!animators.contains(animator) && !queuedAnimators.contains(animator)) {
@@ -31,6 +32,7 @@ public class AnimatorManager {
     public void onDraw(ScreenEvent.Render.Pre event) {
         long time = Util.getMillis();
         int elapsedTime = IAnimator.getTimeDiff(lastTime, time);
+        checkClearAnimators();
         if (lastTime > 0 && !animators.isEmpty()) {
             animators.removeIf(animator -> {
                 if (animator == null) return true;
@@ -42,14 +44,21 @@ public class AnimatorManager {
         lastTime = time;
         animators.addAll(queuedAnimators);
         queuedAnimators.clear();
+        checkClearAnimators();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onDraw(ScreenEvent.Opening event) {
-        if (event.getNewScreen() == null) {
-            // stop and yeet all animators on gui close
+    private static void checkClearAnimators() {
+        if (waitClearAnimators) {
+            waitClearAnimators = false;
             animators.forEach(iAnimator -> iAnimator.stop(false));
             animators.clear();
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onClose(ScreenEvent.Closing event) {
+        // stop and yeet all animators on gui close
+        // we can't clear now otherwise we might get a CME because of multithreading
+        waitClearAnimators = true;
     }
 }

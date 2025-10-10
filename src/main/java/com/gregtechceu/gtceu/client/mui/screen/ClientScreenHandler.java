@@ -76,13 +76,7 @@ public class ClientScreenHandler {
         Screen newGui = event.getNewScreen();
         defaultContext.reset();
 
-        if (lastMui != null && newGui == null) {
-            if (lastMui.getScreen().getPanelManager().isOpen()) {
-                lastMui.getScreen().getPanelManager().closeAll();
-            }
-            lastMui.getScreen().getPanelManager().dispose();
-            lastMui = null;
-        } else if (newGui instanceof IMuiScreen screenWrapper) {
+        if (newGui instanceof IMuiScreen screenWrapper) {
             if (lastMui == null) {
                 lastMui = screenWrapper;
             } else if (lastMui == newGui) {
@@ -118,6 +112,13 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onCloseScreen(ScreenEvent.Closing event) {
+        if (lastMui != null) {
+            if (lastMui.getScreen().getPanelManager().isOpen()) {
+                lastMui.getScreen().getPanelManager().closeAll();
+            }
+            lastMui.getScreen().getPanelManager().dispose();
+            lastMui = null;
+        }
         if (hasScreen() && !currentScreen.getPanelManager().isReopened()) {
             currentScreen.onCloseParent();
             currentScreen.getPanelManager().dispose();
