@@ -1,7 +1,12 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Accessors(fluent = true, chain = true)
 public class Wait extends BaseAnimator {
 
+    @Setter
     private int duration;
     private int progress = 0;
 
@@ -32,10 +37,5 @@ public class Wait extends BaseAnimator {
     @Override
     public boolean hasProgressed() {
         return progress > 0 && isAnimating();
-    }
-
-    public Wait duration(int duration) {
-        this.duration = duration;
-        return this;
     }
 }

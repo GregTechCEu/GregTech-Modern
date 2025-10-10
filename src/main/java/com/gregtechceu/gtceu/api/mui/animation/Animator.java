@@ -3,14 +3,20 @@ package com.gregtechceu.gtceu.api.mui.animation;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 
+import lombok.Getter;
+
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
 public class Animator extends BaseAnimator implements IAnimator {
 
+    @Getter
     private float min = 0.0f;
+    @Getter
     private float max = 1.0f;
+    @Getter
     private int duration = 250;
+    @Getter
     private IInterpolation curve = Interpolation.LINEAR;
     private boolean reverseOnFinish = false;
     private int repeats = 0;
@@ -89,22 +95,6 @@ public class Animator extends BaseAnimator implements IAnimator {
 
     public boolean isAtStart() {
         return this.progress <= 0;
-    }
-
-    public float getMin() {
-        return min;
-    }
-
-    public float getMax() {
-        return max;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public IInterpolation getCurve() {
-        return curve;
     }
 
     protected float getRawValue() {
