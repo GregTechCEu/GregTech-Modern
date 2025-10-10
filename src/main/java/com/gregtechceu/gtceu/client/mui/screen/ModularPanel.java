@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.mui.screen;
 
+import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
@@ -9,7 +10,6 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
-import com.gregtechceu.gtceu.api.mui.utils.Animator;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
@@ -115,10 +115,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     /**
      * If this panel is open it will be closed.
      * If animating is enabled and an animation is already playing this method will do nothing.
-     *
-     * @param animate true if the closing animation should play first.
      */
-    public void closeIfOpen(boolean animate) {
+    public void closeIfOpen() {
         if (!isOpen()) return;
         closeSubPanels();
         if (!animate || !shouldAnimate()) {
@@ -130,7 +128,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
                 // if this is the main panel, start closing animation for all panels
                 for (ModularPanel panel : getScreen().getPanelManager().getOpenPanels()) {
                     if (!panel.isMainPanel()) {
-                        panel.closeIfOpen(true);
+                        panel.closeIfOpen();
                     }
                 }
             }
@@ -145,7 +143,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     public void animateClose() {
-        closeIfOpen(true);
+        closeIfOpen();
     }
 
     @Override

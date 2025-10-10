@@ -1,16 +1,21 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IValueWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.DraggableWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +28,9 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     private Consumer<List<T>> onChange;
     private Consumer<Item<T>> onRemove;
     private int timeSinceLastMove = 0;
+    private boolean scheduleAnimation = false;
+    private final ObjectList<Area> widgetAreaSnapshots = new ObjectArrayList<>();
+    private final ObjectList<Animator> animators = new ObjectArrayList<>();;
 
     public SortableListWidget() {
         super(Item::getWidgetValue);
@@ -42,6 +50,39 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     }
 
     @Override
+    public void beforeResize(boolean onOpen) {
+        super.beforeResize(onOpen);
+        if (this.scheduleAnimation) {
+            this.widgetAreaSnapshots.clear();
+            this.widgetAreaSnapshots.size(getTypeChildren().size());
+            this.animators.size(getTypeChildren().size());
+            @UnmodifiableView @NotNull List<Item<T>> typeChildren = getTypeChildren();
+            for (int i = 0; i < typeChildren.size(); i++) {
+                Item<T> item = typeChildren.get(i);
+                this.widgetAreaSnapshots.set(i, item.getArea().copyOrImmutable());
+            }
+        }
+    }
+
+    @Override
+    public void postResize() {
+        if (this.scheduleAnimation && !this.widgetAreaSnapshots.isEmpty()) {
+            @UnmodifiableView @NotNull List<Item<T>> typeChildren = getTypeChildren();
+            for (int i = 0; i < typeChildren.size(); i++) {
+                Item<T> item = typeChildren.get(i);
+                Animator current = this.animators.get(i);
+                if ((current != null && current.isAnimating()) || item.getArea().shouldAnimate(this.widgetAreaSnapshots.get(i))) {
+                    if (current != null) current.stop(true);
+                    Animator animator = item.getArea().animator(this.widgetAreaSnapshots.get(i)).duration(150);
+                    this.animators.set(i, animator);
+                    animator.animate(true);
+                }
+            }
+        }
+        this.scheduleAnimation = false;
+    }
+
+    @Override
     public int getDefaultWidth() {
         return 80;
     }
@@ -56,7 +97,9 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         getChildren().add(to, child);
         assignIndexes();
         if (isValid()) {
-            WidgetTree.resize(this);
+            assignIndexes();
+            this.scheduleAnimation = true;
+            scheduleResize();
         }
         if (this.onChange != null) {
             this.onChange.accept(getValues());
@@ -68,11 +111,10 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     public boolean remove(int index) {
         Item<T> widget = getTypeChildren().remove(index);
         if (widget != null) {
-            onChildRemove(widget);
+            widget.dispose();
             assignIndexes();
-            if (isValid()) {
-                WidgetTree.resize(this);
-            }
+            this.scheduleAnimation = true;
+            onChildRemove(widget);
             if (this.onChange != null) {
                 this.onChange.accept(getValues());
             }
@@ -88,8 +130,9 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     public void onChildAdd(Item<T> child) {
         if (isValid()) {
             assignIndexes();
+            this.scheduleAnimation = true;
             if (this.onChange != null) this.onChange.accept(getValues());
-            WidgetTree.resize(this);
+            scheduleResize();
         }
     }
 
@@ -118,6 +161,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         private SortableListWidget<T> listWidget;
         @Getter
         private int index = -1;
+        private int movingFrom = -1; // no usages? why added?
 
         public Item(T value) {
             this.value = value;

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.ApiStatus;
  * Using {@link #openPanel()} is the only way to open multiple panels.
  * </p>
  * <p>
- * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen(boolean)} and
+ * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen()} and
  * {@link ModularPanel#animateClose()}. With the difference, that the method from this interface also works on server
  * side.
  * </p>

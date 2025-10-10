@@ -132,34 +132,47 @@ public class GuiViewportStack implements IViewportStack {
         updateViewport(true);
     }
 
+    @Override
     public void translate(float x, float y) {
         checkViewport();
         this.top.getMatrix().translate(vec(x, y, 0));
         this.top.markDirty();
     }
 
+    @Override
     public void translate(float x, float y, float z) {
         checkViewport();
         this.top.getMatrix().translate(vec(x, y, z));
         this.top.markDirty();
     }
 
+    @Override
     public void rotate(float angle, float x, float y, float z) {
         checkViewport();
         this.top.getMatrix().rotate(angle, vec(x, y, z));
         this.top.markDirty();
     }
 
+    @Override
     public void rotateZ(float angle) {
         rotate(angle, 0f, 0f, 1f);
     }
 
+    @Override
     public void scale(float x, float y) {
         checkViewport();
         this.top.getMatrix().scale(vec(x, y, 1f));
         this.top.markDirty();
     }
 
+    @Override
+    public void multiply(Matrix4f matrix) {
+        checkViewport();
+        this.top.getMatrix().mul(matrix);
+        this.top.markDirty();
+    }
+
+    @Override
     public void resetCurrent() {
         checkViewport();
         Matrix4f belowTop = this.viewportStack.size() > 1 ?

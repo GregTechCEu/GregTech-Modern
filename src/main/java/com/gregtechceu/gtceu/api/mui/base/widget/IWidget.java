@@ -259,7 +259,7 @@ public interface IWidget extends IGuiElement {
     /**
      * Called before a widget is resized.
      */
-    default void beforeResize() {}
+    default void beforeResize(boolean onOpen) {}
 
     /**
      * Called after a widget is fully resized.

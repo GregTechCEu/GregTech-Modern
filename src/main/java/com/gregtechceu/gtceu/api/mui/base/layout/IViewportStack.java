@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.TransformationMatrix;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
@@ -111,6 +112,13 @@ public interface IViewportStack {
      * @param y y scale factor
      */
     void scale(float x, float y);
+
+    /**
+     * Multiplies current matrix transformation by another matrix
+     *
+     * @param matrix the matrix to multiply with
+     */
+    void multiply(Matrix4f matrix);
 
     /**
      * Resets the top matrix to the matrix below.

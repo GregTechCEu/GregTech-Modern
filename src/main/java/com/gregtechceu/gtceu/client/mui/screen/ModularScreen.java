@@ -270,7 +270,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                 MCHelper.closeScreen();
                 return;
             }
-            getMainPanel().closeIfOpen(true);
+            getMainPanel().closeIfOpen();
         }
     }
 

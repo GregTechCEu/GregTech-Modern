@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
+import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -82,6 +84,9 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Getter
     private final Flex flex = new Flex(this);
     private IResizeable resizer = this.flex;
+
+    private BiConsumer<W, IViewportStack> transform;
+    private boolean requiresResize = false;
     // syncing
     /**
      * Returns the value handler of this widget. Value handlers can provide and update any kind of objects like numbers
@@ -137,7 +142,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     private String widgetThemeOverride = null;
     // listener
     @Nullable
-    private List<IGuiAction> guiActionListeners;
+    private List<IGuiAction> guiActionListeners; // TODO replace with proper event system
     @Getter
     @Nullable
     private Consumer<W> onUpdateListener;
@@ -182,6 +187,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         }
         afterInit();
         onUpdate();
+        this.requiresResize = false;
     }
 
     /**
@@ -597,6 +603,22 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // === Resizing ===
     // ----------------
 
+    @Override
+    public void scheduleResize() {
+        this.requiresResize = true;
+    }
+
+    @Override
+    public boolean requiresResize() {
+        return this.requiresResize;
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void onResized() {
+        this.requiresResize = false;
+    }
+
     /**
      * Returns the flex of this widget. This is responsible for calculating size, pos and relative pos.
      * Originally this was intended to be modular for custom flex class. May come back to this in the future.
@@ -634,6 +656,19 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         this.resizer = resizer != null ? resizer : IUnResizeable.INSTANCE;
     }
 
+    @Override
+    public void transform(IViewportStack stack) {
+        IWidget.super.transform(stack);
+        if (this.transform != null) {
+            this.transform.accept(getThis(), stack);
+        }
+    }
+
+    public W transform(BiConsumer<W, IViewportStack> transform) {
+        this.transform = transform;
+        return getThis();
+    }
+
     // -------------------
     // === Gui context ===
     // -------------------
@@ -658,7 +693,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public @NotNull ModularPanel getPanel() {
         if (!isValid()) {
-            throw new IllegalStateException(getClass().getSimpleName() + " is not in a valid state!");
+            throw new IllegalStateException(this + " is not in a valid state!");
         }
         return this.panel;
     }
@@ -673,7 +708,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public @NotNull IWidget getParent() {
         if (!isValid()) {
-            throw new IllegalStateException(getClass().getSimpleName() + " is not in a valid state!");
+            throw new IllegalStateException(this + " is not in a valid state!");
         }
         return this.parent;
     }
@@ -687,7 +722,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public ModularGuiContext getContext() {
         if (!isValid()) {
-            throw new IllegalStateException(getClass().getSimpleName() + " is not in a valid state!");
+            throw new IllegalStateException(this + " is not in a valid state!");
         }
         return this.context;
     }

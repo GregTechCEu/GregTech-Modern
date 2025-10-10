@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class SingleChildWidget<W extends SingleChildWidget<W>> extends Widget<W> {
 
+    @Getter
     private IWidget child;
     private List<IWidget> list = Collections.emptyList();
 

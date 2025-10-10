@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
+import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
-import com.gregtechceu.gtceu.api.mui.utils.Animator;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.FpsCounter;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
@@ -71,7 +71,7 @@ public class ClientScreenHandler {
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onOpenScreen(ScreenEvent.Opening event) {
         Screen newGui = event.getNewScreen();
         defaultContext.reset();
@@ -113,6 +113,7 @@ public class ClientScreenHandler {
             currentScreen.getPanelManager().dispose();
             currentScreen = null;
         }
+        OverlayManager.onOpenScreen(event);
     }
 
     @SubscribeEvent
@@ -329,7 +330,7 @@ public class ClientScreenHandler {
             if (currentScreen.getContext().hasDraggable()) {
                 currentScreen.getContext().dropDraggable();
             } else {
-                currentScreen.getPanelManager().closeTopPanel(true);
+                currentScreen.getPanelManager().closeTopPanel();
             }
             return true;
         }

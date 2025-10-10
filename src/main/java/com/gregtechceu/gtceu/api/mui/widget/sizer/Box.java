@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.widget.sizer;
 
+import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
+
+import java.util.Objects;
 
 /**
  * A box with four edges.
  * Used for margins and paddings.
  */
-public class Box {
+public class Box implements IAnimatable<Box> {
 
     public static final Box SHARED = new Box();
 
@@ -78,6 +82,19 @@ public class Box {
     }
 
     @Override
+    public Box interpolate(Box start, Box end, float t) {
+        this.left = Interpolations.lerp(start.left, end.left, t);
+        this.top = Interpolations.lerp(start.top, end.top, t);
+        this.right = Interpolations.lerp(start.right, end.right, t);
+        this.bottom = Interpolations.lerp(start.bottom, end.bottom, t);
+        return this;
+    }
+
+    @Override
+    public Box copyOrImmutable() {
+        return new Box().set(this);
+    }
+    @Override
     public String toString() {
         return "Box{" +
                 "left=" + left +
@@ -85,5 +102,22 @@ public class Box {
                 ", right=" + right +
                 ", bottom=" + bottom +
                 '}';
+    }
+
+    public boolean isEqual(Box box) {
+        return left == box.left && top == box.top && right == box.right && bottom == box.bottom;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return isEqual((Box) o);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, top, right, bottom);
     }
 }

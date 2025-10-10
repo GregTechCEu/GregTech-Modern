@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
+import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
-import com.gregtechceu.gtceu.api.mui.utils.Animator;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
@@ -84,7 +84,9 @@ public abstract class ScrollData {
 
     @Getter
     private int animatingTo = 0;
-    private final Animator scrollAnimator = new Animator(30, Interpolation.QUAD_OUT);
+    private final Animator scrollAnimator = new Animator()
+            .duration(500)
+            .curve(Interpolation.QUAD_OUT);
 
     protected ScrollData(GuiAxis axis, boolean axisStart, int thickness) {
         this.axis = axis;
@@ -170,11 +172,13 @@ public abstract class ScrollData {
     }
 
     public void animateTo(ScrollArea area, int x) {
-        this.scrollAnimator.setCallback(value -> {
-            return scrollTo(area, (int) value); // stop animation once an edge is hit
+        this.scrollAnimator.bounds(this.scroll, x).onUpdate(value -> {
+            if (scrollTo(area, (int) value)) {
+                this.scrollAnimator.stop(false); // stop animation once an edge is hit
+            }
         });
-        this.scrollAnimator.setValueBounds(this.scroll, x);
-        this.scrollAnimator.forward();
+        this.scrollAnimator.reset();
+        this.scrollAnimator.animate();
         this.animatingTo = x;
     }
 
@@ -208,7 +212,7 @@ public abstract class ScrollData {
     public abstract boolean isInsideScrollbarArea(ScrollArea area, int x, int y);
 
     public boolean isAnimating() {
-        return this.scrollAnimator.isRunning();
+        return this.scrollAnimator.isAnimating();
     }
 
     public int getAnimationDirection() {

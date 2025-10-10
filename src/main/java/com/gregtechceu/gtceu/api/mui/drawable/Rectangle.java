@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.mui.drawable;
 
+import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
@@ -19,7 +21,7 @@ import lombok.experimental.Accessors;
 import java.util.function.IntConsumer;
 
 @Accessors(fluent = true, chain = true)
-public class Rectangle implements IDrawable, IJsonSerializable<Rectangle> {
+public class Rectangle implements IDrawable, IJsonSerializable<Rectangle>, IAnimatable<Rectangle> {
 
     private int cornerRadius, colorTL, colorTR, colorBL, colorBR;
     @Setter
@@ -130,5 +132,25 @@ public class Rectangle implements IDrawable, IJsonSerializable<Rectangle> {
         if (element != null) {
             color.accept(Color.ofJson(element));
         }
+    }
+
+    @Override
+    public Rectangle interpolate(Rectangle start, Rectangle end, float t) {
+        this.cornerRadius = Interpolations.lerp(start.cornerRadius, end.cornerRadius, t);
+        this.cornerSegments = Interpolations.lerp(start.cornerSegments, end.cornerSegments, t);
+        this.colorTL = Color.interpolate(start.colorTL, end.colorTL, t);
+        this.colorTR = Color.interpolate(start.colorTR, end.colorTR, t);
+        this.colorBL = Color.interpolate(start.colorBL, end.colorBL, t);
+        this.colorBR = Color.interpolate(start.colorBR, end.colorBR, t);
+        return this;
+    }
+
+    @Override
+    public Rectangle copyOrImmutable() {
+        return new Rectangle()
+                .setColor(this.colorTL, this.colorTR, this.colorBL, this.colorBR)
+                .setCornerRadius(this.cornerRadius)
+                .cornerSegments(this.cornerSegments)
+                .canApplyTheme(this.canApplyTheme);
     }
 }

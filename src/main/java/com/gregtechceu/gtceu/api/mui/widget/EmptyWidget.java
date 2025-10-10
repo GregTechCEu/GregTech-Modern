@@ -19,6 +19,7 @@ public class EmptyWidget implements IWidget {
     private final Area area = new Area();
     @Getter
     private final Flex flex = new Flex(this);
+    private boolean requiresResize = false;
     @Getter
     private IWidget parent;
 
@@ -60,6 +61,21 @@ public class EmptyWidget implements IWidget {
     @Override
     public @NotNull ModularPanel getPanel() {
         return this.parent.getPanel();
+    }
+
+    @Override
+    public void scheduleResize() {
+        this.requiresResize = true;
+    }
+
+    @Override
+    public boolean requiresResize() {
+        return this.requiresResize;
+    }
+
+    @Override
+    public void onResized() {
+        this.requiresResize = false;
     }
 
     @Override

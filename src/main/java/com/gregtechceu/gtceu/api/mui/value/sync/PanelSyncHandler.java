@@ -91,7 +91,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
     public void closePanel() {
         if (getSyncManager().isClient()) {
             if (this.openedPanel != null) {
-                this.openedPanel.closeIfOpen(true);
+                this.openedPanel.closeIfOpen();
             }
         } else {
             syncToClient(2);

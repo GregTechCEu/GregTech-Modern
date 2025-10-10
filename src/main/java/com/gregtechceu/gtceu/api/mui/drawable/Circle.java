@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.mui.drawable;
 
+import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
@@ -15,7 +17,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(fluent = true, chain = true)
-public class Circle implements IDrawable, IJsonSerializable<Circle> {
+public class Circle implements IDrawable, IJsonSerializable<Circle>, IAnimatable<Circle> {
 
     @Setter
     private int colorInner, colorOuter, segments;
@@ -72,5 +74,20 @@ public class Circle implements IDrawable, IJsonSerializable<Circle> {
         json.addProperty("colorOuter", this.colorOuter);
         json.addProperty("segments", this.segments);
         return true;
+    }
+
+    @Override
+    public Circle interpolate(Circle start, Circle end, float t) {
+        this.colorInner = Color.interpolate(start.colorInner, end.colorInner, t);
+        this.colorOuter = Color.interpolate(start.colorOuter, end.colorOuter, t);
+        this.segments = Interpolations.lerp(start.segments, end.segments, t);
+        return this;
+    }
+
+    @Override
+    public Circle copyOrImmutable() {
+        return new Circle()
+                .setColor(this.colorInner, this.colorOuter)
+                .setSegments(this.segments);
     }
 }

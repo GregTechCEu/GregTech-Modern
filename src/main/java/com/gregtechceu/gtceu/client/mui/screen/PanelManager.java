@@ -94,7 +94,7 @@ public class PanelManager {
         panel.getArea().setPanelLayer((byte) this.panels.size());
         panel.onOpen(this.screen);
         if (resize) {
-            WidgetTree.resize(panel);
+            WidgetTree.resizeInternal(panel, true);
         }
     }
 
@@ -177,8 +177,8 @@ public class PanelManager {
         }
     }
 
-    public void closeTopPanel(boolean animate) {
-        getTopMostPanel().closeIfOpen(animate);
+    public void closeTopPanel() {
+        getTopMostPanel().closeIfOpen();
     }
 
     public boolean closeAll() {

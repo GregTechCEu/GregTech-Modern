@@ -340,4 +340,14 @@ public enum Interpolation implements IInterpolation, StringRepresentable {
     public @NotNull String getSerializedName() {
         return this.name;
     }
+
+    public static Interpolation getForName(String name) {
+        for (Interpolation interpolation : values()) {
+            if (interpolation.name.equals(name)) {
+                return interpolation;
+            }
+        }
+        return null;
+    }
+
 }

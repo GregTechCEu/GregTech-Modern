@@ -68,6 +68,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     @Override
     public void onResized() {
+        super.onResized();
         if (this.scroll.getScrollX() != null) {
             this.scroll.getScrollX().clamp(this.scroll);
             if (!this.keepScrollBarInArea) {

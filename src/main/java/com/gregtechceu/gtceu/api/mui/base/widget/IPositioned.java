@@ -20,6 +20,10 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     Area getArea();
 
+    void scheduleResize();
+
+    boolean requiresResize();
+
     @SuppressWarnings("unchecked")
     default W getThis() {
         return (W) this;
@@ -401,71 +405,85 @@ public interface IPositioned<W extends IPositioned<W>> {
 
     default W padding(int left, int right, int top, int bottom) {
         getArea().getPadding().all(left, right, top, bottom);
+        scheduleResize();
         return getThis();
     }
 
     default W padding(int horizontal, int vertical) {
         getArea().getPadding().all(horizontal, vertical);
+        scheduleResize();
         return getThis();
     }
 
     default W padding(int all) {
         getArea().getPadding().all(all);
+        scheduleResize();
         return getThis();
     }
 
     default W paddingLeft(int val) {
         getArea().getPadding().left(val);
+        scheduleResize();
         return getThis();
     }
 
     default W paddingRight(int val) {
         getArea().getPadding().right(val);
+        scheduleResize();
         return getThis();
     }
 
     default W paddingTop(int val) {
         getArea().getPadding().top(val);
+        scheduleResize();
         return getThis();
     }
 
     default W paddingBottom(int val) {
         getArea().getPadding().bottom(val);
+        scheduleResize();
         return getThis();
     }
 
     default W margin(int left, int right, int top, int bottom) {
         getArea().getMargin().all(left, right, top, bottom);
+        scheduleResize();
         return getThis();
     }
 
     default W margin(int horizontal, int vertical) {
         getArea().getMargin().all(horizontal, vertical);
+        scheduleResize();
         return getThis();
     }
 
     default W margin(int all) {
         getArea().getMargin().all(all);
+        scheduleResize();
         return getThis();
     }
 
     default W marginLeft(int val) {
         getArea().getMargin().left(val);
+        scheduleResize();
         return getThis();
     }
 
     default W marginRight(int val) {
         getArea().getMargin().right(val);
+        scheduleResize();
         return getThis();
     }
 
     default W marginTop(int val) {
         getArea().getMargin().top(val);
+        scheduleResize();
         return getThis();
     }
 
     default W marginBottom(int val) {
         getArea().getMargin().bottom(val);
+        scheduleResize();
         return getThis();
     }
 }
