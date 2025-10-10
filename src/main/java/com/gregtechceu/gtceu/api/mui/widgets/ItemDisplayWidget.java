@@ -8,9 +8,8 @@ import com.gregtechceu.gtceu.api.mui.value.ObjectValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.world.item.ItemStack;
 
 public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
@@ -53,7 +52,8 @@ public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
         return this;
     }
 
-    public ItemDisplayWidget item(ItemStack itemStack) {;
+    public ItemDisplayWidget item(ItemStack itemStack) {
+        ;
         return item(new ObjectValue<>(itemStack));
     }
 

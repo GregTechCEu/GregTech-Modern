@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.utils.serialization.network.IByteBufDeserializer;
 import com.gregtechceu.gtceu.utils.serialization.network.IByteBufSerializer;
 
 import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,11 +20,13 @@ import java.util.function.Supplier;
 
 public class GenericSyncValue<T> extends ValueSyncHandler<T> {
 
-    public static GenericSyncValue<ItemStack> forItem(@NotNull Supplier<ItemStack> getter, @Nullable Consumer<ItemStack> setter) {
+    public static GenericSyncValue<ItemStack> forItem(@NotNull Supplier<ItemStack> getter,
+                                                      @Nullable Consumer<ItemStack> setter) {
         return new GenericSyncValue<>(getter, setter, ByteBufAdapters.ITEM_STACK);
     }
 
-    public static GenericSyncValue<FluidStack> forFluid(@NotNull Supplier<FluidStack> getter, @Nullable Consumer<FluidStack> setter) {
+    public static GenericSyncValue<FluidStack> forFluid(@NotNull Supplier<FluidStack> getter,
+                                                        @Nullable Consumer<FluidStack> setter) {
         return new GenericSyncValue<>(getter, setter, ByteBufAdapters.FLUID_STACK);
     }
 

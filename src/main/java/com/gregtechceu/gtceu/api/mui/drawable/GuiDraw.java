@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -397,11 +397,13 @@ public class GuiDraw {
         graphics.setColor(1f, 1f, 1f, 1f);
     }
 
-    public static void drawStandardSlotAmountText(ModularGuiContext context, int amount, String format, Area area, float z) {
+    public static void drawStandardSlotAmountText(ModularGuiContext context, int amount, String format, Area area,
+                                                  float z) {
         drawAmountText(context, amount, format, 1, 1, area.width - 1, area.height - 1, Alignment.BottomRight, z);
     }
 
-    public static void drawAmountText(ModularGuiContext context, int amount, String format, int x, int y, int width, int height, Alignment alignment, float z) {
+    public static void drawAmountText(ModularGuiContext context, int amount, String format, int x, int y, int width,
+                                      int height, Alignment alignment, float z) {
         // render the amount overlay
         if (amount > 1 || format != null) {
             String amountText = FormattingUtil.formatNumberReadable(amount, false);

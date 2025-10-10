@@ -119,7 +119,7 @@ public class TextRenderer {
     public List<Line> measureLines(List<Component> lines) {
         List<Line> measuredLines = new ArrayList<>();
         for (Component line : lines) {
-            if(this.hardWrapOnBorder) {
+            if (this.hardWrapOnBorder) {
                 for (FormattedCharSequence subLine : wrapLine(line)) {
                     measuredLines.add(line(subLine));
                 }
