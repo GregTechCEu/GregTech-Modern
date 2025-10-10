@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
+import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +52,11 @@ public class SimpleUIFactory extends AbstractUIFactory<GuiData> {
 
     public void open(ServerPlayer player) {
         GuiManager.open(this, new GuiData(player), player);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void openClient() {
+        GuiManager.openFromClient(this, new GuiData(MCHelper.getPlayer()));
     }
 
     @Override

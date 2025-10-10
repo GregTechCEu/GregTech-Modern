@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+@Deprecated
 public class ItemUIFactory extends AbstractUIFactory<HandGuiData> {
 
     public static final ItemUIFactory INSTANCE = new ItemUIFactory();

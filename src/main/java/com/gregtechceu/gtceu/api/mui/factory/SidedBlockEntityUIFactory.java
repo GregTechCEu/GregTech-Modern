@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
+import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,6 +10,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,15 +24,8 @@ public class SidedBlockEntityUIFactory extends AbstractUIFactory<SidedPosGuiData
     public <T extends BlockEntity & IUIHolder<SidedPosGuiData>> void open(Player player, T blockEntity,
                                                                           Direction facing) {
         Objects.requireNonNull(player);
-        Objects.requireNonNull(blockEntity);
         Objects.requireNonNull(facing);
-        if (blockEntity.isRemoved()) {
-            throw new IllegalArgumentException("Can't open invalid BlockEntity GUI!");
-        }
-        if (player.level() != blockEntity.getLevel()) {
-            throw new IllegalArgumentException("BlockEntity must be in same dimension as the player!");
-        }
-        BlockPos pos = blockEntity.getBlockPos();
+        BlockPos pos = BlockEntityUIFactory.getPosFromBE(blockEntity);
         SidedPosGuiData data = new SidedPosGuiData(player, pos, facing);
         GuiManager.open(this, data, (ServerPlayer) player);
     }
@@ -40,6 +36,22 @@ public class SidedBlockEntityUIFactory extends AbstractUIFactory<SidedPosGuiData
         Objects.requireNonNull(facing);
         SidedPosGuiData data = new SidedPosGuiData(player, pos, facing);
         GuiManager.open(this, data, (ServerPlayer) player);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public <T extends BlockEntity & IUIHolder<SidedPosGuiData>> void openClient(T tile, Direction facing) {
+        Objects.requireNonNull(facing);
+        BlockPos pos = BlockEntityUIFactory.getPosFromBE(tile);
+        SidedPosGuiData data = new SidedPosGuiData(MCHelper.getPlayer(), pos, facing);
+        GuiManager.openFromClient(this, data);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void openClient(BlockPos pos, Direction facing) {
+        Objects.requireNonNull(pos);
+        Objects.requireNonNull(facing);
+        SidedPosGuiData data = new SidedPosGuiData(MCHelper.getPlayer(), pos, facing);
+        GuiManager.openFromClient(this, data);
     }
 
     private SidedBlockEntityUIFactory() {

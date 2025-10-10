@@ -107,7 +107,7 @@ public class GTNetwork {
         register(SPacketNotifyCapeChange.class, SPacketNotifyCapeChange::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SCPacketShareProspection.class, SCPacketShareProspection::new, null);
 
-        register(OpenGuiPacket.class, OpenGuiPacket::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(OpenGuiPacket.class, OpenGuiPacket::new, null);
         register(SyncHandlerPacket.class, SyncHandlerPacket::new, null);
     }
 }

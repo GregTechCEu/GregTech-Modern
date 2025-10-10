@@ -9,6 +9,7 @@ import lombok.Getter;
 /**
  * See {@link GuiData} for an explanation for what this is for.
  */
+@Deprecated
 public class HandGuiData extends GuiData {
 
     @Getter

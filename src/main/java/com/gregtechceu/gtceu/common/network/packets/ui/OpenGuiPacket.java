@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.network.packets.ui;
 
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
@@ -15,15 +16,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpenGuiPacket implements GTNetwork.INetPacket {
+public class OpenGuiPacket<T extends GuiData> implements GTNetwork.INetPacket {
 
     private int windowId;
-    private UIFactory<?> factory;
+    private UIFactory<T> factory;
     private FriendlyByteBuf data;
 
     public OpenGuiPacket(FriendlyByteBuf buf) {
         this.windowId = buf.readVarInt();
-        this.factory = GuiManager.getFactory(buf.readResourceLocation());
+        this.factory = (UIFactory<T>) GuiManager.getFactory(buf.readResourceLocation());
         this.data = NetworkUtils.readFriendlyByteBuf(buf);
     }
 
@@ -37,7 +38,10 @@ public class OpenGuiPacket implements GTNetwork.INetPacket {
     @Override
     public void execute(NetworkEvent.Context handler) {
         if (handler.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-            GuiManager.open(this.windowId, this.factory, this.data, Minecraft.getInstance().player);
+            GuiManager.openFromClient(this.windowId, this.factory, this.data, Minecraft.getInstance().player);
+        } else if (handler.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
+            T guiData = this.factory.readGuiData(handler.getSender(), this.data);
+            GuiManager.open(this.factory, guiData, handler.getSender());
         }
     }
 }

@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
+import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,14 +26,7 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
 
     public <T extends BlockEntity & IUIHolder<PosGuiData>> void open(Player player, T blockEntity) {
         Objects.requireNonNull(player);
-        Objects.requireNonNull(blockEntity);
-        if (blockEntity.isRemoved()) {
-            throw new IllegalArgumentException("Can't open invalid BlockEntity GUI!");
-        }
-        if (player.level() != blockEntity.getLevel()) {
-            throw new IllegalArgumentException("BlockEntity must be in same dimension as the player!");
-        }
-        BlockPos pos = blockEntity.getBlockPos();
+        BlockPos pos = getPosFromBE(blockEntity);
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, (ServerPlayer) player);
     }
@@ -40,6 +36,18 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
         Objects.requireNonNull(pos);
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, (ServerPlayer) player);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public <T extends BlockEntity & IUIHolder<PosGuiData>> void openClient(T tile) {
+        BlockPos pos = getPosFromBE(tile);
+        GuiManager.openFromClient(this, new PosGuiData(MCHelper.getPlayer(), pos));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void openClient(BlockPos pos) {
+        Objects.requireNonNull(pos);
+        GuiManager.openFromClient(this, new PosGuiData(MCHelper.getPlayer(), pos));
     }
 
     @Override
@@ -61,5 +69,16 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
     @Override
     public @NotNull PosGuiData readGuiData(Player player, FriendlyByteBuf buffer) {
         return new PosGuiData(player, buffer.readBlockPos());
+    }
+
+    public static BlockPos getPosFromBE(BlockEntity tile) {
+        Objects.requireNonNull(tile);
+        if (tile.isRemoved()) {
+            throw new IllegalArgumentException("Can't open invalid TileEntity GUI!");
+        }
+        if (MCHelper.getPlayer().level() != tile.getLevel()) {
+            throw new IllegalArgumentException("TileEntity must be in same dimension as the player!");
+        }
+        return tile.getBlockPos();
     }
 }

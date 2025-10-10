@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.Mod;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class GuiManager {
 
     public static @NotNull UIFactory<?> getFactory(ResourceLocation name) {
         UIFactory<?> factory = FACTORIES.get(name);
-        if (factory == null) throw new NoSuchElementException();
+        if (factory == null) throw new NoSuchElementException("No UI factory for name '" + name + "' found!");
         return factory;
     }
 
@@ -96,9 +97,10 @@ public class GuiManager {
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, container));
     }
 
+    @ApiStatus.Internal
     @OnlyIn(Dist.CLIENT)
-    public static <T extends GuiData> void open(int windowId, @NotNull UIFactory<T> factory,
-                                                @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
+    public static <T extends GuiData> void openFromClient(int windowId, @NotNull UIFactory<T> factory,
+                                                          @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
         settings.defaultCanInteractWith(factory, guiData);
@@ -118,6 +120,13 @@ public class GuiManager {
             throw new IllegalStateException("Custom Containers are not yet allowed!");
         MCHelper.setScreen(wrapper.getWrappedScreen());
         player.containerMenu = guiContainer.getMenu();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <T extends GuiData> void openFromClient(@NotNull UIFactory<T> factory, @NotNull T guiData) {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        factory.writeGuiData(guiData, buffer);
+        GTNetwork.sendToServer(new OpenGuiPacket<>(0, factory, buffer));
     }
 
     @OnlyIn(Dist.CLIENT)

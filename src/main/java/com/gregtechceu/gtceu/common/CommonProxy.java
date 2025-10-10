@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.UIFactories;
+import com.gregtechceu.gtceu.api.mui.factory.inventory.InventoryTypes;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
@@ -108,6 +109,7 @@ public class CommonProxy {
 
         /* MUI Initialization */
         UIFactories.init();
+        InventoryTypes.init();
 
         GTGuiTextures.init();
         GTGuiTheme.registerThemes();
