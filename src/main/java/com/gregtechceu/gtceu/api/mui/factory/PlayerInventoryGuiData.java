@@ -7,6 +7,13 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 
+/**
+ * GuiData that finds an item in a player bound inventory. This can be the hotbar, main inventory, armor slots, offhand
+ * slot or curios slots
+ * if curios is loaded.
+ *
+ * @param <T> Type of the context. Usually {@link Void}. User will usually use <?>.
+ */
 @Getter
 public class PlayerInventoryGuiData<T> extends GuiData {
 
@@ -15,8 +22,17 @@ public class PlayerInventoryGuiData<T> extends GuiData {
         return new PlayerInventoryGuiData<>(player, inventoryType, context, slotIndex);
     }
 
+    /**
+     * Inventory type where the item can be found (player or curios for example).
+     */
     private final InventoryType<T> inventoryType;
+    /**
+     * Additional context to find the item. Usually this is null, but for curios it is a string (slot identifier).
+     */
     private final T context;
+    /**
+     * Slot index where the item can be found.
+     */
     private final int slotIndex;
 
     private PlayerInventoryGuiData(Player player, InventoryType<T> inventoryType, T context, int slotIndex) {

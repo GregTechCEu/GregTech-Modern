@@ -68,6 +68,15 @@ public class InventoryTypes {
         return null;
     }
 
+    /**
+     * Visits all slots where the item can be stacked with the given item of all inventory types, this includes the
+     * player inventory, with
+     * hotbar, main inventory, armor slots, offhand slot and curios slots if curios is loaded.
+     *
+     * @param player  the player to visit inventory in
+     * @param stack   item stack to check stackability for
+     * @param visitor visitor function
+     */
     public static void visitAllStackable(Player player, ItemStack stack, InventoryVisitor<?> visitor) {
         for (InventoryType type : getAll()) {
             if (type.visitAllStackable(player, stack, visitor)) {
@@ -76,6 +85,14 @@ public class InventoryTypes {
         }
     }
 
+    /**
+     * Visits all slots of all inventory types, this includes the player inventory, with hotbar, main inventory, armor
+     * slots, offhand slot
+     * and curios slots if curios is loaded.
+     *
+     * @param player  the player to visit inventory in
+     * @param visitor visitor function
+     */
     public static void visitAll(Player player, InventoryVisitor<?> visitor) {
         for (InventoryType type : getAll()) {
             if (type.visitAll(player, visitor)) {
