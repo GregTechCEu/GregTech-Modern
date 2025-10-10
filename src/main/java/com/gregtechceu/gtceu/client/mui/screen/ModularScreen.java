@@ -214,7 +214,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
-            WidgetTree.resize(panel);
+            WidgetTree.resizeInternal(panel, true);
         }
 
         this.context.popViewport(null);
@@ -267,7 +267,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     public void close(boolean force) {
         if (isActive()) {
             if (force) {
-                MCHelper.closeScreen();
+                Minecraft.getInstance().popGuiLayer();
                 return;
             }
             getMainPanel().closeIfOpen();

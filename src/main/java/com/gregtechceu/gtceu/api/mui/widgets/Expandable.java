@@ -4,15 +4,20 @@ import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.animation.MutableObjectAnimator;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
+import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
+import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
+import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
+import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -70,9 +75,9 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
                 }
             } else {
                 this.animator = new MutableObjectAnimator<>(getArea(), this.areaSnapshot, getArea().copyOrImmutable())
-                        .duration(this.animationDuration)
-                        .curve(this.interpolation)
-                        .onFinish(() -> {
+                        .duration(
+                                this.animationDuration)
+                        .curve(this.interpolation).onFinish(() -> {
                             if (!this.expanded) {
                                 this.normalView.setEnabled(true);
                                 this.expandedView.setEnabled(false);
@@ -91,7 +96,7 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     }
 
     @Override
-    public @NotNull Result onMousePressed(int mouseButton) {
+    public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
         toggle();
         return Result.SUCCESS;
     }

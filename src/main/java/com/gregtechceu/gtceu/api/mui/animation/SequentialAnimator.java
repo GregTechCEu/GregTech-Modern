@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-import com.cleanroommc.modularui.ModularUI;
+import com.gregtechceu.gtceu.GTCEu;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +52,7 @@ public class SequentialAnimator extends BaseAnimator implements IAnimator {
             if (!animator.isAnimating()) {
                 // animator has finished
                 this.currentIndex += getDirection();
-                ModularUI.LOGGER.info("Finished {}th animator", this.currentIndex);
+                GTCEu.LOGGER.info("Finished {}th animator", this.currentIndex);
                 if (this.currentIndex >= this.animators.size() || this.currentIndex < 0) {
                     // whole sequence has finished
                     stop(false);

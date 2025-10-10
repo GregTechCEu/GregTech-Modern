@@ -20,7 +20,6 @@ public class Interpolations {
         return a + (b - a) * position;
     }
 
-
     public static int lerp(int a, int b, float position) {
         return (int) (a + (b - a) * position);
     }

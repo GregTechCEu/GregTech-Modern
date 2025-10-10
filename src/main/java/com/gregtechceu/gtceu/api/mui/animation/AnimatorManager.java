@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraft.Util;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +28,8 @@ public class AnimatorManager {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onDraw(GuiScreenEvent.DrawScreenEvent.Pre event) {
-        long time = Minecraft.getSystemTime();
+    public void onDraw(ScreenEvent.Render.Pre event) {
+        long time = Util.getMillis();
         int elapsedTime = IAnimator.getTimeDiff(lastTime, time);
         if (lastTime > 0 && !animators.isEmpty()) {
             animators.removeIf(animator -> {
@@ -46,8 +45,8 @@ public class AnimatorManager {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onDraw(GuiOpenEvent event) {
-        if (event.getGui() == null) {
+    public void onDraw(ScreenEvent.Opening event) {
+        if (event.getNewScreen() == null) {
             // stop and yeet all animators on gui close
             animators.forEach(iAnimator -> iAnimator.stop(false));
             animators.clear();

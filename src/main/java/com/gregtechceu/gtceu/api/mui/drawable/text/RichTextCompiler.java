@@ -72,11 +72,11 @@ public class RichTextCompiler {
                     continue;
                 }
                 text = key.getFormatted();
+            }
+            if (o instanceof MutableComponent component) {
+                text = component.copy();
             } else if (!(o instanceof IDrawable)) {
-                if (o instanceof MutableComponent component) {
-                    text = component.copy();
-                }
-
+                text = Component.literal(o.toString());
             }
             if (text != null) {
                 if (text.getStyle() != Style.EMPTY) {

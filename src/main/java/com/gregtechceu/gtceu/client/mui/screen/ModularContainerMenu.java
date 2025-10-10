@@ -260,17 +260,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) &&
                 (mouseButton == LEFT_MOUSE || mouseButton == RIGHT_MOUSE)) {
             if (slotId == DROP_TO_WORLD) {
-                // no dif
-                if (!this.getCarried().isEmpty()) {
-                    if (mouseButton == LEFT_MOUSE) {
-                        player.drop(this.getCarried(), true);
-                        this.setCarried(ItemStack.EMPTY);
-                    }
-
-                    if (mouseButton == RIGHT_MOUSE) {
-                        player.drop(this.getCarried().split(1), true);
-                    }
-                }
+                superClicked(slotId, mouseButton, clickTypeIn, player);
                 return;
             }
 
@@ -283,7 +273,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                 if (!fromSlot.mayPickup(player)) {
                     return;
                 }
-                // simpler code, but effectively no difference
+                // simpler code, but effectively no difference // TODO: NEA
                 ItemStack remainder;
                 do {
                     remainder = quickMoveStack(player, slotId);

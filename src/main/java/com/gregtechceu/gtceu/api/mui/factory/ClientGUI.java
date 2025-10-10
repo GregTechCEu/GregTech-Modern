@@ -17,8 +17,6 @@ import java.util.function.IntFunction;
 
 /**
  * Helper class to open client only GUIs. This class is safe to use inside a Modular GUI.
- * Direct calls to {@link net.minecraft.client.Minecraft#setScreen(Screen)} are redirected to this class if
- * the current screen is a Modular GUI.
  */
 @OnlyIn(Dist.CLIENT)
 public class ClientGUI {

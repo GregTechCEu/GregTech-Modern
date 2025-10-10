@@ -25,12 +25,16 @@ public class MCHelper {
             player.closeContainer();
             return true;
         }
-        getMc().setScreen(null);
+        getMc().popGuiLayer();
         return false;
     }
 
     public static void setScreen(Screen screen) {
-        getMc().setScreen(screen);
+        if (screen == null) {
+            closeScreen();
+        } else {
+            getMc().setScreen(screen);
+        }
     }
 
     public static Screen getCurrentScreen() {

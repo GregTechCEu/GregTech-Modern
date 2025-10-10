@@ -833,9 +833,9 @@ public class ConfigHolder {
         @Configurable.Comment("If progress bar should step in texture pixels or screen pixels. (Screen pixels are way smaller and therefore smoother)")
         public boolean smoothProgressBar = true;
         @Configurable
-        @Configurable.Comment("Duration of UI animations in 1/60 sec.")
-        @Configurable.Range(min = 1)
-        public int animationTime = 8;
+        @Configurable.Comment("Duration of UI animations in millie sec.")
+        @Configurable.Range(min = 1, max = 500)
+        public int animationTime = 100;
         @Configurable
         @Configurable.Comment("Default tooltip position around the widget or its panel.")
         public RichTooltip.Pos tooltipPos = RichTooltip.Pos.VERTICAL;

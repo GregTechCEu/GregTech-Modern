@@ -94,6 +94,7 @@ public class Box implements IAnimatable<Box> {
     public Box copyOrImmutable() {
         return new Box().set(this);
     }
+
     @Override
     public String toString() {
         return "Box{" +
@@ -114,7 +115,6 @@ public class Box implements IAnimatable<Box> {
         if (o == null || getClass() != o.getClass()) return false;
         return isEqual((Box) o);
     }
-
 
     @Override
     public int hashCode() {

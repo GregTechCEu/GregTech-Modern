@@ -349,5 +349,4 @@ public enum Interpolation implements IInterpolation, StringRepresentable {
         }
         return null;
     }
-
 }

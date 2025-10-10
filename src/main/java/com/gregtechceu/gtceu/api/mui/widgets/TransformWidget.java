@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
-
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.DelegatingSingleChildWidget;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -37,7 +37,7 @@ public class TransformWidget extends DelegatingSingleChildWidget<TransformWidget
 
     public TransformWidget translate(float x, float y) {
         this.hasConstTransform = true;
-        this.constTransform.translate(x, y);
+        this.constTransform.translate(x, y, 0);
         return this;
     }
 

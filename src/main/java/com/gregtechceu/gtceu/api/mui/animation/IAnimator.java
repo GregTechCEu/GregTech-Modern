@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.Util;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public interface IAnimator {
 
-    @Nullable IAnimator getParent();
+    @Nullable
+    IAnimator getParent();
 
     default void animate(boolean reverse) {
         reset(reverse);
@@ -51,7 +53,7 @@ public interface IAnimator {
     }
 
     static int getTimeDiff(long startTime) {
-        return getTimeDiff(startTime, Minecraft.getSystemTime());
+        return getTimeDiff(startTime, Util.getMillis());
     }
 
     static int getTimeDiff(long startTime, long currentTime) {

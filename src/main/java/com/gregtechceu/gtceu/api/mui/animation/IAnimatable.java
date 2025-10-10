@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-import com.cleanroommc.modularui.api.drawable.IInterpolation;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 
 public interface IAnimatable<T extends IAnimatable<T>> {
 
@@ -49,7 +49,8 @@ public interface IAnimatable<T extends IAnimatable<T>> {
         animate(target, curve, durationMs, reverse, false, 0);
     }
 
-    default void animate(T target, IInterpolation curve, int durationMs, boolean reverse, boolean reverseOnFinish, int repeatsOnFinish) {
+    default void animate(T target, IInterpolation curve, int durationMs, boolean reverse, boolean reverseOnFinish,
+                         int repeatsOnFinish) {
         if (shouldAnimate(target)) {
             animator(target)
                     .curve(curve)

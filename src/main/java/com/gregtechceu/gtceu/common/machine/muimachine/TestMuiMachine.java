@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
@@ -32,7 +33,6 @@ import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -101,8 +101,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         syncManager.syncValue("mixer_fluids", 1, SyncHandlers.fluidSlot(this.mixerFluids2));
         IntSyncValue cycleStateValue = new IntSyncValue(() -> this.cycleState, val -> this.cycleState = val);
         syncManager.syncValue("cycle_state", cycleStateValue);
-        syncManager.syncValue("display_item",
-                new GenericSyncValue<ItemStack>(() -> this.displayItem, (itemStack -> {}), ByteBufAdapters.ITEM_STACK));
+        syncManager.syncValue("display_item", GenericSyncValue.forItem(() -> this.displayItem, null));
         syncManager.bindPlayerInventory(data.getPlayer());
 
         /*
@@ -161,34 +160,36 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .child(new PageButton(4, tabController)
                                 .tab(GTGuiTextures.TAB_TOP, 0)
                                 .overlay(new ItemDrawable(Items.ENDER_EYE).asIcon())))
-                /*
-                 * .child(new Expandable()
-                 * .debugName("expandable")
-                 * .top(0)
-                 * .leftRelOffset(1f, 1)
-                 * .background(GuiTextures.MC_BACKGROUND)
-                 * .excludeAreaInRecipeViewer()
-                 * .stencilTransform((r, expanded) -> {
-                 * r.width = Math.max(20, r.width - 5);
-                 * r.height = Math.max(20, r.height - 5);
-                 * })
-                 * .animationDuration(500)
-                 * .interpolation(Interpolation.BOUNCE_OUT)
-                 * .collapsedView(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
-                 * .expandedView(new ParentWidget<>()
-                 * .debugName("crafting tab")
-                 * .coverChildren()
-                 * .child(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
-                 * .child(SlotGroupWidget.builder()
-                 * .row("III  O") // D
-                 * .row("III  O")
-                 * .row("III   ")
-                 * .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i)))
-                 * .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
-                 * //.key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
-                 * .build()
-                 * .margin(5, 5, 20, 5).debugName("crafting"))))
-                 */
+
+                .child(new Expandable()
+                        .debugName("expandable")
+                        .top(0)
+                        .leftRelOffset(1f, 1)
+                        .background(GTGuiTextures.BACKGROUND)
+                        .excludeAreaInXei()
+                        .stencilTransform((r, expanded) -> {
+                            r.width = Math.max(20, r.width - 5);
+                            r.height = Math.max(20, r.height - 5);
+                        })
+                        .animationDuration(500)
+                        .interpolation(Interpolation.BOUNCE_OUT)
+                        .normalView(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
+                        .expandedView(new ParentWidget<>()
+                                .debugName("crafting tab")
+                                .coverChildren()
+                                .child(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
+                                .child(SlotGroupWidget.builder()
+                                        .row("III  D")
+                                        .row("III  O")
+                                        .row("III   ")
+                                        .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i)))
+                                        .key('O',
+                                                new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
+                                        .key('D',
+                                                new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
+                                        .build()
+                                        .margin(5, 5, 20, 5).debugName("crafting"))))
+
                 .child(Flow.column()
                         .sizeRel(1f)
                         .paddingBottom(7)

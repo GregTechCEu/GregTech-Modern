@@ -57,6 +57,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Getter
     @Setter
     private boolean enabled = true;
+    @Getter
+    private boolean excludeAreaInXei = false;
     // gui context
     /**
      * Returns if this widget is currently part of an open panel. Only if this is true information about parent, panel
@@ -179,6 +181,9 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         if (!getScreen().isClientOnly()) {
             initialiseSyncHandler(getScreen().getSyncManager());
         }
+        if (isExcludeAreaInXei()) {
+            getContext().getXeiSettings().addExclusionArea(this);
+        }
         onInit();
         if (hasChildren()) {
             for (IWidget child : getChildren()) {
@@ -236,7 +241,9 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
                     this.context.getScreen().removeGuiActionListener(action);
                 }
             }
-
+            if (isExcludeAreaInXei()) {
+                getContext().getXeiSettings().removeExclusionArea(this);
+            }
         }
         if (hasChildren()) {
             for (IWidget child : getChildren()) {
@@ -789,6 +796,18 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // -------------
     // === Other ===
     // -------------
+
+    public W excludeAreaInXei() {
+        return excludeAreaInXei(true);
+    }
+
+    public W excludeAreaInXei(boolean val) {
+        this.excludeAreaInXei = val;
+        if (isValid()) {
+            getContext().getXeiSettings().addExclusionArea(this);
+        }
+        return getThis();
+    }
 
     /**
      * Disables the widget from start. Useful inside widget tree creation, where widget references are usually not

@@ -56,7 +56,9 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
             this.widgetAreaSnapshots.clear();
             this.widgetAreaSnapshots.size(getTypeChildren().size());
             this.animators.size(getTypeChildren().size());
-            @UnmodifiableView @NotNull List<Item<T>> typeChildren = getTypeChildren();
+            @UnmodifiableView
+            @NotNull
+            List<Item<T>> typeChildren = getTypeChildren();
             for (int i = 0; i < typeChildren.size(); i++) {
                 Item<T> item = typeChildren.get(i);
                 this.widgetAreaSnapshots.set(i, item.getArea().copyOrImmutable());
@@ -67,11 +69,14 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     @Override
     public void postResize() {
         if (this.scheduleAnimation && !this.widgetAreaSnapshots.isEmpty()) {
-            @UnmodifiableView @NotNull List<Item<T>> typeChildren = getTypeChildren();
+            @UnmodifiableView
+            @NotNull
+            List<Item<T>> typeChildren = getTypeChildren();
             for (int i = 0; i < typeChildren.size(); i++) {
                 Item<T> item = typeChildren.get(i);
                 Animator current = this.animators.get(i);
-                if ((current != null && current.isAnimating()) || item.getArea().shouldAnimate(this.widgetAreaSnapshots.get(i))) {
+                if ((current != null && current.isAnimating()) ||
+                        item.getArea().shouldAnimate(this.widgetAreaSnapshots.get(i))) {
                     if (current != null) current.stop(true);
                     Animator animator = item.getArea().animator(this.widgetAreaSnapshots.get(i)).duration(150);
                     this.animators.set(i, animator);

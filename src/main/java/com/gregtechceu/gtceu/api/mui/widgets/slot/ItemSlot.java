@@ -173,7 +173,8 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void drawSlot(ModularGuiContext context, Slot slotIn) {
+    private void drawSlot(ModularGuiContext context, ModularSlot slotIn) {
+        // TODO: NEA animations
         Screen guiScreen = getScreen().getScreenWrapper().getWrappedScreen();
         if (!(guiScreen instanceof AbstractContainerScreen<?>))
             throw new IllegalStateException("The gui must be an instance of GuiContainer if it contains slots!");

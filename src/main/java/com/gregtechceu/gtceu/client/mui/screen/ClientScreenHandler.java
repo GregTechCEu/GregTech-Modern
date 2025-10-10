@@ -285,7 +285,6 @@ public class ClientScreenHandler {
     public static void onFrameUpdate() {
         OverlayStack.foreach(ModularScreen::onFrameUpdate, true);
         if (currentScreen != null) currentScreen.onFrameUpdate();
-        Animator.advance();
     }
 
     private static boolean doAction(@Nullable ModularScreen muiScreen, Predicate<ModularScreen> action) {
@@ -324,17 +323,25 @@ public class ClientScreenHandler {
             ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
             return true;
         }
+        if (keyCode == InputConstants.KEY_ESCAPE && screen.shouldCloseOnEsc()) {
+            onClose();
+            return true;
+        }
         boolean isInventoryKey = Minecraft.getInstance().options.keyInventory
                 .isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
         if (keyCode == 1 || isInventoryKey) {
-            if (currentScreen.getContext().hasDraggable()) {
-                currentScreen.getContext().dropDraggable();
-            } else {
-                currentScreen.getPanelManager().closeTopPanel();
-            }
+            onClose();
             return true;
         }
         return false;
+    }
+
+    private static void onClose() {
+        if (currentScreen.getContext().hasDraggable()) {
+            currentScreen.getContext().dropDraggable();
+        } else {
+            currentScreen.getPanelManager().closeTopPanel();
+        }
     }
 
     public static void dragSlot(double mouseX, double mouseY, int button, double dragX, double dragY) {

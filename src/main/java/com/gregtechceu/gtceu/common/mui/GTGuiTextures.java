@@ -50,7 +50,7 @@ public class GTGuiTextures {
     public static final UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
             .imageSize(16, 16)
-            .adaptable(3)
+            .adaptable(4)
             .name(IDs.STANDARD_BACKGROUND)
             .canApplyTheme()
             .build();
@@ -578,7 +578,6 @@ public class GTGuiTextures {
     public static final UITexture CYCLE_BUTTON = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distribution_mode.png")
             .imageSize(20, 60)
-            .uv(0f, 0f, 1f, 1 / 3f)
             .name("cycle")
             .build();
     // 16, 48, 16, 16, true);

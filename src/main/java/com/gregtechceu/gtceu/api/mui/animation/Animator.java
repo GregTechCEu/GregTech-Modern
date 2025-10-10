@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 
@@ -62,7 +61,8 @@ public class Animator extends BaseAnimator implements IAnimator {
                 stop(true);
                 break;
             }
-            if ((isAnimatingForward() && this.progress >= this.duration) || (isAnimatingReverse() && this.progress <= 0)) {
+            if ((isAnimatingForward() && this.progress >= this.duration) ||
+                    (isAnimatingReverse() && this.progress <= 0)) {
                 stop(false);
                 if (!isAnimating()) {
                     onAnimationFinished(true, true);
@@ -112,7 +112,7 @@ public class Animator extends BaseAnimator implements IAnimator {
     }
 
     public float getValue() {
-        //advance();
+        // advance();
         return getRawValue();
     }
 
@@ -193,7 +193,8 @@ public class Animator extends BaseAnimator implements IAnimator {
     }
 
     /**
-     * Sets how often the animation should repeat. If {@link #reverseOnFinish(boolean)} is set to true, it will repeat the whole cycle.
+     * Sets how often the animation should repeat. If {@link #reverseOnFinish(boolean)} is set to true, it will repeat
+     * the whole cycle.
      * If the number of repeats is negative, it will repeat infinitely.
      *
      * @param repeats how often the animation should repeat.

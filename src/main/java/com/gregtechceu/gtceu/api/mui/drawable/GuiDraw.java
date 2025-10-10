@@ -471,20 +471,22 @@ public class GuiDraw {
     // TODO: No clue how to do this
     // spotless:off
     /*
-    public static void drawTiledSprite(TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
-        drawTiledSprite(Minecraft.getInstance().getTextureMapBlocks(), sprite, x0, y0, w, h);
-    }
-
-    public static void drawTiledSprite(TextureMap textureMap, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
-        GlStateManager.disableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.enableTexture2D();
-        GlStateManager.bindTexture(textureMap.getGlTextureId());
-        drawTiledTexture(x0, y0, x0 + w, y0 + h, sprite.getMinU(), sprite.getMinV(), sprite.getMaxU(), sprite.getMaxV(), sprite.getIconWidth(), sprite.getIconHeight(), 0);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-    }
-    */
+     * public static void drawTiledSprite(TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
+     * drawTiledSprite(Minecraft.getInstance().getTextureMapBlocks(), sprite, x0, y0, w, h);
+     * }
+     * 
+     * public static void drawTiledSprite(TextureMap textureMap, TextureAtlasSprite sprite, float x0, float y0, float w,
+     * float h) {
+     * GlStateManager.disableAlpha();
+     * GlStateManager.enableBlend();
+     * GlStateManager.enableTexture2D();
+     * GlStateManager.bindTexture(textureMap.getGlTextureId());
+     * drawTiledTexture(x0, y0, x0 + w, y0 + h, sprite.getMinU(), sprite.getMinV(), sprite.getMaxU(), sprite.getMaxV(),
+     * sprite.getIconWidth(), sprite.getIconHeight(), 0);
+     * GlStateManager.disableBlend();
+     * GlStateManager.enableAlpha();
+     * }
+     */
 
     public static void drawOutlineCenter(GuiGraphics graphics,
                                          int x, int y, int offset, int color) {

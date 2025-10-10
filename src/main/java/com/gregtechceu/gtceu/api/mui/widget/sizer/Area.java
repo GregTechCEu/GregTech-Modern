@@ -70,7 +70,6 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         this.padding.set(area.padding);
     }
 
-
     public int x() {
         return this.x;
     }
@@ -541,7 +540,8 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     @Override
     public boolean shouldAnimate(Area target) {
         return x != target.x || y != target.y || width != target.width || height != target.height ||
-                rx != target.rx || ry != target.ry || !margin.isEqual(target.margin) || !padding.isEqual(target.padding);
+                rx != target.rx || ry != target.ry || !margin.isEqual(target.margin) ||
+                !padding.isEqual(target.padding);
     }
 
     @Override
@@ -552,7 +552,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         Area area = (Area) o;
         return rx == area.rx && ry == area.ry && panelLayer == area.panelLayer && z == area.z && Objects.equals(margin,
                 area.margin) && Objects.equals(
-                padding, area.padding);
+                        padding, area.padding);
     }
 
     @Override

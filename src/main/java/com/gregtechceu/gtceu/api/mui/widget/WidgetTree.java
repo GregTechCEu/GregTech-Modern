@@ -121,7 +121,8 @@ public class WidgetTree {
         drawTree(parent, context, false, true);
     }
 
-    public static void drawTree(IWidget parent, ModularGuiContext context, boolean ignoreEnabled, boolean shouldDrawBackground) {
+    public static void drawTree(IWidget parent, ModularGuiContext context, boolean ignoreEnabled,
+                                boolean shouldDrawBackground) {
         if (!parent.isEnabled() && !ignoreEnabled) return;
         if (parent.requiresResize()) {
             resizeInternal(parent, false);
@@ -181,7 +182,8 @@ public class WidgetTree {
             boolean backgroundSeparate = children.size() > 1;
             // draw all backgrounds first if we have more than 1 child
             // the whole reason this exists is because of the hover animation of items with NEA
-            // on hover the item scales up slightly, this causes the amount text to overlap nearby slots, but since the whole slot is drawn
+            // on hover the item scales up slightly, this causes the amount text to overlap nearby slots, but since the
+            // whole slot is drawn
             // at once the backgrounds might draw on top of the text
             // for now we'll apply this always without checking for NEA as it might be useful for other things
             // maybe proper layer customization in the future?
@@ -217,6 +219,7 @@ public class WidgetTree {
     public static void drawBackground(IWidget parent, ModularGuiContext context, boolean ignoreEnabled) {
         if (!parent.isEnabled() && !ignoreEnabled) return;
 
+        GuiGraphics graphics = context.getGraphics();
         float alpha = parent.getPanel().getAlpha();
 
         // transform stack according to the widget
@@ -229,23 +232,17 @@ public class WidgetTree {
             return;
         }
 
-        /* TODO: How to do this
-        // spotless:off
         // apply transformations to opengl
-        GlStateManager.pushMatrix();
-        context.applyToOpenGl();
+        graphics.pose().pushPose();
+        context.applyTo(graphics.pose());
 
         // draw widget
-        GlStateManager.colorMask(true, true, true, true);
-        GlStateManager.color(1f, 1f, 1f, alpha);
-        GlStateManager.enableBlend();
+        graphics.setColor(1f, 1f, 1f, alpha);
         WidgetTheme widgetTheme = parent.getWidgetTheme(context.getTheme());
         parent.drawBackground(context, widgetTheme);
 
-        GlStateManager.popMatrix();
+        graphics.pose().popPose();
         context.popMatrix();
-        // spotless:on
-        */
     }
 
     public static void drawTreeForeground(IWidget parent, ModularGuiContext context) {
@@ -276,6 +273,7 @@ public class WidgetTree {
             return true;
         }, true);
     }
+
     @Deprecated
     public static void resize(IWidget parent) {
         parent.scheduleResize();
