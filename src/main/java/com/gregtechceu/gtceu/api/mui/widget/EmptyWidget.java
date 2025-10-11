@@ -29,7 +29,7 @@ public class EmptyWidget implements IWidget {
     }
 
     @Override
-    public void initialise(@NotNull IWidget parent) {
+    public void initialise(@NotNull IWidget parent, boolean late) {
         this.parent = parent;
     }
 

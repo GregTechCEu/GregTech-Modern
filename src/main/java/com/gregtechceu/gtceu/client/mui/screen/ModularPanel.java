@@ -219,7 +219,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public void onOpen(ModularScreen screen) {
         this.screen = screen;
         getArea().z(1);
-        initialise(this);
+        initialise(this, false);
         WidgetTree.onUpdate(this);
         // TODO: NEA handles main panel
         if (shouldAnimate()) {

@@ -156,10 +156,11 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * Called when a panel is opened. Use {@link #onInit()} and {@link #afterInit()} for custom logic.
      *
      * @param parent the parent this element belongs to
+     * @param late   true if this is called some time after the widget tree of the parent has been initialised
      */
     @ApiStatus.Internal
     @Override
-    public void initialise(@NotNull IWidget parent) {
+    public void initialise(@NotNull IWidget parent, boolean late) {
         if (!(this instanceof ModularPanel)) {
             this.parent = parent;
             this.panel = parent.getPanel();
@@ -178,7 +179,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         }
         this.valid = true;
         if (!getScreen().isClientOnly()) {
-            initialiseSyncHandler(getScreen().getSyncManager());
+            initialiseSyncHandler(getScreen().getSyncManager(), late);
         }
         if (isExcludeAreaInXei()) {
             getContext().getXeiSettings().addExclusionArea(this);
@@ -186,7 +187,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         onInit();
         if (hasChildren()) {
             for (IWidget child : getChildren()) {
-                child.initialise(this);
+                child.initialise(this, false);
             }
         }
         afterInit();
@@ -211,7 +212,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * Custom logic should be handled in {@link #isValidSyncHandler(SyncHandler)}.
      */
     @Override
-    public void initialiseSyncHandler(ModularSyncManager syncManager) {
+    public void initialiseSyncHandler(ModularSyncManager syncManager, boolean late) {
         if (this.syncKey != null) {
             this.syncHandler = syncManager.getSyncHandler(getPanel().getName(), this.syncKey);
         }

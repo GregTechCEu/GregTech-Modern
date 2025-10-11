@@ -86,7 +86,7 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
         }
         this.children.add(index, child);
         if (isValid()) {
-            child.initialise(this);
+            child.initialise(this, true);
         }
         onChildAdd(child);
         return true;

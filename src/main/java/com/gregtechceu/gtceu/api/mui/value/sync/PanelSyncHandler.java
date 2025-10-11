@@ -57,7 +57,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
                 this.syncManager.getModularSyncManager() != getSyncManager().getModularSyncManager()) {
             throw new IllegalStateException("Can't reopen synced panel in another screen!");
         } else if (this.syncManager == null) {
-            this.syncManager = new PanelSyncManager();
+            this.syncManager = new PanelSyncManager(client);
             this.openedPanel = Objects.requireNonNull(createUI(this.syncManager));
             this.panelName = this.openedPanel.getName();
             this.openedPanel.setSyncHandler(this);

@@ -218,7 +218,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
 
         public Item<T> child(IWidget widget) {
             this.children = Collections.singletonList(widget);
-            if (isValid()) widget.initialise(this);
+            if (isValid()) widget.initialise(this, true);
             return this;
         }
 

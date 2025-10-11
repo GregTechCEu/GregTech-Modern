@@ -40,8 +40,9 @@ public interface IWidget extends IGuiElement {
      * This element now becomes valid
      *
      * @param parent the parent this element belongs to
+     * @param late   true if this is called some time after the widget tree of the parent has been initialised
      */
-    void initialise(@NotNull IWidget parent);
+    void initialise(@NotNull IWidget parent, boolean late);
 
     /**
      * Invalidates this element.

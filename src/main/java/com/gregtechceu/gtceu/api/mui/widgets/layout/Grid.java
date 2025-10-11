@@ -193,7 +193,7 @@ public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayout
         }
         super.getChildren().add(index, child);
         if (isValid()) {
-            child.initialise(this);
+            child.initialise(this, true);
         }
         onChildAdd(child);
         this.dirty = true;

@@ -145,6 +145,15 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         this.init = false;
     }
 
+    @ApiStatus.Internal
+    public void onUpdate() {
+        // detectAndSendChanges is potentially called multiple times per tick, while this method is called exactly once
+        // per tick
+        if (this.syncManager != null) {
+            this.syncManager.onUpdate();
+        }
+    }
+
     private void sortShiftClickSlots() {
         this.shiftClickSlots.sort(ModularSlot.SHIFT_CLICK_PRIORITY);
     }

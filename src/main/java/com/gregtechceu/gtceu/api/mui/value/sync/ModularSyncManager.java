@@ -48,8 +48,8 @@ public class ModularSyncManager {
         if (this.mainPSM.getSlotGroup(PLAYER_INVENTORY) == null) {
             this.mainPSM.bindPlayerInventory(getPlayer());
         }
-        open(mainPanelName, mainPSM);
         mainPSM.syncValue(CURSOR_KEY, this.cursorSlotSyncHandler);
+        open(mainPanelName, mainPSM);
     }
 
     public void detectAndSendChanges(boolean init) {
@@ -62,6 +62,10 @@ public class ModularSyncManager {
 
     public void onOpen() {
         this.panelSyncManagerMap.values().forEach(PanelSyncManager::onOpen);
+    }
+
+    public void onUpdate() {
+        this.panelSyncManagerMap.values().forEach(PanelSyncManager::onUpdate);
     }
 
     public PanelSyncManager getPanelSyncManager(String panelName) {
@@ -102,10 +106,10 @@ public class ModularSyncManager {
         return this.panelSyncManagerMap.containsKey(panelName);
     }
 
-    public void receiveWidgetUpdate(String panelName, String mapKey, int id, FriendlyByteBuf buf) {
+    public void receiveWidgetUpdate(String panelName, String mapKey, boolean action, int id, FriendlyByteBuf buf) {
         PanelSyncManager psm = this.panelSyncManagerMap.get(panelName);
         if (psm != null) {
-            psm.receiveWidgetUpdate(mapKey, id, buf);
+            psm.receiveWidgetUpdate(mapKey, action, id, buf);
         } else if (!this.panelHistory.contains(panelName)) {
             GTCEu.LOGGER.throwing(new IllegalStateException(
                     "A packet was send to panel '\" + panelName + \"' which was not opened yet!"));

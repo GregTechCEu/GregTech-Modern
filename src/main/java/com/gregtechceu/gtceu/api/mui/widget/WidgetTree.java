@@ -397,8 +397,14 @@ public class WidgetTree {
 
     @ApiStatus.Internal
     public static void collectSyncValues(PanelSyncManager syncManager, ModularPanel panel, boolean includePanel) {
+        collectSyncValues(syncManager, panel.getName(), panel, includePanel);
+    }
+
+    @ApiStatus.Internal
+    public static void collectSyncValues(PanelSyncManager syncManager, String panelName, IWidget panel,
+                                         boolean includePanel) {
         AtomicInteger id = new AtomicInteger(0);
-        String syncKey = ModularSyncManager.AUTO_SYNC_PREFIX + panel.getName();
+        String syncKey = ModularSyncManager.AUTO_SYNC_PREFIX + panelName;
         foreachChildBFS(panel, widget -> {
             if (widget instanceof ISynced<?> synced) {
                 if (synced.isSynced() && !syncManager.hasSyncHandler(synced.getSyncHandler())) {

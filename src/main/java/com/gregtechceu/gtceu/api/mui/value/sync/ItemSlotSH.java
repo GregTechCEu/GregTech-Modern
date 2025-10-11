@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,7 +23,6 @@ public class ItemSlotSH extends SyncHandler {
     private ItemStack lastStoredItem;
     private boolean registered = false;
 
-    @ApiStatus.Internal
     public ItemSlotSH(ModularSlot slot) {
         this.slot = slot;
     }

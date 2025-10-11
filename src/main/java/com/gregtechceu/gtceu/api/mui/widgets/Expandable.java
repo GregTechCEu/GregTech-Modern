@@ -157,7 +157,7 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
         this.normalView = normalView;
         this.children.set(0, normalView);
         if (isValid()) {
-            this.normalView.initialise(this);
+            this.normalView.initialise(this, true);
         }
         return this;
     }
@@ -166,7 +166,7 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
         this.expandedView = expandedView;
         this.children.set(1, expandedView);
         if (isValid()) {
-            this.expandedView.initialise(this);
+            this.expandedView.initialise(this, true);
         }
         return this;
     }
