@@ -13,6 +13,9 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public class RichText implements IDrawable, IRichTextBuilder<RichText> {
 
@@ -28,6 +31,8 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     @Getter
     private Boolean shadow = null;
 
+    private int cursor = 0;
+    private boolean cursorLocked = false;
     private List<ITextLine> cachedText;
 
     public boolean isEmpty() {
@@ -67,6 +72,13 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         return minWidth;
     }
 
+    private void addElement(Object o) {
+        this.elements.add(this.cursor, o);
+        if (!this.cursorLocked) {
+            this.cursor++;
+        }
+    }
+
     @Override
     public RichText getThis() {
         return this;
@@ -79,13 +91,13 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
 
     @Override
     public RichText add(Component c) {
-        this.elements.add(c);
+        addElement(c);
         return this;
     }
 
     @Override
     public RichText add(String s) {
-        this.elements.add(s);
+        addElement(s);
         return this;
     }
 
@@ -93,19 +105,20 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     public RichText add(IDrawable drawable) {
         Object o = drawable;
         if (!(o instanceof IKey) && !(o instanceof IIcon)) o = drawable.asIcon();
-        this.elements.add(o);
+        addElement(o);
         return this;
     }
 
     @Override
     public RichText addLine(ITextLine line) {
-        this.elements.add(line);
+        addElement(line);
         return this;
     }
 
     @Override
     public RichText clearText() {
         this.elements.clear();
+        this.cursor = 0;
         return this;
     }
 
@@ -131,6 +144,103 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     public RichText textShadow(boolean shadow) {
         this.shadow = shadow;
         return this;
+    }
+
+    @Override
+    public RichText moveCursorAfterElement(Pattern regex) {
+        int i = findNextText(this.cursor, true, s -> regex.matcher(s).find());
+        if (i < 0) i = this.elements.size();
+        this.cursor = i;
+        return this;
+    }
+
+    @Override
+    public RichText replace(Pattern regex, UnaryOperator<IKey> function) {
+        int i = findNextText(this.cursor, true, s -> regex.matcher(s).find());
+        if (i >= 0) {
+            this.cursor = i;
+            Object o = this.elements.get(i);
+            IKey key = o instanceof IKey key1 ? key1 : IKey.str((String) o);
+            key = function.apply(key);
+            if (key == null) {
+                this.elements.remove(i);
+                this.cursor--;
+            } else {
+                this.elements.set(i, key);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public RichText moveCursorToStart() {
+        this.cursor = 0;
+        return this;
+    }
+
+    @Override
+    public RichText moveCursorToEnd() {
+        this.cursor = this.elements.size() - 1;
+        return this;
+    }
+
+    @Override
+    public RichText moveCursorForward(int by) {
+        this.cursor = Math.min(this.cursor + by, this.elements.size() - 1);
+        return this;
+    }
+
+    @Override
+    public RichText moveCursorBackward(int by) {
+        this.cursor = Math.max(0, this.cursor - by);
+        return this;
+    }
+
+    @Override
+    public RichText lockCursor() {
+        this.cursorLocked = true;
+        return this;
+    }
+
+    @Override
+    public RichText unlockCursor() {
+        this.cursorLocked = false;
+        return this;
+    }
+
+    @Override
+    public RichText moveCursorToNextLine() {
+        if (this.cursor < this.elements.size() - 1) {
+            this.cursor = findNextLine(this.cursor) + 1;
+        }
+        return this;
+    }
+
+    private int findNextLine(int current) {
+        for (int i = current; i < this.elements.size(); i++) {
+            Object o = this.elements.get(i);
+            if (o == IKey.LINE_FEED) return i;
+            if (o instanceof IKey key && key.get().getString().trim().endsWith("\n")) return i;
+            if (o instanceof String string && string.trim().endsWith("\n")) return i;
+            if (o instanceof ITextLine) return i;
+        }
+        return this.elements.size() - 1;
+    }
+
+    private int findNextText(int current, boolean wrapAround, Predicate<String> test) {
+        int i = current;
+        int lim = this.elements.size();
+        while (i < lim) {
+            Object o = this.elements.get(i);
+            if (o instanceof IKey key && test.test(key.get().getString())) return i;
+            if (o instanceof String string && test.test(string)) return i;
+            if (++i == lim && wrapAround) {
+                i = 0;
+                lim = current;
+                wrapAround = false;
+            }
+        }
+        return -1;
     }
 
     public RichText insertTitleMargin(int margin) {

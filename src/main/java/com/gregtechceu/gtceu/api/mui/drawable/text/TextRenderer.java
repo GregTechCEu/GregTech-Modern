@@ -155,7 +155,7 @@ public class TextRenderer {
         this.lastY = y0;
         for (ITextLine line : lines) {
             int x0 = getStartX(width, line.getWidth());
-            if (!simulate) line.draw(context, getFont(), x0, y0, this.color, this.shadow);
+            if (!simulate) line.draw(context, getFont(), x0, y0, this.color, this.shadow, width, height);
             y0 += line.getHeight(getFont());
         }
         if (!this.simulate) {

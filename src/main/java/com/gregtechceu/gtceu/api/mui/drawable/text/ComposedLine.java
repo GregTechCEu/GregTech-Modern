@@ -35,7 +35,8 @@ public class ComposedLine implements ITextLine {
     }
 
     @Override
-    public void draw(GuiContext context, Font font, float x, float y, int color, boolean shadow) {
+    public void draw(GuiContext context, Font font, float x, float y, int color, boolean shadow,
+                     int availableWidth, int availableHeight) {
         this.lastX = x;
         this.lastY = y;
         for (Object o : this.elements) {
@@ -53,12 +54,13 @@ public class ComposedLine implements ITextLine {
                 x += font.width(s);
             } else if (o instanceof IIcon icon) {
                 float drawY = getHeight(font) / 2f - icon.getHeight() / 2f;
-                icon.draw(context, (int) x, (int) (y + drawY), icon.getWidth(), icon.getHeight(),
+                int w = icon.getWidth() > 0 ? icon.getWidth() : availableWidth;
+                icon.draw(context, (int) x, (int) (y + drawY), w, icon.getHeight(),
                         IThemeApi.get().getDefaultTheme().getFallback());
                 if (icon instanceof IHoverable hoverable) {
                     hoverable.setRenderedAt((int) x, (int) (y + drawY));
                 }
-                x += icon.getWidth();
+                x += w;
             }
         }
     }

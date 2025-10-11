@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
+import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
@@ -50,10 +51,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.DoubleUnaryOperator;
 
@@ -599,6 +599,31 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .asWidget()
                         .pos(5, 17));
         return panel;
+    }
+
+    public @NotNull ModularPanel buildSearchTest(ModularGuiContext context) {
+        List<String> items = Arrays.asList("Chicken", "Jockey", "Flint", "Steel", "Steve", "Diamond", "Ingot", "Iron",
+                "Armor", "Greg");
+        StringValue searchValue = new StringValue("");
+        return ModularPanel.defaultPanel("search", 100, 150)
+                .child(Flow.column()
+                        .padding(5)
+                        .child(new TextFieldWidget()
+                                .value(searchValue)
+                                .height(16)
+                                .widthRel(1f))
+                        .child(new ListWidget<>()
+                                .collapseDisabledChild()
+                                .expanded()
+                                .widthRel(1f)
+                                .children(items.size(), i -> new TextWidget(IKey.str(items.get(i)))
+                                        .alignment(Alignment.Center)
+                                        .color(Color.WHITE.main)
+                                        .widthRel(1f)
+                                        .height(16)
+                                        .background(GTGuiTextures.MC_BUTTON)
+                                        .setEnabledIf(w -> items.get(i).toLowerCase()
+                                                .contains(searchValue.getStringValue())))));
     }
 
     public void tick() {

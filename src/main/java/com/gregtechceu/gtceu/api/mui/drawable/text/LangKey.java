@@ -19,7 +19,7 @@ public class LangKey extends BaseKey {
     @Getter
     private final @Nullable Supplier<@NotNull Object @Nullable []> argsSupplier;
     private MutableComponent component;
-    private long time = 0;
+    private long time = -1;
 
     public LangKey(@NotNull String key) {
         this(key, () -> null);

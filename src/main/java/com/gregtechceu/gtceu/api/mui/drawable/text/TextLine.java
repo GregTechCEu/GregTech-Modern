@@ -27,7 +27,8 @@ public class TextLine implements ITextLine {
     }
 
     @Override
-    public void draw(GuiContext context, Font font, float x, float y, int color, boolean shadow) {
+    public void draw(GuiContext context, Font font, float x, float y, int color, boolean shadow,
+                     int availableWidth, int availableHeight) {
         context.getGraphics().drawString(font, this.text.getVisualOrderText(), x, y, color, shadow);
         this.lastX = x;
         this.lastY = y;

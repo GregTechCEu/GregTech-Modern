@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.drawable.ITextLine;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IEnumValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
@@ -220,6 +222,217 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
      */
     protected W addTooltip(int state, String tooltip) {
         return addTooltip(state, IKey.str(tooltip));
+    }
+
+    /**
+     * Adds a tooltip element to all states.
+     *
+     * @param s element
+     * @return this
+     */
+    @Override
+    public W addTooltipElement(String s) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.add(s);
+        }
+        return getThis();
+    }
+
+    /**
+     * Adds tooltip drawables as lines to all states.
+     *
+     * @param lines drawables
+     * @return this
+     */
+    @Override
+    public W addTooltipDrawableLines(Iterable<IDrawable> lines) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.addDrawableLines(lines);
+        }
+        return getThis();
+    }
+
+    /**
+     * Adds a tooltip element to all states.
+     *
+     * @param drawable element
+     * @return this
+     */
+    @Override
+    public W addTooltipElement(IDrawable drawable) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.add(drawable);
+        }
+        return getThis();
+    }
+
+    /**
+     * Adds a tooltip line to all states.
+     *
+     * @param line tooltip line
+     * @return this
+     */
+    @Override
+    public W addTooltipLine(ITextLine line) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.addLine(line);
+        }
+        return getThis();
+    }
+
+    /**
+     * Adds a tooltip line to all states.
+     *
+     * @param drawable tooltip line
+     * @return this
+     */
+    @Override
+    public W addTooltipLine(IDrawable drawable) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.addLine(drawable);
+        }
+        return getThis();
+    }
+
+    /**
+     * Adds tooltip lines to all states.
+     *
+     * @param lines tooltip lines
+     * @return this
+     */
+    @Override
+    public W addTooltipStringLines(Iterable<String> lines) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.addStringLines(lines);
+        }
+        return getThis();
+    }
+
+    /**
+     * Applies a function to the tooltip of all states once.
+     *
+     * @param tooltipConsumer tooltip function
+     * @return this
+     */
+    @Override
+    public W tooltipStatic(Consumer<RichTooltip> tooltipConsumer) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltipConsumer.accept(tooltip);
+        }
+        return getThis();
+    }
+
+    /**
+     * Applies a function to the tooltip of all states every time the tooltip needs to update.
+     *
+     * @param tooltipBuilder tooltip function
+     * @return this
+     */
+    @Override
+    public W tooltipDynamic(Consumer<RichTooltip> tooltipBuilder) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.tooltipBuilder(tooltipBuilder);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip alignment of all states.
+     *
+     * @param alignment alignment
+     * @return this
+     */
+    @Override
+    public W tooltipAlignment(Alignment alignment) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.alignment(alignment);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip position of all states.
+     *
+     * @param pos tooltip pos
+     * @return this
+     */
+    @Override
+    public W tooltipPos(RichTooltip.Pos pos) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.pos(pos);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip position of all states.
+     *
+     * @param x x
+     * @param y y
+     * @return this
+     */
+    @Override
+    public W tooltipPos(int x, int y) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.pos(x, y);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip scale of all states.
+     *
+     * @param scale tooltip scale
+     * @return this
+     */
+    @Override
+    public W tooltipScale(float scale) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.scale(scale);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip text color of all states.
+     *
+     * @param textColor tooltip text color
+     * @return this
+     */
+    @Override
+    public W tooltipTextColor(int textColor) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.textColor(textColor);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip text shadow of all states.
+     *
+     * @param textShadow tooltip pos
+     * @return this
+     */
+    @Override
+    public W tooltipTextShadow(boolean textShadow) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.textShadow(textShadow);
+        }
+        return getThis();
+    }
+
+    /**
+     * Sets the tooltip show up timer of all states.
+     *
+     * @param showUpTimer tooltip show up timer
+     * @return this
+     */
+    @Override
+    public W tooltipShowUpTimer(int showUpTimer) {
+        for (RichTooltip tooltip : this.stateTooltip) {
+            tooltip.showUpTimer(showUpTimer);
+        }
+        return getThis();
     }
 
     protected W stateCount(int stateCount) {
