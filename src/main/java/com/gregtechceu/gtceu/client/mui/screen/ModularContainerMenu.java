@@ -75,7 +75,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             T guiData = factory.readGuiData(player, data);
             UISettings settings = new UISettings();
             settings.defaultCanInteractWith(factory, guiData);
-            PanelSyncManager syncManager = new PanelSyncManager();
+            PanelSyncManager syncManager = new PanelSyncManager(NetworkUtils.isClient(player));
             ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
             WidgetTree.collectSyncValues(syncManager, panel);
             ModularScreen screen = factory.createScreen(guiData, panel);

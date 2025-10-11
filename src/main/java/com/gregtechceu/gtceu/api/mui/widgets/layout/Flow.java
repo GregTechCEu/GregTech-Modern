@@ -46,7 +46,6 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
     /**
      * Whether disabled child widgets should be collapsed for display.
      */
-    @Setter
     private boolean collapseDisabledChild = false;
 
     public Flow(GuiAxis axis) {

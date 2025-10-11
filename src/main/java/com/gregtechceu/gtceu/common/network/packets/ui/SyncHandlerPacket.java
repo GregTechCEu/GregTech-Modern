@@ -15,8 +15,6 @@ import net.minecraftforge.network.NetworkEvent;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
-
 @NoArgsConstructor
 @AllArgsConstructor
 public class SyncHandlerPacket implements GTNetwork.INetPacket {
@@ -62,8 +60,6 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
             syncManager.receiveWidgetUpdate(this.panel, this.key, this.action, id, this.packet);
         } catch (IndexOutOfBoundsException e) {
             GTCEu.LOGGER.error("Failed to read packet for sync handler {} in panel {}", this.key, this.panel);
-        } catch (IOException e) {
-            GTCEu.LOGGER.throwing(e);
         }
     }
 }
