@@ -14,6 +14,7 @@ import java.util.Objects;
  * A box with four edges.
  * Used for margins and paddings.
  */
+@Accessors(fluent = true, chain = true)
 public class Box implements IAnimatable<Box> {
 
     public static final Box SHARED = new Box();
@@ -22,19 +23,15 @@ public class Box implements IAnimatable<Box> {
 
     @Getter
     @Setter
-    @Accessors(fluent = true, chain = true)
     public int left;
     @Getter
     @Setter
-    @Accessors(fluent = true, chain = true)
     public int top;
     @Getter
     @Setter
-    @Accessors(fluent = true, chain = true)
     public int right;
     @Getter
     @Setter
-    @Accessors(fluent = true, chain = true)
     public int bottom;
 
     public Box all(int all) {
