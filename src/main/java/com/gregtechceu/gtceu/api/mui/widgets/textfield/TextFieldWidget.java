@@ -96,7 +96,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     @Override
     protected void setupDrawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
         this.renderer.setSimulate(false);
-        this.renderer.setPos(getArea().getPadding().left, 0);
+        this.renderer.setPos(getArea().getPadding().getLeft(), getArea().getPadding().getTop());
         this.renderer.setScale(this.scale);
         this.renderer.setAlignment(this.textAlignment, -1, getArea().height);
     }

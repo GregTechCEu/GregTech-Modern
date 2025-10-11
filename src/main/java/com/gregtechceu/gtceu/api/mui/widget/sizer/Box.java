@@ -4,12 +4,15 @@ import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
 /**
  * A box with four edges.
  * Used for margins and paddings.
  */
+@Getter
 public class Box implements IAnimatable<Box> {
 
     public static final Box SHARED = new Box();

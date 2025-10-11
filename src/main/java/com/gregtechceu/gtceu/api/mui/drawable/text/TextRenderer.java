@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.drawable.text;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.ITextLine;
-import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -195,12 +194,12 @@ public class TextRenderer {
         float max = this.maxWidth + scroll;
         FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
         Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
-        Stencil.apply(Area.SHARED, context);
+        context.getStencil().push(Area.SHARED);
         context.getGraphics().pose().pushPose();
         context.getGraphics().pose().translate(-scroll, 0, 0);
         drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
         context.getGraphics().pose().popPose();
-        Stencil.remove();
+        context.getStencil().pop();
     }
 
     public List<FormattedCharSequence> wrapLine(Component line) {

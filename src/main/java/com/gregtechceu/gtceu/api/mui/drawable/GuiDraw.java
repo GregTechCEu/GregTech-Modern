@@ -53,7 +53,28 @@ public class GuiDraw {
     public static final double HALF_PI = Math.PI / 2;
 
     public static void drawRect(GuiGraphics graphics, float x0, float y0, float w, float h, int color) {
-        drawRect(graphics, x0, y0, w, h, color, color, color, color);
+        Matrix4f pose = graphics.pose().last().pose();
+        VertexConsumer bufferbuilder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+
+        int r = Color.getRed(color);
+        int g = Color.getGreen(color);
+        int b = Color.getBlue(color);
+        int a = Color.getAlpha(color);
+        if (a == 0 && color != 0) a = 0xFF;
+
+        float x1 = x0 + w, y1 = y0 + h;
+        bufferbuilder.vertex(pose, x0, y0, 0.0f)
+                .color(r, g, b, a)
+                .endVertex();
+        bufferbuilder.vertex(pose, x0, y1, 0.0f)
+                .color(r, g, b, a)
+                .endVertex();
+        bufferbuilder.vertex(pose, x1, y1, 0.0f)
+                .color(r, g, b, a)
+                .endVertex();
+        bufferbuilder.vertex(pose, x1, y0, 0.0f)
+                .color(r, g, b, a)
+                .endVertex();
     }
 
     public static void drawHorizontalGradientRect(GuiGraphics graphics, float x0, float y0, float w, float h,

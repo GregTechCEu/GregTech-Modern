@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTextFieldTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
@@ -118,12 +117,21 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             setupDrawText(context, widgetTheme);
             drawText(context, widgetTheme);
         } else {
-            Stencil.apply(1, 1, getArea().w() - 2, getArea().h() - 2, context);
+            context.getStencil().push(1, 1, getArea().w() - 2, getArea().h() - 2);
+        }
+    }
+
+    @Override
+    public void postDraw(ModularGuiContext context, boolean transformed) {
+        if (!transformed) {
+            context.getStencil().pop();
+            getScrollArea().drawScrollbar(context);
         }
     }
 
     protected void setupDrawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
         this.renderer.setSimulate(false);
+        this.renderer.setPos(getArea().getPadding().getLeft(), getArea().getPadding().getTop());
         this.renderer.setScale(this.scale);
         this.renderer.setAlignment(this.textAlignment, -2, getArea().height);
     }
@@ -263,11 +271,6 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
                 return Result.SUCCESS;
         }
-
-        if (keyCode == Character.MIN_VALUE) {
-            return Result.STOP;
-        }
-
         if (Screen.isCopy(keyCode)) {
             // copy marked text
             Minecraft.getInstance().keyboardHandler.setClipboard(this.handler.getSelectedText());
@@ -288,16 +291,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             // mark whole text
             this.handler.markAll();
             return Result.SUCCESS;
-        } else if (BASE_PATTERN.matcher(String.valueOf((char) keyCode)).matches() &&
-                handler.test(String.valueOf(keyCode))) {
-                    if (this.handler.hasTextMarked()) {
-                        this.handler.delete();
-                    }
-                    // insert typed char
-                    this.handler.insert(String.valueOf((char) keyCode));
-                    return Result.SUCCESS;
-                }
-
+        }
         return Result.STOP;
     }
 
@@ -309,7 +303,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         if (codePoint == Character.MIN_VALUE) {
             return Result.STOP;
         }
-        if (BASE_PATTERN.matcher(String.valueOf(codePoint)).matches() && handler.test(String.valueOf(codePoint))) {
+        if (BASE_PATTERN.matcher(String.valueOf(codePoint)).matches() &&
+                handler.test(String.valueOf(codePoint))) {
             if (this.handler.hasTextMarked()) {
                 this.handler.delete();
             }

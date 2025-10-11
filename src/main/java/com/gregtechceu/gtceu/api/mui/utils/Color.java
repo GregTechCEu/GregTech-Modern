@@ -334,6 +334,12 @@ public class Color {
         return withAlpha(argb, (int) (alpha * 255));
     }
 
+    public static int ensureAlpha(int argb) {
+        int a = getAlpha(argb);
+        if (a == 0) argb = withAlpha(argb, 0xFF);
+        return argb;
+    }
+
     /**
      * Calculates the hue value (HSV or HSL format) from the ARGB color.
      *

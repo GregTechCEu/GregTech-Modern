@@ -222,6 +222,15 @@ public class FontRenderHelper {
         };
     }
 
+    public static int length(FormattedCharSequence str) {
+        MutableInt length = new MutableInt();
+        str.accept((positionInCurrentSequence, style, codePoint) -> {
+            length.increment();
+            return true;
+        });
+        return length.intValue();
+    }
+
     public static List<Component> asComponents(List<String> lines) {
         return lines.stream().<Component>map(Component::literal).toList();
     }

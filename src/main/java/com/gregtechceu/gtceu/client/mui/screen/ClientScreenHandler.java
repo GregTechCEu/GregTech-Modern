@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
-import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.FpsCounter;
+import com.gregtechceu.gtceu.api.mui.utils.Stencil;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.RichTextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -418,7 +418,7 @@ public class ClientScreenHandler {
     public static void drawScreenInternal(GuiGraphics graphics, ModularScreen muiScreen, Screen mcScreen, int mouseX,
                                           int mouseY, float partialTicks) {
         Stencil.reset();
-        Stencil.apply(muiScreen.getScreenArea(), null);
+        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
         muiScreen.render(graphics, mouseX, mouseY, partialTicks);
         RenderSystem.disableDepthTest();
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
@@ -427,7 +427,7 @@ public class ClientScreenHandler {
         muiScreen.drawForeground(graphics, partialTicks);
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
-        Stencil.remove();
+        muiScreen.getContext().getStencil().pop();
     }
 
     public static void drawContainer(GuiGraphics graphics, ModularScreen muiScreen, AbstractContainerScreen<?> mcScreen,
@@ -435,7 +435,7 @@ public class ClientScreenHandler {
         AbstractContainerScreenAccessor acc = (AbstractContainerScreenAccessor) mcScreen;
 
         Stencil.reset();
-        Stencil.apply(muiScreen.getScreenArea(), null);
+        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
         mcScreen.renderBackground(graphics);
         int x = mcScreen.getGuiLeft();
         int y = mcScreen.getGuiTop();
@@ -503,7 +503,7 @@ public class ClientScreenHandler {
         graphics.pose().popPose();
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
-        Stencil.remove();
+        muiScreen.getContext().getStencil().pop();
     }
 
     private static void drawFloatingItemStack(AbstractContainerScreen<?> mcScreen, GuiGraphics graphics,

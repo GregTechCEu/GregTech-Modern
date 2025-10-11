@@ -1,26 +1,21 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
+import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
+import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.PointF;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Setter;
+import org.apache.commons.lang3.mutable.MutableFloat;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -102,41 +97,34 @@ public class TextFieldRenderer extends TextRenderer {
         }
         List<Line> measuredLines = measureStringLines(lines);
         y -= getStartY(measuredLines.size());
-        int index = (int) (y / (getFontHeight()));
-        if (index < 0) return new Point();
-        if (index >= measuredLines.size())
-            return new Point(getFont().width(measuredLines.get(measuredLines.size() - 1).text()),
+        int lineIndex = (int) (y / (getFontHeight()));
+        if (lineIndex < 0) return new Point();
+        if (lineIndex >= measuredLines.size()) {
+            return new Point(FontRenderHelper.length(measuredLines.get(measuredLines.size() - 1).text()),
                     measuredLines.size() - 1);
-        Line line = measuredLines.get(index);
-        x -= getStartX(line.width());
-        if (line.width() <= 0) return new Point(0, index);
-        if (line.width() < x) return new Point(getFont().width(line.text()), index);
-        float currentX = 0;
-        for (int i = 0; i < getFont().width(line.text()); i++) {
-            final int finalI = i;
-            MutableInt total = new MutableInt();
-            MutableInt last = new MutableInt();
-            MutableInt c = new MutableInt();
-            MutableObject<Style> s = new MutableObject<>();
-            line.text().accept((pos, style, codePoint) -> {
-                if (total.addAndGet(pos - last.getValue()) >= finalI) {
-                    c.setValue(codePoint);
-                    s.setValue(style);
-                    return false;
-                }
-                last.setValue(pos);
-                return true;
-            });
-            float charWidth = getFont().getSplitter()
-                    .stringWidth(FormattedCharSequence.codepoint(c.getValue(), s.getValue())) * this.scale;
-            currentX += charWidth;
-            if (currentX >= x) {
-                // dist with current letter < dist without current letter -> next letter pos
-                if (Math.abs(currentX - x) < Math.abs(currentX - charWidth - x)) i++;
-                return new Point(i, index);
-            }
         }
-        return new Point();
+        Line line = measuredLines.get(lineIndex);
+        x -= getStartX(line.width());
+        if (line.width() <= 0) return new Point(0, lineIndex);
+        if (line.width() < x) return new Point(FontRenderHelper.length(line.text()), lineIndex);
+
+        final float fx = x;
+        final MutableFloat currentX = new MutableFloat();
+        final MutableInt xIndex = new MutableInt();
+        line.text().accept((positionInCurrentSequence, style, codePoint) -> {
+            float charWidth = getFont().width(FormattedCharSequence.codepoint(codePoint, style));
+            currentX.add(charWidth);
+            if (currentX.floatValue() >= fx) {
+                // dist with current letter < dist without current letter -> next letter pos
+                if (Math.abs(currentX.floatValue() - fx) < Math.abs(currentX.floatValue() - charWidth - fx)) {
+                    xIndex.increment();
+                }
+                return false;
+            }
+            xIndex.increment();
+            return true;
+        });
+        return new Point(xIndex.intValue(), lineIndex);
     }
 
     public PointF getPosOf(List<Line> measuredLines, Point cursorPos) {
@@ -144,7 +132,7 @@ public class TextFieldRenderer extends TextRenderer {
             return new PointF(getStartX(0), getStartYOfLines(1));
         }
         Line line = measuredLines.get(cursorPos.y);
-        float width = Math.min(getFont().getSplitter().stringWidth(line.text()), cursorPos.x);
+        float width = getFont().getSplitter().stringWidth(FontRenderHelper.substring(line.text(), 0, cursorPos.x + 1));
         return new PointF(getStartX(line.width()) + width * this.scale,
                 getStartYOfLines(measuredLines.size()) + cursorPos.y * getFontHeight());
     }
@@ -152,55 +140,19 @@ public class TextFieldRenderer extends TextRenderer {
     @OnlyIn(Dist.CLIENT)
     public void drawMarked(GuiGraphics graphics, float y0, float x0, float x1) {
         y0 -= 1;
-        float y1 = y0 + getFontHeight();
-        float red = Color.getRedF(this.markedColor);
-        float green = Color.getGreenF(this.markedColor);
-        float blue = Color.getBlueF(this.markedColor);
-        float alpha = Color.getAlphaF(this.markedColor);
-        if (alpha == 0)
-            alpha = 1f;
-
-        graphics.setColor(red, green, blue, alpha);
-        drawRect(x0, y0, x1, y1, red, green, blue, alpha);
-        RenderSystem.disableColorLogicOp();
-        graphics.setColor(1, 1, 1, 1);
+        RenderSystem.enableBlend();
+        GuiDraw.drawRect(graphics, x0, y0, x1 - x0, getFontHeight(), this.markedColor);
     }
 
     @OnlyIn(Dist.CLIENT)
     private void drawCursor(GuiGraphics graphics, float x0, float y0) {
         x0 = (x0 - 0.8f) / this.scale;
         y0 = (y0 - 1) / this.scale;
-        float x1 = x0 + 0.6f;
-        float y1 = y0 + 9;
-        float red = Color.getRedF(this.cursorColor);
-        float green = Color.getGreenF(this.cursorColor);
-        float blue = Color.getBlueF(this.cursorColor);
-        float alpha = Color.getAlphaF(this.cursorColor);
-        if (alpha == 0)
-            alpha = 1f;
 
-        RenderSystem.disableBlend();
         graphics.pose().pushPose();
-        graphics.pose().scale(this.scale, this.scale, 0);
-        graphics.setColor(red, green, blue, alpha);
-        drawRect(x0, y0, x1, y1, red, green, blue, alpha);
-        graphics.setColor(1, 1, 1, 1);
-
-        graphics.pose().popPose();
+        graphics.pose().scale(this.scale, this.scale, 1);
         RenderSystem.enableBlend();
-    }
-
-    private static void drawRect(float x0, float y0, float x1, float y1, float red, float green, float blue,
-                                 float alpha) {
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        bufferbuilder.vertex(x0, y1, 0.0D).endVertex();
-        bufferbuilder.vertex(x1, y1, 0.0D).endVertex();
-        bufferbuilder.vertex(x1, y0, 0.0D).endVertex();
-        bufferbuilder.vertex(x0, y0, 0.0D).endVertex();
-        tesselator.end();
+        GuiDraw.drawRect(graphics, x0, y0, 0.6f, 9, this.cursorColor);
+        graphics.pose().popPose();
     }
 }

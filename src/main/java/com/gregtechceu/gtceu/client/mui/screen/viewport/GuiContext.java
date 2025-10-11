@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
+import com.gregtechceu.gtceu.api.mui.utils.Stencil;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
 
@@ -36,6 +37,8 @@ public class GuiContext extends GuiViewportStack {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     private GuiGraphics graphics = null;
+    @Getter
+    private final Stencil stencil = new Stencil(this);
 
     /* Mouse states */
     private int mouseX;

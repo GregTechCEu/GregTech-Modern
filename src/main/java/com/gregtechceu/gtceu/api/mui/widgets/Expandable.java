@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.drawable.Stencil;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
@@ -114,14 +113,14 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
             if (this.stencilTransform != null) {
                 this.stencilTransform.accept(rect, this.expanded);
             }
-            Stencil.apply(rect, context);
+            context.getStencil().push(rect);
         }
     }
 
     @Override
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
-            Stencil.remove();
+            context.getStencil().pop();
         }
     }
 
