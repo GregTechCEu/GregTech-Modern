@@ -104,7 +104,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     public TestMuiMachine(IMachineBlockEntity holder) {
         super(holder);
-        q sub = subscribeServerTick(this::tick);
+        sub = subscribeServerTick(this::tick);
     }
 
     @Override
@@ -492,7 +492,6 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .size(14, 14))
                                                                 .child(IKey.str("Boolean config 3").asWidget()
                                                                         .height(14)))))
-
                                         .addPage(new ParentWidget<>()
                                                 .debugName("page 4 storage")
                                                 .sizeRel(1f)
@@ -511,8 +510,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         }))))
                                                         .child(new DynamicSyncedWidget<>()
                                                                 .widthRel(1f)
-                                                                .syncHandler(dynamicSyncHandler))))))
-                        .addPage(createSchemaPage(data)))
+                                                                .syncHandler(dynamicSyncHandler))))
+                                        .addPage(createSchemaPage(data)))))
                 .child(SlotGroupWidget.playerInventory(false));
         /*
          * panel.child(new ButtonWidget<>()
