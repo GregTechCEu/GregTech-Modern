@@ -503,14 +503,15 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                           client, init) -> {
                                                                             if (client && !onlyAmountChanged) {
                                                                                 dynamicSyncHandler.notifyUpdate(
-                                                                                        packet -> packet.writeItem(newItem));
+                                                                                        packet -> packet
+                                                                                                .writeItem(newItem));
                                                                             }
                                                                         }))))
                                                         .child(new DynamicSyncedWidget<>()
                                                                 .widthRel(1f)
                                                                 .syncHandler(dynamicSyncHandler))))
-                                        .addPage(createSchemaPage(data)))))
-                .child(SlotGroupWidget.playerInventory(false));
+                                        .addPage(createSchemaPage(data))))
+                        .child(SlotGroupWidget.playerInventory(false)));
         /*
          * panel.child(new ButtonWidget<>()
          * .flex(flex -> flex.size(60, 20)
