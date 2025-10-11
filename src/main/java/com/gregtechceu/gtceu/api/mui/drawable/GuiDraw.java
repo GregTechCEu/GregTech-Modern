@@ -63,18 +63,10 @@ public class GuiDraw {
         if (a == 0 && color != 0) a = 0xFF;
 
         float x1 = x0 + w, y1 = y0 + h;
-        bufferbuilder.vertex(pose, x0, y0, 0.0f)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(pose, x0, y1, 0.0f)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(pose, x1, y1, 0.0f)
-                .color(r, g, b, a)
-                .endVertex();
-        bufferbuilder.vertex(pose, x1, y0, 0.0f)
-                .color(r, g, b, a)
-                .endVertex();
+        bufferbuilder.vertex(pose, x0, y0, 0.0f).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(pose, x0, y1, 0.0f).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(pose, x1, y1, 0.0f).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(pose, x1, y0, 0.0f).color(r, g, b, a).endVertex();
     }
 
     public static void drawHorizontalGradientRect(GuiGraphics graphics, float x0, float y0, float w, float h,
