@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Objects;
 
@@ -12,16 +14,27 @@ import java.util.Objects;
  * A box with four edges.
  * Used for margins and paddings.
  */
-@Getter
 public class Box implements IAnimatable<Box> {
 
     public static final Box SHARED = new Box();
 
     public static final Box ZERO = new Box();
 
+    @Getter
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public int left;
+    @Getter
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public int top;
+    @Getter
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public int right;
+    @Getter
+    @Setter
+    @Accessors(fluent = true, chain = true)
     public int bottom;
 
     public Box all(int all) {
@@ -36,26 +49,6 @@ public class Box implements IAnimatable<Box> {
         this.left = left;
         this.top = top;
         this.right = right;
-        this.bottom = bottom;
-        return this;
-    }
-
-    public Box left(int left) {
-        this.left = left;
-        return this;
-    }
-
-    public Box top(int top) {
-        this.top = top;
-        return this;
-    }
-
-    public Box right(int right) {
-        this.right = right;
-        return this;
-    }
-
-    public Box bottom(int bottom) {
         this.bottom = bottom;
         return this;
     }

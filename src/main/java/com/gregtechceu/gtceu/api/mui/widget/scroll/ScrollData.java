@@ -137,7 +137,7 @@ public abstract class ScrollData {
 
     public float getProgress(ScrollArea area, int mainAxisPos, int crossAxisPos) {
         float fullSize = (float) getFullVisibleSize(area);
-        return (mainAxisPos - area.getPoint(this.axis) - clickOffset) / (fullSize - getScrollBarLength(area));
+        return (mainAxisPos - clickOffset) / (fullSize - getScrollBarLength(area));
     }
 
     @Nullable
@@ -240,19 +240,18 @@ public abstract class ScrollData {
     }
 
     public boolean onMouseClicked(ScrollArea area, int mainAxisPos, int crossAxisPos, int button) {
-        if (isAxisStart() ? crossAxisPos <= area.getPoint(this.axis.getOther()) + getThickness() :
-                crossAxisPos >= area.getEndPoint(this.axis.getOther()) - getThickness()) {
+        if (isAxisStart() ? crossAxisPos <= getThickness() :
+                crossAxisPos >= area.getSize(this.axis.getOther()) - getThickness()) {
             this.dragging = true;
             this.clickOffset = mainAxisPos;
 
             int scrollBarSize = getScrollBarLength(area);
             int start = getScrollBarStart(area, scrollBarSize, false);
-            int areaStart = area.getPoint(this.axis);
-            boolean clickInsideBar = mainAxisPos >= areaStart + start &&
-                    mainAxisPos <= areaStart + start + scrollBarSize;
+            boolean clickInsideBar = mainAxisPos >= start &&
+                    mainAxisPos <= start + scrollBarSize;
 
             if (clickInsideBar) {
-                this.clickOffset = mainAxisPos - areaStart - start; // relative click position inside bar
+                this.clickOffset = mainAxisPos - start; // relative click position inside bar
             } else {
                 this.clickOffset = scrollBarSize / 2; // assume click position in center of bar
             }

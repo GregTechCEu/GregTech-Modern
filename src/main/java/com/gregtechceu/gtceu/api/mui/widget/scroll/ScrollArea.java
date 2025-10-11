@@ -86,11 +86,6 @@ public class ScrollArea extends Area {
      * This method should be invoked when mouse wheel is scrolling
      */
     public boolean mouseScroll(int x, int y, double scroll, boolean shift) {
-        if (!isInside(x, y)) {
-            // not hovering TODO: this shouldn't be required
-            return false;
-        }
-
         ScrollData data;
         if (this.scrollX != null) {
             data = this.scrollY == null || shift ? this.scrollX : this.scrollY;

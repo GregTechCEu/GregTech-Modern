@@ -46,18 +46,18 @@ public class HorizontalScrollData extends ScrollData {
 
     @Override
     public boolean isInsideScrollbarArea(ScrollArea area, int x, int y) {
-        if (!area.isInside(x, y) || !isScrollBarActive(area, false)) {
+        if (!isScrollBarActive(area, false)) {
             return false;
         }
         int scrollbar = getThickness();
         ScrollData data = getOtherScrollData(area);
         if (data != null && isOtherScrollBarActive(area, true)) {
             int thickness = data.getThickness();
-            if (data.isAxisStart() ? x < area.x + thickness : x >= area.ex() - thickness) {
+            if (data.isAxisStart() ? x < thickness : x >= area.w() - thickness) {
                 return false;
             }
         }
-        return isAxisStart() ? y >= area.y && y < area.y + scrollbar : y >= area.ey() - scrollbar && y < area.ey();
+        return isAxisStart() ? y >= 0 && y < scrollbar : y >= area.h() - scrollbar && y < area.h();
     }
 
     @Override

@@ -91,6 +91,7 @@ public class Stencil {
     }
 
     private void applyShape(Runnable stencilShape, boolean hideStencilShape) {
+        // TODO: figure out exactly what this does, why its needed and why it sometimes causes issues
         this.context.getGraphics().flush();
         // increase stencil values in the area
         GL11.glEnable(GL11.GL_STENCIL_TEST);
@@ -135,7 +136,6 @@ public class Stencil {
         bufferbuilder.vertex(pose, x1, y1, 0.0f).endVertex();
         bufferbuilder.vertex(pose, x1, y0, 0.0f).endVertex();
         tesselator.end();
-        RenderSystem.disableBlend();
         RenderSystem.setShader(() -> lastShader);
     }
 

@@ -131,7 +131,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
 
     protected void setupDrawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
         this.renderer.setSimulate(false);
-        this.renderer.setPos(getArea().getPadding().getLeft(), getArea().getPadding().getTop());
+        this.renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         this.renderer.setScale(this.scale);
         this.renderer.setAlignment(this.textAlignment, -2, getArea().height);
     }
@@ -216,6 +216,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
 
     @Override
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        super.onMouseDrag(mouseX, mouseY, button, dragX, dragY);
         if (isFocused() && !getScrollArea().isDragging()) {
             int x = getContext().getMouseX() + getScrollX();
             int y = getContext().getMouseY() + getScrollY();
