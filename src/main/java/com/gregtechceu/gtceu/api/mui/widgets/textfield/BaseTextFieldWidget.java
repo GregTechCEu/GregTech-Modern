@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.VoidWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -47,6 +48,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     private static final Pattern BASE_PATTERN = Pattern.compile("[^§]");
 
     private static final int CURSOR_BLINK_RATE = 10;
+    // max time between clicks to count as double-click, in ms
+    private static final int DOUBLE_CLICK_THRESHOLD = 300;
 
     protected TextFieldHandler handler = new TextFieldHandler(this);
     protected TextFieldRenderer renderer = new TextFieldRenderer(this.handler);
@@ -57,6 +60,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     protected float scale = 1f;
     protected boolean focusOnGuiOpen;
     private int cursorTimer;
+    protected long lastClickTime = 0;
 
     protected Integer textColor;
     protected Integer markedColor;
@@ -178,7 +182,26 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             // manually transform here
             int x = getContext().getMouseX() + getScrollX();
             int y = getContext().getMouseY() + getScrollY();
+            long now = Util.getMillis();
+            if (this.lastClickTime < 0) {
+                // triple click
+                if (now + this.lastClickTime < DOUBLE_CLICK_THRESHOLD) {
+                    this.handler.markAll();
+                    this.lastClickTime = now;
+                    return Result.SUCCESS;
+                }
+                this.lastClickTime = 0;
+            } else if (this.lastClickTime > 0) {
+                // double click
+                if (now - this.lastClickTime < DOUBLE_CLICK_THRESHOLD) {
+                    this.handler.markCurrentLine();
+                    this.lastClickTime = -Util.getMillis();
+                    return Result.SUCCESS;
+                }
+                this.lastClickTime = 0;
+            }
             this.handler.setCursor(this.renderer.getCursorPos(this.handler.getText(), x, y), true);
+            this.lastClickTime = Util.getMillis();
         }
         return Result.SUCCESS;
     }
@@ -241,6 +264,10 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 return Result.SUCCESS;
         }
 
+        if (keyCode == Character.MIN_VALUE) {
+            return Result.STOP;
+        }
+
         if (Screen.isCopy(keyCode)) {
             // copy marked text
             Minecraft.getInstance().keyboardHandler.setClipboard(this.handler.getSelectedText());
@@ -261,7 +288,16 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             // mark whole text
             this.handler.markAll();
             return Result.SUCCESS;
-        }
+        } else if (BASE_PATTERN.matcher(String.valueOf((char) keyCode)).matches() &&
+                handler.test(String.valueOf(keyCode))) {
+                    if (this.handler.hasTextMarked()) {
+                        this.handler.delete();
+                    }
+                    // insert typed char
+                    this.handler.insert(String.valueOf((char) keyCode));
+                    return Result.SUCCESS;
+                }
+
         return Result.STOP;
     }
 

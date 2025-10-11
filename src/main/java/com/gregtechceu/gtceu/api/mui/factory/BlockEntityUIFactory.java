@@ -26,7 +26,8 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
 
     public <T extends BlockEntity & IUIHolder<PosGuiData>> void open(Player player, T blockEntity) {
         Objects.requireNonNull(player);
-        BlockPos pos = getPosFromBE(blockEntity);
+        verifyBlockEntity(MCHelper.getPlayer(), blockEntity);
+        BlockPos pos = blockEntity.getBlockPos();
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, (ServerPlayer) player);
     }
@@ -39,8 +40,9 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public <T extends BlockEntity & IUIHolder<PosGuiData>> void openClient(T tile) {
-        BlockPos pos = getPosFromBE(tile);
+    public <T extends BlockEntity & IUIHolder<PosGuiData>> void openClient(T blockEntity) {
+        verifyBlockEntity(MCHelper.getPlayer(), blockEntity);
+        BlockPos pos = blockEntity.getBlockPos();
         GuiManager.openFromClient(this, new PosGuiData(MCHelper.getPlayer(), pos));
     }
 
@@ -71,14 +73,13 @@ public class BlockEntityUIFactory extends AbstractUIFactory<PosGuiData> {
         return new PosGuiData(player, buffer.readBlockPos());
     }
 
-    public static BlockPos getPosFromBE(BlockEntity tile) {
-        Objects.requireNonNull(tile);
-        if (tile.isRemoved()) {
-            throw new IllegalArgumentException("Can't open invalid TileEntity GUI!");
+    public static void verifyBlockEntity(Player player, BlockEntity blockEntity) {
+        Objects.requireNonNull(blockEntity);
+        if (blockEntity.isRemoved()) {
+            throw new IllegalArgumentException("Can't open invalid BlockEntity GUI!");
         }
-        if (MCHelper.getPlayer().level() != tile.getLevel()) {
-            throw new IllegalArgumentException("TileEntity must be in same dimension as the player!");
+        if (player.level() != blockEntity.getLevel()) {
+            throw new IllegalArgumentException("BlockEntity must be in same dimension as the player!");
         }
-        return tile.getBlockPos();
     }
 }

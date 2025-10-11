@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiViewportStack;
@@ -219,6 +220,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         this.screen = screen;
         getArea().z(1);
         initialise(this);
+        WidgetTree.onUpdate(this);
         // TODO: NEA handles main panel
         if (shouldAnimate()) {
             getAnimator().onFinish(() -> {});

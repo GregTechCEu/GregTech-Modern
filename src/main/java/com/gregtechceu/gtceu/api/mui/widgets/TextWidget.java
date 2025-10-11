@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +28,9 @@ public class TextWidget extends Widget<TextWidget> {
     @Getter
     private float scale = 1f;
 
+    private Component lastText = Component.empty();
+    private Component textForDefaultSize = Component.empty();
+
     public TextWidget(IKey key) {
         this.key = key;
     }
@@ -33,6 +38,11 @@ public class TextWidget extends Widget<TextWidget> {
     @Override
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;
+        Component comp = this.key.getFormatted().copy();
+        if (this.lastText != null && !this.lastText.equals(Component.empty()) && !this.lastText.equals(comp)) {
+            WidgetTree.resizeInternal(this, false);
+        }
+        this.lastText = comp;
         renderer.setColor(this.color != null ? this.color : widgetTheme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().w() + this.scale, getArea().h());
         renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
@@ -49,7 +59,8 @@ public class TextWidget extends Widget<TextWidget> {
         renderer.setPos(padding.left, padding.top);
         renderer.setScale(this.scale);
         renderer.setSimulate(true);
-        renderer.draw(null, this.key.getFormatted());
+        renderer.draw(null, getComponentForDefaultSize());
+        renderer.setSimulate(false);
         return renderer;
     }
 
@@ -64,8 +75,7 @@ public class TextWidget extends Widget<TextWidget> {
             maxWidth = getScreen().getScreenArea().width;
         }
         TextRenderer renderer = simulate(maxWidth);
-        Box padding = getArea().getPadding();
-        return Math.max(1, (int) (renderer.getLastHeight() + padding.vertical() + 0.5f));
+        return getWidgetHeight(renderer.getLastHeight());
     }
 
     @Override
@@ -75,8 +85,30 @@ public class TextWidget extends Widget<TextWidget> {
             maxWidth = getParent().getArea().width;
         }
         TextRenderer renderer = simulate(maxWidth);
+        return getWidgetWidth(renderer.getLastWidth());
+    }
+
+    protected int getWidgetWidth(float actualTextWidth) {
         Box padding = getArea().getPadding();
-        return Math.max(1, (int) Math.ceil(renderer.getLastWidth() + padding.horizontal()));
+        return Math.max(1, (int) Math.ceil(actualTextWidth + padding.horizontal()));
+    }
+
+    protected int getWidgetHeight(float actualTextHeight) {
+        Box padding = getArea().getPadding();
+        return Math.max(1, (int) Math.ceil(actualTextHeight + padding.vertical()));
+    }
+
+    protected Component getComponentForDefaultSize() {
+        if (this.textForDefaultSize == null || this.textForDefaultSize.equals(Component.empty())) {
+            this.textForDefaultSize = this.key.get();
+            this.lastText = this.textForDefaultSize;
+        }
+        return this.textForDefaultSize;
+    }
+
+    @Override
+    public void postResize() {
+        this.textForDefaultSize = Component.empty();
     }
 
     public TextWidget alignment(Alignment alignment) {

@@ -275,7 +275,7 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.END) {
             OverlayStack.onTick();
             defaultContext.tick();
             if (checkGui()) {
@@ -311,20 +311,20 @@ public class ClientScreenHandler {
         if (isPress) {
             // pressing a key
             return inputPhase.isEarly() ? doAction(muiScreen, ms -> ms.keyPressed(keyCode, scanCode, modifiers)) :
-                    keyPressed(mcScreen, keyCode, scanCode, modifiers);
+                    keyTyped(mcScreen, keyCode, scanCode, modifiers);
         } else {
             // releasing a key
             if (inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers))) {
                 return true;
             }
             if (inputPhase.isLate() && keyCode >= ' ') {
-                return keyPressed(mcScreen, keyCode, scanCode, modifiers);
+                return keyTyped(mcScreen, keyCode, scanCode, modifiers);
             }
         }
         return false;
     }
 
-    private static boolean keyPressed(Screen screen, int keyCode, int scanCode, int modifiers) {
+    private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
         if (keyCode == 'C' &&

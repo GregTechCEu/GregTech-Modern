@@ -25,7 +25,8 @@ public class SidedBlockEntityUIFactory extends AbstractUIFactory<SidedPosGuiData
                                                                           Direction facing) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(facing);
-        BlockPos pos = BlockEntityUIFactory.getPosFromBE(blockEntity);
+        BlockEntityUIFactory.verifyBlockEntity(MCHelper.getPlayer(), blockEntity);
+        BlockPos pos = blockEntity.getBlockPos();
         SidedPosGuiData data = new SidedPosGuiData(player, pos, facing);
         GuiManager.open(this, data, (ServerPlayer) player);
     }
@@ -39,9 +40,10 @@ public class SidedBlockEntityUIFactory extends AbstractUIFactory<SidedPosGuiData
     }
 
     @OnlyIn(Dist.CLIENT)
-    public <T extends BlockEntity & IUIHolder<SidedPosGuiData>> void openClient(T tile, Direction facing) {
+    public <T extends BlockEntity & IUIHolder<SidedPosGuiData>> void openClient(T blockEntity, Direction facing) {
         Objects.requireNonNull(facing);
-        BlockPos pos = BlockEntityUIFactory.getPosFromBE(tile);
+        BlockEntityUIFactory.verifyBlockEntity(MCHelper.getPlayer(), blockEntity);
+        BlockPos pos = blockEntity.getBlockPos();
         SidedPosGuiData data = new SidedPosGuiData(MCHelper.getPlayer(), pos, facing);
         GuiManager.openFromClient(this, data);
     }

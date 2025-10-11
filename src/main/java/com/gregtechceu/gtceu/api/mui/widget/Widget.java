@@ -55,7 +55,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * be interacted with.
      */
     @Getter
-    @Setter
     private boolean enabled = true;
     @Getter
     private boolean excludeAreaInXei = false;
@@ -781,6 +780,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     public W syncHandler(String name, int id) {
         this.syncKey = ModularSyncManager.makeSyncKey(name, id);
         return getThis();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (this.enabled != enabled) {
+            this.enabled = enabled;
+            if (this.isValid() && getParent() instanceof INotifyEnabled notifyEnabled) {
+                notifyEnabled.onChildChangeEnabled(this, enabled);
+            }
+        }
     }
 
     /**

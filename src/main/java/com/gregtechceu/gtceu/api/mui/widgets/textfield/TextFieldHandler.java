@@ -228,6 +228,11 @@ public class TextFieldHandler {
         setMainCursor(this.text.size() - 1, this.text.get(this.text.size() - 1).length(), true);
     }
 
+    public void markCurrentLine() {
+        setOffsetCursor(getMainCursor().y, 0);
+        setMainCursor(getMainCursor().y, this.text.get(getMainCursor().y).length(), true);
+    }
+
     public String getTextAsString() {
         return JOINER.join(this.text);
     }

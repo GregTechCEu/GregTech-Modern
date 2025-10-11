@@ -101,16 +101,5 @@ public class InventoryTypes {
         }
     }
 
-    public static class SlotFindResult<T> {
-
-        public final InventoryType<T> type;
-        public final T context;
-        public final int slot;
-
-        public SlotFindResult(InventoryType<T> type, T context, int slot) {
-            this.type = type;
-            this.context = context;
-            this.slot = slot;
-        }
-    }
+    public record SlotFindResult<T>(InventoryType<T> type, T context, int slot) {}
 }
