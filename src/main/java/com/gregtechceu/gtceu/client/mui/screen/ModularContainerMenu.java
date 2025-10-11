@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.client.mui.screen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.mui.base.UIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
-import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
@@ -68,21 +65,8 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     public <T extends GuiData> ModularContainerMenu(MenuType<ModularContainerMenu> type, int containerId,
                                                     Inventory playerInv, @Nullable FriendlyByteBuf data) {
         super(type, containerId);
-        if (data != null) {
-            this.player = playerInv.player;
-            // Copied from GuiManager to (hopefully) set up the correct state even when someone didn't use the API.
-            UIFactory<T> factory = (UIFactory<T>) GuiManager.getFactory(data.readResourceLocation());
-            T guiData = factory.readGuiData(player, data);
-            UISettings settings = new UISettings();
-            settings.defaultCanInteractWith(factory, guiData);
-            PanelSyncManager syncManager = new PanelSyncManager(NetworkUtils.isClient(player));
-            ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
-            WidgetTree.collectSyncValues(syncManager, panel);
-            ModularScreen screen = factory.createScreen(guiData, panel);
-            screen.getContext().setSettings(settings);
-            this.optionalScreen = screen;
-            this.construct(player, syncManager, settings, panel.getName(), guiData);
-        }
+        // TODO: Better integration with menu types for custom containers and screens.
+        throw new IllegalArgumentException("Do not open the modular container the forge way. Use an UIFactory!");
     }
 
     @ApiStatus.Internal
