@@ -46,18 +46,18 @@ public class VerticalScrollData extends ScrollData {
 
     @Override
     public boolean isInsideScrollbarArea(ScrollArea area, int x, int y) {
-        if (!area.isInside(x, y) || !isScrollBarActive(area)) {
+        if (!isScrollBarActive(area)) {
             return false;
         }
         int scrollbar = getThickness();
         ScrollData data = getOtherScrollData(area);
         if (data != null && isOtherScrollBarActive(area, true)) {
             int thickness = data.getThickness();
-            if (data.isAxisStart() ? y < area.y + thickness : y >= area.ey() - thickness) {
+            if (data.isAxisStart() ? y < thickness : y >= area.h() - thickness) {
                 return false;
             }
         }
-        return isAxisStart() ? x >= area.x && x < area.x + scrollbar : x >= area.ex() - scrollbar && x < area.ex();
+        return isAxisStart() ? x >= 0 && x < scrollbar : x >= area.w() - scrollbar && x < area.w();
     }
 
     @Override
