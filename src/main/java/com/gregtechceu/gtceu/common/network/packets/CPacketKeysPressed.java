@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Deprecated
+@Deprecated(forRemoval = true, since = "7.2.1")
 @SuppressWarnings("unchecked")
 @NoArgsConstructor
 public class CPacketKeysPressed implements GTNetwork.INetPacket {

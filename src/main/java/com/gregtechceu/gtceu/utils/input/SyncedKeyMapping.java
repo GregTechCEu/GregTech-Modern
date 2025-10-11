@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Set;
@@ -82,7 +83,7 @@ public final class SyncedKeyMapping {
      * @param mcKeyMapping Doubly-wrapped supplier around a keymapping from
      *                     {@link net.minecraft.client.Options Minecraft.getInstance().options}.
      */
-    public static SyncedKeyMapping createFromMC(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
+    public static @NotNull SyncedKeyMapping createFromMC(@NotNull Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         return new SyncedKeyMapping(mcKeyMapping);
     }
 
@@ -91,7 +92,7 @@ public final class SyncedKeyMapping {
      *
      * @param keyCode The key code.
      */
-    public static SyncedKeyMapping create(int keyCode) {
+    public static @NotNull SyncedKeyMapping create(int keyCode) {
         return new SyncedKeyMapping(keyCode);
     }
 
@@ -103,7 +104,9 @@ public final class SyncedKeyMapping {
      * @param ctx     Conflict context for the keymapping options category.
      * @param keyCode The key code, from {@link InputConstants}.
      */
-    public static SyncedKeyMapping createConfigurable(String nameKey, IKeyConflictContext ctx, int keyCode) {
+    public static @NotNull SyncedKeyMapping createConfigurable(@NotNull String nameKey,
+                                                               @NotNull IKeyConflictContext ctx,
+                                                               int keyCode) {
         return createConfigurable(nameKey, ctx, keyCode, GTCEu.NAME);
     }
 
@@ -116,13 +119,15 @@ public final class SyncedKeyMapping {
      * @param keyCode  The key code, from {@link InputConstants}.
      * @param category The category in the MC options page.
      */
-    public static SyncedKeyMapping createConfigurable(String nameKey, IKeyConflictContext ctx, int keyCode,
-                                                      String category) {
+    public static @NotNull SyncedKeyMapping createConfigurable(@NotNull String nameKey,
+                                                               @NotNull IKeyConflictContext ctx,
+                                                               int keyCode, @NotNull String category) {
         return new SyncedKeyMapping(nameKey, ctx, keyCode, category);
     }
 
     @OnlyIn(Dist.CLIENT)
-    private Object createKeyMapping(String nameKey, IKeyConflictContext ctx, int keyCode, String category) {
+    private @NotNull Object createKeyMapping(@NotNull String nameKey, @NotNull IKeyConflictContext ctx, int keyCode,
+                                             String category) {
         return new KeyMapping(nameKey, ctx, InputConstants.Type.KEYSYM, keyCode, category);
     }
 
@@ -133,7 +138,7 @@ public final class SyncedKeyMapping {
      *
      * @return If the key is held.
      */
-    public boolean isKeyDown(Player player) {
+    public boolean isKeyDown(@NotNull Player player) {
         if (player.level().isClientSide) {
             if (keyMapping != null) {
                 return keyMapping.isDown();
@@ -152,14 +157,16 @@ public final class SyncedKeyMapping {
      * @param player   The player who owns this listener.
      * @param listener The handler for the key clicked event.
      */
-    public SyncedKeyMapping registerPlayerListener(ServerPlayer player, IKeyPressedListener listener) {
+    public @NotNull SyncedKeyMapping registerPlayerListener(@NotNull ServerPlayer player,
+                                                            @NotNull IKeyPressedListener listener) {
         Set<IKeyPressedListener> listenerSet = playerListeners
                 .computeIfAbsent(player, $ -> Collections.newSetFromMap(new WeakHashMap<>()));
         listenerSet.add(listener);
         return this;
     }
 
-    public static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
+    @ApiStatus.Internal
+    public static void onRegisterKeyBinds(@NotNull RegisterKeyMappingsEvent event) {
         for (SyncedKeyMapping value : KEYMAPPINGS.values()) {
             if (value.keyMappingGetter != null) {
                 value.keyMapping = value.keyMappingGetter.get().get();
@@ -177,7 +184,7 @@ public final class SyncedKeyMapping {
      * @param player   The player who owns this listener.
      * @param listener The handler for the key clicked event.
      */
-    public void removePlayerListener(ServerPlayer player, IKeyPressedListener listener) {
+    public void removePlayerListener(@NotNull ServerPlayer player, @NotNull IKeyPressedListener listener) {
         Set<IKeyPressedListener> listenerSet = playerListeners.get(player);
         if (listenerSet != null) {
             listenerSet.remove(listener);
@@ -190,7 +197,7 @@ public final class SyncedKeyMapping {
      *
      * @param listener The handler for the key clicked event.
      */
-    public SyncedKeyMapping registerGlobalListener(IKeyPressedListener listener) {
+    public @NotNull SyncedKeyMapping registerGlobalListener(@NotNull IKeyPressedListener listener) {
         globalListeners.add(listener);
         return this;
     }
@@ -200,13 +207,14 @@ public final class SyncedKeyMapping {
      *
      * @param listener The handler for the key clicked event.
      */
-    public void removeGlobalListener(IKeyPressedListener listener) {
+    public void removeGlobalListener(@NotNull IKeyPressedListener listener) {
         globalListeners.remove(listener);
     }
 
+    @ApiStatus.Internal
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(@NotNull TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             updatingKeyDown.clear();
             for (var entry : KEYMAPPINGS.int2ObjectEntrySet()) {

@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanBooleanMutablePair;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -27,22 +28,75 @@ import java.util.function.Supplier;
 /**
  * @deprecated Use {@link SyncedKeyMappings} instead
  */
-@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
+@Deprecated(forRemoval = true, since = "7.2.1")
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public enum KeyBind {
 
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_JUMP}
+     */
+    @Deprecated
     VANILLA_JUMP(() -> () -> Minecraft.getInstance().options.keyJump),
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_SNEAK}
+     */
+    @Deprecated
     VANILLA_SNEAK(() -> () -> Minecraft.getInstance().options.keyShift),
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_FORWARD}
+     */
+    @Deprecated
     VANILLA_FORWARD(() -> () -> Minecraft.getInstance().options.keyUp),
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_BACKWARD}
+     */
+    @Deprecated
     VANILLA_BACKWARD(() -> () -> Minecraft.getInstance().options.keyDown),
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_LEFT}
+     */
+    @Deprecated
     VANILLA_LEFT(() -> () -> Minecraft.getInstance().options.keyLeft),
+    /**
+     * @deprecated {@link SyncedKeyMappings#VANILLA_RIGHT}
+     */
+    @Deprecated
     VANILLA_RIGHT(() -> () -> Minecraft.getInstance().options.keyRight),
+    /**
+     * @deprecated {@link SyncedKeyMappings#ARMOR_MODE_SWITCH}
+     */
+    @Deprecated
     ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
+    /**
+     * @deprecated {@link SyncedKeyMappings#ARMOR_HOVER}
+     */
+    @Deprecated
     ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
+    /**
+     * @deprecated {@link SyncedKeyMappings#JETPACK_ENABLE}
+     */
+    @Deprecated
     JETPACK_ENABLE("gtceu.key.enable_jetpack", KeyConflictContext.IN_GAME, InputConstants.KEY_G),
+    /**
+     * @deprecated {@link SyncedKeyMappings#BOOTS_ENABLE}
+     */
+    @Deprecated
     BOOTS_ENABLE("gtceu.key.enable_boots", KeyConflictContext.IN_GAME, InputConstants.KEY_PERIOD),
+    /**
+     * @deprecated {@link SyncedKeyMappings#ARMOR_CHARGING}
+     */
+    @Deprecated
     ARMOR_CHARGING("gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N),
+    /**
+     * @deprecated {@link SyncedKeyMappings#TOOL_AOE_CHANGE}
+     */
+    @Deprecated
     TOOL_AOE_CHANGE("gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V),
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(forRemoval = true)
     ACTION("gtceu.key.action", KeyConflictContext.GUI, InputConstants.KEY_DELETE),
     ;
 
