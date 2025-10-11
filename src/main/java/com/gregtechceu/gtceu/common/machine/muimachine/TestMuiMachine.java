@@ -123,7 +123,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
         DynamicSyncHandler dynamicSyncHandler = new DynamicSyncHandler()
                 .widgetProvider((syncManager1, packet) -> {
-                    ItemStack itemStack = NetworkUtils.readItemStack(packet);
+                    ItemStack itemStack = packet.readItem();
                     if (itemStack.isEmpty()) return new EmptyWidget();
                     Item item = itemStack.getItem();
                     ItemStackHandler handler = stackHandlerMap.computeIfAbsent(item,
@@ -503,9 +503,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                           client, init) -> {
                                                                             if (client && !onlyAmountChanged) {
                                                                                 dynamicSyncHandler.notifyUpdate(
-                                                                                        packet -> NetworkUtils
-                                                                                                .writeItemStack(packet,
-                                                                                                        newItem));
+                                                                                        packet -> packet.writeItem(newItem));
                                                                             }
                                                                         }))))
                                                         .child(new DynamicSyncedWidget<>()
