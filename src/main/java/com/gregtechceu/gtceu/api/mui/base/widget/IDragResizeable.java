@@ -24,7 +24,7 @@ public interface IDragResizeable {
     }
 
     /**
-     * Called every time the mouse moves one or more pixel while this widget is resized by dragging an edge.
+     * Called every time the mouse moves one or more pixels while this widget is resized by dragging an edge.
      */
     default void onDragResize() {
         ((IWidget) this).scheduleResize();
