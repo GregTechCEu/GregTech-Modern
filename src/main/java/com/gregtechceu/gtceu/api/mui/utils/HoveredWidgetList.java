@@ -15,8 +15,8 @@ public class HoveredWidgetList {
         this.delegate = delegate;
     }
 
-    public void add(IWidget widget, TransformationMatrix viewports) {
-        this.delegate.add(0, new LocatedWidget(widget, viewports));
+    public void add(IWidget widget, TransformationMatrix viewports, Object additionalHoverInfo) {
+        this.delegate.add(0, new LocatedWidget(widget, viewports, additionalHoverInfo));
     }
 
     @Nullable

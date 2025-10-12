@@ -73,7 +73,7 @@ public class DraggableWidget<W extends DraggableWidget<W>> extends Widget<W> imp
     @Override
     public void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
         if (!isMoving() && isInside(stack, x, y)) {
-            widgets.add(this, stack.peek());
+            widgets.add(this, stack.peek(), getAdditionalHoverInfo(stack, x, y));
         }
     }
 

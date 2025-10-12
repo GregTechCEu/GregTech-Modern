@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.mui.screen.viewport;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
+import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 
 import net.minecraft.Util;
@@ -37,8 +38,7 @@ public class ModularGuiContext extends GuiContext {
     /**
      * the hovered widget (widget directly below the mouse)
      */
-    @Getter
-    private @Nullable IWidget hovered;
+    private @Nullable LocatedWidget hovered;
     private int timeHovered = 0;
     private final HoveredIterable hoveredWidgets;
 
@@ -67,7 +67,7 @@ public class ModularGuiContext extends GuiContext {
      * @return true if the widget is directly below the mouse
      */
     public boolean isHovered(IGuiElement guiElement) {
-        return isHovered() && this.hovered == guiElement;
+        return isHovered() && getHovered() == guiElement;
     }
 
     /**
@@ -80,6 +80,10 @@ public class ModularGuiContext extends GuiContext {
     public boolean isHoveredFor(IGuiElement guiElement, int ticks) {
         // convert from frames per second to ticks per second
         return isHovered(guiElement) && this.timeHovered / 3 >= ticks;
+    }
+
+    public IWidget getHovered() {
+        return this.hovered != null ? this.hovered.getElement() : null;
     }
 
     /**
@@ -254,7 +258,7 @@ public class ModularGuiContext extends GuiContext {
     public void dropDraggable() {
         this.draggable.applyMatrix(this);
         this.draggable.getElement()
-                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), this.hovered));
+                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), getHovered()));
         this.draggable.getElement().setMoving(false);
         this.draggable.unapplyMatrix(this);
         this.draggable = null;
@@ -305,7 +309,6 @@ public class ModularGuiContext extends GuiContext {
 
     @ApiStatus.Internal
     public void onFrameUpdate() {
-        IWidget hovered = this.screen.getPanelManager().getTopWidget();
         if (hasDraggable() && (this.lastDragX != getAbsMouseX() || this.lastDragY != getAbsMouseY())) {
             this.lastDragX = getAbsMouseX();
             this.lastDragY = getAbsMouseY();
@@ -313,23 +316,42 @@ public class ModularGuiContext extends GuiContext {
             this.draggable.getElement().onDrag(this.lastButton, this.lastClickTime);
             this.draggable.unapplyMatrix(this);
         }
-        if (this.hovered != hovered) {
-            if (this.hovered != null) {
-                this.hovered.onMouseEndHover();
+        LocatedWidget locatedHovered = this.screen.getPanelManager().getTopWidgetLocated(false);
+        IWidget hovered = locatedHovered != null ? locatedHovered.getElement() : null;
+        IWidget oldHovered = getHovered();
+        if (oldHovered != hovered) {
+            if (this.hovered != null && oldHovered != null) {
+                if (this.hovered.getAdditionalHoverInfo() instanceof ResizeDragArea) {
+                    ClientProxy.resetCursorIcon();
+                }
+                oldHovered.onMouseEndHover();
             }
-            this.hovered = hovered;
+
+            this.hovered = locatedHovered;
             this.timeHovered = 0;
             if (this.hovered != null) {
-                this.hovered.onMouseStartHover();
+                if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
+                    ClientProxy.setCursorResizeIcon(dragArea);
+                }
+                hovered.onMouseStartHover();
                 if (this.hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
                     this.screen.getScreenWrapper().setHoveredSlot(vanillaSlot.getVanillaSlot());
                 } else {
                     this.screen.getScreenWrapper().setHoveredSlot(null);
                 }
             }
-        } else {
-            this.timeHovered++;
-        }
+        } else if (this.hovered != null && locatedHovered != null &&
+                this.hovered.getAdditionalHoverInfo() != locatedHovered.getAdditionalHoverInfo()) {
+                    if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
+                        ClientProxy.setCursorResizeIcon(dragArea);
+                    } else {
+                        ClientProxy.resetCursorIcon();
+                    }
+                    // widget is unchanged, but additional info changed
+                    this.hovered = locatedHovered;
+                } else {
+                    this.timeHovered++;
+                }
     }
 
     public ITheme getTheme() {

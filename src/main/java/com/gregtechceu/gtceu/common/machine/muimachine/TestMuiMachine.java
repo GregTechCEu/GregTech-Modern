@@ -38,6 +38,8 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -155,6 +157,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         panel.flex()                        // returns object which is responsible for sizing
                 .size(176, 220)       // set a static size for the main panel
                 .align(Alignment.Center);    // center the panel in the screen
+
+        var babyFop = new Fox(EntityType.FOX, data.getLevel());
+        babyFop.setAge(-1);
         panel
                 .child(new Row()
                         .debugName("Tab row")
@@ -162,7 +167,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .topRel(0f, 4, 1f)
                         .child(new PageButton(0, tabController)
                                 .tab(GTGuiTextures.TAB_TOP, -1)
-                                .overlay(new EntityDrawable(data.getPlayer())))
+                                .overlay(new EntityDrawable(babyFop)))
                         .child(new PageButton(1, tabController)
                                 .tab(GTGuiTextures.TAB_TOP, 0)
                                 .overlay(new ItemDrawable(Items.OAK_SAPLING).asIcon()))
@@ -305,12 +310,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 // .widthRel(0.5f)
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> this.progress /
-                                                                                (double) this.duration)
+                                                                        .progress(() -> (this.progress /
+                                                                                (double) this.duration))
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 20))
                                                                 .child(new ProgressWidget()
-                                                                        .progress(() -> this.progress /
-                                                                                (double) this.duration)
+                                                                        .progress(() -> (this.progress /
+                                                                                (double) this.duration))
                                                                         .texture(GTGuiTextures.PROGRESS_BAR_MIXER, 20)
                                                                         .direction(
                                                                                 ProgressWidget.Direction.CIRCULAR_CW))
@@ -531,14 +536,17 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         ParentWidget<?> page = new ParentWidget<>();
         page.debugName("page 5 schema");
         page.sizeRel(1f);
-        page.child(IKey.str("schema").asWidget());
+        page.child(IKey.str("Schema").asWidget());
+
         /*
-         * if (getLevel().isClientSide()) {}
+         * if (getLevel().isClientSide()) {
          * page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 5))
          * .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)))
          * .pos(20, 20)
          * .size(100, 100));
+         * }
          */
+
         return page;
     }
 
@@ -547,7 +555,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                 .setDisablePanelsBelow(false)
                 .setCloseOnOutOfBoundsClick(false)
                 .setDraggable(true)
-                .size(100, 100);
+                .size(100, 100)
+                .resizeableOnDrag(true);
         SlotGroup slotGroup = new SlotGroup("small_inv", 2);
         IntSyncValue timeSync = new IntSyncValue(() -> (int) java.lang.System.currentTimeMillis());
         syncManager.syncValue(123456, timeSync);
@@ -601,18 +610,22 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         return panel;
     }
 
+    @Override
+    public void clientTick() {
+        if (this.time++ % 20 == 0) {
+            this.val++;
+        }
+        if (++this.progress == this.duration) {
+            this.progress = 0;
+        }
+    }
+
     public void tick() {
-        if (getLevel().isClientSide) {
-            if (this.time++ % 20 == 0) {
-                this.val++;
-            }
-        } else {
-            if (this.time++ % 20 == 0) {
-                if (++this.val2 == 3) this.val2 = 0;
-                Collection<Item> vals = ForgeRegistries.ITEMS.getValues();
-                Item item = vals.stream().skip(new Random().nextInt(vals.size())).findFirst().orElse(Items.DIAMOND);
-                this.displayItem = new ItemStack(item, 26735987);
-            }
+        if (this.time++ % 20 == 0) {
+            if (++this.val2 == 3) this.val2 = 0;
+            Collection<Item> vals = ForgeRegistries.ITEMS.getValues();
+            Item item = vals.stream().skip(new Random().nextInt(vals.size())).findFirst().orElse(Items.DIAMOND);
+            this.displayItem = new ItemStack(item, 26735987);
         }
         if (++this.progress == this.duration) {
             this.progress = 0;

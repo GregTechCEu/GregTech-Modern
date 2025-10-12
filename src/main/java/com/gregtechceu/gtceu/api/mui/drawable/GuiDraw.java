@@ -408,8 +408,8 @@ public class GuiDraw {
 
     public static void drawLivingEntity(GuiGraphics graphics, LivingEntity entity, int x, int y, float width,
                                         float height, int z) {
-        int scale = 16;
-        Quaternionf pose = new Quaternionf(0.707f, 0.0f, -0.707f, 0.0f);
+        int scale = 132;
+        Quaternionf pose = new Quaternionf(1.414f, 0.0f, 1.0f, 0.0f);
         graphics.pose().pushPose();
         graphics.pose().translate((double) x + width / 2, (double) y + height, 50.0D);
         graphics.pose()

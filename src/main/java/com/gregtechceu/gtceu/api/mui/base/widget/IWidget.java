@@ -108,6 +108,10 @@ public interface IWidget extends IGuiElement {
         stack.translate(getArea().rx, getArea().ry, getArea().getPanelLayer() * 20);
     }
 
+    default Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
+        return null;
+    }
+
     default WidgetTheme getWidgetTheme(ITheme theme) {
         return theme.getFallback();
     }
@@ -139,8 +143,26 @@ public interface IWidget extends IGuiElement {
      * @return if pos is inside this widgets area
      */
     default boolean isInside(IViewportStack stack, int mx, int my) {
-        int x = stack.unTransformX(mx, my);
-        int y = stack.unTransformY(mx, my);
+        return isInside(stack, mx, my, true);
+    }
+
+    /**
+     * Calculates if a given pos is inside this widgets area.
+     * This should be used over {@link Area#isInside(int, int)}, since this accounts for transformations.
+     *
+     * @param stack    viewport stack
+     * @param mx       x pos
+     * @param my       y pos
+     * @param absolute true if the position is absolute or relative to the current stack transform otherwise
+     * @return if pos is inside this widgets area
+     */
+    default boolean isInside(IViewportStack stack, int mx, int my, boolean absolute) {
+        int x = mx;
+        int y = my;
+        if (absolute) {
+            x = stack.unTransformX(mx, my);
+            y = stack.unTransformY(mx, my);
+        }
         return x >= 0 && x < getArea().w() && y >= 0 && y < getArea().h();
     }
 

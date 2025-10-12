@@ -830,6 +830,14 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         return getThis();
     }
 
+    @Override
+    public Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
+        if (this instanceof IDragResizeable dragResizeable) {
+            return IDragResizeable.getDragResizeCorner(dragResizeable, getArea(), viewportStack, mouseX, mouseY);
+        }
+        return null;
+    }
+
     /**
      * Sets a debug name. This is only used in {@link #toString()}, which is displayed in the mui debug info. Useful for
      * identifying widgets

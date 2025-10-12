@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
-import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
+import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
@@ -50,7 +48,7 @@ import java.util.function.Supplier;
  * {@link IPanelHandler#simple(ModularPanel, SecondaryPanel.IPanelBuilder, boolean)}
  * or {@link PanelSyncManager#panel(String, PanelSyncHandler.IPanelBuilder, boolean)} if the panel should be synced.
  */
-public class ModularPanel extends ParentWidget<ModularPanel> implements IViewport {
+public class ModularPanel extends ParentWidget<ModularPanel> implements IViewport, IDragResizeable {
 
     public static ModularPanel defaultPanel(@NotNull String name) {
         return defaultPanel(name, 176, 166);
@@ -75,9 +73,17 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private final Input keyboard = new Input();
     private final Input mouse = new Input();
 
+    private IDragResizeable currentResizing = null;
+    private LocatedWidget currentResizingWidget = null;
+    private ResizeDragArea draggingDragArea = null;
+    private Area startArea = new Area();
+    private int dragX, dragY;
+
     private final List<IPanelHandler> clientSubPanels = new ArrayList<>();
     private boolean invisible = false;
     private Animator animator;
+
+    private boolean resizeable = false;
 
     public ModularPanel(@NotNull String name) {
         this.name = Objects.requireNonNull(name, "A panels name must not be null and should be unique!");
@@ -168,11 +174,12 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public void transform(IViewportStack stack) {
         super.transform(stack);
         // apply scaling for animation
-        if (getScale() != 1f) {
+        float scale = getScale();
+        if (scale != 1f) {
             float x = getArea().w() / 2f;
             float y = getArea().h() / 2f;
             stack.translate(x, y);
-            stack.scale(getScale(), getScale());
+            stack.scale(scale, scale);
             stack.translate(-x, -y);
         }
     }
@@ -187,7 +194,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     @Override
     public void getSelfAt(IViewportStack stack, HoveredWidgetList widgets, int x, int y) {
         if (isInside(stack, x, y)) {
-            widgets.add(this, stack.peek());
+            widgets.add(this, stack.peek(), getAdditionalHoverInfo(stack, x, y));
         }
     }
 
@@ -208,6 +215,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         getWidgetsAt(stack, widgetList, getContext().getAbsMouseX(), getContext().getAbsMouseY());
         stack.popViewport(this);
         stack.popViewport(null);
+        stack.reset();
     }
 
     @Override
@@ -309,6 +317,20 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             } else {
                 for (LocatedWidget widget : this.hovering) {
                     widget.applyMatrix(getContext());
+                    IWidget w = widget.getElement();
+                    if (w instanceof IDragResizeable resizeable &&
+                            widget.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
+                        this.currentResizing = resizeable;
+                        this.currentResizingWidget = widget;
+                        this.dragX = getContext().getMouseX();
+                        this.dragY = getContext().getMouseY();
+                        this.startArea.set(w.getArea());
+                        this.startArea.rx = w.getArea().rx;
+                        this.startArea.ry = w.getArea().ry;
+                        this.draggingDragArea = dragArea;
+                        widget.unapplyMatrix(getContext());
+                        break;
+                    }
                     // click widget and see how it reacts
                     if (widget.getElement() instanceof Interactable interactable) {
                         Interactable.Result interactResult = interactable.onMousePressed(mouseX, mouseY, button);
@@ -357,6 +379,12 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             if (!this.mouse.doRelease) {
                 this.mouse.reset();
                 return false;
+            }
+            if (this.currentResizing != null) {
+                this.mouse.reset();
+                this.currentResizing = null;
+                this.currentResizingWidget = null;
+                return true;
             }
             if (interactFocused(widget -> widget.onMouseReleased(mouseX, mouseY, button), false)) {
                 return true;
@@ -569,6 +597,19 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     public boolean onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
         return doSafeBool(() -> {
+            if (this.currentResizing != null) {
+                this.currentResizingWidget.applyMatrix(getContext());
+                int mx = getContext().getMouseX();
+                int my = getContext().getMouseY();
+                this.currentResizingWidget.unapplyMatrix(getContext());
+                int dx = mx - this.dragX;
+                int dy = my - this.dragY;
+                if (dx != 0 || dy != 0) {
+                    IDragResizeable.applyDrag(this.currentResizing, (IWidget) this.currentResizing,
+                            this.draggingDragArea, this.startArea, dx, dy);
+                }
+                return true;
+            }
             if (this.mouse.held &&
                     button == this.mouse.lastButton &&
                     this.mouse.lastPressed != null &&
@@ -614,6 +655,16 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
      */
     public boolean closeOnOutOfBoundsClick() {
         return false;
+    }
+
+    @Override
+    public boolean isCurrentlyResizable() {
+        return this.resizeable;
+    }
+
+    @Override
+    public boolean keepPosOnDragResize() {
+        return !isDraggable();
     }
 
     @Override
@@ -743,6 +794,11 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public ModularPanel invisible() {
         this.invisible = true;
         return background(IDrawable.EMPTY);
+    }
+
+    public ModularPanel resizeableOnDrag(boolean resizeable) {
+        this.resizeable = resizeable;
+        return this;
     }
 
     @Override

@@ -73,7 +73,7 @@ public interface IViewport {
                 stack.pushMatrix();
                 child.transform(stack);
                 if (child.isInside(stack, x, y)) {
-                    widgetList.add(child, stack.peek());
+                    widgetList.add(child, stack.peek(), child.getAdditionalHoverInfo(stack, x, y));
                 }
                 if (child.hasChildren()) {
                     getChildrenAt(child, stack, widgetList, x, y);
