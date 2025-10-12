@@ -641,12 +641,12 @@ public class GuiDraw {
             textRenderer.setColor(Color.WHITE.main);
             textRenderer.setAlignment(alignment, width, height);
             textRenderer.setPos(x, y);
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableBlend();
-            context.getGraphics().pose().translate(0, 0, 100 + z);
+
+            context.poseStack().pushPose();
+            context.poseStack().translate(0, 0, 100 + z);
             textRenderer.draw(context.getGraphics(), amountText);
-            RenderSystem.enableDepthTest();
-            RenderSystem.enableBlend();
+
+            context.poseStack().popPose();
         }
     }
 
