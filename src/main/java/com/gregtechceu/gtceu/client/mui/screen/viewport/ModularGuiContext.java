@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 
+import lombok.Setter;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 
 import lombok.Getter;
@@ -32,7 +34,10 @@ public class ModularGuiContext extends GuiContext {
 
     /* GUI elements */
     @Getter
-    public final ModularScreen screen;
+    private final ModularScreen screen;
+    @Getter
+    @Setter
+    private @Nullable Screen parent;
     @Getter
     private LocatedWidget focusedWidget = LocatedWidget.EMPTY;
     /**

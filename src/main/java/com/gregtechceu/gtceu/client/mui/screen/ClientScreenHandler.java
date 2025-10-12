@@ -104,6 +104,7 @@ public class ClientScreenHandler {
                     currentScreen.getPanelManager().dispose();
                 }
                 currentScreen = muiScreen.getScreen();
+                currentScreen.getContext().setParent(Minecraft.getInstance().screen);
                 fpsCounter.reset();
             }
         } else if (hasScreen() && event.getCurrentScreen() != null && newGui != event.getCurrentScreen()) {
