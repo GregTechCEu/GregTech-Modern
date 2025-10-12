@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
-public class Animator extends BaseAnimator implements IAnimator {
+public class Animator extends BaseAnimator<Animator> implements IAnimator {
 
     @Getter
     private float min = 0.0f;
@@ -18,41 +18,31 @@ public class Animator extends BaseAnimator implements IAnimator {
     private int duration = 250;
     @Getter
     private IInterpolation curve = Interpolation.LINEAR;
-    private boolean reverseOnFinish = false;
-    private int repeats = 0;
     private DoublePredicate onUpdate;
     private Runnable onFinish;
 
     private int progress = 0;
-    private boolean startedReverse = false;
-    private int repeated = 0;
 
     @Override
     public void reset(boolean atEnd) {
+        super.reset(atEnd);
         this.progress = atEnd ? this.duration : 0;
-        this.startedReverse = atEnd;
-        this.repeated = 0;
     }
 
-    @Override
-    public void stop(boolean force) {
-        if (isAnimating() && !force) {
-            if (this.reverseOnFinish && this.startedReverse == isAnimatingReverse()) {
-                onAnimationFinished(false, false);
-                // started reverse -> bounce back and animate forward
-                animate(isAnimatingForward());
-                return;
-            }
-            if (repeats != 0 && (repeated < repeats || repeats < 0)) {
-                onAnimationFinished(true, false);
-                // started forward -> full cycle finished -> try repeating
-                boolean reverse = !this.reverseOnFinish == isAnimatingReverse();
-                animate(reverse);
-                repeated++;
-                return;
-            }
+    public Animator copy(boolean reversed) {
+        Animator animator = new Animator()
+                .curve(this.curve)
+                .reverseOnFinish(this.reverseOnFinish)
+                .repeatsOnFinish(this.repeats)
+                .onUpdate(this.onUpdate)
+                .duration(this.duration)
+                .onFinish(this.onFinish);
+        if (reversed) {
+            animator.bounds(this.max, this.min);
+        } else {
+            animator.bounds(this.min, this.max);
         }
-        super.stop(force);
+        return animator;
     }
 
     @Override
@@ -167,31 +157,6 @@ public class Animator extends BaseAnimator implements IAnimator {
      */
     public Animator curve(IInterpolation curve) {
         this.curve = curve;
-        return this;
-    }
-
-    /**
-     * Sets if the animation should reverse animate once after it finished.
-     * If the animation started in reverse it will animate forward on finish.
-     *
-     * @param reverseOnFinish if animation should bounce back on finish
-     * @return this
-     */
-    public Animator reverseOnFinish(boolean reverseOnFinish) {
-        this.reverseOnFinish = reverseOnFinish;
-        return this;
-    }
-
-    /**
-     * Sets how often the animation should repeat. If {@link #reverseOnFinish(boolean)} is set to true, it will repeat
-     * the whole cycle.
-     * If the number of repeats is negative, it will repeat infinitely.
-     *
-     * @param repeats how often the animation should repeat.
-     * @return this
-     */
-    public Animator repeatsOnFinish(int repeats) {
-        this.repeats = repeats;
         return this;
     }
 

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntSupplier;
 
-public class TextWidget extends Widget<TextWidget> {
+public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Getter
     private final IKey key;
@@ -40,11 +40,7 @@ public class TextWidget extends Widget<TextWidget> {
     @Override
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;
-        Component comp = this.key.getFormatted().copy();
-        if (this.lastText != null && !this.lastText.equals(Component.empty()) && !this.lastText.equals(comp)) {
-            WidgetTree.resizeInternal(this, false);
-        }
-        this.lastText = comp;
+        this.lastText = checkString();
         renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
         renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
@@ -52,6 +48,19 @@ public class TextWidget extends Widget<TextWidget> {
         renderer.setScale(this.scale);
         renderer.setSimulate(false);
         renderer.draw(context.getGraphics(), this.key.getFormatted());
+    }
+
+    protected Component checkString() {
+        Component text = this.key.getFormatted();
+        if (this.lastText != null && !this.lastText.equals(text)) {
+            onTextChanged(text);
+        }
+        return text;
+    }
+
+    protected void onTextChanged(Component newText) {
+        // scheduling it would resize it on next frame, but we need it now
+        WidgetTree.resizeInternal(this, false);
     }
 
     private TextRenderer simulate(float maxWidth) {
@@ -113,33 +122,33 @@ public class TextWidget extends Widget<TextWidget> {
         this.textForDefaultSize = Component.empty();
     }
 
-    public TextWidget alignment(Alignment alignment) {
+    public W alignment(Alignment alignment) {
         this.alignment = alignment;
-        return this;
+        return getThis();
     }
 
-    public TextWidget color(int color) {
+    public W color(int color) {
         return color(() -> color);
     }
 
-    public TextWidget color(@Nullable IntSupplier color) {
+    public W color(@Nullable IntSupplier color) {
         this.color = color;
-        return this;
+        return getThis();
     }
 
-    public TextWidget scale(float scale) {
+    public W scale(float scale) {
         this.scale = scale;
-        return this;
+        return getThis();
     }
 
-    public TextWidget shadow(@Nullable Boolean shadow) {
+    public W shadow(@Nullable Boolean shadow) {
         this.shadow = shadow;
-        return this;
+        return getThis();
     }
 
-    public TextWidget style(ChatFormatting formatting) {
+    public W style(ChatFormatting formatting) {
         this.key.style(formatting);
-        return this;
+        return getThis();
     }
 
     public Boolean isShadow() {

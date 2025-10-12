@@ -635,7 +635,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                 .collapseDisabledChild()
                                 .expanded()
                                 .widthRel(1f)
-                                .children(items.size(), i -> new TextWidget(IKey.str(items.get(i)))
+                                .children(items.size(), i -> new TextWidget<>(IKey.str(items.get(i)))
                                         .alignment(Alignment.Center)
                                         .color(Color.WHITE.main)
                                         .widthRel(1f)
