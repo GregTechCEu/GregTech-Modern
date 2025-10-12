@@ -73,10 +73,11 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private final Input keyboard = new Input();
     private final Input mouse = new Input();
 
+    // drag resizing
     private IDragResizeable currentResizing = null;
     private LocatedWidget currentResizingWidget = null;
     private ResizeDragArea draggingDragArea = null;
-    private Area startArea = new Area();
+    private final Area startArea = new Area();
     private int dragX, dragY;
 
     private final List<IPanelHandler> clientSubPanels = new ArrayList<>();

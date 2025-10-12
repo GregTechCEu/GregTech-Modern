@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.mui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 
+import lombok.Getter;
 import org.apache.logging.log4j.Level;
 
 import java.util.Objects;
@@ -9,12 +11,18 @@ import java.util.Objects;
 public class GuiError {
 
     public static void throwNew(IGuiElement guiElement, Type type, String msg) {
-        GuiErrorHandler.INSTANCE.pushError(guiElement, type, msg);
+        if (GTCEu.isClientSide()) {
+            GuiErrorHandler.INSTANCE.pushError(guiElement, type, msg);
+        }
     }
 
+    @Getter
     private final Level level = Level.ERROR;
+    @Getter
     private final String msg;
+    @Getter
     private final IGuiElement reference;
+    @Getter
     private final Type type;
 
     protected GuiError(String msg, IGuiElement reference, Type type) {
@@ -25,8 +33,7 @@ public class GuiError {
 
     @Override
     public String toString() {
-        return "[" + this.level.name() + "][" + this.reference.toString() + "][" + this.type.toString() + "]: " +
-                this.msg;
+        return "MUI [" + this.type.toString() + "][" + this.reference.toString() + "]: " + this.msg;
     }
 
     @Override

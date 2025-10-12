@@ -31,7 +31,7 @@ public class GuiErrorHandler {
     void pushError(IGuiElement reference, GuiError.Type type, String msg) {
         GuiError error = new GuiError(msg, reference, type);
         if (this.errorSet.add(error)) {
-            GTCEu.LOGGER.error(msg);
+            GTCEu.LOGGER.log(error.getLevel(), error);
             this.errors.add(error);
         }
     }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.mui.screen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.GuiErrorHandler;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
@@ -110,6 +111,7 @@ public class ClientScreenHandler {
             currentScreen.getPanelManager().dispose();
             currentScreen = null;
         }
+        GuiErrorHandler.INSTANCE.clear();
         OverlayManager.onOpenScreen(event);
     }
 

@@ -193,7 +193,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         })
                         .animationDuration(500)
                         .interpolation(Interpolation.BOUNCE_OUT)
-                        .normalView(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
+                        .collapsedView(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
                         .expandedView(new ParentWidget<>()
                                 .debugName("crafting tab")
                                 .coverChildren()

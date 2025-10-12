@@ -31,7 +31,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         return UITexture.builder()
                 .location(ICONS_LOCATION)
                 .imageSize(256, 256)
-                .uv(x, y, w, h)
+                .xy(x, y, w, h)
                 .name(name)
                 .build();
     }
@@ -174,12 +174,12 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
             if (mode2) {
                 throw new JsonParseException("Tried to specify x, y, w, h and u0, v0, u1, v1!");
             }
-            builder.uv(JsonHelper.getInt(json, 0, "x"),
+            builder.xy(JsonHelper.getInt(json, 0, "x"),
                     JsonHelper.getInt(json, 0, "y"),
                     JsonHelper.getInt(json, builder.iw, "w", "width"),
                     JsonHelper.getInt(json, builder.ih, "h", "height"));
         } else if (mode2) {
-            builder.uv(JsonHelper.getFloat(json, 0, "u0"),
+            builder.xy(JsonHelper.getFloat(json, 0, "u0"),
                     JsonHelper.getFloat(json, 0, "v0"),
                     JsonHelper.getFloat(json, 1, "u1"),
                     JsonHelper.getFloat(json, 1, "v1"));
@@ -263,7 +263,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
 
         /**
          * Set the image size. Required for {@link #tiled()}, {@link #adaptable(int, int)} and
-         * {@link #uv(int, int, int, int)}
+         * {@link #xy(int, int, int, int)}
          *
          * @param w image width
          * @param h image height
@@ -308,7 +308,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
          * @param w width in pixels
          * @param h height in pixels
          */
-        public Builder uv(int x, int y, int w, int h) {
+        public Builder xy(int x, int y, int w, int h) {
             this.mode = Mode.PIXEL;
             this.x = x;
             this.y = y;
@@ -325,7 +325,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
          * @param u1 x end
          * @param v1 y end
          */
-        public Builder uv(float u0, float v0, float u1, float v1) {
+        public Builder xy(float u0, float v0, float u1, float v1) {
             this.mode = Mode.RELATIVE;
             this.u0 = u0;
             this.v0 = v0;

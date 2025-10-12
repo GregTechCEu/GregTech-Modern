@@ -194,32 +194,38 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         return this;
     }
 
-    public Flex width(float w, Unit.Measure measure) {
-        return unitSize(getWidth(), w, measure);
+    @ApiStatus.Internal
+    public Flex width(float val, int offset, Unit.Measure measure) {
+        return unitSize(getWidth(), val, offset, measure);
     }
 
-    public Flex width(DoubleSupplier w, Unit.Measure measure) {
-        return unitSize(getWidth(), w, measure);
+    @ApiStatus.Internal
+    public Flex width(DoubleSupplier val, int offset, Unit.Measure measure) {
+        return unitSize(getWidth(), val, offset, measure);
     }
 
-    public Flex height(float h, Unit.Measure measure) {
-        return unitSize(getHeight(), h, measure);
+    @ApiStatus.Internal
+    public Flex height(float val, int offset, Unit.Measure measure) {
+        return unitSize(getHeight(), val, offset, measure);
     }
 
-    public Flex height(DoubleSupplier h, Unit.Measure measure) {
-        return unitSize(getHeight(), h, measure);
+    @ApiStatus.Internal
+    public Flex height(DoubleSupplier val, int offset, Unit.Measure measure) {
+        return unitSize(getHeight(), val, offset, measure);
     }
 
-    private Flex unitSize(Unit u, float val, Unit.Measure measure) {
+    private Flex unitSize(Unit u, float val, int offset, Unit.Measure measure) {
         u.setValue(val);
         u.setMeasure(measure);
+        u.setOffset(offset);
         scheduleResize();
         return this;
     }
 
-    private Flex unitSize(Unit u, DoubleSupplier val, Unit.Measure measure) {
+    private Flex unitSize(Unit u, DoubleSupplier val, int offset, Unit.Measure measure) {
         u.setValue(val);
         u.setMeasure(measure);
+        u.setOffset(offset);
         scheduleResize();
         return this;
     }
@@ -406,14 +412,14 @@ public class Flex implements IResizeable, IPositioned<Flex> {
                 w = Math.max(w, area.requestedWidth() + padding.horizontal());
                 if (resizeable.isXCalculated()) {
                     // if pos is calculated use that
-                    x0 = Math.min(x0, area.rx - padding.left - margin.left);
+                    x0 = Math.min(x0, area.rx - padding.left() - margin.left());
                     x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
                 }
             }
             if (this.y.dependsOnChildren() && resizeable.isHeightCalculated()) {
                 h = Math.max(h, area.requestedHeight() + padding.vertical());
                 if (resizeable.isYCalculated()) {
-                    y0 = Math.min(y0, area.ry - padding.top - margin.top);
+                    y0 = Math.min(y0, area.ry - padding.top() - margin.top());
                     y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
                 }
             }
@@ -501,8 +507,8 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         Area relativeTo = getRelativeTo().getArea();
         Area area = parent.getArea();
         // apply margin and padding if not done yet
-        this.x.applyMarginAndPaddingToPos(area, relativeTo);
-        this.y.applyMarginAndPaddingToPos(area, relativeTo);
+        this.x.applyMarginAndPaddingToPos(parent, area, relativeTo);
+        this.y.applyMarginAndPaddingToPos(parent, area, relativeTo);
         // after all widgets x, y, width and height have been calculated we can now calculate the absolute position
         area.applyPos(relativeTo.x, relativeTo.y);
         Area parentArea = parent.getParentArea();

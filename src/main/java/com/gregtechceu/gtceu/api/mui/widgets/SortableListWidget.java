@@ -68,6 +68,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
 
     @Override
     public void postResize() {
+        super.postResize();
         if (this.scheduleAnimation && !this.widgetAreaSnapshots.isEmpty()) {
             @UnmodifiableView
             @NotNull

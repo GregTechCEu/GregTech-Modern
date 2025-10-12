@@ -570,7 +570,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
             .imageSize(16, 32) // texture is 32x64, but this looks nicer
-            .uv(0f, 0f, 1f, 0.5f)
+            .xy(0f, 0f, 1f, 0.5f)
             .adaptable(2).tiled()
             .name("mc_button")
             .build();
@@ -585,7 +585,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_PRESSED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
             .imageSize(16, 32)
-            .uv(0f, 0.5f, 1f, 1f)
+            .xy(0f, 0.5f, 1f, 1f)
             .adaptable(2).tiled()
             .name("mc_button_pressed")
             .build();
@@ -593,7 +593,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_HOVERED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
             .imageSize(16, 32)
-            .uv(0f, 0f, 1f, 0.5f)
+            .xy(0f, 0f, 1f, 0.5f)
             .adaptable(2).tiled()
             .name("mc_button_hovered")
             .build();
@@ -601,7 +601,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_HOVERED_PRESSED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
             .imageSize(16, 32)
-            .uv(0f, 0.5f, 1f, 1f)
+            .xy(0f, 0.5f, 1f, 1f)
             .adaptable(2).tiled()
             .name("mc_button_hovered_pressed")
             .build();
@@ -609,7 +609,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_DISABLED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_disabled.png")
             .imageSize(16, 16)
-            .uv(0f, 0f, 1f, 0.5f)
+            .xy(0f, 0f, 1f, 0.5f)
             .adaptable(1).tiled()
             .name("mc_button_disabled")
             .build();
@@ -673,7 +673,7 @@ public class GTGuiTextures {
                         .location(GTCEu.MOD_ID, path)
                         .canApplyTheme(canApplyTheme)
                         .imageSize(imageWidth, imageHeight)
-                        .uv(indexX * sliceWidth, indexY * sliceHeight, sliceWidth, sliceHeight)
+                        .xy(indexX * sliceWidth, indexY * sliceHeight, sliceWidth, sliceHeight)
                         .build();
             }
         }

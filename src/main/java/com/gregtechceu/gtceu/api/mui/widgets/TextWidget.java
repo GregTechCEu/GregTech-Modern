@@ -46,7 +46,7 @@ public class TextWidget extends Widget<TextWidget> {
         }
         this.lastText = comp;
         renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
-        renderer.setAlignment(this.alignment, getArea().w() + this.scale, getArea().h());
+        renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
         renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
         renderer.setPos(getArea().getPadding().left, getArea().getPadding().top);
         renderer.setScale(this.scale);

@@ -28,9 +28,15 @@ public class SingleChildWidget<W extends SingleChildWidget<W>> extends Widget<W>
             return getThis();
         }
 
+        if (this.child != null) {
+            this.child.dispose();
+        }
+
         this.child = child;
-        if (isValid()) {
+        updateList();
+        if (child != null && isValid()) {
             child.initialise(this, true);
+            scheduleResize();
         }
         updateList();
         return getThis();
