@@ -406,27 +406,183 @@ public class GuiDraw {
         tesselator.end();
     }
 
-    public static void drawLivingEntity(GuiGraphics graphics, LivingEntity entity, int x, int y, float width,
-                                        float height, int z) {
-        int scale = 132;
-        Quaternionf pose = new Quaternionf(1.414f, 0.0f, 1.0f, 0.0f);
-        graphics.pose().pushPose();
-        graphics.pose().translate((double) x + width / 2, (double) y + height, 50.0D);
-        graphics.pose()
-                .mulPoseMatrix((new Matrix4f()).scaling((float) width / 2, (float) height / 2, (float) (-scale)));
-        graphics.pose().mulPose(pose);
-        Lighting.setupForEntityInInventory();
-
-        EntityRenderDispatcher erd = Minecraft.getInstance().getEntityRenderDispatcher();
-        erd.setRenderShadow(false);
+    /**
+     * Draws an entity. Note that this does NOT do any necessary setup for rendering the entity. Please see
+     * {@link #drawEntity(GuiGraphics, Entity, float, float, float, float, float, BiConsumer, BiConsumer)} for a full
+     * draw method.
+     *
+     * @param graphics the current {@link GuiGraphics} instance.
+     * @param entity   entity to draw.
+     * @see #drawEntity(GuiGraphics, Entity, float, float, float, float, float, BiConsumer, BiConsumer)
+     */
+    public static void drawEntityRaw(GuiGraphics graphics, Entity entity) {
+        EntityRenderDispatcher entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher();
+        entityRenderer.setRenderShadow(false);
 
         RenderSystem.runAsFancy(() -> {
-            erd.render(entity, 0.0d, 0.0d, 0.0d, 0.0f, 1.0f, graphics.pose(), graphics.bufferSource(),
-                    LightTexture.FULL_BRIGHT);
+            entityRenderer.render(entity, 0.0D, 0.0D, 0.0D, 0.0f, Minecraft.getInstance().getPartialTick(),
+                    graphics.pose(), graphics.bufferSource(), LightTexture.FULL_BRIGHT);
         });
         graphics.flush();
-        erd.setRenderShadow(true);
+        entityRenderer.setRenderShadow(true);
+    }
+
+    /**
+     * A simple method to a draw an entity in a GUI. Using the consumers is not always ideal to modify and restore
+     * entity state. In those cases just copy and paste this method and put your code where the consumers would be
+     * called. The entity will be scaled so that it fits right in the given size when untransformed (default). When
+     * transforming during pre draw, you may need to manually correct the scale and offset.
+     *
+     * @param graphics the current {@link GuiGraphics} instance.
+     * @param entity   entity to draw
+     * @param x        x pos
+     * @param y        y pos
+     * @param w        the width of the area where the entity should be drawn
+     * @param h        the height of the area where the entity should be drawn
+     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
+     * @param preDraw  a function to call before rendering. Transform or modify the entity here.
+     * @param postDraw a function to call after rendering. Restore old entity state here if needed.
+     * @param <T>      type of the entity to render
+     */
+    public static <T extends Entity> void drawEntity(GuiGraphics graphics, T entity,
+                                                     float x, float y, float w, float h, float z,
+                                                     @Nullable BiConsumer<GuiGraphics, T> preDraw,
+                                                     @Nullable BiConsumer<GuiGraphics, T> postDraw) {
+        graphics.pose().pushPose();
+        setupDrawEntity(graphics, entity, x, y, w, h, z);
+        if (preDraw != null) preDraw.accept(graphics, entity);
+        drawEntityRaw(graphics, entity);
+        if (postDraw != null) postDraw.accept(graphics, entity);
+        endDrawEntity();
         graphics.pose().popPose();
+    }
+
+    /**
+     * Draws an entity which looks in the direction of the mouse like the player render in the player inventory does.
+     * The code was copied from
+     * {@link net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, float, float, LivingEntity)
+     * InventoryScreen.renderEntityInInventoryFollowsMouse}.
+     *
+     * @param graphics the current {@link GuiGraphics} instance.
+     * @param entity   entity to draw
+     * @param x        x pos
+     * @param y        y pos
+     * @param w        the width of the area where the entity should be drawn
+     * @param h        the height of the area where the entity should be drawn
+     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
+     * @param mouseX   current x pos of the mouse
+     * @param mouseY   current y pos of the mouse
+     */
+    public static <T extends Entity> void drawEntityLookingAtMouse(GuiGraphics graphics, T entity,
+                                                                   float x, float y, float w, float h, float z,
+                                                                   int mouseX, int mouseY,
+                                                                   @Nullable BiConsumer<GuiGraphics, T> preDraw,
+                                                                   @Nullable BiConsumer<GuiGraphics, T> postDraw) {
+        float xAngle = (float) Math.atan(mouseX / 40.0f);
+        float yAngle = (float) Math.atan(mouseY / 40.0f);
+        drawEntityLookingAtAngle(graphics, entity, x, y, w, h, z, xAngle, yAngle, preDraw, postDraw);
+    }
+
+    /**
+     * Draws an entity which looks toward a specific angle.
+     * The code was copied from
+     * {@link net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsAngle(GuiGraphics, int, int, int, float, float, LivingEntity)
+     * InventoryScreen.renderEntityInInventoryFollowsAngle}.
+     *
+     * @param graphics the current {@link GuiGraphics} instance.
+     * @param entity   entity to draw
+     * @param x        x pos
+     * @param y        y pos
+     * @param w        the width of the area where the entity should be drawn
+     * @param h        the height of the area where the entity should be drawn
+     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
+     * @param xAngle   the x angle to look toward
+     * @param yAngle   the y angle to look toward
+     */
+    public static <T extends Entity> void drawEntityLookingAtAngle(GuiGraphics graphics, T entity,
+                                                                   float x, float y, float w, float h, float z,
+                                                                   float xAngle, float yAngle,
+                                                                   @Nullable BiConsumer<GuiGraphics, T> preDraw,
+                                                                   @Nullable BiConsumer<GuiGraphics, T> postDraw) {
+        graphics.pose().pushPose();
+        setupDrawEntity(graphics, entity, x, y, w, h, z);
+
+        // pre draw
+        float oldYRot = entity.getYRot();
+        float oldXRot = entity.getXRot();
+        float oldYBodyRot = 0.0f;
+        float oldYHeadRot0 = 0.0f;
+        float oldYHeadRot = 0.0f;
+
+        entity.setYRot(180.0f + xAngle * 40.0f);
+        entity.setXRot(-yAngle * 20.0f);
+        // made this method more generic by only updating these if the entity is a LivingEntity
+        if (entity instanceof LivingEntity livingEntity) {
+            oldYBodyRot = livingEntity.yBodyRot;
+            oldYHeadRot0 = livingEntity.yHeadRotO;
+            oldYHeadRot = livingEntity.yHeadRot;
+
+            livingEntity.yBodyRot = 180.0f + xAngle * 20.0f;
+            livingEntity.yHeadRot = entity.getYRot();
+            livingEntity.yHeadRotO = entity.getYRot();
+        }
+
+        // skip rotating the render by 180° on the Z axis here, because we always do that in setupDrawEntity
+        Quaternionf cameraRot = new Quaternionf().rotateX(yAngle * 20 * Mth.DEG_TO_RAD);
+        graphics.pose().mulPose(cameraRot);
+        // set the camera orientation (vanilla also does this)
+        cameraRot.conjugate();
+        Minecraft.getInstance().getEntityRenderDispatcher().overrideCameraOrientation(cameraRot);
+
+        if (preDraw != null) preDraw.accept(graphics, entity);
+        drawEntityRaw(graphics, entity);
+        if (postDraw != null) postDraw.accept(graphics, entity);
+
+        // post draw
+        entity.setYRot(oldYRot);
+        entity.setXRot(oldXRot);
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.yBodyRot = oldYBodyRot;
+            livingEntity.yHeadRotO = oldYHeadRot0;
+            livingEntity.yHeadRot = oldYHeadRot;
+        }
+
+        endDrawEntity();
+        graphics.pose().popPose();
+    }
+
+    /**
+     * Sets up the gl state for rendering an entity. The entity will be scaled so that it fits right in the given size
+     * when untransformed.
+     *
+     * @param graphics the current {@link GuiGraphics} instance.
+     * @param entity   entity to set up drawing for
+     * @param x        x pos
+     * @param y        y pos
+     * @param w        the width of the area where the entity should be drawn
+     * @param h        the height of the area where the entity should be drawn
+     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI)
+     */
+    public static void setupDrawEntity(GuiGraphics graphics, Entity entity, float x, float y, float w, float h,
+                                       float z) {
+        float size;
+        float scale;
+        if (h / entity.getBbHeight() < w / entity.getBbWidth()) {
+            size = entity.getBbHeight();
+            scale = h / size;
+        } else {
+            size = entity.getBbWidth();
+            scale = w / size;
+        }
+        graphics.pose().translate(x + w / 2, y + h / 2, z + 50.0f);
+        graphics.pose().scale(scale, scale, -scale);
+        graphics.pose().translate(0, size / 2f, 0);
+        graphics.pose().mulPose(new Quaternionf().rotateZ(Mth.PI));
+
+        Lighting.setupForEntityInInventory();
+    }
+
+    public static void endDrawEntity() {
         Lighting.setupFor3DItems();
     }
 
