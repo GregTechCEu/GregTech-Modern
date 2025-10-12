@@ -167,7 +167,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .topRel(0f, 4, 1f)
                         .child(new PageButton(0, tabController)
                                 .tab(GTGuiTextures.TAB_TOP, -1)
-                                .overlay(new EntityDrawable(babyFop)))
+                                .overlay(new EntityDrawable<>(babyFop).followMouse()))
                         .child(new PageButton(1, tabController)
                                 .tab(GTGuiTextures.TAB_TOP, 0)
                                 .overlay(new ItemDrawable(Items.OAK_SAPLING).asIcon()))
