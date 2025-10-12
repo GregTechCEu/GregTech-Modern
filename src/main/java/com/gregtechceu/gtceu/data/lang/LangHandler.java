@@ -159,8 +159,6 @@ public class LangHandler {
         provider.add("medical_condition.gtceu.carcinogen.affected", "§eCancer");
         provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
         provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
-        provider.add("medical_condition.gtceu.silicosis", "§1Silicosis");
-        provider.add("medical_condition.gtceu.berylliosis", "§5Berylliosis");
         provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
         provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
