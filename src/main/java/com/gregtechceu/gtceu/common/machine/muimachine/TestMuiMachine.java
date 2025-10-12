@@ -619,7 +619,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
             this.progress = 0;
         }
     }
-  
+
     public @NotNull ModularPanel buildSearchTest(ModularGuiContext context) {
         List<String> items = Arrays.asList("Chicken", "Jockey", "Flint", "Steel", "Steve", "Diamond", "Ingot", "Iron",
                 "Armor", "Greg");
