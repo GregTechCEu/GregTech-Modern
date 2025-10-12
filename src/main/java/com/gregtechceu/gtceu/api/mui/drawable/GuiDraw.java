@@ -40,12 +40,14 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class GuiDraw {
 
@@ -662,8 +664,7 @@ public class GuiDraw {
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         drawTiledTexture(pose, sprite.atlasLocation(), x0, y0, x0 + w, y0 + h, sprite.getU0(), sprite.getV0(),
-                sprite.getU1(),
-                sprite.getV1(), sprite.contents().width(), sprite.contents().height(), 0);
+                sprite.getU1(), sprite.getV1(), sprite.contents().width(), sprite.contents().height(), 0);
         RenderSystem.disableBlend();
     }
 
