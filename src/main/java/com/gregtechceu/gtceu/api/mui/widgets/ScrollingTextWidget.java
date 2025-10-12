@@ -66,7 +66,7 @@ public class ScrollingTextWidget extends TextWidget {
         renderer.setColor(getColor() != null ? getColor().getAsInt() : widgetTheme.getTextColor());
         renderer.setAlignment(getAlignment(), getArea().w() + 1, getArea().h());
         renderer.setShadow(isShadow() != null ? isShadow() : widgetTheme.getTextShadow());
-        renderer.setPos(getArea().getPadding().left, getArea().getPadding().top);
+        renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(getScale());
         renderer.setSimulate(false);
         if (this.hovering) {

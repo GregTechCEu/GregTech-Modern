@@ -132,14 +132,15 @@ public class DimensionSizer {
         int p, s;
         int parentSize = relativeTo.getArea().getSize(this.axis);
         boolean calcParent = relativeTo.isSizeCalculated(this.axis);
+        Box padding = relativeTo.getArea().getPadding();
 
         if (this.sizeCalculated && !this.posCalculated) {
             // size was calculated before
             s = area.getSize(this.axis);
             if (this.start != null) {
-                p = calcPoint(this.start, s, parentSize, calcParent);
+                p = calcPoint(this.start, padding, s, parentSize, calcParent);
             } else if (this.end != null) {
-                p = calcPoint(this.end, s, parentSize, calcParent) - s;
+                p = calcPoint(this.end, padding, s, parentSize, calcParent) - s;
             } else {
                 throw new IllegalStateException();
             }
@@ -147,7 +148,7 @@ public class DimensionSizer {
             // pos was calculated before
             p = area.getRelativePoint(this.axis);
             if (this.size != null) {
-                s = this.coverChildren ? 18 : calcSize(this.size, parentSize, calcParent);
+                s = this.coverChildren ? 18 : calcSize(this.size, padding, parentSize, calcParent);
             } else {
                 s = defaultSize.getAsInt();
                 this.sizeCalculated = s > 0;
@@ -160,16 +161,16 @@ public class DimensionSizer {
                     s = defaultSize.getAsInt();
                     this.sizeCalculated = s > 0 && !this.expanded;
                 } else {
-                    s = calcSize(this.size, parentSize, calcParent);
+                    s = calcSize(this.size, padding, parentSize, calcParent);
                 }
                 this.posCalculated = true;
             } else {
                 if (this.size == null) {
                     if (this.start != null && this.end != null) {
-                        p = calcPoint(this.start, -1, parentSize, calcParent);
+                        p = calcPoint(this.start, padding, -1, parentSize, calcParent);
                         boolean b = this.posCalculated;
                         this.posCalculated = false;
-                        int p2 = calcPoint(this.end, -1, parentSize, calcParent);
+                        int p2 = calcPoint(this.end, padding, -1, parentSize, calcParent);
                         s = Math.abs(p2 - p);
                         this.posCalculated &= b;
                         this.sizeCalculated |= this.posCalculated;
@@ -177,32 +178,33 @@ public class DimensionSizer {
                         s = defaultSize.getAsInt();
                         this.sizeCalculated = s > 0 && !this.expanded;
                         if (this.start == null) {
-                            p = calcPoint(this.end, s, parentSize, calcParent);
+                            p = calcPoint(this.end, padding, s, parentSize, calcParent);
                             p -= s;
                             this.posCalculated &= this.sizeCalculated;
                         } else {
-                            p = calcPoint(this.start, s, parentSize, calcParent);
+                            p = calcPoint(this.start, padding, s, parentSize, calcParent);
                             this.posCalculated &= (this.sizeCalculated || !needsSize(this.start));
                         }
                     }
                 } else if (this.start != null) {
-                    s = calcSize(this.size, parentSize, calcParent);
-                    p = calcPoint(this.start, s, parentSize, calcParent);
+                    s = calcSize(this.size, padding, parentSize, calcParent);
+                    p = calcPoint(this.start, padding, s, parentSize, calcParent);
                     this.posCalculated &= (this.sizeCalculated || !needsSize(this.start));
                 } else {
-                    s = calcSize(this.size, parentSize, calcParent);
-                    p = calcPoint(this.end, s, parentSize, calcParent) - s;
+                    s = calcSize(this.size, padding, parentSize, calcParent);
+                    p = calcPoint(this.end, padding, s, parentSize, calcParent) - s;
                     this.posCalculated &= this.sizeCalculated;
                 }
             }
         }
 
+        // TODO find a better place to apply the margin, is it needed at all?
         // apply padding and margin to size
         if (this.sizeCalculated && calcParent && ((this.size != null && this.size.isRelative()) ||
                 (this.start != null && this.end != null && (this.start.isRelative() || this.end.isRelative())))) {
-            Box padding = relativeTo.getArea().getPadding();
             Box margin = area.getMargin();
-            s = Math.min(s, parentSize - padding.getTotal(this.axis) - margin.getTotal(this.axis));
+            // padding is applied in calcSize()
+            s = Math.min(s, parentSize /*- padding.getTotal(this.axis)*/ - margin.getTotal(this.axis));
         }
         area.setRelativePoint(this.axis, p);
         area.setPoint(this.axis, p + relativeTo.getArea().x); // temporary
@@ -218,9 +220,9 @@ public class DimensionSizer {
         this.sizeCalculated = true;
         if (!isPosCalculated()) {
             if (this.start != null) {
-                p = calcPoint(this.start, s, relativeTo.getSize(this.axis), true);
+                p = calcPoint(this.start, relativeTo.getPadding(), s, relativeTo.getSize(this.axis), true);
             } else if (this.end != null) {
-                p = calcPoint(this.end, s, relativeTo.getSize(this.axis), true) - s;
+                p = calcPoint(this.end, relativeTo.getPadding(), s, relativeTo.getSize(this.axis), true) - s;
             } else {
                 p = area.getRelativePoint(this.axis) + p0/* + area.getMargin().getStart(this.axis) */;
                 if (!this.cancelAutoMovement) {
@@ -240,9 +242,9 @@ public class DimensionSizer {
         if (!isPosCalculated()) {
             int p;
             if (this.start != null) {
-                p = calcPoint(this.start, s, relativeTo.getSize(this.axis), true);
+                p = calcPoint(this.start, relativeTo.getPadding(), s, relativeTo.getSize(this.axis), true);
             } else if (this.end != null) {
-                p = calcPoint(this.end, s, relativeTo.getSize(this.axis), true) - s;
+                p = calcPoint(this.end, relativeTo.getPadding(), s, relativeTo.getSize(this.axis), true) - s;
             } else {
                 p = area.getRelativePoint(this.axis);
             }
@@ -289,23 +291,23 @@ public class DimensionSizer {
         }
     }
 
-    private int calcSize(Unit s, int parentSize, boolean parentSizeCalculated) {
+    private int calcSize(Unit s, Box padding, int parentSize, boolean parentSizeCalculated) {
         if (this.coverChildren) return 18; // placeholder value
         float val = s.getValue();
         if (s.isRelative()) {
             if (!parentSizeCalculated) return (int) val;
-            val *= parentSize;
+            val *= parentSize - padding.getTotal(this.axis);
         }
         val += s.getOffset();
         this.sizeCalculated = true;
         return (int) val;
     }
 
-    public int calcPoint(Unit p, int width, int parentSize, boolean parentSizeCalculated) {
+    public int calcPoint(Unit p, Box padding, int width, int parentSize, boolean parentSizeCalculated) {
         float val = p.getValue();
         if (!parentSizeCalculated && (p == this.end || p.isRelative())) return (int) val;
         if (p.isRelative()) {
-            val = parentSize * val;
+            val *= parentSize + padding.getTotal(this.axis);
             float anchor = p.getAnchor();
             if (width > 0 && anchor != 0) {
                 val -= width * anchor;

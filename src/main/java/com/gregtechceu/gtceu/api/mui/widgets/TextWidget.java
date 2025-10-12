@@ -48,7 +48,7 @@ public class TextWidget extends Widget<TextWidget> {
         renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
         renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
-        renderer.setPos(getArea().getPadding().left, getArea().getPadding().top);
+        renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(this.scale);
         renderer.setSimulate(false);
         renderer.draw(context.getGraphics(), this.key.getFormatted());
@@ -58,7 +58,7 @@ public class TextWidget extends Widget<TextWidget> {
         Box padding = getArea().getPadding();
         TextRenderer renderer = TextRenderer.SHARED;
         renderer.setAlignment(Alignment.TopLeft, maxWidth);
-        renderer.setPos(padding.left, padding.top);
+        renderer.setPos(padding.left(), padding.top());
         renderer.setScale(this.scale);
         renderer.setSimulate(true);
         renderer.draw(null, getComponentForDefaultSize());

@@ -103,7 +103,9 @@ public abstract class ScrollData {
     }
 
     protected final int getRawVisibleSize(ScrollArea area) {
-        return Math.max(0, getRawFullVisibleSize(area) - area.getPadding().getTotal(this.axis));
+        // the scroll area doesn't contribute to the visible size in this case
+        return Math.max(0, getRawFullVisibleSize(area) - area.getPadding().getTotal(this.axis) +
+                area.getScrollPadding().getTotalScrollPadding(this.axis));
     }
 
     protected final int getRawFullVisibleSize(ScrollArea area) {
