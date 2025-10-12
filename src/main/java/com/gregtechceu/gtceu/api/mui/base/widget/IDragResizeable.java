@@ -31,7 +31,7 @@ public interface IDragResizeable {
     }
 
     /**
-     * @return The border size in witch to allow drag resizing in pixels.
+     * @return The border size in which to allow drag resizing in pixels.
      */
     default int getDragAreaSize() {
         return 3;

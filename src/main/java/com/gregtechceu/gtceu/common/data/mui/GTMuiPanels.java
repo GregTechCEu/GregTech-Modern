@@ -14,7 +14,7 @@ public class GTMuiPanels {
     public static PanelFactory TEST_PANEL = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                              MetaMachine machine) -> {
         ModularPanel panel = new ModularPanel("test_panel");
-        panel.child(new TextWidget(new StringKey("test").color(0xff0000)));
+        panel.child(new TextWidget(new StringKey("test").scale(10.0f).color(0xff0000)));
         return panel;
     };
 }

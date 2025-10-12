@@ -815,24 +815,4 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         else if (this.context.isHovered()) return NarrationPriority.HOVERED;
         else return NarrationPriority.NONE;
     }
-
-    public enum UpOrDown {
-
-        UP(1),
-        DOWN(-1);
-
-        public final int modifier;
-
-        UpOrDown(int modifier) {
-            this.modifier = modifier;
-        }
-
-        public boolean isUp() {
-            return this == UP;
-        }
-
-        public boolean isDown() {
-            return this == DOWN;
-        }
-    }
 }

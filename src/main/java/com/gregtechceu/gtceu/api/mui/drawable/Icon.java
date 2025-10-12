@@ -27,6 +27,7 @@ public class Icon implements IIcon, IJsonSerializable<Icon> {
     private Alignment alignment = Alignment.Center;
     @Getter
     private final Box margin = new Box();
+    @Getter
     private int color = 0;
 
     public Icon(IDrawable drawable) {
@@ -52,6 +53,11 @@ public class Icon implements IIcon, IJsonSerializable<Icon> {
             widgetTheme = widgetTheme.withColor(this.color);
         }
         this.drawable.draw(context, x, y, width, height, widgetTheme);
+    }
+
+    @Override
+    public IDrawable getWrappedDrawable() {
+        return drawable;
     }
 
     public Icon width(int width) {

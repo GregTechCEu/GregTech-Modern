@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.drawable.text;
 
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
+import lombok.Getter;
 import net.minecraft.client.gui.Font;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An icon which represents a {@link IKey} object.
@@ -15,6 +18,7 @@ import net.minecraft.client.gui.Font;
  */
 public class KeyIcon implements IIcon {
 
+    @Getter
     private final IKey key;
     private Font overrideFont;
     private final Box margin = new Box();
@@ -40,6 +44,11 @@ public class KeyIcon implements IIcon {
     @Override
     public Box getMargin() {
         return null;
+    }
+
+    @Override
+    public IKey getWrappedDrawable() {
+        return key;
     }
 
     @Override

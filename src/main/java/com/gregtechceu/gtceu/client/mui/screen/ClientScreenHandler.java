@@ -557,8 +557,8 @@ public class ClientScreenHandler {
         int shift = (int) (11 * scale + 0.5f);
         int lineY = screenH - shift - 2;
         GuiDraw.drawText(graphics, "Mouse Pos: " + mouseX + ", " + mouseY, 5, lineY, scale, color, true);
-        lineY -= shift;
-        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 24, scale, color, true);
+        lineY -= shift + 2;
+        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 23, scale, color, true);
         LocatedWidget locatedHovered = muiScreen.getPanelManager().getTopWidgetLocated(true);
         if (locatedHovered != null) {
             drawSegmentLine(graphics, lineY -= 4, scale, color);

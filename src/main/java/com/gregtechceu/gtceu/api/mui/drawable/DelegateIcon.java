@@ -33,6 +33,11 @@ public class DelegateIcon implements IIcon {
         this.icon.draw(context, x, y, width, height, widgetTheme);
     }
 
+    @Override
+    public IIcon getWrappedDrawable() {
+        return icon;
+    }
+
     public IIcon getDelegate() {
         return icon;
     }
