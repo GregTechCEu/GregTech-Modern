@@ -239,7 +239,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 }
                 return Result.SUCCESS;
             case InputConstants.KEY_ESCAPE:
-                if (ConfigHolder.INSTANCE.client.ui.escRestoreLastText) {
+                if (ConfigHolder.INSTANCE.client.ui.escRestoresLastText) {
                     this.handler.clear();
                     this.handler.insert(this.lastText);
                 }

@@ -49,7 +49,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     protected UnaryOperator<ItemStack> itemHook;
 
     public ItemSlot() {
-        tooltip().setAutoUpdate(true);// .setHasTitleMargin(true);
+        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
         tooltipBuilder(tooltip -> {
             if (!isSynced()) return;
             ItemStack stack = getSlot().getItem();

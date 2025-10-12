@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -38,6 +40,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -720,17 +723,24 @@ public class GuiDraw {
         graphics.pose().popPose();
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static void drawTooltipBackground(GuiGraphics graphics, ItemStack stack, List<ClientTooltipComponent> lines,
-                                             int x, int y,
-                                             int textWidth, int height) {
+                                             int x, int y, int textWidth, int height, @Nullable RichTooltip tooltip) {
         // TODO theme color
         int backgroundTop = 0xF0100010;
         int backgroundBottom = backgroundTop;
         int borderColorStart = 0x505000FF;
         int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-        RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y,
-                TextRenderer.getFont(), backgroundTop,
-                borderColorStart, borderColorEnd, lines);
+        RenderTooltipEvent.Color colorEvent;
+
+        if (tooltip != null) {
+            colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, TextRenderer.getFont(),
+                    backgroundTop, borderColorStart, borderColorEnd, lines, tooltip);
+        } else {
+            colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y, TextRenderer.getFont(),
+                    backgroundTop, borderColorStart, borderColorEnd, lines);
+        }
+
         MinecraftForge.EVENT_BUS.post(colorEvent);
         backgroundTop = colorEvent.getBackgroundStart();
         backgroundBottom = colorEvent.getBackgroundEnd();

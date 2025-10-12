@@ -34,7 +34,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
         @Override
         public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-            if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.drum) return false;
+            if (!ConfigHolder.INSTANCE.client.tankContentPreview.drum) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
     };
@@ -43,7 +43,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
         @Override
         public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-            if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.quantumTank) return false;
+            if (!ConfigHolder.INSTANCE.client.tankContentPreview.quantumTank) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
     };

@@ -60,7 +60,7 @@ public class FluidSlot extends Widget<FluidSlot>
 
     public FluidSlot() {
         size(DEFAULT_SIZE);
-        tooltip().setAutoUpdate(true);// .setHasTitleMargin(true);
+        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
         tooltipBuilder(tooltip -> {
             IFluidTank fluidTank = getFluidTank();
             FluidStack fluid = this.syncHandler.getValue();

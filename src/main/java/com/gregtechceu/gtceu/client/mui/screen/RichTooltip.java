@@ -10,15 +10,19 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -30,6 +34,7 @@ import com.mojang.datafixers.util.Either;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,13 +42,15 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Accessors(chain = true)
+@Accessors(fluent = true, chain = true)
 public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
     private static final Area HOLDER = new Area();
 
-    private final Consumer<Area> parent;
     private final RichText text = new RichText();
+    @Setter
+    private Consumer<Area> parent;
+    @Setter
     private Pos pos = null;
     private Consumer<RichTooltip> tooltipBuilder;
     @Getter
@@ -60,23 +67,26 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
     private boolean dirty;
 
-    public RichTooltip(IWidget parent) {
-        this(area -> {
-            area.setSize(parent.getArea());
+    public RichTooltip() {
+        parent(Area.ZERO);
+    }
+
+    @Tolerate
+    public RichTooltip parent(Area parent) {
+        return parent(area -> area.set(parent));
+    }
+
+    @Tolerate
+    public RichTooltip parent(Supplier<Area> parent) {
+        return parent(area -> area.set(parent.get()));
+    }
+
+    @Tolerate
+    public RichTooltip parent(IWidget parent) {
+        return parent(area -> {
             area.setPos(0, 0);
+            area.setSize(parent.getArea());
         });
-    }
-
-    public RichTooltip(Area parent) {
-        this(area -> area.set(parent));
-    }
-
-    public RichTooltip(Supplier<Area> parent) {
-        this(area -> area.set(parent.get()));
-    }
-
-    public RichTooltip(Consumer<Area> parent) {
-        this.parent = parent;
     }
 
     public void buildTooltip() {
@@ -111,7 +121,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         TextRenderer renderer = TextRenderer.SHARED;
         // this only turns the text and not any drawables into strings
-        List<Either<FormattedText, TooltipComponent>> textLines = this.text.getStringRepresentation().stream()
+        List<Either<FormattedText, TooltipComponent>> textLines = this.text.getAsComponents().stream()
                 .<Either<FormattedText, TooltipComponent>>map(Either::left)
                 .collect(Collectors.toList());
 
@@ -127,9 +137,11 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
                         ClientTooltipComponent::create))
                 .toList();
 
-        RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(stack, context.getGraphics(),
+        RichText copy = this.text.copy();
+
+        RichTooltipEvent.Pre event = new RichTooltipEvent.Pre(stack, context.getGraphics(),
                 mouseX, mouseY, screen.width, screen.height,
-                TextRenderer.getFont(), components, DefaultTooltipPositioner.INSTANCE);
+                TextRenderer.getFont(), components, DefaultTooltipPositioner.INSTANCE, copy);
         if (MinecraftForge.EVENT_BUS.post(event)) return; // canceled
         // we are supposed to now use the strings of the event, but we can't properly determine where to put them
         mouseX = event.getX();
@@ -137,17 +149,17 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         int screenWidth = event.getScreenWidth(), screenHeight = event.getScreenHeight();
 
         // simulate to figure how big this tooltip is without any restrictions
-        this.text.setupRenderer(renderer, 0, 0, this.maxWidth, -1, Color.WHITE.main, false);
-        this.text.compileAndDraw(renderer, context, true);
+        copy.setupRenderer(renderer, 0, 0, this.maxWidth, -1, Color.WHITE.main, false);
+        copy.compileAndDraw(renderer, context, true);
 
-        Rectangle area = determineTooltipArea(context, renderer, screenWidth, screenHeight, mouseX, mouseY);
+        Rectangle area = determineTooltipArea(copy, context, renderer, screenWidth, screenHeight, mouseX, mouseY);
 
         Lighting.setupForFlatItems();
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
         GuiDraw.drawTooltipBackground(context.getGraphics(), stack, components, area.x, area.y, area.width,
-                area.height);
+                area.height, this);
 
         // MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, area.x, area.y,
         // TextRenderer.getFont(), area.width, area.height));
@@ -162,10 +174,13 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         // TextRenderer.getFont(), area.width, area.height));
     }
 
-    public Rectangle determineTooltipArea(GuiContext context, TextRenderer renderer, int screenWidth, int screenHeight,
-                                          int mouseX, int mouseY) {
+    public Rectangle determineTooltipArea(RichText text, GuiContext context, TextRenderer renderer,
+                                          int screenWidth, int screenHeight, int mouseX, int mouseY) {
         int width = (int) renderer.getLastWidth();
         int height = (int) renderer.getLastHeight();
+        if (width > screenWidth - 14) {
+            width = screenWidth - 14;
+        }
 
         Pos pos = this.pos;
         if (pos == null) {
@@ -177,6 +192,12 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
             return new Rectangle(this.x, this.y, width, height);
         }
 
+        Area area = HOLDER;
+        this.parent.accept(area);
+        if (area.x == 0 && area.y == 0 && area.width == 0 && area.height == 0) {
+            pos = Pos.NEXT_TO_MOUSE;
+        }
+
         if (pos == Pos.NEXT_TO_MOUSE) {
             // vanilla style, tooltip floats next to mouse
             // note that this behaves slightly different from vanilla (better imo)
@@ -185,7 +206,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
             final int mouseOffset = 12;
             int x = mouseX + mouseOffset, y = mouseY - mouseOffset;
             if (x < padding) {
-                x = padding; // this cant happen mathematically since mouse is always positive
+                x = padding; // this can't happen mathematically since mouse is always positive
             } else if (x + width + padding > screenWidth) {
                 // doesn't fit on the right side of the screen
                 if (screenWidth - mouseX < mouseX) { // check if left side has more space
@@ -193,14 +214,14 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
                     if (x < padding) {
                         x = padding; // went off-screen
                     }
-                    width = mouseX - mouseOffset - x; // max space on left side
+                    width = mouseX - mouseOffset - padding; // max space on left side
                 } else {
                     width = screenWidth - padding - x; // max space on right side
                 }
                 // recalculate width and height
                 renderer.setPos(x, y);
-                renderer.setAlignment(this.text.getAlignment(), width, -1);
-                this.text.compileAndDraw(renderer, context, true);
+                renderer.setAlignment(text.getAlignment(), width, -1);
+                text.compileAndDraw(renderer, context, true);
                 width = (int) renderer.getLastWidth();
                 height = (int) renderer.getLastHeight();
             }
@@ -213,30 +234,16 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
             throw new IllegalStateException("Tooltip pos is " + pos.name() + ", but no widget parent is set!");
         }
 
-        int minWidth = this.text.getMinWidth();
+        int minWidth = text.getMinWidth();
 
         int shiftAmount = 10;
         int padding = 7;
 
-        Area area = HOLDER;
-        this.parent.accept(area);
         area.transformAndRectanglerize(context);
         int x = 0, y = 0;
         if (pos.axis.isVertical()) { // above or below
-            if (width < area.width) {
-                x = area.x + shiftAmount;
-            } else {
-                x = area.x - shiftAmount;
-                if (x < padding) {
-                    x = padding;
-                } else if (x + width > screenWidth - padding) {
-                    int maxWidth = Math.max(minWidth, screenWidth - x - padding);
-                    renderer.setAlignment(this.text.getAlignment(), maxWidth);
-                    this.text.compileAndDraw(renderer, context, true);
-                    width = (int) renderer.getLastWidth();
-                    height = (int) renderer.getLastHeight();
-                }
-            }
+            x = area.x + (width < area.width ? shiftAmount : -shiftAmount);
+            x = Mth.clamp(x, padding, screenWidth - padding - width);
 
             if (pos == Pos.VERTICAL) {
                 int bottomSpace = screenHeight - area.ey();
@@ -263,6 +270,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
             if (height < area.height) {
                 y = area.y + shiftAmount;
+
             } else {
                 y = area.y - shiftAmount;
                 if (y < padding) {
@@ -293,6 +301,10 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
                 x = area.ex() + padding;
             } else if (pos == Pos.LEFT) {
                 x = area.x - width - padding;
+                if (x < padding) {
+                    x = padding;
+                    width = area.x - x - padding;
+                }
             }
         }
         return new Rectangle(x, y, width, height);
@@ -305,11 +317,6 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
     public void markDirty() {
         this.dirty = true;
-    }
-
-    public RichTooltip pos(Pos pos) {
-        this.pos = pos;
-        return this;
     }
 
     public RichTooltip pos(int x, int y) {
@@ -327,10 +334,6 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
     @Override
     public IRichTextBuilder<?> getRichText() {
         return text;
-    }
-
-    public RichTooltip showUpTimer(int showUpTimer) {
-        return this.setShowUpTimer(showUpTimer);
     }
 
     public RichTooltip tooltipBuilder(Consumer<RichTooltip> tooltipBuilder) {
@@ -367,6 +370,39 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         this.titleMargin = margin;
         this.appliedMargin = false;
         return this;
+    }
+
+    public static void findIngredientArea(Area area, int x, int y) {
+        Screen screen = MCHelper.getCurrentScreen();
+        if (screen instanceof AbstractContainerScreen<?> containerScreen) {
+            Slot slot = containerScreen.getSlotUnderMouse();
+            if (slot != null) {
+                int sx = slot.x + containerScreen.getGuiLeft();
+                int sy = slot.y + containerScreen.getGuiTop();
+                if (sx >= 0 && sy >= 0) {
+                    area.set(sx - 1, sy - 1, 18, 18);
+                    return;
+                }
+            }
+        }
+        /*
+         * TODO fix this JEI compat thing
+         * if (GTCEu.Mods.isJEILoaded()) {
+         * IShowsRecipeFocuses overlay = (IShowsRecipeFocuses)
+         * ModularUIJeiPlugin.getRuntime().getIngredientListOverlay();
+         * IClickedIngredient<?> ingredient = overlay.getIngredientUnderMouse(x, y);
+         * if (ingredient == null || ingredient.getArea() == null) {
+         * overlay = (IShowsRecipeFocuses) ModularUIJeiPlugin.getRuntime().getBookmarkOverlay();
+         * ingredient = overlay.getIngredientUnderMouse(x, y);
+         * }
+         * if (ingredient != null && ingredient.getArea() != null) {
+         * Rectangle slot = ingredient.getArea();
+         * area.set(slot.x - 1, slot.y - 1, 18, 18);
+         * return;
+         * }
+         * }
+         */
+        area.set(Area.ZERO);
     }
 
     public enum Pos {
