@@ -129,13 +129,13 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
          * if (isMainPanel()) {
          * // close screen and let NEA animation // TODO: since nea is not yet ported, it will just close the screen
          *
-            EntityPlayer player = MCHelper.getPlayer();
-            if (player != null) {
-                player.closeScreen();
-            } else {
-                // we are currently not in a world and want to display the previous screen
-                Minecraft.getMinecraft().displayGuiScreen(getContext().getParentScreen());
-            }
+         * EntityPlayer player = MCHelper.getPlayer();
+         * if (player != null) {
+         * player.closeScreen();
+         * } else {
+         * // we are currently not in a world and want to display the previous screen
+         * Minecraft.getMinecraft().displayGuiScreen(getContext().getParentScreen());
+         * }
          * return;
          * }
          */

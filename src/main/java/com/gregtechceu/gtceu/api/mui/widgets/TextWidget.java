@@ -37,6 +37,10 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         this.key = key;
     }
 
+    public TextWidget(String key) {
+        this(IKey.str(key));
+    }
+
     @Override
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;

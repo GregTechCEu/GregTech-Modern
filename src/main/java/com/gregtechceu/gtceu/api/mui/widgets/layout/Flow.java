@@ -188,7 +188,6 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
         }
     }
 
-
     public Flow children(Iterable<IWidget> widgets) {
         for (IWidget widget : widgets) {
             child(widget);
