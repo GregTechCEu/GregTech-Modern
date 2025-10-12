@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntSupplier;
+
 public class TextWidget extends Widget<TextWidget> {
 
     @Getter
@@ -22,7 +24,7 @@ public class TextWidget extends Widget<TextWidget> {
     @Getter
     private Alignment alignment = Alignment.CenterLeft;
     @Getter
-    private Integer color = null;
+    private IntSupplier color = null;
     @Getter
     private Boolean shadow = null;
     @Getter
@@ -43,7 +45,7 @@ public class TextWidget extends Widget<TextWidget> {
             WidgetTree.resizeInternal(this, false);
         }
         this.lastText = comp;
-        renderer.setColor(this.color != null ? this.color : widgetTheme.getTextColor());
+        renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().w() + this.scale, getArea().h());
         renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
         renderer.setPos(getArea().getPadding().left, getArea().getPadding().top);
@@ -116,7 +118,11 @@ public class TextWidget extends Widget<TextWidget> {
         return this;
     }
 
-    public TextWidget color(@Nullable Integer color) {
+    public TextWidget color(int color) {
+        return color(() -> color);
+    }
+
+    public TextWidget color(@Nullable IntSupplier color) {
         this.color = color;
         return this;
     }

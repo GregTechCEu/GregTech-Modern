@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -239,7 +240,11 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         return withStyle().alignment(alignment);
     }
 
-    default StyledText color(@Nullable Integer color) {
+    default StyledText color(int color) {
+        return color(() -> color);
+    }
+
+    default StyledText color(@Nullable IntSupplier color) {
         return withStyle().color(color);
     }
 

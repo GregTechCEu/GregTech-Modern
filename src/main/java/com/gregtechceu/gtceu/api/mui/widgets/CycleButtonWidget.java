@@ -6,6 +6,18 @@ import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 
 import java.util.function.Consumer;
 
+/**
+ * A button which cycles between multiple states by clicking on it. Background, overlay and tooltip can be supplied per
+ * state.
+ * <p>
+ * Note that you need to set the amount of states before setting any state backgrounds etc. The state count is
+ * automatically set, if the passed {@link com.gregtechceu.gtceu.api.mui.base.value.IIntValue} is a
+ * {@link com.gregtechceu.gtceu.api.mui.base.value.IEnumValue IEnumValue} or a
+ * {@link com.gregtechceu.gtceu.api.mui.base.value.IBoolValue IBoolValue}.
+ * </p>
+ * 
+ * @see ToggleButton
+ */
 public class CycleButtonWidget extends AbstractCycleButtonWidget<CycleButtonWidget> {
 
     @Override

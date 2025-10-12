@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -57,7 +58,9 @@ public class ModularSyncManager {
     }
 
     public void onClose() {
-        this.panelSyncManagerMap.values().forEach(PanelSyncManager::onClose);
+        if (ClientScreenHandler.isGuiClosing()) {
+            this.panelSyncManagerMap.values().forEach(PanelSyncManager::onClose);
+        }
     }
 
     public void onOpen() {

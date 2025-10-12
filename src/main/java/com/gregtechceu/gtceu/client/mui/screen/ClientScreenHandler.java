@@ -70,10 +70,13 @@ public class ClientScreenHandler {
     @Getter
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
+    @Getter
+    private static boolean guiClosing;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onOpenScreen(ScreenEvent.Opening event) {
         Screen newGui = event.getNewScreen();
+        guiClosing = newGui == null;
         defaultContext.reset();
 
         if (newGui instanceof IMuiScreen screenWrapper) {
