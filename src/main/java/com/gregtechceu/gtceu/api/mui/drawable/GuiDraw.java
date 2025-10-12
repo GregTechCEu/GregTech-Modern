@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -614,14 +616,13 @@ public class GuiDraw {
         graphics.setColor(1f, 1f, 1f, 1f);
     }
 
-    public static void drawStandardSlotAmountText(ModularGuiContext context, int amount, String format, Area area,
+    public static void drawStandardSlotAmountText(GuiContext context, int amount, String format, Area area,
                                                   float z) {
         drawAmountText(context, amount, format, 1, 1, area.width - 1, area.height - 1, Alignment.BottomRight, z);
     }
 
-    public static void drawAmountText(ModularGuiContext context, int amount, String format, int x, int y, int width,
-                                      int height,
-                                      Alignment alignment, float z) {
+    public static void drawAmountText(GuiContext context, int amount, String format,
+                                      int x, int y, int width, int height, Alignment alignment, float z) {
         // render the amount overlay
         if (amount > 1 || format != null) {
             String amountText = FormattingUtil.formatNumberReadable(amount, false);
