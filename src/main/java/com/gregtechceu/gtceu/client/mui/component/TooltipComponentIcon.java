@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.mui.component;
 
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
@@ -13,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 public class TooltipComponentIcon implements IIcon {
 
@@ -26,6 +28,11 @@ public class TooltipComponentIcon implements IIcon {
     @OnlyIn(Dist.CLIENT)
     public TooltipComponentIcon(ClientTooltipComponent clientComponent) {
         this.clientComponent = clientComponent;
+    }
+
+    @Override
+    public @Nullable IDrawable getWrappedDrawable() {
+        return null;
     }
 
     @Override
