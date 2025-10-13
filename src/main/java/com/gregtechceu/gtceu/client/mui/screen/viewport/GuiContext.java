@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 /**
@@ -37,6 +38,7 @@ public class GuiContext extends GuiViewportStack {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     private GuiGraphics graphics = null;
+    private @Nullable Font overrideFont = null;
     @Getter
     private final Stencil stencil = new Stencil(this);
 
@@ -132,7 +134,17 @@ public class GuiContext extends GuiViewportStack {
 
     @OnlyIn(Dist.CLIENT)
     public Font getFont() {
-        return MCHelper.getFont();
+        if (overrideFont != null) {
+            return overrideFont;
+        } else {
+            return MCHelper.getFont();
+        }
+    }
+
+    @ApiStatus.Internal
+    @OnlyIn(Dist.CLIENT)
+    public void setOverrideFont(@Nullable Font overrideFont) {
+        this.overrideFont = overrideFont;
     }
 
     public void tick() {

@@ -142,7 +142,7 @@ public class TextRenderer {
     public void drawCompiled(GuiContext context, List<ITextLine> lines) {
         int height = 0, width = 0;
         for (ITextLine line : lines) {
-            height += line.getHeight(getFont());
+            height += line.getHeight(context.getFont());
             width = Math.max(width, line.getWidth());
         }
         if (!this.simulate) {
@@ -155,8 +155,8 @@ public class TextRenderer {
         this.lastY = y0;
         for (ITextLine line : lines) {
             int x0 = getStartX(width, line.getWidth());
-            if (!simulate) line.draw(context, getFont(), x0, y0, this.color, this.shadow, width, height);
-            y0 += line.getHeight(getFont());
+            if (!simulate) line.draw(context, context.getFont(), x0, y0, this.color, this.shadow, width, height);
+            y0 += line.getHeight(context.getFont());
         }
         if (!this.simulate) {
             context.getGraphics().pose().popPose();

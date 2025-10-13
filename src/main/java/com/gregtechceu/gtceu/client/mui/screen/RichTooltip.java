@@ -149,7 +149,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
         RichTooltipEvent.Pre event = new RichTooltipEvent.Pre(stack, context.getGraphics(),
                 mouseX, mouseY, screen.width, screen.height,
-                TextRenderer.getFont(), components, DefaultTooltipPositioner.INSTANCE, copy);
+                context.getFont(), components, DefaultTooltipPositioner.INSTANCE, copy);
         if (MinecraftForge.EVENT_BUS.post(event)) {
             // canceled
             return;
@@ -158,6 +158,8 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         mouseX = event.getX();
         mouseY = event.getY();
         int screenWidth = event.getScreenWidth(), screenHeight = event.getScreenHeight();
+
+        context.setOverrideFont(event.getFont());
 
         // simulate to figure how big this tooltip is without any restrictions
         copy.setupRenderer(renderer, 0, 0, this.maxWidth, -1, Color.WHITE.main, false);
@@ -169,8 +171,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
-        GuiDraw.drawTooltipBackground(context.getGraphics(), stack, components, area.x, area.y, area.width,
-                area.height, this);
+        GuiDraw.drawTooltipBackground(context, stack, components, area.x, area.y, area.width, area.height, this);
 
         // MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, area.x, area.y,
         // TextRenderer.getFont(), area.width, area.height));
@@ -181,8 +182,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         context.getGraphics().pose().translate(0, 0, 430);
         this.text.compileAndDraw(renderer, context, false);
 
-        // MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(stack, textLines, area.x, area.y,
-        // TextRenderer.getFont(), area.width, area.height));
+        context.setOverrideFont(null);
     }
 
     public Rectangle determineTooltipArea(RichText text, GuiContext context, TextRenderer renderer,

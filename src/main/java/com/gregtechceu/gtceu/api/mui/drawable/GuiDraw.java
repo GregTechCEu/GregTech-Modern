@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -724,8 +725,10 @@ public class GuiDraw {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static void drawTooltipBackground(GuiGraphics graphics, ItemStack stack, List<ClientTooltipComponent> lines,
+    public static void drawTooltipBackground(GuiContext context, ItemStack stack, List<ClientTooltipComponent> lines,
                                              int x, int y, int textWidth, int height, @Nullable RichTooltip tooltip) {
+        GuiGraphics graphics = context.getGraphics();
+
         // TODO theme color
         int backgroundTop = 0xF0100010;
         int backgroundBottom = backgroundTop;
@@ -734,10 +737,10 @@ public class GuiDraw {
         RenderTooltipEvent.Color colorEvent;
 
         if (tooltip != null) {
-            colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, TextRenderer.getFont(),
+            colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
                     backgroundTop, borderColorStart, borderColorEnd, lines, tooltip);
         } else {
-            colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y, TextRenderer.getFont(),
+            colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
                     backgroundTop, borderColorStart, borderColorEnd, lines);
         }
 
