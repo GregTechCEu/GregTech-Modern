@@ -273,7 +273,7 @@ public class RichTextCompiler {
         for (; i >= 0; i--) {
             if (!Character.isWhitespace(s.charAt(i))) break;
         }
-        if (i < s.length() - 1) s = s.substring(0, i);
+        if (i < s.length() - 1) s = s.substring(0, i + 1);
         return s;
     }
 

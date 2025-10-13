@@ -73,10 +73,11 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     private final Input keyboard = new Input();
     private final Input mouse = new Input();
 
+    // drag resizing
     private IDragResizeable currentResizing = null;
     private LocatedWidget currentResizingWidget = null;
     private ResizeDragArea draggingDragArea = null;
-    private Area startArea = new Area();
+    private final Area startArea = new Area();
     private int dragX, dragY;
 
     private final List<IPanelHandler> clientSubPanels = new ArrayList<>();
@@ -127,7 +128,14 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         /*
          * if (isMainPanel()) {
          * // close screen and let NEA animation // TODO: since nea is not yet ported, it will just close the screen
-         * Minecraft.getInstance().player.closeContainer();
+         *
+         * EntityPlayer player = MCHelper.getPlayer();
+         * if (player != null) {
+         * player.closeScreen();
+         * } else {
+         * // we are currently not in a world and want to display the previous screen
+         * Minecraft.getMinecraft().displayGuiScreen(getContext().getParentScreen());
+         * }
          * return;
          * }
          */

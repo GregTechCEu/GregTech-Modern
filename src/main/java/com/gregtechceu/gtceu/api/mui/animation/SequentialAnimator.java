@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.animation;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SequentialAnimator extends BaseAnimator implements IAnimator {
+public class SequentialAnimator extends BaseAnimator<SequentialAnimator> implements IAnimator {
 
     private final List<IAnimator> animators;
     private int currentIndex = 0;
@@ -14,7 +12,7 @@ public class SequentialAnimator extends BaseAnimator implements IAnimator {
     public SequentialAnimator(List<IAnimator> animators) {
         this.animators = new ArrayList<>(animators);
         this.animators.forEach(animator -> {
-            if (animator instanceof BaseAnimator baseAnimator) {
+            if (animator instanceof BaseAnimator<?> baseAnimator) {
                 baseAnimator.setParent(this);
             }
         });
@@ -24,7 +22,7 @@ public class SequentialAnimator extends BaseAnimator implements IAnimator {
         this.animators = new ArrayList<>();
         Collections.addAll(this.animators, animators);
         this.animators.forEach(animator -> {
-            if (animator instanceof BaseAnimator baseAnimator) {
+            if (animator instanceof BaseAnimator<?> baseAnimator) {
                 baseAnimator.setParent(this);
             }
         });
@@ -40,8 +38,15 @@ public class SequentialAnimator extends BaseAnimator implements IAnimator {
 
     @Override
     public void reset(boolean atEnd) {
+        super.reset(atEnd);
         this.currentIndex = atEnd ? this.animators.size() - 1 : 0;
         this.animators.forEach(animator -> animator.reset(atEnd));
+    }
+
+    @Override
+    public void resume(boolean reverse) {
+        super.resume(reverse);
+        this.animators.get(this.currentIndex).resume(reverse);
     }
 
     @Override
@@ -52,7 +57,7 @@ public class SequentialAnimator extends BaseAnimator implements IAnimator {
             if (!animator.isAnimating()) {
                 // animator has finished
                 this.currentIndex += getDirection();
-                GTCEu.LOGGER.info("Finished {}th animator", this.currentIndex);
+                // GTCEu.LOGGER.info("Finished {}th animator", this.currentIndex);
                 if (this.currentIndex >= this.animators.size() || this.currentIndex < 0) {
                     // whole sequence has finished
                     stop(false);

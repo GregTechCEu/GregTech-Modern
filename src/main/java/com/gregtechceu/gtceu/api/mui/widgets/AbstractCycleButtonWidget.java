@@ -106,7 +106,8 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
     public IDrawable getCurrentBackground(ITheme theme, WidgetTheme widgetTheme) {
         // make sure texture is up-to-date
         int state = getState();
-        if (isHovering() && this.hoverBackground != null && this.hoverBackground[state] != null) {
+        if (isHovering() && this.hoverBackground != null && this.hoverBackground[state] != null &&
+                this.hoverBackground[state] != IDrawable.NONE) {
             return this.hoverBackground[state];
         }
         return this.background != null && this.background[state] != null ? this.background[state] :
@@ -116,7 +117,8 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
     @Override
     public IDrawable getCurrentOverlay(ITheme theme, WidgetTheme widgetTheme) {
         int state = getState();
-        if (isHovering() && this.hoverOverlay != null && this.hoverOverlay[state] != null) {
+        if (isHovering() && this.hoverOverlay != null && this.hoverOverlay[state] != null &&
+                this.hoverOverlay[state] != IDrawable.NONE) {
             return this.hoverOverlay[state];
         }
         return this.overlay != null && this.overlay[state] != null ? this.overlay[state] :
@@ -145,6 +147,28 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
             return this.stateTooltip.get(getState());
         }
         return tooltip;
+    }
+
+    @Override
+    public W disableHoverBackground() {
+        if (this.hoverBackground != null) {
+            Arrays.fill(this.hoverBackground, IDrawable.NONE);
+        }
+        if (getHoverBackground() == null) {
+            super.hoverBackground(IDrawable.NONE);
+        }
+        return getThis();
+    }
+
+    @Override
+    public W disableHoverOverlay() {
+        if (this.hoverOverlay != null) {
+            Arrays.fill(this.hoverOverlay, IDrawable.NONE);
+        }
+        if (getHoverOverlay() == null) {
+            super.hoverOverlay(IDrawable.NONE);
+        }
+        return getThis();
     }
 
     protected W value(IIntValue<?> value) {

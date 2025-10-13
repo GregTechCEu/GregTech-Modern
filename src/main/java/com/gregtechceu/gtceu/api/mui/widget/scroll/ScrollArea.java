@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widget.scroll;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -29,6 +30,7 @@ public class ScrollArea extends Area {
     @Getter
     @Setter
     private VerticalScrollData scrollY;
+    private final ScrollPadding scrollPadding = new ScrollPadding();
     @Getter
     @Setter
     private int scrollBarBackgroundColor = Color.withAlpha(Color.BLACK.main, 0.25f);
@@ -38,6 +40,16 @@ public class ScrollArea extends Area {
     }
 
     public ScrollArea() {}
+
+    @Override
+
+    public Box getPadding() {
+        return this.scrollPadding;
+    }
+
+    public ScrollPadding getScrollPadding() {
+        return this.scrollPadding;
+    }
 
     public void setScrollData(ScrollData data) {
         if (data instanceof HorizontalScrollData scrollData) {

@@ -14,10 +14,12 @@ public class GTMuiEditors {
 
     public static PanelEditor TEST_EDITOR_1 = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                                MetaMachine machine, ModularPanel panel) -> {
-        panel.child(new TextWidget(new StringKey("Edit Test 1")).color(0x00ff00).alignment(Alignment.BottomRight));
+        panel.child(new TextWidget<>(new StringKey("Edit Test 1")).color(0x00ff00).bottom(7).left(4)
+                .alignment(Alignment.BottomRight));
     };
     public static PanelEditor TEST_EDITOR_2 = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                                MetaMachine machine, ModularPanel panel) -> {
-        panel.child(new TextWidget(new StringKey("Edit Test 2")).color(0x0000ff).alignment(Alignment.TopRight));
+        panel.child(
+                new TextWidget<>(new StringKey("Edit Test 2")).top(40).color(0x0000ff).alignment(Alignment.TopRight));
     };
 }

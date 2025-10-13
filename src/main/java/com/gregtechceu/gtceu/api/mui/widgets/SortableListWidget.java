@@ -35,6 +35,8 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
     public SortableListWidget() {
         super(Item::getWidgetValue);
         heightRel(1f);
+        // this is not desired here in favor of animations
+        collapseDisabledChild(false);
     }
 
     @Override
@@ -68,6 +70,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
 
     @Override
     public void postResize() {
+        super.postResize();
         if (this.scheduleAnimation && !this.widgetAreaSnapshots.isEmpty()) {
             @UnmodifiableView
             @NotNull

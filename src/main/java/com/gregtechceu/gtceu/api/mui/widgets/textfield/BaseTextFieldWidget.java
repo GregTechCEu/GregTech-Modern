@@ -133,7 +133,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         this.renderer.setSimulate(false);
         this.renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         this.renderer.setScale(this.scale);
-        this.renderer.setAlignment(this.textAlignment, -2, getArea().height);
+        this.renderer.setAlignment(this.textAlignment, -1, getArea().paddedHeight());
     }
 
     protected void drawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {

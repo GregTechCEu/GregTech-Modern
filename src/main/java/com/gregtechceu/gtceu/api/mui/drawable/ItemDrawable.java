@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 
 public class ItemDrawable implements IDrawable, IJsonSerializable<ItemDrawable> {
 
+    @Getter
     private ItemStack item = ItemStack.EMPTY;
 
     public ItemDrawable() {}

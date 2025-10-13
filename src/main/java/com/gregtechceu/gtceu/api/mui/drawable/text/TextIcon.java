@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 public class TextIcon implements IIcon {
 
@@ -37,6 +38,12 @@ public class TextIcon implements IIcon {
         TextRenderer.SHARED.setAlignment(this.alignment, width);
         TextRenderer.SHARED.setScale(this.scale);
         TextRenderer.SHARED.drawSimple(context.getGraphics(), this.text);
+    }
+
+    @Override
+    @Nullable
+    public IIcon getWrappedDrawable() {
+        return null;
     }
 
     @Override

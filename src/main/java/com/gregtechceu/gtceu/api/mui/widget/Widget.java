@@ -635,7 +635,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @Override
     public Flex flex() {
-        return this.flex;
+        return getFlex();
     }
 
     /**

@@ -50,13 +50,13 @@ public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayout
     }
 
     private int getElementWidth(Area area) {
-        return area.width + Math.max(area.getMargin().left, this.minElementMargin.left) +
-                Math.max(area.getMargin().right, this.minElementMargin.right);
+        return area.width + Math.max(area.getMargin().left(), this.minElementMargin.left()) +
+                Math.max(area.getMargin().right(), this.minElementMargin.right());
     }
 
     private int getElementHeight(Area area) {
-        return area.height + Math.max(area.getMargin().top, this.minElementMargin.top) +
-                Math.max(area.getMargin().bottom, this.minElementMargin.bottom);
+        return area.height + Math.max(area.getMargin().top(), this.minElementMargin.top()) +
+                Math.max(area.getMargin().bottom(), this.minElementMargin.bottom());
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Grid extends AbstractScrollWidget<IWidget, Grid> implements ILayout
                     rowHeight = Math.max(rowHeight, getElementHeight(child.getArea()));
                 }
             }
-            h += Math.min(rowHeight, this.minRowHeight);
+            h += Math.max(rowHeight, this.minRowHeight);
         }
         return h;
     }

@@ -47,7 +47,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
         if (this.childSeparator == null || this.separatorPositions.isEmpty()) return;
         GuiAxis axis = this.scrollData.getAxis();
-        int x = getArea().getPadding().left, y = getArea().getPadding().top, w, h;
+        int x = getArea().getPadding().left(), y = getArea().getPadding().top(), w, h;
         if (axis.isHorizontal()) {
             w = this.childSeparator.getWidth();
             h = getArea().h() - getArea().getPadding().vertical();

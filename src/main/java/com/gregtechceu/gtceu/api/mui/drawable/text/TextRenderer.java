@@ -185,12 +185,13 @@ public class TextRenderer {
         }
     }
 
-    public void drawScrolling(GuiGraphics graphics, Line line, int scroll, Area area, GuiContext context) {
+    public void drawScrolling(GuiGraphics graphics, Line line, float progress, Area area, GuiContext context) {
         if (line.width() <= this.maxWidth) {
             drawMeasuredLines(graphics, Collections.singletonList(line));
             return;
         }
-        scroll = scroll % (int) (line.width + 1);
+        float scroll = (this.maxWidth - line.getWidth()) * progress;
+        // scroll = scroll % (int) (line.width + 1);
         float max = this.maxWidth + scroll;
         FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
         Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
@@ -294,7 +295,7 @@ public class TextRenderer {
         }
 
         public int lowerWidth() {
-            return (int) (this.width + 1);
+            return (int) this.width;
         }
     }
 

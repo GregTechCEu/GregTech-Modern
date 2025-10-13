@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ParallelAnimator extends BaseAnimator implements IAnimator {
+public class ParallelAnimator extends BaseAnimator<ParallelAnimator> implements IAnimator {
 
     private final List<IAnimator> animators;
     private int waitTimeBetweenAnimators;
@@ -46,15 +46,20 @@ public class ParallelAnimator extends BaseAnimator implements IAnimator {
     }
 
     @Override
-    public void stop(boolean force) {
-        super.stop(force);
-        for (IAnimator animator : animators) {
-            animator.stop(force);
+
+    public boolean stop(boolean force) {
+        if (super.stop(force)) {
+            for (IAnimator animator : animators) {
+                animator.stop(force);
+            }
+            return true;
         }
+        return false;
     }
 
     @Override
     public void reset(boolean atEnd) {
+        super.reset(atEnd);
         this.startedAnimating = 0;
         this.finishedAnimating = 0;
         for (IAnimator animator : animators) {
