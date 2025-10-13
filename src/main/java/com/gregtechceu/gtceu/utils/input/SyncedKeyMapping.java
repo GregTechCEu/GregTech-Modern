@@ -132,6 +132,18 @@ public final class SyncedKeyMapping {
     }
 
     /**
+     * Check if the current client-side player is holding down this key.
+     *
+     * @return If the key is held. Always returns false on the server.
+     */
+    public boolean isKeyDown() {
+        if (GTCEu.isClientSide()) {
+            return isKeyDownClient();
+        }
+        return false;
+    }
+
+    /**
      * Check if a player is currently holding down this key.
      *
      * @param player The player to check.
@@ -139,15 +151,24 @@ public final class SyncedKeyMapping {
      * @return If the key is held.
      */
     public boolean isKeyDown(@NotNull Player player) {
-        if (player.level().isClientSide) {
-            if (keyMapping != null) {
-                return keyMapping.isDown();
-            }
-            long id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, keyCode);
+        if (player.level().isClientSide()) {
+            return isKeyDownClient();
         }
         Boolean isKeyDown = serverMapping.get((ServerPlayer) player);
         return isKeyDown != null ? isKeyDown : false;
+    }
+
+    /**
+     * Is only safe to call on the client side
+     *
+     * @return if the key is down
+     */
+    private boolean isKeyDownClient() {
+        if (keyMapping != null) {
+            return keyMapping.isDown();
+        }
+        long id = Minecraft.getInstance().getWindow().getWindow();
+        return InputConstants.isKeyDown(id, keyCode);
     }
 
     /**
