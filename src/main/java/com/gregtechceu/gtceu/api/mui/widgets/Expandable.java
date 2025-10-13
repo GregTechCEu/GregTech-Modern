@@ -54,14 +54,9 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
     }
 
     @Override
-    public void onResized() {
-        super.onResized();
-        currentChildren = children;
-    }
-
-    @Override
     public void postResize() {
         super.postResize();
+        currentChildren = children;
         if (this.animator != null) {
             this.animator.stop(true);
             this.animator = null;
@@ -146,13 +141,17 @@ public class Expandable extends Widget<Expandable> implements Interactable, IVie
             this.expandedView.setEnabled(true);
         }
         if (isValid()) {
+            if (expanded) {
+                this.normalView.setEnabled(false);
+                this.expandedView.setEnabled(true);
+            }
             this.areaSnapshot = getArea().copyOrImmutable();
             scheduleResize();
         }
         return this;
     }
 
-    public Expandable normalView(IWidget normalView) {
+    public Expandable collapsedView(IWidget normalView) {
         this.normalView = normalView;
         this.children.set(0, normalView);
         if (isValid()) {

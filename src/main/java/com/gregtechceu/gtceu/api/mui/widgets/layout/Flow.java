@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.function.IntFunction;
+
 @Accessors(fluent = true, chain = true)
 public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander {
 
@@ -184,6 +186,20 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
         if (this.collapseDisabledChild) {
             ILayoutWidget.super.onChildChangeEnabled(child, enabled);
         }
+    }
+
+    public Flow children(Iterable<IWidget> widgets) {
+        for (IWidget widget : widgets) {
+            child(widget);
+        }
+        return getThis();
+    }
+
+    public Flow children(int amount, IntFunction<IWidget> widgetCreator) {
+        for (int i = 0; i < amount; i++) {
+            child(widgetCreator.apply(i));
+        }
+        return getThis();
     }
 
     /**

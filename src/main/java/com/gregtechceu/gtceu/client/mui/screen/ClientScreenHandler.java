@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.mui.screen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.GuiErrorHandler;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
@@ -103,6 +104,7 @@ public class ClientScreenHandler {
                     currentScreen.getPanelManager().dispose();
                 }
                 currentScreen = muiScreen.getScreen();
+                currentScreen.getContext().setParent(Minecraft.getInstance().screen);
                 fpsCounter.reset();
             }
         } else if (hasScreen() && event.getCurrentScreen() != null && newGui != event.getCurrentScreen()) {
@@ -110,6 +112,7 @@ public class ClientScreenHandler {
             currentScreen.getPanelManager().dispose();
             currentScreen = null;
         }
+        GuiErrorHandler.INSTANCE.clear();
         OverlayManager.onOpenScreen(event);
     }
 
@@ -554,8 +557,8 @@ public class ClientScreenHandler {
         int shift = (int) (11 * scale + 0.5f);
         int lineY = screenH - shift - 2;
         GuiDraw.drawText(graphics, "Mouse Pos: " + mouseX + ", " + mouseY, 5, lineY, scale, color, true);
-        lineY -= shift;
-        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 24, scale, color, true);
+        lineY -= shift + 2;
+        GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 23, scale, color, true);
         LocatedWidget locatedHovered = muiScreen.getPanelManager().getTopWidgetLocated(true);
         if (locatedHovered != null) {
             drawSegmentLine(graphics, lineY -= 4, scale, color);

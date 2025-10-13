@@ -268,42 +268,52 @@ public interface IPositioned<W extends IPositioned<W>> {
     }
 
     default W width(int val) {
-        flex().width(val, Unit.Measure.PIXEL);
+        flex().width(val, 0, Unit.Measure.PIXEL);
         return getThis();
     }
 
     default W widthRel(float val) {
-        flex().width(val, Unit.Measure.RELATIVE);
+        flex().width(val, 0, Unit.Measure.RELATIVE);
+        return getThis();
+    }
+
+    default W widthRelOffset(float val, int offset) {
+        flex().width(val, offset, Unit.Measure.RELATIVE);
         return getThis();
     }
 
     default W width(float val, Unit.Measure measure) {
-        flex().width(val, measure);
+        flex().width(val, 0, measure);
         return getThis();
     }
 
     default W width(DoubleSupplier val, Unit.Measure measure) {
-        flex().width(val, measure);
+        flex().width(val, 0, measure);
         return getThis();
     }
 
     default W height(int val) {
-        flex().height(val, Unit.Measure.PIXEL);
+        flex().height(val, 0, Unit.Measure.PIXEL);
         return getThis();
     }
 
     default W heightRel(float val) {
-        flex().height(val, Unit.Measure.RELATIVE);
+        flex().height(val, 0, Unit.Measure.RELATIVE);
         return getThis();
     }
 
     default W height(float val, Unit.Measure measure) {
-        flex().height(val, measure);
+        flex().height(val, 0, measure);
+        return getThis();
+    }
+
+    default W heightRelOffset(DoubleSupplier val, int offset) {
+        flex().height(val, offset, Unit.Measure.RELATIVE);
         return getThis();
     }
 
     default W height(DoubleSupplier val, Unit.Measure measure) {
-        flex().height(val, measure);
+        flex().height(val, 0, measure);
         return getThis();
     }
 

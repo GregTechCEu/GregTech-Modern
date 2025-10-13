@@ -9,12 +9,15 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
 
+import lombok.Getter;
+
 /**
  * An icon which represents a {@link IKey} object.
  * Note: This class assumes the string will be a single line!
  */
 public class KeyIcon implements IIcon {
 
+    @Getter
     private final IKey key;
     private Font overrideFont;
     private final Box margin = new Box();
@@ -40,6 +43,11 @@ public class KeyIcon implements IIcon {
     @Override
     public Box getMargin() {
         return null;
+    }
+
+    @Override
+    public IKey getWrappedDrawable() {
+        return key;
     }
 
     @Override

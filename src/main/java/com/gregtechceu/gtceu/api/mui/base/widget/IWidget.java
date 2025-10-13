@@ -200,13 +200,22 @@ public interface IWidget extends IGuiElement {
     ModularPanel getPanel();
 
     /**
-     * Returns if this element is enabled. Disabled elements are not drawn and can not be interacted with.
+     * Returns if this element is enabled. Disabled elements are not drawn and can not be interacted with. If this is
+     * disabled, the children
+     * will be considered disabled to without actually being disabled.
+     *
+     * @return if this element is enabled
      */
     @Override
     boolean isEnabled();
 
     void setEnabled(boolean enabled);
 
+    /**
+     * Checks if all ancestors are enabled. Only then this widget is visible and interactable.
+     *
+     * @return if all ancestors are enabled.
+     */
     default boolean areAncestorsEnabled() {
         IWidget parent = this;
         do {
@@ -216,14 +225,37 @@ public interface IWidget extends IGuiElement {
         return true;
     }
 
+    /**
+     * If this widget can be seen on the screen even partly. If this returns false it will be culled. This is visually
+     * only!
+     *
+     * @param stack viewport stack
+     * @return false if this widget can not be seen currently and should not be drawn
+     */
     default boolean canBeSeen(IViewportStack stack) {
         return Stencil.isInsideScissorArea(getArea(), stack);
     }
 
+    /**
+     * Determines if this widget can have any hover interaction. Interactions with mouse or keyboard like clicks ignore
+     * this.
+     * This is useful, when you have a widget which changes its background when hovered or has a tooltip and some
+     * decoration child. Normally
+     * you can click through the child, but while you hover it the widget will not show its tooltip etc. To change that
+     * return false here.
+     *
+     * @return if this widget can have any hover interaction
+     */
     default boolean canHover() {
         return true;
     }
 
+    /**
+     * Determines if widgets below this can receive a click callback. This is only called when this widget didn't
+     * consume the click.
+     *
+     * @return if widgets below this should be able to receive a click
+     */
     default boolean canClickThrough() {
         return true;
     }

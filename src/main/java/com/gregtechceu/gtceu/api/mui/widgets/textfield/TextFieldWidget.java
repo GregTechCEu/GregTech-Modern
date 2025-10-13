@@ -94,14 +94,6 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     }
 
     @Override
-    protected void setupDrawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
-        this.renderer.setSimulate(false);
-        this.renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
-        this.renderer.setScale(this.scale);
-        this.renderer.setAlignment(this.textAlignment, -1, getArea().height);
-    }
-
-    @Override
     public void drawForeground(ModularGuiContext context) {
         if (hasTooltip() && getScrollData().isScrollBarActive(getScrollArea()) &&
                 isHoveringFor(getTooltip().getShowUpTimer())) {

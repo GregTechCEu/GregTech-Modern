@@ -71,8 +71,8 @@ public class StyledText extends BaseKey {
     }
 
     @Override
-    public TextWidget asWidget() {
-        return new TextWidget(this.key)
+    public TextWidget<?> asWidget() {
+        return new TextWidget<>(this.key)
                 .alignment(this.alignment)
                 .color(this.color)
                 .scale(this.scale)

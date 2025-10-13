@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.mui.widget.sizer;
 import com.gregtechceu.gtceu.api.mui.animation.IAnimatable;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
+import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -23,16 +25,16 @@ public class Box implements IAnimatable<Box> {
 
     @Getter
     @Setter
-    public int left;
+    protected int left;
     @Getter
     @Setter
-    public int top;
+    protected int top;
     @Getter
     @Setter
-    public int right;
+    protected int right;
     @Getter
     @Setter
-    public int bottom;
+    protected int bottom;
 
     public Box all(int all) {
         return this.all(all, all);
@@ -54,6 +56,23 @@ public class Box implements IAnimatable<Box> {
         return all(box.left, box.right, box.top, box.bottom);
     }
 
+    public Box set(GuiAxis axis, boolean start, int val) {
+        if (axis.isVertical()) {
+            if (start) {
+                top(val);
+            } else {
+                bottom(val);
+            }
+        } else {
+            if (start) {
+                left(val);
+            } else {
+                right(val);
+            }
+        }
+        return this;
+    }
+
     public int vertical() {
         return this.top + this.bottom;
     }
@@ -72,6 +91,29 @@ public class Box implements IAnimatable<Box> {
 
     public int getEnd(GuiAxis axis) {
         return axis.isHorizontal() ? this.right : this.bottom;
+    }
+
+    public void fromJson(JsonObject json) {
+        all(JsonHelper.getInt(json, 0, "margin"));
+        if (json.has("marginHorizontal")) {
+            this.left = json.get("marginHorizontal").getAsInt();
+            this.right = this.left;
+        }
+        if (json.has("marginVertical")) {
+            this.top = json.get("marginVertical").getAsInt();
+            this.bottom = this.top;
+        }
+        this.top = JsonHelper.getInt(json, this.top, "marginTop");
+        this.bottom = JsonHelper.getInt(json, this.bottom, "marginBottom");
+        this.left = JsonHelper.getInt(json, this.left, "marginLeft");
+        this.right = JsonHelper.getInt(json, this.right, "marginRight");
+    }
+
+    public void toJson(JsonObject json) {
+        json.addProperty("marginTop", this.top);
+        json.addProperty("marginBottom", this.bottom);
+        json.addProperty("marginLeft", this.left);
+        json.addProperty("marginRight", this.right);
     }
 
     @Override
