@@ -13,7 +13,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +27,8 @@ public class InventoryTypes {
 
     public static final ItemEntry<TestItem> TEST_ITEM = REGISTRATE.item("mui_test_item", TestItem::new)
             .tab(GTCreativeModeTabs.ITEM.getKey())
+            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .register();
 
     @ApiStatus.Internal
