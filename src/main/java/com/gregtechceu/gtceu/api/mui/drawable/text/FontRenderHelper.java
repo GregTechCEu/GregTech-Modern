@@ -141,7 +141,7 @@ public class FontRenderHelper {
         return value.isTrue();
     }
 
-    public static Component componentFromSequence(FormattedCharSequence input) {
+    public static Component getComponentFromCharSequence(FormattedCharSequence input) {
         List<MutableComponent> parts = new ArrayList<>();
         StringBuilder value = new StringBuilder();
         MutableObject<Style> lastStyle = new MutableObject<>(Style.EMPTY);
@@ -161,9 +161,9 @@ public class FontRenderHelper {
             parts.add(Component.literal(value.toString()).setStyle(lastStyle.getValue()));
         }
         // remove completely empty components
-        parts.removeIf(FontRenderHelper::checkEmpty);
+        parts.removeIf(FontRenderHelper::isEmpty);
         // no need to join completely empty or single components
-        if (parts.isEmpty()) return CommonComponents.EMPTY;
+        if (parts.isEmpty()) return Component.empty();
         else if (parts.size() == 1) return parts.get(0);
 
         MutableComponent composite = parts.remove(0);
@@ -173,7 +173,7 @@ public class FontRenderHelper {
         return composite;
     }
 
-    public static boolean checkEmpty(FormattedText text) {
+    public static boolean isEmpty(FormattedText text) {
         if (text == FormattedText.EMPTY) return true;
         // if the text has ANY content, this will return false.
         return text.visit(content -> Optional.of(false)).orElse(true);

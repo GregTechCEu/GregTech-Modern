@@ -25,6 +25,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -98,10 +100,12 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void draw(GuiContext context) {
         draw(context, ItemStack.EMPTY);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void draw(GuiContext context, @Nullable ItemStack stack) {
         if (this.autoUpdate) markDirty();
         if (isEmpty()) return;
@@ -121,19 +125,23 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         TextRenderer renderer = TextRenderer.SHARED;
         // this only turns the text and not any drawables into strings
-        List<Either<FormattedText, TooltipComponent>> textLines = this.text.getAsComponents().stream()
+        List<Either<FormattedText, TooltipComponent>> textLines = this.text.getAsText().stream()
                 .<Either<FormattedText, TooltipComponent>>map(Either::left)
                 .collect(Collectors.toList());
 
-        var gatherEvent = new RenderTooltipEvent.GatherComponents(stack, screen.width, screen.height, textLines,
-                this.maxWidth);
-        if (MinecraftForge.EVENT_BUS.post(gatherEvent)) return; // canceled
+        var gatherEvent = new RenderTooltipEvent.GatherComponents(stack, screen.width, screen.height,
+                textLines, this.maxWidth);
+        if (MinecraftForge.EVENT_BUS.post(gatherEvent)) {
+            // canceled
+            return;
+        }
+
         this.maxWidth = gatherEvent.getMaxWidth();
         textLines = gatherEvent.getTooltipElements();
         List<ClientTooltipComponent> components = textLines.stream()
                 .map(either -> either.map(
-                        text -> ClientTooltipComponent.create(text instanceof Component ?
-                                ((Component) text).getVisualOrderText() : Language.getInstance().getVisualOrder(text)),
+                        text -> ClientTooltipComponent.create(text instanceof Component component ?
+                                component.getVisualOrderText() : Language.getInstance().getVisualOrder(text)),
                         ClientTooltipComponent::create))
                 .toList();
 
@@ -142,7 +150,10 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         RichTooltipEvent.Pre event = new RichTooltipEvent.Pre(stack, context.getGraphics(),
                 mouseX, mouseY, screen.width, screen.height,
                 TextRenderer.getFont(), components, DefaultTooltipPositioner.INSTANCE, copy);
-        if (MinecraftForge.EVENT_BUS.post(event)) return; // canceled
+        if (MinecraftForge.EVENT_BUS.post(event)) {
+            // canceled
+            return;
+        }
         // we are supposed to now use the strings of the event, but we can't properly determine where to put them
         mouseX = event.getX();
         mouseY = event.getY();

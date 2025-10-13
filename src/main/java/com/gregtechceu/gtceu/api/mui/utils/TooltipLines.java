@@ -4,13 +4,13 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextIcon;
 
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.FormattedText;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TooltipLines extends AbstractList<Component> {
+public class TooltipLines extends AbstractList<FormattedText> {
 
     private final List<Object> elements;
     private final List<Line> lines = new ArrayList<>(8);
@@ -35,7 +35,7 @@ public class TooltipLines extends AbstractList<Component> {
 
     private Line parseNext() {
         if (this.lastElementIndex >= elements.size()) return null;
-        MutableComponent currentLine = Component.empty();
+        FormattedText currentLine = FormattedText.EMPTY;
         int currentLength = 0;
         for (int i = this.lastElementIndex; i < this.elements.size(); i++) {
             Object o = elements.get(i);
@@ -45,18 +45,18 @@ public class TooltipLines extends AbstractList<Component> {
                 this.lastElementIndex += currentLength;
                 return line;
             }
-            Component s = null;
-            if (o instanceof IKey key) {
+            FormattedText s = null;
+            if (o instanceof FormattedText txt) {
+                s = txt;
+            } else if (o instanceof String str) {
+                s = FormattedText.of(str);
+            } else if (o instanceof IKey key) {
                 s = key.get();
-            } else if (o instanceof Component c) {
-                s = c;
-            } else if (o instanceof String s1) {
-                s = Component.literal(s1);
             } else if (o instanceof TextIcon ti) {
                 s = ti.getText();
             }
             if (s != null) {
-                currentLine.append(s);
+                currentLine = FontRenderHelper.isEmpty(currentLine) ? s : FormattedText.composite(currentLine, s);
             }
         }
         if (currentLength > 0) {
@@ -68,7 +68,7 @@ public class TooltipLines extends AbstractList<Component> {
     }
 
     @Override
-    public Component get(int index) {
+    public FormattedText get(int index) {
         buildUntil(index);
         return lines.get(index).text;
     }
@@ -80,7 +80,7 @@ public class TooltipLines extends AbstractList<Component> {
     }
 
     @Override
-    public Component remove(int index) {
+    public FormattedText remove(int index) {
         buildUntil(index);
         Line line = lines.remove(index);
 
@@ -98,7 +98,7 @@ public class TooltipLines extends AbstractList<Component> {
     }
 
     @Override
-    public void add(int index, Component s) {
+    public void add(int index, FormattedText s) {
         buildUntil(index);
         int elementIndex = index >= this.lines.size() ? this.lastElementIndex : this.lines.get(index).index;
         lines.add(index, new Line(s, elementIndex, 1));
@@ -110,7 +110,7 @@ public class TooltipLines extends AbstractList<Component> {
     }
 
     @Override
-    public Component set(int index, Component element) {
+    public FormattedText set(int index, FormattedText element) {
         Line line = lines.get(index);
         if (line.length == 1) {
             this.elements.set(line.index, element);
@@ -131,11 +131,11 @@ public class TooltipLines extends AbstractList<Component> {
 
     private static class Line {
 
-        private final Component text;
+        private final FormattedText text;
         private final int length;
         private int index;
 
-        private Line(Component text, int index, int length) {
+        private Line(FormattedText text, int index, int length) {
             this.text = text;
             this.index = index;
             this.length = length;

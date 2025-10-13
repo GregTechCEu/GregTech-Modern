@@ -7,7 +7,8 @@ import com.gregtechceu.gtceu.api.mui.utils.TooltipLines;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import lombok.Getter;
 
@@ -40,7 +41,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         return this.elements.isEmpty();
     }
 
-    public List<Component> getAsComponents() {
+    public List<FormattedText> getAsText() {
         if (this.componentList == null) {
             this.componentList = new TooltipLines(this.elements);
         }
@@ -81,7 +82,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     }
 
     @Override
-    public RichText add(Component c) {
+    public RichText add(FormattedText c) {
         addElement(c);
         clearComponents();
         return this;

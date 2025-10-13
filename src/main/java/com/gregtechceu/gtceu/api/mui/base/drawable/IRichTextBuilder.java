@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 import com.gregtechceu.gtceu.api.mui.drawable.text.Spacer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {
      * @param c component to add
      * @return this
      */
-    default T add(Component c) {
+    default T add(FormattedText c) {
         getRichText().add(c);
         return getThis();
     }
