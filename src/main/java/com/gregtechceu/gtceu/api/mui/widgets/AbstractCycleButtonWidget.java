@@ -107,7 +107,7 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         // make sure texture is up-to-date
         int state = getState();
         if (isHovering() && this.hoverBackground != null && this.hoverBackground[state] != null &&
-            this.hoverBackground[state] != IDrawable.NONE) {
+                this.hoverBackground[state] != IDrawable.NONE) {
             return this.hoverBackground[state];
         }
         return this.background != null && this.background[state] != null ? this.background[state] :

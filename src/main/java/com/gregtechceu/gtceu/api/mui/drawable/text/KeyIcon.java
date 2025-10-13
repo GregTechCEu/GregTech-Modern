@@ -1,16 +1,15 @@
 package com.gregtechceu.gtceu.api.mui.drawable.text;
 
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
-import lombok.Getter;
 import net.minecraft.client.gui.Font;
-import org.jetbrains.annotations.Nullable;
+
+import lombok.Getter;
 
 /**
  * An icon which represents a {@link IKey} object.

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 import com.gregtechceu.gtceu.api.mui.drawable.HoverableIcon;
 import com.gregtechceu.gtceu.api.mui.drawable.InteractableIcon;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -13,7 +14,8 @@ public interface IIcon extends IDrawable {
     /**
      * @return the drawable this icon wraps or null if it doesn't wrap anything
      */
-    @Nullable IDrawable getWrappedDrawable();
+    @Nullable
+    IDrawable getWrappedDrawable();
 
     /**
      * @return width of this icon or 0 if the width should be dynamic
