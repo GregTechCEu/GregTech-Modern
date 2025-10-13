@@ -1,20 +1,19 @@
 package com.gregtechceu.gtceu.api.mui.factory.inventory;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * A {@link InventoryType} implementation for {@link Container}.
+ * A {@link InventoryType} implementation for {@link net.minecraft.world.Container Container}.
  */
-public abstract class Inventory extends InventoryType<Void> {
+public abstract class Container extends InventoryType<Void> {
 
-    public Inventory(String id) {
+    public Container(String id) {
         super(id);
     }
 
-    public abstract Container getInventory(Player player);
+    public abstract net.minecraft.world.Container getInventory(Player player);
 
     @Override
     public ItemStack getStackInSlot(Player player, Void context, int index) {
