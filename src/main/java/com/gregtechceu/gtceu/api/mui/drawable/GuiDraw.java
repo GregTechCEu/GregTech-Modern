@@ -482,8 +482,8 @@ public class GuiDraw {
                                                                    int mouseX, int mouseY,
                                                                    @Nullable BiConsumer<GuiGraphics, T> preDraw,
                                                                    @Nullable BiConsumer<GuiGraphics, T> postDraw) {
-        float xAngle = (float) Math.atan(mouseX / 40.0f);
-        float yAngle = (float) Math.atan(mouseY / 40.0f);
+        float xAngle = (float) Math.atan((x + w / 2 - mouseX) / h);
+        float yAngle = (float) Math.atan((y + h / 2 - mouseY) / h);
         drawEntityLookingAtAngle(graphics, entity, x, y, w, h, z, xAngle, yAngle, preDraw, postDraw);
     }
 
@@ -513,26 +513,29 @@ public class GuiDraw {
 
         // pre draw
         float oldYRot = entity.getYRot();
+        float oldYRotO = entity.yRotO;
         float oldXRot = entity.getXRot();
+        float oldXRotO = entity.xRotO;
         float oldYBodyRot = 0.0f;
-        float oldYHeadRot0 = 0.0f;
+        float oldYBodyRotO = 0.0f;
+        float oldYHeadRotO = 0.0f;
         float oldYHeadRot = 0.0f;
 
-        entity.setYRot(180.0f + xAngle * 40.0f);
-        entity.setXRot(-yAngle * 20.0f);
+        entity.setYRot(entity.yRotO = 180.0f + xAngle * 40.0f);
+        entity.setXRot(entity.xRotO = -yAngle * 20.0f);
         // made this method more generic by only updating these if the entity is a LivingEntity
         if (entity instanceof LivingEntity livingEntity) {
             oldYBodyRot = livingEntity.yBodyRot;
-            oldYHeadRot0 = livingEntity.yHeadRotO;
+            oldYBodyRotO = livingEntity.yBodyRotO;
+            oldYHeadRotO = livingEntity.yHeadRotO;
             oldYHeadRot = livingEntity.yHeadRot;
 
-            livingEntity.yBodyRot = 180.0f + xAngle * 20.0f;
-            livingEntity.yHeadRot = entity.getYRot();
-            livingEntity.yHeadRotO = entity.getYRot();
+            livingEntity.yBodyRotO = livingEntity.yBodyRot = 180.0f + xAngle * 20.0f;
+            livingEntity.yHeadRotO = livingEntity.yHeadRot = entity.getYRot();
         }
 
         // skip rotating the render by 180° on the Z axis here, because we always do that in setupDrawEntity
-        Quaternionf cameraRot = new Quaternionf().rotateX(yAngle * 20 * Mth.DEG_TO_RAD);
+        Quaternionf cameraRot = new Quaternionf().rotateX(yAngle * 20.0f * Mth.DEG_TO_RAD);
         graphics.pose().mulPose(cameraRot);
         // set the camera orientation (vanilla also does this)
         cameraRot.conjugate();
@@ -544,10 +547,13 @@ public class GuiDraw {
 
         // post draw
         entity.setYRot(oldYRot);
+        entity.yRotO = oldYRotO;
         entity.setXRot(oldXRot);
+        entity.xRotO = oldXRotO;
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.yBodyRot = oldYBodyRot;
-            livingEntity.yHeadRotO = oldYHeadRot0;
+            livingEntity.yBodyRotO = oldYBodyRotO;
+            livingEntity.yHeadRotO = oldYHeadRotO;
             livingEntity.yHeadRot = oldYHeadRot;
         }
 
