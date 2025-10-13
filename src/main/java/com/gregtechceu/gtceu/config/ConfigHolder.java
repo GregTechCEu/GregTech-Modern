@@ -767,13 +767,6 @@ public class ConfigHolder {
         @Configurable.Gui.ColorValue
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
-        @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                "#FFFFFF is no coloring (like GTCE) (default).",
-                "#D2DCFF is the classic blue from GT5." })
-        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
-        @Configurable.Gui.ColorValue
-        public String defaultUIColor = "#FFFFFF";
-        @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
                 "Disable if you have issues with rendering multiblocks.", "Default: true" })
         public boolean useVBO = true;
@@ -864,12 +857,11 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                    "16777215 (#FFFFFF) is no coloring (like GTCE) (default).",
-                    "13819135 (#D2DCFF in decimal) is the classic blue from GT5." })
+                    "#FFFFFF is no coloring (like GTCE) (default).",
+                    "#D2DCFF is the classic blue from GT5." })
             @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
             @Configurable.Gui.ColorValue
             public String defaultUIColor = "#FFFFFF";
-
             @Configurable
             @Configurable.Comment({
                     "If true, pressing the ESC key in a text field will restore the last text instead of confirming current one.",
