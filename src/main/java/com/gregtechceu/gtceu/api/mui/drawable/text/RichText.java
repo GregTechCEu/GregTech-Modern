@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.api.mui.utils.TooltipLines;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 
@@ -93,14 +90,6 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     @Override
     public RichText add(String s) {
         addElement(s);
-        clearComponents();
-        return this;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public RichText add(ClientTooltipComponent c) {
-        addElement(c);
         clearComponents();
         return this;
     }

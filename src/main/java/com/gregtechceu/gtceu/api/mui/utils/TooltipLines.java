@@ -1,17 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextIcon;
-import com.gregtechceu.gtceu.core.mixins.client.ClientTextTooltipAccessor;
 
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -61,8 +54,6 @@ public class TooltipLines extends AbstractList<Component> {
                 s = Component.literal(s1);
             } else if (o instanceof TextIcon ti) {
                 s = ti.getText();
-            } else if (GTCEu.isClientSide()) {
-                s = ClientCallWrapper.getClientTooltipComponentOrNull(o);
             }
             if (s != null) {
                 currentLine.append(s);
@@ -148,18 +139,6 @@ public class TooltipLines extends AbstractList<Component> {
             this.text = text;
             this.index = index;
             this.length = length;
-        }
-    }
-
-    private static class ClientCallWrapper {
-
-        private static @Nullable Component getClientTooltipComponentOrNull(Object o) {
-            if (o instanceof ClientTooltipComponent c) {
-                if (c instanceof ClientTextTooltip textTooltip) {
-                    return FontRenderHelper.componentFromSequence(((ClientTextTooltipAccessor) textTooltip).getText());
-                }
-            }
-            return null;
         }
     }
 }

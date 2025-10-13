@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 import com.gregtechceu.gtceu.api.mui.drawable.text.Spacer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -36,18 +33,6 @@ public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {
      */
     default T add(String s) {
         getRichText().add(s);
-        return getThis();
-    }
-
-    /**
-     * Adds a {@link ClientTooltipComponent} to the current line
-     *
-     * @param c Client tooltip component to add
-     * @return this
-     */
-    @OnlyIn(Dist.CLIENT)
-    default T add(ClientTooltipComponent c) {
-        getRichText().add(c);
         return getThis();
     }
 
