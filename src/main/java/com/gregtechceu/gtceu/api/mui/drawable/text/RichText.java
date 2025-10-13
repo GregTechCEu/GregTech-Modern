@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.*;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.TooltipLines;
+import com.gregtechceu.gtceu.client.mui.component.DrawableTooltipComponent;
+import com.gregtechceu.gtceu.client.mui.component.TooltipComponentIcon;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
@@ -102,6 +104,16 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         addElement(o);
         clearComponents();
         return this;
+    }
+
+    @Override
+    public RichText add(TooltipComponent tooltipComponent) {
+        if (tooltipComponent instanceof DrawableTooltipComponent drawable) {
+            return add(drawable.getDrawable());
+        } else {
+            TooltipComponentIcon tci = new TooltipComponentIcon(tooltipComponent);
+            return add(tci);
+        }
     }
 
     @Override
