@@ -44,6 +44,13 @@ public class GTMath {
     public static final Constant z = new Constant("z", 1e-21);
     public static final Constant y = new Constant("y", 1e-24);
 
+
+    // I 8 some PI and it was DELICIOUS
+    public static final float PI = (float) Math.PI;
+    public static final float PI2 = 2f * PI;
+    public static final float PI_HALF = PI / 2f;
+    public static final float PI_QUART = PI / 4f;
+
     public static int lerpInt(double delta, int start, int end) {
         return start + Mth.floor(delta * (end - start));
     }
@@ -204,4 +211,9 @@ public class GTMath {
         }
         return max;
     }
+
+    public static float tan(float v) {
+        return Mth.sin(v) / Mth.cos(v);
+    }
+
 }

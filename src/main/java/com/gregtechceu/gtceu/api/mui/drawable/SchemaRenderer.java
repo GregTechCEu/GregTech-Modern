@@ -54,7 +54,7 @@ public class SchemaRenderer implements IDrawable {
     private final ISchema schema;
     private final LevelReader renderLevel;
     private final RenderTarget renderTarget;
-    private final Camera camera = new Camera(new Vector3f(), new Vector3f());
+//    private final Camera camera = new Camera(new Vector3f(), new Vector3f());
     @Setter
     private boolean cameraSetup = false;
     @Setter
