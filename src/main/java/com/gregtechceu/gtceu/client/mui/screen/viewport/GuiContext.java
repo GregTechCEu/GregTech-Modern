@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -156,6 +157,11 @@ public class GuiContext extends GuiViewportStack {
     public Matrix4f getLastPose() {
         if (graphics == null) return new Matrix4f();
         return graphics.pose().last().pose();
+    }
+
+    public PoseStack poseStack() {
+        if (graphics == null) return new PoseStack();
+        return graphics.pose();
     }
 
     public int getMouseX() {

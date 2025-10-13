@@ -146,10 +146,10 @@ public class TextRenderer {
             width = Math.max(width, line.getWidth());
         }
         if (!this.simulate) {
-            context.getGraphics().pose().pushPose();
-            context.getGraphics().pose().translate(this.x, this.y, 10);
-            context.getGraphics().pose().scale(this.scale, this.scale, 1f);
-            context.getGraphics().pose().translate(-this.x, -this.y, 0);
+            context.poseStack().pushPose();
+            context.poseStack().translate(this.x, this.y, 10);
+            context.poseStack().scale(this.scale, this.scale, 1f);
+            context.poseStack().translate(-this.x, -this.y, 0);
         }
         int y0 = getStartY(height, height);
         this.lastY = y0;
@@ -159,7 +159,7 @@ public class TextRenderer {
             y0 += line.getHeight(context.getFont());
         }
         if (!this.simulate) {
-            context.getGraphics().pose().popPose();
+            context.poseStack().popPose();
         }
         this.lastWidth = this.maxWidth > 0 ? Math.min(width * this.scale, this.maxWidth) : width * this.scale;
         this.lastHeight = height * this.scale;
@@ -195,10 +195,10 @@ public class TextRenderer {
         FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
         Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
         context.getStencil().push(Area.SHARED);
-        context.getGraphics().pose().pushPose();
-        context.getGraphics().pose().translate(-scroll, 0, 0);
+        context.poseStack().pushPose();
+        context.poseStack().translate(-scroll, 0, 0);
         drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
-        context.getGraphics().pose().popPose();
+        context.poseStack().popPose();
         context.getStencil().pop();
     }
 
