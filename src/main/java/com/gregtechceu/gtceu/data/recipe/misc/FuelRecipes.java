@@ -60,48 +60,49 @@ public class FuelRecipes {
             addBoilerFuel(provider, addedItems, item, burnTime);
         }
 
-        STEAM_BOILER_RECIPES.recipeBuilder("lava")
+        // override the default fluid recipes for lava and creosote
+        STEAM_BOILER_RECIPES.recipeBuilder("minecraft_lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
                 .duration(900) //60s -> 45s Might still be too good with drip stone farming.
                 .save(provider);
 
-        STEAM_BOILER_RECIPES.recipeBuilder("creosote")
+        STEAM_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
                 .inputFluids(Creosote.getFluid(250))
                 .duration(350) //150s -> 17.5s
                 .save(provider);
 
         // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
-        LARGE_BOILER_RECIPES.recipeBuilder("creosote")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
                 .inputFluids(Creosote.getFluid(250))
                 .duration(35)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("biomass")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_biomass")
                 .inputFluids(Biomass.getFluid(40))
                 .duration(85)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil")
                 .inputFluids(Oil.getFluid(200))
                 .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil_heavy")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil_heavy")
                 .inputFluids(OilHeavy.getFluid(32))
                 .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("sulfuric_heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_sulfuric_heavy_fuel")
                 .inputFluids(SulfuricHeavyFuel.getFluid(32))
                 .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_heavy_fuel")
                 .inputFluids(HeavyFuel.getFluid(16))
                 .duration(90)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("fish_oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_fish_oil")
                 .inputFluids(FishOil.getFluid(160))
                 .duration(50)
                 .save(provider);
