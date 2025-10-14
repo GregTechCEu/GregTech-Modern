@@ -372,7 +372,7 @@ public class GTUtil {
     }
 
     public static int getItemBurnTime(Item item) {
-        return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
+        return ForgeHooks.getBurnTime(item.getDefaultInstance(), null);
     }
 
     public static int getPumpBiomeModifier(Holder<Biome> biome) {
