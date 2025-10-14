@@ -464,8 +464,12 @@ public class GTRecipeBuilder {
         return inputItems(machine.asStack(count));
     }
 
+    public GTRecipeBuilder inputItemsRanged(IntProviderIngredient provider) {
+        return inputItems(provider);
+    }
+
     public GTRecipeBuilder inputItemsRanged(ItemStack input, IntProvider intProvider) {
-        return inputItems(IntProviderIngredient.of(input, intProvider));
+        return inputItemsRanged(IntProviderIngredient.of(input, intProvider));
     }
 
     public GTRecipeBuilder inputItemsRanged(Item input, IntProvider intProvider) {
@@ -614,8 +618,12 @@ public class GTRecipeBuilder {
         return output(ItemRecipeCapability.CAP, ingredient);
     }
 
+    public GTRecipeBuilder outputItemsRanged(IntProviderIngredient provider) {
+        return outputItems(provider);
+    }
+
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return outputItems(IntProviderIngredient.of(output, intProvider));
+        return outputItemsRanged(IntProviderIngredient.of(output, intProvider));
     }
 
     public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {
@@ -707,7 +715,7 @@ public class GTRecipeBuilder {
         return notConsumable(IntCircuitIngredient.of(configuration));
     }
 
-    public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(Ingredient stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
@@ -721,7 +729,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(FluidIngredient stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
@@ -735,7 +743,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(Ingredient stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
@@ -749,7 +757,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(FluidIngredient stack, int chance, int tierChanceBoost) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
@@ -761,6 +769,22 @@ public class GTRecipeBuilder {
         this.chance = lastChance;
         this.tierChanceBoost = lastTierChanceBoost;
         return this;
+    }
+
+    public GTRecipeBuilder chancedInput (ItemStack stack, int chance, int tierChanceBoost){
+        return chancedInput(Ingredient.of(stack), chance, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedInput (FluidStack stack, int chance, int tierChanceBoost){
+        return chancedInput(FluidIngredient.of(stack), chance, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput (ItemStack stack, int chance, int tierChanceBoost){
+        return chancedOutput(Ingredient.of(stack), chance, tierChanceBoost);
+    }
+
+    public GTRecipeBuilder chancedOutput (FluidStack stack, int chance, int tierChanceBoost){
+        return chancedOutput(FluidIngredient.of(stack), chance, tierChanceBoost);
     }
 
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
@@ -974,12 +998,16 @@ public class GTRecipeBuilder {
         return input(FluidRecipeCapability.CAP, ingredients.toArray(FluidIngredient[]::new));
     }
 
-    public GTRecipeBuilder inputFluidsRanged(FluidStack input, IntProvider intProvider) {
-        return inputFluidsRanged(FluidIngredient.of(input), intProvider);
+    public GTRecipeBuilder inputFluidsRanged(IntProviderFluidIngredient provider) {
+        return inputFluids(provider);
     }
 
     protected GTRecipeBuilder inputFluidsRanged(FluidIngredient input, IntProvider intProvider) {
-        return inputFluids(IntProviderFluidIngredient.of(input, intProvider));
+        return inputFluidsRanged(IntProviderFluidIngredient.of(input, intProvider));
+    }
+
+    public GTRecipeBuilder inputFluidsRanged(FluidStack input, IntProvider intProvider) {
+        return inputFluidsRanged(FluidIngredient.of(input), intProvider);
     }
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
@@ -999,12 +1027,16 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, outputs);
     }
 
-    public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
-        return outputFluidsRanged(FluidIngredient.of(output), intProvider);
+    public GTRecipeBuilder outputFluidsRanged(IntProviderFluidIngredient provider) {
+        return outputFluids(provider);
     }
 
     protected GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {
-        return outputFluids(IntProviderFluidIngredient.of(output, intProvider));
+        return outputFluidsRanged(IntProviderFluidIngredient.of(output, intProvider));
+    }
+
+    public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
+        return outputFluidsRanged(FluidIngredient.of(output), intProvider);
     }
 
     //////////////////////////////////////
