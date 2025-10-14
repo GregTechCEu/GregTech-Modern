@@ -6,12 +6,14 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -21,27 +23,41 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class FuelRecipes {
 
+    public static void addBoilerFuel(Consumer<FinishedRecipe> provider, Set<Item> added,
+                                     Item item, int burnTime) {
+        if (added.contains(item) || burnTime <= 0) {
+            return;
+        }
+        added.add(item);
+
+        Optional<FluidStack> containedFluid = FluidUtil.getFluidContained(item.getDefaultInstance());
+        if (containedFluid.isEmpty()) {
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(id.getNamespace() + "_" + id.getPath()))
+                    .inputItems(item)
+                    .duration(burnTime)
+                    .save(provider);
+        } else {
+            FluidStack fluid = new FluidStack(containedFluid.get(), 250);
+            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
+
+            // the lava recipe's duration is 4/9 of the bucket's burn time
+            // the creosote recipe's duration is 7/32 of the bucket's burn time
+            // as such, the mean ratio is 191/576, or approximately 1/3.
+            STEAM_BOILER_RECIPES.recipeBuilder(id.getNamespace() + "_" + id.getPath())
+                    .inputFluids(fluid)
+                    .duration(burnTime / 3)
+                    .save(provider);
+        }
+    }
+
     public static void init(Consumer<FinishedRecipe> provider) {
         // TODO this all needs to be cleaned up, but this will make it somewhat work for now
         // do these first because for some reason vanilla fuels are not set up yet at this phase?
         Set<Item> addedItems = new HashSet<>();
-        for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
-            addedItems.add(fuelEntry.getKey());
-            var resLoc = BuiltInRegistries.ITEM.getKey(fuelEntry.getKey());
-            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
-                    .inputItems(fuelEntry.getKey())
-                    .duration(fuelEntry.getValue())
-                    .save(provider);
-        }
         for (Item item : BuiltInRegistries.ITEM) {
-            var burnTime = GTUtil.getItemBurnTime(item);
-            if (burnTime > 0 && !addedItems.contains(item)) {
-                var resLoc = BuiltInRegistries.ITEM.getKey(item);
-                STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
-                        .inputItems(item)
-                        .duration(burnTime)
-                        .save(provider);
-            }
+            int burnTime = GTUtil.getItemBurnTime(item);
+            addBoilerFuel(provider, addedItems, item, burnTime);
         }
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
