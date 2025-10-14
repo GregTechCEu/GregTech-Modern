@@ -30,7 +30,7 @@ public class FuelRecipes {
             var resLoc = BuiltInRegistries.ITEM.getKey(fuelEntry.getKey());
             STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
                     .inputItems(fuelEntry.getKey())
-                    .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
+                    .duration(fuelEntry.getValue())
                     .save(provider);
         }
         for (Item item : BuiltInRegistries.ITEM) {
@@ -39,55 +39,55 @@ public class FuelRecipes {
                 var resLoc = BuiltInRegistries.ITEM.getKey(item);
                 STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
                         .inputItems(item)
-                        .duration(burnTime * 12)
+                        .duration(burnTime)
                         .save(provider);
             }
         }
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
-                .duration(100 * 12)
+                .duration(900) //60s -> 45s Might still be too good with drip stone farming.
                 .save(provider);
 
         STEAM_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(250 * 12)
+                .duration(350) //150s -> 17.5s
                 .save(provider);
 
-        // semi-fluid fuels, like creosote
+        // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
         LARGE_BOILER_RECIPES.recipeBuilder("creosote")
-                .inputFluids(Creosote.getFluid(160))
+                .inputFluids(Creosote.getFluid(250))
                 .duration(10)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("biomass")
                 .inputFluids(Biomass.getFluid(40))
-                .duration(10)
+                .duration(85)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("oil")
                 .inputFluids(Oil.getFluid(200))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("oil_heavy")
                 .inputFluids(OilHeavy.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("sulfuric_heavy_fuel")
                 .inputFluids(SulfuricHeavyFuel.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("heavy_fuel")
                 .inputFluids(HeavyFuel.getFluid(16))
-                .duration(30)
+                .duration(90)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("fish_oil")
                 .inputFluids(FishOil.getFluid(160))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         // diesel generator fuels

@@ -66,8 +66,8 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
             .onRecipeBuild((builder, provider) -> {
-                // remove the * 12 if SteamBoilerMachine:240 is uncommented
-                var duration = (builder.duration / 12 / 80); // copied for large boiler
+                //25% Burn Time, Rounded Up. Eg. 80sec -> 20s
+                int duration = ((builder.duration + 3) / 4); // Redone, the original double division made boilers impossibly bad.
                 if (duration > 0) {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
