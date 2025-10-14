@@ -46,12 +46,12 @@ public class FuelRecipes {
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
-                .duration(900) //60s -> 45s Might still be too good with drip stone farming.
+                .duration(900) // 60s -> 45s Might still be too good with drip stone farming.
                 .save(provider);
 
         STEAM_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(350) //150s -> 17.5s
+                .duration(350) // 150s -> 17.5s
                 .save(provider);
 
         // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
