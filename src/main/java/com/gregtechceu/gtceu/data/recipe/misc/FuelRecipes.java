@@ -57,7 +57,7 @@ public class FuelRecipes {
         // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
         LARGE_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(10)
+                .duration(35)
                 .save(provider);
 
         LARGE_BOILER_RECIPES.recipeBuilder("biomass")
