@@ -23,7 +23,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -41,10 +41,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
+import java.util.function.*;
 
 @Accessors(fluent = true)
 public class BaseSchemaRenderer implements IDrawable {
@@ -68,6 +65,7 @@ public class BaseSchemaRenderer implements IDrawable {
     protected Runnable afterRender;
     @Setter
     protected BiConsumer<Camera, ISchema> cameraFunc;
+    protected Supplier<BlockHighlight> highlight;
     private int clearColor = 0;
     @Setter
     protected boolean isometric = false;
@@ -111,6 +109,9 @@ public class BaseSchemaRenderer implements IDrawable {
         if (this.cameraFunc != null) {
             this.cameraFunc.accept(this.camera, this.schema);
         }
+        if (scale == null) {
+            scale = () -> 1.f;
+        }
         if (Objects.nonNull(scale)) {
             Vector3f cameraPos = camera.pos();
             Vector3f looking = camera.lookAt();
@@ -128,18 +129,20 @@ public class BaseSchemaRenderer implements IDrawable {
         setupCamera(this.renderTarget.viewWidth, this.renderTarget.viewHeight);
         renderWorld(context);
         if (this.onRayTrace != null && Area.isInside(x, y, width, height, mouseX, mouseY)) {
-            this.onRayTrace.accept(new IRayTracer() {
+            IRayTracer rayTrace;
+            this.onRayTrace.accept(rayTrace = new IRayTracer() {
 
                 @Override
-                public HitResult rayTrace(int screenX, int screenY) {
+                public BlockHitResult rayTrace(int screenX, int screenY) {
                     return BaseSchemaRenderer.this.rayTrace(GTMatrixUtils.projectScreenToWorld(screenX, screenY));
                 }
 
                 @Override
-                public HitResult rayTraceMousePos() {
+                public BlockHitResult rayTraceMousePos() {
                     return rayTrace(mouseX, mouseY);
                 }
             });
+            highlight.get().renderHighlight(rayTrace.rayTraceMousePos(), camera.pos(), context.getGraphics().pose());
         }
         resetCamera();
         context.getGraphics().pose().popPose();
@@ -287,7 +290,7 @@ public class BaseSchemaRenderer implements IDrawable {
         RenderSystem.disableDepthTest();
     }
 
-    private HitResult rayTrace(Vector3f hitPos) {
+    private BlockHitResult rayTrace(Vector3f hitPos) {
         Vec3 startPos = new Vec3(this.camera.pos().x, this.camera.pos().y, this.camera.pos().z);
         hitPos.mul(2); // Double view range to ensure pos can be seen.
         Vec3 endPos = new Vec3((hitPos.x - startPos.x), (hitPos.y - startPos.y), (hitPos.z - startPos.z));
@@ -303,9 +306,9 @@ public class BaseSchemaRenderer implements IDrawable {
 
     public interface IRayTracer {
 
-        HitResult rayTrace(int screenX, int screenY);
+        BlockHitResult rayTrace(int screenX, int screenY);
 
-        HitResult rayTraceMousePos();
+        BlockHitResult rayTraceMousePos();
     }
 
     public interface ICamera {

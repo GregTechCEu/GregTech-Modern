@@ -40,17 +40,16 @@ public class ArraySchema implements ISchema {
         int s = 2 * radius + 1;
         BlockInfo[][][] blocks = new BlockInfo[s][s][s];
 
-        MutableBlockPos pos = new MutableBlockPos();
-        BlockPosUtil.add(pos.set(center), -radius, -radius, -radius);
+        MutableBlockPos pos = center.offset(-radius, -radius, -radius).mutable();
         for (int x = 0; x < s; x++) {
             for (int y = 0; y < s; y++) {
                 for (int z = 0; z < s; z++) {
                     blocks[x][y][z] = BlockInfo.of(level, pos);
-                    BlockPosUtil.add(pos, 0, 0, 1);
+                    pos.move(0, 0, 1);
                 }
-                BlockPosUtil.add(pos, 0, 1, -s);
+                pos.move(0, 1, -s);
             }
-            BlockPosUtil.add(pos, 1, -s, 0);
+            pos.move(1, -s, 0);
         }
         return new ArraySchema(blocks);
     }
@@ -80,7 +79,7 @@ public class ArraySchema implements ISchema {
     private final BlockInfo[][][] blocks;
     @Getter
     @Setter
-    private BiPredicate<BlockPos, BlockInfo> renderFilter;
+    private BiPredicate<BlockPos, BlockInfo> renderFilter = (__, ___) -> true;
     private final Vec3 center;
 
     public ArraySchema(BlockInfo[][][] blocks) {

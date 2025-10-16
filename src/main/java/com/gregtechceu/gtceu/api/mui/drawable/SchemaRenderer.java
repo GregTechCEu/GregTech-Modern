@@ -6,10 +6,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.*;
 import lombok.experimental.Accessors;
 
-import java.util.function.BiConsumer;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
+import java.util.function.*;
 
 @Accessors(fluent = true, chain = true)
 public class SchemaRenderer extends BaseSchemaRenderer {
@@ -59,6 +56,11 @@ public class SchemaRenderer extends BaseSchemaRenderer {
 
     public SchemaRenderer disableBER(BooleanSupplier disableBER) {
         this.disableBER = disableBER;
+        return this;
+    }
+
+    public SchemaRenderer highlightRenderer(BlockHighlight supp) {
+        this.highlight = () -> supp;
         return this;
     }
 }

@@ -38,7 +38,6 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.fakelevel.ArraySchema;
-import com.gregtechceu.gtceu.utils.fakelevel.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.utils.fakelevel.BlockHighlight;
 
 import net.minecraft.network.chat.Component;
@@ -537,12 +536,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     private IWidget createSchemaPage(GuiData data) {
         ParentWidget<?> page = new ParentWidget<>();
-        page.debugName("page 5 schema");
+        page.debugName("Page 5 schema");
         page.sizeRel(1f);
         page.child(IKey.str("Schema").asWidget());
 
         if (getLevel().isClientSide()) {
-            page.child(new SchemaWidget(new BaseSchemaRenderer(ArraySchema.of(data.getPlayer(), 5))
+            page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 5))
                     .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)))
                     .pos(20, 20)
                     .size(100, 100));
