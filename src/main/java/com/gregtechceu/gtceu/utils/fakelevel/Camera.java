@@ -1,14 +1,18 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
+
 import com.gregtechceu.gtceu.utils.GTMath;
-import lombok.Getter;
+
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import static com.gregtechceu.gtceu.utils.GTMath.PI_HALF;
 
-
+@Accessors(fluent = true)
 public class Camera {
 
     @Getter
@@ -55,7 +59,7 @@ public class Camera {
     public Camera setLookAtKeepAngle(float x, float y, float z) {
         // just calculate the offset
         this.temp.set(x, y, z);
-        this.temp.sub( this.lookAt, this.temp);
+        this.temp.sub(this.lookAt, this.temp);
         this.pos.add(this.temp);
         this.lookAt.set(this.temp);
         return this;
@@ -68,7 +72,7 @@ public class Camera {
     public Camera setPosKeepAngle(float x, float y, float z) {
         // just calculate the offset
         this.temp.set(x, y, z);
-        this.temp.sub( this.pos, this.temp);
+        this.temp.sub(this.pos, this.temp);
         this.lookAt.add(this.temp);
         this.pos.set(this.temp);
         return this;
@@ -115,9 +119,9 @@ public class Camera {
     public void setDistanceKeepLookAt(float dist) {
         if (dist == this.dist) return;
         this.dist = dist;
-        this.pos.sub( this.lookAt, this.temp);
+        this.pos.sub(this.lookAt, this.temp);
         this.temp.normalize().mul(dist);
-        this.lookAt.sub( this.temp, this.pos);
+        this.lookAt.sub(this.temp, this.pos);
     }
 
     public void scaleDistanceKeepLookAt(float dist) {
@@ -135,5 +139,4 @@ public class Camera {
     public Vector3f getLookVec(@Nullable Vector3f dest) {
         return lookAt.sub(pos, dest);
     }
-
 }

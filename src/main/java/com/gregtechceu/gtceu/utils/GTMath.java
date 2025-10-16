@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.mariuszgromada.math.mxparser.Constant;
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -44,12 +45,15 @@ public class GTMath {
     public static final Constant z = new Constant("z", 1e-21);
     public static final Constant y = new Constant("y", 1e-24);
 
-
     // I 8 some PI and it was DELICIOUS
     public static final float PI = (float) Math.PI;
     public static final float PI2 = 2f * PI;
     public static final float PI_HALF = PI / 2f;
     public static final float PI_QUART = PI / 4f;
+
+    public static final Vector3f UNIT_X = new Vector3f(1f, 0f, 0f);
+    public static final Vector3f UNIT_Y = new Vector3f(0f, 1f, 0f);
+    public static final Vector3f UNIT_Z = new Vector3f(0f, 0f, 1f);
 
     public static int lerpInt(double delta, int start, int end) {
         return start + Mth.floor(delta * (end - start));
@@ -215,5 +219,4 @@ public class GTMath {
     public static float tan(float v) {
         return Mth.sin(v) / Mth.cos(v);
     }
-
 }

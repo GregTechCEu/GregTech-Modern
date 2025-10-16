@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.utils.fakelevel;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,20 +26,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.BiPredicate;
 
-import static journeymap.client.data.AllData.Key.world;
-
 public class ArraySchema implements ISchema {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static ArraySchema of(Entity entity,int radius){
+    public static ArraySchema of(Entity entity, int radius) {
         return of(entity.level(), BlockPos.containing(entity.position()), radius);
     }
 
-    public static ArraySchema of(Level level,BlockPos center, int radius){
-
+    public static ArraySchema of(Level level, BlockPos center, int radius) {
         int s = 2 * radius + 1;
         BlockInfo[][][] blocks = new BlockInfo[s][s][s];
 
@@ -59,9 +55,9 @@ public class ArraySchema implements ISchema {
         return new ArraySchema(blocks);
     }
 
-    public static ArraySchema of (Level level, Vec3 center, Vec3 p1, Vec3 p2){
-
-        // have to cast  to int because double is our vector but MutableBLockPos.betweenClosed() takes in ints
+    public static ArraySchema of(Level level, Vec3 center, Vec3 p1, Vec3 p2) {
+        // todo: do what screret said to refactor this,
+        // (later me problem)
         int x0 = (int) Math.min(p1.x, p2.x);
         int y0 = (int) Math.min(p1.y, p2.y);
         int z0 = (int) Math.min(p1.z, p2.z);
