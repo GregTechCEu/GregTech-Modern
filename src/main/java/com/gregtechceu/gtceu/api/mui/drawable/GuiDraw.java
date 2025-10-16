@@ -491,7 +491,7 @@ public class GuiDraw {
             textRenderer.setPos(x, y);
             RenderSystem.disableDepthTest();
             RenderSystem.disableBlend();
-            context.poseStack().translate(0, 0, 100 + z);
+            context.graphicsPose().translate(0, 0, 100 + z);
             textRenderer.draw(context.getGraphics(), amountText);
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();

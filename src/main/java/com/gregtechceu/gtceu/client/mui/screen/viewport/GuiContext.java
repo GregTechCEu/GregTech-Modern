@@ -154,12 +154,12 @@ public class GuiContext extends GuiViewportStack {
 
     /* Viewport */
 
-    public Matrix4f getLastPose() {
+    public Matrix4f getLastGraphicsPose() {
         if (graphics == null) return new Matrix4f();
         return graphics.pose().last().pose();
     }
 
-    public PoseStack poseStack() {
+    public PoseStack graphicsPose() {
         if (graphics == null) return new PoseStack();
         return graphics.pose();
     }

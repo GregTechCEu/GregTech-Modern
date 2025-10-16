@@ -54,7 +54,7 @@ public class TooltipComponentIcon implements IIcon {
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         Font font = context.getFont();
-        context.poseStack().pushPose();
+        context.graphicsPose().pushPose();
 
         // rescale the tooltip component if we happen to go out of its bounds
         float ratio = 1.0f;
@@ -65,10 +65,10 @@ public class TooltipComponentIcon implements IIcon {
             ratio = Math.min(ratio, (float) height / clientComponent.getHeight());
         }
         if (ratio != 1.0f) {
-            context.poseStack().scale(ratio, ratio, 1.0f);
+            context.graphicsPose().scale(ratio, ratio, 1.0f);
         }
         clientComponent.renderImage(font, x, y, context.getGraphics());
 
-        context.poseStack().popPose();
+        context.graphicsPose().popPose();
     }
 }

@@ -223,8 +223,8 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
         // makes sure items of different layers don't interfere with each other visually
         float z = context.getCurrentDrawingZ() + 100;
-        context.poseStack().pushPose();
-        context.poseStack().translate(0, 0, z);
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(0, 0, z);
 
         if (!flag1) {
             if (isDragPreview) {
@@ -250,7 +250,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
                 RenderSystem.disableDepthTest();
             }
         }
-        context.poseStack().popPose();
+        context.graphicsPose().popPose();
     }
 
     @Override

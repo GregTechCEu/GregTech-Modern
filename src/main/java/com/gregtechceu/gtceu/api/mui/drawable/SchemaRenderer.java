@@ -112,7 +112,7 @@ public class SchemaRenderer implements IDrawable {
         this.renderTarget.clear(Minecraft.ON_OSX);
         this.renderTarget.bindWrite(true);
 
-        context.poseStack().pushPose();
+        context.graphicsPose().pushPose();
         setupCamera(this.renderTarget.viewWidth, this.renderTarget.viewHeight);
         renderWorld(context);
         if (this.onRayTrace != null && Area.isInside(x, y, width, height, mouseX, mouseY)) {
@@ -130,7 +130,7 @@ public class SchemaRenderer implements IDrawable {
             });
         }
         resetCamera();
-        context.poseStack().popPose();
+        context.graphicsPose().popPose();
         this.renderTarget.unbindWrite();
         Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
 
