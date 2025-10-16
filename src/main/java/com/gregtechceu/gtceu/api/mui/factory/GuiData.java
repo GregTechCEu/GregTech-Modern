@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
-import me.jellysquid.mods.sodium.mixin.features.render.world.sky.WorldRendererMixin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,9 +23,6 @@ public class GuiData {
 
     @Getter
     private final Player player;
-
-
-
 
     public GuiData(Player player) {
         this.player = Objects.requireNonNull(player);

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.core.Vec3i;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,5 +48,4 @@ public class VectorUtil {
     public static Vector3f vec3fAdd(@Nullable Vector3f source, @Nullable Vector3f target, Vec3 vec) {
         return vec3fAdd(source, target, (float) vec.x, (float) vec.y, (float) vec.z);
     }
-
 }
