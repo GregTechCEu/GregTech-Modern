@@ -5,19 +5,15 @@ import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.VectorUtil;
 import com.gregtechceu.gtceu.utils.fakelevel.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.utils.fakelevel.ISchema;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-
-import static net.minecraft.util.Mth.TWO_PI;
 
 public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
@@ -38,21 +34,20 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     public SchemaWidget(BaseSchemaRenderer schema) {
         this.schema = schema;
-        schema.cameraFunc((camera, $schema) -> {
-            Vector3f focus = VectorUtil.vec3fAdd(this.offset, null, $schema.getFocus());
-            camera.setLookAtAndAngle(focus, scale, yaw, pitch);
-        });
     }
 
     @Override
     public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+        Vec3 f = this.schema.schema().getFocus();
+        this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
+                (float) (f.z + this.offset.z), scale, yaw, pitch);
         this.schema.drawAtZero(context, getArea(), widgetTheme);
     }
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
         if (this.enableScaling) {
-            scale(delta / 120.0);
+            incrementScale((float) (-delta / 120.0f));
             return true;
         }
         return false;
@@ -73,20 +68,13 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         float dy = (float) mY - lastMouseY;
         if (button == 0 && this.enableRotation) {
             float moveScale = 0.03f;
-            yaw = (yaw + dx * moveScale + TWO_PI) % TWO_PI;
-            pitch = Mth.clamp(pitch + dy * moveScale, -TWO_PI / 4 + 0.001f, TWO_PI / 4 - 0.001f);
+            yaw(this.yaw + dx * moveScale);
+            pitch(this.pitch + dy * moveScale);
         } else if (button == 2 && this.enableTranslation) {
-            // the idea is to construct a vector which points upwards from the camera pov (y-axis on screen)
-            // this vector determines the amount of z offset from mouse movement in y
-            float y = (float) Math.cos(pitch);
             float moveScale = 0.09f;
-            // with this the offset can be moved by dy
-            offset.add(0, dy * y * moveScale, 0);
-            // to respect dx we need a new vector which is perpendicular on the previous vector (x-axis on screen)
-            // y = 0 => mouse movement in x does not move y
             Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking
-            Vector3f right = look.cross(GTMath.UNIT_Y).normalize(); // right relative to screen
-            Vector3f up = right.cross(look);
+            Vector3f right = look.cross(0, 1, 0, new Vector3f()).normalize(); // right relative to screen
+            Vector3f up = right.cross(look, new Vector3f()); // up relative to screen
             this.offset.add(right.mul(-dx * moveScale)).add(up.mul(dy * moveScale));
 
         }
@@ -94,8 +82,22 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         this.lastMouseY = (float) mY;
     }
 
-    public SchemaWidget scale(double scale) {
-        this.scale += scale;
+    public void incrementScale(float amount) {
+        this.scale += amount;
+    }
+
+    public SchemaWidget scale(float scale) {
+        this.scale = scale;
+        return this;
+    }
+
+    public SchemaWidget pitch(float pitch) {
+        this.pitch = GTMath.clamp(pitch, -GTMath.PI_HALF + 0.001f, GTMath.PI_HALF - 0.001f);
+        return this;
+    }
+
+    public SchemaWidget yaw(float yaw) {
+        this.yaw = (yaw + GTMath.PI2) % GTMath.PI2;
         return this;
     }
 
@@ -138,7 +140,6 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         public LayerButton(ISchema schema, int minLayer, int maxLayer) {
             this.minLayer = minLayer;
             this.maxLayer = maxLayer;
-            background(GTGuiTextures.BACKGROUND);
             overlay(IKey.dynamic(() -> currentLayer > Integer.MIN_VALUE ?
                     Component.literal(Integer.toString(currentLayer)) : Component.literal("ALL")).scale(0.5f));
 

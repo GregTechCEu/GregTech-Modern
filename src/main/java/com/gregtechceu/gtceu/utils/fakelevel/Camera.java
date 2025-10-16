@@ -137,6 +137,7 @@ public class Camera {
     }
 
     public Vector3f getLookVec(@Nullable Vector3f dest) {
+        if (dest == null) dest = new Vector3f();
         return lookAt.sub(pos, dest);
     }
 }

@@ -10,11 +10,11 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -33,42 +33,31 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.Tolerate;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Objects;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Accessors(fluent = true)
 public class BaseSchemaRenderer implements IDrawable {
 
     private static final RenderTarget FBO = new TextureTarget(1080, 1080, true, Minecraft.ON_OSX);
 
-    protected final ISchema schema;
+    @Getter
+    private final ISchema schema;
     private final LevelReader renderLevel;
     private final RenderTarget renderTarget;
     @Getter
     private final Camera camera = new Camera();
-    @Setter
-    private boolean cameraSetup = false;
-    @Setter
-    protected DoubleSupplier scale;
-    @Setter
-    protected BooleanSupplier disableBER;
-    @Setter
-    protected Consumer<IRayTracer> onRayTrace;
-    @Setter
-    protected Runnable afterRender;
-    @Setter
-    protected BiConsumer<Camera, ISchema> cameraFunc;
-    protected Supplier<BlockHighlight> highlight;
-    private int clearColor = 0;
-    @Setter
-    protected boolean isometric = false;
+    @Getter
+    private @Nullable BlockHitResult lastRayTrace = null;
 
     public BaseSchemaRenderer(ISchema schema, RenderTarget renderTarget) {
         this.schema = schema;
@@ -78,16 +67,6 @@ public class BaseSchemaRenderer implements IDrawable {
 
     public BaseSchemaRenderer(ISchema schema) {
         this(schema, FBO);
-    }
-
-    @Tolerate
-    public BaseSchemaRenderer scale(double scale) {
-        return scale(() -> scale);
-    }
-
-    @Tolerate
-    public BaseSchemaRenderer disableBER(boolean disable) {
-        return disableBER(() -> disable);
     }
 
     @Override
@@ -106,20 +85,8 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     public void render(GuiContext context, int x, int y, int width, int height, int mouseX, int mouseY) {
-        if (this.cameraFunc != null) {
-            this.cameraFunc.accept(this.camera, this.schema);
-        }
-        if (scale == null) {
-            scale = () -> 1.f;
-        }
-        if (Objects.nonNull(scale)) {
-            Vector3f cameraPos = camera.pos();
-            Vector3f looking = camera.lookAt();
-            cameraPos.sub(looking);
-            if (cameraPos.length() != 0.0f) cameraPos.normalize();
-            cameraPos.mul((float) scale.getAsDouble());
-            cameraPos.add(looking);
-        }
+        context.getGraphics().flush();
+        onSetupCamera();
 
         this.renderTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         this.renderTarget.clear(Minecraft.ON_OSX);
@@ -128,21 +95,19 @@ public class BaseSchemaRenderer implements IDrawable {
         context.getGraphics().pose().pushPose();
         setupCamera(this.renderTarget.viewWidth, this.renderTarget.viewHeight);
         renderWorld(context);
-        if (this.onRayTrace != null && Area.isInside(x, y, width, height, mouseX, mouseY)) {
-            IRayTracer rayTrace;
-            this.onRayTrace.accept(rayTrace = new IRayTracer() {
-
-                @Override
-                public BlockHitResult rayTrace(int screenX, int screenY) {
-                    return BaseSchemaRenderer.this.rayTrace(GTMatrixUtils.projectScreenToWorld(screenX, screenY));
+        if (doRayTrace()) {
+            BlockHitResult result = null;
+            if (Area.isInside(x, y, width, height, mouseX, mouseY)) {
+                result = rayTrace(mouseX, mouseY, width, height);
+            }
+            if (result == null) {
+                if (this.lastRayTrace != null) {
+                    onRayTraceFailed();
                 }
-
-                @Override
-                public BlockHitResult rayTraceMousePos() {
-                    return rayTrace(mouseX, mouseY);
-                }
-            });
-            highlight.get().renderHighlight(rayTrace.rayTraceMousePos(), camera.pos(), context.getGraphics().pose());
+            } else {
+                onSuccessfulRayTrace(context.getGraphics(), result);
+            }
+            this.lastRayTrace = result;
         }
         resetCamera();
         context.getGraphics().pose().popPose();
@@ -166,9 +131,37 @@ public class BaseSchemaRenderer implements IDrawable {
         tesselator.end();
     }
 
+    protected BlockHitResult rayTrace(int mouseX, int mouseY, int width, int height) {
+        final float halfPI = (float) (Math.PI / 2);
+        Vector3f cameraPos = camera.pos();
+        float yaw = camera.yaw();
+        float pitch = camera.pitch();
+
+        Vector3f mouseXShift = new Vector3f(1, 0, 0)
+                // TODO
+                // .rotatePitch(pitch)
+                // .rotateYaw(-yaw + halfPI)
+                .mul(mouseX - width / 2f)
+                .mul(1 / 32f);
+        Vector3f mouseYShift = new Vector3f(0, -1, 0)
+                // .rotatePitch(pitch)
+                // .rotateYaw(-yaw + halfPI)
+                .mul(mouseY - height / 2f)
+                .mul(1 / 32f);
+        Vector3f mousePos = cameraPos.add(mouseXShift, new Vector3f()).add(mouseYShift);
+        Vector3f focus = camera.lookAt();
+        float perspectiveCompensation = isIsometric() ? 1 : cameraPos.distance(focus) / 3 * width / 100;
+        Vector3f underMousePos = focus.add(mouseXShift.mul(perspectiveCompensation), new Vector3f())
+                .add(mouseYShift.mul(perspectiveCompensation));
+        Vector3f look = underMousePos.sub(mousePos, new Vector3f()).mul(10);
+        mousePos.add(look, underMousePos);
+        ClipContext context = new ClipContext(new Vec3(mousePos), new Vec3(underMousePos),
+                ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null);
+        return schema.getLevel().clip(context);
+    }
+
     private void renderWorld(GuiContext context) {
         PoseStack poseStack = context.getGraphics().pose();
-        MultiBufferSource.BufferSource bufferSource = context.getGraphics().bufferSource();
         RandomSource random = RandomSource.create();
 
         Minecraft mc = Minecraft.getInstance();
@@ -178,57 +171,84 @@ public class BaseSchemaRenderer implements IDrawable {
         mc.gameRenderer.lightTexture().turnOffLightLayer();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
-        for (final RenderType type : RenderType.chunkBufferLayers()) {
-            type.setupRenderState();
-            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-            BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
-            this.schema.forEach(pair -> {
-                BlockPos pos = pair.getKey();
-                BlockState state = pair.getValue().getBlockState();
-                if (state.getRenderShape() == RenderShape.INVISIBLE) return;
+        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 
-                var be = pair.getValue().getBlockEntity();
-                ModelData modelData = ModelData.EMPTY;
-                if (be != null) {
-                    modelData = be.getModelData();
-                }
-                poseStack.pushPose();
-                poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
-                blockRenderer.renderBatched(state, pos, this.renderLevel,
-                        poseStack, buffer, true,
-                        random, modelData, type);
-                poseStack.popPose();
+        List<BlockEntity> tesr = null;
+        // render block in each layer
+        List<RenderType> chunkBufferLayers = RenderType.chunkBufferLayers();
+        for (int i = 0; i < chunkBufferLayers.size(); i++) {
+            RenderType layer = chunkBufferLayers.get(i);
+            if (i == 0 && isBEREnabled()) {
+                tesr = renderBlocksInLayer(poseStack, mc, layer, random, true);
+            } else {
+                renderBlocksInLayer(poseStack, mc, layer, random, false);
+            }
 
-            });
-            Tesselator.getInstance().end();
-            type.clearRenderState();
         }
 
         Lighting.setupFor3DItems();
 
-        // render BERs
-        if (disableBER == null || !disableBER.getAsBoolean()) {
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            BlockEntityRenderDispatcher blockEntityRenderer = mc.getBlockEntityRenderDispatcher();
-            float partialTick = mc.getPartialTick();
-            this.schema.forEach(pair -> {
-                BlockPos pos = pair.getKey();
-                if (pair.getValue().getBlockState().getRenderShape() == RenderShape.MODEL) return;
-                BlockEntity be = pair.getValue().getBlockEntity();
-                if (be == null) return;
-                poseStack.pushPose();
-                poseStack.translate(pos.getX() - cameraPos.x(), pos.getY() - cameraPos.y(), pos.getZ() - cameraPos.z());
-                blockEntityRenderer.render(be, partialTick, poseStack, bufferSource);
-                poseStack.popPose();
-            });
+        // render TESR
+        if (tesr != null && !tesr.isEmpty()) {
+            renderTesr(context.getGraphics(), mc, tesr);
         }
+
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
-        if (this.afterRender != null) {
-            this.afterRender.run();
+    }
+
+    private List<BlockEntity> renderBlocksInLayer(PoseStack pose, Minecraft mc, RenderType type, RandomSource random,
+                                                  boolean collectTesr) {
+        List<BlockEntity> tesr = collectTesr ? new ArrayList<>() : null;
+        type.setupRenderState();
+
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+        BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
+        this.schema.forEach(pair -> {
+            BlockPos pos = pair.getKey();
+            BlockState state = pair.getValue().getBlockState();
+            if (state.getRenderShape() == RenderShape.INVISIBLE) return;
+            var be = pair.getValue().getBlockEntity();
+
+            if (collectTesr) {
+                if (be != null && !be.isRemoved()) {
+                    if (mc.getBlockEntityRenderDispatcher().getRenderer(be) != null) {
+                        // only collect tiles to render which actually have a tesr
+                        tesr.add(be);
+                    }
+                }
+            }
+
+            ModelData modelData = ModelData.EMPTY;
+            if (be != null) {
+                modelData = be.getModelData();
+            }
+            pose.pushPose();
+            // pose.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+            blockRenderer.renderBatched(state, pos, this.renderLevel,
+                    pose, buffer, true,
+                    random, modelData, type);
+            pose.popPose();
+
+        });
+        Tesselator.getInstance().end();
+        type.clearRenderState();
+        return tesr;
+    }
+
+    private static void renderTesr(GuiGraphics graphics, Minecraft mc, List<BlockEntity> tileEntities) {
+        MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
+        for (Iterator<BlockEntity> iterator = tileEntities.iterator(); iterator.hasNext();) {
+            BlockEntity tile = iterator.next();
+            if (tile == null || tile.isRemoved()) continue;
+
+            mc.getBlockEntityRenderDispatcher().render(tile, mc.getPartialTick(), graphics.pose(), bufferSource);
         }
+        bufferSource.endBatch();
     }
 
     protected void setupCamera(int width, int height) {
@@ -238,16 +258,16 @@ public class BaseSchemaRenderer implements IDrawable {
 
         // setup viewport and clear GL buffers
         RenderSystem.viewport(0, 0, width, height);
-        Color.setGlColor(clearColor);
+        Color.setGlColor(getClearColor());
         RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         RenderSystem.backupProjectionMatrix();
 
-        float near = this.isometric ? 1f : 0.1f;
+        float near = isIsometric() ? 1f : 0.1f;
         float far = 10000.0f;
         float fovY = 60.0f; // Field of view in the Y direction
         float aspect = (float) width / height; // width and height are the dimensions of your window
         Matrix4f projection = new Matrix4f();
-        if (this.isometric) {
+        if (isIsometric()) {
             float top = near * (float) Math.tan(Math.toRadians(fovY) / 2.0);
             float bottom = -top;
             float left = aspect * bottom;
@@ -263,18 +283,16 @@ public class BaseSchemaRenderer implements IDrawable {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.setIdentity();
-        if (this.isometric) {
+        if (isIsometric()) {
             modelViewStack.scale(0.1f, 0.1f, 0.1f);
         }
         var cameraPos = this.camera.pos();
         var lookAt = this.camera.lookAt();
         modelViewStack.mulPoseMatrix(GTMatrixUtils.lookAt(cameraPos, lookAt));
         RenderSystem.applyModelViewMatrix();
-        this.cameraSetup = true;
     }
 
     protected void resetCamera() {
-        this.cameraSetup = false;
         // reset viewport
         Minecraft minecraft = Minecraft.getInstance();
         RenderSystem.viewport(0, 0, minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
@@ -300,19 +318,31 @@ public class BaseSchemaRenderer implements IDrawable {
         return this.schema.getLevel().clip(context);
     }
 
-    public boolean isCameraSetup() {
-        return cameraSetup;
+    @ApiStatus.OverrideOnly
+    protected void onSetupCamera() {}
+
+    @ApiStatus.OverrideOnly
+    protected void onRendered() {}
+
+    @ApiStatus.OverrideOnly
+    protected void onSuccessfulRayTrace(GuiGraphics graphics, @NotNull BlockHitResult result) {}
+
+    @ApiStatus.OverrideOnly
+    protected void onRayTraceFailed() {}
+
+    public boolean doRayTrace() {
+        return false;
     }
 
-    public interface IRayTracer {
-
-        BlockHitResult rayTrace(int screenX, int screenY);
-
-        BlockHitResult rayTraceMousePos();
+    public int getClearColor() {
+        return Color.withAlpha(0, 0.5f);
     }
 
-    public interface ICamera {
+    public boolean isIsometric() {
+        return false;
+    }
 
-        void setupCamera(Vector3f cameraPos, Vector3f lookAt);
+    public boolean isBEREnabled() {
+        return true;
     }
 }

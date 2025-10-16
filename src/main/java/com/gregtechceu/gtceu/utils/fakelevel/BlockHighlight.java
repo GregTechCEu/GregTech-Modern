@@ -66,7 +66,8 @@ public class BlockHighlight {
 
     public final void renderHighlight(BlockHitResult result, Vector3f camera, PoseStack pose) {
         if (result != null && result.getType() == HitResult.Type.BLOCK) {
-            renderHighlight(result.getBlockPos(), result.getDirection(), camera, pose);
+            // TODO buffer builder error
+            //renderHighlight(result.getBlockPos(), result.getDirection(), camera, pose);
         }
     }
 
@@ -78,7 +79,7 @@ public class BlockHighlight {
         pose.translate(pos.getX(), pos.getY(), pos.getZ());
 
         float distance = camera.distance(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-        doRender(direction, distance, pose);
+        //doRender(direction, distance, pose);
         pose.popPose();
         RenderSystem.enableCull();
         RenderSystem.enableDepthTest();
@@ -110,8 +111,8 @@ public class BlockHighlight {
 
     protected static void renderFrame(@Nullable Direction side, Float d) {
         if (side == null) {
-            for (int i = 0; i < 6; i++) {
-                buildFrameFace(side, d);
+            for (Direction direction : Direction.values()) {
+                buildFrameFace(direction, d);
             }
         } else {
             buildFrameFace(side, d);
