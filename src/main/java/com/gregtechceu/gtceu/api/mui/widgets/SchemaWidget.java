@@ -41,7 +41,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         Vec3 f = this.schema.schema().getFocus();
         this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
                 (float) (f.z + this.offset.z), scale, yaw, pitch);
-        this.schema.drawAtZero(context, getArea(), widgetTheme);
+        this.schema.draw(context, getArea(), widgetTheme);
     }
 
     @Override

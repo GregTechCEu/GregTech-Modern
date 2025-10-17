@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ClipContext;
@@ -88,7 +89,7 @@ public class BaseSchemaRenderer implements IDrawable {
         context.getGraphics().flush();
         onSetupCamera();
 
-        this.renderTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        this.renderTarget.setClearColor(0.9F, 0.8F, 0.8F, 0.1F);
         this.renderTarget.clear(Minecraft.ON_OSX);
         this.renderTarget.bindWrite(true);
 
@@ -106,6 +107,7 @@ public class BaseSchemaRenderer implements IDrawable {
                 }
             } else {
                 onSuccessfulRayTrace(context.getGraphics(), result);
+                Minecraft.getInstance().player.sendSystemMessage(Component.literal(result.getBlockPos().toShortString()));
             }
             this.lastRayTrace = result;
         }
@@ -226,7 +228,8 @@ public class BaseSchemaRenderer implements IDrawable {
                 modelData = be.getModelData();
             }
             pose.pushPose();
-            // pose.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+            pose.setIdentity();
+            pose.translate(pos.getX(), pos.getY(), pos.getZ());
             blockRenderer.renderBatched(state, pos, this.renderLevel,
                     pose, buffer, true,
                     random, modelData, type);
