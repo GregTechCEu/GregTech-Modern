@@ -51,7 +51,6 @@ public class DummyLevel extends Level {
 
     @Getter
     protected DummyChunkSource chunkSource = new DummyChunkSource(this);
-    protected final LevelLightEngine lighter;
     @Getter
     private final Scoreboard scoreboard = new Scoreboard();
 
@@ -62,7 +61,6 @@ public class DummyLevel extends Level {
                 GTRegistries.builtinRegistry().registryOrThrow(Registries.DIMENSION_TYPE)
                         .getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
                 () -> InactiveProfiler.INSTANCE, false, false, 0, 1000000);
-        this.lighter = new LevelLightEngine(chunkSource, true, false);
     }
 
     @Override

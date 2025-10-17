@@ -14,6 +14,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -161,10 +162,11 @@ public class BaseSchemaRenderer implements IDrawable {
 
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.enableCull();
-        Lighting.setupFor3DItems();
+        //Lighting.setupFor3DItems();
         // Lighting.setupLevel(poseStack.last().pose());
-        // mc.gameRenderer.lightTexture().turnOffLightLayer();
+        mc.gameRenderer.lightTexture().turnOnLightLayer();
         RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
         // RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
@@ -244,9 +246,10 @@ public class BaseSchemaRenderer implements IDrawable {
             if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) return;
             pose.pushPose();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
+            //blockRenderer.getModelRenderer().renderModel(pose.last(), buffer, state, blockModel, 1f, 1f, 1f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, modelData, type);
             blockRenderer.getModelRenderer().tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer,
                     true,
-                    random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
+                   random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
             pose.popPose();
 
         });
