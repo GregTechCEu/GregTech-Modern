@@ -21,8 +21,6 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     private boolean enableRotation = true;
     private boolean enableTranslation = true;
     private boolean enableScaling = true;
-    private float lastMouseX;
-    private float lastMouseY;
     private float scale = 10f;
     private float pitch = GTMath.PI_QUART;
     private float yaw = 0;
@@ -41,7 +39,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         Vec3 f = this.schema.schema().getFocus();
         this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
                 (float) (f.z + this.offset.z), scale, yaw, pitch);
-        this.schema.draw(context, getArea(), widgetTheme);
+        this.schema.drawAtZero(context, getArea(), widgetTheme);
     }
 
     @Override
@@ -55,17 +53,13 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
-        this.lastMouseX = getContext().getMouseX();
-        this.lastMouseY = getContext().getMouseY();
         return Result.SUCCESS;
     }
 
     @Override
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        int mX = getContext().getAbsMouseX();
-        int mY = getContext().getAbsMouseY();
-        float dx = (float) mX - lastMouseX;
-        float dy = (float) mY - lastMouseY;
+        float dx = (float) dragX;
+        float dy = (float) -dragY;
         if (button == 0 && this.enableRotation) {
             float moveScale = 0.03f;
             yaw(this.yaw + dx * moveScale);
@@ -78,8 +72,6 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
             this.offset.add(right.mul(-dx * moveScale)).add(up.mul(dy * moveScale));
 
         }
-        this.lastMouseX = (float) mX;
-        this.lastMouseY = (float) mY;
     }
 
     public void incrementScale(float amount) {
@@ -93,7 +85,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget pitch(float pitch) {
-        this.pitch = GTMath.clamp(pitch, -GTMath.PI_HALF + 0.001f, GTMath.PI_HALF - 0.001f);
+        this.pitch = GTMath.clamp(pitch, 0 + 0.001f, GTMath.PI2 - 0.001f);
         return this;
     }
 

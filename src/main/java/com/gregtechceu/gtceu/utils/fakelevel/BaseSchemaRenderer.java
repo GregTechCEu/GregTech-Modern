@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ClipContext;
@@ -107,7 +107,6 @@ public class BaseSchemaRenderer implements IDrawable {
                 }
             } else {
                 onSuccessfulRayTrace(context.getGraphics(), result);
-                Minecraft.getInstance().player.sendSystemMessage(Component.literal(result.getBlockPos().toShortString()));
             }
             this.lastRayTrace = result;
         }
@@ -122,15 +121,7 @@ public class BaseSchemaRenderer implements IDrawable {
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         // render rect with FBO texture
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-        bufferbuilder.vertex(x + width, y + height, 0).uv(1, 0).endVertex();
-        bufferbuilder.vertex(x + width, y, 0).uv(1, 1).endVertex();
-        bufferbuilder.vertex(x, y, 0).uv(0, 1).endVertex();
-        bufferbuilder.vertex(x, y + height, 0).uv(0, 0).endVertex();
-        tesselator.end();
+        GuiDraw.drawTexture(context.getGraphics().pose().last().pose(), x, y, x + width, y + height, 0f, 0f, 1f, 1f);
     }
 
     protected BlockHitResult rayTrace(int mouseX, int mouseY, int width, int height) {
@@ -309,16 +300,6 @@ public class BaseSchemaRenderer implements IDrawable {
 
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
-    }
-
-    private BlockHitResult rayTrace(Vector3f hitPos) {
-        Vec3 startPos = new Vec3(this.camera.pos().x, this.camera.pos().y, this.camera.pos().z);
-        hitPos.mul(2); // Double view range to ensure pos can be seen.
-        Vec3 endPos = new Vec3((hitPos.x - startPos.x), (hitPos.y - startPos.y), (hitPos.z - startPos.z));
-
-        ClipContext context = new ClipContext(startPos, endPos,
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null);
-        return this.schema.getLevel().clip(context);
     }
 
     @ApiStatus.OverrideOnly
