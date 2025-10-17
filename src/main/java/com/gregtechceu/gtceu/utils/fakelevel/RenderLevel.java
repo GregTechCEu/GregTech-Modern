@@ -9,7 +9,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
@@ -85,11 +84,6 @@ public class RenderLevel implements LevelReader {
     @Override
     public int getSkyDarken() {
         return level.getSkyDarken();
-    }
-
-    @Override
-    public int getBrightness(LightLayer lightType, BlockPos blockPos) {
-        return 15;
     }
 
     @Override

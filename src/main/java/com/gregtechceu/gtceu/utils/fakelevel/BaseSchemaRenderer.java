@@ -10,11 +10,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.SchemaWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -108,8 +105,7 @@ public class BaseSchemaRenderer implements IDrawable {
                     onRayTraceFailed();
                 }
             } else {
-                onSuccessfulRayTrace(context.getGraphics(), result);
-                //GTCEu.LOGGER.info("Block hovered: {}", this.schema.getLevel().getBlockState(result.getBlockPos()).getBlock().getName().getString());
+                onSuccessfulRayTrace(RenderSystem.getModelViewStack(), result);
             }
             this.lastRayTrace = result;
         }
@@ -162,13 +158,9 @@ public class BaseSchemaRenderer implements IDrawable {
 
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.enableCull();
-        //Lighting.setupFor3DItems();
-        // Lighting.setupLevel(poseStack.last().pose());
         mc.gameRenderer.lightTexture().turnOnLightLayer();
         RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        // RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
         var bufferSource = mc.renderBuffers().bufferSource();
 
@@ -246,10 +238,8 @@ public class BaseSchemaRenderer implements IDrawable {
             if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) return;
             pose.pushPose();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            //blockRenderer.getModelRenderer().renderModel(pose.last(), buffer, state, blockModel, 1f, 1f, 1f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, modelData, type);
             blockRenderer.getModelRenderer().tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer,
-                    true,
-                   random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
+                    true, random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
             pose.popPose();
 
         });
@@ -340,7 +330,7 @@ public class BaseSchemaRenderer implements IDrawable {
     protected void onRendered() {}
 
     @ApiStatus.OverrideOnly
-    protected void onSuccessfulRayTrace(GuiGraphics graphics, @NotNull BlockHitResult result) {}
+    protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {}
 
     @ApiStatus.OverrideOnly
     protected void onRayTraceFailed() {}

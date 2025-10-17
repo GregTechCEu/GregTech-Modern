@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.mui.drawable;
 
 import com.gregtechceu.gtceu.utils.fakelevel.*;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
@@ -75,9 +75,9 @@ public class SchemaRenderer extends BaseSchemaRenderer {
     }
 
     @Override
-    protected void onSuccessfulRayTrace(GuiGraphics graphics, @NotNull BlockHitResult result) {
+    protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {
         if (this.highlight != null) {
-            this.highlight.get().renderHighlight(result, camera().pos(), graphics.pose());
+            this.highlight.get().renderHighlight(poseStack, result, camera().pos());
         }
     }
 

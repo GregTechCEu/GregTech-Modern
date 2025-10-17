@@ -28,7 +28,6 @@ import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
@@ -38,6 +37,7 @@ import net.minecraft.world.ticks.BlackholeTickAccess;
 import net.minecraft.world.ticks.LevelTickAccess;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
@@ -187,8 +187,26 @@ public class DummyLevel extends Level {
     public void gameEvent(GameEvent event, Vec3 position, GameEvent.Context context) {}
 
     @Override
-    public float getShade(Direction direction, boolean shade) {
-        return 0;
+    public float getShade(@NotNull Direction direction, boolean shade) {
+        boolean flag = false;// effects().constantAmbientLight();
+        if (!shade) {
+            return flag ? 0.9F : 1.0F;
+        } else {
+            switch (direction) {
+                case DOWN:
+                    return flag ? 0.9F : 0.5F;
+                case UP:
+                    return flag ? 0.9F : 1.0F;
+                case NORTH:
+                case SOUTH:
+                    return 0.8F;
+                case WEST:
+                case EAST:
+                    return 0.6F;
+                default:
+                    return 1.0F;
+            }
+        }
     }
 
     @Override
