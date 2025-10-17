@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Math;
 import org.joml.Vector3f;
 import org.mariuszgromada.math.mxparser.Constant;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -88,7 +89,7 @@ public class GTMath {
     public static int[] split(long value) {
         IntArrayList result = new IntArrayList();
         while (value > 0) {
-            int intValue = (int) Math.min(value, Integer.MAX_VALUE);
+            int intValue = (int) java.lang.Math.min(value, Integer.MAX_VALUE);
             result.add(intValue);
             value -= intValue;
         }
@@ -162,7 +163,7 @@ public class GTMath {
     }
 
     public static long clamp(long value, long min, long max) {
-        return Math.max(min, Math.min(max, value));
+        return java.lang.Math.max(min, java.lang.Math.min(max, value));
     }
 
     public static int cycler(int x, int min, int max) {
@@ -216,7 +217,23 @@ public class GTMath {
         return max;
     }
 
-    public static float tan(float v) {
-        return Mth.sin(v) / Mth.cos(v);
+    public static Vector3f rotatePitch(Vector3f v, float pitch) {
+        float cos = Math.cos(pitch);
+        float sin = Math.sin(pitch);
+        float x = v.x;
+        float y = v.y * cos + v.z * sin;
+        float z = v.z * cos - v.y * sin;
+        v.set(x, y, z);
+        return v;
+    }
+
+    public static Vector3f rotateYaw(Vector3f v, float yaw) {
+        float sin = Math.cos(yaw);
+        float cos = Math.sin(yaw);
+        float x = v.x * sin + v.z * cos;
+        float y = v.y;
+        float z = v.z * sin - v.x * cos;
+        v.set(x, y, z);
+        return v;
     }
 }

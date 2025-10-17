@@ -31,12 +31,15 @@ import net.minecraftforge.client.model.data.ModelData;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -56,6 +59,7 @@ public class BaseSchemaRenderer implements IDrawable {
     private final RenderTarget renderTarget;
     @Getter
     private final Camera camera = new Camera();
+    private final int[] viewport = { 0, 0, 0, 0 };
     @Getter
     private @Nullable BlockHitResult lastRayTrace = null;
 
@@ -92,6 +96,11 @@ public class BaseSchemaRenderer implements IDrawable {
         this.renderTarget.clear(Minecraft.ON_OSX);
         this.renderTarget.bindWrite(true);
 
+        this.viewport[0] = 0;
+        this.viewport[1] = 0;
+        this.viewport[2] = this.renderTarget.viewWidth;
+        this.viewport[3] = this.renderTarget.viewHeight;
+
         context.getGraphics().pose().pushPose();
         setupCamera(this.renderTarget.viewWidth, this.renderTarget.viewHeight);
         renderWorld();
@@ -124,31 +133,40 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     protected BlockHitResult rayTrace(int mouseX, int mouseY, int width, int height) {
-        final float halfPI = (float) (Math.PI / 2);
         Vector3f cameraPos = camera.pos();
         float yaw = camera.yaw();
         float pitch = camera.pitch();
 
         Vector3f mouseXShift = new Vector3f(1, 0, 0)
-                // TODO
-                // .rotatePitch(pitch)
-                // .rotateYaw(-yaw + halfPI)
+                .rotateX(pitch)
+                .rotateY(-yaw + GTMath.PI_HALF)
                 .mul(mouseX - width / 2f)
                 .mul(1 / 32f);
         Vector3f mouseYShift = new Vector3f(0, -1, 0)
-                // .rotatePitch(pitch)
-                // .rotateYaw(-yaw + halfPI)
+                .rotateX(pitch)
+                .rotateY(-yaw + GTMath.PI_HALF)
                 .mul(mouseY - height / 2f)
                 .mul(1 / 32f);
-        Vector3f mousePos = cameraPos.add(mouseXShift, new Vector3f()).add(mouseYShift);
+        Vector3f levelMouse = cameraPos.add(mouseXShift, new Vector3f()).add(mouseYShift);
         Vector3f focus = camera.lookAt();
         float perspectiveCompensation = isIsometric() ? 1 : cameraPos.distance(focus) / 3 * width / 100;
-        Vector3f underMousePos = focus.add(mouseXShift.mul(perspectiveCompensation), new Vector3f())
+        Vector3f target = focus.add(mouseXShift.mul(perspectiveCompensation), new Vector3f())
                 .add(mouseYShift.mul(perspectiveCompensation));
-        Vector3f look = underMousePos.sub(mousePos, new Vector3f()).mul(10);
-        mousePos.add(look, underMousePos);
-        ClipContext context = new ClipContext(new Vec3(mousePos), new Vec3(underMousePos),
-                ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, null);
+        Vector3f look = target.sub(levelMouse, new Vector3f()).mul(10);
+        levelMouse.add(look, target);
+        // TODO proper raytracing by matrix inversion
+        /*
+         * mouseX = (int) ((float) mouseX / width * this.viewport[2]);
+         * mouseY = (int) ((float) mouseY / height * this.viewport[3]);
+         * Vector3f levelMouse = screenPosToLevelPos(mouseX, mouseY);
+         * Vector3f target = this.camera.getLookVec().mul(20).add(levelMouse);
+         * GTCEu.LOGGER.info("Raytracing at {}, {}. Level pos: {}, Target: {}",
+         * mouseX, mouseY, new BlockPos((int) levelMouse.x, (int) levelMouse.y, (int) levelMouse.z),
+         * new BlockPos((int) target.x, (int) target.y, (int) target.z));
+         */
+        ClipContext context = new ClipContext(new Vec3(levelMouse), new Vec3(target), ClipContext.Block.VISUAL,
+                ClipContext.Fluid.ANY,
+                null);
         return schema.getLevel().clip(context);
     }
 
@@ -238,8 +256,10 @@ public class BaseSchemaRenderer implements IDrawable {
             if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) return;
             pose.pushPose();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            blockRenderer.getModelRenderer().tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer,
-                    true, random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
+            blockRenderer.getModelRenderer()
+                    .tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer, true, random,
+                            state.getSeed(pos),
+                            OverlayTexture.NO_OVERLAY, modelData, type);
             pose.popPose();
 
         });
@@ -321,6 +341,14 @@ public class BaseSchemaRenderer implements IDrawable {
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
+    }
+
+    protected Vector3f screenPosToLevelPos(int wx, int wy) {
+        // TODO in theory this should work, but the resulting raytracer always hits the block in the center of the
+        // framebuffer texture
+        Matrix4f levelTransform = new Matrix4f(RenderSystem.getProjectionMatrix())
+                .mul(RenderSystem.getModelViewStack().last().pose());
+        return levelTransform.unproject(wx, wy, -1f, this.viewport, new Vector3f());
     }
 
     @ApiStatus.OverrideOnly

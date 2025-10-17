@@ -62,8 +62,8 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         float dy = (float) dragY;
         if (button == 0 && this.enableRotation) {
             float moveScale = 0.03f;
-            yaw(this.yaw + -dx * moveScale);
-            pitch(this.pitch - dy * moveScale);
+            yaw(this.yaw - dx * moveScale);
+            pitch(this.pitch + dy * moveScale);
         } else if (button == 2 && this.enableTranslation) {
             float moveScale = 0.09f;
             Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking

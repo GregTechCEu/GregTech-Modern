@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils.fakelevel;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.BlockHitResult;
@@ -80,6 +81,8 @@ public class BlockHighlight {
     public void renderHighlight(PoseStack pose, BlockPos pos, Direction direction, Vector3f camera) {
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         Color.setGlColor(this.color);
         pose.pushPose();
         pose.translate(pos.getX(), pos.getY(), pos.getZ());
