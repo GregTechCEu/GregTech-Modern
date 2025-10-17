@@ -10,15 +10,16 @@ import com.gregtechceu.gtceu.api.mui.widgets.SchemaWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;
@@ -31,7 +32,6 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
@@ -90,13 +90,13 @@ public class BaseSchemaRenderer implements IDrawable {
         context.getGraphics().flush();
         onSetupCamera();
 
-        this.renderTarget.setClearColor(0.9F, 0.8F, 0.8F, 0.1F);
+        this.renderTarget.setClearColor(0, 0, 0, 0);
         this.renderTarget.clear(Minecraft.ON_OSX);
         this.renderTarget.bindWrite(true);
 
         context.getGraphics().pose().pushPose();
         setupCamera(this.renderTarget.viewWidth, this.renderTarget.viewHeight);
-        renderWorld(context);
+        renderWorld();
         if (doRayTrace()) {
             BlockHitResult result = null;
             if (Area.isInside(x, y, width, height, mouseX, mouseY)) {
@@ -108,6 +108,7 @@ public class BaseSchemaRenderer implements IDrawable {
                 }
             } else {
                 onSuccessfulRayTrace(context.getGraphics(), result);
+                //GTCEu.LOGGER.info("Block hovered: {}", this.schema.getLevel().getBlockState(result.getBlockPos()).getBlock().getName().getString());
             }
             this.lastRayTrace = result;
         }
@@ -154,47 +155,67 @@ public class BaseSchemaRenderer implements IDrawable {
         return schema.getLevel().clip(context);
     }
 
-    private void renderWorld(GuiContext context) {
+    private void renderWorld() {
         PoseStack poseStack = RenderSystem.getModelViewStack();
-        RandomSource random = RandomSource.create();
+        RandomSource random = RandomSource.createNewThreadLocalInstance();
 
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.enableCull();
-        //Lighting.setupForFlatItems();
-        Lighting.setupLevel(poseStack.last().pose());
-        //mc.gameRenderer.lightTexture().turnOffLightLayer();
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        Lighting.setupFor3DItems();
+        // Lighting.setupLevel(poseStack.last().pose());
+        // mc.gameRenderer.lightTexture().turnOffLightLayer();
+        RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
 
-        List<BlockEntity> tesr = null;
+        // RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+
+        var bufferSource = mc.renderBuffers().bufferSource();
+
+        List<BlockEntity> ber = null;
         // render block in each layer
         List<RenderType> chunkBufferLayers = RenderType.chunkBufferLayers();
         for (int i = 0; i < chunkBufferLayers.size(); i++) {
             RenderType layer = chunkBufferLayers.get(i);
             if (i == 0 && isBEREnabled()) {
-                tesr = renderBlocksInLayer(poseStack, mc, layer, random, true);
+                ber = renderBlocksInLayer(mc, bufferSource, poseStack, layer, random, true);
             } else {
-                renderBlocksInLayer(poseStack, mc, layer, random, false);
+                renderBlocksInLayer(mc, bufferSource, poseStack, layer, random, false);
             }
 
         }
 
         // render TESR
-        if (tesr != null && !tesr.isEmpty()) {
-            renderTesr(context.getGraphics(), mc, tesr);
+        if (ber != null && !ber.isEmpty()) {
+            renderTesr(mc, bufferSource, poseStack, ber);
         }
+
+        bufferSource.endBatch();
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
     }
 
-    private List<BlockEntity> renderBlocksInLayer(PoseStack pose, Minecraft mc, RenderType type, RandomSource random,
-                                                  boolean collectTesr) {
-        List<BlockEntity> tesr = collectTesr ? new ArrayList<>() : null;
-        type.setupRenderState();
+    public static void setDefaultRenderLayerState(RenderType layer) {
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        if (layer == RenderType.translucent()) { // TRANSLUCENT
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderSystem.depthMask(false);
+        } else { // SOLID
+            RenderSystem.enableDepthTest();
+            RenderSystem.disableBlend();
+            RenderSystem.depthMask(true);
+        }
+    }
 
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+    private List<BlockEntity> renderBlocksInLayer(Minecraft mc, MultiBufferSource.BufferSource bufferSource,
+                                                  PoseStack pose,
+                                                  RenderType type, RandomSource random, boolean collectBer) {
+        type.setupRenderState();
+        setDefaultRenderLayerState(type);
+        List<BlockEntity> ber = collectBer ? new ArrayList<>() : null;
+
+        VertexConsumer buffer = bufferSource.getBuffer(type);
         BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
         this.schema.forEach(pair -> {
             BlockPos pos = pair.getKey();
@@ -202,54 +223,60 @@ public class BaseSchemaRenderer implements IDrawable {
             if (state.getRenderShape() == RenderShape.INVISIBLE) return;
             var be = pair.getValue().getBlockEntity();
 
-            if (collectTesr) {
+            if (collectBer) {
                 if (be != null && !be.isRemoved()) {
                     if (mc.getBlockEntityRenderDispatcher().getRenderer(be) != null) {
-                        // only collect tiles to render which actually have a tesr
-                        tesr.add(be);
+                        // only collect tiles to render which actually have a ber
+                        ber.add(be);
                     }
                 }
             }
 
+            if (state.getRenderShape() != RenderShape.MODEL) return;
+
             ModelData modelData = ModelData.EMPTY;
+            // normally get cached model data from ModelDataManager from level
+            // but our dummy level doesn't have that
             if (be != null) {
                 modelData = be.getModelData();
             }
+            var blockModel = blockRenderer.getBlockModel(state);
+            if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) return;
             pose.pushPose();
-            //pose.setIdentity();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            blockRenderer.renderBatched(state, pos, this.renderLevel,
-                    pose, buffer, true,
-                    random, modelData, type);
+            blockRenderer.getModelRenderer().tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer,
+                    true,
+                    random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
             pose.popPose();
 
         });
-        Tesselator.getInstance().end();
+        bufferSource.endBatch(type);
         type.clearRenderState();
-        return tesr;
+        return ber;
     }
 
-    private static void renderTesr(GuiGraphics graphics, Minecraft mc, List<BlockEntity> tileEntities) {
-        MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
+    private static void renderTesr(Minecraft mc, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack,
+                                   List<BlockEntity> tileEntities) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         for (Iterator<BlockEntity> iterator = tileEntities.iterator(); iterator.hasNext();) {
             BlockEntity tile = iterator.next();
             if (tile == null || tile.isRemoved()) continue;
 
-            mc.getBlockEntityRenderDispatcher().render(tile, mc.getPartialTick(), graphics.pose(), bufferSource);
+            mc.getBlockEntityRenderDispatcher().render(tile, mc.getPartialTick(), poseStack, bufferSource);
         }
-        bufferSource.endBatch();
     }
 
     protected void setupCamera(int width, int height) {
-        //Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
 
         // setup viewport and clear GL buffers
         RenderSystem.viewport(0, 0, width, height);
-        Color.setGlColor(getClearColor());
+        RenderSystem.depthMask(true);
+        int clearColor = getClearColor();
+        RenderSystem.clearColor(Color.getRedF(clearColor), Color.getGreenF(clearColor), Color.getBlueF(clearColor),
+                Color.getAlphaF(clearColor));
         RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         RenderSystem.backupProjectionMatrix();
 
@@ -257,7 +284,7 @@ public class BaseSchemaRenderer implements IDrawable {
         float far = 10000.0f;
         float fovY = (float) Math.toRadians(60.0f); // Field of view in the Y direction
         float aspect = (float) width / height; // width and height are the dimensions of your window
-        float top = near * (float) Math.tan(fovY / 2.0);
+        float top = -near * (float) Math.tan(fovY / 2.0);
         float bottom = -top;
         float left = aspect * bottom;
         float right = aspect * top;
@@ -274,23 +301,22 @@ public class BaseSchemaRenderer implements IDrawable {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.setIdentity();
+        RenderSystem.applyModelViewMatrix();
         if (isIsometric()) {
             modelViewStack.scale(0.1f, 0.1f, 0.1f);
         } else {
-            //modelViewStack.scale(-1f, -1f, -1f);
+            // modelViewStack.scale(-1f, -1f, -1f);
         }
         var cameraPos = this.camera.pos();
         var lookAt = this.camera.lookAt();
-        //modelViewStack.mulPoseMatrix(GTMatrixUtils.lookAt(cameraPos, lookAt));
         modelViewStack.last().pose().lookAt(cameraPos, lookAt, GTMath.UNIT_Y);
-        modelViewStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        RenderSystem.applyModelViewMatrix();
     }
 
     protected void resetCamera() {
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         // reset viewport
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.viewport(0, 0, minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
+        RenderSystem.viewport(0, 0, minecraft.getWindow().getWidth(), minecraft.getWindow().getHeight());
 
         // reset projection matrix
         RenderSystem.restoreProjectionMatrix();
@@ -299,9 +325,9 @@ public class BaseSchemaRenderer implements IDrawable {
         RenderSystem.getModelViewStack().popPose();
         RenderSystem.applyModelViewMatrix();
 
-        RenderSystem.disableBlend();
+        RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
-        Lighting.setupForFlatItems();
+        RenderSystem.enableBlend();
     }
 
     @ApiStatus.OverrideOnly
@@ -321,7 +347,7 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     public int getClearColor() {
-        return Color.withAlpha(0, 0.5f);
+        return Color.withAlpha(Color.WHITE.main, 0.5f);
     }
 
     public boolean isIsometric() {

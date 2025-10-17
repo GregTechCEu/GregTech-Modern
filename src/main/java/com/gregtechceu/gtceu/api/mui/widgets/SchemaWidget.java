@@ -45,7 +45,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
         if (this.enableScaling) {
-            incrementScale((float)(-delta / 12.0f));
+            incrementScale((float) (-delta / 12.0f));
             return true;
         }
         return false;
@@ -62,14 +62,14 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         float dy = (float) dragY;
         if (button == 0 && this.enableRotation) {
             float moveScale = 0.03f;
-            yaw(this.yaw + dx * moveScale);
-            pitch(this.pitch + dy * moveScale);
+            yaw(this.yaw + -dx * moveScale);
+            pitch(this.pitch - dy * moveScale);
         } else if (button == 2 && this.enableTranslation) {
             float moveScale = 0.09f;
             Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking
             Vector3f right = look.cross(0, 1, 0, new Vector3f()).normalize(); // right relative to screen
             Vector3f up = right.cross(look, new Vector3f()); // up relative to screen
-            this.offset.add(right.mul(-dx * moveScale)).add(up.mul(dy * moveScale));
+            this.offset.add(right.mul(dx * moveScale)).add(up.mul(dy * moveScale));
         }
     }
 
@@ -84,7 +84,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget pitch(float pitch) {
-        this.pitch = GTMath.clamp(pitch, 0 + 0.001f, GTMath.PI2 - 0.001f);
+        this.pitch = GTMath.clamp(pitch, -GTMath.PI_HALF + 0.001f, GTMath.PI_HALF - 0.001f);
         return this;
     }
 
