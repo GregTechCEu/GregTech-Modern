@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.SchemaWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
@@ -101,7 +102,7 @@ public class BaseSchemaRenderer implements IDrawable {
             if (Area.isInside(x, y, width, height, mouseX, mouseY)) {
                 result = rayTrace(mouseX, mouseY, width, height);
             }
-            if (result == null) {
+            if (result == null || result.getType() != HitResult.Type.BLOCK) {
                 if (this.lastRayTrace != null) {
                     onRayTraceFailed();
                 }
@@ -154,17 +155,15 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     private void renderWorld(GuiContext context) {
-        PoseStack poseStack = context.getGraphics().pose();
+        PoseStack poseStack = RenderSystem.getModelViewStack();
         RandomSource random = RandomSource.create();
 
         Minecraft mc = Minecraft.getInstance();
-        Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
         RenderSystem.enableCull();
         //Lighting.setupForFlatItems();
+        Lighting.setupLevel(poseStack.last().pose());
         //mc.gameRenderer.lightTexture().turnOffLightLayer();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-
-        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 
         List<BlockEntity> tesr = null;
         // render block in each layer
@@ -178,8 +177,6 @@ public class BaseSchemaRenderer implements IDrawable {
             }
 
         }
-
-        //Lighting.setupFor3DItems();
 
         // render TESR
         if (tesr != null && !tesr.isEmpty()) {
@@ -219,7 +216,7 @@ public class BaseSchemaRenderer implements IDrawable {
                 modelData = be.getModelData();
             }
             pose.pushPose();
-            pose.setIdentity();
+            //pose.setIdentity();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
             blockRenderer.renderBatched(state, pos, this.renderLevel,
                     pose, buffer, true,
@@ -258,19 +255,19 @@ public class BaseSchemaRenderer implements IDrawable {
 
         float near = isIsometric() ? 1f : 0.1f;
         float far = 10000.0f;
-        float fovY = 60.0f; // Field of view in the Y direction
+        float fovY = (float) Math.toRadians(60.0f); // Field of view in the Y direction
         float aspect = (float) width / height; // width and height are the dimensions of your window
+        float top = near * (float) Math.tan(fovY / 2.0);
+        float bottom = -top;
+        float left = aspect * bottom;
+        float right = aspect * top;
         Matrix4f projection = new Matrix4f();
         if (isIsometric()) {
-            float top = near * (float) Math.tan(Math.toRadians(fovY) / 2.0);
-            float bottom = -top;
-            float left = aspect * bottom;
-            float right = aspect * top;
             projection.setOrtho(left, right, bottom, top, near, far);
             RenderSystem.setProjectionMatrix(projection, VertexSorting.ORTHOGRAPHIC_Z);
         } else {
-            projection.setPerspective(fovY, aspect, near, far);
-            RenderSystem.setProjectionMatrix(projection, VertexSorting.byDistance(camera.lookAt()));
+            projection.setFrustum(left, right, bottom, top, near, far);
+            RenderSystem.setProjectionMatrix(projection, VertexSorting.byDistance(camera.pos()));
         }
 
         // setup modelview matrix
@@ -279,10 +276,14 @@ public class BaseSchemaRenderer implements IDrawable {
         modelViewStack.setIdentity();
         if (isIsometric()) {
             modelViewStack.scale(0.1f, 0.1f, 0.1f);
+        } else {
+            //modelViewStack.scale(-1f, -1f, -1f);
         }
         var cameraPos = this.camera.pos();
         var lookAt = this.camera.lookAt();
-        modelViewStack.mulPoseMatrix(GTMatrixUtils.lookAt(cameraPos, lookAt));
+        //modelViewStack.mulPoseMatrix(GTMatrixUtils.lookAt(cameraPos, lookAt));
+        modelViewStack.last().pose().lookAt(cameraPos, lookAt, GTMath.UNIT_Y);
+        modelViewStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -300,6 +301,7 @@ public class BaseSchemaRenderer implements IDrawable {
 
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
+        Lighting.setupForFlatItems();
     }
 
     @ApiStatus.OverrideOnly
