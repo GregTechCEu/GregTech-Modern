@@ -47,7 +47,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
         if (this.enableScaling) {
-            incrementScale((float) (-delta / 120.0f));
+            incrementScale((float)(-delta / 12.0f));
             return true;
         }
         return false;
@@ -84,6 +84,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     public void incrementScale(float amount) {
         this.scale += amount;
+        this.scale = Math.max(this.scale, 0.001f);
     }
 
     public SchemaWidget scale(float scale) {

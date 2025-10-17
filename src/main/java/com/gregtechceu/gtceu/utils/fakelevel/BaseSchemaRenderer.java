@@ -169,8 +169,8 @@ public class BaseSchemaRenderer implements IDrawable {
         Minecraft mc = Minecraft.getInstance();
         Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
         RenderSystem.enableCull();
-        Lighting.setupForFlatItems();
-        mc.gameRenderer.lightTexture().turnOffLightLayer();
+        //Lighting.setupForFlatItems();
+        //mc.gameRenderer.lightTexture().turnOffLightLayer();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
         poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
@@ -188,7 +188,7 @@ public class BaseSchemaRenderer implements IDrawable {
 
         }
 
-        Lighting.setupFor3DItems();
+        //Lighting.setupFor3DItems();
 
         // render TESR
         if (tesr != null && !tesr.isEmpty()) {
@@ -255,7 +255,7 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     protected void setupCamera(int width, int height) {
-        Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
+        //Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
 

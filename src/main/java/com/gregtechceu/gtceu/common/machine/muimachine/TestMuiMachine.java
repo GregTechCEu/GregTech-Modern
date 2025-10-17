@@ -542,7 +542,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
         if (getLevel().isClientSide()) {
             page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 2))
-                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)))
+                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
+
+                    .isometric(true))
                     .pos(20, 20)
                     .size(100, 100));
         }
