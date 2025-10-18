@@ -223,17 +223,32 @@ public class GTMatrixUtils {
      * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
      * applying it to the deprecated OpenGL transformation stack.
      *
+     * @param worldPos world space position
      * @apiNote the Z component of the return value is the distance from the screen.
      */
-    public static Vector3f projectWorldToScreen(Vector3f worldPos) {
-        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-        Vector4f v = new Matrix4f(projectionMatrix).mul(modelViewMatrix).transform(new Vector4f(worldPos, 1.0f));
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectWorldToScreen(worldPos, window.getWidth(), window.getHeight());
+    }
 
-        float windowX = Minecraft.getInstance().getWindow().getWidth() * (v.x() + 1) / 2;
-        float windowY = Minecraft.getInstance().getWindow().getHeight() * (v.y() + 1) / 2;
-        float windowZ = (v.z() + 1) / 2;
-        return new Vector3f(windowX, windowY, windowZ);
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param worldPos   world space position
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos, int viewWidth, int viewHeight) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+        Vector3f screenPos = new Vector3f(worldPos).mulPosition(transform);
+        screenPos.x = viewWidth * (screenPos.x + 1.0f) / 2.0f;
+        screenPos.y = viewHeight * (screenPos.y + 1.0f) / 2.0f;
+        screenPos.z = (screenPos.z + 1.0f) / 2.0f;
+
+        return screenPos;
     }
 
     /**
