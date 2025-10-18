@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -61,16 +62,16 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
         float dx = (float) dragX;
         float dy = (float) dragY;
-        if (button == 0 && this.enableRotation) {
+        if (button == InputConstants.MOUSE_BUTTON_LEFT && this.enableRotation) {
             float moveScale = 0.03f;
-            yaw(this.yaw - dx * moveScale);
+            yaw(this.yaw + dx * moveScale);
             pitch(this.pitch + dy * moveScale);
-        } else if (button == 2 && this.enableTranslation) {
+        } else if (button == InputConstants.MOUSE_BUTTON_MIDDLE && this.enableTranslation) {
             float moveScale = 0.09f;
             Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking
-            Vector3f right = look.cross(0, 1, 0, new Vector3f()).normalize(); // right relative to screen
+            Vector3f right = look.cross(GTMath.UNIT_Y, new Vector3f()).normalize(); // right relative to screen
             Vector3f up = right.cross(look, new Vector3f()); // up relative to screen
-            this.offset.add(right.mul(dx * moveScale)).add(up.mul(dy * moveScale));
+            this.offset.sub(right.mul(dx * moveScale)).add(up.mul(dy * moveScale));
         }
     }
 
@@ -85,6 +86,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget pitch(float pitch) {
+        // clamp pitch to [-180,180] degrees up/down
         this.pitch = Mth.clamp(pitch, -Mth.HALF_PI + 0.001f, Mth.HALF_PI - 0.001f);
         return this;
     }
