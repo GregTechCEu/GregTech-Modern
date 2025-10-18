@@ -284,7 +284,8 @@ public class TextFieldHandler {
         List<String> copy = new ArrayList<>(this.text);
         Point point = insert(copy, text);
         // if we can scroll horizontally, we have virtually an infinite amount of space and don't need to check width
-        if (point == null || copy.size() > this.maxLines || !this.renderer.wouldFit(copy, !hasHorizontalScrolling)) return;
+        if (point == null || copy.size() > this.maxLines || !this.renderer.wouldFit(copy, !hasHorizontalScrolling))
+            return;
         this.text.clear();
         this.text.addAll(copy);
         setCursor(point, true);

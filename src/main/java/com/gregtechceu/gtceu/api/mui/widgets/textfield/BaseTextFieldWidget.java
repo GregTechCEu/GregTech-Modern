@@ -281,7 +281,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
             }
             // paste copied text in marked text
-            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""), canScrollHorizontally());
+            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""),
+                    canScrollHorizontally());
             return Result.SUCCESS;
         } else if (Screen.isCut(keyCode) && this.handler.hasTextMarked()) {
             // copy and delete copied text
