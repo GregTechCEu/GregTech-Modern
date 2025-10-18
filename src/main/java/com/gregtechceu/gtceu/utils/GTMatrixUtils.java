@@ -13,13 +13,13 @@ import com.google.common.collect.Tables;
 import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Contract;
 import org.joml.*;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 
@@ -174,49 +174,35 @@ public class GTMatrixUtils {
     }
 
     /**
-     * This is in essence the same code as in gluLookAt, but it returns the resulting transformation matrix instead of
-     * applying it to the deprecated OpenGL transformation stack.
+     * {@link Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc) Matrix4f#lookAt} with an up axis of {@code (0, 1, 0)}
+     *
+     * @see Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc)
      */
-    public static Matrix4f lookAt(Vector3f eyePos, Vector3f lookAt) {
-        Vector3f dir = new Vector3f(lookAt);
-        dir.sub(eyePos);
+    public static Matrix4f lookAt(Vector3fc eyePos, Vector3fc target) {
+        return new Matrix4f().lookAt(eyePos, target, GTMath.UNIT_Y);
+    }
 
-        Vector3f up = new Vector3f(0, 1f, 0);
-        dir.normalize();
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param poseStack the pose stack to modify
+     * @param eyePos    the position of the camera
+     * @param target    the point to look at
+     */
+    public static void lookAt(PoseStack poseStack, Vector3fc eyePos, Vector3fc target) {
+        lookAt(poseStack.last(), eyePos, target);
+    }
 
-        var right = new Vector3f(dir);
-        right.cross(up);
-        right.normalize();
-
-        up = new Vector3f(right);
-        up.cross(dir);
-        up.normalize();
-
-        var viewMatrix = new Matrix4f();
-        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
-                right.x(),
-                right.y(),
-                right.z(),
-                0.0f,
-
-                up.x(),
-                up.y(),
-                up.z(),
-                0.0f,
-
-                -dir.x(),
-                -dir.y(),
-                -dir.z(),
-                0.0f,
-
-                0.0f,
-                0.0f,
-                0.0f,
-                1.0f,
-        }));
-
-        viewMatrix.translate(-eyePos.x(), -eyePos.y(), -eyePos.z());
-        return viewMatrix;
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param pose   the pose stack layer to modify
+     * @param eyePos the position of the camera
+     * @param target the point to look at
+     */
+    public static void lookAt(PoseStack.Pose pose, Vector3fc eyePos, Vector3fc target) {
+        pose.pose().lookAt(eyePos, target, GTMath.UNIT_Y);
+        pose.normal().lookAlong(target, GTMath.UNIT_Y);
     }
 
     /**
