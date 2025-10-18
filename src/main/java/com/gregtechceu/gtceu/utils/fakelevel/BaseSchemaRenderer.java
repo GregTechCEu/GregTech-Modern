@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
@@ -43,9 +43,9 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Accessors(fluent = true)
@@ -157,27 +157,27 @@ public class BaseSchemaRenderer implements IDrawable {
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.enableCull();
         mc.gameRenderer.lightTexture().turnOnLightLayer();
-        RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+        RenderSystem.activeTexture(GL13.GL_TEXTURE0);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        var bufferSource = mc.renderBuffers().bufferSource();
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
 
-        List<BlockEntity> ber = null;
+        List<BlockEntity> blockEntities = null;
         // render block in each layer
         List<RenderType> chunkBufferLayers = RenderType.chunkBufferLayers();
         for (int i = 0; i < chunkBufferLayers.size(); i++) {
             RenderType layer = chunkBufferLayers.get(i);
             if (i == 0 && isBEREnabled()) {
-                ber = renderBlocksInLayer(mc, bufferSource, poseStack, layer, random, true);
+                blockEntities = renderBlocksInLayer(mc, bufferSource, poseStack, layer, random, true);
             } else {
                 renderBlocksInLayer(mc, bufferSource, poseStack, layer, random, false);
             }
 
         }
 
-        // render BER
-        if (ber != null && !ber.isEmpty()) {
-            renderTesr(mc, bufferSource, poseStack, ber);
+        // render block entity renderers
+        if (blockEntities != null && !blockEntities.isEmpty()) {
+            renderBERs(mc, bufferSource, poseStack, blockEntities);
         }
 
         bufferSource.endBatch();
@@ -187,7 +187,7 @@ public class BaseSchemaRenderer implements IDrawable {
         RenderSystem.depthMask(true);
     }
 
-    public static void setDefaultRenderLayerState(RenderType layer) {
+    public static void setupDefaultRenderTypeState(RenderType layer) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         if (layer == RenderType.translucent()) { // TRANSLUCENT
             RenderSystem.enableBlend();
@@ -200,30 +200,28 @@ public class BaseSchemaRenderer implements IDrawable {
         }
     }
 
-    private List<BlockEntity> renderBlocksInLayer(Minecraft mc, MultiBufferSource.BufferSource bufferSource,
-                                                  PoseStack pose,
-                                                  RenderType type, RandomSource random, boolean collectBer) {
+    private @Nullable List<BlockEntity> renderBlocksInLayer(Minecraft mc, MultiBufferSource.BufferSource bufferSource,
+                                                            PoseStack pose, RenderType type, RandomSource random,
+                                                            boolean collectBlockEntityRenderers) {
         type.setupRenderState();
-        setDefaultRenderLayerState(type);
-        List<BlockEntity> ber = collectBer ? new ArrayList<>() : null;
+        setupDefaultRenderTypeState(type);
+        List<BlockEntity> blockEntities = collectBlockEntityRenderers ? new ArrayList<>() : null;
 
         VertexConsumer buffer = bufferSource.getBuffer(type);
         BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
-        this.schema.forEach(pair -> {
-            BlockPos pos = pair.getKey();
-            BlockState state = pair.getValue().getBlockState();
+        this.schema.forEach((pos, blockInfo) -> {
+            BlockState state = blockInfo.getBlockState();
             if (state.getRenderShape() == RenderShape.INVISIBLE) return;
-            var be = pair.getValue().getBlockEntity();
+            var be = blockInfo.getBlockEntity();
 
-            if (collectBer) {
+            if (collectBlockEntityRenderers) {
                 if (be != null && !be.isRemoved()) {
                     if (mc.getBlockEntityRenderDispatcher().getRenderer(be) != null) {
-                        // only collect tiles to render which actually have a ber
-                        ber.add(be);
+                        // only collect blocks to render which actually have a block entity
+                        blockEntities.add(be);
                     }
                 }
             }
-
             if (state.getRenderShape() != RenderShape.MODEL) return;
 
             ModelData modelData = ModelData.EMPTY;
@@ -232,28 +230,27 @@ public class BaseSchemaRenderer implements IDrawable {
             if (be != null) {
                 modelData = be.getModelData();
             }
-            var blockModel = blockRenderer.getBlockModel(state);
-            if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) return;
+            BakedModel blockModel = blockRenderer.getBlockModel(state);
+            if (!blockModel.getRenderTypes(state, random, modelData).contains(type)) {
+                return;
+            }
             pose.pushPose();
             pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            blockRenderer.getModelRenderer()
-                    .tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer, true, random,
-                            state.getSeed(pos),
-                            OverlayTexture.NO_OVERLAY, modelData, type);
+            blockRenderer.getModelRenderer().tesselateBlock(this.renderLevel, blockModel, state, pos, pose, buffer,
+                    true, random, state.getSeed(pos), OverlayTexture.NO_OVERLAY, modelData, type);
             pose.popPose();
 
         });
         bufferSource.endBatch(type);
         type.clearRenderState();
-        return ber;
+        return blockEntities;
     }
 
-    private static void renderTesr(Minecraft mc, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack,
-                                   List<BlockEntity> tileEntities) {
+    private static void renderBERs(Minecraft mc, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack,
+                                   List<BlockEntity> blockEntities) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        for (Iterator<BlockEntity> iterator = tileEntities.iterator(); iterator.hasNext();) {
-            BlockEntity tile = iterator.next();
+        for (BlockEntity tile : blockEntities) {
             if (tile == null || tile.isRemoved()) continue;
 
             mc.getBlockEntityRenderDispatcher().render(tile, mc.getPartialTick(), poseStack, bufferSource);

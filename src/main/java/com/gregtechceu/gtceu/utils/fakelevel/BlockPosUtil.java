@@ -25,7 +25,8 @@ public class BlockPosUtil {
     }
 
     public static BlockPos getMin(BlockPos p1, BlockPos p2) {
-        return new BlockPos(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
+        return new BlockPos(Math.min(p1.getX(), p2.getX()),
+                Math.min(p1.getY(), p2.getY()),
                 Math.min(p1.getZ(), p2.getZ()));
     }
 
@@ -49,18 +50,22 @@ public class BlockPosUtil {
     }
 
     public static Vec3 getCenterD(BlockPos p1, BlockPos p2) {
-        return getCenterD(getMin(p1, p2), getXDist(p1, p2), getYDist(p1, p2), getZDist(p1, p2));
+        BlockPos min = getMin(p1, p2);
+        return getCenterD(min.getX(), min.getY(), min.getZ(), getXDist(p1, p2), getYDist(p1, p2), getZDist(p1, p2));
     }
 
-    public static Vec3 getCenterD(BlockPos origin, int xs, int ys, int zs) {
-        return new Vec3(xs / 2.0 + origin.getX(), ys / 2.0 + origin.getY(), zs / 2.0 + origin.getY());
+    public static Vec3 getCenterD(int oX, int oY, int oZ, int dX, int dY, int dZ) {
+        return new Vec3(dX / 2.0 + oX, dY / 2.0 + oY, dZ / 2.0 + oZ);
     }
 
     public static Iterable<BlockPos> getAllInside(BlockPos p1, BlockPos p2, boolean includeBorder) {
-        int x0 = Math.min(p1.getX(), p2.getX()), y0 = Math.min(p1.getY(), p2.getY()),
-                z0 = Math.min(p1.getZ(), p2.getZ());
-        int x1 = Math.max(p1.getX(), p2.getX()), y1 = Math.max(p1.getY(), p2.getY()),
-                z1 = Math.max(p1.getZ(), p2.getZ());
+        int x0 = Math.min(p1.getX(), p2.getX());
+        int y0 = Math.min(p1.getY(), p2.getY());
+        int z0 = Math.min(p1.getZ(), p2.getZ());
+        int x1 = Math.max(p1.getX(), p2.getX());
+        int y1 = Math.max(p1.getY(), p2.getY());
+        int z1 = Math.max(p1.getZ(), p2.getZ());
+
         if (includeBorder) {
             x0--;
             y0--;

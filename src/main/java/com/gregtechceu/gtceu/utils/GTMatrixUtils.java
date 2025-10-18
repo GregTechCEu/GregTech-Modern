@@ -145,12 +145,12 @@ public class GTMatrixUtils {
 
     public static Vector3f rotateMatrixToFront(Matrix4f matrix, Direction frontFace) {
         // rotate frontFacing to correct cardinal direction
-        var front = frontFace.step();
+        Vector3f front = frontFace.step();
         rotateMatrix(matrix, Direction.NORTH.step(), getDirectionAxis(frontFace), front);
         return front;
     }
 
-    public static void rotateMatrixToUp(Matrix4f matrix, Vector3f front, Direction upwardsFace) {
+    public static void rotateMatrixToUp(Matrix4f matrix, Vector3fc front, Direction upwardsFace) {
         // rotate upwards face to the correct orientation
         rotateMatrix(matrix, upwardFacingAngle(upwardsFace), front);
     }

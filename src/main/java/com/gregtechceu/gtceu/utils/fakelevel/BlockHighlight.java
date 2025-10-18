@@ -14,10 +14,10 @@ import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
-import javax.annotation.Nullable;
 
 @Accessors(fluent = true, chain = true)
 public class BlockHighlight {
@@ -55,7 +55,7 @@ public class BlockHighlight {
     private float thickness;
 
     public BlockHighlight(int color) {
-        this(color, true, 0.0f);
+        this(color, true);
     }
 
     public BlockHighlight(int color, float frameThickness) {
@@ -63,7 +63,7 @@ public class BlockHighlight {
     }
 
     public BlockHighlight(int color, boolean allSides) {
-        this(color, allSides, 0.0F);
+        this(color, allSides, 0.0f);
     }
 
     public BlockHighlight(int color, boolean allSides, float frameThickness) {
@@ -72,7 +72,7 @@ public class BlockHighlight {
         this.thickness = frameThickness;
     }
 
-    public final void renderHighlight(PoseStack pose, BlockHitResult result, Vector3f camera) {
+    public final void renderHighlight(PoseStack pose, @Nullable BlockHitResult result, Vector3f camera) {
         if (result != null && result.getType() == HitResult.Type.BLOCK) {
             renderHighlight(pose, result.getBlockPos(), result.getDirection(), camera);
         }
@@ -94,21 +94,21 @@ public class BlockHighlight {
         RenderSystem.enableDepthTest();
     }
 
-    protected void doRender(PoseStack poseStack, Direction direction, float distance) {
+    protected void doRender(PoseStack poseStack, @Nullable Direction direction, float distance) {
         if (this.allSides) direction = null;
         Matrix4f pose = poseStack.last().pose();
         if (this.thickness >= 0) {
             // scale frame thickness with distance to camera
-            float d = (float) (this.thickness * (1 + Math.max(0, Math.sqrt(distance) - 3) / 5));
-            renderFrame(pose, direction, d);
+            float offset = (float) (this.thickness * (1 + Math.max(0, Math.sqrt(distance) - 3) / 5.0f));
+            renderFrame(pose, direction, offset);
         } else {
             renderSolid(pose, direction);
         }
     }
 
-    public void renderSolid(Matrix4f pose, Direction direction) {
-        Tesselator tess = Tesselator.getInstance();
-        BufferBuilder builder = tess.getBuilder();
+    public static void renderSolid(Matrix4f pose, @Nullable Direction direction) {
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         if (direction == null) {
             for (Direction dir : GTUtil.DIRECTIONS) {
@@ -119,65 +119,65 @@ public class BlockHighlight {
         }
     }
 
-    protected static void renderFrame(Matrix4f pose, @Nullable Direction side, float d) {
+    protected static void renderFrame(Matrix4f pose, @Nullable Direction side, float offset) {
         if (side == null) {
             for (Direction dir : GTUtil.DIRECTIONS) {
-                buildFrameFace(pose, dir, d);
+                buildFrameFace(pose, dir, offset);
             }
         } else {
-            buildFrameFace(pose, side, d);
+            buildFrameFace(pose, side, offset);
         }
     }
 
-    protected static void buildFrameFace(Matrix4f pose, Direction side, float d) {
+    protected static void buildFrameFace(Matrix4f pose, @NotNull Direction side, float offset) {
         float[] vert = vertices[side.get3DDataValue()];
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
         buildVertex(pose, builder, vert, 9);
-        buildInnerVertex(pose, builder, vert, 9, side, d);
+        buildInnerVertex(pose, builder, vert, 9, side, offset);
         buildVertex(pose, builder, vert, 6);
-        buildInnerVertex(pose, builder, vert, 6, side, d);
+        buildInnerVertex(pose, builder, vert, 6, side, offset);
         buildVertex(pose, builder, vert, 3);
-        buildInnerVertex(pose, builder, vert, 3, side, d);
+        buildInnerVertex(pose, builder, vert, 3, side, offset);
         buildVertex(pose, builder, vert, 0);
-        buildInnerVertex(pose, builder, vert, 0, side, d);
+        buildInnerVertex(pose, builder, vert, 0, side, offset);
         buildVertex(pose, builder, vert, 9);
-        buildInnerVertex(pose, builder, vert, 9, side, d);
+        buildInnerVertex(pose, builder, vert, 9, side, offset);
 
         BufferUploader.drawWithShader(builder.end());
     }
 
-    protected static void buildVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int i) {
-        float x = vertices[i];
-        float y = vertices[i + 1];
-        float z = vertices[i + 2];
+    protected static void buildVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int vertexIndex) {
+        float x = vertices[vertexIndex];
+        float y = vertices[vertexIndex + 1];
+        float z = vertices[vertexIndex + 2];
         builder.vertex(pose, x, y, z).endVertex();
     }
 
-    private static void buildInnerVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int i, Direction side,
-                                         float d) {
-        float x = vertices[i];
-        float y = vertices[i + 1];
-        float z = vertices[i + 2];
+    private static void buildInnerVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int vertexIndex,
+                                         @NotNull Direction side, float offset) {
+        float x = vertices[vertexIndex];
+        float y = vertices[vertexIndex + 1];
+        float z = vertices[vertexIndex + 2];
         if (side.getAxis() != Direction.Axis.X) {
-            if (x >= 1) x -= d;
-            else x += d;
+            if (x >= 1) x -= offset;
+            else x += offset;
         }
         if (side.getAxis() != Direction.Axis.Y) {
-            if (y >= 1) y -= d;
-            else y += d;
+            if (y >= 1) y -= offset;
+            else y += offset;
         }
         if (side.getAxis() != Direction.Axis.Z) {
-            if (z >= 1) z -= d;
-            else z += d;
+            if (z >= 1) z -= offset;
+            else z += offset;
         }
         builder.vertex(pose, x, y, z).endVertex();
     }
 
-    protected static void buildFace(Matrix4f pose, BufferBuilder builder, Direction facing) {
-        float[] vert = vertices[facing.ordinal()];
+    protected static void buildFace(Matrix4f pose, BufferBuilder builder, @NotNull Direction side) {
+        float[] vert = vertices[side.ordinal()];
         buildVertex(pose, builder, vert, 0);
         buildVertex(pose, builder, vert, 3);
         buildVertex(pose, builder, vert, 6);
