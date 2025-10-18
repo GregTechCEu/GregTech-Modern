@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.mui.factory.inventory.InventoryTypes;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,7 +27,8 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
     }
 
     public void openFromHand(Player player, InteractionHand hand) {
-        openFromPlayerInventory(player, hand == InteractionHand.OFF_HAND ? 40 : player.getInventory().selected);
+        openFromPlayerInventory(player,
+                hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
     }
 
     public void openFromCurios(Player player, String type, int index) {
@@ -50,7 +52,8 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
     @SideOnly(Side.CLIENT)
     public void openFromHandClient(InteractionHand hand) {
         openFromPlayerInventoryClient(
-                hand == InteractionHand.OFF_HAND ? 40 : MCHelper.getPlayer().getInventory().selected);
+                hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND :
+                        MCHelper.getPlayer().getInventory().selected);
     }
 
     @SideOnly(Side.CLIENT)
@@ -68,7 +71,7 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
     }
 
     private PlayerInventoryUIFactory() {
-        super(GTCEu.id("mui:player_inv"));
+        super(GTCEu.id("player_inventory"));
     }
 
     @Override

@@ -17,7 +17,7 @@ public class SpriteDrawable implements IDrawable {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        GuiDraw.drawSprite(context.getGraphics().pose().last().pose(), this.sprite, x, y, width, height);
+        GuiDraw.drawSprite(context.getLastGraphicsPose(), this.sprite, x, y, width, height);
     }
 
     @Override

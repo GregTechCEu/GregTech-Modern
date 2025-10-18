@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.mui.screen.viewport;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
-import com.gregtechceu.gtceu.client.ClientProxy;
+import com.gregtechceu.gtceu.client.mui.CursorHandler;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 
 import net.minecraft.Util;
@@ -327,7 +327,7 @@ public class ModularGuiContext extends GuiContext {
         if (oldHovered != hovered) {
             if (this.hovered != null && oldHovered != null) {
                 if (this.hovered.getAdditionalHoverInfo() instanceof ResizeDragArea) {
-                    ClientProxy.resetCursorIcon();
+                    CursorHandler.resetCursorIcon();
                 }
                 oldHovered.onMouseEndHover();
             }
@@ -336,7 +336,7 @@ public class ModularGuiContext extends GuiContext {
             this.timeHovered = 0;
             if (this.hovered != null) {
                 if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-                    ClientProxy.setCursorResizeIcon(dragArea);
+                    CursorHandler.setCursorResizeIcon(dragArea);
                 }
                 hovered.onMouseStartHover();
                 if (this.hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
@@ -348,9 +348,9 @@ public class ModularGuiContext extends GuiContext {
         } else if (this.hovered != null && locatedHovered != null &&
                 this.hovered.getAdditionalHoverInfo() != locatedHovered.getAdditionalHoverInfo()) {
                     if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-                        ClientProxy.setCursorResizeIcon(dragArea);
+                        CursorHandler.setCursorResizeIcon(dragArea);
                     } else {
-                        ClientProxy.resetCursorIcon();
+                        CursorHandler.resetCursorIcon();
                     }
                     // widget is unchanged, but additional info changed
                     this.hovered = locatedHovered;

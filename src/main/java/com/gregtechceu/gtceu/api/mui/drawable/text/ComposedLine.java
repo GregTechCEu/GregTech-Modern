@@ -7,7 +7,9 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.ITextLine;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 
 import lombok.Getter;
@@ -44,10 +46,12 @@ public class ComposedLine implements ITextLine {
                 float drawY = getHeight(font) / 2f - font.lineHeight / 2f;
                 context.getGraphics().drawString(font, s, x, y + drawY, color, shadow);
                 x += font.width(s);
-            } else if (o instanceof Component c) {
+            } else if (o instanceof FormattedText text) {
                 float drawY = getHeight(font) / 2f - font.lineHeight / 2f;
-                context.getGraphics().drawString(font, c.getVisualOrderText(), x, y + drawY, color, shadow);
-                x += font.width(c);
+                FormattedCharSequence charSequence = text instanceof Component component ?
+                        component.getVisualOrderText() : Language.getInstance().getVisualOrder(text);
+                context.getGraphics().drawString(font, charSequence, x, y + drawY, color, shadow);
+                x += font.width(text);
             } else if (o instanceof FormattedCharSequence s) {
                 float drawY = getHeight(font) / 2f - font.lineHeight / 2f;
                 context.getGraphics().drawString(font, s, x, y + drawY, color, shadow);

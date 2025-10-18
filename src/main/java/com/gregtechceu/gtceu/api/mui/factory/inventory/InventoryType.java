@@ -7,12 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * A way of finding and setting an item in an inventory, that is owned by a player. This includes the normal player
@@ -28,17 +23,15 @@ import java.util.Map;
  *            server.
  * @see InventoryTypes InventoryTypes for default implementations
  */
-@Getter
 public abstract class InventoryType<T> {
 
-    private static final Map<String, InventoryType<?>> inventoryTypes = new Object2ObjectOpenHashMap<>();
-
+    @Getter
     private final String id;
 
     public InventoryType(String id) {
         this.id = id;
         if (isActive()) {
-            inventoryTypes.put(id, this);
+            InventoryTypes.inventoryTypes.put(id, this);
         }
     }
 
@@ -149,10 +142,6 @@ public abstract class InventoryType<T> {
     }
 
     public static InventoryType<?> getFromId(String id) {
-        return inventoryTypes.get(id);
-    }
-
-    public static Collection<InventoryType<?>> getAllRegistered() {
-        return Collections.unmodifiableCollection(inventoryTypes.values());
+        return InventoryTypes.inventoryTypes.get(id);
     }
 }

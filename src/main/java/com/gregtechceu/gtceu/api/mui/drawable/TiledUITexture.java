@@ -26,7 +26,7 @@ public class TiledUITexture extends UITexture {
             super.draw(context, x, y, width, height);
             return;
         }
-        GuiDraw.drawTiledTexture(context.getLastPose(), this.location, x, y, width, height,
+        GuiDraw.drawTiledTexture(context.getLastGraphicsPose(), this.location, x, y, width, height,
                 this.u0, this.v0, this.u1, this.v1,
                 this.imageWidth, this.imageHeight, 0);
     }

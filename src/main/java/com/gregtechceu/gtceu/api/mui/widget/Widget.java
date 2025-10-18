@@ -319,7 +319,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public void drawForeground(ModularGuiContext context) {
         RichTooltip tooltip = getTooltip();
-        if (tooltip != null && isHoveringFor(tooltip.getShowUpTimer())) {
+        if (tooltip != null && isHoveringFor(tooltip.showUpTimer())) {
             tooltip.draw(context);
         }
     }
@@ -360,7 +360,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public @NotNull RichTooltip tooltip() {
         if (this.tooltip == null) {
-            this.tooltip = new RichTooltip(this);
+            this.tooltip = new RichTooltip().parent(this);
         }
         return this.tooltip;
     }

@@ -191,7 +191,7 @@ public interface ITooltip<W extends ITooltip<W>> {
      * @return this
      */
     default W tooltipAutoUpdate(boolean update) {
-        tooltip().setAutoUpdate(update);
+        tooltip().autoUpdate(update);
         return getThis();
     }
 

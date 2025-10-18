@@ -14,9 +14,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 /**
@@ -37,6 +39,7 @@ public class GuiContext extends GuiViewportStack {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     private GuiGraphics graphics = null;
+    private @Nullable Font overrideFont = null;
     @Getter
     private final Stencil stencil = new Stencil(this);
 
@@ -132,7 +135,17 @@ public class GuiContext extends GuiViewportStack {
 
     @OnlyIn(Dist.CLIENT)
     public Font getFont() {
-        return MCHelper.getFont();
+        if (overrideFont != null) {
+            return overrideFont;
+        } else {
+            return MCHelper.getFont();
+        }
+    }
+
+    @ApiStatus.Internal
+    @OnlyIn(Dist.CLIENT)
+    public void setOverrideFont(@Nullable Font overrideFont) {
+        this.overrideFont = overrideFont;
     }
 
     public void tick() {
@@ -141,9 +154,14 @@ public class GuiContext extends GuiViewportStack {
 
     /* Viewport */
 
-    public Matrix4f getLastPose() {
+    public Matrix4f getLastGraphicsPose() {
         if (graphics == null) return new Matrix4f();
         return graphics.pose().last().pose();
+    }
+
+    public PoseStack graphicsPose() {
+        if (graphics == null) return new PoseStack();
+        return graphics.pose();
     }
 
     public int getMouseX() {

@@ -49,7 +49,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     protected UnaryOperator<ItemStack> itemHook;
 
     public ItemSlot() {
-        tooltip().setAutoUpdate(true);// .setHasTitleMargin(true);
+        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
         tooltipBuilder(tooltip -> {
             if (!isSynced()) return;
             ItemStack stack = getSlot().getItem();
@@ -100,7 +100,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     @Override
     public void drawForeground(ModularGuiContext context) {
         RichTooltip tooltip = getTooltip();
-        if (tooltip != null && isHoveringFor(tooltip.getShowUpTimer())) {
+        if (tooltip != null && isHoveringFor(tooltip.showUpTimer())) {
             tooltip.draw(context, getSlot().getItem());
         }
     }
@@ -223,8 +223,8 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
         // makes sure items of different layers don't interfere with each other visually
         float z = context.getCurrentDrawingZ() + 100;
-        context.getGraphics().pose().pushPose();
-        context.getGraphics().pose().translate(0, 0, z);
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(0, 0, z);
 
         if (!flag1) {
             if (isDragPreview) {
@@ -250,7 +250,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
                 RenderSystem.disableDepthTest();
             }
         }
-        context.getGraphics().pose().popPose();
+        context.graphicsPose().popPose();
     }
 
     @Override

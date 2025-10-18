@@ -140,7 +140,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
     }
 
     public void draw(GuiContext context, float x, float y, float width, float height) {
-        GuiDraw.drawTexture(context.getLastPose(), this.location, x, y, x + width, y + height, this.u0, this.v0,
+        GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, this.u0, this.v0,
                 this.u1, this.v1);
     }
 
@@ -152,7 +152,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         } else {
             Color.setGlColorOpaque(Color.WHITE.main);
         }
-        GuiDraw.drawTexture(context.getLastPose(), this.location, x, y, x + width, y + height, lerpU(uStart),
+        GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, lerpU(uStart),
                 lerpV(vStart), lerpU(uEnd),
                 lerpV(vEnd));
     }

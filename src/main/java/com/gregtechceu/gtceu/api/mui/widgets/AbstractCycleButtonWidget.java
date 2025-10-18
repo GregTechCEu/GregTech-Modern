@@ -463,7 +463,7 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
         this.stateCount = stateCount;
         // adjust tooltip buffer size
         while (this.stateTooltip.size() < this.stateCount) {
-            this.stateTooltip.add(new RichTooltip(this));
+            this.stateTooltip.add(new RichTooltip().parent(this));
         }
         while (this.stateTooltip.size() > this.stateCount) {
             this.stateTooltip.remove(this.stateTooltip.size() - 1);

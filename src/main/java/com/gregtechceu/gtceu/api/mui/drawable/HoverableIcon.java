@@ -34,7 +34,7 @@ public class HoverableIcon extends DelegateIcon implements IHoverable, ITooltip<
 
     @Override
     public @NotNull RichTooltip tooltip() {
-        if (this.tooltip == null) this.tooltip = new RichTooltip(area -> area.set(getRenderedArea()));
+        if (this.tooltip == null) this.tooltip = new RichTooltip().parent(area -> area.set(getRenderedArea()));
         return tooltip;
     }
 

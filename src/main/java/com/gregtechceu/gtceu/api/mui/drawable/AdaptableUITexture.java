@@ -49,7 +49,7 @@ public class AdaptableUITexture extends UITexture {
     }
 
     public void drawStretched(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastPose();
+        Matrix4f pose = context.getLastGraphicsPose();
 
         if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
             super.draw(context, x, y, width, height);
@@ -110,7 +110,7 @@ public class AdaptableUITexture extends UITexture {
     }
 
     public void drawTiled(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastPose();
+        Matrix4f pose = context.getLastGraphicsPose();
 
         if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
             GuiDraw.drawTiledTexture(pose, this.location, x, y, width, height, this.u0, this.v0, this.u1, this.v1,
