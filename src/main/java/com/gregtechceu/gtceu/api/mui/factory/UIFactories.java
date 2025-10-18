@@ -20,6 +20,10 @@ public class UIFactories {
         return SidedBlockEntityUIFactory.INSTANCE;
     }
 
+    public static EntityUIFactory entity() {
+        return EntityUIFactory.INSTANCE;
+    }
+
     @Deprecated
     public static ItemUIFactory item() {
         return ItemUIFactory.INSTANCE;
@@ -49,6 +53,7 @@ public class UIFactories {
     public static void init() {
         GuiManager.registerFactory(blockEntity());
         GuiManager.registerFactory(sidedBlockEntity());
+        GuiManager.registerFactory(entity());
         GuiManager.registerFactory(item());
         GuiManager.registerFactory(playerInventory());
         GuiManager.registerFactory(machine());

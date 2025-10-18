@@ -133,7 +133,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
         this.renderer.setSimulate(false);
         this.renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         this.renderer.setScale(this.scale);
-        this.renderer.setAlignment(this.textAlignment, -1, getArea().paddedHeight());
+        this.renderer.setAlignment(this.textAlignment, getArea().paddedWidth(), getArea().paddedHeight());
     }
 
     protected void drawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
@@ -241,7 +241,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             case InputConstants.KEY_ESCAPE:
                 if (ConfigHolder.INSTANCE.client.ui.escRestoresLastText) {
                     this.handler.clear();
-                    this.handler.insert(this.lastText);
+                    this.handler.insert(this.lastText, canScrollHorizontally());
                 }
                 getContext().removeFocus();
                 return Result.SUCCESS;
@@ -281,7 +281,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
             }
             // paste copied text in marked text
-            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""));
+            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""), canScrollHorizontally());
             return Result.SUCCESS;
         } else if (Screen.isCut(keyCode) && this.handler.hasTextMarked()) {
             // copy and delete copied text
@@ -310,10 +310,14 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
             }
             // insert typed char
-            this.handler.insert(String.valueOf(codePoint));
+            this.handler.insert(String.valueOf(codePoint), canScrollHorizontally());
             return Result.SUCCESS;
         }
         return Result.STOP;
+    }
+
+    public boolean canScrollHorizontally() {
+        return getScrollArea().getScrollX() != null;
     }
 
     public int getMaxLines() {
