@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.utils.fakelevel;
+package com.gregtechceu.gtceu.client.mui.schemarenderer;
 
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -78,18 +78,18 @@ public class BlockHighlight {
         }
     }
 
-    public void renderHighlight(PoseStack pose, BlockPos pos, Direction direction, Vector3f camera) {
+    public void renderHighlight(PoseStack poseStack, BlockPos pos, Direction direction, Vector3f camera) {
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         Color.setGlColor(this.color);
-        pose.pushPose();
-        pose.translate(pos.getX(), pos.getY(), pos.getZ());
+        poseStack.pushPose();
+        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
         float distance = camera.distance(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-        doRender(pose, direction, distance);
-        pose.popPose();
+        doRender(poseStack, direction, distance);
+        poseStack.popPose();
         RenderSystem.enableCull();
         RenderSystem.enableDepthTest();
     }

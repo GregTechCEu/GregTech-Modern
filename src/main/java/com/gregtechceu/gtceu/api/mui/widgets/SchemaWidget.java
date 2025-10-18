@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
+import com.gregtechceu.gtceu.api.mui.schema.ISchema;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.fakelevel.BaseSchemaRenderer;
-import com.gregtechceu.gtceu.utils.fakelevel.ISchema;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -31,8 +31,8 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
         this(new BaseSchemaRenderer(schema));
     }
 
-    public SchemaWidget(BaseSchemaRenderer schema) {
-        this.schema = schema;
+    public SchemaWidget(BaseSchemaRenderer schemaRenderer) {
+        this.schema = schemaRenderer;
     }
 
     @Override

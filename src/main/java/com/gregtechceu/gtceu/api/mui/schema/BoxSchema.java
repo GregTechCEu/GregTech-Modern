@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.utils.fakelevel;
+package com.gregtechceu.gtceu.api.mui.schema;
 
 import com.gregtechceu.gtceu.utils.BlockPosUtil;
 

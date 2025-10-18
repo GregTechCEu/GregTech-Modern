@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.*;
 import com.gregtechceu.gtceu.api.mui.drawable.text.AnimatedText;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.schema.ArraySchema;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -32,13 +33,12 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.BlockHighlight;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.fakelevel.ArraySchema;
-import com.gregtechceu.gtceu.utils.fakelevel.BlockHighlight;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -541,10 +541,11 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         page.child(IKey.str("Schema").asWidget());
 
         if (getLevel().isClientSide()) {
-            page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 2))
-                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
-            // .isometric(true)
-            )
+            page.child(new SchemaWidget(
+                    new SchemaRenderer(ArraySchema.of(data.getPlayer(), 2))
+                            .highlightRenderer(
+                                    new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
+            /* .isometric(true) */)
                     .pos(20, 20)
                     .size(100, 100));
         }

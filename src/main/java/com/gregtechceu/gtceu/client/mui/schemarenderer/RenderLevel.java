@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.utils.fakelevel;
+package com.gregtechceu.gtceu.client.mui.schemarenderer;
+
+import com.gregtechceu.gtceu.api.mui.schema.ISchema;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -25,11 +27,13 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RenderLevel implements LevelReader {
 

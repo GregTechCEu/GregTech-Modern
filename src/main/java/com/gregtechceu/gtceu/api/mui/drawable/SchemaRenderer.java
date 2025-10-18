@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.mui.drawable;
 
-import com.gregtechceu.gtceu.utils.fakelevel.*;
+import com.gregtechceu.gtceu.api.mui.schema.ISchema;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.BaseSchemaRenderer;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.BlockHighlight;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.Camera;
 
 import net.minecraft.world.phys.BlockHitResult;
 

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.utils.fakelevel;
+package com.gregtechceu.gtceu.client.mui.schemarenderer;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
