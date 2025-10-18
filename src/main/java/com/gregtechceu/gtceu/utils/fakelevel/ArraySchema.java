@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.utils.fakelevel;
 import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,19 +32,61 @@ public class ArraySchema implements ISchema {
         return new Builder();
     }
 
+    public static ArraySchema of(Entity entity, int radius) {
+        return of(entity.level(), BlockPos.containing(entity.position()), radius);
+    }
+
+    public static ArraySchema of(Level level, BlockPos center, int radius) {
+        int s = 2 * radius + 1;
+        BlockInfo[][][] blocks = new BlockInfo[s][s][s];
+
+        MutableBlockPos pos = center.offset(-radius, -radius, -radius).mutable();
+        for (int x = 0; x < s; x++) {
+            for (int y = 0; y < s; y++) {
+                for (int z = 0; z < s; z++) {
+                    blocks[x][y][z] = BlockInfo.of(level, pos);
+                    pos.move(0, 0, 1);
+                }
+                pos.move(0, 1, -s);
+            }
+            pos.move(1, -s, 0);
+        }
+        return new ArraySchema(blocks);
+    }
+
+    public static ArraySchema of(Level level, Vec3 center, Vec3 p1, Vec3 p2) {
+        // todo: do what screret said to refactor this,
+        // (later me problem)
+        int x0 = (int) Math.min(p1.x, p2.x);
+        int y0 = (int) Math.min(p1.y, p2.y);
+        int z0 = (int) Math.min(p1.z, p2.z);
+
+        int x1 = (int) Math.max(p1.x, p2.x);
+        int y1 = (int) Math.max(p1.y, p2.y);
+        int z1 = (int) Math.max(p1.z, p2.z);
+        x0--;
+        y0--;
+        z0--;
+        BlockInfo[][][] blocks = new BlockInfo[x1 - x0][y1 - y0][z1 - z0];
+        for (BlockPos pos : MutableBlockPos.betweenClosed(x0, y0, z0, x1, y1, z1)) {
+            blocks[pos.getX() - x0][pos.getY() - y0][pos.getZ() - z0] = BlockInfo.of(level, pos);
+        }
+        return new ArraySchema(blocks);
+    }
+
     @Getter
     private final Level level;
     private final BlockInfo[][][] blocks;
     @Getter
     @Setter
-    private BiPredicate<BlockPos, BlockInfo> renderFilter;
+    private BiPredicate<BlockPos, BlockInfo> renderFilter = (__, ___) -> true;
     private final Vec3 center;
 
     public ArraySchema(BlockInfo[][][] blocks) {
         this.blocks = blocks;
         this.level = new DummyLevel();
-        BlockPos.MutableBlockPos current = new BlockPos.MutableBlockPos();
-        BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
+        MutableBlockPos current = new MutableBlockPos();
+        MutableBlockPos max = BlockPosUtil.MIN.mutable();
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[x].length; y++) {
                 for (int z = 0; z < blocks[x][y].length; z++) {
@@ -72,7 +116,7 @@ public class ArraySchema implements ISchema {
     public Iterator<Map.Entry<BlockPos, BlockInfo>> iterator() {
         return new AbstractIterator<>() {
 
-            private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+            private final MutableBlockPos pos = new MutableBlockPos();
             private final MutablePair<BlockPos, BlockInfo> pair = new MutablePair<>(pos, null);
             private int x = 0, y = 0, z = -1;
 

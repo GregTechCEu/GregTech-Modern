@@ -28,7 +28,7 @@ public class DummyChunkSource extends ChunkSource {
 
     public DummyChunkSource(Level level) {
         this.level = level;
-        this.lightEngine = new LevelLightEngine(this, true, false);
+        this.lightEngine = new LevelLightEngine(this, true, true);
     }
 
     @Override

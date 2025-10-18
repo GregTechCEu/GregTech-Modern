@@ -37,6 +37,8 @@ import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.fakelevel.ArraySchema;
+import com.gregtechceu.gtceu.utils.fakelevel.BlockHighlight;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -534,18 +536,18 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     private IWidget createSchemaPage(GuiData data) {
         ParentWidget<?> page = new ParentWidget<>();
-        page.debugName("page 5 schema");
+        page.debugName("Page 5 schema");
         page.sizeRel(1f);
         page.child(IKey.str("Schema").asWidget());
 
-        /*
-         * if (getLevel().isClientSide()) {
-         * page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 5))
-         * .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)))
-         * .pos(20, 20)
-         * .size(100, 100));
-         * }
-         */
+        if (getLevel().isClientSide()) {
+            page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 2))
+                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
+            // .isometric(true)
+            )
+                    .pos(20, 20)
+                    .size(100, 100));
+        }
 
         return page;
     }
