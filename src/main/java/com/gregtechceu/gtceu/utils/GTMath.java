@@ -145,32 +145,8 @@ public class GTMath {
         return ParseResult.success(result);
     }
 
-    /**
-     * @deprecated use {@link Mth#clamp(int, int, int) Mth.clamp}
-     */
-    @Deprecated(forRemoval = true)
-    public static int clamp(int v, int min, int max) {
-        return Mth.clamp(v, min, max);
-    }
-
-    /**
-     * @deprecated use {@link Mth#clamp(float, float, float) Mth.clamp}
-     */
-    @Deprecated(forRemoval = true)
-    public static float clamp(float v, float min, float max) {
-        return Mth.clamp(v, min, max);
-    }
-
-    /**
-     * @deprecated use {@link Mth#clamp(double, double, double) Mth.clamp}
-     */
-    @Deprecated(forRemoval = true)
-    public static double clamp(double v, double min, double max) {
-        return Mth.clamp(v, min, max);
-    }
-
-    public static long clamp(long value, long min, long max) {
-        return java.lang.Math.max(min, java.lang.Math.min(max, value));
+    public static long clamp(long v, long min, long max) {
+        return Math.max(min, Math.min(max, v));
     }
 
     public static int cycler(int x, int min, int max) {
@@ -222,21 +198,5 @@ public class GTMath {
             }
         }
         return max;
-    }
-
-    /**
-     * @deprecated use {@link Vector3f#rotateX(float) Vector3f.rotateX}
-     */
-    @Deprecated(forRemoval = true)
-    public static Vector3f rotatePitch(Vector3f v, float pitch) {
-        return v.rotateX(pitch);
-    }
-
-    /**
-     * @deprecated use {@link Vector3f#rotateY(float) Vector3f.rotateY}
-     */
-    @Deprecated(forRemoval = true)
-    public static Vector3f rotateYaw(Vector3f v, float yaw) {
-        return v.rotateY(yaw);
     }
 }

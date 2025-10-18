@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -168,7 +168,7 @@ public class ScrollArea extends Area {
         } else {
             return;
         }
-        progress = GTMath.clamp(progress, 0f, 1f);
+        progress = Mth.clamp(progress, 0f, 1f);
         data.scrollTo(this,
                 (int) (progress * (data.getScrollSize() - data.getVisibleSize(this) + data.getThickness())));
     }

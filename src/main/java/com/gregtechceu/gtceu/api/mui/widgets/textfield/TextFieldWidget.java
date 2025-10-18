@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.math.ParseResult;
 
+import net.minecraft.util.Mth;
+
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -196,7 +198,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     }
 
     public TextFieldWidget setNumbers(IntSupplier min, IntSupplier max) {
-        return setNumbers(val -> GTMath.clamp(val, min.getAsInt(), max.getAsInt()));
+        return setNumbers(val -> Mth.clamp(val, min.getAsInt(), max.getAsInt()));
     }
 
     public TextFieldWidget setNumbersLong(LongSupplier min, LongSupplier max) {
@@ -204,7 +206,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     }
 
     public TextFieldWidget setNumbersDouble(DoubleSupplier min, DoubleSupplier max) {
-        return setNumbersDouble(val -> GTMath.clamp(val, min.getAsDouble(), max.getAsDouble()));
+        return setNumbersDouble(val -> Mth.clamp(val, min.getAsDouble(), max.getAsDouble()));
     }
 
     public TextFieldWidget setNumbers(int min, int max) {

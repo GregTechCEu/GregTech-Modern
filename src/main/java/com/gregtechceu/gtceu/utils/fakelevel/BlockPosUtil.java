@@ -8,14 +8,6 @@ public class BlockPosUtil {
     public static final BlockPos MAX = new BlockPos(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
     public static final BlockPos MIN = new BlockPos(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
 
-    /**
-     * @deprecated use {@link BlockPos#distManhattan(net.minecraft.core.Vec3i) BlockPos.distManhattan}
-     */
-    @Deprecated(forRemoval = true)
-    public static int getManhattanDistance(BlockPos p1, BlockPos p2) {
-        return p1.distManhattan(p2);
-    }
-
     public static int getBlockCountInside(BlockPos p1, BlockPos p2) {
         return getXDist(p1, p2) * getYDist(p1, p2) * getZDist(p1, p2);
     }
@@ -85,13 +77,5 @@ public class BlockPosUtil {
         return p.getX() == boxMin.getX() || p.getX() == boxMax.getX() ||
                 p.getY() == boxMin.getY() || p.getY() == boxMax.getY() ||
                 p.getZ() == boxMin.getZ() || p.getZ() == boxMax.getZ();
-    }
-
-    /**
-     * @deprecated use {@link BlockPos.MutableBlockPos#move(int, int, int) MutableBlockPos.move}
-     */
-    @Deprecated(forRemoval = true)
-    public static BlockPos.MutableBlockPos add(BlockPos.MutableBlockPos pos, int x, int y, int z) {
-        return pos.move(x, y, z);
     }
 }

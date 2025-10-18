@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.util.Mth;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -280,10 +282,10 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         int x2 = area.ex();
         int y2 = area.ey();
 
-        x1 = GTMath.clamp(x1, this.x, this.ex());
-        y1 = GTMath.clamp(y1, this.y, this.ey());
-        x2 = GTMath.clamp(x2, this.x, this.ex());
-        y2 = GTMath.clamp(y2, this.y, this.ey());
+        x1 = Mth.clamp(x1, this.x, this.ex());
+        y1 = Mth.clamp(y1, this.y, this.ey());
+        x2 = Mth.clamp(x2, this.x, this.ex());
+        y2 = Mth.clamp(y2, this.y, this.ey());
 
         area.setPos(x1, y1, x2, y2);
     }
