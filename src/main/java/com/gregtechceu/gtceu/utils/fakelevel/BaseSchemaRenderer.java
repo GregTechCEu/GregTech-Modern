@@ -145,7 +145,7 @@ public class BaseSchemaRenderer implements IDrawable {
         // transform mouse pos into relative mouse pos from 0 - 1
         Vector3f levelMouse = screenToWorldPos((float) mouseX / width, (float) mouseY / height);
         Vector3f target = this.camera.getLookVec().mul(20).add(levelMouse);
-        ClipContext context = new ClipContext(new Vec3(levelMouse), new Vec3(target), ClipContext.Block.VISUAL,
+        ClipContext context = new ClipContext(new Vec3(levelMouse), new Vec3(target), ClipContext.Block.OUTLINE,
                 ClipContext.Fluid.ANY, null);
         return schema.getLevel().clip(context);
     }
@@ -287,19 +287,18 @@ public class BaseSchemaRenderer implements IDrawable {
             RenderSystem.setProjectionMatrix(projection, VertexSorting.byDistance(camera.pos()));
         }
 
-        // setup modelview matrix
+        // set up model view matrix
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.setIdentity();
-        RenderSystem.applyModelViewMatrix();
         if (isIsometric()) {
             // see GameRenderer:935
             // Vanilla uses a -2000 z translation for isometric rendering
             modelViewStack.translate(0.0f, 0.0f, -2000.0f);
         }
-        var cameraPos = this.camera.pos();
-        var lookAt = this.camera.lookAt();
-        modelViewStack.last().pose().lookAt(cameraPos, lookAt, GTMath.UNIT_Y);
+        GTMatrixUtils.lookAt(modelViewStack, this.camera.pos(), this.camera.lookAt());
+
+        RenderSystem.applyModelViewMatrix();
     }
 
     protected void resetCamera() {
@@ -311,7 +310,7 @@ public class BaseSchemaRenderer implements IDrawable {
         // reset projection matrix
         RenderSystem.restoreProjectionMatrix();
 
-        // reset modelview matrix
+        // reset model view matrix
         RenderSystem.getModelViewStack().popPose();
         RenderSystem.applyModelViewMatrix();
 
