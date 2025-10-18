@@ -98,7 +98,7 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        this.center = BlockPosUtil.getCenterD(BlockPos.ZERO, BlockPosUtil.add(max, 1, 1, 1));
+        this.center = BlockPosUtil.getCenterD(BlockPos.ZERO, max.move(1, 1, 1));
     }
 
     @Override

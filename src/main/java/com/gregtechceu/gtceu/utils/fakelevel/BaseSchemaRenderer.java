@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LevelReader;
@@ -39,7 +40,6 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -281,7 +281,7 @@ public class BaseSchemaRenderer implements IDrawable {
 
         float near = isIsometric() ? 1f : 0.1f;
         float far = 10000.0f;
-        float fovY = (float) Math.toRadians(60.0f); // Field of view in the Y direction
+        float fovY = 60.0f * Mth.DEG_TO_RAD; // Field of view in the Y direction
         float aspect = (float) width / height; // width and height are the dimensions of your window
         float top = -near * (float) Math.tan(fovY / 2.0);
         float bottom = -top;

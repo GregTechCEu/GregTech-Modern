@@ -10,7 +10,6 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Math;
 import org.joml.Vector3f;
 import org.mariuszgromada.math.mxparser.Constant;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -46,11 +45,7 @@ public class GTMath {
     public static final Constant z = new Constant("z", 1e-21);
     public static final Constant y = new Constant("y", 1e-24);
 
-    // I 8 some PI and it was DELICIOUS
-    public static final float PI = (float) Math.PI;
-    public static final float PI2 = 2f * PI;
-    public static final float PI_HALF = PI / 2f;
-    public static final float PI_QUART = PI / 4f;
+    public static final float QUART_PI = Mth.PI / 4f;
 
     public static final Vector3f UNIT_X = new Vector3f(1f, 0f, 0f);
     public static final Vector3f UNIT_Y = new Vector3f(0f, 1f, 0f);
@@ -150,16 +145,28 @@ public class GTMath {
         return ParseResult.success(result);
     }
 
+    /**
+     * @deprecated use {@link Mth#clamp(int, int, int) Mth.clamp}
+     */
+    @Deprecated(forRemoval = true)
     public static int clamp(int v, int min, int max) {
-        return Math.max(min, Math.min(v, max));
+        return Mth.clamp(v, min, max);
     }
 
+    /**
+     * @deprecated use {@link Mth#clamp(float, float, float) Mth.clamp}
+     */
+    @Deprecated(forRemoval = true)
     public static float clamp(float v, float min, float max) {
-        return Math.max(min, Math.min(v, max));
+        return Mth.clamp(v, min, max);
     }
 
+    /**
+     * @deprecated use {@link Mth#clamp(double, double, double) Mth.clamp}
+     */
+    @Deprecated(forRemoval = true)
     public static double clamp(double v, double min, double max) {
-        return Math.max(min, Math.min(v, max));
+        return Mth.clamp(v, min, max);
     }
 
     public static long clamp(long value, long min, long max) {
@@ -217,23 +224,19 @@ public class GTMath {
         return max;
     }
 
+    /**
+     * @deprecated use {@link Vector3f#rotateX(float) Vector3f.rotateX}
+     */
+    @Deprecated(forRemoval = true)
     public static Vector3f rotatePitch(Vector3f v, float pitch) {
-        float cos = Math.cos(pitch);
-        float sin = Math.sin(pitch);
-        float x = v.x;
-        float y = v.y * cos + v.z * sin;
-        float z = v.z * cos - v.y * sin;
-        v.set(x, y, z);
-        return v;
+        return v.rotateX(pitch);
     }
 
+    /**
+     * @deprecated use {@link Vector3f#rotateY(float) Vector3f.rotateY}
+     */
+    @Deprecated(forRemoval = true)
     public static Vector3f rotateYaw(Vector3f v, float yaw) {
-        float sin = Math.cos(yaw);
-        float cos = Math.sin(yaw);
-        float x = v.x * sin + v.z * cos;
-        float y = v.y;
-        float z = v.z * sin - v.x * cos;
-        v.set(x, y, z);
-        return v;
+        return v.rotateY(yaw);
     }
 }

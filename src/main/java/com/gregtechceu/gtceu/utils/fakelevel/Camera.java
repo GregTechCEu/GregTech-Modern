@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Math;
 import org.joml.Vector3f;
 
-import static com.gregtechceu.gtceu.utils.GTMath.PI_HALF;
+import static net.minecraft.util.Mth.HALF_PI;
 
 @Accessors(fluent = true)
 public class Camera {
@@ -43,8 +43,8 @@ public class Camera {
         this.pos.set(xPos, yPos, zPos);
         this.lookAt.set(xLook, yLook, zLook);
         Vector3f v = this.temp.set(lookAt).sub(pos).normalize();
-        this.yaw = Math.atan2(-v.x, v.z);
-        this.pitch = Math.asin(-v.y);
+        this.yaw = (float) Math.atan2(-v.x, v.z);
+        this.pitch = (float) Math.asin(-v.y);
         this.dist = pos.distance(lookAt);
         return this;
     }
@@ -94,8 +94,8 @@ public class Camera {
         this.pitch = pitch;
         this.dist = dist;
         Vector3f v = this.temp;
-        v.set(Math.cos(yaw), 0, Math.sin(yaw));
-        v.y = Math.tan(pitch) * v.length();
+        v.set(Mth.cos(yaw), 0, Mth.sin(yaw));
+        v.y = ((float) Math.tan(pitch)) * v.length();
         v.normalize().mul(dist);
         this.pos.set(v.add(lookAtX, lookAtY, lookAtZ));
         return this;
@@ -107,8 +107,8 @@ public class Camera {
         this.pitch = pitch;
         this.dist = dist;
         Vector3f v = this.temp;
-        v.set(Math.cos(PI_HALF - yaw), 0, Math.sin(PI_HALF - yaw));
-        v.y = Math.tan(PI_HALF - pitch) * v.length();
+        v.set(Mth.cos(HALF_PI - yaw), 0, Mth.sin(HALF_PI - yaw));
+        v.y = ((float) Math.tan(HALF_PI - pitch)) * v.length();
         v.normalize().mul(dist);
         this.lookAt.set(v).add(this.pos);
         return this;

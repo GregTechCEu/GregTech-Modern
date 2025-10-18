@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.fakelevel.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.utils.fakelevel.ISchema;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     private boolean enableTranslation = true;
     private boolean enableScaling = true;
     private float scale = 10f;
-    private float pitch = GTMath.PI_QUART;
+    private float pitch = GTMath.QUART_PI;
     private float yaw = 0;
     private final Vector3f offset = new Vector3f();
 
@@ -84,12 +85,12 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget pitch(float pitch) {
-        this.pitch = GTMath.clamp(pitch, -GTMath.PI_HALF + 0.001f, GTMath.PI_HALF - 0.001f);
+        this.pitch = Mth.clamp(pitch, -Mth.HALF_PI + 0.001f, Mth.HALF_PI - 0.001f);
         return this;
     }
 
     public SchemaWidget yaw(float yaw) {
-        this.yaw = (yaw + GTMath.PI2) % GTMath.PI2;
+        this.yaw = (yaw + Mth.TWO_PI) % Mth.TWO_PI;
         return this;
     }
 
