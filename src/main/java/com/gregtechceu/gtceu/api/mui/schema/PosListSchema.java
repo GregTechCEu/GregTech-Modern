@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.mui.schema;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,22 +22,24 @@ public abstract class PosListSchema implements ISchema {
     private final Iterable<? extends BlockPos> posList;
     @Getter
     @Setter
-    private BiPredicate<BlockPos, BlockInfo> renderFilter;
+    private BiPredicate<BlockPos, BlockState> renderFilter = (pos, state) -> true;
 
     public PosListSchema(Level level, Iterable<? extends BlockPos> posList,
-                         BiPredicate<BlockPos, BlockInfo> renderFilter) {
+                         BiPredicate<BlockPos, BlockState> renderFilter) {
         this.level = level;
         this.posList = posList;
-        this.renderFilter = renderFilter;
+        if (renderFilter != null) {
+            this.renderFilter = renderFilter;
+        }
     }
 
     @NotNull
     @Override
-    public Iterator<Map.Entry<BlockPos, BlockInfo>> iterator() {
+    public Iterator<Map.Entry<BlockPos, BlockState>> iterator() {
         return new Iterator<>() {
 
             private final Iterator<? extends BlockPos> posIt = PosListSchema.this.posList.iterator();
-            private final MutablePair<BlockPos, BlockInfo> pair = new MutablePair<>();
+            private final MutablePair<BlockPos, BlockState> pair = new MutablePair<>();
 
             @Override
             public boolean hasNext() {
@@ -43,14 +47,14 @@ public abstract class PosListSchema implements ISchema {
             }
 
             @Override
-            public Pair<BlockPos, BlockInfo> next() {
+            public Pair<BlockPos, BlockState> next() {
                 BlockPos pos = posIt.next();
                 pair.setLeft(pos);
-                BlockInfo.Mutable.SHARED.set(PosListSchema.this.level, pos);
-                if (renderFilter == null || renderFilter.test(pos, BlockInfo.Mutable.SHARED)) {
-                    pair.setRight(BlockInfo.Mutable.SHARED);
+                BlockState state = PosListSchema.this.level.getBlockState(pos);
+                if (renderFilter == null || renderFilter.test(pos, state)) {
+                    pair.setRight(state);
                 } else {
-                    pair.setRight(BlockInfo.EMPTY);
+                    pair.setRight(Blocks.AIR.defaultBlockState());
                 }
                 return pair;
             }
