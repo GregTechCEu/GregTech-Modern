@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.client.mui.schemarenderer.Camera;
 
 import net.minecraft.world.phys.BlockHitResult;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -33,10 +32,6 @@ public class SchemaRenderer extends BaseSchemaRenderer {
     protected boolean isometric = false;
     @Setter
     private boolean rayTracing = false;
-
-    public SchemaRenderer(ISchema schema, RenderTarget renderTarget) {
-        super(schema, renderTarget);
-    }
 
     public SchemaRenderer(ISchema schema) {
         super(schema);

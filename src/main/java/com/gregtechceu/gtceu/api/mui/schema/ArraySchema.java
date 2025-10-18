@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.schema;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.BlockPosUtil;
+import com.gregtechceu.gtceu.utils.fakelevel.SchemaLevel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -10,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -80,7 +81,7 @@ public class ArraySchema implements ISchema {
 
     public ArraySchema(BlockState[][][] blocks) {
         this.blocks = blocks;
-        this.level = new DummyLevel();
+        this.level = new SchemaLevel();
         MutableBlockPos current = new MutableBlockPos();
         MutableBlockPos max = BlockPosUtil.MIN.mutable();
         for (int x = 0; x < blocks.length; x++) {
@@ -215,7 +216,9 @@ public class ArraySchema implements ISchema {
             }
             if (!errors.isEmpty()) {
                 GTCEu.LOGGER.error("Error validating ArrayScheme BlockArray:");
-                for (String e : errors) GTCEu.LOGGER.error("  - {}", e);
+                for (String e : errors) {
+                    GTCEu.LOGGER.error("  - {}", e);
+                }
                 throw new IllegalArgumentException("The ArraySchema builder was misconfigured. See message above.");
             }
         }
