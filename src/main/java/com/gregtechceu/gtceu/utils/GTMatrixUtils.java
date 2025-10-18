@@ -11,8 +11,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Contract;
 import org.joml.*;
 import org.lwjgl.opengl.GL11;
@@ -39,6 +39,9 @@ public class GTMatrixUtils {
     });
     private static final Table<Direction, Direction, Matrix4fc> rotations = Tables
             .synchronizedTable(HashBasedTable.create());
+
+    private static final ByteBuffer PIXEL_DEPTH_BUFFER = GlUtil.allocateMemory(4);
+    private static final int[] VIEWPORT_COORDS = { 0, 0, 0, 0 };
 
     /**
      * @param from the original vector
@@ -236,34 +239,57 @@ public class GTMatrixUtils {
     /**
      * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
      * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x X-coordinate in pixels
+     * @param y Y-coordinate in pixels
+     * @return world pos
      */
-    public static Vector3f projectScreenToWorld(int viewX, int viewY) {
-        return projectScreenToWorld(viewX, viewY, true);
+    public static Vector3f projectScreenToWorld(int x, int y) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectScreenToWorld(x, y, window.getWidth(), window.getHeight(), true);
     }
 
     /**
      * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
      * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
      */
-    public static Vector3f projectScreenToWorld(int viewX, int viewY, boolean checkDepth) {
+    public static Vector3f projectScreenToWorld(int x, int y, int viewWidth, int viewHeight, boolean checkDepth) {
+        // update the viewport size array
+        VIEWPORT_COORDS[2] = viewWidth;
+        VIEWPORT_COORDS[3] = viewHeight;
+        return projectScreenToWorld(x, y, VIEWPORT_COORDS, checkDepth);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrixinstead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewport   the viewport described by {@code [x, y, width, height]}
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y, int[] viewport, boolean checkDepth) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+
         float depth = 1.0f;
         if (checkDepth) {
-            ByteBuffer depthBuffer = GlUtil.allocateMemory(4);
-            RenderSystem.readPixels(viewX, viewY, 1, 1,
-                    GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, depthBuffer);
-            depth = depthBuffer.asFloatBuffer().get();
-            GlUtil.freeMemory(depthBuffer);
+            // read depth under mouse
+            RenderSystem.readPixels(x, y, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, PIXEL_DEPTH_BUFFER);
+            PIXEL_DEPTH_BUFFER.rewind();
+            depth = PIXEL_DEPTH_BUFFER.getFloat();
+            PIXEL_DEPTH_BUFFER.rewind();
         }
 
-        int viewW = Minecraft.getInstance().getWindow().getWidth();
-        int viewH = Minecraft.getInstance().getWindow().getHeight();
-        Vector4f coords = new Vector4f(2.0f * viewX / viewW - 1, 2.0f * viewY / viewH - 1, 2.0f * depth - 1, 1);
-
-        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-        Matrix4f inverse = new Matrix4f(projectionMatrix).mul(modelViewMatrix).invert();
-        inverse.transform(coords);
-
-        return new Vector3f(coords.x(), coords.y(), coords.z());
+        return transform.unproject(x, y, depth, viewport, new Vector3f());
     }
 }

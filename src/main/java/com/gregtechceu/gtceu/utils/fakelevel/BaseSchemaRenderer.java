@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.SchemaWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -44,18 +44,12 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 @Accessors(fluent = true)
 public class BaseSchemaRenderer implements IDrawable {
-
-    protected static final FloatBuffer PIXEL_DEPTH_BUFFER = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder())
-            .asFloatBuffer();
 
     private static final RenderTarget FBO = new TextureTarget(1080, 1080, true, Minecraft.ON_OSX);
 
@@ -149,7 +143,7 @@ public class BaseSchemaRenderer implements IDrawable {
      */
     protected BlockHitResult rayTrace(int mouseX, int mouseY, int width, int height) {
         // transform mouse pos into relative mouse pos from 0 - 1
-        Vector3f levelMouse = screenPosToLevelPos((float) mouseX / width, (float) mouseY / height);
+        Vector3f levelMouse = screenToWorldPos((float) mouseX / width, (float) mouseY / height);
         Vector3f target = this.camera.getLookVec().mul(20).add(levelMouse);
         ClipContext context = new ClipContext(new Vec3(levelMouse), new Vec3(target), ClipContext.Block.VISUAL,
                 ClipContext.Fluid.ANY, null);
@@ -302,9 +296,9 @@ public class BaseSchemaRenderer implements IDrawable {
         modelViewStack.setIdentity();
         RenderSystem.applyModelViewMatrix();
         if (isIsometric()) {
-            modelViewStack.scale(0.1f, 0.1f, 0.1f);
-        } else {
-            // modelViewStack.scale(-1f, -1f, -1f);
+            // see GameRenderer:935
+            // Vanilla uses a -2000 z translation for isometric rendering
+            modelViewStack.translate(0.0f, 0.0f, -2000.0f);
         }
         var cameraPos = this.camera.pos();
         var lookAt = this.camera.lookAt();
@@ -336,19 +330,11 @@ public class BaseSchemaRenderer implements IDrawable {
      * @param y Y pos from 0 to 1
      * @return world pos
      */
-    protected Vector3f screenPosToLevelPos(float x, float y) {
-        // read projection and modelview matrix
-        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix())
-                .mul(RenderSystem.getModelViewStack().last().pose());
-        // convert pos to framebuffer pos
+    protected Vector3f screenToWorldPos(float x, float y) {
+        // convert relative pos to framebuffer pos
         int wx = (int) (x * this.viewport[2]);
         int wy = (int) (y * this.viewport[3]);
-        // read depth under mouse
-        GL11.glReadPixels(wx, wy, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, PIXEL_DEPTH_BUFFER);
-        PIXEL_DEPTH_BUFFER.rewind();
-        float depth = PIXEL_DEPTH_BUFFER.get();
-        PIXEL_DEPTH_BUFFER.rewind();
-        return transform.unproject(wx, wy, depth, this.viewport, new Vector3f());
+        return GTMatrixUtils.projectScreenToWorld(wx, wy, this.viewport, true);
     }
 
     @ApiStatus.OverrideOnly
