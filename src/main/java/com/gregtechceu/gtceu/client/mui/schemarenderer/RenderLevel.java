@@ -10,7 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.LevelTimeAccess;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RenderLevel implements LevelReader {
+public class RenderLevel implements LevelTimeAccess {
 
     private final ISchema schema;
     private final Level level;
@@ -47,27 +47,30 @@ public class RenderLevel implements LevelReader {
 
     @Nullable
     @Override
-    public BlockEntity getBlockEntity(@NotNull BlockPos pos) {
-        if (this.schema == null) return this.level.getBlockEntity(pos);
-        BlockInfo.Mutable.SHARED.set(this.level, pos);
-        return this.schema.getRenderFilter().test(pos, BlockInfo.Mutable.SHARED) ?
-                BlockInfo.Mutable.SHARED.getBlockEntity() : null;
+    public BlockEntity getBlockEntity(BlockPos pos) {
+        BlockState state = this.level.getBlockState(pos);
+        if (!this.schema.getRenderFilter().test(pos, state)) {
+            return null;
+        }
+        return this.level.getBlockEntity(pos);
     }
 
     @Override
     public BlockState getBlockState(BlockPos pos) {
-        if (this.schema == null) return this.level.getBlockState(pos);
-        BlockInfo.Mutable.SHARED.set(this.level, pos);
-        return this.schema.getRenderFilter().test(pos, BlockInfo.Mutable.SHARED) ?
-                BlockInfo.Mutable.SHARED.getBlockState() : Blocks.AIR.defaultBlockState();
+        BlockState state = this.level.getBlockState(pos);
+        if (!this.schema.getRenderFilter().test(pos, state)) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        return state;
     }
 
     @Override
     public FluidState getFluidState(BlockPos pos) {
-        if (this.schema == null) return this.level.getFluidState(pos);
-        BlockInfo.Mutable.SHARED.set(this.level, pos);
-        return this.schema.getRenderFilter().test(pos, BlockInfo.Mutable.SHARED) ?
-                BlockInfo.Mutable.SHARED.getBlockState().getFluidState() : Fluids.EMPTY.defaultFluidState();
+        BlockState state = this.level.getBlockState(pos);
+        if (!this.schema.getRenderFilter().test(pos, state)) {
+            return Fluids.EMPTY.defaultFluidState();
+        }
+        return this.level.getFluidState(pos);
     }
 
     @Override
@@ -143,5 +146,10 @@ public class RenderLevel implements LevelReader {
     @Override
     public List<VoxelShape> getEntityCollisions(@Nullable Entity entity, AABB collisionBox) {
         return level.getEntityCollisions(entity, collisionBox);
+    }
+
+    @Override
+    public long dayTime() {
+        return level.dayTime();
     }
 }
