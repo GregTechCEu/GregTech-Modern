@@ -20,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LiquidVertexConsumer implements VertexConsumer {
+
     private final VertexConsumer delegate;
     private final SectionPos sectionPos;
 
@@ -69,7 +70,7 @@ public class LiquidVertexConsumer implements VertexConsumer {
 
     @Override
     public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float texU,
-            float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
+                       float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
         delegate.vertex(x, y, z, red, green, blue, alpha, texU, texV, overlayUV, lightmapUV, normalX, normalY, normalZ);
     }
 
@@ -111,7 +112,7 @@ public class LiquidVertexConsumer implements VertexConsumer {
 
     @Override
     public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
-            float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
+                            float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
         delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
     }
 
