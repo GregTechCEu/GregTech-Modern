@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.BlockPosUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;

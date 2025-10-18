@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.utils.fakelevel;
 
+import com.gregtechceu.gtceu.utils.BlockPosUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
