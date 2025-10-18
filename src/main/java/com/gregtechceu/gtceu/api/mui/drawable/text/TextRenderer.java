@@ -91,7 +91,7 @@ public class TextRenderer {
             draw(graphics, measuredLine.text, x0, y0);
             y0 += (int) getFontHeight();
         }
-        this.lastWidth = this.maxWidth > 0 ? Math.min(maxW, this.maxWidth) : maxW;
+        this.lastWidth = maxW;
         this.lastHeight = measuredLines.size() * getFontHeight();
         this.lastWidth = Math.max(0, this.lastWidth - this.scale);
         this.lastHeight = Math.max(0, this.lastHeight - this.scale);
@@ -208,11 +208,11 @@ public class TextRenderer {
                 Collections.singletonList(line.getVisualOrderText());
     }
 
-    public boolean wouldFit(List<String> text) {
+    public boolean wouldFit(List<String> text, boolean shouldCheckWidth) {
         if (this.maxHeight > 0 && this.maxHeight < text.size() * getFontHeight() - this.scale) {
             return false;
         }
-        if (this.maxWidth > 0) {
+        if (this.maxWidth > 0 && shouldCheckWidth) {
             for (String line : text) {
                 if (this.maxWidth < getFont().width(line)) {
                     return false;
@@ -255,7 +255,7 @@ public class TextRenderer {
 
     protected int getStartX(float maxWidth, float lineWidth) {
         if (this.alignment.x > 0 && maxWidth > 0) {
-            return (int) (this.x + (maxWidth * this.alignment.x) - lineWidth * this.alignment.x);
+            return Math.max(this.x, (int) (this.x + (maxWidth * this.alignment.x) - lineWidth * this.alignment.x));
         }
         return this.x;
     }
