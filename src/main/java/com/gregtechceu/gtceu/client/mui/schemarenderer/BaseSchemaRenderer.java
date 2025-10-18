@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -155,12 +156,7 @@ public class BaseSchemaRenderer implements IDrawable {
             lightEngine.runLightUpdates();
         }
 
-        Vector3f lightDirection = new Vector3f(15 / 90f, 0.35f, 1.0f);
-        Matrix4f lightTransform = new Matrix4f(RenderSystem.getModelViewMatrix());
-        lightTransform.invert();
-        lightTransform.transformPosition(lightDirection);
-
-        RenderSystem.setShaderLights(lightDirection, lightDirection);
+        Lighting.setupLevel(RenderSystem.getModelViewMatrix());
 
         RenderSystem.disableDepthTest();
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
