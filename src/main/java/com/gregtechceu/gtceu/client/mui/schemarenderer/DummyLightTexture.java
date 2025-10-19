@@ -110,7 +110,7 @@ public class DummyLightTexture implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         lightmapTexture.close();
     }
 }

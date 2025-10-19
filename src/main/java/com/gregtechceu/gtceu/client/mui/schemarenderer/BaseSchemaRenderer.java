@@ -72,6 +72,8 @@ import java.util.function.Function;
 @Accessors(fluent = true)
 public class BaseSchemaRenderer implements IDrawable {
 
+    private static final DummyLightTexture lightTexture = new DummyLightTexture();
+
     @Getter
     private final ISchema schema;
     private final RenderLevel renderLevel;
@@ -82,11 +84,10 @@ public class BaseSchemaRenderer implements IDrawable {
     @Getter
     private @Nullable BlockHitResult lastRayTrace = null;
 
-    private final DummyLightTexture lightTexture = new DummyLightTexture();
     private final ChunkBufferBuilderPack chunkBufferBuilders;
 
     private final AtomicReference<RenderCompileResults> compileResults = new AtomicReference<>();
-    private final AtomicReference<CompileStatus> compileStatus = new AtomicReference<>(CompileStatus.NEED_COMPILE);
+    private final AtomicReference<CompileStatus> compileStatus = new AtomicReference<>(CompileStatus.CANCELED);
     private @Nullable Map<RenderType, VertexBuffer> chunkBuffers = getOrCreateChunkBuffers();
 
     public BaseSchemaRenderer(ISchema schema) {
@@ -110,14 +111,12 @@ public class BaseSchemaRenderer implements IDrawable {
     public void clearChunkBuffers() {
         if (this.lastRenderCompileTask != null) {
             this.lastRenderCompileTask.cancel();
-            if (this.chunkBuffers != null && !this.chunkBuffers.isEmpty()) {
-                this.chunkBuffers.values().forEach(VertexBuffer::close);
-                this.chunkBuffers.clear();
-            }
+            this.lastRenderCompileTask = null;
         }
-
-        this.compileStatus.set(CompileStatus.CANCELED);
-        this.lastRenderCompileTask = null;
+        if (this.chunkBuffers != null && !this.chunkBuffers.isEmpty()) {
+            this.chunkBuffers.values().forEach(VertexBuffer::close);
+            this.chunkBuffers.clear();
+        }
     }
 
     public void recompile() {
@@ -141,6 +140,13 @@ public class BaseSchemaRenderer implements IDrawable {
                         this.compileStatus.set(result);
                     }
                 });
+    }
+
+    public void dispose() {
+        clearChunkBuffers();
+
+        this.chunkBufferBuilders.discardAll();
+        this.compileStatus.set(CompileStatus.DISABLED);
     }
 
     @Override
@@ -200,7 +206,7 @@ public class BaseSchemaRenderer implements IDrawable {
         CompileStatus status = this.compileStatus.get();
         if (status == CompileStatus.DISABLED || status == CompileStatus.COMPILING) {
             return;
-        } else if (status == CompileStatus.NEED_COMPILE) {
+        } else if (status == CompileStatus.CANCELED) {
             recompile();
             return;
         }
@@ -489,7 +495,6 @@ public class BaseSchemaRenderer implements IDrawable {
 
     protected enum CompileStatus {
         DISABLED,
-        NEED_COMPILE,
         COMPILING,
         SUCCESS,
         CANCELED

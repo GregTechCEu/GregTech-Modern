@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 
 public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
-    private final BaseSchemaRenderer schema;
+    private final BaseSchemaRenderer schemaRenderer;
     private boolean enableRotation = true;
     private boolean enableTranslation = true;
     private boolean enableScaling = true;
@@ -32,15 +32,21 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget(BaseSchemaRenderer schemaRenderer) {
-        this.schema = schemaRenderer;
+        this.schemaRenderer = schemaRenderer;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.schemaRenderer.dispose();
     }
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        Vector3f f = this.schema.schema().getFocus();
-        this.schema.camera().setLookAtAndAngle(f.x + this.offset.x, f.y + this.offset.y,
+        Vector3f f = this.schemaRenderer.schema().getFocus();
+        this.schemaRenderer.camera().setLookAtAndAngle(f.x + this.offset.x, f.y + this.offset.y,
                 f.z + this.offset.z, scale, yaw, pitch);
-        this.schema.drawAtZero(context, getArea(), widgetTheme.getTheme());
+        this.schemaRenderer.drawAtZero(context, getArea(), widgetTheme.getTheme());
     }
 
     @Override
@@ -67,7 +73,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
             pitch(this.pitch + dy * moveScale);
         } else if (button == InputConstants.MOUSE_BUTTON_MIDDLE && this.enableTranslation) {
             float moveScale = 0.09f;
-            Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking
+            Vector3f look = this.schemaRenderer.camera().getLookVec().normalize(); // direction camera is looking
             Vector3f right = look.cross(GTMath.UNIT_Y, new Vector3f()).normalize(); // right relative to screen
             Vector3f up = right.cross(look, new Vector3f()); // up relative to screen
             this.offset.sub(right.mul(dx * moveScale)).add(up.mul(dy * moveScale));
