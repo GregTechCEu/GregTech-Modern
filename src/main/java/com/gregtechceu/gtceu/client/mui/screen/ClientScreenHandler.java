@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
@@ -71,13 +72,10 @@ public class ClientScreenHandler {
     @Getter
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
-    @Getter
-    private static boolean guiClosing;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onOpenScreen(ScreenEvent.Opening event) {
         Screen newGui = event.getNewScreen();
-        guiClosing = newGui == null;
         defaultContext.reset();
 
         if (newGui instanceof IMuiScreen screenWrapper) {
@@ -452,17 +450,15 @@ public class ClientScreenHandler {
         RenderSystem.disableDepthTest();
         // mainly for invtweaks compat
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
-        graphics.pose().pushPose();
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         acc.setHoveredSlot(null);
+        graphics.pose().pushPose();
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         Lighting.setupForFlatItems();
         acc.invokeRenderLabels(graphics, mouseX, mouseY);
         muiScreen.drawForeground(graphics, partialTicks);
-        Lighting.setupFor3DItems();
 
         acc.setHoveredSlot(null);
-        IGuiElement hovered = muiScreen.getContext().getHovered();
+        IGuiElement hovered = muiScreen.getContext().getTopHovered();
         if (hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
             acc.setHoveredSlot(vanillaSlot.getVanillaSlot());
         }
@@ -566,13 +562,13 @@ public class ClientScreenHandler {
             drawSegmentLine(graphics, lineY -= 4, scale, color);
             lineY -= 10;
 
-            IGuiElement hovered = locatedHovered.getElement();
+            IWidget hovered = locatedHovered.getElement();
             locatedHovered.applyMatrix(context);
             graphics.pose().pushPose();
             context.applyTo(graphics.pose());
 
             Area area = hovered.getArea();
-            IGuiElement parent = hovered.getParent();
+            IWidget parent = hovered.getParent();
 
             GuiDraw.drawBorder(graphics, 0, 0, area.width, area.height, color, scale);
             if (hovered.hasParent()) {
@@ -581,15 +577,23 @@ public class ClientScreenHandler {
             }
             graphics.pose().popPose();
             locatedHovered.unapplyMatrix(context);
-            GuiDraw.drawText(graphics, "Pos: " + area.x + ", " + area.y + "  Rel: " + area.rx + ", " + area.ry, 5,
-                    lineY, scale, color, false);
+            GuiDraw.drawText(graphics,
+                    "Widget Theme: " + hovered.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(), 5,
+                    lineY, scale, color, true);
             lineY -= shift;
             GuiDraw.drawText(graphics, "Size: " + area.width + ", " + area.height, 5, lineY, scale, color, true);
+            lineY -= shift;
+            GuiDraw.drawText(graphics, "Pos: " + area.x + ", " + area.y + "  Rel: " + area.rx + ", " + area.ry, 5,
+                    lineY, scale, color, false);
             lineY -= shift;
             GuiDraw.drawText(graphics, "Class: " + hovered, 5, lineY, 1, color, true);
             if (hovered.hasParent()) {
                 drawSegmentLine(graphics, lineY -= 4, scale, color);
                 lineY -= 10;
+                GuiDraw.drawText(graphics,
+                        "Widget Theme: " + parent.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(), 5,
+                        lineY, scale, color, true);
+                lineY -= shift;
                 area = parent.getArea();
                 GuiDraw.drawText(graphics, "Parent size: " + area.width + ", " + area.height, 5, lineY, scale, color,
                         true);
@@ -615,7 +619,9 @@ public class ClientScreenHandler {
             } else if (hovered instanceof RichTextWidget richTextWidget) {
                 drawSegmentLine(graphics, lineY -= 4, scale, color);
                 lineY -= 10;
+                locatedHovered.applyMatrix(context);
                 Object hoveredElement = richTextWidget.getHoveredElement();
+                locatedHovered.unapplyMatrix(context);
                 GuiDraw.drawText(graphics, "Hovered: " + hoveredElement, 5, lineY, scale, color, true);
             }
         }

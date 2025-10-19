@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -22,7 +23,14 @@ public class ColorPickerDialog extends Dialog<Integer> {
     private static final IDrawable handleBackground = new Rectangle().setColor(Color.WHITE.main);
 
     private int color;
-    private final int alpha;
+    private int red;
+    private int green;
+    private int blue;
+    private double hue;
+    private double saturation;
+    private double value;
+
+    private int alpha;
     private final boolean controlAlpha;
 
     private final Rectangle preview = new Rectangle();
@@ -39,18 +47,11 @@ public class ColorPickerDialog extends Dialog<Integer> {
 
     public ColorPickerDialog(String name, Consumer<Integer> resultConsumer, int startColor, boolean controlAlpha) {
         super(name, resultConsumer);
-        this.alpha = Color.getAlpha(startColor);
-        updateColor(startColor);
+
         this.controlAlpha = controlAlpha;
+        this.alpha = Color.getAlpha(startColor);
+        updateAll(startColor);
         size(140, controlAlpha ? 106 : 94).background(GTGuiTextures.BACKGROUND);
-        IWidget alphaSlider = controlAlpha ? new Row()
-                .widthRel(1f).height(12)
-                .child(IKey.str("A: ").asWidget().heightRel(1f))
-                .child(createSlider(this.sliderBackgroundA)
-                        .bounds(0, 255)
-                        .value(new DoubleValue.Dynamic(() -> Color.getAlpha(this.color),
-                                val -> updateColor(Color.withAlpha(this.color, (int) val))))) :
-                null;
 
         PagedWidget.Controller controller = new PagedWidget.Controller();
         child(new Column()
@@ -73,21 +74,23 @@ public class ColorPickerDialog extends Dialog<Integer> {
                                 .setValidator(this::validateRawColor)
                                 .value(new StringValue.Dynamic(() -> {
                                     if (controlAlpha) {
-                                        return "#" + Integer.toHexString(this.color);
+                                        return "#" + Color.toFullHexString(this.red, this.green, this.blue, this.alpha);
                                     }
-                                    return "#" + Integer.toHexString(Color.withAlpha(this.color, 0));
+                                    return "#" + Color.toFullHexString(this.red, this.green, this.blue);
                                 }, val -> {
                                     try {
-                                        updateColor(Integer.decode(val));
-                                    } catch (NumberFormatException ignored) {}
+                                        updateAll((int) (long) Long.decode(val));
+                                    } catch (NumberFormatException ignored) {
+                                        GTCEu.LOGGER.error("Illegal color string '{}'", val);
+                                    }
                                 })))
                         .child(this.preview.asWidget().background(GTGuiTextures.CHECKBOARD).size(10, 10).margin(1)))
                 .child(new PagedWidget<>()
                         .left(5).right(5)
                         .expanded()
                         .controller(controller)
-                        .addPage(createRGBPage(alphaSlider))
-                        .addPage(createHSVPage(alphaSlider)))
+                        .addPage(createRGBPage(createAlphaSlider("rgb")))
+                        .addPage(createHSVPage(createAlphaSlider("hsv"))))
                 .child(new Row()
                         .left(10).right(10).height(14)
                         .mainAxisAlignment(Alignment.MainAxis.SPACE_BETWEEN)
@@ -114,23 +117,23 @@ public class ColorPickerDialog extends Dialog<Integer> {
                         .widthRel(1f).height(12)
                         .child(IKey.str("R: ").asWidget().heightRel(1f))
                         .child(createSlider(this.sliderBackgroundR)
+                                .debugName("red")
                                 .bounds(0, 255)
-                                .value(new DoubleValue.Dynamic(() -> Color.getRed(this.color),
-                                        val -> updateColor(Color.withRed(this.color, (int) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.red, this::updateRed))))
                 .child(new Row()
                         .widthRel(1f).height(12)
                         .child(IKey.str("G: ").asWidget().heightRel(1f))
                         .child(createSlider(this.sliderBackgroundG)
+                                .debugName("green")
                                 .bounds(0, 255)
-                                .value(new DoubleValue.Dynamic(() -> Color.getGreen(this.color),
-                                        val -> updateColor(Color.withGreen(this.color, (int) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.green, this::updateGreen))))
                 .child(new Row()
                         .widthRel(1f).height(12)
                         .child(IKey.str("B: ").asWidget().heightRel(1f))
                         .child(createSlider(this.sliderBackgroundB)
+                                .debugName("blue")
                                 .bounds(0, 255)
-                                .value(new DoubleValue.Dynamic(() -> Color.getBlue(this.color),
-                                        val -> updateColor(Color.withBlue(this.color, (int) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.blue, this::updateBlue))))
                 .childIf(alphaSlider != null, alphaSlider);
     }
 
@@ -141,23 +144,23 @@ public class ColorPickerDialog extends Dialog<Integer> {
                         .widthRel(1f).height(12)
                         .child(IKey.str("H: ").asWidget().heightRel(1f))
                         .child(createSlider(new HueBar(GuiAxis.X))
+                                .debugName("hue")
                                 .bounds(0, 360)
-                                .value(new DoubleValue.Dynamic(() -> Color.getHue(this.color),
-                                        val -> updateColor(Color.withHSVHue(this.color, (float) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.hue, this::updateHue))))
                 .child(new Row()
                         .widthRel(1f).height(12)
                         .child(IKey.str("S: ").asWidget().heightRel(1f))
                         .child(createSlider(this.sliderBackgroundS)
+                                .debugName("saturation")
                                 .bounds(0, 1)
-                                .value(new DoubleValue.Dynamic(() -> Color.getHSVSaturation(this.color),
-                                        val -> updateColor(Color.withHSVSaturation(this.color, (float) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.saturation, this::updateSaturation))))
                 .child(new Row()
                         .widthRel(1f).height(12)
                         .child(IKey.str("V: ").asWidget().heightRel(1f))
                         .child(createSlider(this.sliderBackgroundV)
+                                .debugName("value")
                                 .bounds(0, 1)
-                                .value(new DoubleValue.Dynamic(() -> Color.getValue(this.color),
-                                        val -> updateColor(Color.withValue(this.color, (float) val))))))
+                                .value(new DoubleValue.Dynamic(() -> this.value, this::updateValue))))
                 .childIf(alphaSlider != null, alphaSlider);
     }
 
@@ -170,6 +173,17 @@ public class ColorPickerDialog extends Dialog<Integer> {
                 .sliderSize(2, 8);
     }
 
+    private IWidget createAlphaSlider(String s) {
+        return controlAlpha ? new Row()
+                .widthRel(1f).height(12)
+                .child(IKey.str("A: ").asWidget().heightRel(1f))
+                .child(createSlider(this.sliderBackgroundA)
+                        .debugName("alpha " + s)
+                        .bounds(0, 255)
+                        .value(new DoubleValue.Dynamic(() -> this.alpha, this::updateAlpha))) :
+                null;
+    }
+
     private String validateRawColor(String raw) {
         if (!raw.startsWith("#")) {
             if (raw.startsWith("0x") || raw.startsWith("0X")) {
@@ -180,11 +194,74 @@ public class ColorPickerDialog extends Dialog<Integer> {
         return raw;
     }
 
-    public void updateColor(int color) {
-        this.color = color;
+    private void updateRed(double v) {
+        this.red = (int) v;
+        updateFromRGB();
+    }
+
+    private void updateGreen(double v) {
+        this.green = (int) v;
+        updateFromRGB();
+    }
+
+    private void updateBlue(double v) {
+        this.blue = (int) v;
+        updateFromRGB();
+    }
+
+    private void updateHue(double v) {
+        this.hue = v;
+        updateFromHSV();
+    }
+
+    private void updateSaturation(double v) {
+        this.saturation = v;
+        updateFromHSV();
+    }
+
+    private void updateValue(double v) {
+        this.value = v;
+        updateFromHSV();
+    }
+
+    private void updateAlpha(double v) {
+        if (!this.controlAlpha) return;
+        this.alpha = (int) v;
+        this.color = Color.withAlpha(this.color, this.alpha);
+    }
+
+    private void updateFromRGB() {
+        this.color = Color.argb(this.red, this.green, this.blue, this.alpha);
+        this.saturation = Color.getHSVSaturation(this.color);
+        this.value = Color.getValue(this.color);
+        this.hue = Color.getHue(this.color);
+        updateColor(this.color);
+    }
+
+    private void updateFromHSV() {
+        this.color = Color.ofHSV((float) this.hue, (float) this.saturation, (float) this.value, this.alpha);
+        this.red = Color.getRed(this.color);
+        this.green = Color.getGreen(this.color);
+        this.blue = Color.getBlue(this.color);
+        updateColor(this.color);
+    }
+
+    public void updateAll(int color) {
         if (!this.controlAlpha) {
-            this.color = Color.withAlpha(this.color, this.alpha);
+            color = Color.withAlpha(color, this.alpha);
         }
+        this.color = color;
+        this.alpha = Color.getAlpha(color);
+        this.red = Color.getRed(color);
+        this.green = Color.getGreen(color);
+        this.blue = Color.getBlue(color);
+        this.hue = Color.getHue(color);
+        this.saturation = Color.getHSVSaturation(color);
+        this.value = Color.getValue(color);
+        updateColor(color);
+    }
+
+    public void updateColor(int color) {
         color = Color.withAlpha(color, 255);
         int rs = Color.withRed(color, 0), re = Color.withRed(color, 255);
         int gs = Color.withGreen(color, 0), ge = Color.withGreen(color, 255);
@@ -197,6 +274,6 @@ public class ColorPickerDialog extends Dialog<Integer> {
         this.sliderBackgroundS.setHorizontalGradient(Color.withHSVSaturation(color, 0f),
                 Color.withHSVSaturation(color, 1f));
         this.sliderBackgroundV.setHorizontalGradient(Color.withValue(color, 0f), Color.withValue(color, 1f));
-        this.preview.setColor(this.color);
+        this.preview.setColor(color);
     }
 }

@@ -35,7 +35,7 @@ public class JEIContainerHandler implements IGuiContainerHandler<ContainerScreen
     @Override
     public @NotNull Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(@NotNull ContainerScreenWrapper screen,
                                                                                        double mouseX, double mouseY) {
-        IGuiElement hovered = screen.getScreen().getContext().getHovered();
+        IGuiElement hovered = screen.getScreen().getContext().getTopHovered();
         if (hovered instanceof IngredientProvider<?> provider) {
             var override = provider.ingredientOverride();
             if (override != null) {

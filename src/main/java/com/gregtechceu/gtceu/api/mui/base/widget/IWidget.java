@@ -261,6 +261,10 @@ public interface IWidget extends IGuiElement {
         return true;
     }
 
+    default boolean canHoverThrough() {
+        return false;
+    }
+
     /**
      * Marks tooltip for this widget as dirty.
      */

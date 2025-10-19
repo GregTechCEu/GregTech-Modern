@@ -47,6 +47,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -405,7 +406,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                         .key('I',
                                                                 index -> ItemSlot.create(index >= 2)
                                                                         .slot(new ModularSlot(this.mixerItems, index)
-                                                                                .slotGroup("mixer_items")))
+                                                                                .slotGroup("mixer_items")
+                                                                                .filter(stack -> !stack.getCapability(
+                                                                                        ForgeCapabilities.ITEM_HANDLER)
+                                                                                        .isPresent())))
                                                         .build().debugName("mixer inv"))
                                                 .child(new Row()
                                                         .coverChildrenHeight()
@@ -542,7 +546,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
         if (getLevel().isClientSide()) {
             page.child(new SchemaWidget(
-                    new SchemaRenderer(ArraySchema.of(data.getPlayer(), 2))
+                    new SchemaRenderer(ArraySchema.of(data.getPlayer(), 50))
                             .highlightRenderer(
                                     new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
             /* .isometric(true) */)

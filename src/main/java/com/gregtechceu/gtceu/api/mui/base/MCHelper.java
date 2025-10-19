@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.mui.base;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -15,12 +15,12 @@ public class MCHelper {
         return Minecraft.getInstance();
     }
 
-    public static LocalPlayer getPlayer() {
+    public static Player getPlayer() {
         return getMc().player;
     }
 
     public static boolean closeScreen() {
-        LocalPlayer player = getMc().player;
+        Player player = getMc().player;
         if (player != null) {
             player.closeContainer();
             return true;

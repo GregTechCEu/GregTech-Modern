@@ -68,7 +68,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {
-        super(new HorizontalScrollData(), null);
+        super(new HorizontalScrollData(false, 4), null);
         this.handler.setRenderer(this.renderer);
         this.handler.setScrollArea(getScrollArea());
         padding(4, 0);
@@ -127,7 +127,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
             context.getStencil().pop();
-            getScrollArea().drawScrollbar(context);
+            getScrollArea().drawScrollbar(context, context.getTheme().getScrollbarTheme().getTheme(isHovering()));
         }
     }
 

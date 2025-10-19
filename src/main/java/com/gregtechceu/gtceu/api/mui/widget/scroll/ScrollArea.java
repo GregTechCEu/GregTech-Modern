@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
@@ -196,18 +197,23 @@ public class ScrollArea extends Area {
                 (this.scrollY != null && this.scrollY.isDragging());
     }
 
+    public void applyWidgetTheme(WidgetTheme widgetTheme) {
+        if (this.scrollX != null) this.scrollX.applyWidgetTheme(widgetTheme);
+        if (this.scrollY != null) this.scrollY.applyWidgetTheme(widgetTheme);
+    }
+
     /**
      * This method is responsible for drawing a scroll bar
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScrollbar(GuiContext context) {
+    public void drawScrollbar(GuiContext context, WidgetTheme widgetTheme) {
         boolean isXActive = false; // micro optimisation
         if (this.scrollX != null && this.scrollX.isScrollBarActive(this, false)) {
             isXActive = true;
-            this.scrollX.drawScrollbar(context, this);
+            this.scrollX.drawScrollbar(context, this, widgetTheme);
         }
         if (this.scrollY != null && this.scrollY.isScrollBarActive(this, isXActive)) {
-            this.scrollY.drawScrollbar(context, this);
+            this.scrollY.drawScrollbar(context, this, widgetTheme);
         }
     }
 }

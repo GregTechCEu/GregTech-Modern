@@ -208,7 +208,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     private void findHoveredWidgets() {
         this.hovering.clear();
-        this.hovering.trim();
         if (!isEnabled()) {
             return;
         }
@@ -704,6 +703,26 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             i++;
         }
         return null;
+    }
+
+    public List<LocatedWidget> getAllHoveringList(boolean debug) {
+        List<LocatedWidget> hovering = new ArrayList<>();
+        for (var iterator = this.hovering.iterator(); iterator.hasNext();) {
+            LocatedWidget lw = iterator.next();
+            if (!lw.getElement().isValid()) {
+                iterator.remove();
+                continue;
+            }
+            if (debug) {
+                hovering.add(lw);
+                continue;
+            }
+            if (lw.getElement().canHover()) {
+                hovering.add(lw);
+                if (!lw.getElement().canHoverThrough()) break;
+            }
+        }
+        return hovering;
     }
 
     final void setPanelGuiContext(@NotNull ModularGuiContext context) {

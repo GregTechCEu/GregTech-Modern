@@ -41,9 +41,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
     @Override
     public void drawForeground(ModularGuiContext context) {
         super.drawForeground(context);
-        Object o = this.text.getHoveringElement(context.getFont(), context.getMouseX(), context.getMouseY());
-        // GTCEu.LOGGER.info("Mouse {}, {}", context.getMouseX(), context.getMouseY());
-        if (o instanceof IHoverable hoverable) {
+        if (getHoveredElement(context) instanceof IHoverable hoverable) {
             hoverable.onHover();
             RichTooltip tooltip = hoverable.getTooltip();
             if (tooltip != null) {
@@ -54,9 +52,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onMousePressed(mouseX, mouseY, button);
         }
         return Result.ACCEPT;
@@ -64,9 +60,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public boolean onMouseReleased(double mouseX, double mouseY, int button) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onMouseReleased(mouseX, mouseY, button);
         }
         return false;
@@ -74,9 +68,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public @NotNull Result onMouseTapped(double mouseX, double mouseY, int button) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onMouseTapped(mouseX, mouseY, button);
         }
         return Result.IGNORE;
@@ -84,9 +76,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public @NotNull Result onKeyPressed(int keyCode, int scanCode, int modifiers) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onKeyPressed(keyCode, scanCode, modifiers);
         }
         return Result.ACCEPT;
@@ -94,9 +84,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public boolean onKeyReleased(int keyCode, int scanCode, int modifiers) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onKeyReleased(keyCode, scanCode, modifiers);
         }
         return false;
@@ -104,9 +92,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public @NotNull Result onKeyTapped(int keyCode, int scanCode, int modifiers) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onKeyTapped(keyCode, scanCode, modifiers);
         }
         return Result.ACCEPT;
@@ -114,9 +100,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             return interactable.onMouseScrolled(mouseX, mouseY, delta);
         }
         return false;
@@ -124,21 +108,37 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
 
     @Override
     public void onMouseDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        Object o = this.text.getHoveringElement(getContext().getFont(), getContext().getMouseX(),
-                getContext().getMouseY());
-        if (o instanceof Interactable interactable) {
+        if (getHoveredElement() instanceof Interactable interactable) {
             interactable.onMouseDrag(mouseX, mouseY, button, dragX, dragY);
         }
     }
 
+    /**
+     * Returns the currently hovered element of this rich text or {@code null} if none is hovered.
+     * Note that this method assumes, that the {@link com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack
+     * IViewportStack}
+     * is transformed to this widget.
+     *
+     * @return hovered element or null
+     */
     @Nullable
     public Object getHoveredElement() {
+        return getHoveredElement(getContext());
+    }
+
+    /**
+     * Returns the currently hovered element of this rich text or {@code null} if none is hovered.
+     * Note that this method assumes, that the {@link com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack
+     * IViewportStack}
+     * is transformed to this widget.
+     *
+     * @param context the viewport stack with transformation to this widget
+     * @return hovered element or null
+     */
+    @Nullable
+    public Object getHoveredElement(ModularGuiContext context) {
         if (!isHovering()) return null;
-        getContext().pushMatrix();
-        getContext().translate(getArea().x, getArea().y);
-        Object o = this.text.getHoveringElement(getContext());
-        getContext().popMatrix();
-        return o;
+        return this.text.getHoveringElement(context);
     }
 
     @Override

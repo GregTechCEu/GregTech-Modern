@@ -80,6 +80,17 @@ public class PanelManager {
         }
     }
 
+    @NotNull
+    public List<LocatedWidget> getAllHoveredWidgetsList(boolean debug) {
+        for (ModularPanel panel : this.panels) {
+            List<LocatedWidget> widgets = panel.getAllHoveringList(debug);
+            if (widgets != null) {
+                return widgets;
+            }
+        }
+        return Collections.emptyList();
+    }
+
     private void openPanel(ModularPanel panel, boolean resize) {
         if (this.panels.size() == 127) {
             throw new IllegalStateException("Too many panels are open!");

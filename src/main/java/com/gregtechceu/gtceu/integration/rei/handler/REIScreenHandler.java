@@ -87,7 +87,7 @@ public class REIScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
 
     @Override
     public @Nullable DraggableStack getHoveredStack(DraggingContext<T> context, double mouseX, double mouseY) {
-        IGuiElement hovered = context.getScreen().getScreen().getContext().getHovered();
+        IGuiElement hovered = context.getScreen().getScreen().getContext().getTopHovered();
         if (hovered instanceof IngredientProvider<?> provider) {
             var override = provider.ingredientOverride();
             if (override != null) {

@@ -22,6 +22,8 @@ public class UISettings {
     private IntFunction<ModularContainerMenu> containerCreator;
     private Predicate<Player> canInteractWith;
     @Getter
+    private String theme;
+    @Getter
     private final XeiSettings xeiSettings;
 
     public UISettings() {
@@ -80,6 +82,10 @@ public class UISettings {
 
     public void canInteractWithinDefaultRange(PosGuiData guiData) {
         canInteractWithinRange(guiData, DEFAULT_INTERACT_RANGE);
+    }
+
+    public void useTheme(String theme) {
+        this.theme = theme;
     }
 
     @ApiStatus.Internal

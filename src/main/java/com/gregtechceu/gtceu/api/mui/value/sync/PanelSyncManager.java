@@ -93,10 +93,9 @@ public class PanelSyncManager {
     @ApiStatus.Internal
     public void onClose() {
         this.closeListener.forEach(listener -> listener.accept(getPlayer()));
-        for (String name : this.subPanels.keySet()) {
-            SyncHandler sh = this.getModularSyncManager().getMainPSM().syncHandlers.remove(name);
-            this.getModularSyncManager().getMainPSM().reverseSyncHandlers.remove(sh);
-        }
+        // previously panel sync handlers were removed from the main psm, however this problematic if the screen will be
+        // reopened at some point.
+        // we can just not remove the sync handlers since mui has proper checks for re-registering panels
     }
 
     public boolean isInitialised() {

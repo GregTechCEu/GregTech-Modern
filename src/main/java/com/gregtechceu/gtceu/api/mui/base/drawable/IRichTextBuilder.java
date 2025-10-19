@@ -67,6 +67,11 @@ public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {
         return getThis();
     }
 
+    default T addLine(FormattedText formattedText) {
+        getRichText().add(formattedText).newLine();
+        return getThis();
+    }
+
     default T addLine(String s) {
         getRichText().add(s).newLine();
         return getThis();

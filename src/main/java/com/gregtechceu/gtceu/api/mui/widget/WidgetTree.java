@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -142,11 +143,10 @@ public class WidgetTree {
         graphics.pose().pushPose();
         context.applyTo(graphics.pose());
 
+        RenderSystem.colorMask(true, true, true, true);
         if (canBeSeen) {
             // draw widget
-            RenderSystem.colorMask(true, true, true, true);
             graphics.setColor(1f, 1f, 1f, alpha);
-            RenderSystem.enableBlend();
             WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(context.getTheme());
             if (shouldDrawBackground) parent.drawBackground(context, widgetTheme);
             parent.draw(context, widgetTheme);
@@ -157,7 +157,6 @@ public class WidgetTree {
             if (canBeSeen) {
                 // draw viewport without children transformation
                 graphics.setColor(1f, 1f, 1f, alpha);
-                RenderSystem.enableBlend();
                 viewport.preDraw(context, false);
                 graphics.pose().popPose();
                 // apply children transformation of the viewport
@@ -195,7 +194,6 @@ public class WidgetTree {
             if (canBeSeen) {
                 // apply opengl transformations again and draw
                 graphics.setColor(1f, 1f, 1f, alpha);
-                RenderSystem.enableBlend();
                 graphics.pose().pushPose();
                 context.applyTo(graphics.pose());
                 viewport.postDraw(context, true);
@@ -318,7 +316,7 @@ public class WidgetTree {
         if (widget.hasChildren()) {
             anotherResize = new ArrayList<>();
             for (IWidget child : widget.getChildren()) {
-                if (init && expandAxis != null) child.flex().checkExpanded(expandAxis);
+                if (init) child.flex().checkExpanded(expandAxis);
                 if (!resizeWidget(child, init, onOpen)) {
                     anotherResize.add(child);
                 }
@@ -326,6 +324,9 @@ public class WidgetTree {
         }
 
         if (!alreadyCalculated) {
+            // we need to keep track of which widgets are not yet fully calculated, so we can call onResized onto those
+            // which later are fully calculated
+            BitSet state = getCalculatedState(anotherResize);
             if (widget instanceof ILayoutWidget layoutWidget) {
                 layoutWidget.layoutWidgets();
             }
@@ -338,6 +339,7 @@ public class WidgetTree {
             if (widget instanceof ILayoutWidget layoutWidget) {
                 layoutWidget.postLayoutWidgets();
             }
+            checkFullyCalculated(anotherResize, state);
         }
 
         // now fully resize all children which needs it
@@ -348,6 +350,29 @@ public class WidgetTree {
         if (result && !alreadyCalculated) widget.onResized();
 
         return result && anotherResize.isEmpty();
+    }
+
+    private static BitSet getCalculatedState(List<IWidget> children) {
+        if (children.isEmpty()) return null;
+        BitSet state = new BitSet();
+        for (int i = 0; i < children.size(); i++) {
+            IWidget widget = children.get(i);
+            if (widget.resizer().isFullyCalculated()) {
+                state.set(i);
+            }
+        }
+        return state;
+    }
+
+    private static void checkFullyCalculated(List<IWidget> children, BitSet state) {
+        if (children.isEmpty() || state == null) return;
+        for (int i = 0; i < children.size(); i++) {
+            IWidget widget = children.get(i);
+            if (!state.get(i) && widget.resizer().isFullyCalculated()) {
+                widget.onResized();
+                state.set(i);
+            }
+        }
     }
 
     public static void applyPos(IWidget parent) {

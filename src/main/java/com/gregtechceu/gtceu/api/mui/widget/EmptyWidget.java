@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class EmptyWidget implements IWidget {
@@ -20,6 +21,9 @@ public class EmptyWidget implements IWidget {
     @Getter
     private final Flex flex = new Flex(this);
     private boolean requiresResize = false;
+    @Setter
+    @Getter
+    public boolean enabled = true;
     @Getter
     private IWidget parent;
 
@@ -81,16 +85,18 @@ public class EmptyWidget implements IWidget {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public boolean canBeSeen(IViewportStack stack) {
+        return false;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {}
+    public boolean canHover() {
+        return false;
+    }
 
     @Override
-    public boolean canBeSeen(IViewportStack stack) {
-        return false;
+    public boolean canHoverThrough() {
+        return true;
     }
 
     @Override
