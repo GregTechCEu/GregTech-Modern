@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetSlotTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.SlotTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
@@ -139,7 +139,7 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         IFluidTank fluidTank = getFluidTank();
         FluidStack content = this.syncHandler.getValue();
         if (content != null && !content.isEmpty()) {
@@ -154,7 +154,7 @@ public class FluidSlot extends Widget<FluidSlot>
                     this.contentOffsetX, y, getArea().width - this.contentOffsetX * 2, height, 0);
         }
         if (this.overlayTexture != null) {
-            this.overlayTexture.drawAtZero(context, getArea(), widgetTheme);
+            this.overlayTexture.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
         if (content != null && this.syncHandler.controlsAmount()) {
             String s = FormattingUtil.formatNumberReadable2F(content.getAmount(), true) + getBaseUnit();
@@ -165,7 +165,7 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     @Override
-    public void drawOverlay(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (isHovering()) {
             RenderSystem.colorMask(true, true, true, false);
             GuiDraw.drawRect(context.getGraphics(), 1, 1, getArea().w() - 2, getArea().h() - 2, getSlotHoverColor());
@@ -174,16 +174,13 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     @Override
-    public WidgetSlotTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getFluidSlotTheme();
     }
 
     public int getSlotHoverColor() {
-        WidgetTheme theme = getWidgetTheme(getContext().getTheme());
-        if (theme instanceof WidgetSlotTheme slotTheme) {
-            return slotTheme.getSlotHoverColor();
-        }
-        return ITheme.getDefault().getFluidSlotTheme().getSlotHoverColor();
+        WidgetThemeEntry<SlotTheme> theme = getWidgetTheme(getContext().getTheme(), SlotTheme.class);
+        return theme.getTheme().getSlotHoverColor();
     }
 
     @NotNull

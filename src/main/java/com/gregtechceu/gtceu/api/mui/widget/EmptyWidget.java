@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widget;
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Flex;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -46,13 +46,13 @@ public class EmptyWidget implements IWidget {
     }
 
     @Override
-    public void drawBackground(ModularGuiContext context, WidgetTheme widgetTheme) {}
+    public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {}
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
     @Override
-    public void drawOverlay(ModularGuiContext context, WidgetTheme widgetTheme) {}
+    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
     @Override
     public void drawForeground(ModularGuiContext context) {}

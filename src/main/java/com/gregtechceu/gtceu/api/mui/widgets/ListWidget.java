@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IParentWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
@@ -44,7 +44,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.childSeparator == null || this.separatorPositions.isEmpty()) return;
         GuiAxis axis = this.scrollData.getAxis();
         int x = getArea().getPadding().left(), y = getArea().getPadding().top(), w, h;
@@ -61,7 +61,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
             } else {
                 y = p;
             }
-            this.childSeparator.draw(context, x, y, w, h, widgetTheme);
+            this.childSeparator.draw(context, x, y, w, h, getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 

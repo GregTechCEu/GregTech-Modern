@@ -25,6 +25,7 @@ public class HueBar implements IDrawable {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+        applyColor(widgetTheme.getColor());
         int size = this.axis.isHorizontal() ? width : height;
         float step = size / 6f;
         int previous = COLORS[5];

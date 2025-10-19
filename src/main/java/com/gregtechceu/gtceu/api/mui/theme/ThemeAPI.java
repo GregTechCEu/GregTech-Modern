@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.api.mui.theme;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
 
@@ -14,46 +11,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class ThemeAPI implements IThemeApi {
 
     public static final ThemeAPI INSTANCE = new ThemeAPI();
-    public static final String DEFAULT = "DEFAULT";
-    public static final ITheme DEFAULT_DEFAULT = new DefaultTheme();
+    public static final String DEFAULT_ID = "DEFAULT";
+    public static final ITheme DEFAULT_THEME = DefaultTheme.INSTANCE;
+
+    public static final Pattern widgetThemeNamePattern = Pattern.compile("[a-zA-z0-9_-]+");
 
     private final Object2ObjectMap<String, ITheme> themes = new Object2ObjectOpenHashMap<>();
     protected final Object2ObjectMap<String, List<JsonBuilder>> defaultThemes = new Object2ObjectOpenHashMap<>();
-    protected final Object2ObjectMap<String, WidgetTheme> defaultWidgetThemes = new Object2ObjectOpenHashMap<>();
-    protected final Object2ObjectMap<String, WidgetThemeParser> widgetThemeFunctions = new Object2ObjectOpenHashMap<>();
+    private final List<WidgetThemeKey<?>> keys = new ArrayList<>();
     protected final Object2ObjectOpenHashMap<String, String> jsonScreenThemes = new Object2ObjectOpenHashMap<>();
     private final Object2ObjectMap<String, String> screenThemes = new Object2ObjectOpenHashMap<>();
 
-    private ThemeAPI() {
-        registerWidgetTheme(Theme.PANEL,
-                new WidgetTheme(GTGuiTextures.BACKGROUND, null, Color.WHITE.main, 0xFF404040, false),
-                WidgetTheme::new);
-        registerWidgetTheme(Theme.BUTTON, new WidgetTheme(GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_HOVERED,
-                Color.WHITE.main, Color.WHITE.main, true), WidgetTheme::new);
-        registerWidgetTheme(Theme.ITEM_SLOT,
-                new WidgetSlotTheme(GTGuiTextures.SLOT, Color.withAlpha(Color.WHITE.main, 0x60)),
-                WidgetSlotTheme::new);
-        registerWidgetTheme(Theme.FLUID_SLOT,
-                new WidgetSlotTheme(GTGuiTextures.FLUID_SLOT, Color.withAlpha(Color.WHITE.main, 0x60)),
-                WidgetSlotTheme::new);
-        registerWidgetTheme(Theme.TEXT_FIELD, new WidgetTextFieldTheme(0xFF2F72A8, 0xFF5F5F5F),
-                (parent, json, fallback) -> new WidgetTextFieldTheme(parent, fallback, json));
-        registerWidgetTheme(Theme.TOGGLE_BUTTON,
-                new WidgetThemeSelectable(GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_HOVERED, Color.WHITE.main,
-                        Color.WHITE.main, true,
-                        GTGuiTextures.MC_BUTTON_DISABLED, IDrawable.NONE, Color.WHITE.main, Color.WHITE.main, true),
-                WidgetThemeSelectable::new);
-    }
+    private ThemeAPI() {}
 
     @Override
     public ITheme getDefaultTheme() {
-        return DEFAULT_DEFAULT;
+        return DEFAULT_THEME;
     }
 
     @Override
@@ -64,11 +45,6 @@ public class ThemeAPI implements IThemeApi {
     @Override
     public boolean hasTheme(String id) {
         return this.themes.containsKey(id);
-    }
-
-    @Override
-    public boolean hasWidgetTheme(String id) {
-        return this.widgetThemeFunctions.containsKey(id);
     }
 
     @Override
@@ -109,13 +85,27 @@ public class ThemeAPI implements IThemeApi {
         this.screenThemes.put(screen, theme);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void registerWidgetTheme(String id, WidgetTheme defaultTheme, WidgetThemeParser parser) {
-        if (this.widgetThemeFunctions.containsKey(id)) {
-            throw new IllegalStateException();
+    public <T extends WidgetTheme> WidgetThemeKey<T> registerWidgetTheme(String id, T defaultTheme, T defaultHoverTheme,
+                                                                         WidgetThemeParser<T> parser) {
+        Objects.requireNonNull(id, "Id for widget theme must not be null");
+        Objects.requireNonNull(defaultTheme, "Default widget theme must not be null, but is null for id '" + id + "'.");
+        Objects.requireNonNull(parser, "Parser for widget theme must not be null, but is null for id '" + id + "'.");
+        if (WidgetThemeKey.getFromFullName(id) != null) {
+            throw new IllegalStateException("there already is a widget theme for id '" + id + "' registered.");
         }
-        this.widgetThemeFunctions.put(id, parser);
-        this.defaultWidgetThemes.put(id, defaultTheme);
+        if (!widgetThemeNamePattern.matcher(id).matches()) {
+            throw new IllegalArgumentException("Widget theme id '" + id +
+                    "' is invalid. Id must only contain letters, numbers, underscores and minus.");
+        }
+        Class<T> type = (Class<T>) defaultTheme.getClass();
+        return new WidgetThemeKey<>(type, id, defaultTheme, defaultHoverTheme, parser);
+    }
+
+    @Override
+    public List<WidgetThemeKey<?>> getWidgetThemeKeys() {
+        return Collections.unmodifiableList(this.keys);
     }
 
     // Internals
@@ -127,29 +117,13 @@ public class ThemeAPI implements IThemeApi {
         this.themes.put(theme.getId(), theme);
     }
 
+    void registerWidgetThemeKey(WidgetThemeKey<?> key) {
+        this.keys.add(key);
+    }
+
     void onReload() {
         this.themes.clear();
         this.jsonScreenThemes.clear();
-        registerTheme(DEFAULT_DEFAULT);
-    }
-
-    public static class DefaultTheme extends AbstractDefaultTheme {
-
-        private DefaultTheme() {}
-
-        @Override
-        public String getId() {
-            return DEFAULT;
-        }
-
-        @Override
-        public WidgetTheme getFallback() {
-            return ThemeManager.defaultdefaultWidgetTheme;
-        }
-
-        @Override
-        public WidgetTheme getWidgetTheme(String id) {
-            return INSTANCE.defaultWidgetThemes.get(id);
-        }
+        registerTheme(DEFAULT_THEME);
     }
 }

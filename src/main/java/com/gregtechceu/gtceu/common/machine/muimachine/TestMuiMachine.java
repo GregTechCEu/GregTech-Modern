@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.AnimatedText;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.schema.ArraySchema;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
@@ -670,12 +670,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         }
 
         @Override
-        public void draw(ModularGuiContext context) {
-            this.animatedKey.draw(context, 0, 0, getArea().w(), getArea().h(), WidgetTheme.getDefault()/*
-                                                                                                        * getActiveWidgetTheme
-                                                                                                        * (widgetTheme,
-                                                                                                        * isHovering())
-                                                                                                        */);
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            this.animatedKey.draw(context, 0, 0, getArea().w(), getArea().h(),
+                    getActiveWidgetTheme(widgetTheme, isHovering()));
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PlayerSlotType;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -20,11 +21,15 @@ public class ItemSlotSH extends SyncHandler {
 
     @Getter
     private final ModularSlot slot;
+    @Nullable
+    @Getter
+    private final PlayerSlotType playerSlotType;
     private ItemStack lastStoredItem;
     private boolean registered = false;
 
     public ItemSlotSH(ModularSlot slot) {
         this.slot = slot;
+        this.playerSlotType = PlayerSlotType.getPlayerSlotType(slot);
     }
 
     @Override
@@ -123,6 +128,10 @@ public class ItemSlotSH extends SyncHandler {
 
     public boolean isPhantom() {
         return false;
+    }
+
+    public boolean isPlayerSlot() {
+        return playerSlotType != null;
     }
 
     @Nullable

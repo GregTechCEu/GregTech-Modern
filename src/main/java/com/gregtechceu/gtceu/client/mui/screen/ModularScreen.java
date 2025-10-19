@@ -101,7 +101,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     @Getter
     private boolean pauseScreen = false;
 
-    @Getter
     private ITheme currentTheme;
     @Getter
     private IMuiScreen screenWrapper;
@@ -148,7 +147,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                 buildUI(this.context);
         Objects.requireNonNull(mainPanel, "The main panel must not be null!");
         this.name = mainPanel.getName();
-        this.currentTheme = IThemeApi.get().getThemeForScreen(this, null);
         this.panelManager = new PanelManager(this, mainPanel);
     }
 
@@ -727,6 +725,13 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    public ITheme getCurrentTheme() {
+        if (this.currentTheme == null) {
+            useTheme(null);
+        }
+        return this.currentTheme;
     }
 
     /**

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
@@ -174,7 +174,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getPanelTheme();
     }
 
@@ -706,16 +706,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return null;
     }
 
-    @Override
-    public int getDefaultHeight() {
-        return 166;
-    }
-
-    @Override
-    public int getDefaultWidth() {
-        return 176;
-    }
-
     final void setPanelGuiContext(@NotNull ModularGuiContext context) {
         setContext(context);
         if (!context.getScreen().isOverlay()) {
@@ -774,7 +764,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     public boolean shouldAnimate() {
-        return !getScreen().isOverlay() && getScreen().getCurrentTheme().getOpenCloseAnimationOverride() > 0;
+        // TODO: fix when NEA gets ported
+        return !getScreen().isOverlay() /* && getScreen().getCurrentTheme().getOpenCloseAnimationOverride() > 0 */;
     }
 
     void registerSubPanel(IPanelHandler handler) {

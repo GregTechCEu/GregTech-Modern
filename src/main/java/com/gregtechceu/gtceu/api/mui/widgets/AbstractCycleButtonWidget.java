@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.mui.base.value.IEnumValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
@@ -98,12 +98,12 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getButtonTheme();
     }
 
     @Override
-    public IDrawable getCurrentBackground(ITheme theme, WidgetTheme widgetTheme) {
+    public IDrawable getCurrentBackground(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
         // make sure texture is up-to-date
         int state = getState();
         if (isHovering() && this.hoverBackground != null && this.hoverBackground[state] != null &&
@@ -115,7 +115,7 @@ public class AbstractCycleButtonWidget<W extends AbstractCycleButtonWidget<W>> e
     }
 
     @Override
-    public IDrawable getCurrentOverlay(ITheme theme, WidgetTheme widgetTheme) {
+    public IDrawable getCurrentOverlay(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
         int state = getState();
         if (isHovering() && this.hoverOverlay != null && this.hoverOverlay[state] != null &&
                 this.hoverOverlay[state] != IDrawable.NONE) {

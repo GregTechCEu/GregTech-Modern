@@ -24,7 +24,7 @@ public class TextFieldRenderer extends TextRenderer {
 
     protected final TextFieldHandler handler;
     @Setter
-    protected int markedColor = 0x2F72A8;
+    protected int markedColor = 0xFF2F72A8;
     @Setter
     protected int cursorColor = 0xFFFFFFFF;
     protected boolean renderCursor = false;

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IHoverable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IRichTextBuilder;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.text.RichText;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -26,7 +26,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.draw(context, widgetTheme);
         if (this.autoUpdate || this.dirty) {
             if (this.builder != null) {
@@ -35,7 +35,7 @@ public class RichTextWidget extends Widget<RichTextWidget> implements IRichTextB
             }
             this.dirty = false;
         }
-        this.text.drawAtZero(context, getArea(), widgetTheme);
+        this.text.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
     }
 
     @Override

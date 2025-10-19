@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.ISynced;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
@@ -147,7 +147,7 @@ public class WidgetTree {
             RenderSystem.colorMask(true, true, true, true);
             graphics.setColor(1f, 1f, 1f, alpha);
             RenderSystem.enableBlend();
-            WidgetTheme widgetTheme = parent.getWidgetTheme(context.getTheme());
+            WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(context.getTheme());
             if (shouldDrawBackground) parent.drawBackground(context, widgetTheme);
             parent.draw(context, widgetTheme);
             parent.drawOverlay(context, widgetTheme);
@@ -238,7 +238,7 @@ public class WidgetTree {
 
         // draw widget
         graphics.setColor(1f, 1f, 1f, alpha);
-        WidgetTheme widgetTheme = parent.getWidgetTheme(context.getTheme());
+        WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(context.getTheme());
         parent.drawBackground(context, widgetTheme);
 
         graphics.pose().popPose();

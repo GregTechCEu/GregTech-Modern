@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
@@ -25,12 +25,12 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
     private IDrawable collapsedOverlay;
 
     @Override
-    public void drawOverlay(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawOverlay(context, widgetTheme);
         if (this.expanded) {
-            this.expandedOverlay.drawAtZero(context, getArea(), widgetTheme);
+            this.expandedOverlay.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         } else {
-            this.collapsedOverlay.drawAtZero(context, getArea(), widgetTheme);
+            this.collapsedOverlay.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.mui.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widgets.VoidWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
@@ -60,9 +60,9 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
                 IDrawable.isVisible(getHoverOverlay()) ||
                 getTooltip() != null)
             return true;
-        WidgetTheme widgetTheme = getWidgetTheme(getContext().getTheme());
-        if (getBackground() == null && IDrawable.isVisible(widgetTheme.getBackground())) return true;
-        return getHoverBackground() == null && IDrawable.isVisible(widgetTheme.getHoverBackground());
+        WidgetThemeEntry<?> widgetTheme = getWidgetTheme(getContext().getTheme());
+        if (getBackground() == null && IDrawable.isVisible(widgetTheme.getTheme().getBackground())) return true;
+        return getHoverBackground() == null && IDrawable.isVisible(widgetTheme.getHoverTheme().getBackground());
     }
 
     @Override

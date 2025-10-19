@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
@@ -42,12 +43,13 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;
         this.lastText = checkString();
-        renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
+        WidgetTheme theme = getActiveWidgetTheme(widgetTheme, isHovering());
+        renderer.setColor(this.color != null ? this.color.getAsInt() : theme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
-        renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
+        renderer.setShadow(this.shadow != null ? this.shadow : theme.isTextShadow());
         renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(this.scale);
         renderer.setSimulate(false);

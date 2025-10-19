@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeKey;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
@@ -111,14 +113,14 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     /**
      * The current set background. This is not an accurate representation of what is actually being displayed currently.
      * Usually background is handled by the theme, which is when this is null.
-     * Backgrounds are drawn in {@link #drawBackground(ModularGuiContext, WidgetTheme)}.
+     * Backgrounds are drawn in {@link IWidget#drawBackground(ModularGuiContext, WidgetThemeEntry)}.
      */
     @Getter
     @Nullable
     private IDrawable background = null;
     /**
      * The current set overlay. This is used when the widget is not hovered or no hovered overlay is set.
-     * Overlays are drawn in {@link #drawOverlay(ModularGuiContext, WidgetTheme)}.
+     * Overlays are drawn in {@link IWidget#drawOverlay(ModularGuiContext, WidgetThemeEntry)}.
      */
     @Getter
     @Nullable
@@ -140,7 +142,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     private RichTooltip tooltip;
     @Getter
     @Nullable
-    private String widgetThemeOverride = null;
+    private WidgetThemeKey<?> widgetThemeOverride = null;
     // listener
     @Nullable
     private List<IGuiAction> guiActionListeners; // TODO replace with proper event system
@@ -263,25 +265,25 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // -----------------
 
     /**
-     * Called directly before {@link #draw(ModularGuiContext, WidgetTheme)}. Draws background textures.
+     * Called directly before {@link IWidget#draw(ModularGuiContext, WidgetThemeEntry)}. Draws background textures.
      * It is highly recommended to at least replicate this behaviour when overriding.
-     * Overriding {@link #draw(ModularGuiContext, WidgetTheme)} for custom visuals is preferred.
+     * Overriding {@link IWidget#draw(ModularGuiContext, WidgetThemeEntry)} for custom visuals is preferred.
      * If a parent of this widget is disabled, this widget will not be drawn.
      *
      * @param context     gui context
      * @param widgetTheme widget theme of this widget
      */
     @Override
-    public void drawBackground(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         IDrawable bg = getCurrentBackground(context.getTheme(), widgetTheme);
         if (bg != null) {
-            bg.drawAtZero(context, getArea().width, getArea().height, widgetTheme);
+            bg.drawAtZero(context, getArea().width, getArea().height, getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 
     /**
-     * Called between {@link #drawBackground(ModularGuiContext, WidgetTheme)} and
-     * {@link #drawOverlay(ModularGuiContext, WidgetTheme)}.
+     * Called between {@link IWidget#drawBackground(ModularGuiContext, WidgetThemeEntry)} and
+     * {@link IWidget#drawOverlay(ModularGuiContext, WidgetThemeEntry)}.
      * Custom visuals should be drawn here. For example the {@link com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot
      * ItemSlot} draws its item
      * here. If a parent of this widget is disabled, this widget will not be drawn.
@@ -290,22 +292,22 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @param widgetTheme widget theme
      */
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {}
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {}
 
     /**
-     * Called directly after {@link #draw(ModularGuiContext, WidgetTheme)}. Draws overlay textures.
+     * Called directly after {@link IWidget#draw(ModularGuiContext, WidgetThemeEntry)}. Draws overlay textures.
      * It is highly recommended to at least replicate this behaviour when overriding.
-     * Overriding {@link #draw(ModularGuiContext, WidgetTheme)} for custom visuals is preferred.
+     * Overriding {@link #draw(ModularGuiContext, WidgetThemeEntry)} for custom visuals is preferred.
      * If a parent of this widget is disabled, this widget will not be drawn.
      *
      * @param context     gui context
      * @param widgetTheme widget theme
      */
     @Override
-    public void drawOverlay(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         IDrawable bg = getCurrentOverlay(context.getTheme(), widgetTheme);
         if (bg != null) {
-            bg.drawAtZero(context, getArea(), widgetTheme);
+            bg.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 
@@ -331,14 +333,14 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @param widgetTheme widget theme which is used by this widget
      * @return currently displayed background
      */
-    public IDrawable getCurrentBackground(ITheme theme, WidgetTheme widgetTheme) {
+    public IDrawable getCurrentBackground(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
         if (isHovering()) {
             IDrawable hoverBackground = getHoverBackground();
-            if (hoverBackground == null) hoverBackground = widgetTheme.getHoverBackground();
+            if (hoverBackground == null) hoverBackground = getActiveWidgetTheme(widgetTheme, true).getBackground();
             if (hoverBackground != null && hoverBackground != IDrawable.NONE) return hoverBackground;
         }
         IDrawable background = getBackground();
-        return background == null ? widgetTheme.getBackground() : background;
+        return background == null ? getActiveWidgetTheme(widgetTheme, false).getBackground() : background;
     }
 
     /**
@@ -348,7 +350,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @param widgetTheme widget theme which is used by this widget
      * @return currently displayed background
      */
-    public IDrawable getCurrentOverlay(ITheme theme, WidgetTheme widgetTheme) {
+    public IDrawable getCurrentOverlay(ITheme theme, WidgetThemeEntry<?> widgetTheme) {
         IDrawable hoverBackground = getHoverOverlay();
         return hoverBackground != null && hoverBackground != IDrawable.NONE && isHovering() ? hoverBackground :
                 getOverlay();
@@ -396,8 +398,13 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @return widget theme this widget wishes to use
      */
     @ApiStatus.OverrideOnly
-    protected WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    protected WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getFallback();
+    }
+
+    @ApiStatus.OverrideOnly
+    protected WidgetTheme getActiveWidgetTheme(WidgetThemeEntry<?> widgetTheme, boolean hover) {
+        return widgetTheme.getTheme(hover);
     }
 
     /**
@@ -409,11 +416,32 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @ApiStatus.NonExtendable
     @Override
-    public final WidgetTheme getWidgetTheme(ITheme theme) {
+    public final WidgetThemeEntry<?> getWidgetTheme(ITheme theme) {
         if (this.widgetThemeOverride != null) {
             return theme.getWidgetTheme(this.widgetThemeOverride);
         }
         return getWidgetThemeInternal(theme);
+    }
+
+    /**
+     * Returns the actual used widget theme. Uses {@link #widgetTheme(String)} if it has been set, otherwise calls
+     * {@link #getWidgetThemeInternal(ITheme)}
+     *
+     * @param theme        theme to get widget theme from
+     * @param expectedType type of the widget theme to expect used for validation
+     * @return widget theme this widget will use
+     */
+    @SuppressWarnings("unchecked")
+    @ApiStatus.NonExtendable
+    public final <T extends WidgetTheme> WidgetThemeEntry<T> getWidgetTheme(ITheme theme, Class<T> expectedType) {
+        WidgetThemeEntry<?> entry = getWidgetTheme(theme);
+        if (entry.getKey().isOfType(expectedType)) {
+            return (WidgetThemeEntry<T>) entry;
+        }
+        throw new IllegalStateException(String.format(
+                "Got widget theme with invalid type in widget '%s'. Got type '%s'" +
+                        ", but expected type '%s'!",
+                this, entry.getKey().getWidgetThemeType().getSimpleName(), expectedType.getSimpleName()));
     }
 
     /**
@@ -449,7 +477,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * <p>
      * Following argument special cases should be considered:
      * <ul>
-     * <li>{@code null} will fallback to {@link WidgetTheme#getHoverBackground()}</li>
+     * <li>{@code null} will fallback to {@link WidgetThemeEntry#getHoverTheme()}</li>
      * <li>{@link IDrawable#EMPTY} will make the hover background invisible</li>
      * <li>{@link IDrawable#NONE} will use the normal background instead (which is also achieved using
      * {@link #disableHoverBackground()})</li>
@@ -512,9 +540,20 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      * @return this
      */
     public W widgetTheme(String s) {
-        if (!IThemeApi.get().hasWidgetTheme(s)) {
+        WidgetThemeKey<?> widgetThemeKey = WidgetThemeKey.getFromFullName(s);
+        if (widgetThemeKey == null) {
             throw new IllegalArgumentException("No widget theme for id '" + s + "' exists.");
         }
+        return widgetTheme(widgetThemeKey);
+    }
+
+    /**
+     * Sets an override widget theme. This will change of the appearance of this widget according to the widget theme.
+     *
+     * @param s id of the widget theme (see constants in {@link IThemeApi})
+     * @return this
+     */
+    public W widgetTheme(WidgetThemeKey<?> s) {
         this.widgetThemeOverride = s;
         return getThis();
     }
@@ -609,6 +648,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     // ----------------
     // === Resizing ===
     // ----------------
+
+    @Override
+    public int getDefaultWidth() {
+        return isValid() ? getWidgetTheme(getContext().getTheme()).getTheme().getDefaultWidth() : 18;
+    }
+
+    @Override
+    public int getDefaultHeight() {
+        return isValid() ? getWidgetTheme(getContext().getTheme()).getTheme().getDefaultHeight() : 18;
+    }
 
     @Override
     public void scheduleResize() {

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.DoubleValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
@@ -74,7 +75,7 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
     }
 
     @Override
-    public void drawBackground(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawBackground(context, widgetTheme);
         if (this.stopper != null && this.stopperDrawable != null && this.stopperWidth > 0 && this.stopperHeight > 0) {
             for (double stop : this.stopper) {
@@ -83,21 +84,21 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
                     pos -= this.stopperWidth / 2;
                     int crossAxisPos = (int) (getArea().height / 2D - this.stopperHeight / 2D);
                     this.stopperDrawable.draw(context, pos, crossAxisPos, this.stopperWidth, this.stopperHeight,
-                            WidgetTheme.getDefault());
+                            WidgetTheme.getDefault().getTheme());
                 } else {
                     pos -= this.stopperHeight / 2;
                     int crossAxisPos = (int) (getArea().width / 2D - this.stopperWidth / 2D);
                     this.stopperDrawable.draw(context, crossAxisPos, pos, this.stopperWidth, this.stopperHeight,
-                            WidgetTheme.getDefault());
+                            WidgetTheme.getDefault().getTheme());
                 }
             }
         }
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.handleDrawable != null) {
-            this.handleDrawable.draw(context, this.sliderArea, context.getTheme().getButtonTheme());
+            this.handleDrawable.draw(context, this.sliderArea, context.getTheme().getButtonTheme().getTheme());
         }
     }
 

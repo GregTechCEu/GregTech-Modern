@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.base;
 
-import com.gregtechceu.gtceu.api.mui.theme.WidgetSlotTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTextFieldTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeSelectable;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.api.mui.theme.*;
+
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Collection;
 
 /**
  * A theme is parsed from json and contains style information like color or background texture.
@@ -36,33 +36,22 @@ public interface ITheme {
      */
     ITheme getParentTheme();
 
-    WidgetTheme getFallback();
+    @UnmodifiableView
+    Collection<WidgetThemeEntry<?>> getWidgetThemes();
 
-    WidgetTheme getPanelTheme();
+    WidgetThemeEntry<WidgetTheme> getFallback();
 
-    WidgetTheme getButtonTheme();
+    WidgetThemeEntry<WidgetTheme> getPanelTheme();
 
-    WidgetSlotTheme getItemSlotTheme();
+    WidgetThemeEntry<WidgetTheme> getButtonTheme();
 
-    WidgetSlotTheme getFluidSlotTheme();
+    WidgetThemeEntry<SlotTheme> getItemSlotTheme();
 
-    WidgetTextFieldTheme getTextFieldTheme();
+    WidgetThemeEntry<SlotTheme> getFluidSlotTheme();
 
-    WidgetThemeSelectable getToggleButtonTheme();
+    WidgetThemeEntry<TextFieldTheme> getTextFieldTheme();
 
-    WidgetTheme getWidgetTheme(String id);
+    WidgetThemeEntry<SelectableTheme> getToggleButtonTheme();
 
-    default <T extends WidgetTheme> T getWidgetTheme(Class<T> clazz, String id) {
-        WidgetTheme theme = getWidgetTheme(id);
-        if (clazz.isInstance(theme)) {
-            return (T) theme;
-        }
-        return null;
-    }
-
-    int getOpenCloseAnimationOverride();
-
-    boolean getSmoothProgressBarOverride();
-
-    RichTooltip.Pos getTooltipPosOverride();
+    <T extends WidgetTheme> WidgetThemeEntry<T> getWidgetTheme(WidgetThemeKey<T> key);
 }

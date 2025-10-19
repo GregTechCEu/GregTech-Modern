@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.schema.ISchema;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.schemarenderer.BaseSchemaRenderer;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -37,11 +37,11 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         Vec3 f = this.schema.schema().getFocus();
         this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
                 (float) (f.z + this.offset.z), scale, yaw, pitch);
-        this.schema.drawAtZero(context, getArea(), widgetTheme);
+        this.schema.drawAtZero(context, getArea(), widgetTheme.getTheme());
     }
 
     @Override

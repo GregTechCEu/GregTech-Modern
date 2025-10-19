@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
@@ -45,7 +45,7 @@ public class ButtonWidget<W extends ButtonWidget<W>> extends SingleChildWidget<W
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getButtonTheme();
     }
 

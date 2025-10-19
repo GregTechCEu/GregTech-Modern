@@ -20,6 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * A util class for stencil stack used as a scissor stack. The reason for using stencils over scissors is that scissors
+ * can not have transformation applied and therefore don't work with 3D holo UI's.
+ */
 public class Stencil {
 
     // Stores a stack of areas that are transformed, so it represents the actual area

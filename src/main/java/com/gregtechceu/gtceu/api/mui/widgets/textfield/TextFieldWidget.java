@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTextFieldTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
@@ -60,14 +57,6 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
         if (!hasTooltip()) {
             tooltipBuilder(tooltip -> tooltip.addLine(IKey.str(getText())));
         }
-    }
-
-    public int getMarkedColor() {
-        WidgetTheme theme = getWidgetTheme(getContext().getTheme());
-        if (theme instanceof WidgetTextFieldTheme textFieldTheme) {
-            return textFieldTheme.getMarkedColor();
-        }
-        return ITheme.getDefault().getTextFieldTheme().getMarkedColor();
     }
 
     @Override

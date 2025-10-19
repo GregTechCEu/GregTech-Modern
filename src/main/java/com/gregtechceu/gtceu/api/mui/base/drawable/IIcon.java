@@ -41,10 +41,20 @@ public interface IIcon extends IDrawable {
         return drawable;
     }
 
+    /**
+     * This returns a hoverable wrapper of this icon. This is only used in
+     * {@link com.gregtechceu.gtceu.api.mui.drawable.text.RichText RichText}.
+     * This allows this icon to have its own tooltip.
+     */
     default HoverableIcon asHoverable() {
         return new HoverableIcon(this);
     }
 
+    /**
+     * This returns an interactable wrapper of this icon. This is only used in
+     * {@link com.gregtechceu.gtceu.api.mui.drawable.text.RichText RichText}.
+     * This allows this icon to be able to listen to clicks and other inputs.
+     */
     default InteractableIcon asInteractable() {
         return new InteractableIcon(this);
     }

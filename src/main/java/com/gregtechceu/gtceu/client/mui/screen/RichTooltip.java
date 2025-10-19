@@ -195,9 +195,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
         Pos pos = this.pos;
         if (pos == null) {
-            pos = context.isMuiContext() ?
-                    context.getMuiContext().getScreen().getCurrentTheme().getTooltipPosOverride() : null;
-            if (pos == null) pos = ConfigHolder.INSTANCE.client.ui.tooltipPos;
+            pos = ConfigHolder.INSTANCE.client.ui.tooltipPos;
         }
         if (pos == Pos.FIXED) {
             return new Rectangle(this.x, this.y, width, height);

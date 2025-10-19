@@ -273,7 +273,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        draw(context, x, y, width, height, widgetTheme.getTextColor(), widgetTheme.getTextShadow());
+        draw(context, x, y, width, height, widgetTheme.getTextColor(), widgetTheme.isTextShadow());
     }
 
     public void draw(GuiContext context, int x, int y, int width, int height, int color, boolean shadow) {
