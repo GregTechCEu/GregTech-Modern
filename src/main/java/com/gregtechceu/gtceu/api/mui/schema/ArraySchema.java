@@ -24,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -52,7 +54,7 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        return new ArraySchema(blocks);
+        return new ArraySchema(blocks, center.getCenter().toVector3f());
     }
 
     public static ArraySchema of(Level level, Vec3 center, Vec3 p1, Vec3 p2) {
@@ -68,7 +70,7 @@ public class ArraySchema implements ISchema {
         for (BlockPos pos : BlockPos.betweenClosed(x0, y0, z0, x1, y1, z1)) {
             blocks[pos.getX() - x0][pos.getY() - y0][pos.getZ() - z0] = level.getBlockState(pos);
         }
-        return new ArraySchema(blocks);
+        return new ArraySchema(blocks, center.toVector3f());
     }
 
     @Getter
@@ -77,9 +79,13 @@ public class ArraySchema implements ISchema {
     @Getter
     @Setter
     private BiPredicate<BlockPos, BlockState> renderFilter = (pos, block) -> true;
-    private final Vec3 center;
+    private final Vector3f center;
 
     public ArraySchema(BlockState[][][] blocks) {
+        this(blocks, null);
+    }
+
+    public ArraySchema(BlockState[][][] blocks, @Nullable Vector3f center) {
         this.blocks = blocks;
         this.level = new SchemaLevel();
         MutableBlockPos current = new MutableBlockPos();
@@ -95,11 +101,11 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        this.center = BlockPosUtil.getCenterD(BlockPos.ZERO, max.move(1, 1, 1));
+        this.center = center != null ? center : BlockPosUtil.getCenterF(BlockPos.ZERO, max.move(1, 1, 1));
     }
 
     @Override
-    public Vec3 getFocus() {
+    public Vector3f getFocus() {
         return center;
     }
 
