@@ -71,7 +71,7 @@ public class GuiManager {
                                                 ServerPlayer player) {
         if (player instanceof FakePlayer || openedContainers.contains(player)) return;
         openedContainers.add(player);
-        // create panel, collect sync handlers and create container
+        // create panel, collect sync handlers and create menu
         UISettings settings = new UISettings(XeiSettings.DUMMY);
         settings.defaultCanInteractWith(factory, guiData);
         PanelSyncManager syncManager = new PanelSyncManager(false);
@@ -80,21 +80,24 @@ public class GuiManager {
 
         // create the menu
         player.nextContainerCounter();
-        player.closeContainer();
+        if (player.containerMenu != player.inventoryMenu) {
+            player.closeContainer();
+        }
         int windowId = player.containerCounter;
-        ModularContainerMenu container = settings.hasContainer() ? settings.createContainer(windowId) :
+        ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
                 factory.createContainer(windowId);
-        container.construct(player, syncManager, settings, panel.getName(), guiData);
+        menu.construct(player, syncManager, settings, panel.getName(), guiData);
 
         // sync to client
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         factory.writeGuiData(guiData, buffer);
-        GTNetwork.sendToPlayer(player, new OpenGuiPacket(windowId, factory, buffer));
+        GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, factory, buffer));
         // open the menu // this mimics forge behaviour
-        player.containerMenu = container;
+        player.initMenu(menu);
+        player.containerMenu = menu;
         player.containerMenu.addSlotListener(((ServerPlayerAccessor) player).getContainerListener());
         // finally invoke event
-        MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, container));
+        MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
     }
 
     @ApiStatus.Internal
