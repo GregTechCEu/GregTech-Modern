@@ -37,12 +37,12 @@ public class WidgetThemeKey<T extends WidgetTheme> implements Comparable<WidgetT
         this(type, name, defaultValue, defaultValue, parser);
     }
 
-    WidgetThemeKey(Class<T> type, String name, T defaultValue, T defaultHoverValue, WidgetThemeParser parser) {
+    WidgetThemeKey(Class<T> type, String name, T defaultValue, T defaultHoverValue, WidgetThemeParser<T> parser) {
         this(null, type, name, null, defaultValue, defaultHoverValue, parser);
     }
 
     WidgetThemeKey(@Nullable WidgetThemeKey<T> parent, Class<T> type, String name, @Nullable String subName,
-                   T defaultValue, T defaultHoverValue, WidgetThemeParser parser) {
+                   T defaultValue, T defaultHoverValue, WidgetThemeParser<T> parser) {
         this.parent = parent;
         this.type = type;
         this.name = name;
@@ -110,7 +110,7 @@ public class WidgetThemeKey<T extends WidgetTheme> implements Comparable<WidgetT
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         WidgetThemeKey<?> that = (WidgetThemeKey<?>) obj;
-        return Objects.equals(name, this.name) && Objects.equals(subName, that.subName);
+        return Objects.equals(name, that.name) && Objects.equals(subName, that.subName);
     }
 
     @Override
