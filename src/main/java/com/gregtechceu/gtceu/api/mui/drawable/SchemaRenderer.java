@@ -49,8 +49,8 @@ public class SchemaRenderer extends BaseSchemaRenderer {
         return this;
     }
 
-    public SchemaRenderer highlightRenderer(BlockHighlight supp) {
-        this.highlight = () -> supp;
+    public SchemaRenderer highlightRenderer(BlockHighlight highlight) {
+        this.highlight = () -> highlight;
         this.rayTracing = true;
         return this;
     }

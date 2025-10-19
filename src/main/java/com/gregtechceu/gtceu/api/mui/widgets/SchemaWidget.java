@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
@@ -38,9 +37,9 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        Vec3 f = this.schema.schema().getFocus();
-        this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
-                (float) (f.z + this.offset.z), scale, yaw, pitch);
+        Vector3f f = this.schema.schema().getFocus();
+        this.schema.camera().setLookAtAndAngle(f.x + this.offset.x, f.y + this.offset.y,
+                f.z + this.offset.z, scale, yaw, pitch);
         this.schema.drawAtZero(context, getArea(), widgetTheme.getTheme());
     }
 
