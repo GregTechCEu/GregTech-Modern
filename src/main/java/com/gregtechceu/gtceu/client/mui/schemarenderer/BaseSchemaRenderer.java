@@ -237,7 +237,9 @@ public class BaseSchemaRenderer implements IDrawable {
             bufferSource.endBatch(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS));
             bufferSource.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
 
-            renderBlockEntities(bufferSource);
+            if (isBEREnabled()) {
+                renderBlockEntities(bufferSource);
+            }
 
             bufferSource.endBatch(RenderType.solid());
             bufferSource.endBatch(RenderType.endPortal());
