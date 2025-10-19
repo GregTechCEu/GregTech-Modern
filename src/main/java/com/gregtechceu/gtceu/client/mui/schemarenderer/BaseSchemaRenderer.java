@@ -58,10 +58,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -183,7 +180,7 @@ public class BaseSchemaRenderer implements IDrawable {
 
         onSetupCamera();
         setupCamera(width, height);
-        renderWorld(context.getGraphics().bufferSource());
+        renderWorld(context.getGraphics().bufferSource(), context.getPartialTicks());
 
         if (doRayTrace()) {
             BlockHitResult result = null;
@@ -206,7 +203,7 @@ public class BaseSchemaRenderer implements IDrawable {
     }
 
     @SuppressWarnings("deprecation")
-    public void renderWorld(MultiBufferSource.BufferSource bufferSource) {
+    public void renderWorld(MultiBufferSource.BufferSource bufferSource, float partialTick) {
         CompileStatus status = this.compileStatus.get();
         if (status == CompileStatus.DISABLED || status == CompileStatus.COMPILING) {
             return;
@@ -248,7 +245,7 @@ public class BaseSchemaRenderer implements IDrawable {
             bufferSource.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
 
             if (isBEREnabled()) {
-                renderBlockEntities(bufferSource);
+                renderBlockEntities(bufferSource, partialTick);
             }
 
             bufferSource.endBatch(RenderType.solid());
@@ -350,7 +347,7 @@ public class BaseSchemaRenderer implements IDrawable {
         renderType.clearRenderState();
     }
 
-    protected void renderBlockEntities(MultiBufferSource buffers) {
+    protected void renderBlockEntities(MultiBufferSource bufferSource, float partialTick) {
         PoseStack poseStack = new PoseStack();
 
         RenderCompileResults compileResults = this.compileResults.get();
@@ -359,13 +356,13 @@ public class BaseSchemaRenderer implements IDrawable {
         }
         for (BlockEntity blockEntity : compileResults.blockEntities) {
             if (blockEntity != null) {
-                this.handleBlockEntity(poseStack, buffers, blockEntity);
+                this.handleBlockEntity(poseStack, bufferSource, partialTick, blockEntity);
             }
         }
     }
 
     protected <E extends BlockEntity> void handleBlockEntity(PoseStack poseStack, MultiBufferSource bufferSource,
-                                                             E blockEntity) {
+                                                             float partialTick, E blockEntity) {
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         var renderer = dispatcher.getRenderer(blockEntity);
         if (renderer == null) {
@@ -373,11 +370,11 @@ public class BaseSchemaRenderer implements IDrawable {
         }
         BlockPos pos = blockEntity.getBlockPos();
         poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+        poseStack.translate(pos.getX() - camera.pos().x, pos.getY() - camera.pos().y, pos.getZ() - camera.pos().z);
 
         // noinspection DataFlowIssue
         int packedLight = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
-        renderer.render(blockEntity, 0, poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
+        renderer.render(blockEntity, partialTick, poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 
