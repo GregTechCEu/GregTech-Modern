@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.mui.schemarenderer;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
 import com.gregtechceu.gtceu.api.mui.schema.ISchema;
@@ -8,6 +9,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.SchemaWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import net.minecraft.CrashReport;
@@ -17,6 +20,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -328,6 +332,10 @@ public class BaseSchemaRenderer implements IDrawable {
         // actually draw the chunk
         RenderCompileResults compileResults = this.compileResults.get();
         if (compileResults != null && !compileResults.isEmpty(renderType)) {
+            if (GTCEu.Mods.isSodiumRubidiumEmbeddiumLoaded()) {
+                GTEmbeddiumCompat.markSpritesAsActive(compileResults.activeFluidSprites);
+            }
+
             VertexBuffer vertexBuffer = getOrCreateChunkBuffers().get(renderType);
             // check if the buffer is invalid in case someone breaks it
             // noinspection ConstantValue
@@ -354,15 +362,6 @@ public class BaseSchemaRenderer implements IDrawable {
                 this.handleBlockEntity(poseStack, buffers, blockEntity);
             }
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    protected static void markFluidSpritesActive(FluidState fluidState) {
-        // For Sodium compatibility, ensure the sprites actually animate
-        // even if no block is on-screen that would cause them to, otherwise.
-        var props = IClientFluidTypeExtensions.of(fluidState);
-        Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(props.getStillTexture());
-        Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(props.getFlowingTexture());
     }
 
     protected <E extends BlockEntity> void handleBlockEntity(PoseStack poseStack, MultiBufferSource bufferSource,
@@ -546,7 +545,7 @@ public class BaseSchemaRenderer implements IDrawable {
                     blockRenderDispatcher.renderLiquid(pos, BaseSchemaRenderer.this.renderLevel, vertexConsumer,
                             blockState, fluidState);
 
-                    // markFluidSpritesActive(fluidState);
+                    markFluidSpritesActive(compileResults, fluidState);
                 }
 
                 if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
@@ -570,8 +569,7 @@ public class BaseSchemaRenderer implements IDrawable {
                         poseStack.pushPose();
                         poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
                         blockRenderDispatcher.renderBatched(blockState, pos, BaseSchemaRenderer.this.renderLevel,
-                                poseStack,
-                                builder, true, randomSource, modelData, renderType);
+                                poseStack, builder, true, randomSource, modelData, renderType);
                         poseStack.popPose();
                     }
                 }
@@ -581,7 +579,6 @@ public class BaseSchemaRenderer implements IDrawable {
                 BufferBuilder bufferBuilder = chunkBufferBuilders.builder(RenderType.translucent());
                 if (!bufferBuilder.isCurrentBatchEmpty()) {
                     bufferBuilder.setQuadSorting(VertexSorting.byDistance(camera.pos()));
-                    compileResults.transparencyState = bufferBuilder.getSortState();
                 }
             }
 
@@ -630,16 +627,23 @@ public class BaseSchemaRenderer implements IDrawable {
                 }
             }, runnable -> RenderSystem.recordRenderCall(runnable::run));
         }
+
+        protected static void markFluidSpritesActive(RenderCompileResults compileResults, FluidState fluidState) {
+            // For Sodium compatibility, ensure the sprites actually animate
+            // even if no block is on-screen that would cause them to, otherwise.
+            var props = IClientFluidTypeExtensions.of(fluidState);
+            compileResults.activeFluidSprites.add(RenderUtil.FluidTextureType.STILL.map(props));
+            compileResults.activeFluidSprites.add(RenderUtil.FluidTextureType.FLOWING.map(props));
+        }
     }
 
-    private static class RenderCompileResults {
+    protected static class RenderCompileResults {
 
-        private final List<BlockEntity> blockEntities = new ArrayList<>();
-        private final Map<RenderType, BufferBuilder.RenderedBuffer> renderedLayers = new Reference2ObjectArrayMap<>();
-        @Nullable
-        private BufferBuilder.SortState transparencyState;
+        protected final List<BlockEntity> blockEntities = new ArrayList<>();
+        protected final Map<RenderType, BufferBuilder.RenderedBuffer> renderedLayers = new Reference2ObjectArrayMap<>();
+        protected final Set<TextureAtlasSprite> activeFluidSprites = new HashSet<>();
 
-        private final Set<RenderType> hasBlocks = new ObjectArraySet<>(RenderType.chunkBufferLayers().size());
+        protected final Set<RenderType> hasBlocks = new ObjectArraySet<>(RenderType.chunkBufferLayers().size());
 
         public boolean isEmpty(RenderType renderType) {
             return !this.hasBlocks.contains(renderType);
