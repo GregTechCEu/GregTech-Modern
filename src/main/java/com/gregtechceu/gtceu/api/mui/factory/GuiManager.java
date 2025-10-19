@@ -95,7 +95,6 @@ public class GuiManager {
         // open the menu // this mimics forge behaviour
         player.initMenu(menu);
         player.containerMenu = menu;
-        player.containerMenu.addSlotListener(((ServerPlayerAccessor) player).getContainerListener());
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
     }
