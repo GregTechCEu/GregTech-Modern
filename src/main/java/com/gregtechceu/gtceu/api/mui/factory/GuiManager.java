@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
-import com.gregtechceu.gtceu.core.mixins.ServerPlayerAccessor;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
