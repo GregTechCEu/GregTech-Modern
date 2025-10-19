@@ -24,7 +24,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -54,7 +53,7 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        return new ArraySchema(blocks, center.getCenter().toVector3f());
+        return new ArraySchema(blocks);
     }
 
     public static ArraySchema of(Level level, Vec3 center, Vec3 p1, Vec3 p2) {
@@ -70,7 +69,7 @@ public class ArraySchema implements ISchema {
         for (BlockPos pos : BlockPos.betweenClosed(x0, y0, z0, x1, y1, z1)) {
             blocks[pos.getX() - x0][pos.getY() - y0][pos.getZ() - z0] = level.getBlockState(pos);
         }
-        return new ArraySchema(blocks, center.toVector3f());
+        return new ArraySchema(blocks);
     }
 
     @Getter
@@ -82,10 +81,6 @@ public class ArraySchema implements ISchema {
     private final Vector3f center;
 
     public ArraySchema(BlockState[][][] blocks) {
-        this(blocks, null);
-    }
-
-    public ArraySchema(BlockState[][][] blocks, @Nullable Vector3f center) {
         this.blocks = blocks;
         this.level = new SchemaLevel();
         MutableBlockPos current = new MutableBlockPos();
@@ -101,7 +96,7 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        this.center = center != null ? center : BlockPosUtil.getCenterF(BlockPos.ZERO, max.move(1, 1, 1));
+        this.center = BlockPosUtil.getCenterF(BlockPos.ZERO, max.move(1, 1, 1));
     }
 
     @Override

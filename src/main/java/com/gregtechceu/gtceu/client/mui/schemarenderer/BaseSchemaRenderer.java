@@ -287,6 +287,10 @@ public class BaseSchemaRenderer implements IDrawable {
             shader.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
         }
 
+        if (shader.INVERSE_VIEW_ROTATION_MATRIX != null) {
+            shader.INVERSE_VIEW_ROTATION_MATRIX.set(RenderSystem.getInverseViewRotationMatrix());
+        }
+
         if (shader.COLOR_MODULATOR != null) {
             shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
         }
@@ -319,8 +323,13 @@ public class BaseSchemaRenderer implements IDrawable {
             shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
         }
 
+        if (shader.SCREEN_SIZE != null) {
+            Window window = Minecraft.getInstance().getWindow();
+            shader.SCREEN_SIZE.set((float)window.getWidth(), (float)window.getHeight());
+        }
+
         if (shader.CHUNK_OFFSET != null) {
-            shader.CHUNK_OFFSET.set(0.0F, 0.0F, 0.0F);
+            shader.CHUNK_OFFSET.set(-camera.pos().x, -camera.pos().y, -camera.pos().z);
         }
 
         RenderSystem.setupShaderLights(shader);
