@@ -83,6 +83,11 @@ public class ClientScreenHandler {
     }
 
     @SubscribeEvent
+    public static void onCloseScreen(ScreenEvent.Closing event) {
+        onGuiChanged(event.getScreen(), null);
+    }
+
+    @SubscribeEvent
     public static void onInitScreenPost(ScreenEvent.Init.Post event) {
         defaultContext.updateScreenArea(event.getScreen().width, event.getScreen().height);
         if (validateGui(event.getScreen())) {
