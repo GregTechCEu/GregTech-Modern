@@ -82,7 +82,7 @@ public class ClientScreenHandler {
         onGuiChanged(event.getCurrentScreen(), event.getNewScreen());
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public static void onCloseScreen(ScreenEvent.Closing event) {
         onGuiChanged(event.getScreen(), null);
     }
