@@ -179,7 +179,6 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         renderer.setPos(area.x, area.y);
-        context.graphicsPose().translate(0, 0, 430);
         this.text.compileAndDraw(renderer, context, false);
 
         context.setOverrideFont(null);
