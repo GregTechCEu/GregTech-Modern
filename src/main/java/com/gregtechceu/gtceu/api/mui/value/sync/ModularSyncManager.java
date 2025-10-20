@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,6 +18,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -58,9 +58,7 @@ public class ModularSyncManager {
     }
 
     public void onClose() {
-        if (ClientScreenHandler.isGuiClosing()) {
-            this.panelSyncManagerMap.values().forEach(PanelSyncManager::onClose);
-        }
+        this.panelSyncManagerMap.values().forEach(PanelSyncManager::onClose);
     }
 
     public void onOpen() {
@@ -77,8 +75,9 @@ public class ModularSyncManager {
         throw new NullPointerException("No PanelSyncManager found for name '" + panelName + "'!");
     }
 
+    @Nullable
     public SyncHandler getSyncHandler(String panelName, String syncKey) {
-        return getPanelSyncManager(panelName).getSyncHandler(syncKey);
+        return getPanelSyncManager(panelName).getSyncHandlerFromMapKey(syncKey);
     }
 
     public SlotGroup getSlotGroup(String panelName, String slotGroupName) {

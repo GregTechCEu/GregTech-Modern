@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+/**
+ * @deprecated use {@link PlayerInventoryUIFactory}
+ */
 @Deprecated
 public class ItemUIFactory extends AbstractUIFactory<HandGuiData> {
 

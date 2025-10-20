@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.DrawableStack;
 import com.gregtechceu.gtceu.api.mui.drawable.TabTexture;
+import com.gregtechceu.gtceu.api.mui.theme.SelectableTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeSelectable;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,9 +26,14 @@ public class PageButton extends Widget<PageButton> implements Interactable {
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
-        WidgetThemeSelectable widgetTheme = theme.getToggleButtonTheme();
-        return isActive() ^ invertSelected() ? widgetTheme : widgetTheme.getSelected();
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
+        return theme.getToggleButtonTheme();
+    }
+
+    @Override
+    protected WidgetTheme getActiveWidgetTheme(WidgetThemeEntry<?> widgetTheme, boolean hover) {
+        SelectableTheme selectableTheme = widgetTheme.expectType(SelectableTheme.class).getTheme(hover);
+        return isActive() ^ invertSelected() ? selectableTheme : selectableTheme.getSelected();
     }
 
     @Override

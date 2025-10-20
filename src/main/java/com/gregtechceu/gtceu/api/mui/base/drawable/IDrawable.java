@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 import com.gregtechceu.gtceu.api.mui.drawable.DrawableStack;
 import com.gregtechceu.gtceu.api.mui.drawable.Icon;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -14,8 +16,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An object which can be drawn. This is mainly used for backgrounds and overlays in
+ * An object which can be drawn at any size. This is mainly used for backgrounds and overlays in
  * {@link com.gregtechceu.gtceu.api.mui.base.widget.IWidget}.
+ * To draw at a fixed size, use {@link IIcon} (see {@link #asIcon()}).
  */
 public interface IDrawable {
 
@@ -30,7 +33,8 @@ public interface IDrawable {
     }
 
     /**
-     * Draws this drawable at the given position with the given size.
+     * Draws this drawable at the given position with the given size. It's the implementors responsibility to properly
+     * apply the widget theme by calling {@link #applyColor(int)} before drawing.
      *
      * @param context     current context to draw with
      * @param x           x position
@@ -43,7 +47,8 @@ public interface IDrawable {
     void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme);
 
     /**
-     * Draws this drawable at the current (0|0) with the given size.
+     * Draws this drawable at the current (0|0) with the given size. This is useful inside widgets since GL is
+     * transformed to their position when they are drawing.
      *
      * @param context     gui context
      * @param width       draw width
@@ -69,7 +74,8 @@ public interface IDrawable {
     }
 
     /**
-     * Draws this drawable at the current (0|0) with the given area's size.
+     * Draws this drawable at the current (0|0) with the given area's size. This is useful inside widgets since GL is
+     * transformed to their position when they are drawing.
      *
      * @param context     gui context
      * @param area        draw area
@@ -85,6 +91,22 @@ public interface IDrawable {
      */
     default boolean canApplyTheme() {
         return false;
+    }
+
+    /**
+     * Applies the theme color to OpenGL if this drawable can have theme colors applied. This is determined by
+     * {@link #canApplyTheme()}.
+     * If this drawable does not allow theme colors, it will reset the current color (to white).
+     * This method should be called before drawing.
+     *
+     * @param themeColor theme color to apply (usually {@link WidgetTheme#getColor()})
+     */
+    default void applyColor(int themeColor) {
+        if (canApplyTheme()) {
+            Color.setGlColor(themeColor);
+        } else {
+            Color.setGlColorOpaque(Color.WHITE.main);
+        }
     }
 
     /**
@@ -132,8 +154,8 @@ public interface IDrawable {
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
-            this.drawable.drawAtZero(context, getArea(), widgetTheme);
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            this.drawable.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 }

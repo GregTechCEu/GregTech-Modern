@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
 import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
-import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.Scrollbar;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
@@ -51,14 +53,14 @@ public abstract class ScrollData {
         return new VerticalScrollData(axisStart, thickness);
     }
 
-    public static final int DEFAULT_THICKNESS = 4;
+    public static final int DEFAULT_THICKNESS = -1;
 
     @Getter
     private final GuiAxis axis;
     @Getter
     private final boolean axisStart;
-    @Getter
     private final int thickness;
+    private int fallbackThickness = -1;
     @Getter
     @Setter
     private int scrollSpeed = 30;
@@ -72,6 +74,7 @@ public abstract class ScrollData {
     @Getter
     @Setter
     private boolean cancelScrollEdge = true;
+    private IDrawable scrollbar;
 
     @Getter
     @Setter
@@ -91,7 +94,11 @@ public abstract class ScrollData {
     protected ScrollData(GuiAxis axis, boolean axisStart, int thickness) {
         this.axis = axis;
         this.axisStart = axisStart;
-        this.thickness = thickness <= 0 ? DEFAULT_THICKNESS : thickness;
+        this.thickness = thickness > 0 ? Math.max(2, thickness) : -1;
+    }
+
+    public int getThickness() {
+        return this.thickness > 0 ? this.thickness : this.fallbackThickness;
     }
 
     public boolean isVertical() {
@@ -100,6 +107,10 @@ public abstract class ScrollData {
 
     public boolean isHorizontal() {
         return this.axis.isHorizontal();
+    }
+
+    public final int getMinLength() {
+        return getThickness() + 1; // make sure bar is always longer than thicker;
     }
 
     protected final int getRawVisibleSize(ScrollArea area) {
@@ -208,7 +219,7 @@ public abstract class ScrollData {
         boolean isOtherActive = isOtherScrollBarActive(area, false);
         int length = (int) (getVisibleSize(area, isOtherActive) * getFullVisibleSize(area, isOtherActive) /
                 (float) this.scrollSize);
-        return Math.max(length, DEFAULT_THICKNESS); // min length of 4
+        return Math.max(length, getMinLength()); // min length of 4
     }
 
     public abstract boolean isInsideScrollbarArea(ScrollArea area, int x, int y);
@@ -231,14 +242,25 @@ public abstract class ScrollData {
         return getScrollBarStart(area, scrollBarLength, getFullVisibleSize(area, isOtherActive));
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public abstract void drawScrollbar(GuiContext context, ScrollArea area);
+    protected abstract int getFallbackThickness(WidgetTheme widgetTheme);
+
+    protected final void applyWidgetTheme(WidgetTheme widgetTheme) {
+        this.fallbackThickness = Math.max(2, getFallbackThickness(widgetTheme));
+    }
+
+    public ScrollData texture(IDrawable drawable) {
+        this.scrollbar = drawable;
+        return this;
+    }
 
     @OnlyIn(Dist.CLIENT)
-    protected void drawScrollBar(GuiContext context, int x, int y, int w, int h) {
-        GuiDraw.drawRect(context.getGraphics(), x, y, w, h, 0xffeeeeee);
-        GuiDraw.drawRect(context.getGraphics(), x + 1, y + 1, w - 1, h - 1, 0xff666666);
-        GuiDraw.drawRect(context.getGraphics(), x + 1, y + 1, w - 2, h - 2, 0xffaaaaaa);
+    public abstract void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme);
+
+    @OnlyIn(Dist.CLIENT)
+    protected void drawScrollBar(GuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme) {
+        IDrawable drawable = this.scrollbar != null ? this.scrollbar : widgetTheme.getBackground();
+        if (drawable == null) drawable = Scrollbar.DEFAULT;
+        drawable.draw(context, x, y, w, h, widgetTheme);
     }
 
     public boolean onMouseClicked(ScrollArea area, int mainAxisPos, int crossAxisPos, int button) {

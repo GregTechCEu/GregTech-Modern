@@ -187,11 +187,16 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     @Override
     default void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         renderer.setColor(widgetTheme.getTextColor());
-        renderer.setShadow(widgetTheme.getTextShadow());
+        renderer.setShadow(widgetTheme.isTextShadow());
         renderer.setAlignment(Alignment.Center, width, height);
         renderer.setScale(1f);
         renderer.setPos(x, y);
         renderer.draw(context.getGraphics(), getFormatted());
+    }
+
+    @Override
+    default boolean canApplyTheme() {
+        return true;
     }
 
     @Override

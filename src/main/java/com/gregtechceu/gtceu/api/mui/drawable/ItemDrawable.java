@@ -60,6 +60,7 @@ public class ItemDrawable implements IDrawable, IJsonSerializable<ItemDrawable> 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+        applyColor(widgetTheme.getColor());
         GuiDraw.drawItem(context.getGraphics(), this.item, x, y, width, height, context.getCurrentDrawingZ());
     }
 

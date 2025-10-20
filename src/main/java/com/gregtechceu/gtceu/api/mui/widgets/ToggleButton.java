@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
+import com.gregtechceu.gtceu.api.mui.theme.SelectableTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeSelectable;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 
 import lombok.Getter;
@@ -30,9 +31,14 @@ public class ToggleButton extends AbstractCycleButtonWidget<ToggleButton> {
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
-        WidgetThemeSelectable widgetTheme = theme.getToggleButtonTheme();
-        return isValueSelected() ^ invertSelected() ? widgetTheme.getSelected() : widgetTheme;
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
+        return theme.getToggleButtonTheme();
+    }
+
+    @Override
+    protected WidgetTheme getActiveWidgetTheme(WidgetThemeEntry<?> widgetTheme, boolean hover) {
+        SelectableTheme selectableTheme = widgetTheme.expectType(SelectableTheme.class).getTheme(hover);
+        return isValueSelected() ^ invertSelected() ? selectableTheme.getSelected() : selectableTheme;
     }
 
     public boolean isValueSelected() {

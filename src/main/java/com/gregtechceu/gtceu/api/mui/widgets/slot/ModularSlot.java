@@ -3,10 +3,14 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -219,5 +223,14 @@ public class ModularSlot extends SlotItemHandler {
      */
     public ModularSlot singletonSlotGroup() {
         return singletonSlotGroup(SlotGroup.STORAGE_SLOT_PRIO);
+    }
+
+    public static boolean isPlayerSlot(Slot slot) {
+        return slot.container instanceof Inventory;
+    }
+
+    public static boolean isPlayerSlot(SlotItemHandler slot) {
+        return slot.getItemHandler() instanceof PlayerInvWrapper ||
+                slot.getItemHandler() instanceof PlayerMainInvWrapper;
     }
 }

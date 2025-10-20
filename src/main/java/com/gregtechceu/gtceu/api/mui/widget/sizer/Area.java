@@ -516,7 +516,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     }
 
     @Override
-    public boolean resize(IGuiElement guiElement) {
+    public boolean resize(IGuiElement guiElement, boolean isParentLayout) {
         guiElement.getArea().set(this);
         return true;
     }

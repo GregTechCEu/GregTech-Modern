@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.core.mixins.client.SlotAccessor;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -29,6 +31,11 @@ public class Flex implements IResizeable, IPositioned<Flex> {
     private final IGuiElement parent;
     private Area relativeTo;
     private boolean relativeToParent = true;
+
+    private boolean childrenCalculated = false;
+    @Setter
+    @Getter
+    private boolean layoutDone = true;
 
     public Flex(IGuiElement parent) {
         this.parent = parent;
@@ -82,6 +89,21 @@ public class Flex implements IResizeable, IPositioned<Flex> {
     @Override
     public boolean isHeightCalculated() {
         return this.y.isSizeCalculated();
+    }
+
+    @Override
+    public boolean areChildrenCalculated() {
+        return this.childrenCalculated;
+    }
+
+    @Override
+    public boolean canRelayout(boolean isParentLayout) {
+        return isParentLayout && (this.x.canRelayout() || this.y.canRelayout());
+    }
+
+    @Override
+    public void setChildrenResized(boolean resized) {
+        this.childrenCalculated = resized;
     }
 
     public Flex coverChildrenWidth() {
@@ -323,15 +345,21 @@ public class Flex implements IResizeable, IPositioned<Flex> {
     }
 
     @ApiStatus.Internal
-    public void checkExpanded(GuiAxis axis) {
-        if (axis.isHorizontal()) this.x.setExpanded(this.expanded);
-        else this.y.setExpanded(this.expanded);
+    public void checkExpanded(@Nullable GuiAxis axis) {
+        this.x.setExpanded(false);
+        this.y.setExpanded(false);
+        if (this.expanded && axis != null) {
+            if (axis.isHorizontal()) this.x.setExpanded(true);
+            else this.y.setExpanded(true);
+        }
     }
 
     @Override
     public void initResizing() {
         setMarginPaddingApplied(false);
         setResized(false);
+        this.childrenCalculated = false;
+        this.layoutDone = false;
     }
 
     @Override
@@ -361,7 +389,7 @@ public class Flex implements IResizeable, IPositioned<Flex> {
     }
 
     @Override
-    public boolean resize(IGuiElement guiElement) {
+    public boolean resize(IGuiElement guiElement, boolean isParentLayout) {
         IResizeable relativeTo = getRelativeTo();
         Area relativeArea = relativeTo.getArea();
         byte panelLayer = this.parent.getArea().getPanelLayer();
@@ -376,20 +404,20 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         // calculate x, y, width and height if possible
         this.x.apply(guiElement.getArea(), relativeTo, guiElement::getDefaultWidth);
         this.y.apply(guiElement.getArea(), relativeTo, guiElement::getDefaultHeight);
-        return isFullyCalculated();
+        return isFullyCalculated(isParentLayout);
     }
 
     @Override
     public boolean postResize(IGuiElement guiElement) {
-        if (!this.x.dependsOnChildren() && !this.y.dependsOnChildren()) return isFullyCalculated();
+        if (!this.x.dependsOnChildren() && !this.y.dependsOnChildren()) return isSelfFullyCalculated();
         if (!(this.parent instanceof IWidget widget) || !widget.hasChildren()) {
             coverChildrenForEmpty();
-            return isFullyCalculated();
+            return isSelfFullyCalculated();
         }
         if (this.parent instanceof ILayoutWidget) {
             // layout widgets handle widget layout's themselves, so we only need to fit the right and bottom border
             coverChildrenForLayout(widget);
-            return isFullyCalculated();
+            return isSelfFullyCalculated();
         }
         // non layout widgets can have their children in any position
         // we try to wrap all edges as close as possible to all widgets
@@ -452,7 +480,7 @@ public class Flex implements IResizeable, IPositioned<Flex> {
                 if (resizeable.isYCalculated()) area.ry += moveChildrenY;
             }
         }
-        return isFullyCalculated();
+        return isSelfFullyCalculated();
     }
 
     private void coverChildrenForLayout(IWidget widget) {

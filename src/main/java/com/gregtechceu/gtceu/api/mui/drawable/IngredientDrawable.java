@@ -20,6 +20,9 @@ public class IngredientDrawable implements IDrawable, IJsonSerializable<Ingredie
     @Getter
     @Setter
     private ItemStack[] items;
+    @Getter
+    @Setter
+    private int cycleTime = 1000;
 
     public IngredientDrawable(Ingredient ingredient) {
         this(ingredient.getItems());
@@ -33,10 +36,22 @@ public class IngredientDrawable implements IDrawable, IJsonSerializable<Ingredie
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         if (this.items.length == 0) return;
-        ItemStack item = this.items[(int) (Util.getMillis() % (1000 * this.items.length)) / 1000];
+        ItemStack item = this.items[(int) (Util.getMillis() % (this.cycleTime * this.items.length)) / this.cycleTime];
         if (item != null) {
             GuiDraw.drawItem(context.getGraphics(), item, x, y, width, height, context.getCurrentDrawingZ());
         }
+    }
+
+    /**
+     * Sets how many milliseconds each item shows up
+     *
+     * @param cycleTime time per item in milliseconds
+     * @return this
+     */
+    @Tolerate
+    public IngredientDrawable cycleTime(int cycleTime) {
+        this.cycleTime = cycleTime;
+        return this;
     }
 
     @Tolerate

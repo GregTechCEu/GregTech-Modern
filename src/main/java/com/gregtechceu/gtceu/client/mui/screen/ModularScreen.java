@@ -100,8 +100,9 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     private final Object2ObjectArrayMap<IWidget, Runnable> frameUpdates = new Object2ObjectArrayMap<>();
     @Getter
     private boolean pauseScreen = false;
-
     @Getter
+    private boolean openParentOnClose = false;
+
     private ITheme currentTheme;
     @Getter
     private IMuiScreen screenWrapper;
@@ -148,7 +149,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                 buildUI(this.context);
         Objects.requireNonNull(mainPanel, "The main panel must not be null!");
         this.name = mainPanel.getName();
-        this.currentTheme = IThemeApi.get().getThemeForScreen(this, null);
         this.panelManager = new PanelManager(this, mainPanel);
     }
 
@@ -221,15 +221,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         if (!isOverlay()) {
             this.screenWrapper.updateGuiArea(this.panelManager.getMainPanel().getArea());
         }
-    }
-
-    /**
-     * Called when another screen opens, but this screen is still open or this screen an overlay is and the gui screen
-     * parent closes.
-     */
-    @ApiStatus.Internal
-    public final void onCloseParent() {
-        this.panelManager.closeAll();
     }
 
     /**
@@ -611,6 +602,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         return getCurrent() == this;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "#" + getOwner() + ":" + getName();
+    }
+
     /**
      * @return the owner and name as a {@link ResourceLocation}
      * @see #getOwner()
@@ -729,6 +725,13 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         throw new IllegalArgumentException();
     }
 
+    public ITheme getCurrentTheme() {
+        if (this.currentTheme == null) {
+            useTheme(null);
+        }
+        return this.currentTheme;
+    }
+
     /**
      * Tries to use a specific theme for this screen. If the theme for this screen has been overriden via resource
      * packs, this method does
@@ -752,6 +755,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      */
     public ModularScreen pausesGame(boolean pausesGame) {
         this.pauseScreen = pausesGame;
+        return this;
+    }
+
+    public ModularScreen openParentOnClose(boolean openParentOnClose) {
+        this.openParentOnClose = openParentOnClose;
         return this;
     }
 

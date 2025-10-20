@@ -27,8 +27,6 @@ public class Icon implements IIcon, IJsonSerializable<Icon> {
     private Alignment alignment = Alignment.Center;
     @Getter
     private final Box margin = new Box();
-    @Getter
-    private int color = 0;
 
     public Icon(IDrawable drawable) {
         this.drawable = drawable;
@@ -48,9 +46,6 @@ public class Icon implements IIcon, IJsonSerializable<Icon> {
         if (this.height > 0) {
             y += (int) (height * this.alignment.y - this.height * this.alignment.y);
             height = this.height;
-        }
-        if (this.color != 0 && this.color != widgetTheme.getColor()) {
-            widgetTheme = widgetTheme.withColor(this.color);
         }
         this.drawable.draw(context, x, y, width, height, widgetTheme);
     }
@@ -85,11 +80,6 @@ public class Icon implements IIcon, IJsonSerializable<Icon> {
 
     public Icon center() {
         return alignment(Alignment.Center);
-    }
-
-    public Icon color(int color) {
-        this.color = color;
-        return this;
     }
 
     public Icon margin(int left, int right, int top, int bottom) {

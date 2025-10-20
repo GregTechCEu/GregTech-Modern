@@ -853,7 +853,7 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "Default tooltip position around the widget or its panel.",
                     "Default: VERTICAL" })
-            public RichTooltip.Pos tooltipPos = RichTooltip.Pos.VERTICAL;
+            public RichTooltip.Pos tooltipPos = RichTooltip.Pos.NEXT_TO_MOUSE;
 
             @Configurable
             @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",

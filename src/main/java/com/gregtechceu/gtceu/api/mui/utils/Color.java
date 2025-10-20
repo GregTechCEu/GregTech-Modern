@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IInterpolation;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
@@ -11,7 +12,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Locale;
 import java.util.function.ToIntFunction;
 
 /**
@@ -240,6 +243,36 @@ public class Color {
      */
     public static float getAlphaF(int argb) {
         return getAlpha(argb) / 255f;
+    }
+
+    /**
+     * Extracts the red bits from the ARGB color and squares it.
+     *
+     * @return the squared red value
+     */
+    public static int getRedSq(int argb) {
+        int v = getRed(argb);
+        return v * v;
+    }
+
+    /**
+     * Extracts the green bits from the ARGB color and squares it.
+     *
+     * @return the squared green value
+     */
+    public static int getGreenSq(int argb) {
+        int v = getGreen(argb);
+        return v * v;
+    }
+
+    /**
+     * Extracts the blue bits from the ARGB color and squares it.
+     *
+     * @return the squared blue value
+     */
+    public static int getBlueSq(int argb) {
+        int v = getBlue(argb);
+        return v * v;
     }
 
     /**
@@ -619,6 +652,17 @@ public class Color {
     }
 
     /**
+     * Calculates perceived luminance according to <a href="https://alienryderflex.com/hsp.html">this web page</a>.
+     *
+     * @param argb argb color
+     * @return perceived luminance
+     */
+    public static float getLuminance(int argb) {
+        float r = getRedF(argb), g = getGreenF(argb), b = getBlueF(argb);
+        return Mth.sqrt(0.299f * r * r + 0.587f * g * g + 0.114f * b * b);
+    }
+
+    /**
      * Converts an RGBA int to an ARGB int.
      *
      * @param rgba RGBA color
@@ -662,20 +706,33 @@ public class Color {
     }
 
     /**
+     * Multiplies each argb component of two colors and returns the result argb.
+     *
+     * @param argb1 color 1
+     * @param argb2 color 2
+     * @return mixed color
+     */
+    public static int mix(int argb1, int argb2) {
+        return argb(getRedF(argb1) * getRedF(argb2), getGreenF(argb1) * getGreenF(argb2),
+                getBlueF(argb1) * getBlueF(argb2), getAlphaF(argb1) * getAlphaF(argb2));
+    }
+
+    /**
      * Calculates the average of each color byte in the array and puts it into a new ARGB color.
      *
      * @param colors ARGB colors
      * @return average ARGB color
      */
     public static int average(int... colors) {
-        int r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0, a = 0;
         for (int color : colors) {
             r += getRed(color);
             g += getGreen(color);
             b += getBlue(color);
             a += getAlpha(color);
         }
-        return argb(r / colors.length, g / colors.length, b / colors.length, a / colors.length);
+        return argb((int) Math.sqrt(r / colors.length), (int) Math.sqrt(g / colors.length),
+                (int) Math.sqrt(b / colors.length), (int) Math.sqrt(a / colors.length));
     }
 
     /**
@@ -687,27 +744,41 @@ public class Color {
      */
     @SafeVarargs
     public static <T> int average(ToIntFunction<T> colorFunction, T... colorHolders) {
-        int r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0, a = 0;
         for (T colorHolder : colorHolders) {
             int color = colorFunction.applyAsInt(colorHolder);
-            r += getRed(color);
-            g += getGreen(color);
-            b += getBlue(color);
+            r += getRedSq(color);
+            g += getGreenSq(color);
+            b += getBlueSq(color);
             a += getAlpha(color);
         }
-        return argb(r / colorHolders.length, g / colorHolders.length, b / colorHolders.length, a / colorHolders.length);
+        return argb((int) Math.sqrt(r / colorHolders.length), (int) Math.sqrt(g / colorHolders.length),
+                (int) Math.sqrt(b / colorHolders.length), a / colorHolders.length);
+    }
+
+    /**
+     * @deprecated renamed to {@link #lerp(int, int, float)}
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    public static int interpolate(int color1, int color2, float value) {
+        return lerp(color1, color2, value);
+    }
+
+    public static int average(int argb1, int argb2) {
+        return lerp(argb1, argb2, 0.5f);
     }
 
     /**
      * Interpolates each color byte between two ARGB colors using linear interpolation and a progress value.
      *
-     * @param color1 lower color
-     * @param color2 higher color
-     * @param value  progress value
-     * @return interpolated ARGB color
+     * @param argb1 color 1
+     * @param argb2 color 2
+     * @param value progress value
+     * @return linear interpolated ARGB color
      */
-    public static int interpolate(int color1, int color2, float value) {
-        return interpolate(Interpolation.LINEAR, color1, color2, value);
+    public static int lerp(int argb1, int argb2, float value) {
+        return interpolate(Interpolation.LINEAR, argb1, argb2, value);
     }
 
     /**
@@ -721,11 +792,15 @@ public class Color {
      */
     public static int interpolate(IInterpolation curve, int color1, int color2, float value) {
         value = Mth.clamp(value, 0, 1);
-        int r = (int) curve.interpolate(Color.getRed(color1), Color.getRed(color2), value);
-        int g = (int) curve.interpolate(Color.getGreen(color1), Color.getGreen(color2), value);
-        int b = (int) curve.interpolate(Color.getBlue(color1), Color.getBlue(color2), value);
-        int a = (int) curve.interpolate(Color.getAlpha(color1), Color.getAlpha(color2), value);
+        int r = (int) lerpComp(curve, Color.getRed(color1), Color.getRed(color2), value);
+        int g = (int) lerpComp(curve, Color.getGreen(color1), Color.getGreen(color2), value);
+        int b = (int) lerpComp(curve, Color.getBlue(color1), Color.getBlue(color2), value);
+        int a = (int) lerpComp(curve, Color.getAlpha(color1), Color.getAlpha(color2), value);
         return Color.argb(r, g, b, a);
+    }
+
+    public static float lerpComp(IInterpolation curve, float a, float b, float v) {
+        return Mth.sqrt(curve.interpolate(a * a, b * b, v));
     }
 
     /**
@@ -769,6 +844,66 @@ public class Color {
     }
 
     /**
+     * Returns a six digit hex string representation of a color component with upper case letters. Alpha is ignored.
+     *
+     * @param rgb rgb color
+     * @return hex string representation
+     */
+    public static String rgbToFullHexString(int rgb) {
+        return toFullHexString(getRed(rgb), getGreen(rgb), getBlue(rgb));
+    }
+
+    /**
+     * Returns an eight digit hex string representation of a color component with upper case letters.
+     *
+     * @param argb argb color
+     * @return hex string representation
+     */
+    public static String argbToFullHexString(int argb) {
+        return toFullHexString(getRed(argb), getGreen(argb), getBlue(argb), getAlpha(argb));
+    }
+
+    /**
+     * Returns a six digit hex string representation of a color component with upper case letters.
+     *
+     * @param r red
+     * @param g green
+     * @param b blue
+     * @return hex string representation
+     */
+    public static String toFullHexString(int r, int g, int b) {
+        return componentToFullHexString(r) + componentToFullHexString(g) + componentToFullHexString(b);
+    }
+
+    /**
+     * Returns an eight digit hex string representation of a color component with upper case letters.
+     *
+     * @param r red
+     * @param g green
+     * @param b blue
+     * @param a alpha
+     * @return hex string representation
+     */
+    public static String toFullHexString(int r, int g, int b, int a) {
+        return componentToFullHexString(a) + toFullHexString(r, g, b);
+    }
+
+    /**
+     * Returns a double-digit hex string representation of a color component with upper case letters.
+     *
+     * @param component red, green, blue or alpha
+     * @return hex string representation
+     */
+    public static String componentToFullHexString(int component) {
+        component &= 0xFF;
+        if (component == 0) return "00";
+        if (component == 255) return "FF";
+        String s = Integer.toHexString(component).toUpperCase(Locale.ENGLISH);
+        if (s.length() == 1) s = "0" + s;
+        return s;
+    }
+
+    /**
      * Parses a ARGB color of a json element.
      *
      * @param jsonElement json element
@@ -777,11 +912,40 @@ public class Color {
      */
     public static int ofJson(JsonElement jsonElement) {
         if (jsonElement.isJsonPrimitive()) {
-            int color = (int) (long) Long.decode(jsonElement.getAsString()); // bruh
-            if (color != 0 && getAlpha(color) == 0) {
-                return withAlpha(color, 255);
+            String colorString = jsonElement.getAsString();
+            if (colorString.isEmpty()) return WHITE.main;
+            char c = colorString.charAt(0);
+            // a normal int string
+            if (Character.isDigit(c) || c == '-' || c == '#') {
+                int color = (int) (long) Long.decode(jsonElement.getAsString()); // bruh
+                if (color != 0 && getAlpha(color) == 0) {
+                    return withAlpha(color, 255);
+                }
+                return color;
             }
-            return color;
+
+            if ("invisible".equals(jsonElement.getAsString())) {
+                return withAlpha(WHITE.main, 0);
+            }
+            int i = colorString.indexOf(':');
+            int index = 0;
+            if (i > 0) {
+                try {
+                    index = Integer.parseInt(colorString.substring(i + 1));
+                } catch (NumberFormatException e) {
+                    GTCEu.LOGGER.error("[THEME] If the color is a word then after teh : must come a negative or " +
+                            "positive integer, but got '{}'", colorString.substring(i + 1));
+                }
+                colorString = colorString.substring(0, i);
+            }
+            ColorShade colorShade = ColorShade.getFromName(colorString);
+            if (colorShade != null) {
+                if (index == 0) return colorShade.main;
+                if (index > 0) return colorShade.brighterSafe(index - 1);
+                return colorShade.darkerSafe(-index - 1);
+            }
+            GTCEu.LOGGER.error("[THEME] No color shade for name '{}' was found", colorString);
+            return WHITE.main;
         }
         if (jsonElement.isJsonObject()) {
             JsonObject json = jsonElement.getAsJsonObject();
@@ -868,185 +1032,187 @@ public class Color {
                 json.has("k") || json.has("black");
     }
 
-    public static final ColorShade WHITE = ColorShade.builder(0xFFFFFFFF)
+    public static final int TEXT_COLOR_DARK = 0xFF404040;
+
+    public static final ColorShade WHITE = ColorShade.builder("white", 0xFFFFFFFF)
             .addDarker(0xFFF7F7F7, 0xFFEFEFEF, 0xFFE7E7E7, 0xFFDFDFDF, 0xFFD7D7D7, 0xFFCFCFCF, 0xFFC7C7C7, 0xFFBFBFBF)
             .build();
 
-    public static final ColorShade BLACK = ColorShade.builder(0xFF000000)
+    public static final ColorShade BLACK = ColorShade.builder("black", 0xFF000000)
             .addBrighter(0xFF080808, 0xFF101010, 0xFF181818, 0xFF202020, 0xFF282828, 0xFF303030, 0xFF383838, 0xFF404040)
             .build();
 
-    public static final ColorShade RED = ColorShade.builder(0xFFF44336)
+    public static final ColorShade RED = ColorShade.builder("red", 0xFFF44336)
             .addBrighter(0xFFEF5350, 0xFFE57373, 0xFFEF9A9A, 0xFFFFCDD2, 0xFFFFEBEE)
             .addDarker(0xFFE53935, 0xFFD32F2F, 0xFFC62828, 0xFFB71C1C)
             .build();
 
-    public static final ColorShade RED_ACCENT = ColorShade.builder(0xFFFF5252)
+    public static final ColorShade RED_ACCENT = ColorShade.builder("red_accent", 0xFFFF5252)
             .addBrighter(0xFFFF8A80)
             .addDarker(0xFFFF1744, 0xFFD50000)
             .build();
 
-    public static final ColorShade PINK = ColorShade.builder(0xFFE91E63)
+    public static final ColorShade PINK = ColorShade.builder("pink", 0xFFE91E63)
             .addBrighter(0xFFEC407A, 0xFFF06292, 0xFFF48FB1, 0xFFF8BBD0, 0xFFFCE4EC)
             .addDarker(0xFFD81B60, 0xFFC2185B, 0xFFAD1457, 0xFF880E4F)
             .build();
 
-    public static final ColorShade PINK_ACCENT = ColorShade.builder(0xFFFF4081)
+    public static final ColorShade PINK_ACCENT = ColorShade.builder("pink_accent", 0xFFFF4081)
             .addBrighter(0xFFFF80AB)
             .addDarker(0xFFF50057, 0xFFC51162)
             .build();
 
-    public static final ColorShade PURPLE = ColorShade.builder(0xFF9C27B0)
+    public static final ColorShade PURPLE = ColorShade.builder("purple", 0xFF9C27B0)
             .addBrighter(0xFFAB47BC, 0xFFBA68C8, 0xFFCE93D8, 0xFFE1BEE7, 0xFFF3E5F5)
             .addDarker(0xFF8E24AA, 0xFF7B1FA2, 0xFF6A1B9A, 0xFF4A148C)
             .build();
 
-    public static final ColorShade PURPLE_ACCENT = ColorShade.builder(0xFFE040FB)
+    public static final ColorShade PURPLE_ACCENT = ColorShade.builder("purple_accent", 0xFFE040FB)
             .addBrighter(0xFFEA80FC)
             .addDarker(0xFFD500F9, 0xFFAA00FF)
             .build();
 
-    public static final ColorShade DEEP_PURPLE = ColorShade.builder(0xFF673AB7)
+    public static final ColorShade DEEP_PURPLE = ColorShade.builder("deep_purple", 0xFF673AB7)
             .addBrighter(0xFF7E57C2, 0xFF9575CD, 0xFFB39DDB, 0xFFD1C4E9, 0xFFEDE7F6)
             .addDarker(0xFF5E35B1, 0xFF512DA8, 0xFF4527A0, 0xFF311B92)
             .build();
 
-    public static final ColorShade DEEP_PURPLE_ACCENT = ColorShade.builder(0xFF7C4DFF)
+    public static final ColorShade DEEP_PURPLE_ACCENT = ColorShade.builder("deep_purple_accent", 0xFF7C4DFF)
             .addBrighter(0xFFB388FF)
             .addDarker(0xFF651FFF, 0xFF651FFF)
             .build();
 
-    public static final ColorShade INDIGO = ColorShade.builder(0xFF3F51B5)
+    public static final ColorShade INDIGO = ColorShade.builder("indigo", 0xFF3F51B5)
             .addBrighter(0xFF5C6BC0, 0xFF7986CB, 0xFF9FA8DA, 0xFFC5CAE9, 0xFFE8EAF6)
             .addDarker(0xFF3949AB, 0xFF303F9F, 0xFF283593, 0xFF1A237E)
             .build();
 
-    public static final ColorShade INDIGO_ACCENT = ColorShade.builder(0xFF536DFE)
+    public static final ColorShade INDIGO_ACCENT = ColorShade.builder("indigo_accent", 0xFF536DFE)
             .addBrighter(0xFF8C9EFF)
             .addDarker(0xFF3D5AFE, 0xFF304FFE)
             .build();
 
-    public static final ColorShade BLUE = ColorShade.builder(0xFF2196F3)
+    public static final ColorShade BLUE = ColorShade.builder("blue", 0xFF2196F3)
             .addBrighter(0xFF42A5F5, 0xFF64B5F6, 0xFF90CAF9, 0xFFBBDEFB, 0xFFE3F2FD)
             .addDarker(0xFF1E88E5, 0xFF1976D2, 0xFF1565C0, 0xFF0D47A1)
             .build();
 
-    public static final ColorShade BLUE_ACCENT = ColorShade.builder(0xFF448AFF)
+    public static final ColorShade BLUE_ACCENT = ColorShade.builder("blue_accent", 0xFF448AFF)
             .addBrighter(0xFF82B1FF)
             .addDarker(0xFF2979FF, 0xFF2962FF)
             .build();
 
-    public static final ColorShade LIGHT_BLUE = ColorShade.builder(0xFF03A9F4)
+    public static final ColorShade LIGHT_BLUE = ColorShade.builder("light_blue", 0xFF03A9F4)
             .addBrighter(0xFF29B6F6, 0xFF4FC3F7, 0xFF81D4FA, 0xFFB3E5FC, 0xFFE1F5FE)
             .addDarker(0xFF039BE5, 0xFF0288D1, 0xFF0277BD, 0xFF01579B)
             .build();
 
-    public static final ColorShade LIGHT_BLUE_ACCENT = ColorShade.builder(0xFF40C4FF)
+    public static final ColorShade LIGHT_BLUE_ACCENT = ColorShade.builder("light_blue_accent", 0xFF40C4FF)
             .addBrighter(0xFF80D8FF)
             .addDarker(0xFF00B0FF, 0xFF0091EA)
             .build();
 
-    public static final ColorShade CYAN = ColorShade.builder(0xFF00BCD4)
+    public static final ColorShade CYAN = ColorShade.builder("cyan", 0xFF00BCD4)
             .addBrighter(0xFF26C6DA, 0xFF4DD0E1, 0xFF80DEEA, 0xFFB2EBF2, 0xFFE0F7FA)
             .addDarker(0xFF00ACC1, 0xFF0097A7, 0xFF00838F, 0xFF006064)
             .build();
 
-    public static final ColorShade CYAN_ACCENT = ColorShade.builder(0xFF18FFFF)
+    public static final ColorShade CYAN_ACCENT = ColorShade.builder("cyan_accent", 0xFF18FFFF)
             .addBrighter(0xFF84FFFF)
             .addDarker(0xFF00E5FF, 0xFF00B8D4)
             .build();
 
-    public static final ColorShade TEAL = ColorShade.builder(0xFF009688)
+    public static final ColorShade TEAL = ColorShade.builder("teal", 0xFF009688)
             .addBrighter(0xFF26A69A, 0xFF4DB6AC, 0xFF80CBC4, 0xFFB2DFDB, 0xFFE0F2F1)
             .addDarker(0xFF00897B, 0xFF00796B, 0xFF00695C, 0xFF004D40)
             .build();
 
-    public static final ColorShade TEAL_ACCENT = ColorShade.builder(0xFF64FFDA)
+    public static final ColorShade TEAL_ACCENT = ColorShade.builder("teal_accent", 0xFF64FFDA)
             .addBrighter(0xFFA7FFEB)
             .addDarker(0xFF1DE9B6, 0xFF00BFA5)
             .build();
 
-    public static final ColorShade GREEN = ColorShade.builder(0xFF4CAF50)
+    public static final ColorShade GREEN = ColorShade.builder("green", 0xFF4CAF50)
             .addBrighter(0xFF66BB6A, 0xFF81C784, 0xFFA5D6A7, 0xFFC8E6C9, 0xFFE8F5E9)
             .addDarker(0xFF43A047, 0xFF388E3C, 0xFF2E7D32, 0xFF1B5E20)
             .build();
 
-    public static final ColorShade GREEN_ACCENT = ColorShade.builder(0xFF69F0AE)
+    public static final ColorShade GREEN_ACCENT = ColorShade.builder("green_accent", 0xFF69F0AE)
             .addBrighter(0xFFB9F6CA)
             .addDarker(0xFF00E676, 0xFF00C853)
             .build();
 
-    public static final ColorShade LIGHT_GREEN = ColorShade.builder(0xFF8BC34A)
+    public static final ColorShade LIGHT_GREEN = ColorShade.builder("light_green", 0xFF8BC34A)
             .addBrighter(0xFF9CCC65, 0xFFAED581, 0xFFC5E1A5, 0xFFDCEDC8, 0xFFF1F8E9)
             .addDarker(0xFF7CB342, 0xFF689F38, 0xFF558B2F, 0xFF33691E)
             .build();
 
-    public static final ColorShade LIGHT_GREEN_ACCENT = ColorShade.builder(0xFFB2FF59)
+    public static final ColorShade LIGHT_GREEN_ACCENT = ColorShade.builder("light_green_accent", 0xFFB2FF59)
             .addBrighter(0xFFCCFF90)
             .addDarker(0xFF76FF03, 0xFF64DD17)
             .build();
 
-    public static final ColorShade LIME = ColorShade.builder(0xFFCDDC39)
+    public static final ColorShade LIME = ColorShade.builder("lime", 0xFFCDDC39)
             .addBrighter(0xFFD4E157, 0xFFDCE775, 0xFFE6EE9C, 0xFFF0F4C3, 0xFFF9FBE7)
             .addDarker(0xFFC0CA33, 0xFFAFB42B, 0xFF9E9D24, 0xFF827717)
             .build();
 
-    public static final ColorShade LIME_ACCENT = ColorShade.builder(0xFFEEFF41)
+    public static final ColorShade LIME_ACCENT = ColorShade.builder("lime_accent", 0xFFEEFF41)
             .addBrighter(0xFFF4FF81)
             .addDarker(0xFFC6FF00, 0xFFAEEA00)
             .build();
 
-    public static final ColorShade YELLOW = ColorShade.builder(0xFFFFEB3B)
+    public static final ColorShade YELLOW = ColorShade.builder("yellow", 0xFFFFEB3B)
             .addBrighter(0xFFFFEE58, 0xFFFFF176, 0xFFFFF59D, 0xFFFFF9C4, 0xFFFFFDE7)
             .addDarker(0xFFFDD835, 0xFFFBC02D, 0xFFF9A825, 0xFFF57F17)
             .build();
 
-    public static final ColorShade YELLOW_ACCENT = ColorShade.builder(0xFFFFFF00)
+    public static final ColorShade YELLOW_ACCENT = ColorShade.builder("yellow_accent", 0xFFFFFF00)
             .addBrighter(0xFFFFFF8D)
             .addDarker(0xFFFFEA00, 0xFFFFD600)
             .build();
 
-    public static final ColorShade AMBER = ColorShade.builder(0xFFFFC107)
+    public static final ColorShade AMBER = ColorShade.builder("amber", 0xFFFFC107)
             .addBrighter(0xFFFFCA28, 0xFFFFD54F, 0xFFFFE082, 0xFFFFECB3, 0xFFFFF8E1)
             .addDarker(0xFFFFB300, 0xFFFFA000, 0xFFFF8F00, 0xFFFF6F00)
             .build();
 
-    public static final ColorShade AMBER_ACCENT = ColorShade.builder(0xFFFFD740)
+    public static final ColorShade AMBER_ACCENT = ColorShade.builder("amber_accent", 0xFFFFD740)
             .addBrighter(0xFFFFE57F)
             .addDarker(0xFFFFC400, 0xFFFFAB00)
             .build();
 
-    public static final ColorShade ORANGE = ColorShade.builder(0xFFFF9800)
+    public static final ColorShade ORANGE = ColorShade.builder("orange", 0xFFFF9800)
             .addBrighter(0xFFFFA726, 0xFFFFB74D, 0xFFFFCC80, 0xFFFFE0B2, 0xFFFFF3E0)
             .addDarker(0xFFFB8C00, 0xFFF57C00, 0xFFEF6C00, 0xFFE65100)
             .build();
 
-    public static final ColorShade ORANGE_ACCENT = ColorShade.builder(0xFFFFAB40)
+    public static final ColorShade ORANGE_ACCENT = ColorShade.builder("orange_accent", 0xFFFFAB40)
             .addBrighter(0xFFFFD180)
             .addDarker(0xFFFF9100, 0xFFFF6D00)
             .build();
 
-    public static final ColorShade DEEP_ORANGE = ColorShade.builder(0xFFFF5722)
+    public static final ColorShade DEEP_ORANGE = ColorShade.builder("deep_orange", 0xFFFF5722)
             .addBrighter(0xFFFF7043, 0xFFFF8A65, 0xFFFFAB91, 0xFFFFCCBC, 0xFFFBE9E7)
             .addDarker(0xFFF4511E, 0xFFE64A19, 0xFFD84315, 0xFFBF360C)
             .build();
 
-    public static final ColorShade DEEP_ORANGE_ACCENT = ColorShade.builder(0xFFFF6E40)
+    public static final ColorShade DEEP_ORANGE_ACCENT = ColorShade.builder("deep_orange_accent", 0xFFFF6E40)
             .addBrighter(0xFFFF9E80)
             .addDarker(0xFFFF3D00, 0xFFDD2C00)
             .build();
 
-    public static final ColorShade BROWN = ColorShade.builder(0xFF795548)
+    public static final ColorShade BROWN = ColorShade.builder("brown", 0xFF795548)
             .addBrighter(0xFF8D6E63, 0xFFA1887F, 0xFFBCAAA4, 0xFFD7CCC8, 0xFFEFEBE9)
             .addDarker(0xFF6D4C41, 0xFF5D4037, 0xFF4E342E, 0xFF3E2723)
             .build();
 
-    public static final ColorShade GREY = ColorShade.builder(0xFF9E9E9E)
+    public static final ColorShade GREY = ColorShade.builder("grey", 0xFF9E9E9E)
             .addBrighter(0xFFBDBDBD, 0xFFE0E0E0, 0xFFEEEEEE, 0xFFF5F5F5, 0xFFFAFAFA)
             .addDarker(0xFF757575, 0xFF616161, 0xFF424242, 0xFF212121)
             .build();
 
-    public static final ColorShade BLUE_GREY = ColorShade.builder(0xFF607D8B)
+    public static final ColorShade BLUE_GREY = ColorShade.builder("blue_grey", 0xFF607D8B)
             .addBrighter(0xFF78909C, 0xFF90A4AE, 0xFFB0BEC5, 0xFFCFD8DC, 0xFFECEFF1)
             .addDarker(0xFF546E7A, 0xFF455A64, 0xFF37474F, 0xFF263238)
             .build();

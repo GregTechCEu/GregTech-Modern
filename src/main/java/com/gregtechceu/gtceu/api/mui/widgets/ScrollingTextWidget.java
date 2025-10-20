@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.animation.Wait;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
@@ -17,7 +18,6 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
     private static final int pauseTime = 60;
     private TextRenderer.Line line;
     private float progress = 0;
-    private boolean hovering = false;
     private IAnimator animator;
     private Animator forward;
     private Animator backward;
@@ -42,20 +42,20 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
 
     @Override
     public void onMouseStartHover() {
-        this.hovering = true;
+        super.onMouseStartHover();
         this.animator.resume(false);
     }
 
     @Override
     public void onMouseEndHover() {
-        this.hovering = false;
+        super.onMouseEndHover();
         this.animator.stop(true);
         this.animator.reset();
         this.progress = 0;
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.animator == null) {
             animator(new Animator().curve(Interpolation.SINE_INOUT));
         }
@@ -63,14 +63,15 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
             updateLine(getKey().getFormatted());
         }
         checkString();
+        WidgetTheme theme = getActiveWidgetTheme(widgetTheme, isHovering());
         TextRenderer renderer = TextRenderer.SHARED;
-        renderer.setColor(getColor() != null ? getColor().getAsInt() : widgetTheme.getTextColor());
+        renderer.setColor(getColor() != null ? getColor().getAsInt() : theme.getTextColor());
         renderer.setAlignment(getAlignment(), getArea().w(), getArea().h());
-        renderer.setShadow(isShadow() != null ? isShadow() : widgetTheme.getTextShadow());
+        renderer.setShadow(isShadow() != null ? isShadow() : theme.isTextShadow());
         renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(getScale());
         renderer.setSimulate(false);
-        if (this.hovering) {
+        if (isHovering()) {
             renderer.drawScrolling(context.getGraphics(), this.line, this.progress, getArea(), context);
         } else {
             renderer.drawCut(context.getGraphics(), this.line);

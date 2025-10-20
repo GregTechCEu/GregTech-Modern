@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IParentWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
@@ -44,7 +44,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.childSeparator == null || this.separatorPositions.isEmpty()) return;
         GuiAxis axis = this.scrollData.getAxis();
         int x = getArea().getPadding().left(), y = getArea().getPadding().top(), w, h;
@@ -61,31 +61,33 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
             } else {
                 y = p;
             }
-            this.childSeparator.draw(context, x, y, w, h, widgetTheme);
+            this.childSeparator.draw(context, x, y, w, h, getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 
     @Override
-    public void layoutWidgets() {
+    public boolean layoutWidgets() {
         this.separatorPositions.clear();
         GuiAxis axis = this.scrollData.getAxis();
         int separatorSize = getSeparatorSize();
         int p = getArea().getPadding().getStart(axis);
         for (IWidget widget : getChildren()) {
-            if (shouldIgnoreChildSize(widget)) continue;
-            if (axis.isVertical() ?
-                    widget.getFlex().hasYPos() || !widget.resizer().isHeightCalculated() :
-                    widget.getFlex().hasXPos() || !widget.resizer().isWidthCalculated()) {
+            if (shouldIgnoreChildSize(widget)) {
+                widget.resizer().updateResized();
                 continue;
             }
+            if (widget.flex().hasPos(axis)) {
+                // this is required when the widget has a pos on the main axis, but not on the cross axis
+                widget.resizer().updateResized();
+                continue;
+            }
+            if (!widget.resizer().isSizeCalculated(axis)) return false;
+
             p += widget.getArea().getMargin().getStart(axis);
             widget.getArea().setRelativePoint(axis, p);
             p += widget.getArea().getSize(axis) + widget.getArea().getMargin().getEnd(axis);
-            if (axis.isHorizontal()) {
-                widget.resizer().setXResized(true);
-            } else {
-                widget.resizer().setYResized(true);
-            }
+            widget.resizer().setPosResized(axis, true);
+            widget.resizer().setMarginPaddingApplied(true);
             this.separatorPositions.add(p);
             p += separatorSize;
             if (isValid()) {
@@ -93,6 +95,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
             }
         }
         getScrollData().setScrollSize(p + getArea().getPadding().getEnd(axis));
+        return true;
     }
 
     @Override

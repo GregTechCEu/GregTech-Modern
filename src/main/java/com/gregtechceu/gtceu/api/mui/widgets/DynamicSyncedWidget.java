@@ -16,9 +16,10 @@ import java.util.function.Supplier;
  * Such a sync handler must be supplied or else this widget has no effect.
  * The dynamic child can be a widget tree of any size which can also contain {@link SyncHandler}s. These sync handlers
  * MUST be registered
- * via {@link PanelSyncManager#getOrCreateSyncHandler(String, Class, Supplier)}
+ * via a variant of
+ * {@link com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager#getOrCreateSyncHandler(String, Class, Supplier)}
  * 
- * @param <W>
+ * @param <W> type of this widget
  */
 public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widget<W> {
 
@@ -29,7 +30,7 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
     public boolean isValidSyncHandler(SyncHandler syncHandler) {
         if (syncHandler instanceof DynamicSyncHandler dynamicSyncHandler) {
             this.syncHandler = dynamicSyncHandler;
-            dynamicSyncHandler.onWidgetUpdate(this::updateChild);
+            dynamicSyncHandler.attachDynamicWidgetListener(this::updateChild);
             return true;
         }
         return false;
@@ -45,9 +46,14 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
     }
 
     private void updateChild(IWidget widget) {
+        if (this.child != null) {
+            this.child.dispose();
+        } else if (widget == null) {
+            return;
+        }
         this.child = widget;
         if (isValid()) {
-            this.child.initialise(this, true);
+            if (this.child != null) this.child.initialise(this, true);
             scheduleResize();
         }
     }
@@ -55,7 +61,19 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
     public W syncHandler(DynamicSyncHandler syncHandler) {
         this.syncHandler = syncHandler;
         setSyncHandler(syncHandler);
-        syncHandler.onWidgetUpdate(this::updateChild);
+        syncHandler.attachDynamicWidgetListener(this::updateChild);
+        return getThis();
+    }
+
+    /**
+     * Sets an initial child. This can only be done before the widget is initialised.
+     *
+     * @param child initial child
+     * @return this
+     */
+    public W initialChild(IWidget child) {
+        if (isValid()) throw new IllegalStateException("Can only set initial child before the widget is initialised.");
+        this.child = child;
         return getThis();
     }
 }

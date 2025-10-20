@@ -345,6 +345,14 @@ public interface IPositioned<W extends IPositioned<W>> {
         return widthRel(val).heightRel(val);
     }
 
+    default W fullWidth() {
+        return widthRel(1f);
+    }
+
+    default W fullHeight() {
+        return heightRel(1f);
+    }
+
     default W full() {
         return widthRel(1f).heightRel(1f);
     }
