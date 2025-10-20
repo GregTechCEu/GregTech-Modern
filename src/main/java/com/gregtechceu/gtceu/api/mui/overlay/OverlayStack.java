@@ -82,14 +82,17 @@ public class OverlayStack {
 
     public static void close(ModularScreen screen) {
         if (overlay.remove(screen)) {
-            screen.onCloseParent();
+            // TODO: Maybe not always dispose similar to normal screens
+            screen.getPanelManager().closeAll();
+            screen.getPanelManager().dispose();
         }
     }
 
     static void closeAll() {
         for (int i = overlay.size() - 1; i >= 0; i--) {
             ModularScreen screen = overlay.remove(i);
-            screen.onCloseParent();
+            screen.getPanelManager().closeAll();
+            screen.getPanelManager().dispose();
         }
     }
 

@@ -51,7 +51,8 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
 
     // other
     @Nullable
-    private String debugName;
+    @Getter
+    private String name;
     /**
      * Returns if this widget is currently enabled. Disabled widgets (and all its children) are not rendered and can't
      * be interacted with.
@@ -918,15 +919,23 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a debug name. This is only used in {@link #toString()}, which is displayed in the mui debug info. Useful for
-     * identifying widgets
-     * for debugging. This has no other effect.
+     * @deprecated this got renamed to name
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    public W debugName(String name) {
+        return name(name);
+    }
+
+    /**
+     * This can be used to find the widget with various methods from {@link WidgetTree} from a parent.
+     * The name is also included in {@link #toString()}.
      *
      * @param name debug name to use
      * @return this
      */
-    public W debugName(String name) {
-        this.debugName = name;
+    public W name(String name) {
+        this.name = name;
         return getThis();
     }
 
@@ -942,13 +951,22 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
+     * This is only used in {@link #toString()}.
+     *
+     * @return the simple class name or other fitting name
+     */
+    protected String getTypeName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
      * @return the simple class plus the debug name, if set
      */
     @Override
     public String toString() {
-        if (this.debugName != null) {
-            return getClass().getSimpleName() + "#" + this.debugName;
+        if (getName() != null) {
+            return getTypeName() + "#" + getName();
         }
-        return getClass().getSimpleName();
+        return getTypeName();
     }
 }

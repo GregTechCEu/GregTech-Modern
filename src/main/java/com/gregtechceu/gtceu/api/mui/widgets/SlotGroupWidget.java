@@ -45,21 +45,21 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
     public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer) {
         SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
         slotGroupWidget.coverChildren();
-        slotGroupWidget.debugName("player_inventory");
+        slotGroupWidget.name("player_inventory");
         String key = "player";
         for (int i = 0; i < 9; i++) {
             slotGroupWidget.child(slotConsumer.apply(i, new ItemSlot())
                     .background(GTGuiTextures.SLOT)
                     .syncHandler(key, i)
                     .pos(i * 18, 3 * 18 + 4)
-                    .debugName("slot_" + i));
+                    .name("slot_" + i));
         }
         for (int i = 0; i < 27; i++) {
             slotGroupWidget.child(slotConsumer.apply(i + 9, new ItemSlot())
                     .background(GTGuiTextures.SLOT)
                     .syncHandler(key, i + 9)
                     .pos(i % 9 * 18, i / 9 * 18)
-                    .debugName("slot_" + (i + 9)));
+                    .name("slot_" + (i + 9)));
         }
         return slotGroupWidget;
     }

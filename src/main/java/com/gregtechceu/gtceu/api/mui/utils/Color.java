@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Locale;
 import java.util.function.ToIntFunction;
@@ -242,6 +243,36 @@ public class Color {
      */
     public static float getAlphaF(int argb) {
         return getAlpha(argb) / 255f;
+    }
+
+    /**
+     * Extracts the red bits from the ARGB color and squares it.
+     *
+     * @return the squared red value
+     */
+    public static int getRedSq(int argb) {
+        int v = getRed(argb);
+        return v * v;
+    }
+
+    /**
+     * Extracts the green bits from the ARGB color and squares it.
+     *
+     * @return the squared green value
+     */
+    public static int getGreenSq(int argb) {
+        int v = getGreen(argb);
+        return v * v;
+    }
+
+    /**
+     * Extracts the blue bits from the ARGB color and squares it.
+     *
+     * @return the squared blue value
+     */
+    public static int getBlueSq(int argb) {
+        int v = getBlue(argb);
+        return v * v;
     }
 
     /**
@@ -621,6 +652,17 @@ public class Color {
     }
 
     /**
+     * Calculates perceived luminance according to <a href="https://alienryderflex.com/hsp.html">this web page</a>.
+     *
+     * @param argb argb color
+     * @return perceived luminance
+     */
+    public static float getLuminance(int argb) {
+        float r = getRedF(argb), g = getGreenF(argb), b = getBlueF(argb);
+        return Mth.sqrt(0.299f * r * r + 0.587f * g * g + 0.114f * b * b);
+    }
+
+    /**
      * Converts an RGBA int to an ARGB int.
      *
      * @param rgba RGBA color
@@ -682,14 +724,15 @@ public class Color {
      * @return average ARGB color
      */
     public static int average(int... colors) {
-        int r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0, a = 0;
         for (int color : colors) {
             r += getRed(color);
             g += getGreen(color);
             b += getBlue(color);
             a += getAlpha(color);
         }
-        return argb(r / colors.length, g / colors.length, b / colors.length, a / colors.length);
+        return argb((int) Math.sqrt(r / colors.length), (int) Math.sqrt(g / colors.length),
+                (int) Math.sqrt(b / colors.length), (int) Math.sqrt(a / colors.length));
     }
 
     /**
@@ -701,27 +744,41 @@ public class Color {
      */
     @SafeVarargs
     public static <T> int average(ToIntFunction<T> colorFunction, T... colorHolders) {
-        int r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0, a = 0;
         for (T colorHolder : colorHolders) {
             int color = colorFunction.applyAsInt(colorHolder);
-            r += getRed(color);
-            g += getGreen(color);
-            b += getBlue(color);
+            r += getRedSq(color);
+            g += getGreenSq(color);
+            b += getBlueSq(color);
             a += getAlpha(color);
         }
-        return argb(r / colorHolders.length, g / colorHolders.length, b / colorHolders.length, a / colorHolders.length);
+        return argb((int) Math.sqrt(r / colorHolders.length), (int) Math.sqrt(g / colorHolders.length),
+                (int) Math.sqrt(b / colorHolders.length), a / colorHolders.length);
+    }
+
+    /**
+     * @deprecated renamed to {@link #lerp(int, int, float)}
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    public static int interpolate(int color1, int color2, float value) {
+        return lerp(color1, color2, value);
+    }
+
+    public static int average(int argb1, int argb2) {
+        return lerp(argb1, argb2, 0.5f);
     }
 
     /**
      * Interpolates each color byte between two ARGB colors using linear interpolation and a progress value.
      *
-     * @param color1 lower color
-     * @param color2 higher color
-     * @param value  progress value
-     * @return interpolated ARGB color
+     * @param argb1 color 1
+     * @param argb2 color 2
+     * @param value progress value
+     * @return linear interpolated ARGB color
      */
-    public static int interpolate(int color1, int color2, float value) {
-        return interpolate(Interpolation.LINEAR, color1, color2, value);
+    public static int lerp(int argb1, int argb2, float value) {
+        return interpolate(Interpolation.LINEAR, argb1, argb2, value);
     }
 
     /**
@@ -735,11 +792,15 @@ public class Color {
      */
     public static int interpolate(IInterpolation curve, int color1, int color2, float value) {
         value = Mth.clamp(value, 0, 1);
-        int r = (int) curve.interpolate(Color.getRed(color1), Color.getRed(color2), value);
-        int g = (int) curve.interpolate(Color.getGreen(color1), Color.getGreen(color2), value);
-        int b = (int) curve.interpolate(Color.getBlue(color1), Color.getBlue(color2), value);
-        int a = (int) curve.interpolate(Color.getAlpha(color1), Color.getAlpha(color2), value);
+        int r = (int) lerpComp(curve, Color.getRed(color1), Color.getRed(color2), value);
+        int g = (int) lerpComp(curve, Color.getGreen(color1), Color.getGreen(color2), value);
+        int b = (int) lerpComp(curve, Color.getBlue(color1), Color.getBlue(color2), value);
+        int a = (int) lerpComp(curve, Color.getAlpha(color1), Color.getAlpha(color2), value);
         return Color.argb(r, g, b, a);
+    }
+
+    public static float lerpComp(IInterpolation curve, float a, float b, float v) {
+        return Mth.sqrt(curve.interpolate(a * a, b * b, v));
     }
 
     /**

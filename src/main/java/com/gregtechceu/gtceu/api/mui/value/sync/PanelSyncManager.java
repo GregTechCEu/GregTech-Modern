@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -165,7 +166,7 @@ public class PanelSyncManager {
             if (this.allowSyncHandlerRegistration) {
                 // lock can be bypassed currently, but it wasn't used
                 throw new IllegalStateException(
-                        "SyncHandlers must be registered during panel building. Please use getOrCreateSyncHandler()!");
+                        "SyncHandlers must be registered during panel building. Please use getOrCreateSyncHandler() inside DynamicSyncHandler!");
             } else {
                 throw new IllegalStateException(
                         "SyncHandlers must be registered during panel building. The only exceptions is via a DynamicSyncHandler and sync functions!");
@@ -390,8 +391,66 @@ public class PanelSyncManager {
         return this.slotGroups.values();
     }
 
-    public SyncHandler getSyncHandler(String mapKey) {
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    public @Nullable SyncHandler getSyncHandler(String mapKey) {
+        return getSyncHandlerFromMapKey(mapKey);
+    }
+
+    public @Nullable SyncHandler getSyncHandlerFromMapKey(String mapKey) {
         return this.syncHandlers.get(mapKey);
+    }
+
+    public @Nullable SyncHandler findSyncHandlerNullable(String name, int id) {
+        return this.syncHandlers.get(makeSyncKey(name, id));
+    }
+
+    public @Nullable SyncHandler findSyncHandlerNullable(String name) {
+        return findSyncHandlerNullable(name, 0);
+    }
+
+    public @NotNull SyncHandler findSyncHandler(String name, int id) {
+        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
+        if (syncHandler == null) {
+            throw new NoSuchElementException(
+                    "Expected to find sync handler with key '" + makeSyncKey(name, id) + "', but none was found.");
+        }
+        return syncHandler;
+    }
+
+    public @NotNull SyncHandler findSyncHandler(String name) {
+        return findSyncHandler(name, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends SyncHandler> @Nullable T findSyncHandlerNullable(String name, int id, Class<T> type) {
+        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
+        if (syncHandler != null && type.isAssignableFrom(syncHandler.getClass())) {
+            return (T) syncHandler;
+        }
+        return null;
+    }
+
+    public <T extends SyncHandler> @Nullable T findSyncHandlerNullable(String name, Class<T> type) {
+        return findSyncHandlerNullable(name, 0, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends SyncHandler> @NotNull T findSyncHandler(String name, int id, Class<T> type) {
+        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
+        if (syncHandler == null) {
+            throw new NoSuchElementException(
+                    "Expected to find sync handler with key '" + makeSyncKey(name, id) + "', but none was found.");
+        }
+        if (!type.isAssignableFrom(syncHandler.getClass())) {
+            throw new ClassCastException("Expected to find sync handler with key '" + makeSyncKey(name, id) +
+                    "' of type '" + type.getName() + "', but found type '" + syncHandler.getClass().getName() + "'.");
+        }
+        return (T) syncHandler;
+    }
+
+    public <T extends SyncHandler> @NotNull T findSyncHandler(String name, Class<T> type) {
+        return findSyncHandler(name, 0, type);
     }
 
     public Player getPlayer() {

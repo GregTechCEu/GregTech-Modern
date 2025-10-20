@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.google.common.base.CharMatcher;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -339,5 +340,20 @@ public interface IWidget extends IGuiElement {
     default boolean isExpanded() {
         Flex flex = getFlex();
         return flex != null && flex.isExpanded();
+    }
+
+    @Nullable
+    String getName();
+
+    default boolean isName(String name) {
+        return name.equals(getName());
+    }
+
+    default boolean isType(Class<? extends IWidget> type) {
+        return type.isAssignableFrom(getClass());
+    }
+
+    default boolean isNameAndType(String name, Class<? extends IWidget> type) {
+        return isName(name) && isType(type);
     }
 }

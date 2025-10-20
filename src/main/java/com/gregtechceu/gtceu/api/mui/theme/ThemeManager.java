@@ -338,13 +338,13 @@ public class ThemeManager extends SimplePreparableReloadListener<Map<String, Lis
                     }
                     // we still need to parse non inherited values (fallback)
                     widgetThemeJson = emptyJson;
+                    widgetThemeHoverJson = emptyJson;
                 }
             }
 
             JsonObject fallback = key.isSubWidgetTheme() ? null : json.getJson();
             T widgetTheme = null;
             if (widgetThemeJson != null) {
-                // widget theme defined
                 T parentWidgetTheme = key.isSubWidgetTheme() ? map.getTheme(key.getParent()).getTheme() :
                         parent.getWidgetTheme(key).getTheme();
                 // sub widget themes strictly only inherit from their parent widget theme and not the parent theme
@@ -353,8 +353,8 @@ public class ThemeManager extends SimplePreparableReloadListener<Map<String, Lis
 
             T widgetThemeHover = null;
             if (widgetThemeHoverJson != null) {
-                // hover widget theme defined
-                T parentWidgetHoverTheme = key.isSubWidgetTheme() ? map.getTheme(key.getParent()).getHoverTheme() :
+                // only inherit from the widget theme if it was actually defined, otherwise use parent
+                T parentWidgetHoverTheme = definedInTheme ? widgetTheme :
                         parent.getWidgetTheme(key).getHoverTheme();
                 // sub widget themes strictly only inherit from their parent widget theme and not the parent theme
                 widgetThemeHover = parser.parse(parentWidgetHoverTheme, widgetThemeHoverJson, fallback);

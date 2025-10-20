@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 
 public class PanelManager {
 
+    private static final int DISPOSAL_CAPACITY = 1 << 4;
+
     @Getter
     private final @NotNull ModularScreen screen;
     /**
@@ -40,7 +42,7 @@ public class PanelManager {
     private final List<WidgetWrapper> panelWrappers = new ArrayList<>();
     private final List<WidgetWrapper> panelWrappersView = Collections.unmodifiableList(this.panelWrappers);
     private final ReverseIterable<WidgetWrapper> reversePanelWrappers = new ReverseIterable<>(this.panelWrappersView);
-    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(20);
+    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(DISPOSAL_CAPACITY);
     private final Map<String, IPanelHandler> panelHandlerMap = new Object2ObjectOpenHashMap<>();
     private boolean cantDisposeNow = false;
     private boolean dirty = false;
@@ -52,7 +54,15 @@ public class PanelManager {
     }
 
     boolean tryInit() {
-        if (this.state == State.CLOSED) throw new IllegalStateException("Can't init in closed state!");
+        if (this.state == State.CLOSED) {
+            if (this.panels.isEmpty()) {
+                throw new IllegalStateException("Can't init in closed state!");
+            }
+            this.panels.forEach(p -> p.reopen(true));
+            this.disposal.removeIf(this.panels::contains);
+            setState(State.REOPENED);
+            return true;
+        }
         if (this.state == State.INIT || this.state == State.DISPOSED) {
             setState(State.OPEN);
             openPanel(this.mainPanel, false);
@@ -84,7 +94,7 @@ public class PanelManager {
     public List<LocatedWidget> getAllHoveredWidgetsList(boolean debug) {
         for (ModularPanel panel : this.panels) {
             List<LocatedWidget> widgets = panel.getAllHoveringList(debug);
-            if (widgets != null) {
+            if (!widgets.isEmpty()) {
                 return widgets;
             }
         }
@@ -194,6 +204,7 @@ public class PanelManager {
 
     public boolean closeAll() {
         if (this.state.isOpen) {
+            // any open panel will be set to closed, but will not actually be removed, so it can be reopened
             this.panels.forEach(this::finalizePanel);
             setState(State.CLOSED);
             this.screen.onClose();
@@ -205,7 +216,7 @@ public class PanelManager {
     private void finalizePanel(ModularPanel panel) {
         panel.onClose();
         if (!this.disposal.contains(panel)) {
-            if (this.disposal.size() == 20) {
+            if (this.disposal.size() == DISPOSAL_CAPACITY) {
                 this.disposal.remove(0).dispose();
             }
             this.disposal.add(panel);
@@ -227,11 +238,14 @@ public class PanelManager {
     @ApiStatus.Internal
     public void dispose() {
         if (isDisposed()) return;
+        if (this.state != State.CLOSED && this.state != State.WAIT_DISPOSAL) {
+            throw new IllegalStateException("Must close screen first before disposing!");
+        }
         if (this.cantDisposeNow) {
             setState(State.WAIT_DISPOSAL);
             return;
         }
-        if (!isClosed()) throw new IllegalStateException("Must close screen first before disposing!");
+        setState(State.CLOSED);
         this.disposal.forEach(ModularPanel::dispose);
         this.disposal.clear();
         this.panels.clear();
@@ -239,16 +253,6 @@ public class PanelManager {
         this.panelWrappers.clear();
         this.dirty = false;
         setState(State.DISPOSED);
-    }
-
-    @ApiStatus.Internal
-    public void reopen() {
-        if (this.panels.isEmpty()) {
-            throw new IllegalStateException("Screen is disposed. Can't be recovered!");
-        }
-        this.panels.forEach(ModularPanel::reopen);
-        this.disposal.removeIf(this.panels::contains);
-        setState(State.REOPENED);
     }
 
     public boolean hasOpenPanel(ModularPanel panel) {
@@ -347,7 +351,7 @@ public class PanelManager {
         OPEN(true),
         REOPENED(true),
         CLOSED(false),
-        WAIT_DISPOSAL(true),
+        WAIT_DISPOSAL(false),
         DISPOSED(false);
 
         public final boolean isOpen;

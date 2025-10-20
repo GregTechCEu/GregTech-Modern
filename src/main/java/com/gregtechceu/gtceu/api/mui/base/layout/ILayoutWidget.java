@@ -1,25 +1,37 @@
 package com.gregtechceu.gtceu.api.mui.base.layout;
 
+import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.widget.INotifyEnabled;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 
 /**
- * This is responsible for laying out widgets.
+ * This is responsible for laying out widgets. This method responsible for laying out its children
+ * in itself. This includes calling {@link IResizeable#setSizeResized(boolean, boolean)} or one of its variants after a
+ * size with
+ * {@link com.gregtechceu.gtceu.api.mui.widget.sizer.Area#setSize(GuiAxis, int)} or one of its variants on each child.
+ * The same goes for
+ * position. If this widget also applies margin and padding (this is usually the case), then
+ * {@link IResizeable#setMarginPaddingApplied(boolean)}
+ * or one of its variants needs to be called to.
  */
 public interface ILayoutWidget extends INotifyEnabled {
 
     /**
      * Called after the children tried to calculate their size.
      * Might be called multiple times.
+     *
+     * @return true if the layout was successful and no further iteration is needed.
      */
-    void layoutWidgets();
+    boolean layoutWidgets();
 
     /**
-     * Called after post calculation of this widget.
-     * Might be called multiple times.
-     * The last call guarantees, that this widget is fully calculated.
+     * Called after post calculation of this widget. The last call guarantees, that this widget is fully calculated.
+     *
+     * @return true if the layout was successful and no further iteration is needed
      */
-    default void postLayoutWidgets() {}
+    default boolean postLayoutWidgets() {
+        return true;
+    }
 
     /**
      * Called when determining wrapping size of this widget.

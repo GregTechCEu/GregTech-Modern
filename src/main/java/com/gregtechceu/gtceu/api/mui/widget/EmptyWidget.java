@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EmptyWidget implements IWidget {
 
@@ -112,11 +113,18 @@ public class EmptyWidget implements IWidget {
         return this.flex;
     }
 
+    @NotNull
     @Override
-    public @NotNull IResizeable resizer() {
+    public IResizeable resizer() {
         return this.flex;
     }
 
     @Override
     public void resizer(IResizeable resizer) {}
+
+    @Nullable
+    @Override
+    public String getName() {
+        return null;
+    }
 }
