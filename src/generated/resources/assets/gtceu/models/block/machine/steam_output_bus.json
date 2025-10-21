@@ -13,8 +13,9 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_item_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_output",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
           "top": "gtceu:block/casings/steam/bronze/top"
         }
@@ -25,8 +26,9 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_item_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_output",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
           "top": "gtceu:block/casings/steam/bronze/top"
         }
@@ -37,8 +39,9 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_item_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_output",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
           "top": "gtceu:block/casings/steam/bronze/top"
         }
@@ -49,8 +52,9 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/steam/bronze/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_item_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_item_hatch_output",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+          "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
           "side": "gtceu:block/casings/steam/bronze/side",
           "top": "gtceu:block/casings/steam/bronze/top"
         }

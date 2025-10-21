@@ -220,7 +220,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == PERFECT_DURATION_FACTOR_INV,
+        helper.assertTrue(newRecipe.subtickParallels == PERFECT_DURATION_FACTOR_INV,
                 "Perfect subtick overclock didn't multiply parallels by 4");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() ==
@@ -248,7 +248,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_NON_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == STD_DURATION_FACTOR_INV,
+        helper.assertTrue(newRecipe.subtickParallels == STD_DURATION_FACTOR_INV,
                 "Non-Perfect subtick overclock didn't multiply parallels by 2");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() ==
@@ -276,7 +276,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_NON_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == 1,
+        helper.assertTrue(newRecipe.subtickParallels == 1,
                 "Non-Perfect Non-subtick overclock overclocked when it shouldn't have");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() == recipeBeforeModifiers.getInputEUt().getTotalEU(),
