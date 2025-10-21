@@ -157,7 +157,7 @@ public class GTMuiRecipeTypePanel {
 
             y += 18 * side;
         }
-
+        panel.bindPlayerInventory();
         return panel;
     };
 

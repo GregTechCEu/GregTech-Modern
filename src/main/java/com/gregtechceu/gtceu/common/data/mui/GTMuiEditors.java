@@ -54,17 +54,21 @@ public class GTMuiEditors {
                 ProgressWidget progressBar = new ProgressWidget()
                         .texture(texture, imageSize)
                         .direction(direction)
-                        .progress(() -> {
-                            double maxProgress = tieredMachine.getMaxProgress();
-                            return maxProgress == 0 ? 0.0 : tieredMachine.getProgress() / maxProgress;
-                        });
+                        .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
                 panel.child(new Column()
                         .widthRel(1.0f)
+                        .heightRel(.5f)
                         .child(progressBar.align(Alignment.Center))
                 );
             }
         };
     }
 
+    public static PanelEditor POWER_BUTTON = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                           MetaMachine machine, ModularPanel panel) -> {
 
+
+
+
+    };
 }
