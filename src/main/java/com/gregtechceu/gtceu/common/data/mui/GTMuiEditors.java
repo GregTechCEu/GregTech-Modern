@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
 import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
@@ -29,12 +27,11 @@ public class GTMuiEditors {
     };
 
     public static PanelEditor CHARGE_SLOT = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-            MetaMachine machine, ModularPanel panel) -> {
+                                             MetaMachine machine, ModularPanel panel) -> {
 
-        if(machine instanceof SimpleTieredMachine simpleTieredMachine) {
+        if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
             var energyContainer = simpleTieredMachine.getChargerInventory();
             panel.child(new ItemSlot().slot(new ModularSlot(energyContainer, 0)).widthRel(.5F));
         }
     };
-
 }

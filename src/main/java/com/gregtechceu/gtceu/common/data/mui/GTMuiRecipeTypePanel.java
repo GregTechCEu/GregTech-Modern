@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -13,31 +11,30 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import net.minecraftforge.items.IItemHandlerModifiable;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import java.util.function.IntFunction;
 
 public class GTMuiRecipeTypePanel {
 
     public static PanelFactory RECIPE_TYPE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                             MetaMachine machine) -> {
+                                              MetaMachine machine) -> {
 
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
-            GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content", machine.getDefinition().getName());
+            GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
+                    machine.getDefinition().getName());
             return null;
         }
 
@@ -58,7 +55,7 @@ public class GTMuiRecipeTypePanel {
             slotGroups.put(recipeCap, IO.IN, group);
             syncManager.registerSlotGroup(group);
 
-            int side = (int)Math.ceil(Math.sqrt(max));
+            int side = (int) Math.ceil(Math.sqrt(max));
             String[] matrix = new String[side];
             for (int i = 0; i < side; i++) {
                 StringBuilder s = new StringBuilder();
@@ -101,7 +98,7 @@ public class GTMuiRecipeTypePanel {
             slotGroups.put(recipeCap, IO.OUT, group);
             syncManager.registerSlotGroup(group);
 
-            int side = (int)Math.ceil(Math.sqrt(max));
+            int side = (int) Math.ceil(Math.sqrt(max));
             String[] matrix = new String[side];
             for (int i = 0; i < side; i++) {
                 StringBuilder s = new StringBuilder();
