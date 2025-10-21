@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
 import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -37,12 +37,8 @@ public class GTMuiEditors {
 
         if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
             var energyContainer = simpleTieredMachine.getChargerInventory();
-            panel.child(new Column()
-                            .widthRel(1.0f)
-                            .heightRel(.5f)
-                            .paddingBottom(5)
-                    .child( new ItemSlot().slot(new ModularSlot(energyContainer, 0))
-                    .align(Alignment.BottomCenter)));
+            panel.child( new ItemSlot().slot(new ModularSlot(energyContainer, 0))
+                    .align(Alignment.BottomCenter));
         }
     };
 
@@ -55,20 +51,21 @@ public class GTMuiEditors {
                         .texture(texture, imageSize)
                         .direction(direction)
                         .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
-                panel.child(new Column()
-                        .widthRel(1.0f)
-                        .heightRel(.5f)
-                        .child(progressBar.align(Alignment.Center))
-                );
+                panel.child(progressBar.align(Alignment.Center));
             }
         };
     }
 
     public static PanelEditor POWER_BUTTON = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                            MetaMachine machine, ModularPanel panel) -> {
-
-
-
-
+        if(machine instanceof SimpleTieredMachine tieredMachine) {
+            panel.child(new ToggleButton()
+                                    .value(new BoolValue.Dynamic(
+                                            () -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
+                                            tieredMachine::setWorkingEnabled))
+                                    .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
+                                    .align(Alignment.BottomLeft)
+                                    .background(GTGuiTextures.BUTTON_POWER[1]));
+        }
     };
 }

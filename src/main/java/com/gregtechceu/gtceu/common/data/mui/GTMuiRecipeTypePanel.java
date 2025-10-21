@@ -49,7 +49,7 @@ public class GTMuiRecipeTypePanel {
         var recipeType = workableMachine.getRecipeType();
 
         ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
-
+        panel.padding(7);
         // Get the title string first
         String title = machine.getDefinition().getLangValue();
 
@@ -162,7 +162,6 @@ public class GTMuiRecipeTypePanel {
     };
 
 
-
     public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT, GTMuiEditors.
-            PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ASSEMBLY_LINE, 30, ProgressWidget.Direction.RIGHT));
+            PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 80, ProgressWidget.Direction.RIGHT), GTMuiEditors.POWER_BUTTON);
 }

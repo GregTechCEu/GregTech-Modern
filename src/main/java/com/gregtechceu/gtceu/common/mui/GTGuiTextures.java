@@ -149,6 +149,10 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
+    public static final UITexture[] BUTTON_POWER = slice("textures/gui/widget/button_power.png", 16, 32, 16, 16, ColorType.DEFAULT);
+
+
+
     public static final UITexture[] BUTTON_BLACKLIST = slice("textures/gui/widget/button_blacklist.png",
             16, 32, 16, 16, ColorType.DEFAULT);
     public static final UITexture[] BUTTON_IGNORE_DAMAGE = slice("textures/gui/widget/button_filter_damage.png",
