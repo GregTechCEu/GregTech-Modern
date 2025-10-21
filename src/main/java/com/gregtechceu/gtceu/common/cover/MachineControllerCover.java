@@ -343,40 +343,40 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
      * setControllerMode(null);
      * }
      * WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
-     * 
+     *
      * group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
      * group.addWidget(new IntInputWidget(10, 20, 131, 20,
      * this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
-     * 
+     *
      * modeButton = new ButtonWidget(10, 45, 131, 20,
      * new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
      * cd -> selectNextMode());
      * group.addWidget(modeButton);
-     * 
+     *
      * // Inverted Mode Toggle:
      * group.addWidget(new ToggleButtonWidget(
      * 146, 20, 20, 20,
      * GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
      * .isMultiLang()
      * .setTooltipText("cover.machine_controller.invert"));
-     * 
+     *
      * group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
      * group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
      * this::preventPowerFail, (data) -> {
      * preventPowerFail = data;
      * }));
-     * 
+     *
      * sideCoverSlot = new CustomItemStackHandler(1);
      * group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
-     * 
+     *
      * @Override
      * public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
      * return sideCoverSlot.getStackInSlot(0);
      * }
      * });
-     * 
+     *
      * updateUI();
-     * 
+     *
      * return group;
      * }
      */

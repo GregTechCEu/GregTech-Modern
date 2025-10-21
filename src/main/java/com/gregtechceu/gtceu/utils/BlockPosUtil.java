@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
+import org.joml.Vector3f;
+
 public class BlockPosUtil {
 
     public static final BlockPos MAX = new BlockPos(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -47,6 +49,15 @@ public class BlockPosUtil {
         BlockPos min = getMin(p1, p2);
         return new BlockPos(getXDist(p1, p2) / 2 + min.getX(), getYDist(p1, p2) / 2 + min.getY(),
                 getYDist(p1, p2) / 2 + min.getY());
+    }
+
+    public static Vector3f getCenterF(BlockPos p1, BlockPos p2) {
+        BlockPos min = getMin(p1, p2);
+        return getCenterF(min.getX(), min.getY(), min.getZ(), getXDist(p1, p2), getYDist(p1, p2), getZDist(p1, p2));
+    }
+
+    public static Vector3f getCenterF(int oX, int oY, int oZ, int dX, int dY, int dZ) {
+        return new Vector3f(dX / 2.0f + oX, dY / 2.0f + oY, dZ / 2.0f + oZ);
     }
 
     public static Vec3 getCenterD(BlockPos p1, BlockPos p2) {

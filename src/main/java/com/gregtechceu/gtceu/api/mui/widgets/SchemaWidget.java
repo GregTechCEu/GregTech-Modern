@@ -11,15 +11,15 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
-    private final BaseSchemaRenderer schema;
+    private final BaseSchemaRenderer schemaRenderer;
     private boolean enableRotation = true;
     private boolean enableTranslation = true;
     private boolean enableScaling = true;
@@ -33,15 +33,21 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
     }
 
     public SchemaWidget(BaseSchemaRenderer schemaRenderer) {
-        this.schema = schemaRenderer;
+        this.schemaRenderer = schemaRenderer;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.schemaRenderer.dispose();
     }
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        Vec3 f = this.schema.schema().getFocus();
-        this.schema.camera().setLookAtAndAngle((float) (f.x + this.offset.x), (float) (f.y + this.offset.y),
-                (float) (f.z + this.offset.z), scale, yaw, pitch);
-        this.schema.drawAtZero(context, getArea(), widgetTheme.getTheme());
+        Vector3fc f = this.schemaRenderer.schema().getFocus();
+        this.schemaRenderer.camera().setLookAtAndAngle(f.x() + this.offset.x, f.y() + this.offset.y,
+                f.z() + this.offset.z, scale, yaw, pitch);
+        this.schemaRenderer.drawAtZero(context, getArea(), widgetTheme.getTheme());
     }
 
     @Override
@@ -68,7 +74,7 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
             pitch(this.pitch + dy * moveScale);
         } else if (button == InputConstants.MOUSE_BUTTON_MIDDLE && this.enableTranslation) {
             float moveScale = 0.09f;
-            Vector3f look = this.schema.camera().getLookVec().normalize(); // direction camera is looking
+            Vector3f look = this.schemaRenderer.camera().getLookVec().normalize(); // direction camera is looking
             Vector3f right = look.cross(GTMath.UNIT_Y, new Vector3f()).normalize(); // right relative to screen
             Vector3f up = right.cross(look, new Vector3f()); // up relative to screen
             this.offset.sub(right.mul(dx * moveScale)).add(up.mul(dy * moveScale));

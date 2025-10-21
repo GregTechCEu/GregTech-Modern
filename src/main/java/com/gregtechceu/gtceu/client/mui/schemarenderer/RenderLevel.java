@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.client.mui.schemarenderer;
 import com.gregtechceu.gtceu.api.mui.schema.ISchema;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
@@ -40,9 +37,13 @@ public class RenderLevel implements LevelTimeAccess {
     private final ISchema schema;
     private final Level level;
 
+    private final Thread thread;
+
     public RenderLevel(ISchema schema) {
         this.schema = schema;
         this.level = schema.getLevel();
+
+        this.thread = Thread.currentThread();
     }
 
     @Nullable
@@ -51,6 +52,16 @@ public class RenderLevel implements LevelTimeAccess {
         BlockState state = this.level.getBlockState(pos);
         if (!this.schema.getRenderFilter().test(pos, state)) {
             return null;
+        }
+        // avoid the level
+        if (Thread.currentThread() != this.thread) {
+            int chunkX = SectionPos.blockToSectionCoord(pos.getX());
+            int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
+            var chunk = this.level.getChunkForCollisions(chunkX, chunkZ);
+            if (chunk == null) {
+                return null;
+            }
+            return chunk.getBlockEntity(pos);
         }
         return this.level.getBlockEntity(pos);
     }
