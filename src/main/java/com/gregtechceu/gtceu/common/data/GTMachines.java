@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiEditors;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiPanels;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.muimachine.TestMuiMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
@@ -1097,11 +1098,10 @@ public class GTMachines {
     public static final MachineDefinition MUI_TEST_2 = REGISTRATE
             .machine("test_mui_new", MonitorPartMachine::new)
             .rotationState(RotationState.ALL)
+            .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI(GTMuiPanels.TEST_PANEL.andThen(
-                    GTMuiEditors.TEST_EDITOR_1,
-                    GTMuiEditors.TEST_EDITOR_2))
+            .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
             .register();
 
     public static void init() {

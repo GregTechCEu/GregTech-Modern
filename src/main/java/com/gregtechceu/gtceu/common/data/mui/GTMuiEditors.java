@@ -22,4 +22,5 @@ public class GTMuiEditors {
         panel.child(
                 new TextWidget<>(new StringKey("Edit Test 2")).top(40).color(0x0000ff).alignment(Alignment.TopRight));
     };
+
 }

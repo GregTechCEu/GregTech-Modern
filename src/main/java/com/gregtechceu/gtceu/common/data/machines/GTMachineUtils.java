@@ -38,6 +38,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
@@ -207,7 +208,9 @@ public class GTMachineUtils {
                     .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                             holder -> factory.apply(holder, tier))
                     .tier(tier);
-            definitions[tier] = builder.apply(tier, register);
+            var definition =  builder.apply(tier, register);
+            definition.setUI(GTMuiRecipeTypePanel.RECIPE_TYPE);
+            definitions[tier] = definition;
         }
         return definitions;
     }
