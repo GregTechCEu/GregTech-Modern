@@ -22,7 +22,7 @@ public class ThemeAPI implements IThemeApi {
     public static final String DEFAULT_ID = "DEFAULT";
     public static final ITheme DEFAULT_THEME = DefaultTheme.INSTANCE;
 
-    public static final Pattern widgetThemeNamePattern = Pattern.compile("[a-zA-z0-9_-]+");
+    public static final Pattern widgetThemeNamePattern = Pattern.compile("[a-zA-z0-9$_-]+");
 
     private final Object2ObjectMap<String, ITheme> themes = new Object2ObjectOpenHashMap<>();
     protected final Object2ObjectMap<String, List<JsonBuilder>> defaultThemes = new Object2ObjectOpenHashMap<>();

@@ -64,4 +64,9 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
     public boolean isPauseScreen() {
         return this.screen.isPauseScreen();
     }
+
+    @Override
+    public String toString() {
+        return "Wrapper(" + getScreen() + ")";
+    }
 }

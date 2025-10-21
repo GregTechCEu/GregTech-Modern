@@ -317,6 +317,7 @@ public class GuiDraw {
 
     public static void drawTexture(Matrix4f pose, float x0, float y0, float x1, float y1, float u0, float v0, float u1,
                                    float v1, float z) {
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -348,6 +349,7 @@ public class GuiDraw {
         float fillerX = w - (countX - 1) * tileW;
         float fillerY = h - (countY - 1) * tileH;
 
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
 
@@ -384,6 +386,7 @@ public class GuiDraw {
         float fillerU = u0 + (u1 - u0) * fillerX / tileWidth;
         float fillerV = v0 + (v1 - v0) * fillerY / tileHeight;
 
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
 
@@ -562,6 +565,7 @@ public class GuiDraw {
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.enableBlend();
+        RenderSystem.disableDepthTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                 GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -621,7 +625,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleFan());
+        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiOverlayTriangleFan());
         buffer.vertex(pose, x, y, 0).color(r1, g1, b1, a1).endVertex();
 
         Vector3d pos = new Vector3d();
@@ -650,7 +654,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleFan());
+        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiOverlayTriangleFan());
         /* Draw opaque base */
         buffer.vertex(pose, x, y, 0).color(r1, g1, b1, a1).endVertex();
 

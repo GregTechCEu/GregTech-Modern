@@ -131,7 +131,7 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
 
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
-        int p = this.axis.isHorizontal() ? getContext().getMouseX() : getContext().getMouseY();
+        int p = getContext().getMouse(this.axis);
         setValue(posToValue(p), true);
         this.dragging = true;
         return Result.SUCCESS;
@@ -200,6 +200,9 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
     public SliderWidget bounds(double min, double max) {
         this.max = Math.max(min, max);
         this.min = Math.min(min, max);
+        if (isValid()) {
+            setValue(getSliderValue(), true);
+        }
         return this;
     }
 

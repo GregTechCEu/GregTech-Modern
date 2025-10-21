@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 public class HorizontalScrollData extends ScrollData {
@@ -40,6 +41,11 @@ public class HorizontalScrollData extends ScrollData {
     }
 
     @Override
+    protected int getFallbackThickness(WidgetTheme widgetTheme) {
+        return widgetTheme.getDefaultHeight();
+    }
+
+    @Override
     public VerticalScrollData getOtherScrollData(ScrollArea area) {
         return area.getScrollY();
     }
@@ -61,7 +67,7 @@ public class HorizontalScrollData extends ScrollData {
     }
 
     @Override
-    public void drawScrollbar(GuiContext context, ScrollArea area) {
+    public void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme) {
         boolean isOtherActive = isOtherScrollBarActive(area, true);
         int l = getScrollBarLength(area);
         int x = 0;
@@ -77,6 +83,6 @@ public class HorizontalScrollData extends ScrollData {
         }
 
         w = l;
-        drawScrollBar(context, x, y, w, h);
+        drawScrollBar(context, x, y, w, h, widgetTheme);
     }
 }

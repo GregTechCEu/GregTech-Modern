@@ -9,7 +9,10 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public class ColorShade implements IntIterable {
@@ -23,6 +26,11 @@ public class ColorShade implements IntIterable {
     @Nullable
     public static ColorShade getFromName(String name) {
         return COLOR_SHADES.get(name);
+    }
+
+    @UnmodifiableView
+    public static Collection<ColorShade> getAll() {
+        return Collections.unmodifiableCollection(COLOR_SHADES.values());
     }
 
     public final String name;

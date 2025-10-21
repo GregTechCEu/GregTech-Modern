@@ -47,6 +47,8 @@ public class TransformationMatrix {
         this.viewportMatrix = false;
         if (parent != null) {
             this.matrix.set(parent);
+        } else {
+            this.matrix.identity();
         }
     }
 
@@ -63,9 +65,7 @@ public class TransformationMatrix {
 
     public Matrix4f getInvertedMatrix() {
         if (this.dirty) {
-            if (this.matrix.invert(this.invertedMatrix) == null) {
-                this.invertedMatrix.set(this.matrix);
-            }
+            this.matrix.invert(this.invertedMatrix);
             this.dirty = false;
         }
         return this.invertedMatrix;

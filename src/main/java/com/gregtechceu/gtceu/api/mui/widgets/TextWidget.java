@@ -30,6 +30,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private Boolean shadow = null;
     @Getter
     private float scale = 1f;
+    private int maxWidth = -1;
 
     private Component lastText = Component.empty();
     private Component textForDefaultSize = Component.empty();
@@ -86,6 +87,8 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         float maxWidth;
         if (resizer().isWidthCalculated()) {
             maxWidth = getArea().width + this.scale;
+        } else if (this.maxWidth > 0) {
+            maxWidth = Math.max(this.maxWidth, 5);
         } else if (getParent().resizer().isWidthCalculated()) {
             maxWidth = getParent().getArea().width + this.scale;
         } else {
@@ -97,9 +100,13 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Override
     public int getDefaultWidth() {
-        float maxWidth = getScreen().getScreenArea().width;
-        if (getParent().resizer().isWidthCalculated()) {
+        float maxWidth;
+        if (this.maxWidth > 0) {
+            maxWidth = Math.max(this.maxWidth, 5);
+        } else if (getParent().resizer().isWidthCalculated()) {
             maxWidth = getParent().getArea().width;
+        } else {
+            maxWidth = getScreen().getScreenArea().width;
         }
         TextRenderer renderer = simulate(maxWidth);
         return getWidgetWidth(renderer.getLastWidth());
@@ -113,6 +120,11 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     protected int getWidgetHeight(float actualTextHeight) {
         Box padding = getArea().getPadding();
         return Math.max(1, (int) Math.ceil(actualTextHeight + padding.vertical()));
+    }
+
+    @Override
+    public boolean canHoverThrough() {
+        return true;
     }
 
     protected Component getComponentForDefaultSize() {
@@ -154,6 +166,11 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     public W style(ChatFormatting formatting) {
         this.key.style(formatting);
+        return getThis();
+    }
+
+    public W maxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
         return getThis();
     }
 

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.overlay;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -28,15 +29,14 @@ public class OverlayManager {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onOpenScreen(ScreenEvent.Opening event) {
-        if (event.getNewScreen() == event.getCurrentScreen()) return;
+    public static void onOpenScreen(Screen newScreen) {
+        // if (newScreen == event.getCurrentScreen()) return;
         OverlayStack.closeAll();
         for (OverlayHandler handler : overlays) {
-            if (handler.isValidFor(event.getNewScreen())) {
-                ModularScreen overlay = Objects.requireNonNull(handler.createOverlay(event.getNewScreen()),
+            if (handler.isValidFor(newScreen)) {
+                ModularScreen overlay = Objects.requireNonNull(handler.createOverlay(newScreen),
                         "Overlays must not be null!");
-                overlay.constructOverlay(event.getNewScreen());
+                overlay.constructOverlay(newScreen);
                 OverlayStack.open(overlay);
             }
         }

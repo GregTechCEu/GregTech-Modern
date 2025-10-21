@@ -32,4 +32,9 @@ public class ScreenWrapper extends Screen implements IMuiScreen {
     public boolean isPauseScreen() {
         return this.screen.isPauseScreen();
     }
+
+    @Override
+    public String toString() {
+        return "Wrapper(" + getScreen() + ")";
+    }
 }

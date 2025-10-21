@@ -22,13 +22,18 @@ import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.ModList;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -102,7 +107,25 @@ public class FluidSlot extends Widget<FluidSlot>
                     }
                 }
             }
+            if (fluid != null && !fluid.isEmpty()) {
+                tooltip.add(getFluidModName(fluid));
+            }
         });
+    }
+
+    private Component getFluidModName(FluidStack fluidStack) {
+        String modID = getFluidModID(fluidStack.getFluid());
+        var container = ModList.get().getModContainerById(modID);
+        if (container.isPresent()) {
+            return Component.literal(container.get().getModInfo().getDisplayName()).withStyle(ChatFormatting.BLUE,
+                    ChatFormatting.ITALIC);
+        }
+        return Component.literal(modID).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC);
+    }
+
+    public static String getFluidModID(Fluid fluid) {
+        ResourceLocation modName = BuiltInRegistries.FLUID.getKey(fluid);
+        return modName.getNamespace();
     }
 
     public void addAdditionalFluidInfo(RichTooltip tooltip, FluidStack fluidStack) {}

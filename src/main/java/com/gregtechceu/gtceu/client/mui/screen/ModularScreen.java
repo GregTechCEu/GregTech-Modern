@@ -45,6 +45,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -100,6 +101,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     private final Object2ObjectArrayMap<IWidget, Runnable> frameUpdates = new Object2ObjectArrayMap<>();
     @Getter
     private boolean pauseScreen = false;
+    @Getter
+    private boolean openParentOnClose = false;
 
     private ITheme currentTheme;
     @Getter
@@ -222,15 +225,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     }
 
     /**
-     * Called when another screen opens, but this screen is still open or this screen an overlay is and the gui screen
-     * parent closes.
-     */
-    @ApiStatus.Internal
-    public final void onCloseParent() {
-        this.panelManager.closeAll();
-    }
-
-    /**
      * Called after the screen is opened, but before the screen and all widgets are resized.
      */
     @ApiStatus.OverrideOnly
@@ -328,7 +322,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
 
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
@@ -339,6 +332,9 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
             }
             WidgetTree.drawTree(panel, this.context);
+            // clear depth, so that anything drawn next will be guaranteed to be on top
+            RenderSystem.clearDepth(1);
+            RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         }
         this.context.updateZ(0);
         this.context.popViewport(null);
@@ -609,6 +605,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         return getCurrent() == this;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "#" + getOwner() + ":" + getName();
+    }
+
     /**
      * @return the owner and name as a {@link ResourceLocation}
      * @see #getOwner()
@@ -757,6 +758,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      */
     public ModularScreen pausesGame(boolean pausesGame) {
         this.pauseScreen = pausesGame;
+        return this;
+    }
+
+    public ModularScreen openParentOnClose(boolean openParentOnClose) {
+        this.openParentOnClose = openParentOnClose;
         return this;
     }
 

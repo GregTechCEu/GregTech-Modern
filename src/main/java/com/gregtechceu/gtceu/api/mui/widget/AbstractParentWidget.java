@@ -70,6 +70,11 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
         return !canHover();
     }
 
+    @Override
+    public boolean canHoverThrough() {
+        return !canHover();
+    }
+
     protected boolean addChild(I child, int index) {
         if (child == null || child == this || getChildren().contains(child)) {
             return false;

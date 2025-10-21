@@ -83,12 +83,13 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
         calculateHeightAndLayout(true);
     }
 
-    public void calculateHeightAndLayout(boolean calculateParents) {
+    public boolean calculateHeightAndLayout(boolean calculateParents) {
         if (this.expanded) {
             int y = getArea().height;
             for (IWidget widget : getChildren()) {
                 widget.getArea().ry = y;
                 widget.resizer().setYResized(true);
+                if (!widget.resizer().isHeightCalculated()) return false;
                 y += widget instanceof CategoryList categoryList && categoryList.expanded ?
                         categoryList.totalHeight : widget.getArea().height;
             }
@@ -97,17 +98,19 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
             this.totalHeight = getArea().height;
         }
 
-        if (!calculateParents) return;
-        if (getParent() instanceof CategoryList categoryList) {
-            categoryList.calculateHeightAndLayout(true);
-        } else if (getParent() instanceof Root root) {
-            root.updateHeight();
+        if (calculateParents) {
+            if (getParent() instanceof CategoryList categoryList) {
+                categoryList.calculateHeightAndLayout(true);
+            } else if (getParent() instanceof Root root) {
+                root.updateHeight();
+            }
         }
+        return true;
     }
 
     @Override
-    public void layoutWidgets() {
-        calculateHeightAndLayout(false);
+    public boolean layoutWidgets() {
+        return calculateHeightAndLayout(false);
     }
 
     public CategoryList setCollapsedOverlay(IDrawable collapsedOverlay) {
@@ -143,15 +146,17 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
         }
 
         @Override
-        public void layoutWidgets() {
+        public boolean layoutWidgets() {
             int y = 0;
             for (IWidget widget : getChildren()) {
                 widget.getArea().ry = y;
                 widget.resizer().setYResized(true);
+                if (!widget.resizer().isHeightCalculated()) return false;
                 y += widget instanceof CategoryList categoryList && categoryList.expanded ?
                         categoryList.totalHeight : widget.getArea().height;
             }
             getScrollArea().getScrollY().setScrollSize(y);
+            return true;
         }
 
         public Root setCollapsedOverlay(IDrawable collapsedOverlay) {

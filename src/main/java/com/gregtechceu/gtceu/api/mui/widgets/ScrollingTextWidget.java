@@ -18,7 +18,6 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
     private static final int pauseTime = 60;
     private TextRenderer.Line line;
     private float progress = 0;
-    private boolean hovering = false;
     private IAnimator animator;
     private Animator forward;
     private Animator backward;
@@ -43,13 +42,13 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
 
     @Override
     public void onMouseStartHover() {
-        this.hovering = true;
+        super.onMouseStartHover();
         this.animator.resume(false);
     }
 
     @Override
     public void onMouseEndHover() {
-        this.hovering = false;
+        super.onMouseEndHover();
         this.animator.stop(true);
         this.animator.reset();
         this.progress = 0;
@@ -72,7 +71,7 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
         renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(getScale());
         renderer.setSimulate(false);
-        if (this.hovering) {
+        if (isHovering()) {
             renderer.drawScrolling(context.getGraphics(), this.line, this.progress, getArea(), context);
         } else {
             renderer.drawCut(context.getGraphics(), this.line);

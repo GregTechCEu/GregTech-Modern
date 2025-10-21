@@ -277,9 +277,22 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     }
 
     public void draw(GuiContext context, int x, int y, int width, int height, int color, boolean shadow) {
+        draw(renderer, context, x, y, width, height, color, shadow);
+    }
+
+    public void draw(TextRenderer renderer, GuiContext context, int x, int y, int width, int height, int color,
+                     boolean shadow) {
         renderer.setSimulate(false);
         setupRenderer(renderer, x, y, width, height, color, shadow);
         this.cachedText = renderer.compileAndDraw(context, this.elements);
+    }
+
+    public int getLastWidth() {
+        return (int) renderer.getLastWidth();
+    }
+
+    public int getLastHeight() {
+        return (int) renderer.getLastHeight();
     }
 
     public void setupRenderer(TextRenderer renderer, int x, int y, float width, float height, int color,
@@ -298,6 +311,15 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         return this.cachedText;
     }
 
+    /**
+     * Returns the currently hovered element of this rich text or {@code null} if none is hovered.
+     * Note that this method assumes, that the {@link com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack
+     * IViewportStack}
+     * is transformed to 0,0 of this {@link IDrawable}.
+     *
+     * @param context the viewport stack with transformation to this widget
+     * @return hovered element or null
+     */
     public Object getHoveringElement(GuiContext context) {
         return getHoveringElement(context.getFont(), context.getMouseX(), context.getMouseY());
     }

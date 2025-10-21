@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.base;
 
+import com.gregtechceu.gtceu.api.mui.drawable.Scrollbar;
 import com.gregtechceu.gtceu.api.mui.theme.*;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -19,22 +20,37 @@ public interface IThemeApi {
     WidgetThemeKey<WidgetTheme> FALLBACK = get().widgetThemeKeyBuilder("default", WidgetTheme.class)
             .defaultTheme(WidgetTheme.darkTextNoShadow(18, 18, null))
             .register();
+
     WidgetThemeKey<WidgetTheme> PANEL = get().widgetThemeKeyBuilder("panel", WidgetTheme.class)
             .defaultTheme(WidgetTheme.darkTextNoShadow(176, 166, GTGuiTextures.BACKGROUND))
             .register();
+
     WidgetThemeKey<WidgetTheme> BUTTON = get().widgetThemeKeyBuilder("button", WidgetTheme.class)
             .defaultTheme(WidgetTheme.whiteTextShadow(18, 18, GTGuiTextures.MC_BUTTON))
             .defaultHoverTheme(WidgetTheme.whiteTextShadow(18, 18, GTGuiTextures.MC_BUTTON_HOVERED))
             .register();
+
+    WidgetThemeKey<WidgetTheme> CLOSE_BUTTON = get().widgetThemeKeyBuilder("closeButton", WidgetTheme.class)
+            .defaultTheme(WidgetTheme.whiteTextShadow(10, 10, GTGuiTextures.MC_BUTTON))
+            .defaultHoverTheme(WidgetTheme.whiteTextShadow(10, 10, GTGuiTextures.MC_BUTTON_HOVERED))
+            .register();
+
+    WidgetThemeKey<WidgetTheme> SCROLLBAR = get().widgetThemeKeyBuilder("scrollbar", WidgetTheme.class)
+            .defaultTheme(WidgetTheme.darkTextNoShadow(4, 4, Scrollbar.VANILLA))
+            .register();
+
     WidgetThemeKey<SlotTheme> ITEM_SLOT = get().widgetThemeKeyBuilder("itemSlot", SlotTheme.class)
             .defaultTheme(new SlotTheme(GTGuiTextures.SLOT))
             .register();
+
     WidgetThemeKey<SlotTheme> FLUID_SLOT = get().widgetThemeKeyBuilder("fluidSlot", SlotTheme.class)
             .defaultTheme(new SlotTheme(GTGuiTextures.FLUID_SLOT))
             .register();
+
     WidgetThemeKey<TextFieldTheme> TEXT_FIELD = get().widgetThemeKeyBuilder("textField", TextFieldTheme.class)
             .defaultTheme(new TextFieldTheme(0xFF2F72A8, 0xFF5F5F5F))
             .register();
+
     WidgetThemeKey<SelectableTheme> TOGGLE_BUTTON = get().widgetThemeKeyBuilder("toggleButton", SelectableTheme.class)
             .defaultTheme(
                     SelectableTheme.whiteTextShadow(18, 18, GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_DISABLED))

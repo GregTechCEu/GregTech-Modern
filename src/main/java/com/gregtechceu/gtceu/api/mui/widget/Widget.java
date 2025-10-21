@@ -51,13 +51,15 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
 
     // other
     @Nullable
-    private String debugName;
+    @Getter
+    private String name;
     /**
      * Returns if this widget is currently enabled. Disabled widgets (and all its children) are not rendered and can't
      * be interacted with.
      */
     @Getter
     private boolean enabled = true;
+    private int timeHovered = -1;
     @Getter
     private boolean excludeAreaInXei = false;
     // gui context
@@ -163,6 +165,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @ApiStatus.Internal
     @Override
     public void initialise(@NotNull IWidget parent, boolean late) {
+        this.timeHovered = -1;
         if (!(this instanceof ModularPanel)) {
             this.parent = parent;
             this.panel = parent.getPanel();
@@ -257,6 +260,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
             this.parent = null;
             this.context = null;
         }
+        this.timeHovered = -1;
         this.valid = false;
     }
 
@@ -571,6 +575,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @MustBeInvokedByOverriders
     @Override
     public void onUpdate() {
+        if (isHovering()) this.timeHovered++;
         if (this.onUpdateListener != null) {
             this.onUpdateListener.accept(getThis());
         }
@@ -879,6 +884,32 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         return getThis();
     }
 
+    @MustBeInvokedByOverriders
+    @Override
+    public void onMouseStartHover() {
+        this.timeHovered = 0;
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void onMouseEndHover() {
+        this.timeHovered = -1;
+    }
+
+    @Override
+    public boolean isHovering() {
+        return timeHovered >= 0;
+    }
+
+    @Override
+    public boolean isHoveringFor(int ticks) {
+        return timeHovered >= ticks;
+    }
+
+    public int getTicksHovered() {
+        return timeHovered;
+    }
+
     @Override
     public Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
         if (this instanceof IDragResizeable dragResizeable) {
@@ -888,15 +919,23 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
-     * Sets a debug name. This is only used in {@link #toString()}, which is displayed in the mui debug info. Useful for
-     * identifying widgets
-     * for debugging. This has no other effect.
+     * @deprecated this got renamed to name
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
+    public W debugName(String name) {
+        return name(name);
+    }
+
+    /**
+     * This can be used to find the widget with various methods from {@link WidgetTree} from a parent.
+     * The name is also included in {@link #toString()}.
      *
      * @param name debug name to use
      * @return this
      */
-    public W debugName(String name) {
-        this.debugName = name;
+    public W name(String name) {
+        this.name = name;
         return getThis();
     }
 
@@ -912,13 +951,22 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     }
 
     /**
+     * This is only used in {@link #toString()}.
+     *
+     * @return the simple class name or other fitting name
+     */
+    protected String getTypeName() {
+        return getClass().getSimpleName();
+    }
+
+    /**
      * @return the simple class plus the debug name, if set
      */
     @Override
     public String toString() {
-        if (this.debugName != null) {
-            return getClass().getSimpleName() + "#" + this.debugName;
+        if (getName() != null) {
+            return getTypeName() + "#" + getName();
         }
-        return getClass().getSimpleName();
+        return getTypeName();
     }
 }
