@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -278,7 +279,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 // Machine isn't getting enough power, suspend after 5 attempts.
                 if (handleTick.io() == IO.IN && handleTick.capability() == EURecipeCapability.CAP) {
                     runAttempt++;
-                    runAttempt = Mth.clamp(runAttempt, 0, 5);
+                    runAttempt = (int) GTMath.clamp(runAttempt, 0, 5);
                     if (runAttempt == 5) {
                         boolean preventPowerFail = false;
                         if (machine.self() instanceof IMultiController) {
