@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -91,6 +92,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiEditors.CHARGE_SLOT;
 import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
@@ -128,36 +130,36 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction, hasPollutionDebuff);
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction, hasPollutionDebuff, panelFactory);
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, hasPollutionDebuff,
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, hasPollutionDebuff, panelFactory,
                 ELECTRIC_TIERS);
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction);
+                                                             Int2IntFunction tankScalingFunction, PanelFactory panelFactory) {
+        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction, panelFactory);
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, false);
+                                                             Int2IntFunction tankScalingFunction, PanelFactory panelFactory) {
+        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, false, panelFactory);
     }
 
-    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType);
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType, PanelFactory panelFactory) {
+        return registerSimpleMachines(REGISTRATE, name, recipeType, panelFactory);
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
-                                                             GTRecipeType recipeType) {
-        return registerSimpleMachines(registrate, name, recipeType, defaultTankSizeFunction);
+                                                             GTRecipeType recipeType, PanelFactory panelFactory) {
+        return registerSimpleMachines(registrate, name, recipeType, defaultTankSizeFunction, panelFactory);
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
@@ -165,6 +167,7 @@ public class GTMachineUtils {
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff,
+                                                             PanelFactory panelFactory,
                                                              int... tiers) {
         return registerTieredMachines(registrate, name,
                 (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
@@ -185,6 +188,7 @@ public class GTMachineUtils {
                             .workableTieredHullModel(GTCEu.id("block/machines/" + name))
                             .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), true))
+                            .UI(panelFactory)
                             .register();
                 },
                 tiers);
@@ -209,7 +213,6 @@ public class GTMachineUtils {
                             holder -> factory.apply(holder, tier))
                     .tier(tier);
             var definition =  builder.apply(tier, register);
-            definition.setUI(GTMuiRecipeTypePanel.RECIPE_TYPE);
             definitions[tier] = definition;
         }
         return definitions;

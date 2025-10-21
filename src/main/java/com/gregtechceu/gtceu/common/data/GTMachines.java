@@ -1130,4 +1130,15 @@ public class GTMachines {
     public static MachineDefinition get(String name) {
         return GTRegistries.MACHINES.get(GTCEu.id(name));
     }
+
+    public static final MachineDefinition[] ALLOY_SMELTER = registerSimpleMachines("alloy_smelter",
+            GTRecipeTypes.ALLOY_SMELTER_RECIPES);
+
+    public static final MachineDefinition[] ALLOY_SMELTER = TieredMachineBuilder(name, recipetype)
+            .registrate()
+            .tankScalingFunc()
+            .pollutionDebuff()
+            .panelFactory()
+            .tiers(LV - UV)
+            .register()
 }

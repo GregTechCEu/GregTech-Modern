@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -35,7 +36,10 @@ public class GTMuiRecipeTypePanel {
     public static PanelFactory RECIPE_TYPE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                              MetaMachine machine) -> {
 
-        if (!(machine instanceof WorkableTieredMachine workableMachine)) return null;
+        if (!(machine instanceof WorkableTieredMachine workableMachine)) {
+            GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content", machine.getDefinition().getName());
+            return null;
+        }
 
         var recipeType = workableMachine.getRecipeType();
 
@@ -87,7 +91,7 @@ public class GTMuiRecipeTypePanel {
             y += 18 * side;
         }
 
-        x = 60;
+        x = 20;
         y = 20;
 
         for (var entry : recipeType.maxOutputs.object2IntEntrySet()) {
@@ -125,7 +129,7 @@ public class GTMuiRecipeTypePanel {
                         .matrix(matrix)
                         .key('S', widget)
                         .build()
-                        .left(x).top(y));
+                        .right(x).top(y));
             }
 
             y += 18 * side;
