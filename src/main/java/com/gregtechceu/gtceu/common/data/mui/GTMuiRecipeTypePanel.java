@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.mui.theme.Theme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -52,7 +53,7 @@ public class GTMuiRecipeTypePanel {
         // Get the title string first
         String title = machine.getDefinition().getLangValue();
 
-// This wrapper widget will hold the background
+        // This wrapper widget will hold the background
         panel.child(new SingleChildWidget<>()
                 .widthRel(1.0f)
                 .coverChildrenHeight()
@@ -157,11 +158,11 @@ public class GTMuiRecipeTypePanel {
             y += 18 * side;
         }
 
-        panel.bindPlayerInventory();
         return panel;
     };
 
 
 
-    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT, GTMuiEditors.PROGRESS_BAR);
+    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT, GTMuiEditors.
+            PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ASSEMBLY_LINE, 30, ProgressWidget.Direction.RIGHT));
 }
