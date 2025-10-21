@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -30,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -278,7 +278,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 // Machine isn't getting enough power, suspend after 5 attempts.
                 if (handleTick.io() == IO.IN && handleTick.capability() == EURecipeCapability.CAP) {
                     runAttempt++;
-                    runAttempt = Mth.clamp(runAttempt, 0, 5);
+                    runAttempt = (int) GTMath.clamp(runAttempt, 0, 5);
                     if (runAttempt == 5) {
                         boolean preventPowerFail = false;
                         if (machine.self() instanceof IMultiController) {

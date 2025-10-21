@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.utils.BlockPosUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 import com.google.common.collect.AbstractIterator;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
@@ -16,6 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class MapSchema implements ISchema {
     @Getter
     private BlockPos origin;
     // this isn't final because of constructor semantics but should be used as if it is
-    private Vec3 center;
+    private Vector3f center;
 
     public MapSchema(Map<BlockPos, BlockState> blocks) {
         this(blocks, null);
@@ -61,7 +62,7 @@ public class MapSchema implements ISchema {
             max.set(0, 0, 0);
         }
         this.origin = min.immutable();
-        this.center = BlockPosUtil.getCenterD(min, max);
+        this.center = BlockPosUtil.getCenterF(min, max);
     }
 
     public MapSchema(Long2ReferenceMap<BlockState> blocks) {
@@ -89,7 +90,7 @@ public class MapSchema implements ISchema {
             max.set(0, 0, 0);
         }
         this.origin = min.immutable();
-        this.center = BlockPosUtil.getCenterD(min, max);
+        this.center = BlockPosUtil.getCenterF(min, max);
     }
 
     protected MapSchema(BiPredicate<BlockPos, BlockState> renderFilter) {
@@ -100,7 +101,7 @@ public class MapSchema implements ISchema {
     }
 
     @Override
-    public Vec3 getFocus() {
+    public Vector3fc getFocus() {
         return center;
     }
 

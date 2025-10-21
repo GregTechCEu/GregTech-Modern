@@ -24,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -77,7 +79,7 @@ public class ArraySchema implements ISchema {
     @Getter
     @Setter
     private BiPredicate<BlockPos, BlockState> renderFilter = (pos, block) -> true;
-    private final Vec3 center;
+    private final Vector3f center;
 
     public ArraySchema(BlockState[][][] blocks) {
         this.blocks = blocks;
@@ -95,11 +97,11 @@ public class ArraySchema implements ISchema {
                 }
             }
         }
-        this.center = BlockPosUtil.getCenterD(BlockPos.ZERO, max.move(1, 1, 1));
+        this.center = BlockPosUtil.getCenterF(BlockPos.ZERO, max.move(1, 1, 1));
     }
 
     @Override
-    public Vec3 getFocus() {
+    public Vector3fc getFocus() {
         return center;
     }
 

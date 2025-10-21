@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.utils.BlockPosUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.function.BiPredicate;
 
@@ -25,18 +26,18 @@ public class BoxSchema extends PosListSchema {
     private final Level level;
     @Getter
     private final BlockPos min, max;
-    private final Vec3 center;
+    private final Vector3f center;
 
     public BoxSchema(Level level, BlockPos min, BlockPos max, BiPredicate<BlockPos, BlockState> renderFilter) {
         super(level, BlockPosUtil.getAllInside(min, max, false), renderFilter);
         this.level = level;
         this.min = BlockPosUtil.getMin(min, max);
         this.max = BlockPosUtil.getMax(min, max);
-        this.center = BlockPosUtil.getCenterD(min, max);
+        this.center = BlockPosUtil.getCenterF(min, max);
     }
 
     @Override
-    public Vec3 getFocus() {
+    public Vector3fc getFocus() {
         return center;
     }
 
