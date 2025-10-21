@@ -16,6 +16,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -100,7 +101,7 @@ public class MapSchema implements ISchema {
     }
 
     @Override
-    public Vector3f getFocus() {
+    public Vector3fc getFocus() {
         return center;
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
@@ -43,9 +44,9 @@ public class SchemaWidget extends Widget<SchemaWidget> implements Interactable {
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        Vector3f f = this.schemaRenderer.schema().getFocus();
-        this.schemaRenderer.camera().setLookAtAndAngle(f.x + this.offset.x, f.y + this.offset.y,
-                f.z + this.offset.z, scale, yaw, pitch);
+        Vector3fc f = this.schemaRenderer.schema().getFocus();
+        this.schemaRenderer.camera().setLookAtAndAngle(f.x() + this.offset.x, f.y() + this.offset.y,
+                f.z() + this.offset.z, scale, yaw, pitch);
         this.schemaRenderer.drawAtZero(context, getArea(), widgetTheme.getTheme());
     }
 

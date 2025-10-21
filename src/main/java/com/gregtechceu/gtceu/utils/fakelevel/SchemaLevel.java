@@ -50,7 +50,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.Iterator;
 import java.util.List;
@@ -190,7 +190,7 @@ public class SchemaLevel extends Level implements ISchema {
     }
 
     @Override
-    public Vector3f getFocus() {
+    public Vector3fc getFocus() {
         return BlockPosUtil.getCenterF(this.min, this.max);
     }
 

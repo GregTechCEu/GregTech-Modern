@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.function.BiPredicate;
 
@@ -36,7 +37,7 @@ public class BoxSchema extends PosListSchema {
     }
 
     @Override
-    public Vector3f getFocus() {
+    public Vector3fc getFocus() {
         return center;
     }
 

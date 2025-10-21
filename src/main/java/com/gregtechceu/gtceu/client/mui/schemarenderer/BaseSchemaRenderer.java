@@ -325,7 +325,7 @@ public class BaseSchemaRenderer implements IDrawable {
 
         if (shader.SCREEN_SIZE != null) {
             Window window = Minecraft.getInstance().getWindow();
-            shader.SCREEN_SIZE.set((float)window.getWidth(), (float)window.getHeight());
+            shader.SCREEN_SIZE.set((float) window.getWidth(), (float) window.getHeight());
         }
 
         if (shader.CHUNK_OFFSET != null) {
