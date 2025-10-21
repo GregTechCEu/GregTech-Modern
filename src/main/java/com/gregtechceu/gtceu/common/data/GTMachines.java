@@ -268,6 +268,7 @@ public class GTMachines {
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
+                    .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
                             GTRecipeTypes.MACERATOR_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -284,7 +285,9 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineDefinition[] GAS_COLLECTOR = new SimpleMachineBuilder("gas_collector",
-            GTRecipeTypes.GAS_COLLECTOR_RECIPES).tankScalingFunction(largeTankSizeFunction).hasPollutionDebuff(true)
+            GTRecipeTypes.GAS_COLLECTOR_RECIPES)
+            .tankScalingFunction(largeTankSizeFunction)
+            .hasPollutionDebuff(true)
             .register();
 
     public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher",
@@ -292,6 +295,7 @@ public class GTMachines {
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"),
                             GTRecipeTypes.ROCK_BREAKER_RECIPES))
+                    .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ROCK_BREAKER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -306,6 +310,7 @@ public class GTMachines {
                     .langValue("%s Air Scrubber %s".formatted(VLVH[tier], VLVT[tier]))
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("air_scrubber"),
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES))
+                    .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.AIR_SCRUBBER_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -1136,7 +1141,7 @@ public class GTMachines {
             .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
+            .UI(GTMuiRecipeTypePanel.BARE_RECIPE_TYPE)
             .register();
 
     public static void init() {

@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -40,8 +39,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiEditors;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiPanels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
@@ -981,9 +978,7 @@ public class GTMachineUtils {
 
         public MachineDefinition[] register() {
             if (panelFactory == null) {
-                // TODO: Set default panel factory
-                // TODO 2: Find a way to change it in the other builders in GTMachines? e.g. GTMachines.MACERATOR
-                panelFactory = GTMuiRecipeTypePanel.RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT);
+                panelFactory = GTMuiRecipeTypePanel.RECIPE_TYPE;
             }
             return registerTieredMachines(registrate, name,
                     (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {

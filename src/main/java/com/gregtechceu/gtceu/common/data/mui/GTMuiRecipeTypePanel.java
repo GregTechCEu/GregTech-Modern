@@ -29,8 +29,8 @@ import java.util.function.IntFunction;
 
 public class GTMuiRecipeTypePanel {
 
-    public static PanelFactory RECIPE_TYPE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                              MetaMachine machine) -> {
+    public static PanelFactory BARE_RECIPE_TYPE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                                   MetaMachine machine) -> {
 
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
@@ -135,4 +135,6 @@ public class GTMuiRecipeTypePanel {
         panel.bindPlayerInventory();
         return panel;
     };
+
+    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT);
 }
