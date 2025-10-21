@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.ReloadThemeEvent;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeKey;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonBuilder;
@@ -23,6 +26,12 @@ public class GTGuiTheme {
 
     private static final List<GTGuiTheme> THEMES = new ArrayList<>();
 
+    public static WidgetThemeKey<WidgetTheme> TEXT_TITLE = IThemeApi.get()
+            .widgetThemeKeyBuilder("textTitle", WidgetTheme.class)
+            .defaultTheme(new WidgetTheme(0, 0, null, Color.WHITE.main, 0x404040, false, 0))
+            .defaultHoverTheme(null)
+            .register();
+
     public static final GTGuiTheme STANDARD = templateBuilder("gregtech_standard")
             .panel(GTGuiTextures.IDs.STANDARD_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)
@@ -33,6 +42,7 @@ public class GTGuiTheme {
                     GTGuiTextures.IDs.STANDARD_SLOT,
                     ConfigHolder.INSTANCE.client.ui.getDefaultUIColor())
             .build();
+
 
     public static final GTGuiTheme COVER = templateBuilder("gregtech_cover")
             .panel(GTGuiTextures.IDs.COVER_BACKGROUND)

@@ -5,15 +5,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.Theme;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -24,6 +29,8 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
 import java.util.function.IntFunction;
 
@@ -42,7 +49,25 @@ public class GTMuiRecipeTypePanel {
 
         ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
 
-        panel.child(IKey.str(machine.getDefinition().getName()).asWidget().left(4));
+        // Get the title string first
+        String title = machine.getDefinition().getLangValue();
+
+// This wrapper widget will hold the background
+        panel.child(new SingleChildWidget<>()
+                .widthRel(1.0f)
+                .coverChildrenHeight()
+                .widgetTheme(GTGuiTheme.TEXT_TITLE)
+                .child(
+                        IKey.str(title)
+                                .asWidget()
+                                .widgetTheme(GTGuiTheme.TEXT_TITLE)
+                                .marginLeft(5)
+                                .marginRight(5)
+                                .marginTop(5)
+                                .marginBottom(1)
+                )
+        );
+
 
         Table<RecipeCapability<?>, IO, SlotGroup> slotGroups = HashBasedTable.create();
 
@@ -136,5 +161,7 @@ public class GTMuiRecipeTypePanel {
         return panel;
     };
 
-    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT);
+
+
+    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT, GTMuiEditors.PROGRESS_BAR);
 }

@@ -7,11 +7,13 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMuiEditors {
 
@@ -31,7 +33,22 @@ public class GTMuiEditors {
 
         if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
             var energyContainer = simpleTieredMachine.getChargerInventory();
-            panel.child(new ItemSlot().slot(new ModularSlot(energyContainer, 0)).widthRel(.5F));
+            panel.child(new ItemSlot().slot(new ModularSlot(energyContainer, 0))
+                    .alignX(Alignment.Center).alignY(.4f));
+        }
+    };
+
+    public static PanelEditor PROGRESS_BAR = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+    MetaMachine machine, ModularPanel panel) -> {
+
+        if (machine instanceof  SimpleTieredMachine tieredMachine ){
+
+            panel.child(new ProgressWidget()
+                    .progress(() ->( tieredMachine.getProgress() /
+                            (double) tieredMachine.getMaxProgress() ))
+                    .texture(GTGuiTextures.PROGRESS_BAR_ARROW , 30)
+                    .alignX(Alignment.Center).alignY(.25f));
+
         }
     };
 }
