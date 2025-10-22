@@ -267,7 +267,9 @@ public class GTMachines {
             .hasPollutionDebuff(true)
             .register();
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
-            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+            (holder, tier)
+                    -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder)
+                    -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),

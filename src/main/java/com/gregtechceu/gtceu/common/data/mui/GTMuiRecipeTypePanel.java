@@ -146,6 +146,6 @@ public class GTMuiRecipeTypePanel {
     };
 
 
-    public static PanelFactory RECIPE_TYPE = GTMuiPanels.BASE_PANEL.andThen(RECIPE_SLOTS, GTMuiEditors.CHARGE_SLOT,
+    public static PanelFactory RECIPE_TYPE = GTMuiPanels.BASE_PANEL.andThen(RECIPE_SLOTS,GTMuiEditors.TITLE, GTMuiEditors.CHARGE_SLOT,
             GTMuiEditors.PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 30, ProgressWidget.Direction.RIGHT), GTMuiEditors.POWER_BUTTON);
 }

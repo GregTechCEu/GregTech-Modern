@@ -1,22 +1,11 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
 import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
-import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.WidgetUtil;
@@ -25,16 +14,11 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
 
 public class GTMuiEditors {
 
@@ -64,6 +48,30 @@ public class GTMuiEditors {
         }
     };
 
+    public static PanelEditor TITLE =
+            (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+             MetaMachine machine, ModularPanel panel) -> {
+
+
+            if(machine instanceof SimpleTieredMachine simpleTieredMachine) {
+                var uiRow = WidgetUtil.getWidget(panel, "Base Panel");
+                if (!(uiRow instanceof Column mainPanel)) {
+                    return;
+                }
+                var displayItem = simpleTieredMachine.getDefinition().asStack();
+                String name = displayItem.getHoverName().getString();
+                name = name.replaceAll("\\s+(§.)", "§");
+                mainPanel.child(new Row()
+                        .background(GTGuiTextures.BACKGROUND_TITLE)
+                        .coverChildren()
+                        .bottomRelAnchor(1.35f,0)
+                        .name("title row")
+                        .child(new ItemDrawable(displayItem)
+                                .asIcon()
+                                .size(14).asWidget().verticalCenter())
+                        .child(new TextWidget<>(name)).paddingRight(4));
+            }
+    };
 
     public static PanelEditor PROGRESS_BAR(UITexture texture, int imageSize, ProgressWidget.Direction direction) {
         return (PosGuiData data, PanelSyncManager syncManager, UISettings settings,

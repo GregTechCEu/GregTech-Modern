@@ -30,11 +30,10 @@ public class GTMuiPanels {
 
         ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
         return panel
-
+                .width(176)
                 .coverChildren()
                 .padding(7)
-                .child(Flow
-                        .column()
+                .child(new Column()
                         .coverChildren()
                         .name("Base Panel")
                         .child(new Row()
