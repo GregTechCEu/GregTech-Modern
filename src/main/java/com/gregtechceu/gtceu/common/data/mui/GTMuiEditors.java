@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -52,12 +53,12 @@ public class GTMuiEditors {
                                              MetaMachine machine, ModularPanel panel) -> {
 
         if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
-            var slotColumn = WidgetUtil.getWidget(panel, "middle column");
-            if(!(slotColumn instanceof Column column)){
+            var uiRow = WidgetUtil.getWidget(panel, "Main Ui");
+            if(!(uiRow instanceof Row mainUi)){
                 return;
             }
             var energyContainer = simpleTieredMachine.getChargerInventory();
-            column.child( new ItemSlot().
+            mainUi.child( new ItemSlot().
                     slot(new ModularSlot(energyContainer, 0))
                     .align(Alignment.BottomCenter)).paddingBottom(5);
         }
@@ -75,7 +76,7 @@ public class GTMuiEditors {
                 ProgressWidget progressBar = new ProgressWidget()
                         .texture(texture, imageSize)
                         .direction(direction)
-                        .padding(20 , 0)
+
                         .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
                 column.child(progressBar.align(Alignment.Center));
             }
