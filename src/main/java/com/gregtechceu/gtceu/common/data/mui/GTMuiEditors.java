@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.StringKey;
+import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -19,6 +21,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 
 public class GTMuiEditors {
 
@@ -61,15 +64,45 @@ public class GTMuiEditors {
                 var displayItem = simpleTieredMachine.getDefinition().asStack();
                 String name = displayItem.getHoverName().getString();
                 name = name.replaceAll("\\s+(§.)", "§");
+                int borderRadius = 5;
+                int maxWidth = 105 - borderRadius * 2;
+                int titleWidth = TextRenderer.getFont().width(name);
+                int widgetWidth = Math.min(maxWidth, titleWidth);
+                int rows = (int) Math.ceil((double) titleWidth / maxWidth);
+                int heightPerRow = (int) (IKey.renderer.getFontHeight());
+                int height = heightPerRow * rows;
                 mainPanel.child(new Row()
-                        .background(GTGuiTextures.BACKGROUND_TITLE)
-                        .coverChildren()
-                        .bottomRelAnchor(1.35f,0)
-                        .name("title row")
-                        .child(new ItemDrawable(displayItem)
-                                .asIcon()
-                                .size(14).asWidget().verticalCenter())
-                        .child(new TextWidget<>(name)).paddingRight(4));
+                                .coverChildrenHeight()
+                                .widthRel(.8f)
+                                .padding(10,0)
+                                .bottomRel(1.4f)
+                                .rightRel(0.5f)
+                                .background(GTGuiTextures.BACKGROUND_TITLE)
+                                .child(new ItemDrawable(displayItem)
+                                        .asWidget().anchorLeft(1)
+                                        .verticalCenter())
+                                .child(IKey.str(name)
+                                        .asWidget()
+                                        .paddingTop(1)
+                                        .margin(5,5,5,1)
+                                        .size(widgetWidth, height)));
+                      //  .child(new TextWidget<>(name)).paddingRight(4));
+
+                /*
+
+
+        return new SingleChildWidget<>().coverChildren()
+            .topRelAnchor(0, 1)
+            .widgetTheme(GTWidgetThemes.BACKGROUND_TITLE)
+            .child(
+                IKey.str(title)
+                    .asWidget()
+                    .size(widgetWidth, height)
+                    .widgetTheme(GTWidgetThemes.TEXT_TITLE)
+
+                    );
+                 */
+
             }
     };
 
