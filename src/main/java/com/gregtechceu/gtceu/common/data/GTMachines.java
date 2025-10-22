@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiPanels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.muimachine.TestMuiMachine;
@@ -1141,7 +1142,7 @@ public class GTMachines {
             .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI(GTMuiRecipeTypePanel.BARE_RECIPE_TYPE)
+            .UI(GTMuiPanels.BASE_PANEL)
             .register();
 
     public static void init() {
