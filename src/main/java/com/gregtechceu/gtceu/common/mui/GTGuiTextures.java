@@ -377,6 +377,8 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture RESEARCH_STATION_OVERLAY = fullImage(
             "textures/gui/overlay/research_station_overlay.png", ColorType.DEFAULT);
+    public static final UITexture OVERLAY_REDSTONE_ON = fullImage("textures/gui/overlay/redstone_on.png");
+    public static final UITexture OVERLAY_REDSTONE_OFF = fullImage("textures/gui/overlay/redstone_off.png");
 
     // BUTTONS
 
