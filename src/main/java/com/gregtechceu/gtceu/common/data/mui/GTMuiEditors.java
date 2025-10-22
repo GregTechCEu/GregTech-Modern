@@ -75,6 +75,7 @@ public class GTMuiEditors {
                 ProgressWidget progressBar = new ProgressWidget()
                         .texture(texture, imageSize)
                         .direction(direction)
+                        .padding(20 , 0)
                         .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
                 column.child(progressBar.align(Alignment.Center));
             }

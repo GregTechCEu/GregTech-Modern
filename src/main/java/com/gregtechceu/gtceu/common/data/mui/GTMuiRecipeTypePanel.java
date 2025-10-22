@@ -97,7 +97,7 @@ public class GTMuiRecipeTypePanel {
                                 .matrix(matrix)
                                 .key('S', slotWidget)
                                 .build().name("inputs")
-                        .align(Alignment.CENTER));
+                        .align(Alignment.CenterRight));
 
             }
 
@@ -138,7 +138,7 @@ public class GTMuiRecipeTypePanel {
                 output.child(SlotGroupWidget.builder()
                                 .matrix(matrix)
                                 .key('S', slotWidget)
-                                .build().align(Alignment.CENTER));
+                                .build().align(Alignment.CenterLeft));
             }
         }
 
