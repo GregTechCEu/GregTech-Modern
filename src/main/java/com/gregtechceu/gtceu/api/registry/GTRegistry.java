@@ -181,7 +181,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     public abstract V loadFromNBT(Tag tag);
 
     public boolean remove(K name) {
-        return keyToValue.remove(name) != null;
+        V value = keyToValue.get(name);
+        return keyToValue.remove(name) != null || valueToKey.remove(value) != null;
     }
 
     public abstract Codec<V> codec();
