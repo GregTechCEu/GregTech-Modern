@@ -6,9 +6,12 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -27,15 +30,32 @@ public class GTMuiPanels {
 
         ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
         return panel
+
                 .coverChildren()
                 .padding(7)
                 .child(Flow
                         .column()
                         .coverChildren()
                         .name("Base Panel")
-                        .child(Flow.row().name("Main Ui")
-                                .coverChildren()
-                                .mainAxisAlignment(Alignment.MainAxis.CENTER))
+                        .child(new Row()
+                                .mainAxisAlignment(Alignment.MainAxis.SPACE_BETWEEN)
+                                .widthRel(1)
+                                .height(80)
+                                .name("Main Ui")
+                                .child(new Column()
+                                        .name("left column")
+                                        .coverChildrenWidth()
+                                        .crossAxisAlignment(Alignment.CrossAxis.START))
+                                .child(new Column()
+                                        .widthRel(.2f)
+                                        .name("middle column")
+                                        .crossAxisAlignment(Alignment.CrossAxis.CENTER))
+                                .child(new Column()
+                                       .name("right column")
+                                        .coverChildrenWidth()
+                                        .crossAxisAlignment(Alignment.CrossAxis.CENTER))
+                        )
+
                         .child(SlotGroupWidget.playerInventory(false ))
                 );
     };

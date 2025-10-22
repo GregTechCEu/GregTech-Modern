@@ -1,76 +1,62 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.Theme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.WidgetUtil;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.SingleChildWidget;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.IntFunction;
 
 public class GTMuiRecipeTypePanel {
 
-    public static PanelFactory BARE_RECIPE_TYPE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                                   MetaMachine machine) -> {
+    public static PanelEditor RECIPE_SLOTS = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                              MetaMachine machine, ModularPanel panel) -> {
 
         if (!(machine instanceof WorkableTieredMachine workableMachine)) {
             GTCEu.LOGGER.error("{} is not a WorkableTieredMachine, can not add slots to its content",
                     machine.getDefinition().getName());
-            return null;
+            return;
         }
 
+        var leftColumn = WidgetUtil.getWidget(panel, "left column");
+        var rightColumn = WidgetUtil.getWidget(panel, "right column");
+        if(!(leftColumn instanceof Column input) || !(rightColumn instanceof Column output)) {
+            return;
+        }
+
+
         var recipeType = workableMachine.getRecipeType();
-
-        ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
-        panel.padding(7);
-        // Get the title string first
-        String title = machine.getDefinition().getLangValue();
-
-        // This wrapper widget will hold the background
-        panel.child(new SingleChildWidget<>()
-                .widthRel(1.0f)
-                .coverChildrenHeight()
-                .widgetTheme(GTGuiTheme.TEXT_TITLE)
-                .child(
-                        IKey.str(title)
-                                .asWidget()
-                                .widgetTheme(GTGuiTheme.TEXT_TITLE)
-                                .marginLeft(5)
-                                .marginRight(5)
-                                .marginTop(5)
-                                .marginBottom(1)
-                )
-        );
-
-
         Table<RecipeCapability<?>, IO, SlotGroup> slotGroups = HashBasedTable.create();
+
+
 
         int x = 10;
         int y = 20;
@@ -82,10 +68,11 @@ public class GTMuiRecipeTypePanel {
             syncManager.registerSlotGroup(group);
 
             int side = (int) Math.ceil(Math.sqrt(max));
-            String[] matrix = new String[side];
-            for (int i = 0; i < side; i++) {
+            int row = max > 3 ? side : 1;
+            String[] matrix = new String[row];
+            for (int i = 0; i < row; i++) {
                 StringBuilder s = new StringBuilder();
-                for (int j = 0; j < side; j++) {
+                for (int j = 0; j <side; j++) {
                     if (i * side + j < max) {
                         s.append("S");
                     }
@@ -93,30 +80,29 @@ public class GTMuiRecipeTypePanel {
                 matrix[i] = s.toString();
             }
 
-            IntFunction<IWidget> widget;
+            IntFunction<IWidget> slotWidget;
             if (recipeCap == ItemRecipeCapability.CAP) {
                 NotifiableItemStackHandler itemHandler = workableMachine.importItems;
-                widget = i -> new ItemSlot().slot(new ModularSlot(itemHandler, i));
+                slotWidget = i -> new ItemSlot().slot(new ModularSlot(itemHandler, i));
             } else if (recipeCap == FluidRecipeCapability.CAP) {
                 NotifiableFluidTank fluidHandler = workableMachine.importFluids;
-                widget = i -> new FluidSlot().syncHandler(fluidHandler.getStorages()[i]);
+                slotWidget = i -> new FluidSlot().syncHandler(fluidHandler.getStorages()[i]);
             } else {
-                widget = null;
+                slotWidget = null;
             }
 
-            if (widget != null) {
-                panel.child(SlotGroupWidget.builder()
-                        .matrix(matrix)
-                        .key('S', widget)
-                        .build().left(x).top(y));
+            if (slotWidget != null) {
+
+                input.child(SlotGroupWidget.builder()
+                                .matrix(matrix)
+                                .key('S', slotWidget)
+                                .build().name("inputs")
+                        .align(Alignment.CENTER));
+
             }
 
             y += 18 * side;
         }
-
-        x = 20;
-        y = 20;
-
         for (var entry : recipeType.maxOutputs.object2IntEntrySet()) {
             var recipeCap = entry.getKey();
             int max = entry.getIntValue();
@@ -125,8 +111,9 @@ public class GTMuiRecipeTypePanel {
             syncManager.registerSlotGroup(group);
 
             int side = (int) Math.ceil(Math.sqrt(max));
-            String[] matrix = new String[side];
-            for (int i = 0; i < side; i++) {
+            int row = max > 3 ? side : 1;
+            String[] matrix = new String[row];
+            for (int i = 0; i < row; i++) {
                 StringBuilder s = new StringBuilder();
                 for (int j = 0; j < side; j++) {
                     if (i * side + j < max) {
@@ -136,32 +123,29 @@ public class GTMuiRecipeTypePanel {
                 matrix[i] = s.toString();
             }
 
-            IntFunction<IWidget> widget;
+            IntFunction<IWidget> slotWidget;
             if (recipeCap == ItemRecipeCapability.CAP) {
                 NotifiableItemStackHandler itemHandler = workableMachine.exportItems;
-                widget = i -> new ItemSlot().slot(new ModularSlot(itemHandler, i));
+                slotWidget = i -> new ItemSlot().slot(new ModularSlot(itemHandler, i));
             } else if (recipeCap == FluidRecipeCapability.CAP) {
                 NotifiableFluidTank fluidHandler = workableMachine.exportFluids;
-                widget = i -> new FluidSlot().syncHandler(fluidHandler.getStorages()[i]);
+                slotWidget = i -> new FluidSlot().syncHandler(fluidHandler.getStorages()[i]);
             } else {
-                widget = null;
+                slotWidget = null;
             }
 
-            if (widget != null) {
-                panel.child(SlotGroupWidget.builder()
-                        .matrix(matrix)
-                        .key('S', widget)
-                        .build()
-                        .right(x).top(y));
+            if (slotWidget != null) {
+                output.child(SlotGroupWidget.builder()
+                                .matrix(matrix)
+                                .key('S', slotWidget)
+                                .build().align(Alignment.CENTER));
             }
-
-            y += 18 * side;
         }
-        panel.bindPlayerInventory();
-        return panel;
+
+
     };
 
 
-    public static PanelFactory RECIPE_TYPE = BARE_RECIPE_TYPE.andThen(GTMuiEditors.CHARGE_SLOT, GTMuiEditors.
-            PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 80, ProgressWidget.Direction.RIGHT), GTMuiEditors.POWER_BUTTON);
+    public static PanelFactory RECIPE_TYPE = GTMuiPanels.BASE_PANEL.andThen(RECIPE_SLOTS, GTMuiEditors.CHARGE_SLOT,
+            GTMuiEditors.PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 30, ProgressWidget.Direction.RIGHT), GTMuiEditors.POWER_BUTTON);
 }

@@ -1142,7 +1142,7 @@ public class GTMachines {
             .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI(GTMuiPanels.BASE_PANEL)
+            .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
             .register();
 
     public static void init() {
