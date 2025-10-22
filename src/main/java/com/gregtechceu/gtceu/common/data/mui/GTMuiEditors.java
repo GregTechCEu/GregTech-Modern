@@ -76,7 +76,6 @@ public class GTMuiEditors {
                 ProgressWidget progressBar = new ProgressWidget()
                         .texture(texture, imageSize)
                         .direction(direction)
-
                         .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
                 column.child(progressBar.align(Alignment.Center));
             }
@@ -86,16 +85,17 @@ public class GTMuiEditors {
     public static PanelEditor POWER_BUTTON = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                            MetaMachine machine, ModularPanel panel) -> {
         if(machine instanceof SimpleTieredMachine tieredMachine) {
-            var slotColumn = WidgetUtil.getWidget(panel, "left column");
-            if(!(slotColumn instanceof Column column)){
+            var mainRow = WidgetUtil.getWidget(panel, "Main Ui");
+            if(!(mainRow instanceof Row mainUI)){
                 return;
             }
-            column.child(new ToggleButton()
+            mainUI.child(new ToggleButton()
                                     .value(new BoolValue.Dynamic(
                                             () -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
                                             tieredMachine::setWorkingEnabled))
                                     .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
                                     .align(Alignment.BottomLeft)
+                            .paddingBottom(5)
                                     .background(GTGuiTextures.BUTTON_POWER[1]));
         }
     };
