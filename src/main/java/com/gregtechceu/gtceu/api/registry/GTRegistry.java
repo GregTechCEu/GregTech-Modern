@@ -182,7 +182,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public boolean remove(K name) {
         V value = keyToValue.get(name);
-        return keyToValue.remove(name) != null || valueToKey.remove(value) != null;
+        return keyToValue.remove(name) != null && valueToKey.remove(value) != null;
     }
 
     public abstract Codec<V> codec();
