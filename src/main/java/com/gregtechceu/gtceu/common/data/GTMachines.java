@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiPanels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.muimachine.TestMuiMachine;
@@ -266,7 +267,9 @@ public class GTMachines {
             .hasPollutionDebuff(true)
             .register();
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
-            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+            (holder, tier)
+                    -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder)
+                    -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
@@ -1141,7 +1144,7 @@ public class GTMachines {
             .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
-            .UI(GTMuiRecipeTypePanel.BARE_RECIPE_TYPE)
+            .UI(GTMuiRecipeTypePanel.RECIPE_TYPE)
             .register();
 
     public static void init() {

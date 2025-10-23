@@ -33,6 +33,9 @@ public class GTGuiTextures {
     }
 
     // ICONS
+
+
+
     /** @apiNote You may want {@link GTGuiTextures#getLogo} instead. */
     public static final UITexture GREGTECH_LOGO = fullImage("textures/gui/icon/gregtech_logo.png");
     /** @apiNote You may want {@link GTGuiTextures#getLogo} instead. */
@@ -65,6 +68,12 @@ public class GTGuiTextures {
             .build();
 
     // todo BORDERED/BOXED backgrounds will not be ported, if possible
+    public static final UITexture BACKGROUND_TITLE = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
+            .imageSize(16, 16)
+            .adaptable(4)
+            .xy(0, 0, 1f, .75f)
+            .build();
 
     public static final UITexture BACKGROUND_BRONZE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_bronze.png")
