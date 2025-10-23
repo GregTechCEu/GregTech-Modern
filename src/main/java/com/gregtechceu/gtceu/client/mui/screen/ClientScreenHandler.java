@@ -57,7 +57,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
@@ -330,7 +329,8 @@ public class ClientScreenHandler {
     private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
-        if (keyCode == 'C' && Interactable.isControl(modifiers) && Interactable.isShift(modifiers) && Interactable.isAlt(modifiers)) {
+        if (keyCode == 'C' && Interactable.isControl(modifiers) && Interactable.isShift(modifiers) &&
+                Interactable.isAlt(modifiers)) {
             if (!debugToggleActive) {
                 ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
                 debugToggleActive = true;
