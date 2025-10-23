@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
@@ -75,6 +76,8 @@ public class ClientScreenHandler {
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
     private static final ObjectArrayList<IMuiScreen> muiStack = new ObjectArrayList<>(8);
+
+    private static boolean debugToggleActive = false;
 
     // we need to know the actual gui and not some fake screen some other mod overwrites
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -327,12 +330,14 @@ public class ClientScreenHandler {
     private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
-        if (keyCode == 'C' &&
-                (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-            ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+        if (keyCode == 'C' && Interactable.isControl(modifiers) && Interactable.isShift(modifiers) && Interactable.isAlt(modifiers)) {
+            if (!debugToggleActive) {
+                ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+                debugToggleActive = true;
+            }
             return true;
+        } else {
+            debugToggleActive = false;
         }
         if (keyCode == InputConstants.KEY_ESCAPE && screen.shouldCloseOnEsc()) {
             onClose();
