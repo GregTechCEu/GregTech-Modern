@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.WidgetUtil;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
@@ -40,56 +41,50 @@ public class GTMuiEditors {
                                              MetaMachine machine, ModularPanel panel) -> {
 
         if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
-            var uiRow = WidgetUtil.getWidget(panel, "Main Ui");
-            if(!(uiRow instanceof Row mainUi)){
+            var mainRow = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
+            if (mainRow == null) {
                 return;
             }
             var energyContainer = simpleTieredMachine.getChargerInventory();
-            mainUi.child( new ItemSlot().
+            mainRow.child(new ItemSlot().
                     slot(new ModularSlot(energyContainer, 0))
-                    .align(Alignment.BottomCenter)).paddingBottom(5);
+                    .align(Alignment.BottomCenter));
         }
     };
 
-    public static PanelEditor TITLE =
-            (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-             MetaMachine machine, ModularPanel panel) -> {
-
-
+    public static PanelEditor TITLE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+                                       MetaMachine machine, ModularPanel panel) -> {
             if(machine instanceof SimpleTieredMachine simpleTieredMachine) {
-                var uiRow = WidgetUtil.getWidget(panel, "Base Panel");
-                if (!(uiRow instanceof Column mainPanel)) {
-                    return;
-                }
+
                 var displayItem = simpleTieredMachine.getDefinition().asStack();
                 String name = displayItem.getHoverName().getString();
-                name = name.replaceAll("\\s+(§.)", "§");
+                name = name.replaceAll("§.", "").trim();
                 int borderRadius = 5;
-                int maxWidth = 129 - 16 - borderRadius * 2;
-                int titleWidth = TextRenderer.getFont().width(name);
-                int widgetWidth = Math.min(maxWidth, titleWidth);
-                int rows = (int) Math.ceil((double) titleWidth / maxWidth);
+                int minWidth = 149 - 16 - (borderRadius * 2);
+                int iconSize = 16;
+                int titleWidth = TextRenderer.getFont().width(name) + iconSize + (borderRadius * 2);
+                int widgetWidth = Math.min(minWidth, titleWidth);
+                int rows = (int) Math.ceil((double) titleWidth / minWidth);
                 int heightPerRow = (int) (IKey.renderer.getFontHeight());
-                int height = heightPerRow * rows +5;
-                int iconSize = (rows == 1) ? 14 : (heightPerRow * rows);
-                mainPanel.child(new Row()
-                                .coverChildrenHeight()
+                int height = heightPerRow * rows + borderRadius;
+                panel.child(new Row()
+                        .coverChildrenHeight()
                         .mainAxisAlignment(Alignment.MainAxis.CENTER)
-
                         .widthRel(.8f)
-                                .padding(10,0)
-                                .topRelAnchor(-.4f, 1)
-                                .rightRel(0.5f)
-                                .background(GTGuiTextures.BACKGROUND_TITLE)
-                                .child(new ItemDrawable(displayItem)
-                                        .asIcon().size(iconSize)
-                                        .asWidget()
-                                        .marginLeft(5))
-                                .child(IKey.str(name)
-                                        .asWidget()
-                                        .paddingTop(1)
-                                        .margin(5,5,5,1)
-                                        .size(widgetWidth, height)));
+                        .top(-height - borderRadius)
+                        .rightRel(0.5f)
+                        .background(GTGuiTextures.BACKGROUND_TITLE)
+                        .child(new ItemDrawable(displayItem)
+                                .asIcon().size(iconSize)
+                                .asWidget()
+                                .marginLeft(borderRadius))
+                                .mainAxisAlignment(Alignment.MainAxis.START)
+                        .child(IKey.str(name)
+                                .asWidget()
+                                .paddingTop(1)
+                                .margin(borderRadius, borderRadius, borderRadius,1)
+                                .size(widgetWidth - height, height))
+                );
 
 
             }
@@ -98,16 +93,18 @@ public class GTMuiEditors {
     public static PanelEditor PROGRESS_BAR(UITexture texture, int imageSize, ProgressWidget.Direction direction) {
         return (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                 MetaMachine machine, ModularPanel panel) -> {
-            var slotColumn = WidgetUtil.getWidget(panel, "middle column");
-            if(!(slotColumn instanceof Column column)){
+
+            var progressColumn = WidgetTree.findFirstWithNameNullable(panel, "progress", Column.class);
+            if (progressColumn == null) {
                 return;
             }
+
             if (machine instanceof SimpleTieredMachine tieredMachine) {
                 ProgressWidget progressBar = new ProgressWidget()
                         .texture(texture, imageSize)
                         .direction(direction)
                         .progress(() -> (tieredMachine.getProgress() / (double) tieredMachine.getMaxProgress()));
-                column.child(progressBar.align(Alignment.Center));
+                progressColumn.child(progressBar.align(Alignment.Center));
             }
         };
     }
@@ -115,18 +112,16 @@ public class GTMuiEditors {
     public static PanelEditor POWER_BUTTON = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                            MetaMachine machine, ModularPanel panel) -> {
         if(machine instanceof SimpleTieredMachine tieredMachine) {
-            var mainRow = WidgetUtil.getWidget(panel, "Main Ui");
-            if(!(mainRow instanceof Row mainUI)){
+            var mainRow = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
+            if (mainRow == null) {
                 return;
             }
-            mainUI.child(new ToggleButton()
-                                    .value(new BoolValue.Dynamic(
-                                            () -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
+            mainRow.child(new ToggleButton()
+                        .value(new BoolValue.Dynamic(() -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
                                             tieredMachine::setWorkingEnabled))
-                                    .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
-                                    .align(Alignment.BottomLeft)
-                            .paddingBottom(5)
-                                    .background(GTGuiTextures.BUTTON_POWER[1]));
+                        .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
+                        .align(Alignment.BottomLeft)
+                        .background(GTGuiTextures.BUTTON_POWER[1]));
         }
     };
 
@@ -134,8 +129,8 @@ public class GTMuiEditors {
     MetaMachine machine, ModularPanel panel) -> {
 
         if(machine instanceof SimpleTieredMachine tieredMachine) {
-            var mainRow = WidgetUtil.getWidget(panel, "Main Ui");
-            if (!(mainRow instanceof Row mainUI)) {
+            var mainRow = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
+            if (mainRow == null) {
                 return;
             }
 

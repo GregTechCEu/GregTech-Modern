@@ -26,7 +26,7 @@ public class GTMuiPanels {
     };
 
     public static PanelFactory BASE_PANEL = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-    MetaMachine machine) -> {
+                                             MetaMachine machine) -> {
 
         ModularPanel panel = new ModularPanel(machine.getDefinition().getName());
         return panel
@@ -35,23 +35,25 @@ public class GTMuiPanels {
                 .padding(7)
                 .child(new Column()
                         .coverChildren()
-                        .name("Base Panel")
+                        .name("BasePanel")
                         .child(new Row()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .height(92)
-                                .name("Main Ui")
+                                .name("MainUI")
                                 .child(new Column()
-                                        .name("left column")
-                                        .coverChildren()
+                                        .name("inputs")
+                                        .widthRel(0.4f)
+                                        .coverChildrenHeight()
                                         .crossAxisAlignment(Alignment.CrossAxis.CENTER))
                                 .child(new Column()
+                                        .name("progress")
                                         .coverChildren()
-                                        .name("middle column")
-                                        .padding(20, 0)
+                                        .padding(10, 0)
                                         .crossAxisAlignment(Alignment.CrossAxis.CENTER))
                                 .child(new Column()
-                                       .name("right column")
-                                        .coverChildren()
+                                        .name("outputs")
+                                        .widthRel(0.4f)
+                                        .coverChildrenHeight()
                                         .crossAxisAlignment(Alignment.CrossAxis.CENTER))
                         )
 

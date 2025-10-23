@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiPanels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.muimachine.TestMuiMachine;
