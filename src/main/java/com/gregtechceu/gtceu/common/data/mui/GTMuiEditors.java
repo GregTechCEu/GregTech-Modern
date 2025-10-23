@@ -65,43 +65,31 @@ public class GTMuiEditors {
                 String name = displayItem.getHoverName().getString();
                 name = name.replaceAll("\\s+(§.)", "§");
                 int borderRadius = 5;
-                int maxWidth = 105 - borderRadius * 2;
+                int maxWidth = 129 - 16 - borderRadius * 2;
                 int titleWidth = TextRenderer.getFont().width(name);
                 int widgetWidth = Math.min(maxWidth, titleWidth);
                 int rows = (int) Math.ceil((double) titleWidth / maxWidth);
                 int heightPerRow = (int) (IKey.renderer.getFontHeight());
-                int height = heightPerRow * rows;
+                int height = heightPerRow * rows +5;
+                int iconSize = (rows == 1) ? 14 : (heightPerRow * rows);
                 mainPanel.child(new Row()
                                 .coverChildrenHeight()
-                                .widthRel(.8f)
+                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
+
+                        .widthRel(.8f)
                                 .padding(10,0)
-                                .bottomRel(1.4f)
+                                .topRelAnchor(-.4f, 1)
                                 .rightRel(0.5f)
                                 .background(GTGuiTextures.BACKGROUND_TITLE)
                                 .child(new ItemDrawable(displayItem)
-                                        .asWidget().anchorLeft(1)
-                                        .verticalCenter())
+                                        .asIcon().size(iconSize)
+                                        .asWidget()
+                                        .marginLeft(5))
                                 .child(IKey.str(name)
                                         .asWidget()
                                         .paddingTop(1)
                                         .margin(5,5,5,1)
                                         .size(widgetWidth, height)));
-                      //  .child(new TextWidget<>(name)).paddingRight(4));
-
-                /*
-
-
-        return new SingleChildWidget<>().coverChildren()
-            .topRelAnchor(0, 1)
-            .widgetTheme(GTWidgetThemes.BACKGROUND_TITLE)
-            .child(
-                IKey.str(title)
-                    .asWidget()
-                    .size(widgetWidth, height)
-                    .widgetTheme(GTWidgetThemes.TEXT_TITLE)
-
-                    );
-                 */
 
             }
     };
