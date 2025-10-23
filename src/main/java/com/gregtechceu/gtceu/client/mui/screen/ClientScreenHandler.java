@@ -96,50 +96,45 @@ public class ClientScreenHandler {
         OverlayStack.foreach(ms -> ms.onResize(event.getScreen().width, event.getScreen().height), false);
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyPressedHigh(ScreenEvent.KeyPressed.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        keyPressedEvent(event, InputPhase.EARLY);
+        // TODO: early needs to be before XEI, but emi does mixin into KeyboardHandler so it is before everything
+        if (keyPressedEvent(event, InputPhase.EARLY)) {
+            keyPressedEvent(event, InputPhase.LATE);
+        }
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyPressedLow(ScreenEvent.KeyPressed.Pre event) {
-        keyPressedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
+    private static boolean keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
         if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), true, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyReleasedHigh(ScreenEvent.KeyReleased.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+        // TODO also needs to be before XEI
+        // dont need late for release event
         keyReleasedEvent(event, InputPhase.EARLY);
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyReleasedLow(ScreenEvent.KeyReleased.Pre event) {
-        keyReleasedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
+    private static boolean keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
         if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), false, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
     // before JEI
@@ -325,14 +320,8 @@ public class ClientScreenHandler {
                     keyTyped(mcScreen, keyCode, scanCode, modifiers);
         } else {
             // releasing a key
-            if (inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers))) {
-                return true;
-            }
-            if (inputPhase.isLate() && keyCode >= ' ') {
-                return keyTyped(mcScreen, keyCode, scanCode, modifiers);
-            }
+            return inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers));
         }
-        return false;
     }
 
     private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
