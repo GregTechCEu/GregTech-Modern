@@ -10,15 +10,20 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Accessors(chain = true)
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     @Getter
+    @Setter
     private boolean ignoreSpaces = false;
 
     @Getter
@@ -107,7 +112,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     public MultiLineComponent append(MultiLineComponent multiLineComponent) {
         if (multiLineComponent == null) return this;
-        this.addGraphics(multiLineComponent.getGraphics().toArray(graphics.toArray(new GraphicsComponent[0])));
+        this.graphics.addAll(multiLineComponent.getGraphics());
         return this.append(multiLineComponent.toImmutable());
     }
 
@@ -146,11 +151,11 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             tag.add(StringTag.valueOf(Component.Serializer.toJson(component)));
         }
         compoundTag.put("text", tag);
-        ListTag tag2 = new ListTag();
+        ListTag graphicsTag = new ListTag();
         for (GraphicsComponent component : this.getGraphics()) {
-            tag2.add(component.toTag());
+            graphicsTag.add(component.toTag());
         }
-        compoundTag.put("graphics", tag2);
+        compoundTag.put("graphics", graphicsTag);
         return compoundTag;
     }
 
@@ -163,10 +168,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
                 out.add(Component.Serializer.fromJson(i.getAsString()));
             }
         } else if (tag instanceof CompoundTag compoundTag) {
-            ListTag list1 = compoundTag.getList("text", Tag.TAG_STRING);
-            for (Tag i : list1) out.add(Component.Serializer.fromJson(i.getAsString()));
-            ListTag list2 = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
-            for (Tag i : list2) out.addGraphics(GraphicsComponent.fromTag(i));
+            ListTag textTag = compoundTag.getList("text", Tag.TAG_STRING);
+            for (Tag i : textTag) out.add(Component.Serializer.fromJson(i.getAsString()));
+            ListTag graphicsTag = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
+            for (Tag i : graphicsTag) out.addGraphics(GraphicsComponent.fromTag(i));
         }
         return out;
     }
@@ -180,13 +185,12 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         return Long.parseLong(s);
     }
 
-    public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {
-        this.ignoreSpaces = ignoreSpaces;
-        return this;
+    public MultiLineComponent addGraphics(GraphicsComponent... graphicsComponents) {
+        return this.addGraphics(List.of(graphicsComponents));
     }
 
-    public MultiLineComponent addGraphics(GraphicsComponent... graphicsComponents) {
-        this.graphics.addAll(List.of(graphicsComponents));
+    public MultiLineComponent addGraphics(Collection<GraphicsComponent> graphicsComponents) {
+        this.graphics.addAll(graphicsComponents);
         return this;
     }
 }

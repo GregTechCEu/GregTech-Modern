@@ -2,9 +2,6 @@
 title: The Central Monitor & Placeholder System
 ---
 
-!!! info "But can it run Doom?"
-    **YES.** <h6>_If anyone is crazy enough to program Doom in the placeholder language._</h6>
-
 ### The Central Monitor
 
 The Central Monitor is a multiblock that allows you to insert modules into it to render images and text.<br>

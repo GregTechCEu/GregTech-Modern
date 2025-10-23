@@ -22,13 +22,13 @@ public class QuadPlaceholderRenderer implements IPlaceholderRenderer {
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.getMonitor());
         Matrix4f pose = poseStack.last().pose();
 
-        consumer.vertex(pose, (float) tag.getDouble("x1"), (float) tag.getDouble("y1"), 0).color(tag.getInt("color1"))
+        consumer.vertex(pose, tag.getFloat("x1"), tag.getFloat("y1"), 0).color(tag.getInt("color1"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, (float) tag.getDouble("x2"), (float) tag.getDouble("y2"), 0).color(tag.getInt("color2"))
+        consumer.vertex(pose, tag.getFloat("x2"), tag.getFloat("y2"), 0).color(tag.getInt("color2"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, (float) tag.getDouble("x3"), (float) tag.getDouble("y3"), 0).color(tag.getInt("color3"))
+        consumer.vertex(pose, tag.getFloat("x3"), tag.getFloat("y3"), 0).color(tag.getInt("color3"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, (float) tag.getDouble("x4"), (float) tag.getDouble("y4"), 0).color(tag.getInt("color4"))
+        consumer.vertex(pose, tag.getFloat("x4"), tag.getFloat("y4"), 0).color(tag.getInt("color4"))
                 .uv2(LightTexture.FULL_BRIGHT).endVertex();
         poseStack.popPose();
     }

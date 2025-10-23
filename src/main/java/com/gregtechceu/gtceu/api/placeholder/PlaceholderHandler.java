@@ -86,12 +86,12 @@ public class PlaceholderHandler {
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         PlaceholderContext context,
-                                                        Object2IntOpenHashMap<String> indexes) throws PlaceholderException {
+                                                        Object2IntOpenHashMap<String> indices) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
-        indexes.addTo(name, 1);
-        return placeholders.get(name).apply(context.withIndex(indexes.getInt(name)),
+        indices.addTo(name, 1);
+        return placeholders.get(name).apply(context.withIndex(indices.getInt(name)),
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -99,7 +99,7 @@ public class PlaceholderHandler {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
-        Object2IntOpenHashMap<String> indexes = new Object2IntOpenHashMap<>();
+        Object2IntOpenHashMap<String> indices = new Object2IntOpenHashMap<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
@@ -133,7 +133,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indexes);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 GTUtil.getLast(stack.peek()).append(result);
                             } else {

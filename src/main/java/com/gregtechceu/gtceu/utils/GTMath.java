@@ -93,4 +93,20 @@ public class GTMath {
         }
         return q;
     }
+
+    public static double min(Double... list) {
+        return Arrays.stream(list).min(Double::compareTo).orElseThrow();
+    }
+
+    public static double max(Double... list) {
+        return Arrays.stream(list).max(Double::compareTo).orElseThrow();
+    }
+
+    public static float min(Float... list) {
+        return Arrays.stream(list).min(Float::compareTo).orElseThrow();
+    }
+
+    public static float max(Float... list) {
+        return Arrays.stream(list).max(Float::compareTo).orElseThrow();
+    }
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -37,20 +38,20 @@ public class MonitorTextRenderer implements IMonitorRenderer {
             int layer = 0;
             for (GraphicsComponent graphics : text.getGraphics()) {
                 if (graphics.x() < 0 || graphics.y() < 0) continue;
-                double maxX = graphics.x2();
-                double maxY = graphics.y2();
+                float maxX = graphics.x2();
+                float maxY = graphics.y2();
                 if (maxX == Math.floor(maxX)) maxX--;
                 if (maxY == Math.floor(maxY)) maxY--;
-                BlockPos relativePos = rel.mutable().move((int) Math.floor(maxX), (int) -Math.floor(maxY), 0);
+                BlockPos relativePos = rel.offset(Mth.floor(maxX), -Mth.floor(maxY), 0);
                 if (!group.getMonitorPositions().stream().map(machine::toRelative).toList().contains(relativePos))
                     continue;
                 poseStack.pushPose();
-                poseStack.translate(graphics.x(), graphics.y(), layer * .001);
+                poseStack.translate(graphics.x(), graphics.y(), layer * .001f);
                 graphics.get().render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                 poseStack.popPose();
                 layer++;
             }
-            poseStack.translate(0, 0, layer * .001);
+            poseStack.translate(0, 0, layer * .001f);
             poseStack.scale(TEXT_SCALE * scale, TEXT_SCALE * scale, TEXT_SCALE * scale);
             float y = 9;
             for (Component s : text) {

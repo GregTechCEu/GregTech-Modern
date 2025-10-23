@@ -612,12 +612,4 @@ public class GTUtil {
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
     }
-
-    public static double min(Double... list) {
-        return Arrays.stream(list).min(Double::compareTo).orElseGet(() -> 0.0);
-    }
-
-    public static double max(Double... list) {
-        return Arrays.stream(list).max(Double::compareTo).orElseGet(() -> 0.0);
-    }
 }

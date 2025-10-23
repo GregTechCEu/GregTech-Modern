@@ -23,7 +23,7 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
     private static final RenderType MONITOR = RenderType.create("central_monitor",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 131072, false, false,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(NO_CULL)
                     .setShaderState(POSITION_COLOR_SHADER)

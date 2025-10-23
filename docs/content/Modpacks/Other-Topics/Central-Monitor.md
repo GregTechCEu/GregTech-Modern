@@ -2,9 +2,6 @@
 title: Central Monitor & Placeholder System
 ---
 
-!!! info "But can it run Doom?"
-    **YES.** <h6>_If anyone is crazy enough to program Doom in the placeholder language._</h6>
-
 ### Custom monitor modules
 If you want to add a monitor module, simply attach a component that implements `IMonitorModuleItem` to your `ComponentItem`.
 Modules can have a custom UI, can be ticked (in a placeholder or not) and, most importantly, rendered.
@@ -19,24 +16,24 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
 
         @Override
         public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-            // this is only run on the logical server side
+            // this is only called on the logical server
             // put all of your module's logic here instead of in getRenderer(stack)
             // can also be left completely empty (like in the image module)
         }
 
         @Override
         public void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {
-            // this is also only run on the logical server side
-            // but this is only called when a placeholder accesses this module (and wants to render it)
-            // this is not called on each tick
-            // you can even put the same code here as in the tick() method (like the text module)
+            // this is also only called on the logical server, but only when a placeholder accesses this module and wants to render it
+            // this *isn't* called on each tick
+            // you can even put the same code here as in the tick() method, like the text module does
         }
 
         @Override
         public IMonitorRenderer getRenderer(ItemStack stack) {
-            // this is only called on the logical client side
+            // this is only called on the logical client
             // should return a new instance of the renderer for this module (not null)
-            // for examples of renderer code look in the GTCEu Modern github (src/main/java/com/gregtechceu/gtceu/client/renderer)
+            // for examples of renderer code look in the GTCEu Modern github:
+            // https://github.com/GregTechCEu/GregTech-Modern/tree/1.20.1/src/main/java/com/gregtechceu/gtceu/client/renderer
             return new MonitorTextRenderer(MultiLineComponent.of("this text is displayed on the monitor"), 1.0);
         }
 

@@ -24,9 +24,9 @@ import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
@@ -912,7 +912,7 @@ public class GTPlaceholders {
                 renderData.putDouble("y", y);
                 renderData.putDouble("width", width);
                 renderData.putDouble("height", height);
-                renderData.putInt("color", 0xFF000000 + PlaceholderUtils.toInt(args.get(4)));
+                renderData.putInt("color", 0xFF000000 | PlaceholderUtils.toInt(args.get(4)));
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
                         x, y, x + width, y + height,
                         "rect",
@@ -926,29 +926,29 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 12);
                 CompoundTag renderData = new CompoundTag();
-                double x1 = PlaceholderUtils.toDouble(args.get(0));
-                double y1 = PlaceholderUtils.toDouble(args.get(1));
-                double x2 = PlaceholderUtils.toDouble(args.get(2));
-                double y2 = PlaceholderUtils.toDouble(args.get(3));
-                double x3 = PlaceholderUtils.toDouble(args.get(4));
-                double y3 = PlaceholderUtils.toDouble(args.get(5));
-                double x4 = PlaceholderUtils.toDouble(args.get(6));
-                double y4 = PlaceholderUtils.toDouble(args.get(7));
-                renderData.putDouble("x1", 0);
-                renderData.putDouble("y1", 0);
-                renderData.putDouble("x2", x2 - x1);
-                renderData.putDouble("y2", y2 - y1);
-                renderData.putDouble("x3", x3 - x1);
-                renderData.putDouble("y3", y3 - y1);
-                renderData.putDouble("x4", x4 - x1);
-                renderData.putDouble("y4", y4 - y1);
+                float x1 = PlaceholderUtils.toFloat(args.get(0));
+                float y1 = PlaceholderUtils.toFloat(args.get(1));
+                float x2 = PlaceholderUtils.toFloat(args.get(2));
+                float y2 = PlaceholderUtils.toFloat(args.get(3));
+                float x3 = PlaceholderUtils.toFloat(args.get(4));
+                float y3 = PlaceholderUtils.toFloat(args.get(5));
+                float x4 = PlaceholderUtils.toFloat(args.get(6));
+                float y4 = PlaceholderUtils.toFloat(args.get(7));
+                renderData.putFloat("x1", 0);
+                renderData.putFloat("y1", 0);
+                renderData.putFloat("x2", x2 - x1);
+                renderData.putFloat("y2", y2 - y1);
+                renderData.putFloat("x3", x3 - x1);
+                renderData.putFloat("y3", y3 - y1);
+                renderData.putFloat("x4", x4 - x1);
+                renderData.putFloat("y4", y4 - y1);
                 renderData.putInt("color1", 0xFF000000 + PlaceholderUtils.toInt(args.get(8)));
                 renderData.putInt("color2", 0xFF000000 + PlaceholderUtils.toInt(args.get(9)));
                 renderData.putInt("color3", 0xFF000000 + PlaceholderUtils.toInt(args.get(10)));
                 renderData.putInt("color4", 0xFF000000 + PlaceholderUtils.toInt(args.get(11)));
                 return MultiLineComponent.empty().addGraphics(new GraphicsComponent(
-                        GTUtil.min(x1, x2, x3, x4), GTUtil.min(y1, y2, y3, y4), GTUtil.max(x1, x2, x3, x4),
-                        GTUtil.max(y1, y2, y3, y4),
+                        GTMath.min(x1, x2, x3, x4), GTMath.min(y1, y2, y3, y4), GTMath.max(x1, x2, x3, x4),
+                        GTMath.max(y1, y2, y3, y4),
                         "quad",
                         renderData));
             }
