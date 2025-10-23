@@ -33,6 +33,9 @@ public class GTGuiTextures {
     }
 
     // ICONS
+
+
+
     /** @apiNote You may want {@link GTGuiTextures#getLogo} instead. */
     public static final UITexture GREGTECH_LOGO = fullImage("textures/gui/icon/gregtech_logo.png");
     /** @apiNote You may want {@link GTGuiTextures#getLogo} instead. */

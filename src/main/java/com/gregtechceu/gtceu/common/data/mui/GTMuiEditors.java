@@ -91,6 +91,7 @@ public class GTMuiEditors {
                                         .margin(5,5,5,1)
                                         .size(widgetWidth, height)));
 
+
             }
     };
 
@@ -126,6 +127,19 @@ public class GTMuiEditors {
                                     .align(Alignment.BottomLeft)
                             .paddingBottom(5)
                                     .background(GTGuiTextures.BUTTON_POWER[1]));
+        }
+    };
+
+    public static PanelEditor GT_LOGO = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
+    MetaMachine machine, ModularPanel panel) -> {
+
+        if(machine instanceof SimpleTieredMachine tieredMachine) {
+            var mainRow = WidgetUtil.getWidget(panel, "Main Ui");
+            if (!(mainRow instanceof Row mainUI)) {
+                return;
+            }
+
+
         }
     };
 }
