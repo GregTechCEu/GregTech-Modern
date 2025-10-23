@@ -458,11 +458,9 @@ public class ClientScreenHandler {
         // mainly for invtweaks compat
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
         acc.setHoveredSlot(null);
-        graphics.pose().pushPose();
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         Lighting.setupForFlatItems();
         acc.invokeRenderLabels(graphics, mouseX, mouseY);
-        muiScreen.drawForeground(graphics, partialTicks);
 
         acc.setHoveredSlot(null);
         IGuiElement hovered = muiScreen.getContext().getTopHovered();
@@ -509,7 +507,9 @@ public class ClientScreenHandler {
             int snapBackY = acc.getSnapbackStartY() + (int) ((float) snapBackOffsetY * delta);
             drawFloatingItemStack(mcScreen, graphics, acc.getSnapbackItem(), snapBackX, snapBackY, null);
         }
-        graphics.pose().popPose();
+
+        muiScreen.drawForeground(graphics, partialTicks);
+
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
         muiScreen.getContext().getStencil().pop();
