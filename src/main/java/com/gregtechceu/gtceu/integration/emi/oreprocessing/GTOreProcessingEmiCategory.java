@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory.sortDefinition;
 
 public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
 
@@ -43,7 +44,10 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 MACERATOR_RECIPES, ORE_WASHER_RECIPES, THERMAL_CENTRIFUGE_RECIPES, CENTRIFUGE_RECIPES,
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
-        for (MachineDefinition machine : GTRegistries.MACHINES) {
+        for (MachineDefinition machine : GTRegistries.MACHINES.values()
+                .stream()
+                .sorted(sortDefinition)
+                .toList()) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 for (GTRecipeType validType : validTypes) {
                     if (type == validType && !registeredMachines.contains(machine)) {

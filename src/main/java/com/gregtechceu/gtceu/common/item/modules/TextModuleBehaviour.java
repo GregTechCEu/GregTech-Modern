@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
@@ -18,6 +19,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.codeeditor.CodeEditorWidget;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -25,28 +27,32 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
-public class TextModuleBehaviour implements IMonitorModuleItem {
+public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        StringBuilder formatStringLines = new StringBuilder();
-        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
-        for (Tag value : tag) {
-            formatStringLines.append(value.getAsString()).append('\n');
+        if (!stack.getOrCreateTag().contains("placeholderUUID")) {
+            stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                formatStringLines.toString(),
+                getPlaceholderText(stack),
                 new PlaceholderContext(
-                        machine.getLevel(),
+                        group.getTargetLevel(machine.getLevel()),
                         group.getTarget(machine.getLevel()),
                         group.getTargetCoverSide(),
                         group.getPlaceholderSlotsHandler(),
                         group.getTargetCover(machine.getLevel()),
-                        null));
+                        null,
+                        stack.getOrCreateTag().getUUID("placeholderUUID")));
         stack.getOrCreateTag().put("text", text.toTag());
     }
 
@@ -58,14 +64,15 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return new MonitorTextRenderer(
-                MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING)).toImmutable(),
-                Math.max(stack.getOrCreateTag().getDouble("scale"), .0001));
+                getText(stack).toImmutable(),
+                Math.max(getScale(stack), .0001));
     }
 
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
         CodeEditorWidget editor = new CodeEditorWidget(0, 0, 120, 80);
+        // editor.codeEditor.setLanguageDefinition(PlaceholderHandler.LANG_DEFINITION);
         TextFieldWidget scaleInput = new TextFieldWidget(
                 -50, 47,
                 40, 10,
@@ -108,5 +115,48 @@ public class TextModuleBehaviour implements IMonitorModuleItem {
         placeholderReference.setSelfPosition(-100, -50);
         builder.addWidget(placeholderReference);
         return builder;
+    }
+
+    @Override
+    public String getType() {
+        return "text";
+    }
+
+    public MultiLineComponent getText(ItemStack stack) {
+        return MultiLineComponent.fromTag(stack.getOrCreateTag().getList("text", Tag.TAG_STRING));
+    }
+
+    public double getScale(ItemStack stack) {
+        return Math.max(stack.getOrCreateTag().getDouble("scale"), .0001);
+    }
+
+    public void setScale(ItemStack stack, double scale) {
+        stack.getOrCreateTag().putDouble("scale", scale);
+    }
+
+    public void setPlaceholderText(ItemStack stack, String text) {
+        ListTag listTag = new ListTag();
+        for (String line : text.split("\n")) listTag.add(StringTag.valueOf(line));
+        stack.getOrCreateTag().put("formatStringLines", listTag);
+    }
+
+    public String getPlaceholderText(ItemStack stack) {
+        StringBuilder formatStringLines = new StringBuilder();
+        ListTag tag = stack.getOrCreateTag().getList("formatStringLines", StringTag.TAG_STRING);
+        for (Tag value : tag) {
+            formatStringLines.append(value.getAsString()).append('\n');
+        }
+        return formatStringLines.toString();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        if (isAdvanced.isAdvanced()) {
+            tooltipComponents.add(Component.literal("Placeholder text:").withStyle(ChatFormatting.GOLD));
+            tooltipComponents.addAll(MultiLineComponent.literal(getPlaceholderText(stack)));
+            tooltipComponents.add(Component.literal("Processed text:").withStyle(ChatFormatting.GOLD));
+            tooltipComponents.addAll(getText(stack));
+        }
     }
 }

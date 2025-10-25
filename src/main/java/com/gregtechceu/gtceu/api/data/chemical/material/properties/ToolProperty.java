@@ -64,6 +64,10 @@ public class ToolProperty implements IMaterialProperty {
     @Setter
     private int harvestLevel;
 
+    @Getter
+    @Setter
+    private int prospectingDepth;
+
     /**
      * Enchantability of tools made from this Material.
      * <p>
@@ -124,6 +128,13 @@ public class ToolProperty implements IMaterialProperty {
         this.durability = durability;
         this.harvestLevel = harvestLevel;
         this.types = types;
+        this.prospectingDepth = this.harvestLevel * 2 + 1;
+    }
+
+    public ToolProperty(float harvestSpeed, float attackDamage, int durability, int harvestLevel, int prospectingDepth,
+                        GTToolType[] types) {
+        this(harvestSpeed, attackDamage, durability, harvestLevel, types);
+        this.prospectingDepth = prospectingDepth;
     }
 
     public ToolProperty() {

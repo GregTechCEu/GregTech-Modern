@@ -2,16 +2,14 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
@@ -23,13 +21,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -40,8 +38,8 @@ public class OverclockLogicTest {
 
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests");
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_lcr_tests", GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("overclock_logic_cr_tests", GTRecipeTypes.CHEMICAL_RECIPES);
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_overclock_logic"))
@@ -85,12 +83,8 @@ public class OverclockLogicTest {
                 .buildRawRecipe());
     }
 
-    private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
-    }
-
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
+                             WorkableMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -109,9 +103,7 @@ public class OverclockLogicTest {
                 helper.getBlockEntity(new BlockPos(2, 2, 0)));
         ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
-        return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, controller);
+        return new BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
     // Test for running HV recipe at HV
@@ -149,12 +141,12 @@ public class OverclockLogicTest {
     public static void overclockLogicOverTierNothingHappens(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.BROWN_BED));
-        helper.failIfEver(() -> {
+        helper.onEachTick(() -> {
             helper.assertFalse(
                     busHolder.outputBus1.getInventory().getStackInSlot(0).getItem().equals(Blocks.STONE.asItem()),
                     "Item crafted at one tier over when it shouldn't have");
         });
-        helper.succeed();
+        TestUtils.succeedAfterTest(helper, 200);
     }
 
     // Test for code wise calculating perfect OC
@@ -228,7 +220,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == PERFECT_DURATION_FACTOR_INV,
+        helper.assertTrue(newRecipe.subtickParallels == PERFECT_DURATION_FACTOR_INV,
                 "Perfect subtick overclock didn't multiply parallels by 4");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() ==
@@ -256,7 +248,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_NON_PERFECT_SUBTICK.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == STD_DURATION_FACTOR_INV,
+        helper.assertTrue(newRecipe.subtickParallels == STD_DURATION_FACTOR_INV,
                 "Non-Perfect subtick overclock didn't multiply parallels by 2");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() ==
@@ -284,7 +276,7 @@ public class OverclockLogicTest {
         GTRecipe newRecipe = OC_NON_PERFECT.applyModifier(busHolder.controller, recipeBeforeModifiers);
 
         helper.assertTrue(newRecipe != null, "Could not apply overclock to recipe");
-        helper.assertTrue(newRecipe.parallels == 1,
+        helper.assertTrue(newRecipe.subtickParallels == 1,
                 "Non-Perfect Non-subtick overclock overclocked when it shouldn't have");
         helper.assertTrue(
                 newRecipe.getInputEUt().getTotalEU() == recipeBeforeModifiers.getInputEUt().getTotalEU(),
@@ -345,8 +337,6 @@ public class OverclockLogicTest {
             helper.assertTrue(chargeUsed == chargeNeeded,
                     "Recipe didn't consume right amount, instead of " + chargeNeeded + " it used " + chargeUsed);
         });
-
-        helper.succeed();
     }
 
     // Test for charge usage of a singleblock HV chemical reactor running an MV recipe
@@ -381,7 +371,5 @@ public class OverclockLogicTest {
             helper.assertTrue(chargeUsed == chargeNeeded,
                     "Recipe didn't consume right amount, instead of " + chargeNeeded + " it used " + chargeUsed);
         });
-
-        helper.succeed();
     }
 }

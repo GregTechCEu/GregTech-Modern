@@ -59,7 +59,8 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
                 var actualRotation = state.getRotation().compose(variant.getRotation());
                 var actualState = new SimpleModelState(actualRotation, variant.isUvLocked());
 
-                BakedModel baked = variant.getResolvedModel().bake(baker, spriteGetter, actualState, location);
+                BakedModel baked = variant.getResolvedModel().bake(baker, spriteGetter, actualState,
+                        variant.getModel().map(Function.identity(), model -> location));
                 weightedBuilder.add(baked, variant.getWeight());
             }
             return weightedBuilder.build();

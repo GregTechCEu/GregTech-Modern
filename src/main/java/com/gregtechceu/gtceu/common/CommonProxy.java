@@ -136,7 +136,7 @@ public class CommonProxy {
         GTSoundEntries.init();
         GTDamageTypes.init();
         GTPlaceholders.initPlaceholders();
-        if (GTCEu.Mods.isCreateLoaded()) {
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
             GTCreateIntegration.init();
         }
         if (GTCEu.Mods.isAE2Loaded()) {
@@ -144,9 +144,9 @@ public class CommonProxy {
         }
 
         GTCovers.init();
-        GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
+        GTFluids.init();
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
@@ -161,7 +161,6 @@ public class CommonProxy {
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
-        // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
 
         GregTechDatagen.initPost();

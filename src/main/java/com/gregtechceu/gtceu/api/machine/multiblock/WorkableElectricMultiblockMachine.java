@@ -85,6 +85,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         this.tier = 0;
     }
 
+    @Override
+    public void setBatchEnabled(boolean batch) {
+        this.batchEnabled = batch;
+    }
+
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
@@ -92,17 +97,23 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void addDisplayText(List<Component> textList) {
         int numParallels;
+        int subtickParallels;
         int batchParallels;
+        int totalRuns;
         boolean exact = false;
         if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
             numParallels = recipeLogic.getLastRecipe().parallels;
+            subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
             batchParallels = recipeLogic.getLastRecipe().batchParallels;
+            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
             exact = true;
         } else {
             numParallels = getParallelHatch()
                     .map(IParallelHatch::getCurrentParallel)
                     .orElse(0);
+            subtickParallels = 0;
             batchParallels = 0;
+            totalRuns = 0;
         }
 
         MultiblockDisplayText.builder(textList, isFormed())
@@ -110,7 +121,9 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
+                .addTotalRunsLine(totalRuns)
                 .addParallelsLine(numParallels, exact)
+                .addSubtickParallelsLine(subtickParallels)
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
@@ -151,7 +164,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                     this::isBatchEnabled,
-                    (cd, p) -> batchEnabled = p)
+                    (cd, p) -> setBatchEnabled(p))
                     .setTooltipsSupplier(
                             p -> List.of(
                                     Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));

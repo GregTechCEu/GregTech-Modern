@@ -42,6 +42,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -96,8 +98,11 @@ public interface GTRecipeSchema {
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
 
+        // material stacks that are from already resolved inputs
         public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
         public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
+        // temporary buffer for unresolved item stacks where decomp is found post recipe addition
+        public List<ItemStack> tempItemStacks = new ArrayList<>();
         public boolean itemMaterialInfo = false;
         public boolean fluidMaterialInfo = false;
         public boolean removeMaterialInfo = false;
@@ -260,10 +265,20 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(InputItem... inputs) {
             for (var stack : inputs) {
-                var matInfo = ChemicalHelper.getMaterialInfo(stack.ingredient);
-                if (matInfo != null && chance == maxChance && chance != 0) {
-                    for (var matStack : matInfo.getMaterials()) {
+                // test simple item that have pure singular material stack
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient.getItems()[0].getItem());
+                // test item that has multiple material stacks
+                var matInfo = ChemicalHelper.getMaterialInfo(stack.ingredient.getItems()[0].getItem());
+                if (chance == maxChance && chance != 0) {
+                    if (!matStack.isEmpty()) {
                         itemMaterialStacks.add(matStack.multiply(stack.count));
+                    }
+                    if (matInfo != null) {
+                        for (var ms : matInfo.getMaterials()) {
+                            itemMaterialStacks.add(ms.multiply(stack.count));
+                        }
+                    } else {
+                        tempItemStacks.add(stack.ingredient.getItems()[0].copyWithCount(stack.count));
                     }
                 }
             }
@@ -272,10 +287,21 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                // test simple item that have pure singular material stack
                 var matStack = ChemicalHelper.getMaterialStack(itemStack);
-                if (!matStack.isEmpty()) {
-                    itemMaterialStacks
-                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
+                // test item that has multiple material stacks
+                var matInfo = ChemicalHelper.getMaterialInfo(itemStack);
+                if (chance == maxChance && chance != 0) {
+                    if (!matStack.isEmpty()) {
+                        itemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
+                    }
+                    if (matInfo != null) {
+                        for (var ms : matInfo.getMaterials()) {
+                            itemMaterialStacks.add(ms.multiply(itemStack.getCount()));
+                        }
+                    } else {
+                        tempItemStacks.add(itemStack);
+                    }
                 }
                 if (itemStack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
@@ -332,6 +358,22 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(MachineDefinition machine, int count) {
             return inputItems(machine.asStack(count));
+        }
+
+        public GTRecipeJS itemInputsRanged(ExtendedOutputItem ingredient, int min, int max) {
+            return inputItemsRanged(ingredient.ingredient.getInner(), min, max);
+        }
+
+        public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
+            return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(ingredient, 1, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS inputItemsRanged(ItemStack stack, int min, int max) {
+            return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(stack, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS itemInputsRanged(TagPrefix orePrefix, Material material, int min, int max) {
+            return inputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
         }
 
         public GTRecipeJS itemOutputs(ExtendedOutputItem... outputs) {
@@ -694,6 +736,16 @@ public interface GTRecipeSchema {
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
+        public GTRecipeJS inputFluidsRanged(FluidStackJS input, int min, int max) {
+            return inputFluidsRanged(input, UniformInt.of(min, max));
+        }
+
+        public GTRecipeJS inputFluidsRanged(FluidStackJS input, IntProvider range) {
+            FluidStack stack = new FluidStack(input.getFluid(), (int) input.getAmount(), input.getNbt());
+            return input(FluidRecipeCapability.CAP,
+                    IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
+        }
+
         public GTRecipeJS outputFluids(FluidStackJS... outputs) {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
@@ -863,6 +915,82 @@ public interface GTRecipeSchema {
             return environmentalHazard(condition, false);
         }
 
+        public GTRecipeJS adjacentFluids(Fluid... fluids) {
+            return adjacentFluids(false, fluids);
+        }
+
+        public GTRecipeJS adjacentFluids(boolean isReverse, Fluid... fluids) {
+            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentFluid(Fluid... fluids) {
+            return adjacentFluid(false, fluids);
+        }
+
+        public GTRecipeJS adjacentFluid(boolean isReverse, Fluid... fluids) {
+            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentFluid(ResourceLocation... tagNames) {
+            return adjacentFluid(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.FLUID, id))
+                    .toList();
+            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentFluidTag(ResourceLocation... tagNames) {
+            return adjacentFluidTag(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentFluidTag(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.FLUID, id))
+                    .toList();
+            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlocks(Block... blocks) {
+            return adjacentBlocks(false, blocks);
+        }
+
+        public GTRecipeJS adjacentBlocks(boolean isReverse, Block... blocks) {
+            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlock(Block... blocks) {
+            return adjacentBlock(false, blocks);
+        }
+
+        public GTRecipeJS adjacentBlock(boolean isReverse, Block... blocks) {
+            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlockTag(ResourceLocation... tagNames) {
+            return adjacentBlockTag(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Block>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.BLOCK, id))
+                    .toList();
+            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+        }
+
+        public GTRecipeJS adjacentBlock(ResourceLocation... tagNames) {
+            return adjacentBlock(false, tagNames);
+        }
+
+        public GTRecipeJS adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
+            List<TagKey<Block>> tags = Arrays.stream(tagNames)
+                    .map(id -> TagKey.create(Registries.BLOCK, id))
+                    .toList();
+            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+        }
+
         public GTRecipeJS daytime(boolean isNight) {
             return addCondition(new DaytimeCondition().setReverse(isNight));
         }
@@ -968,7 +1096,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -990,7 +1118,7 @@ public interface GTRecipeSchema {
          */
         public GTRecipeJS stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
             GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder())
-                    .build();
+                    .build(this.id);
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }

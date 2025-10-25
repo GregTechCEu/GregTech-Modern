@@ -129,6 +129,31 @@ public class ConfigHolder {
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
         public boolean enchantedTools = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether to enable macerator decomposition recycling", "Default: true" })
+        public boolean enableMaceratorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of macerator decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float maceratorRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable arc furnace decomposition recycling", "Default: true" })
+        public boolean enableArcRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of arc furnace decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float arcRecyclingYield = 1.0f;
+        @Configurable
+        @Configurable.Comment({ "Whether to enable extractor decomposition recycling", "Default: true" })
+        public boolean enableExtractorRecycling = true;
+        @Configurable
+        @Configurable.Comment({ "Percentage yield of extractor decomposition recycling outputs, 1.0 means 100%",
+                "Default: 1.0f" })
+        @Configurable.DecimalRange(min = 0.0f, max = 1.0f)
+        public float extractorRecyclingYield = 1.0f;
     }
 
     public static class CompatibilityConfigs {
@@ -170,6 +195,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether dimension markers should show the dimension tier value.", "Default: false" })
         public boolean showDimensionTier = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether Create compatibility will be available.", "Default: true" })
+        public boolean createCompat = true;
 
         public static class EnergyCompatConfig {
 
@@ -462,9 +491,10 @@ public class ConfigHolder {
         public boolean enableMaintenance = true;
         @Configurable
         @Configurable.Comment({
-                "Time in ticks between when Multiblocks can require Maintenance. By default, 48 hours.",
-                "Default: 3456000" })
-        public int maintenanceTime = 3456000;
+                "How often to check for maintenance, rolling a 1/6000 chance every X ticks (before secondary effects like Configurable Maintenance Hatch).",
+                "In default settings, this equates to a 5% chance every hour of a machine running.",
+                "Default: 1000 (ticks)" })
+        public int maintenanceCheckRate = 1000;
 
         @Configurable
         @Configurable.Comment({
@@ -550,6 +580,10 @@ public class ConfigHolder {
                 "Default: 8"
         })
         public int steamMultiParallelAmount = 8;
+
+        @Configurable
+        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
+        public boolean allowDrumsInputFluidsFromOutputSide = false;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
@@ -754,6 +788,8 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererConfigs renderer = new RendererConfigs();
+        @Configurable
+        public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -775,6 +811,16 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class TankItemFluidPreview {
+
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
+            public boolean drum = false;
+            @Configurable
+            @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
+            public boolean quantumTank = false;
         }
     }
 
@@ -804,6 +850,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
         public boolean renderFluids = true;
+
+        @Configurable
+        @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
+        public boolean renderGrowingPlants = true;
 
         @Configurable
         @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",

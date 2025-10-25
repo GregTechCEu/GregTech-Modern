@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -64,7 +65,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
-                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife {
+                                   implements IMonitorComponent, IDataInfoProvider, IMachineLife, ICentralMonitor {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CentralMonitorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -99,6 +100,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             .setMaxGlobalLimited(4))
                     .or(Predicates.machines(GTMachines.HULL))
                     .or(Predicates.machines(GTMachines.MONITOR))
+                    .or(Predicates.machines(GTMachines.ADVANCED_MONITOR))
                     .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
         }
         return MULTI_PREDICATE;
@@ -590,7 +592,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTargets.isEmpty()) {
-                        if (selectedTargets.get(0) == component) {
+                        if (selectedTargets.get(0).getPos() == component.getPos()) {
                             selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
@@ -601,7 +603,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             dataSlotInput.setVisible(false);
                             return;
                         } else {
-                            rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                            try {
+                                rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                            } catch (StackOverflowError e) {
+                                GTCEu.LOGGER.error(
+                                        "Stack overflow when right-clicking monitor component {} at {} (selectedTarget is {} at {})",
+                                        component, component.getPos(), selectedTargets.get(0),
+                                        selectedTargets.get(0).getPos());
+                            }
                         }
                     }
                     selectedTargets.add(component);

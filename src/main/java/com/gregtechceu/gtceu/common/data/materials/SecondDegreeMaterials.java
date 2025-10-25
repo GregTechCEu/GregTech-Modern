@@ -134,6 +134,7 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         TungstenSteel = new Material.Builder(GTCEu.id("tungsten_steel"))
+                .langValue("Tungstensteel")
                 .ingot(4).fluid()
                 .color(0x687ece).secondaryColor(0x03192f).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_DENSE, GENERATE_FRAME,
@@ -232,6 +233,7 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         FullersEarth = new Material.Builder(GTCEu.id("fullers_earth"))
+                .langValue("Fuller's Earth")
                 .dust().ore(2, 1)
                 .color(0xf3efbb).secondaryColor(0xb8d066).iconSet(FINE)
                 .components(Magnesium, 1, Silicon, 4, Hydrogen, 1, Water, 4, Oxygen, 11)
