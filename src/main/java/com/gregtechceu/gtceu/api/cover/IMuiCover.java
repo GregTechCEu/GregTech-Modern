@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -42,16 +40,14 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
     @Override
     default ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        IWidget widget = createUIWidget();
-        Area area = widget.getArea();
-        area.setRelativePos((176 - area.w()) / 2, 0);
-        return GTGuis.createPanel(this.self(), 176, area.h() + 82)
+        ParentWidget ui = createCoverUI(data, syncManager, settings);
+        return GTGuis.createPanel(this.self(), 176, 166)
                 .background(GTGuiTextures.BACKGROUND)
-                .child(widget)
+                .child(ui)
                 .bindPlayerInventory();
     }
 
-    IWidget createUIWidget();
+    ParentWidget createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings);
 
     /* Helper methods for UI creation with covers that are commonly used */
 
@@ -70,7 +66,6 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
      */
     static Flow createTitleRow(ItemStack stack) {
         return Flow.row()
-                .pos(4, 4)
                 .height(16).coverChildrenWidth()
                 .child(new ItemDrawable(stack).asWidget().size(16).marginRight(4))
                 .child(IKey.lang(stack.getDisplayName())

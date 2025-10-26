@@ -46,6 +46,18 @@ public class GTGuiTextures {
     public static final UITexture INDICATOR_NO_STEAM_STEEL = fullImage(
             "textures/gui/base/indicator_no_steam_steel.png");
     public static final UITexture TANK_ICON = fullImage("textures/gui/base/tank_icon.png");
+    public static final UITexture IO_BOTH = fullImage("textures/gui/icon/io_mode/both.png");
+    public static final UITexture IO_EXPORT = fullImage("textures/gui/icon/io_mode/export.png");
+    public static final UITexture IO_IMPORT = fullImage("textures/gui/icon/io_mode/import.png");
+    public static final UITexture IO_NONE = fullImage("textures/gui/icon/io_mode/none.png");
+    public static final UITexture MANUAL_IO_DISABLED = fullImage("textures/gui/icon/manual_io_mode/disabled.png");
+    public static final UITexture MANUAL_IO_FILTERED = fullImage("textures/gui/icon/manual_io_mode/filtered.png");
+    public static final UITexture MANUAL_IO_UNFILTERED = fullImage("textures/gui/icon/manual_io_mode/unfiltered.png");
+    public static final UITexture SEPERATOR_SIMPLE = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/icon/seperator/seperator_simple.png")
+            .imageSize(16, 5)
+            .adaptable(2)
+            .build();
 
     // BACKGROUNDS
     public static final UITexture BACKGROUND = UITexture.builder()
@@ -377,8 +389,6 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture RESEARCH_STATION_OVERLAY = fullImage(
             "textures/gui/overlay/research_station_overlay.png", ColorType.DEFAULT);
-    public static final UITexture OVERLAY_REDSTONE_ON = fullImage("textures/gui/overlay/redstone_on.png");
-    public static final UITexture OVERLAY_REDSTONE_OFF = fullImage("textures/gui/overlay/redstone_off.png");
 
     // BUTTONS
 
@@ -401,10 +411,12 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_CLEAR_GRID = fullImage("textures/gui/widget/button_clear_grid.png", null);
 
     public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
-    public static final UITexture BUTTON_REDSTONE_ON = fullImage("textures/gui/widget/button_redstone_on.png");
-    public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");
     public static final UITexture BUTTON_THROTTLE_MINUS = fullImage("textures/gui/widget/button_throttle_minus.png");
+    public static final UITexture OVERLAY_REDSTONE_ON = fullImage("textures/gui/overlay/redstone_on.png");
+    public static final UITexture OVERLAY_REDSTONE_OFF = fullImage("textures/gui/overlay/redstone_off.png");
+    public static final UITexture OVERLAY_LOCK_CLOSED = fullImage("textures/gui/overlay/lock_closed.png");
+    public static final UITexture OVERLAY_LOCK_OPEN = fullImage("textures/gui/overlay/lock_open.png");
 
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ColorBlockWidget;
@@ -18,11 +18,33 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.utils.MouseData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.serialization.network.IByteBufAdapter;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -33,21 +55,24 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SameParameterValue")
 public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends CoverBehavior
-                                            implements IUICover, IControllable {
+                                            implements IMuiCover, IControllable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AbstractEnderLinkCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
@@ -57,6 +82,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     @Persisted
     @DescSynced
+    @Getter
     protected String colorStr = VirtualEntry.DEFAULT_COLOR;
     @Getter
     @Persisted
@@ -77,6 +103,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     protected VirtualEntryWidget virtualEntryWidget;
     @DescSynced
     boolean isAnyChanged = false;
+    @Getter
+    @Setter
+    private boolean isChannelListActive;
+    @Getter
+    @Setter
+    private int testInt = 0;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -101,7 +133,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public void onRemoved() {
         super.onRemoved();
         subscriptionHandler.unsubscribe();
-        if (!isRemote()) {
+        if (!coverHolder.isRemote()) {
             VirtualEnderRegistry.getInstance()
                     .deleteEntryIf(getOwner(), getEntryType(), getChannelName(), VirtualEntry::canRemove);
         }
@@ -111,15 +143,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public void onUnload() {
         super.onUnload();
         subscriptionHandler.unsubscribe();
-        if (!isRemote()) {
+        if (!coverHolder.isRemote()) {
             VirtualEnderRegistry.getInstance()
                     .deleteEntryIf(getOwner(), getEntryType(), getChannelName(), VirtualEntry::canRemove);
         }
-    }
-
-    @Override
-    public void onUIClosed() {
-        virtualEntryWidget = null;
     }
 
     @Override
@@ -131,14 +158,161 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public Widget createUIWidget() {
-        virtualEntryWidget = new VirtualEntryWidget(this);
-        return virtualEntryWidget;
+    public ParentWidget createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        syncManager.syncValue("CLA", new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive));
+        ListWidget<IWidget, ?> list = createChannelList(data, syncManager, settings);
+        return new Column()
+                .child(IMuiCover.createTitleRow(this.getAttachItem())
+                        .child(new ToggleButton().syncHandler("CLA")
+                                .listenGuiAction((IGuiAction.MousePressed) (mouseX, mouseY, button) -> {
+                                    if (!syncManager.isClient()) return true;
+                                    // CME happens in here frosty
+                                    for (IWidget widget : list.getChildren()) {
+                                        list.remove(widget);
+                                    }
+                                    populateChannelList(list);
+                                    return true;
+                                })
+                                .overlay(GTGuiTextures.MORE)
+                                .tooltip(t -> t
+                                        .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
+                                .marginLeft(4)
+                                .size(16, 16)))
+                .child(list.setEnabledIf(f -> isChannelListActive))
+                .child(createChannelNameRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
+                .child(createDescriptionField(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
+                .child(createSettingsRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
+                .rightRel(0.5F)
+                .top(3)
+                .childPadding(3)
+                .collapseDisabledChild()
+                .coverChildren();
+    }
+
+    public ListWidget<IWidget, ?> createChannelList(SidedPosGuiData data, PanelSyncManager syncManager,
+                                                    UISettings settings) {
+        ListWidget<IWidget, ?> list = new ListWidget<>();
+        // populateChannelList(list);
+        return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
+                .size(162, 58);
+    }
+
+    public void populateChannelList(ListWidget<IWidget, ?> list) {
+        for (String entryName : VirtualEnderRegistry.getInstance().getEntryNames(getOwner(), getEntryType())) {
+            VirtualEntry entry = VirtualEnderRegistry.getInstance().getEntry(getOwner(), getEntryType(), entryName);
+            list.child(createVirtualEntryRow(entry));
+        }
+    }
+
+    public Flow createVirtualEntryRow(VirtualEntry entry) {
+        return new Row()
+                .child(createColorBlock(entry::getColor, 18).asWidget()
+                        .tooltip(t -> t.addLine(entry.getColorStr()))
+                        .size(18, 18))
+                .child(IKey.str(entry.getDescription()).asWidget()
+                        .size(92, 12))
+                .child(createVirtualEntryWidget(entry, 18, 18, false))
+                .child(new com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS)
+                        .onMousePressed((x, y, button) -> {
+                            MouseData mouseData = MouseData.create(button);
+                            if (mouseData.mouseButton() == 1) {
+                                VirtualEnderRegistry.getInstance()
+                                        .getEntry(getOwner(), getEntryType(), entry.getColorStr()).setDescription("");
+                                // entry.setDescription("");
+                                return true;
+                            }
+                            return false;
+                        }))
+                .alignX(0F)
+                .childPadding(3)
+                .coverChildren();
+    }
+
+    public Flow createChannelNameRow(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new Row().child(createColorBlock(this::getColor, 18).asWidget())
+                .child(new TextFieldWidget().value(new StringSyncValue(this::getColorStr, this::setChannelName))
+                        .setPattern(COLOR_INPUT_PATTERN)
+                        .hintText(Component.translatable("cover.ender_link.channel_name"))
+                        .size(120, 16))
+                .child(createVirtualEntryWidget(this.getEntry(), 18, 18, true))
+                .childPadding(3)
+                .coverChildren();
+    }
+
+    public TextFieldWidget createDescriptionField(SidedPosGuiData data, PanelSyncManager syncManager,
+                                                  UISettings settings) {
+        return new TextFieldWidget().value(new StringSyncValue(getEntry()::getDescription, getEntry()::setDescription))
+                .hintText(Component.translatable("cover.ender_link.channel_description"))
+                .widthRel(1F)
+                .height(16);
+    }
+
+    public Flow createSettingsRow(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new Row()
+                // Power button
+                .child(new ToggleButton().value(new BooleanSyncValue(this::isWorkingEnabled, this::setWorkingEnabled))
+                        // TODO: once the branch that has power overlays defined in GTGuiTextures is merged, we need to
+                        // TODO: replace this temporary usage with those. or keep them. they are pretty cool
+                        .overlay(false, GTGuiTextures.PLAY)
+                        .overlay(true, GTGuiTextures.PLAY))
+                // Import / Export button
+                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                        // There are "3" states here because otherwise there is a noticeable lag on the client when it
+                        // goes from OUT to IN and initially doesn't know to go back to IN (because the enum has 4
+                        // states) so it displays no overlay or tooltip. Very annoying.
+                        .stateCount(3)
+                        .stateOverlay(IO.IN, GTGuiTextures.IO_IMPORT)
+                        .stateOverlay(IO.OUT, GTGuiTextures.IO_EXPORT)
+                        .stateOverlay(IO.BOTH, GTGuiTextures.IO_IMPORT)
+                        .tooltip(0, t -> t.addLine(Component.translatable(IO.IN.tooltip)))
+                        .tooltip(1, t -> t.addLine(Component.translatable(IO.OUT.tooltip)))
+                        .tooltip(2, t -> t.addLine(Component.translatable(IO.IN.tooltip)))
+                        .value(new EnumSyncValue<>(IO.class, this::getIo, this::reverseIO)))
+                // Public / Private button
+                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                        .stateCount(2)
+                        .stateOverlay(Permissions.PUBLIC, Permissions.PUBLIC.icon)
+                        .stateOverlay(Permissions.PRIVATE, Permissions.PRIVATE.icon)
+                        .tooltip(0, t -> t.addLine(IKey.lang(Permissions.PUBLIC.tooltip + ".0"))
+                                .addLine(IKey.lang(Permissions.PUBLIC.tooltip + ".1")))
+                        .tooltip(1, t -> t.addLine(IKey.lang(Permissions.PRIVATE.tooltip)))
+                        .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
+                                this::setPermission)))
+                // Manual IO button
+                .child(new com.gregtechceu.gtceu.api.mui.widgets.CycleButtonWidget()
+                        .stateCount(3)
+                        .stateOverlay(ManualIOMode.DISABLED, GTGuiTextures.MANUAL_IO_DISABLED)
+                        .stateOverlay(ManualIOMode.FILTERED, GTGuiTextures.MANUAL_IO_FILTERED)
+                        .stateOverlay(ManualIOMode.UNFILTERED, GTGuiTextures.MANUAL_IO_UNFILTERED)
+                        .tooltip(0, t -> t.addLine(Component.translatable(ManualIOMode.DISABLED.getTooltip())))
+                        .tooltip(1, t -> t.addLine(Component.translatable(ManualIOMode.FILTERED.getTooltip())))
+                        .tooltip(2, t -> t.addLine(Component.translatable(ManualIOMode.UNFILTERED.getTooltip())))
+                        .value(new EnumSyncValue<>(ManualIOMode.class, this::getManualIOMode, this::setManualIOMode)))
+                // TODO: Add Filter slot here once kathryne's ui gets merged
+                .child(new ToggleButton().overlay(GTGuiTextures.EXCLAMATION)
+                        .size(18, 18))
+                .childPadding(18)
+                .widthRel(1F)
+                .coverChildrenHeight();
+    }
+
+    public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
+        return IDrawable.of(
+                // Border
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().setColor(Color.BLACK.main)
+                        .draw(context, x, y, size, size, widgetTheme),
+                // Colored block
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().setColor(colorSupplier.getAsInt())
+                        .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
     }
 
     @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    private void reverseIO(IO io) {
+        setIo(IO.values()[io.ordinal() % 2]);
     }
 
     public void setIo(IO io) {
@@ -171,10 +345,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     protected void setChannelName(String name) {
-        if (isRemote()) return;
+        if (coverHolder.isRemote()) return;
         VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
                 VirtualEntry::canRemove);
         this.colorStr = name;
+        if (colorStr.length() < 8) {
+            colorStr += "F".repeat(8 - colorStr.length());
+        }
         setVirtualEntry();
     }
 
@@ -183,7 +360,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     protected void setPermission(Permissions permission) {
-        if (isRemote()) return;
+        if (coverHolder.isRemote()) return;
         VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
                 VirtualEntry::canRemove);
         this.permission = permission;
@@ -203,7 +380,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0) return;
 
-        if (isWorkingEnabled() && !isRemote()) {
+        if (isWorkingEnabled() && !coverHolder.isRemote()) {
             var entry = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(),
                     getChannelName());
             if (!entry.getColorStr().equals(this.colorStr)) {
@@ -234,8 +411,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return null;
     }
 
-    protected abstract Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height,
-                                                    boolean canClick);
+    protected abstract IWidget createVirtualEntryWidget(VirtualEntry entry, int width, int height,
+                                                        boolean interactable);
 
     protected abstract String getUITitle();
 
@@ -243,20 +420,17 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return VirtualEntry.parseColor(this.colorStr);
     }
 
-    protected enum Permissions implements EnumSelectorWidget.SelectableEnum {
+    protected enum Permissions {
 
-        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5)),
-
-        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
+        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled", GTGuiTextures.OVERLAY_LOCK_OPEN),
+        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled", GTGuiTextures.OVERLAY_LOCK_CLOSED);
 
         @Getter
         private final String tooltip;
         @Getter
-        private final IGuiTexture icon;
+        private final UITexture icon;
 
-        Permissions(String tooltip, IGuiTexture icon) {
+        Permissions(String tooltip, UITexture icon) {
             this.tooltip = tooltip;
             this.icon = icon;
         }
@@ -320,8 +494,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             mainGroup.addWidget(mainChannelGroup);
             mainGroup.addWidget(createWorkingEnabledButton());
             addEnumSelectorWidgets();
-            mainGroup.addWidget(
-                    cover.addVirtualEntryWidget(cover.getEntry(), 146, WIDGET_BOARD, WIDGET_BOARD, WIDGET_BOARD, true));
+            // mainGroup.addWidget(cover.createVirtualEntryWidget(cover.getEntry(), 146, WIDGET_BOARD, WIDGET_BOARD,
+            // WIDGET_BOARD, true));
 
             if (cover.getFilterHandler() != null) {
                 mainGroup.addWidget(cover.getFilterHandler().createFilterSlotUI(117, 108));
@@ -346,8 +520,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         @Contract("_ -> new")
         private @NotNull Widget createToggleButtonForPrivacy(int currentX) {
-            return new EnumSelectorWidget<>(currentX, 0,
-                    WIDGET_BOARD, WIDGET_BOARD, Permissions.values(), cover.permission, cover::setPermission);
+            // return new EnumSelectorWidget<>(currentX, 0, WIDGET_BOARD, WIDGET_BOARD, Permissions.values(),
+            // cover.permission, cover::setPermission);
+            return null;
         }
 
         private ColorBlockWidget createColorBlockWidget(int currentX) {
@@ -444,8 +619,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             }
 
             // Slot
-            Widget slotWidget = cover.addVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE, false);
-            channelGroup.addWidget(slotWidget);
+            // Widget slotWidget = cover.createVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE, false);
+            // channelGroup.addWidget(slotWidget);
             currentX += BUTTON_SIZE + MARGIN;
 
             // Clear Description button
@@ -509,6 +684,34 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 }
                 addChannelWidgets(entries);
             }
+        }
+    }
+
+    private class VirtualEntryListAdapter implements IByteBufAdapter<List<VirtualEntry>> {
+
+        @Override
+        public List<VirtualEntry> deserialize(FriendlyByteBuf buffer) {
+            List<VirtualEntry> list = new ArrayList<>();
+            int size = buffer.readInt();
+            for (int i = 0; i < size; i++) {
+                VirtualEntry entry = getEntryType().createInstance();
+                entry.deserializeNBT(buffer.readNbt());
+                list.add(entry);
+            }
+            return list;
+        }
+
+        @Override
+        public void serialize(FriendlyByteBuf buffer, List<VirtualEntry> list) {
+            buffer.writeInt(list.size());
+            for (VirtualEntry entry : list) {
+                buffer.writeNbt(entry.serializeNBT());
+            }
+        }
+
+        @Override
+        public boolean areEqual(@NotNull List<VirtualEntry> t1, @NotNull List<VirtualEntry> t2) {
+            return t1.equals(t2);
         }
     }
 }

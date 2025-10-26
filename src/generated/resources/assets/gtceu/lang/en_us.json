@@ -2023,6 +2023,8 @@
   "cover.ender_fluid_link.tooltip.clear_button": "Clear channel description",
   "cover.ender_fluid_link.tooltip.list_button": "Show channel list",
   "cover.ender_item_link.title": "Ender Item Link",
+  "cover.ender_link.channel_description": "Channel description",
+  "cover.ender_link.channel_name": "Channel name",
   "cover.ender_redstone_link.title": "Ender Redstone Link",
   "cover.filter.blacklist.disabled": "Whitelist",
   "cover.filter.blacklist.enabled": "Blacklist",
