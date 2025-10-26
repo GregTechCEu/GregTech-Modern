@@ -1,5 +1,45 @@
 # ChangeLog
 
+## Version [v7.2.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v.7.2.0-1.20.1...v7.2.1-1.20.1)
+### Added
+
+- Add flag to disable create compat by @jurrejelle in [#3956](https://github.com/GregTechCEu/GregTech-Modern/pull/3956)
+- Make new flag DISABLE_MATERIAL_RECIPES to replace NO_UNIFICATION. by @Phoenixvine32908 in [#3999](https://github.com/GregTechCEu/GregTech-Modern/pull/3999)
+- Alter Jade/TOP provider to display machine voltage tier by machine tier rather than by recipe/overclock tier by @DilithiumThoride in [#4002](https://github.com/GregTechCEu/GregTech-Modern/pull/4002)
+- Buff facade recipe by @htmlcsjs in [#4007](https://github.com/GregTechCEu/GregTech-Modern/pull/4007)
+- Format Numbers by @remakefactory in [#4111](https://github.com/GregTechCEu/GregTech-Modern/pull/4111)
+
+### Fixed
+
+- Make energy placeholder work with substations by @TarLaboratories in [#3964](https://github.com/GregTechCEu/GregTech-Modern/pull/3964)
+- Fix Advanced Energy Detector Cover not working in % mode by @DilithiumThoride in [#3950](https://github.com/GregTechCEu/GregTech-Modern/pull/3950)
+- Fix recipe search for Ranged Fluid Ingredients on 0 roll by @DilithiumThoride in [#3968](https://github.com/GregTechCEu/GregTech-Modern/pull/3968)
+- Rename AdjacentFluid overload by @jurrejelle in [#3960](https://github.com/GregTechCEu/GregTech-Modern/pull/3960)
+- Slightly increase Large Turbine energy output and fuel burn by @DilithiumThoride in [#3988](https://github.com/GregTechCEu/GregTech-Modern/pull/3988)
+- Fix crates voiding the inventories of their stack after being placed down by @purebluez in [#4012](https://github.com/GregTechCEu/GregTech-Modern/pull/4012)
+- Read and Display Subtick Overclock Parallels separately from Hatch-based Parallels by @DilithiumThoride in [#3961](https://github.com/GregTechCEu/GregTech-Modern/pull/3961)
+- Fix central monitor crash by @TarLaboratories in [#4010](https://github.com/GregTechCEu/GregTech-Modern/pull/4010)
+- Fix Machine explosions by @YoungOnionMC in [#3983](https://github.com/GregTechCEu/GregTech-Modern/pull/3983)
+- Fix color spray not working with  blockstate by @bnjmn21 in [#3982](https://github.com/GregTechCEu/GregTech-Modern/pull/3982)
+- Fix and align textures of (passthrough) hatch/buses, pipeline endpoints and pump hatch by @arsdragonfly in [#3944](https://github.com/GregTechCEu/GregTech-Modern/pull/3944)
+- Add slice-by-slice recipe consumption by @jurrejelle in [#4006](https://github.com/GregTechCEu/GregTech-Modern/pull/4006)
+- Fix representative recipes not generating by @YoungOnionMC in [#4019](https://github.com/GregTechCEu/GregTech-Modern/pull/4019)
+- Downscale manual IO disabled button by @JuiceyBeans in [#4051](https://github.com/GregTechCEu/GregTech-Modern/pull/4051)
+- fix registry removal by @NegaNote in [#4108](https://github.com/GregTechCEu/GregTech-Modern/pull/4108)
+- Fix material decomp not working with KJS recipes by @YoungOnionMC in [#4116](https://github.com/GregTechCEu/GregTech-Modern/pull/4116)
+- Fix Polished Stone Crafting Recipe by @YoungOnionMC in [#4071](https://github.com/GregTechCEu/GregTech-Modern/pull/4071)
+- Fix laser and Optical pipe ignoring connections by @nutant233 in [#3939](https://github.com/GregTechCEu/GregTech-Modern/pull/3939)
+- Fix turbines crashing when interacting with active rotor holders by @Taskeren in [#4047](https://github.com/GregTechCEu/GregTech-Modern/pull/4047)
+
+### Changed
+
+- Force modifier re-apply when recipe starts after being suspended by @jurrejelle in [#3971](https://github.com/GregTechCEu/GregTech-Modern/pull/3971)
+- recipe manager handling refactor by @TechLord22 in [#3975](https://github.com/GregTechCEu/GregTech-Modern/pull/3975)
+- Rename AdjacentFluid overload by @jurrejelle in [#3960](https://github.com/GregTechCEu/GregTech-Modern/pull/3960)
+- Read and Display Subtick Overclock Parallels separately from Hatch-based Parallels by @DilithiumThoride in [#3961](https://github.com/GregTechCEu/GregTech-Modern/pull/3961)
+- Translated using Weblate (Russian) for 1.20.1 by @marisathewitch in [#4078](https://github.com/GregTechCEu/GregTech-Modern/pull/4078)
+
+ 
 ## Version [v.7.2.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.1.4-1.20.1...v.7.2.0-1.20.1)
 ### Added
 
