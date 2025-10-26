@@ -265,7 +265,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         for (Direction direction : GTUtil.DIRECTIONS) {
             BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(direction));
             if (blockEntity instanceof OpticalPipeBlockEntity) {
-                machine.getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER,
+                return machine.getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER,
                         blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, direction.getOpposite());
             }
         }
