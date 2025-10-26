@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -43,7 +44,8 @@ public class PatternBufferTest {
 
     @BeforeBatch(batch = "PatternBuffer")
     public static void prepare(ServerLevel level) {
-        LCR_RECIPE_TYPE = TestUtils.createRecipeTypeAndInsertRecipe("pattern_buffer_tests");
+        LCR_RECIPE_TYPE = TestUtils.createRecipeTypeAndInsertRecipe("pattern_buffer_tests",
+                GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
 
         LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_recipe_pattern_buffer"))

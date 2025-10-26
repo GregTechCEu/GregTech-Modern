@@ -19,6 +19,7 @@ import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
@@ -51,6 +52,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         super(inner.values, provider.getMaxValue(), null);
         this.inner = inner;
         this.countProvider = provider;
+    }
+
+    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
+        super(inner.values, provider.getMaxValue(), null);
+        this.inner = inner;
+        this.countProvider = provider;
+        this.sampledCount = sampledCount;
     }
 
     @Override
@@ -151,6 +159,14 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     /**
+     * Resets the random roll on this ingredient
+     */
+    public void reroll() {
+        sampledCount = -1;
+        fluidStacks = null;
+    }
+
+    /**
      * @param inner    {@link FluidIngredient}
      * @param provider usually as {@link UniformInt#of(int, int)}
      */
@@ -160,6 +176,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient of(FluidStack inner, int min, int max) {
         return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
+    }
+
+    @Override
+    public boolean test(@Nullable FluidStack stack) {
+        return inner.test(stack);
     }
 
     /**
@@ -175,6 +196,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("inner", inner.toJson());
+        json.addProperty("sampledCount", sampledCount);
         return json;
     }
 
@@ -192,8 +214,9 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
+        int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
         FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
-        return new IntProviderFluidIngredient(inner, amount);
+        return new IntProviderFluidIngredient(inner, amount, sampledCount);
     }
 
     public CompoundTag toNBT() {

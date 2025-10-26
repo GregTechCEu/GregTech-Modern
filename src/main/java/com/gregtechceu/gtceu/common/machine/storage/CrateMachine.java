@@ -119,16 +119,11 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         IMachineLife.super.onMachinePlaced(player, stack);
         CompoundTag tag = stack.getTag();
         if (tag != null) {
-            this.isTaped = tag.contains("taped") && tag.getBoolean("taped");
-            if (isTaped) {
+            if (tag.contains("taped") && tag.getBoolean("taped")) {
                 this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
             }
-
-            tag.remove("taped");
-            this.isTaped = false;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
         }
-        stack.setTag(null);
     }
 
     @Override

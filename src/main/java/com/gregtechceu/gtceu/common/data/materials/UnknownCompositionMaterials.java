@@ -575,7 +575,7 @@ public class UnknownCompositionMaterials {
         Lapotron = new Material.Builder(GTCEu.id("lapotron"))
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
-                .flags(NO_UNIFICATION)
+                .flags(DISABLE_MATERIAL_RECIPES)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
 

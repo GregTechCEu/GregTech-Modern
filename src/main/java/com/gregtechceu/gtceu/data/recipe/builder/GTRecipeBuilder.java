@@ -112,8 +112,10 @@ public class GTRecipeBuilder {
     private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
     private boolean generatingRecipes = true;
 
+    // material stacks that are from already resolved inputs
     private List<ItemStack> tempItemStacks = new ArrayList<>();
     private List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
+    // temporary buffer for unresolved item stacks where decomp is found post recipe addition
     private List<MaterialStack> tempFluidStacks = new ArrayList<>();
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
@@ -1153,6 +1155,18 @@ public class GTRecipeBuilder {
         return environmentalHazard(condition, false);
     }
 
+    public final GTRecipeBuilder adjacentFluids(Fluid... fluids) {
+        return adjacentFluids(false, fluids);
+    }
+
+    public final GTRecipeBuilder adjacentFluids(boolean isReverse, Fluid... fluids) {
+        if (fluids.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
+            return this;
+        }
+        return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+    }
+
     public final GTRecipeBuilder adjacentFluid(Fluid... fluids) {
         return adjacentFluid(false, fluids);
     }
@@ -1163,6 +1177,20 @@ public class GTRecipeBuilder {
             return this;
         }
         return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
+    }
+
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentFluidTag(TagKey<Fluid>... tags) {
+        return adjacentFluidTag(false, tags);
+    }
+
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentFluidTag(boolean isReverse, TagKey<Fluid>... tags) {
+        if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many fluids, not adding to recipe, id: {}", this.id);
+            return this;
+        }
+        return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
     }
 
     @SafeVarargs
@@ -1191,6 +1219,18 @@ public class GTRecipeBuilder {
         return addCondition(new AdjacentFluidCondition(isReverse, new ArrayList<>(fluids)));
     }
 
+    public GTRecipeBuilder adjacentBlocks(Block... blocks) {
+        return adjacentBlocks(false, blocks);
+    }
+
+    public GTRecipeBuilder adjacentBlocks(boolean isReverse, Block... blocks) {
+        if (blocks.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
+            return this;
+        }
+        return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
+    }
+
     public GTRecipeBuilder adjacentBlock(Block... blocks) {
         return adjacentBlock(false, blocks);
     }
@@ -1210,6 +1250,20 @@ public class GTRecipeBuilder {
 
     @SafeVarargs
     public final GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
+        if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
+            GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
+            return this;
+        }
+        return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
+    }
+
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentBlockTag(TagKey<Block>... tags) {
+        return adjacentBlockTag(false, tags);
+    }
+
+    @SafeVarargs
+    public final GTRecipeBuilder adjacentBlockTag(boolean isReverse, TagKey<Block>... tags) {
         if (tags.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
             GTCEu.LOGGER.error("Has too many blocks, not adding to recipe, id: {}", this.id);
             return this;
@@ -1394,6 +1448,11 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder setTempFluidMaterialStacks(List<MaterialStack> stacks) {
         tempFluidStacks = stacks;
+        return this;
+    }
+
+    public GTRecipeBuilder setTempItemStacks(List<ItemStack> stacks) {
+        tempItemStacks = stacks;
         return this;
     }
 

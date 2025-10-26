@@ -348,7 +348,7 @@ public interface OverclockingLogic {
                     .eutMultiplier(eutMultiplier)
                     .durationMultiplier(durationMultiplier)
                     .addOCs(ocLevel)
-                    .parallels(parallels)
+                    .subtickParallels(parallels)
                     .build();
         }
     }

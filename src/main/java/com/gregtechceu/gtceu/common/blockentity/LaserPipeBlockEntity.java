@@ -65,7 +65,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         if (cap == GTCapability.CAPABILITY_LASER) {
             if (getLevel().isClientSide())
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> clientCapability));
-
+            if (side != null && !isConnected(side)) return LazyOptional.empty();
             if (handlers.isEmpty()) {
                 initHandlers();
             }
