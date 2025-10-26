@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -28,10 +27,13 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
@@ -106,9 +108,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Getter
     @Setter
     private boolean isChannelListActive;
-    @Getter
-    @Setter
-    private int testInt = 0;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -160,28 +159,25 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Override
     public ParentWidget createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         syncManager.syncValue("CLA", new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive));
-        ListWidget<IWidget, ?> list = createChannelList(data, syncManager, settings);
+        syncManager.syncValue("entries", new GenericListSyncHandler<VirtualEntry>(
+                this::getVirtualEntries,
+                this::setVirtualEntries,
+                nbt -> getEntryType().createInstance(nbt.readNbt()),
+                (buffer, value) -> buffer.writeNbt(value.serializeNBT()),
+                VirtualEntry::equals,
+                null));
         return new Column()
                 .child(IMuiCover.createTitleRow(this.getAttachItem())
                         .child(new ToggleButton().syncHandler("CLA")
-                                .listenGuiAction((IGuiAction.MousePressed) (mouseX, mouseY, button) -> {
-                                    if (!syncManager.isClient()) return true;
-                                    // CME happens in here frosty
-                                    for (IWidget widget : list.getChildren()) {
-                                        list.remove(widget);
-                                    }
-                                    populateChannelList(list);
-                                    return true;
-                                })
                                 .overlay(GTGuiTextures.MORE)
                                 .tooltip(t -> t
                                         .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                                 .marginLeft(4)
                                 .size(16, 16)))
-                .child(list.setEnabledIf(f -> isChannelListActive))
                 .child(createChannelNameRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
                 .child(createDescriptionField(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
                 .child(createSettingsRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
+                .child(createChannelList(data, syncManager, settings).setEnabledIf(f -> isChannelListActive))
                 .rightRel(0.5F)
                 .top(3)
                 .childPadding(3)
@@ -189,17 +185,32 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .coverChildren();
     }
 
-    public ListWidget<IWidget, ?> createChannelList(SidedPosGuiData data, PanelSyncManager syncManager,
+    public DynamicSyncedWidget createChannelList(SidedPosGuiData data, PanelSyncManager syncManager,
                                                     UISettings settings) {
-        ListWidget<IWidget, ?> list = new ListWidget<>();
-        // populateChannelList(list);
-        return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
-                .size(162, 58);
+        GenericListSyncHandler<VirtualEntry> entriesSyncer = (GenericListSyncHandler<VirtualEntry>) syncManager.getSyncHandlerFromMapKey("entries:0");
+        DynamicSyncHandler entryListSyncer = new DynamicSyncHandler().widgetProvider((manager, packet) -> {
+            ListWidget<IWidget, ?> list = new ListWidget<>();
+            if (packet == null) return list;
+            populateChannelList(list, packet);
+            return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
+                    .size(162, 58);
+        });
+        entriesSyncer.setChangeListener(() -> entryListSyncer.notifyUpdate(packet -> {
+            List<VirtualEntry> entries = entriesSyncer.getValue();
+            packet.writeInt(entries.size());
+            for (VirtualEntry entry : entries) {
+                packet.writeNbt(entry.serializeNBT());
+            }
+        }));
+        return new DynamicSyncedWidget<>()
+                .coverChildren()
+                .syncHandler(entryListSyncer);
     }
 
-    public void populateChannelList(ListWidget<IWidget, ?> list) {
-        for (String entryName : VirtualEnderRegistry.getInstance().getEntryNames(getOwner(), getEntryType())) {
-            VirtualEntry entry = VirtualEnderRegistry.getInstance().getEntry(getOwner(), getEntryType(), entryName);
+    public void populateChannelList(ListWidget<IWidget, ?> list, FriendlyByteBuf packet) {
+        int size = packet.readInt();
+        for (int i = 0; i < size; i++) {
+            VirtualEntry entry = getEntryType().createInstance(packet.readNbt());
             list.child(createVirtualEntryRow(entry));
         }
     }
@@ -304,6 +315,20 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 // Colored block
                 (context, x, y, w, h, widgetTheme) -> new Rectangle().setColor(colorSupplier.getAsInt())
                         .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
+    }
+
+    public List<VirtualEntry> getVirtualEntries() {
+        List<VirtualEntry> entries = new ArrayList<>();
+        for (String entryName : VirtualEnderRegistry.getInstance().getEntryNames(getOwner(), getEntryType())) {
+            entries.add(VirtualEnderRegistry.getInstance().getEntry(getOwner(), getEntryType(), entryName));
+        }
+        return entries;
+    }
+
+    public void setVirtualEntries(List<VirtualEntry> entries) {
+        for (VirtualEntry entry : entries) {
+            VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), entry.getColorStr()).setDescription(entry.getDescription());
+        }
     }
 
     @Override
