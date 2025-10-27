@@ -29,7 +29,7 @@ import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.StringSyncValue;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -108,6 +108,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Getter
     @Setter
     private boolean isChannelListActive;
+    private List<VirtualEntry> entryList;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -159,13 +160,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Override
     public ParentWidget createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         syncManager.syncValue("CLA", new BooleanSyncValue(this::isChannelListActive, this::setChannelListActive));
-        syncManager.syncValue("entries", new GenericListSyncHandler<VirtualEntry>(
-                this::getVirtualEntries,
-                this::setVirtualEntries,
-                nbt -> getEntryType().createInstance(nbt.readNbt()),
-                (buffer, value) -> buffer.writeNbt(value.serializeNBT()),
-                VirtualEntry::equals,
-                null));
+        syncManager.syncValue("entries", new GenericSyncValue<>(this::getVirtualEntries, this::setVirtualEntries,
+                new VirtualEntryListAdapter()));
         return new Column()
                 .child(IMuiCover.createTitleRow(this.getAttachItem())
                         .child(new ToggleButton().syncHandler("CLA")
@@ -186,8 +182,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public DynamicSyncedWidget createChannelList(SidedPosGuiData data, PanelSyncManager syncManager,
-                                                    UISettings settings) {
-        GenericListSyncHandler<VirtualEntry> entriesSyncer = (GenericListSyncHandler<VirtualEntry>) syncManager.getSyncHandlerFromMapKey("entries:0");
+                                                 UISettings settings) {
+        GenericSyncValue<List<VirtualEntry>> entriesSyncer = (GenericSyncValue<List<VirtualEntry>>) syncManager
+                .getSyncHandlerFromMapKey("entries:0");
         DynamicSyncHandler entryListSyncer = new DynamicSyncHandler().widgetProvider((manager, packet) -> {
             ListWidget<IWidget, ?> list = new ListWidget<>();
             if (packet == null) return list;
@@ -322,12 +319,14 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         for (String entryName : VirtualEnderRegistry.getInstance().getEntryNames(getOwner(), getEntryType())) {
             entries.add(VirtualEnderRegistry.getInstance().getEntry(getOwner(), getEntryType(), entryName));
         }
-        return entries;
+        this.entryList = entries;
+        return entryList;
     }
 
     public void setVirtualEntries(List<VirtualEntry> entries) {
         for (VirtualEntry entry : entries) {
-            VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), entry.getColorStr()).setDescription(entry.getDescription());
+            VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), entry.getColorStr())
+                    .setDescription(entry.getDescription());
         }
     }
 
