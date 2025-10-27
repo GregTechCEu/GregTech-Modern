@@ -5,6 +5,11 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 
+import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
+import com.gregtechceu.gtceu.api.mui.factory.GuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -49,7 +54,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem, IUIHolder {
 
     protected int burnTime = -1;
 
@@ -443,4 +448,15 @@ public class ComponentItem extends Item
         electricItem.setInfiniteCharge(true);
         return itemStack;
     }
+
+    @Override
+    public ModularPanel buildUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        for (IItemComponent component : components) {
+            if (component instanceof IUIHolder holder) {
+                return holder.buildUI(data, syncManager, settings);
+            }
+        }
+        return null;
+    }
+
 }
