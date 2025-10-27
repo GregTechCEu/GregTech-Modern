@@ -220,19 +220,19 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     }
 
     public int requestedWidth() {
-        return this.width + this.margin.horizontal();
+        return this.width + getMargin().horizontal();
     }
 
     public int paddedWidth() {
-        return this.width - this.padding.horizontal();
+        return this.width - getPadding().horizontal();
     }
 
     public int requestedHeight() {
-        return this.height + this.margin.vertical();
+        return this.height + getMargin().vertical();
     }
 
     public int paddedHeight() {
-        return this.height - this.padding.vertical();
+        return this.height - getPadding().vertical();
     }
 
     public int requestedSize(GuiAxis axis) {
@@ -566,8 +566,8 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     @Override
     public boolean shouldAnimate(Area target) {
         return x != target.x || y != target.y || width != target.width || height != target.height ||
-                rx != target.rx || ry != target.ry || !margin.isEqual(target.margin) ||
-                !padding.isEqual(target.padding);
+                rx != target.rx || ry != target.ry || !getMargin().isEqual(target.getMargin()) ||
+                !getPadding().isEqual(target.getPadding());
     }
 
     @Override

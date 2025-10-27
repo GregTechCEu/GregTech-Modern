@@ -32,8 +32,8 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private float scale = 1f;
     private int maxWidth = -1;
 
-    private Component lastText = Component.empty();
-    private Component textForDefaultSize = Component.empty();
+    private Component lastText = null;
+    private Component textForDefaultSize = null;
 
     public TextWidget(IKey key) {
         this.key = key;
@@ -46,7 +46,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;
-        this.lastText = checkString();
+        Component text = checkString();
         WidgetTheme theme = getActiveWidgetTheme(widgetTheme, isHovering());
         renderer.setColor(this.color != null ? this.color.getAsInt() : theme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
@@ -54,7 +54,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(this.scale);
         renderer.setSimulate(false);
-        renderer.draw(context.getGraphics(), this.key.getFormatted());
+        renderer.draw(context.getGraphics(), text);
     }
 
     protected Component checkString() {
@@ -62,6 +62,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         if (this.lastText != null && !this.lastText.equals(text)) {
             onTextChanged(text);
         }
+        this.lastText = text;
         return text;
     }
 
@@ -128,7 +129,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     }
 
     protected Component getComponentForDefaultSize() {
-        if (this.textForDefaultSize == null || this.textForDefaultSize.equals(Component.empty())) {
+        if (this.textForDefaultSize == null) {
             this.textForDefaultSize = this.key.get();
             this.lastText = this.textForDefaultSize;
         }
@@ -137,7 +138,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Override
     public void postResize() {
-        this.textForDefaultSize = Component.empty();
+        this.textForDefaultSize = null;
     }
 
     public W alignment(Alignment alignment) {

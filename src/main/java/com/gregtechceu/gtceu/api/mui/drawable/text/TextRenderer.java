@@ -190,15 +190,11 @@ public class TextRenderer {
             drawMeasuredLines(graphics, Collections.singletonList(line));
             return;
         }
-        float scroll = (this.maxWidth - line.getWidth()) * progress;
-        // scroll = scroll % (int) (line.width + 1);
-        float max = this.maxWidth + scroll;
-        FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
-        Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
-        context.getStencil().push(Area.SHARED);
+        float scroll = (line.getWidth() - this.maxWidth) * progress;
+        context.getStencil().push(this.x, -500, (int) this.maxWidth, 1000);
         context.graphicsPose().pushPose();
         context.graphicsPose().translate(-scroll, 0, 0);
-        drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
+        drawMeasuredLines(graphics, Collections.singletonList(line));
         context.graphicsPose().popPose();
         context.getStencil().pop();
     }
