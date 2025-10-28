@@ -32,6 +32,9 @@ public class SyncHandlers {
     public static StringSyncValue string(Supplier<String> getter, Consumer<String> setter) {
         return new StringSyncValue(getter, setter);
     }
+    public static ModularSlot phantomItemSlot(IItemHandlerModifiable inventory, int index) {
+        return new ModularSlot(inventory, index, true);
+    }
 
     public static ModularSlot itemSlot(IItemHandlerModifiable inventory, int index) {
         return new ModularSlot(inventory, index);

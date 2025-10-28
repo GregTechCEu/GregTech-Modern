@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
@@ -59,5 +60,10 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     @Override
     public boolean supportsAmounts() {
         return false;
+    }
+
+    @Override
+    public ModularPanel createPanel() {
+        return null;
     }
 }

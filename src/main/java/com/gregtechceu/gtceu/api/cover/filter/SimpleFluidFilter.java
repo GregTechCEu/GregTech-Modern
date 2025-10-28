@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -138,6 +139,11 @@ public class SimpleFluidFilter implements FluidFilter {
         group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
+    }
+
+    @Override
+    public ModularPanel createPanel() {
+        return null;
     }
 
     @Override

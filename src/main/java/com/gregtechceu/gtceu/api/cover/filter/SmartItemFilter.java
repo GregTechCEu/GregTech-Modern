@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -76,6 +77,11 @@ public class SmartItemFilter implements ItemFilter {
         group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
                 SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
         return group;
+    }
+
+    @Override
+    public ModularPanel createPanel() {
+        return null;
     }
 
     @Override
