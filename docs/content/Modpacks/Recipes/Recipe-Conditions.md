@@ -19,10 +19,10 @@ These conditions can be used in both java and kubejs recipes. However, custom co
     -  Locks a recipe behind a certain y level in-world. For example, you could use `.posY(120, 130)` to have a recipe require a machine to be in between y 120 and y 130.
 - Rain: `.rain(float level)`
     - Locks a recipe behind a certain level of rain. For example, you could use `.rain(1.0)` to make a recipe need full rain. 
-- Adjacent_Fluid: `['adjacentFluid(net.minecraft.world.level.material.Fluid[])']("namespace:fluid_id", "namespace:fluid_id")`
-    - Unlike most recipe conditions, the syntax for these adjacent fluid and block ones are slightly different, as shown above. You can pass through any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine.
-- Adjacent_Block: `['adjacentBlock(net.minecraft.world.level.block.Block[])']("minecraft:stone", "minecraft:iron_block")`
-    - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks.
+- Adjacent_Fluid: `adjacentFluid("minecraft:water","minecraft:lava")`
+    - You can pass through any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine. We also have `adjacentBlockTag("forge:water", "forge:lava")`.
+- Adjacent_Block: `adjacentBlock("minecraft:stone", "minecraft:iron_block")`
+    - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks. We also have `adjacentBlockTag("forge:stone", "forge:storage_blocks/iron")`.
 - Thunder: `.thunder(float level)`
     - Locks a recipe behind a certain level of rain. For example, you could use `.thunder(1.0)` to make a recipe need a strong thunderstorm.
 - Vent: This condition is auto added to any steam single block, it blocks recipes from running if the vent is obstructed.
