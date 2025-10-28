@@ -41,7 +41,10 @@ public class VirtualTank extends VirtualEntry {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof VirtualTank other)) return false;
-        return this.fluidTank == other.fluidTank;
+
+        if (this.fluidTank.getCapacity() != other.fluidTank.getCapacity()) return false;
+        if (!this.fluidTank.getFluid().equals(other.fluidTank.getFluid())) return false;
+        return true;
     }
 
     @Override

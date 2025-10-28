@@ -415,8 +415,6 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_CROSS = fullImage("textures/gui/widget/button_clear_grid.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");
     public static final UITexture BUTTON_THROTTLE_MINUS = fullImage("textures/gui/widget/button_throttle_minus.png");
-    public static final UITexture OVERLAY_REDSTONE_ON = fullImage("textures/gui/overlay/redstone_on.png");
-    public static final UITexture OVERLAY_REDSTONE_OFF = fullImage("textures/gui/overlay/redstone_off.png");
     public static final UITexture OVERLAY_LOCK_CLOSED = fullImage("textures/gui/overlay/lock_closed.png");
     public static final UITexture OVERLAY_LOCK_OPEN = fullImage("textures/gui/overlay/lock_open.png");
 
