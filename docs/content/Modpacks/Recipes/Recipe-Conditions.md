@@ -4,7 +4,7 @@ title: Recipe Conditions
 
 Recipe Conditions are recipe properties that can prevent a recipe from starting based on certain criteria, like for example Biome, Weather, Quest Completions, or self-made custom Conditions. These conditions can be very helpful in spicing up your machines and systems!
 
-These conditions can be used in both java and kubejs recipes. However, custom conditons can only be done in java. If you want to see how to make these, check out the [Custom Recipe Condition](./Custom Recipe Condition.md) example page.              
+JurrThese conditions can be used in both java and kubejs recipes. However, custom conditons can only be done in java. If you want to see how to make these, check out the [Custom Recipe Condition](../Examples/Custom-Recipe-Condition.md) example page.              
 
 !!! Note
     The condition is run after recipe matching and before recipe execution. If the recipe condition doesn't match, the machine will be suspended and won't be updated again until something in the inputs/outputs changes.
@@ -19,9 +19,9 @@ These conditions can be used in both java and kubejs recipes. However, custom co
     -  Locks a recipe behind a certain y level in-world. For example, you could use `.posY(120, 130)` to have a recipe require a machine to be in between y 120 and y 130.
 - Rain: `.rain(float level)`
     - Locks a recipe behind a certain level of rain. For example, you could use `.rain(1.0)` to make a recipe need full rain. 
-- Adjacent_Fluid: `adjacentFluid("minecraft:water","minecraft:lava")`
-    - You can pass through any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine. We also have `adjacentBlockTag("forge:water", "forge:lava")`.
-- Adjacent_Block: `adjacentBlock("minecraft:stone", "minecraft:iron_block")`
+- Adjacent_Fluids: `adjacentFluids("minecraft:water","minecraft:lava")`
+    - You can pass through any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine. We also have `adjacentFluidTag("forge:water", "forge:lava")`.
+- Adjacent_Blocks: `adjacentBlocks("minecraft:stone", "minecraft:iron_block")`
     - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks. We also have `adjacentBlockTag("forge:stone", "forge:storage_blocks/iron")`.
 - Thunder: `.thunder(float level)`
     - Locks a recipe behind a certain level of rain. For example, you could use `.thunder(1.0)` to make a recipe need a strong thunderstorm.
