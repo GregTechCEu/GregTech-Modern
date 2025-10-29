@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
+public interface
+ItemFilter extends Filter<ItemStack, ItemFilter> {
 
     Map<ItemLike, Function<ItemStack, ItemFilter>> FILTERS = new HashMap<>();
 

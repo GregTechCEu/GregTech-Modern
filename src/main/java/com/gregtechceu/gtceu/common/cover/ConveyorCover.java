@@ -8,9 +8,13 @@ import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -18,8 +22,9 @@ import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -27,6 +32,8 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.ItemFilterBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -458,8 +465,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         Flow column = Flow.column()
                 .top(24).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
-//        EnumSyncValue<IO> io = new EnumSyncValue<>(IO.class,
-//                this::getIo, this::setIo);
+
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(
                 ManualIOMode.class, this::getManualIOMode, this::setManualIOMode);
 
@@ -470,11 +476,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         StringSyncValue formattedTransferRate = new StringSyncValue(transferRate::getStringValue,
                 transferRate::setStringValue);
 
-//        syncManager.syncValue( "io", io  );
-        // syncManager.syncValue("mode", );
         syncManager.syncValue("manualMode", manualMode);
         syncManager.syncValue("distribution", distMode);
         syncManager.syncValue("throughput", transferRate);
+
         if (createThroughputRow()) {
             column.child(Flow.row()
                     .coverChildrenHeight()
@@ -512,14 +517,29 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                             })
                             .onUpdateListener(w -> w.overlay(createAdjustOverlay(true)))));
         }
+
         if (createFilterRow()) {
-            // column.child(filter)
-        }
+                column.child(new Row()
+                        .child(new ItemSlot()
+                                .slot(SyncHandlers.itemSlot(filterHandler.getFilterSlot(), 0)))
+                        .child(new ButtonWidget<>()
+                                .overlay(new ItemDrawable(GTItems.ITEM_FILTER.asStack()).asIcon().center().size(14))
+                                .tooltip(t -> t.addLine("Configure Filter"))
+
+
+                                .onMousePressed((mouseX, mouseY, button) -> {
+                                return true;
+                                })));
+            }
+
+
         if (createConveyorIORow()) {
-            /*column.child(new EnumRowBuilder<>(IO.class)
-                    .value(io)
-                    .overlay(16, GTGuiTextures.CONVEYOR_MODE_OVERLAY)
-                    .build());*/
+            /*
+             * column.child(new EnumRowBuilder<>(IO.class)
+             * .value(io)
+             * .overlay(16, GTGuiTextures.CONVEYOR_MODE_OVERLAY)
+             * .build());
+             */
         }
 
         if (createDistributionModeRow()) {
@@ -527,16 +547,16 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                     .value(distMode)
                     .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
                     .lang(IKey
-                            .dynamic(() -> Component.translatable( distributionMode.localeName)))
+                            .dynamic(() -> Component.translatable(distributionMode.localeName)))
                     .build());
         }
 
-        if(createManualIOModeRow()){
+        if (createManualIOModeRow()) {
 
-            column.child( new EnumRowBuilder<>(ManualIOMode.class)
+            column.child(new EnumRowBuilder<>(ManualIOMode.class)
                     .value(manualMode)
                     .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                            .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))
+                    .lang(IKey.dynamic(() -> Component.translatable(manualIOMode.localeName)))
                     .build());
 
         }

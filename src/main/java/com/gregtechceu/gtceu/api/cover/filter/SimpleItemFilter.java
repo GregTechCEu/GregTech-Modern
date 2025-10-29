@@ -1,19 +1,18 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.Dialog;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,10 +20,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -48,6 +46,7 @@ public class SimpleItemFilter implements ItemFilter {
 
     private IItemHandlerModifiable inventory() {
         return new CustomItemStackHandler(matches.length) {
+
             {
                 for (int i = 0; i < matches.length; i++) {
                     setStackInSlot(i, matches[i]);
@@ -72,7 +71,6 @@ public class SimpleItemFilter implements ItemFilter {
                 }
                 return stack;
             }
-
         };
     }
 
@@ -145,65 +143,91 @@ public class SimpleItemFilter implements ItemFilter {
 
     @Override
     public ModularPanel createPanel() {
-         return GTGuis.createPanel("test")
+        return GTGuis
+                .createPanel("test")
                 .padding(7)
                 .child(new Column()
                         .coverChildren()
                         .name("base")
+                        .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                         .child(new Row()
                                 .name("main ui panel")
-                                .coverChildren()
-                                .child(SlotGroupWidget
-                                        .builder()
-                                        .matrix("III","III","iii")
-                                        .matrix("III", "III", "III")
-                                        .key('I', index -> new PhantomItemSlot()
-                                                .slot(SyncHandlers.phantomItemSlot(inventory(), index)
-                                                        .ignoreMaxStackSize(true))).build())
-                                .padding(7)
-                                .mainAxisAlignment(Alignment.MainAxis.CENTER))
-                        .child(SlotGroupWidget.playerInventory(false)
-                        )
-                );
+                                .height(80)
+                                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                                .child(new Column()
+                                        .coverChildren()
+                                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                                        .child(SlotGroupWidget.builder()
+                                                .matrix("III", "III", "III")
+                                                .key('I', index -> new PhantomItemSlot()
+                                                        .slot(SyncHandlers.phantomItemSlot(inventory(), index)
+                                                                .ignoreMaxStackSize(true)))
+                                                .build())
+
+                                )
+                                .child(new Column()
+                                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                                        .coverChildren()
+                                        .child(new ToggleButton()
+                                                .margin(0, 4, 4, 4)
+                                                .size(16)
+                                                .overlay(GTGuiTextures.BUTTON_BLACKLIST))
+                                        .child(new ToggleButton()
+                                                .margin(0, 4, 4, 4)
+                                                .size(16)
+                                                .overlay(GTGuiTextures.BUTTON_BLACKLIST))))
+                        .child(SlotGroupWidget.playerInventory(false)));
     }
 
-    //    public WidgetGroup openConfigurator(int x, int y) {
-//        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-//        for (int i = 0; i < 3; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                final int index = i * 3 + j;
-//
-//                var handler = new CustomItemStackHandler(matches[index]);
-//
-//                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
-//
-//                    @Override
-//                    public void updateScreen() {
-//                        super.updateScreen();
-//                        setMaxStackSize(maxStackSize);
-//                    }
-//
-//                    @Override
-//                    public void detectAndSendChanges() {
-//                        super.detectAndSendChanges();
-//                        setMaxStackSize(maxStackSize);
-//                    }
-//                };
-//
-//                slot.setChangeListener(() -> {
-//                    matches[index] = handler.getStackInSlot(0);
-//                    onUpdated.accept(this);
-//                }).setBackground(GuiTextures.SLOT);
-//
-//                group.addWidget(slot);
-//            }
-//        }
-//        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-//                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-//        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-//                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-//        return group;
-//    }
+    @Override
+    public ModularPanel createSubPanel() {
+        if (this.createPanel() instanceof Dialog popupPanel) {
+            return popupPanel.setDisablePanelsBelow(false)
+                    .setCloseOnOutOfBoundsClick(false)
+                    .setDraggable(true)
+                    .resizeableOnDrag(true);
+
+        }
+        return null;
+    }
+
+    // public WidgetGroup openConfigurator(int x, int y) {
+    // WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
+    // for (int i = 0; i < 3; i++) {
+    // for (int j = 0; j < 3; j++) {
+    // final int index = i * 3 + j;
+    //
+    // var handler = new CustomItemStackHandler(matches[index]);
+    //
+    // var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+    //
+    // @Override
+    // public void updateScreen() {
+    // super.updateScreen();
+    // setMaxStackSize(maxStackSize);
+    // }
+    //
+    // @Override
+    // public void detectAndSendChanges() {
+    // super.detectAndSendChanges();
+    // setMaxStackSize(maxStackSize);
+    // }
+    // };
+    //
+    // slot.setChangeListener(() -> {
+    // matches[index] = handler.getStackInSlot(0);
+    // onUpdated.accept(this);
+    // }).setBackground(GuiTextures.SLOT);
+    //
+    // group.addWidget(slot);
+    // }
+    // }
+    // group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
+    // GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
+    // group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
+    // GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
+    // return group;
+    // }
 
     @Override
     public boolean test(ItemStack itemStack) {

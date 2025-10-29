@@ -14,7 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class    PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<ItemStack> {
+public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<ItemStack> {
 
     private PhantomItemSlotSH syncHandler;
 

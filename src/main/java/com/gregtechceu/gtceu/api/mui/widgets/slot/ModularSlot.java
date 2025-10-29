@@ -63,11 +63,11 @@ public class ModularSlot extends SlotItemHandler {
                     ". Valid index range is [0," + itemHandler.getSlots() + ")");
         }
     }
+
     public ModularSlot(IItemHandler itemHandler, int index, boolean phantom) {
         super(itemHandler, index, Integer.MIN_VALUE, Integer.MIN_VALUE);
         this.phantom = phantom;
     }
-
 
     @ApiStatus.Internal
     public void initialize(ItemSlotSH syncManager, boolean phantom) {

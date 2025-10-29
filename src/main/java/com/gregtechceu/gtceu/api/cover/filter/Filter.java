@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,8 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
     WidgetGroup openConfigurator(int x, int y);
 
     ModularPanel createPanel();
+
+    default ModularPanel createSubPanel() {return null;};
 
     CompoundTag saveFilter();
 
