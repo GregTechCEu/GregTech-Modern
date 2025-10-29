@@ -150,3 +150,5 @@ It consists of a few parts:
     In this case, this would call our `new ExampleCondition(isReverse, height)` constructor we have defined earlier.
 
 With this, you should have everything you need to make a custom RecipeCondition.
+
+To apply it to a recipeCondition, you would add to the Recipe Builder: `.condition(new ExampleCondition(70))` for a required height of 70
