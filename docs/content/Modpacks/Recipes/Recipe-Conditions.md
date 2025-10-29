@@ -2,7 +2,7 @@
 title: Recipe Conditions
 ---
 
-Recipe Conditions are recipe properties that can prevent a recipe from starting based on certain criteria, like for example Biome, Weather, Quest Completions, or self-made custom Conditions. These conditions can be very helpful in spicing up your machines and systems!
+Recipe Conditions are recipe properties that can prevent a recipe from starting based on certain criteria, like for example Biome, Weather, Quest Completions, or self-made custom Conditions.
 
 These conditions can be used in both java and kubejs recipes. However, custom conditons can only be done in java. If you want to see how to make these, check out the [Custom Recipe Condition](./Custom Recipe Condition.md) example page.              
 
