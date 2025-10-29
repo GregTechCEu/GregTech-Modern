@@ -35,7 +35,7 @@ These conditions can be used in both java and kubejs recipes. However, custom co
 - Scanner_Research: `.scannerResearch(b => b.researchStack("namespace:item_id").EUt(long eu))`
   - Much like station research, this condition locks a recipe behind needing a research stack. However, in this case it will default to a data stick. For example, you could do `.scannerResearch(b => b.researchStack("gtceu:lv_motor").EUt(8192))`, which would make the recipe need a data stick with the lv motor research, and generates a scanner recipe.
 - Enviromental_Hazard: `.environmentalHazard(GTMedicalConditions.CARBON_MONOXIDE_POISONING)`
-    - Locks a recipe into needing a certain environmental hazard to run. For now, carbon monoxide is the only one. An example of a machine using this condition, is the air scrubber.
+    - Locks a recipe into needing a certain environmental hazard to run. For now, carbon monoxide is the only one. An example of a machine using this condition is the air scrubber.
 - Daytime: `.daytime(boolean notNight)`
     - Locks recipe behind whether it is day or night. For example, you could do `.daytime(true)`, to make the recipe need it to be daytime.
 
