@@ -55,19 +55,12 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     protected abstract F getEmptyFilter();
 
-
     //////////////////////////////////
     // ***** PUBLIC API ******//
     //////////////////////////////////
 
     public abstract boolean canInsertFilterItem(ItemStack itemStack);
 
-
-    public Widget create(int xPos, int yPos) {
-        return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
-                .setChangeListener(this::updateFilter)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
-    }
     public Widget createFilterSlotUI(int xPos, int yPos) {
         return new SlotWidget(getFilterSlot(), 0, xPos, yPos)
                 .setChangeListener(this::updateFilter)

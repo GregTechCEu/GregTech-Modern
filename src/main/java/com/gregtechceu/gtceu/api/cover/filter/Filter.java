@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -13,9 +14,19 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
 
     WidgetGroup openConfigurator(int x, int y);
 
-    ModularPanel createPanel();
+    void createPanel(PanelSyncManager syncManager);
 
-    default ModularPanel createSubPanel() {return null;};
+    void createPopupPanel(PanelSyncManager syncManager);
+
+    /**
+     * @return Filter panel when opened by itself (including the player inventory)
+     */
+    ModularPanel getPanel(PanelSyncManager syncManager);
+
+    /**
+     * @return Filter panel when opened in another panel(eg a conveyor)
+     */
+    ModularPanel getPopupPanel(PanelSyncManager syncManager);
 
     CompoundTag saveFilter();
 

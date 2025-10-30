@@ -149,12 +149,12 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    public static final UITexture[] BUTTON_BLACKLIST = slice("textures/gui/widget/button_blacklist.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_BLACKLIST = fullImage("textures/gui/widget/button_blacklist.png",
+            ColorType.DEFAULT);
     public static final UITexture[] BUTTON_IGNORE_DAMAGE = slice("textures/gui/widget/button_filter_damage.png",
             16, 32, 16, 16, ColorType.DEFAULT);
-    public static final UITexture[] BUTTON_IGNORE_NBT = slice("textures/gui/widget/button_filter_nbt.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_IGNORE_NBT = fullImage("textures/gui/widget/button_filter_nbt.png",
+            ColorType.DEFAULT);
 
     public static final UITexture[] BUTTON_CASE_SENSITIVE = slice(
             "textures/gui/widget/ore_filter/button_case_sensitive.png",

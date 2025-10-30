@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
@@ -63,7 +64,18 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    public ModularPanel createPanel() {
+    public void createPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPanel(PanelSyncManager syncManager) {
+        return null;
+    }
+
+    @Override
+    public void createPopupPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
         return null;
     }
 }

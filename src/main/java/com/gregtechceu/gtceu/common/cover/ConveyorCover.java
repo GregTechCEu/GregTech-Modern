@@ -30,8 +30,6 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.item.ItemFilterBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -516,31 +514,38 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                             .onUpdateListener(w -> w.overlay(createAdjustOverlay(true)))));
         }
 
-
         if (createFilterRow()) {
-            ItemFilter filter = ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0));
-            IPanelHandler panelSyncHandler = syncManager.panel("other_panel", (a, b) -> filter.createSubPanel() , true);
+            // TODO: Figure why the filter handler does not resync when opening the gui, tldr it voids
+            var filterSlot = filterHandler.getFilterSlot();
+            var filterItem = filterHandler.getFilterSlot().getStackInSlot(0);
 
-            column.child(new Row()
-                        .child(new ItemSlot()
-                                .slot(SyncHandlers.itemSlot(filterHandler.getFilterSlot(), 0)))
-                        .child(new ButtonWidget<>()
-                                .overlay (new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0)) .asIcon()
-                                        .center()
-                                        .size(14))
-                                .tooltip(t -> t.addLine("Configure Filter"))
-                                .onMousePressed((mouseX, mouseY, button) -> {
-                                    panelSyncHandler.openPanel();
-                                    return true;
-                                }))
-                        .child( IKey.str(filterHandler
-                                .getFilterSlot()
-                                .getStackInSlot(0)
-                                .getHoverName()
-                                .getString()).asWidget()
-                                .align(Alignment.CenterRight)));
+            column.child(new Row().child(new ItemSlot()
+                    .slot(SyncHandlers.itemSlot(filterSlot, 0))));
+
+            IPanelHandler panelSyncHandler;
+            // TODO: Figure out how to properly attach this to the sync manager to
+            // dynamically add the button widget when a filter exists
+            if (!filterItem.isEmpty()) {
+                ItemFilter filter = ItemFilter.loadFilter(filterItem);
+                panelSyncHandler = syncManager.panel("other_panel", (a, b) -> filter.getPopupPanel(syncManager), true);
+            } else {
+                panelSyncHandler = null;
             }
+            column.childIf((panelSyncHandler != null && !filterItem.isEmpty()), new ButtonWidget<>()
+                    .overlay(new ItemDrawable(filterItem)
+                            .asIcon()
+                            .center()
+                            .size(14))
+                    .tooltip(t -> t.addLine("Configure Filter"))
+                    .onMousePressed((mouseX, mouseY, button) -> {
+                        panelSyncHandler.openPanel();
+                        return true;
+                    }))
+                    .child(IKey.str(filterItem.getHoverName().getString())
+                            .asWidget()
+                            .align(Alignment.CenterRight));
 
+        }
 
         if (createConveyorIORow()) {
             /*

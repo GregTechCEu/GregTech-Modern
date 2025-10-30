@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -61,7 +62,18 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public ModularPanel createPanel() {
+        public void createPanel(PanelSyncManager syncManager) {}
+
+        @Override
+        public ModularPanel getPanel(PanelSyncManager syncManager) {
+            return null;
+        }
+
+        @Override
+        public void createPopupPanel(PanelSyncManager syncManager) {}
+
+        @Override
+        public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
             return null;
         }
 

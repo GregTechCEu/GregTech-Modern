@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -15,8 +16,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface
-ItemFilter extends Filter<ItemStack, ItemFilter> {
+public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
 
     Map<ItemLike, Function<ItemStack, ItemFilter>> FILTERS = new HashMap<>();
 
@@ -61,7 +61,18 @@ ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public ModularPanel createPanel() {
+        public void createPanel(PanelSyncManager syncManager) {}
+
+        @Override
+        public ModularPanel getPanel(PanelSyncManager syncManager) {
+            return null;
+        }
+
+        @Override
+        public void createPopupPanel(PanelSyncManager syncManager) {}
+
+        @Override
+        public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
             return null;
         }
 

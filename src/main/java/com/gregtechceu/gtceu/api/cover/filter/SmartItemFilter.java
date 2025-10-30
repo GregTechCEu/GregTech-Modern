@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
@@ -80,7 +81,18 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public ModularPanel createPanel() {
+    public void createPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPanel(PanelSyncManager syncManager) {
+        return null;
+    }
+
+    @Override
+    public void createPopupPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
         return null;
     }
 

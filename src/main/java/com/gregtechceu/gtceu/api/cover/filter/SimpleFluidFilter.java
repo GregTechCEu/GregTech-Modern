@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
@@ -142,7 +143,18 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public ModularPanel createPanel() {
+    public void createPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPanel(PanelSyncManager syncManager) {
+        return null;
+    }
+
+    @Override
+    public void createPopupPanel(PanelSyncManager syncManager) {}
+
+    @Override
+    public ModularPanel getPopupPanel(PanelSyncManager syncManager) {
         return null;
     }
 
