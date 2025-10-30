@@ -5578,7 +5578,7 @@
     "gtceu.gui.content.fluid_range": "%s-%sмВ",
     "gtceu.machine.batch_disabled": "Группирование выключено",
     "gtceu.machine.batch_enabled": "Группирование включено",
-    "gtceu.multiblock.batch_enabled": "Группирование: включено (%sx)",
+    "gtceu.multiblock.batch_enabled": "- %dx из Группирования",
     "gtceu.recipe.eu.total": "%s EU/т",
     "gtceu.recipe.total_eu": "Общее исп.: %s EU/т",
     "gtceu.recipe.voltage": "Исп.: %s A @ %s",
