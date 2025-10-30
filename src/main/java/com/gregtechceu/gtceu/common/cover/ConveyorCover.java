@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -518,18 +516,29 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                             .onUpdateListener(w -> w.overlay(createAdjustOverlay(true)))));
         }
 
+
         if (createFilterRow()) {
-                column.child(new Row()
+            ItemFilter filter = ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0));
+            IPanelHandler panelSyncHandler = syncManager.panel("other_panel", (a, b) -> filter.createSubPanel() , true);
+
+            column.child(new Row()
                         .child(new ItemSlot()
                                 .slot(SyncHandlers.itemSlot(filterHandler.getFilterSlot(), 0)))
                         .child(new ButtonWidget<>()
-                                .overlay(new ItemDrawable(GTItems.ITEM_FILTER.asStack()).asIcon().center().size(14))
+                                .overlay (new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0)) .asIcon()
+                                        .center()
+                                        .size(14))
                                 .tooltip(t -> t.addLine("Configure Filter"))
-
-
                                 .onMousePressed((mouseX, mouseY, button) -> {
-                                return true;
-                                })));
+                                    panelSyncHandler.openPanel();
+                                    return true;
+                                }))
+                        .child( IKey.str(filterHandler
+                                .getFilterSlot()
+                                .getStackInSlot(0)
+                                .getHoverName()
+                                .getString()).asWidget()
+                                .align(Alignment.CenterRight)));
             }
 
 
