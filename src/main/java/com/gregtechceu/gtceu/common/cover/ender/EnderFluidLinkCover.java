@@ -10,8 +10,10 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlotDisplayOnly;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -50,6 +52,11 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
         if (!coverHolder.isRemote()) visualTank = VirtualEnderRegistry.getInstance()
                 .getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
     }
@@ -122,12 +129,14 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     //////////////////////////////////////
 
     @Override
-    protected IWidget createVirtualEntryWidget(VirtualEntry entry, int width, int height, boolean interactable) {
-        if (interactable) {
-            return new FluidSlot().syncHandler(((VirtualTank) entry).getFluidTank()).size(width, height);
-        } else {
-            return new FluidSlotDisplayOnly().syncHandler(((VirtualTank) entry).getFluidTank()).size(width, height);
-        }
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h) {
+        return new FluidSlot()
+                .syncHandler(manager.getOrCreateSyncHandler(
+                        ModularSyncManager.AUTO_SYNC_PREFIX + coverDefinition.getId().getPath(),
+                        FluidSlotSyncHandler.class,
+                        () -> new FluidSlotSyncHandler(((VirtualTank) entry).getFluidTank())))
+                .marginLeft(3)
+                .size(w, h);
     }
 
     @NotNull

@@ -10,6 +10,11 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -99,13 +104,13 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    protected IWidget createVirtualEntryWidget(VirtualEntry entry, int width, int height,
-                                               boolean interactable) {
-        // WidgetGroup group = new WidgetGroup(x, y, width, height);
-        // for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
-        // group.addWidget(new SlotWidget(((VirtualItemStorage) entry).getHandler(), i, 8 * i, 0, canClick, canClick));
-        // }
-        return null;
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h) {
+        return new ItemSlot()
+                .syncHandler(manager.getOrCreateSyncHandler(
+                        ModularSyncManager.AUTO_SYNC_PREFIX + coverDefinition.getId().getPath(), ItemSlotSH.class,
+                        () -> new ItemSlotSH(new ModularSlot(((VirtualItemStorage) entry).getHandler(), 0))))
+                .marginLeft(3)
+                .size(w, h);
     }
 
     @Override

@@ -159,12 +159,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     @Override
     public ParentWidget createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        GenericSyncValue<List<VirtualEntry>> entriesSyncer = new GenericSyncValue<>(this::getVirtualEntries, this::setVirtualEntries,
+        GenericSyncValue<List<VirtualEntry>> entriesSyncer = new GenericSyncValue<>(this::getVirtualEntries,
+                this::setVirtualEntries,
                 new VirtualEntryListAdapter());
         DynamicSyncHandler entryListSyncer = new DynamicSyncHandler().widgetProvider((manager, packet) -> {
             ListWidget<IWidget, ?> list = new ListWidget<>();
             if (packet == null) return new EmptyWidget();
-            populateChannelList(list, packet);
+            populateChannelList(syncManager, list, packet);
             return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
                     .size(162, 58);
         });
@@ -185,10 +186,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                                         .addLine(Component.translatable("cover.ender_fluid_link.tooltip.list_button")))
                                 .marginLeft(4)
                                 .size(16, 16)))
-                .child(createChannelNameRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
-                .child(createDescriptionField(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
-                .child(createSettingsRow(data, syncManager, settings).setEnabledIf(f -> !isChannelListActive))
-                .child(new DynamicSyncedWidget<>().size(162, 58).syncHandler(entryListSyncer))
+                .child(createChannelNameRow(syncManager).setEnabledIf(f -> !isChannelListActive))
+                .child(createDescriptionField().setEnabledIf(f -> !isChannelListActive))
+                .child(createSettingsRow().setEnabledIf(f -> !isChannelListActive))
+                .child(new DynamicSyncedWidget<>().syncHandler(entryListSyncer)
+                        .setEnabledIf(f -> isChannelListActive)
+                        .size(162, 58))
                 .rightRel(0.5F)
                 .top(3)
                 .childPadding(3)
@@ -196,22 +199,22 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .coverChildren();
     }
 
-    public void populateChannelList(ListWidget<IWidget, ?> list, FriendlyByteBuf packet) {
+    public void populateChannelList(PanelSyncManager syncManager, ListWidget<IWidget, ?> list, FriendlyByteBuf packet) {
         int size = packet.readInt();
         for (int i = 0; i < size; i++) {
             VirtualEntry entry = getEntryType().createInstance(packet.readNbt());
-            list.child(createVirtualEntryRow(entry));
+            list.child(createVirtualEntryRow(syncManager, entry));
         }
     }
 
-    public Flow createVirtualEntryRow(VirtualEntry entry) {
+    public Flow createVirtualEntryRow(PanelSyncManager syncManager, VirtualEntry entry) {
         return new Row()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
                         .tooltip(t -> t.addLine(entry.getColorStr()))
                         .size(18, 18))
                 .child(IKey.str(entry.getDescription()).asWidget()
                         .size(92, 12))
-                .child(createVirtualEntryWidget(entry, 18, 18, false))
+                .child(createVirtualEntryWidget(syncManager, entry, 18, 18))
                 .child(new com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS)
                         .onMousePressed((x, y, button) -> {
                             MouseData mouseData = MouseData.create(button);
@@ -228,26 +231,32 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .coverChildren();
     }
 
-    public Flow createChannelNameRow(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Row().child(createColorBlock(this::getColor, 18).asWidget())
+    public Flow createChannelNameRow(PanelSyncManager syncManager) {
+        return new Row().child(createColorBlock(this::getColor, 18).asWidget().marginRight(3))
                 .child(new TextFieldWidget().value(new StringSyncValue(this::getColorStr, this::setChannelName))
                         .setPattern(COLOR_INPUT_PATTERN)
+                        .setValidator(String::toUpperCase)
                         .hintText(Component.translatable("cover.ender_link.channel_name"))
-                        .size(120, 16))
-                .child(createVirtualEntryWidget(this.getEntry(), 18, 18, true))
-                .childPadding(3)
-                .coverChildren();
+                        .expanded()
+                        .height(16))
+                .child(createVirtualEntryWidget(syncManager, this.getEntry(), 18, 18))
+                .size(162, 18);
     }
 
-    public TextFieldWidget createDescriptionField(SidedPosGuiData data, PanelSyncManager syncManager,
-                                                  UISettings settings) {
-        return new TextFieldWidget().value(new StringSyncValue(getEntry()::getDescription, getEntry()::setDescription))
-                .hintText(Component.translatable("cover.ender_link.channel_description"))
+    // for whatever reason encasing the textfield in a Row like this causes the dynamicsyncwidget to stop working and
+    // for the textfield to start working fine. I swear its haunted. It has to be haunted.
+    public Flow createDescriptionField() {
+        return new Row()
+                .child(new TextFieldWidget()
+                        .value(new StringSyncValue(getEntry()::getDescription, getEntry()::setDescription))
+                        .hintText(Component.translatable("cover.ender_link.channel_description"))
+                        .widthRel(1F)
+                        .height(16))
                 .widthRel(1F)
-                .height(16);
+                .coverChildrenHeight();
     }
 
-    public Flow createSettingsRow(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    public Flow createSettingsRow() {
         return new Row()
                 // Power button
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isWorkingEnabled, this::setWorkingEnabled))
@@ -314,12 +323,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return entries;
     }
 
-    public void setVirtualEntries(List<VirtualEntry> entries) {
-        for (VirtualEntry entry : entries) {
-            VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), entry.getColorStr())
-                    .setDescription(entry.getDescription());
-        }
-    }
+    public void setVirtualEntries(List<VirtualEntry> entries) {}
 
     @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
@@ -426,8 +430,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return null;
     }
 
-    protected abstract IWidget createVirtualEntryWidget(VirtualEntry entry, int width, int height,
-                                                        boolean interactable);
+    /**
+     * All syncers registered through this method MUST use the {@link PanelSyncManager#getOrCreateSyncHandler} method
+     * for applying a syncer to a widget because it gets placed into a {@link DynamicSyncedWidget}.
+     * 
+     * @return A widget to represent the entry type for this cover
+     */
+    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h);
 
     protected abstract String getUITitle();
 

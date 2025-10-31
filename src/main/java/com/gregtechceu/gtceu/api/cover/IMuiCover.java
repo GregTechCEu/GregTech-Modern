@@ -68,7 +68,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return Flow.row()
                 .height(16).coverChildrenWidth()
                 .child(new ItemDrawable(stack).asWidget().size(16).marginRight(4))
-                .child(IKey.lang(stack.getDisplayName())
+                .child(IKey.lang(stack.getHoverName())
                         .color(UI_TITLE_COLOR)
                         .asWidget().heightRel(1.0f));
     }
