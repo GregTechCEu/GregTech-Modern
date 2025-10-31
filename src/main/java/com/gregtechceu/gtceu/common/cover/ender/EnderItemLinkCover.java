@@ -119,11 +119,6 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    protected String getUITitle() {
-        return "cover.ender_item_link.title";
-    }
-
-    @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }

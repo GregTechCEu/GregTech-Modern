@@ -138,10 +138,4 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
                 .marginLeft(3)
                 .size(w, h);
     }
-
-    @NotNull
-    @Override
-    protected String getUITitle() {
-        return "cover.ender_fluid_link.title";
-    }
 }

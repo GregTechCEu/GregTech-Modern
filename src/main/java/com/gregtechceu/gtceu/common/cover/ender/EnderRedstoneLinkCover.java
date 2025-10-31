@@ -80,11 +80,6 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     }
 
     @Override
-    protected String getUITitle() {
-        return "cover.ender_redstone_link.title";
-    }
-
-    @Override
     public boolean canConnectRedstone() {
         return true;
     }
