@@ -4,13 +4,16 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.*;
@@ -20,6 +23,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
@@ -225,5 +230,18 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        inner.toNetwork(buffer);
+        buffer.writeVarIntArray( new int[]{countProvider.getMinValue(), countProvider.getMaxValue()} );
+        buffer.writeVarInt(sampledCount);
+    }
+
+    public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        FluidIngredient readI = FluidIngredient.fromNetwork(buffer);
+        int[] readC = buffer.readVarIntArray(2);
+        IntProvider readP = UniformInt.of(readC[0], readC[1]);
+        return new IntProviderFluidIngredient(readI, readP, buffer.readVarInt());
     }
 }
