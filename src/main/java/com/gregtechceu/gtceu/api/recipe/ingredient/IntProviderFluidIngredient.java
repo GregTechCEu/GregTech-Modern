@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,7 +12,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.*;
@@ -37,6 +35,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
+    /**
+     * "ipfi" as hex. Used to tell {@link FluidIngredient#fromNetwork(FriendlyByteBuf)} to deserialize as an IPFI.
+     */
+    public static final int SERIALIZAZTIONMARKER = -69706669;
+    private static final List<Integer> SERIALIZEMARKERLIST = List.of(SERIALIZAZTIONMARKER);
 
     @Getter
     private final IntProvider countProvider;
@@ -233,15 +236,15 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeCollection(SERIALIZEMARKERLIST, FriendlyByteBuf::writeVarInt);
         inner.toNetwork(buffer);
-        buffer.writeVarIntArray( new int[]{countProvider.getMinValue(), countProvider.getMaxValue()} );
-        buffer.writeVarInt(sampledCount);
+        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
     }
 
     public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
         FluidIngredient readI = FluidIngredient.fromNetwork(buffer);
         int[] readC = buffer.readVarIntArray(2);
         IntProvider readP = UniformInt.of(readC[0], readC[1]);
-        return new IntProviderFluidIngredient(readI, readP, buffer.readVarInt());
+        return new IntProviderFluidIngredient(readI, readP);
     }
 }
