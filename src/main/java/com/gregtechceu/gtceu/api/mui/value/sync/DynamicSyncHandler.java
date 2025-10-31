@@ -60,7 +60,7 @@ public class DynamicSyncHandler extends SyncHandler {
         if (unregistered > 0) {
             throw new IllegalStateException(
                     "Widgets created by DynamicSyncHandler can't have implicitly registered sync" +
-                            " handlers. All sync handlers must be regisered witha  variant of 'PanelSyncManager#getOrCreateSyncHandler(...)'.");
+                            " handlers. All sync handlers must be registered with a variant of 'PanelSyncManager#getOrCreateSyncHandler(...)'.");
         }
         return widget;
     }
