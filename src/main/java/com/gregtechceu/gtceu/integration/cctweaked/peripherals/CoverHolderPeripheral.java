@@ -27,7 +27,7 @@ public class CoverHolderPeripheral implements GenericPeripheral {
         if (direction == null) return MethodResult.of(false, "invalid face");
         if (line < 1 || line > 100) return MethodResult.of(false, "line must be from 1 to 100 (inclusive)");
         if (coverable.getCoverAtSide(direction) instanceof IPlaceholderInfoProviderCover cover) {
-            cover.setDisplayTargetBufferLine(line - 1, Component.literal(text));
+            cover.setComputerCraftTextBufferLine(line - 1, Component.literal(text));
             return MethodResult.of(true, "success");
         } else return MethodResult.of(false, "invalid cover");
     }
