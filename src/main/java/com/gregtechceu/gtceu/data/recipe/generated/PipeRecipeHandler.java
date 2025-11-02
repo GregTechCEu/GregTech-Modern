@@ -89,14 +89,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
-                .inputFluids(material.getFluid(L / 2))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) / 2)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
+                    .inputFluids(material.getFluid(L / 2))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) / 2)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe_dust")
                     .inputItems(dust, material, 1)
@@ -129,14 +130,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
-                .inputFluids(material.getFluid(L))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()))
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
+                    .inputFluids(material.getFluid(L))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()))
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_small_pipe_dust")
                     .inputItems(dust, material, 1)
@@ -169,14 +171,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
-                .inputFluids(material.getFluid(L * 3))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 3)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
+                    .inputFluids(material.getFluid(L * 3))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 3)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_pipe_dust")
                     .inputItems(dust, material, 3)
@@ -209,14 +212,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
-                .inputFluids(material.getFluid(L * 6))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 6)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
+                    .inputFluids(material.getFluid(L * 6))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 6)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_large_pipe_dust")
                     .inputItems(dust, material, 6)
@@ -248,14 +252,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
-                .inputFluids(material.getFluid(L * 12))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 24)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
+                    .inputFluids(material.getFluid(L * 12))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 24)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_huge_pipe_dust")
                     .inputItems(dust, material, 12)
