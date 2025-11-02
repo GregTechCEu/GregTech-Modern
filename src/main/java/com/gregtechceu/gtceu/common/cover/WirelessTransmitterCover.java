@@ -33,10 +33,15 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @Getter
+    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
 
     public WirelessTransmitterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        for (int i = 0; i < 100; i++) {
+            createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+            computerCraftTextBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        }
     }
 
     @Override
@@ -57,6 +62,11 @@ public class WirelessTransmitterCover extends CoverBehavior
     @Override
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {
         createDisplayTargetBuffer.set(line, component);
+    }
+
+    @Override
+    public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
+        computerCraftTextBuffer.set(line, component);
     }
 
     @Override
