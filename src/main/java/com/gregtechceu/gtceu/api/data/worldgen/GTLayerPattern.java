@@ -100,8 +100,19 @@ public class GTLayerPattern {
 
         public Layer(List<Either<List<TargetBlockState>, Material>> targets, int minSize, int maxSize, int weight) {
             if (minSize > maxSize) {
+                StringBuilder materialList = new StringBuilder().append(" with materials: ");
+                for (var target : targets) {
+                    if (target.right().isPresent()) {
+                        materialList.append(target.right().get().getName()).append(",");
+                    }
+                }
+                if (!materialList.isEmpty()) {
+                    materialList.deleteCharAt(materialList.length() - 1);
+                }
+
                 throw new IllegalArgumentException(
-                        "Layer must have minSize (%s) be lower than maxSize (%s)".formatted(minSize, maxSize));
+                        "Layer must have minSize (%s) be lower than maxSize (%s)%s".formatted(minSize, maxSize,
+                                materialList.toString()));
             }
             this.targets = targets;
             this.minSize = minSize;
