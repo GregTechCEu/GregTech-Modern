@@ -253,11 +253,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
         List<Integer> preFluids = buffer.readList(FriendlyByteBuf::readVarInt);
-        if (preFluids.get(0) == IntProviderFluidIngredient.SERIALIZAZTIONMARKER)
+        if (!preFluids.isEmpty() && preFluids.get(0) == IntProviderFluidIngredient.SERIALIZATION_MARKER)
             return IntProviderFluidIngredient.fromNetwork(buffer);
 
         List<Fluid> fluids = new ArrayList<>();
-        for (Integer id : preFluids) {
+        for (int id : preFluids) {
             fluids.add(BuiltInRegistries.FLUID.byId(id));
         }
         return FluidIngredient.of(fluids, buffer.readVarInt(), buffer.readNbt());

@@ -38,8 +38,8 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * "ipfi" as hex. Used to tell {@link FluidIngredient#fromNetwork(FriendlyByteBuf)} to deserialize as an IPFI.
      */
-    public static final int SERIALIZAZTIONMARKER = -69706669;
-    private static final List<Integer> SERIALIZEMARKERLIST = List.of(SERIALIZAZTIONMARKER);
+    public static final int SERIALIZATION_MARKER = -69706669;
+    private static final List<Integer> SERIALIZATION_MARKER_LIST = List.of(SERIALIZATION_MARKER);
 
     @Getter
     private final IntProvider countProvider;
@@ -236,15 +236,17 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeCollection(SERIALIZEMARKERLIST, FriendlyByteBuf::writeVarInt);
+        // SERIALIZATION_MARKER_LIST is consumed by FluidIngredient#fromNetwork
+        // to tell it to deserialize as an IPFI.
+        buffer.writeCollection(SERIALIZATION_MARKER_LIST, FriendlyByteBuf::writeVarInt);
         inner.toNetwork(buffer);
         buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
     }
 
     public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
-        FluidIngredient readI = FluidIngredient.fromNetwork(buffer);
-        int[] readC = buffer.readVarIntArray(2);
-        IntProvider readP = UniformInt.of(readC[0], readC[1]);
-        return new IntProviderFluidIngredient(readI, readP);
+        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        int[] range = buffer.readVarIntArray(2);
+        IntProvider provider = UniformInt.of(range[0], range[1]);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 }
