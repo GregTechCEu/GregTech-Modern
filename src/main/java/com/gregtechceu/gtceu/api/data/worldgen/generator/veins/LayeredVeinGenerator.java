@@ -123,7 +123,17 @@ public class LayeredVeinGenerator extends VeinGenerator {
                         GTLayerPattern.Layer next = layerPattern.rollNext(
                                 resolvedLayers.isEmpty() ? null : resolvedLayers.get(resolvedLayers.size() - 1),
                                 random);
-                        float offset = random.nextFloat() * .5f + .5f;
+
+                        float offset = random.nextFloat() * 0.5f + 0.5f;
+                        // insert the previous layer if this one is null (e.g. invalid)
+                        if (next == null) {
+                            if (resolvedLayers.isEmpty()) {
+                                continue;
+                            }
+                            resolvedLayers.add(resolvedLayers.get(resolvedLayers.size() - 1));
+                            layerDiameterOffsets.add(offset);
+                            continue;
+                        }
                         for (int i = 0; i < next.minSize + random.nextInt(1 + next.maxSize - next.minSize); i++) {
                             resolvedLayers.add(next);
                             layerDiameterOffsets.add(offset);
