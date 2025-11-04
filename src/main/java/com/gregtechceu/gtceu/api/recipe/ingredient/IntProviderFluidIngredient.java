@@ -22,8 +22,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
  * recipe start (input) / completion (output).
@@ -35,11 +33,6 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
-    /**
-     * "ipfi" as hex. Used to tell {@link FluidIngredient#fromNetwork(FriendlyByteBuf)} to deserialize as an IPFI.
-     */
-    public static final int SERIALIZATION_MARKER = -69706669;
-    private static final List<Integer> SERIALIZATION_MARKER_LIST = List.of(SERIALIZATION_MARKER);
 
     @Getter
     private final IntProvider countProvider;
@@ -236,9 +229,6 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     public void toNetwork(FriendlyByteBuf buffer) {
-        // SERIALIZATION_MARKER_LIST is consumed by FluidIngredient#fromNetwork
-        // to tell it to deserialize as an IPFI.
-        buffer.writeCollection(SERIALIZATION_MARKER_LIST, FriendlyByteBuf::writeVarInt);
         inner.toNetwork(buffer);
         buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
     }
