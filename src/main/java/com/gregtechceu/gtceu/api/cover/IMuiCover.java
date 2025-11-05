@@ -41,14 +41,14 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
     @Override
     default ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        IWidget widget = createUIWidget();
+        IWidget widget = createCoverUI(data, syncManager, settings);
         return GTGuis.createPanel(this.self(), 176, 166)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(widget)
                 .bindPlayerInventory();
     }
 
-    IWidget createUIWidget();
+    ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings);
 
     /* Helper methods for UI creation with covers that are commonly used */
 

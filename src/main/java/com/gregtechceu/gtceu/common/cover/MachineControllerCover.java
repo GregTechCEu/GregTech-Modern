@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -267,7 +267,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public IWidget createUIWidget() {
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return null;
     }
 

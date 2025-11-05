@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -80,7 +83,7 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public IWidget createUIWidget() {
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return new Column()
                 .child(IMuiCover.createTitleRow(this.getAttachItem()))
                 .child(SlotGroupWidget.builder()
