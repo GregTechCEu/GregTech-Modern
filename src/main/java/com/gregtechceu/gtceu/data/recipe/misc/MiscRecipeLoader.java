@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemStackMapIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -12,6 +14,8 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +26,7 @@ import net.minecraftforge.common.Tags;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -30,8 +35,20 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class MiscRecipeLoader {
+    public static final Predicate<Tag> predicate = (tag) -> {
+        System.out.println(tag);
+        return tag instanceof CompoundTag compoumd;
+    };
+
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        MIXER_RECIPES.recipeBuilder("test_nbt_predicate").duration(100).EUt(VA[ULV])
+                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE), predicate))
+                .outputItems(new ItemStack(Items.FERMENTED_SPIDER_EYE))
+                .save(provider);
+
+
+
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
                 "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
