@@ -98,8 +98,11 @@ public interface GTRecipeSchema {
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
 
+        // material stacks that are from already resolved inputs
         public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
         public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
+        // temporary buffer for unresolved item stacks where decomp is found post recipe addition
+        public List<ItemStack> tempItemStacks = new ArrayList<>();
         public boolean itemMaterialInfo = false;
         public boolean fluidMaterialInfo = false;
         public boolean removeMaterialInfo = false;
@@ -262,10 +265,20 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(InputItem... inputs) {
             for (var stack : inputs) {
-                var matInfo = ChemicalHelper.getMaterialInfo(stack.ingredient);
-                if (matInfo != null && chance == maxChance && chance != 0) {
-                    for (var matStack : matInfo.getMaterials()) {
+                // test simple item that have pure singular material stack
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient.getItems()[0].getItem());
+                // test item that has multiple material stacks
+                var matInfo = ChemicalHelper.getMaterialInfo(stack.ingredient.getItems()[0].getItem());
+                if (chance == maxChance && chance != 0) {
+                    if (!matStack.isEmpty()) {
                         itemMaterialStacks.add(matStack.multiply(stack.count));
+                    }
+                    if (matInfo != null) {
+                        for (var ms : matInfo.getMaterials()) {
+                            itemMaterialStacks.add(ms.multiply(stack.count));
+                        }
+                    } else {
+                        tempItemStacks.add(stack.ingredient.getItems()[0].copyWithCount(stack.count));
                     }
                 }
             }
@@ -274,10 +287,21 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                // test simple item that have pure singular material stack
                 var matStack = ChemicalHelper.getMaterialStack(itemStack);
-                if (!matStack.isEmpty()) {
-                    itemMaterialStacks
-                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
+                // test item that has multiple material stacks
+                var matInfo = ChemicalHelper.getMaterialInfo(itemStack);
+                if (chance == maxChance && chance != 0) {
+                    if (!matStack.isEmpty()) {
+                        itemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
+                    }
+                    if (matInfo != null) {
+                        for (var ms : matInfo.getMaterials()) {
+                            itemMaterialStacks.add(ms.multiply(itemStack.getCount()));
+                        }
+                    } else {
+                        tempItemStacks.add(itemStack);
+                    }
                 }
                 if (itemStack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
