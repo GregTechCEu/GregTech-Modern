@@ -91,8 +91,8 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
                         .key('I', i -> new ItemSlot()
                                 .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
                         .build())
-                .top(3)
                 .rightRel(0.5F)
+                .margin(3)
                 .childPadding(3)
                 .coverChildren();
     }
