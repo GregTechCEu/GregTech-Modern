@@ -135,6 +135,11 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     }
 
     @Override
+    protected boolean removeAll() {
+        return super.removeAll();
+    }
+
+    @Override
     public void onChildRemove(I child) {
         super.onChildRemove(child);
         if (isValid()) {
