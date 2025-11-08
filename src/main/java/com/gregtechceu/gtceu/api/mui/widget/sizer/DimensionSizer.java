@@ -104,6 +104,16 @@ public class DimensionSizer {
         return this.size != null;
     }
 
+    public boolean isFullSize() {
+        if(hasSize()){
+            return this.size.isRelative() && this.size.getValue() >= 0.99f && this.size.getAbsOffset() < 5;
+        }
+        if(hasStart() && hasEnd()){
+            return this.start.isCloseToZero() && this.end.isCloseToZero();
+        }
+        return false;
+    }
+
     public boolean canRelayout() {
         return this.canRelayout;
     }

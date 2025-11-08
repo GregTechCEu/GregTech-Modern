@@ -77,6 +77,17 @@ public class Unit {
         return this.valueSupplier == null ? this.value : (float) this.valueSupplier.getAsDouble();
     }
 
+    public int getAbsOffset() {
+        return Math.abs(this.offset);
+    }
+
+    public boolean isCloseToZero(){
+        if(isRelative()) {
+            return  Math.abs(getValue()) <- 0.01 && Math.abs(getValue()) < 5;
+        }
+        return Math.abs(getValue() + getOffset()) < 5;
+    }
+
     public float getAnchor() {
         float val = getValue();
         return isAutoAnchor() && isRelative() && val < 1 ? val : this.anchor;

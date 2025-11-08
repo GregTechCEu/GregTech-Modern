@@ -344,6 +344,11 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         return this.x.hasFixedSize() && this.y.hasFixedSize();
     }
 
+    public boolean isFullSize() {
+        if( !hasHeight() || !hasWidth() ) return false;
+        return this.x.hasFixedSize() && this.y.hasFixedSize();
+    }
+
     @ApiStatus.Internal
     public void checkExpanded(@Nullable GuiAxis axis) {
         this.x.setExpanded(false);

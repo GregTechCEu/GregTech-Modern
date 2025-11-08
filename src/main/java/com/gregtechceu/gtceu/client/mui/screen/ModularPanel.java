@@ -249,13 +249,16 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @MustBeInvokedByOverriders
     public void onClose() {
-        if (!getScreen().isOverlay()) {
-            getContext().getXeiSettings().removeExclusionArea(this);
-        }
+        onPanelCLose();
         this.state = State.CLOSED;
         if (this.panelHandler != null) {
             this.panelHandler.closePanelInternal();
         }
+    }
+
+    @Override
+    public boolean isExcludeAreaInXei() {
+        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !flex().isFullSize());
     }
 
     @MustBeInvokedByOverriders
@@ -811,9 +814,14 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return child(SlotGroupWidget.playerInventory(bottom, true));
     }
 
+    @Override
     public ModularPanel invisible() {
         this.invisible = true;
-        return background(IDrawable.EMPTY);
+        return super.invisible();
+    }
+
+    public ModularPanel fullScreenInvisible(){
+        return invisible().full();
     }
 
     public ModularPanel resizeableOnDrag(boolean resizeable) {
