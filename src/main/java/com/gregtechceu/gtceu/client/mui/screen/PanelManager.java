@@ -259,36 +259,130 @@ public class PanelManager {
         return this.panels.contains(panel);
     }
 
-    public void pushUp(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
-        if (index == 0) return;
-        this.panels.remove(index);
-        this.panels.add(index - 1, window);
+
+    public boolean hasPanelOpen(String name){
+        return getOpenPanel(name) != null;
     }
 
-    public void pushDown(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
-        if (index == this.panels.size() - 1) return;
-        this.panels.remove(index);
-        this.panels.add(index + 1, window);
+    public @Nullable ModularPanel getOpenPanel(String name){
+        for(ModularPanel panel : this.panels){
+            if(panel.getName().equals(name)){
+                return panel;
+            }
+        }
+        return null;
+    }
+
+    public int getOpenPanelCount() {
+        return this.panels.size();
+    }
+
+    public int getPanelIndex(ModularPanel panel) {
+        return this.panels.indexOf(panel);
+    }
+
+    public int getPanelIndexOrFail(ModularPanel panel, String action){
+        int index = getPanelIndex(panel);
+        if(index < 0){
+            throw new IllegalArgumentException("Failed to perform action '" + action + "'on panel'" + panel
+            + "', because it is not open in this screen");
+        }
+        return index;
+    }
+
+    public void pushUp(@NotNull ModularPanel panel) {
+        int index = getPanelIndexOrFail(panel, "pushUp");
+        movePanel(index, index-1);
+    }
+
+
+
+
+    public void pushDown(@NotNull ModularPanel panel) {
+       int index = getPanelIndexOrFail(panel, "push down");
+       movePanel(index, index +1);
+
     }
 
     public void pushToTop(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
-        if (index == 0) return;
-        this.panels.remove(index);
-        this.panels.add(0, window);
+     int index = getPanelIndexOrFail(window, "push To Top");
+     movePanel(index, 0);
     }
 
     public void pushToBottom(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
+      int index = getPanelIndexOrFail(window, "push To Bottom");
+      movePanel(index, -1);
+    }
+
+    public void movePanelAbove(ModularPanel panelToMove, ModularPanel target){
+
+        int index = getPanelIndexOrFail(panelToMove, "move panel after");
+        if(index == 0) return;
+        int targetIndex = getTopSubPanelIndexOf(target);
+        if(targetIndex <0 ){
+            throw new IllegalArgumentException("Could not find target or a sub panel of '" + target + "'.");
+        }
+        movePanel(index, targetIndex);
+
+    }
+    public void movePanelBelow(ModularPanel panelToMove, ModularPanel target) {
+        int index = getPanelIndexOrFail(panelToMove, "move panel after");
         if (index == this.panels.size() - 1) return;
-        this.panels.remove(index);
-        this.panels.add(window);
+        int targetIndex = getBottomSubPanelIndexOf(target);
+        if (targetIndex < 0) {
+            throw new IllegalArgumentException("Could not find target or a sub panel of '" + target + "'.");
+        }
+        movePanel(index, targetIndex + 1);
+    }
+
+    private void movePanel(int panelIndex, int target) {
+        if (target < 0) target += this.panels.size();
+        else if (panelIndex < target) target--;
+        ModularPanel panel = this.panels.remove(panelIndex);
+        this.panels.add(target, panel);
+        this.dirty = true;
+    }
+
+    private int getTopSubPanelIndexOf(ModularPanel target) {
+        int targetIndex = -1;
+        for (int i = this.panels.size() - 1; i >= 0; i--) {
+            ModularPanel panel = this.panels.get(i);
+            if (isSubPanelOf(panel, target)) {
+                targetIndex = i;
+                continue;
+            }
+            break;
+        }
+        return targetIndex;
+    }
+
+    private int getBottomSubPanelIndexOf(ModularPanel target) {
+        int targetIndex = -1;
+        for (int i = 0; i < this.panels.size(); i++) {
+            ModularPanel panel = this.panels.get(i);
+            if (isSubPanelOf(panel, target)) {
+                targetIndex = i;
+                continue;
+            }
+            break;
+        }
+        return targetIndex;
+    }
+
+    public boolean isSubPanelOf(ModularPanel panel, ModularPanel target) {
+        if (panel == target) return true;
+        IPanelHandler panelHandler = this.panelHandlerMap.get(panel.getName());
+        while (panelHandler != null) {
+            if (panelHandler instanceof SecondaryPanel secPanel) {
+                if (secPanel.getParent() == target) {
+                    return true;
+                }
+                panelHandler = this.panelHandlerMap.get(secPanel.getParent().getName());
+            } else {
+                break;
+            }
+        }
+        return false;
     }
 
     @NotNull

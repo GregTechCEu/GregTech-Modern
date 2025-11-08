@@ -25,6 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
  * {@link #simple(ModularPanel, SecondaryPanel.IPanelBuilder, boolean)}
  * is likely what you need.
  */
+@ApiStatus.NonExtendable
 public interface IPanelHandler {
 
     /**

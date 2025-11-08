@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 
+import lombok.Getter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,6 +15,7 @@ import java.util.Objects;
 
 public class SecondaryPanel implements IPanelHandler {
 
+    @Getter
     private final ModularPanel parent;
     private final IPanelBuilder provider;
     private final boolean subPanel;
