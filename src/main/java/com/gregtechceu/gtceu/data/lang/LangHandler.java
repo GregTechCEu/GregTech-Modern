@@ -1087,7 +1087,9 @@ public class LangHandler {
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
-        provider.add("gtceu.multiblock.batch_enabled", "Batching Mode: Enabled (%sx)");
+        provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
+        provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
+        provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
         provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
         provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
@@ -1128,7 +1130,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
-        provider.add("gtceu.multiblock.parallel.exact", "Performing %d Recipes in Parallel");
+        provider.add("gtceu.multiblock.parallel.exact", "- %dx from Parallels");
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
@@ -1607,6 +1609,10 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.bufferText",
+                "Returns the text from a buffer accessible by ComputerCraft",
+                "Usage:",
+                "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");

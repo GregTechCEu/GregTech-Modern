@@ -89,14 +89,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
-                .inputFluids(material.getFluid(L / 2))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) / 2)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
+                    .inputFluids(material.getFluid(L / 2))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) / 2)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe_dust")
                     .inputItems(dust, material, 1)
@@ -105,7 +106,7 @@ public final class PipeRecipeHandler {
                     .duration((int) (material.getMass()))
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
-        } else {
+        } else if (plate.doGenerateItem(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_%s_pipe", material.getName()),
                     pipeStack.copyWithCount(2), " s ", "hXw",
                     'X', new MaterialEntry(plate, material));
@@ -129,14 +130,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
-                .inputFluids(material.getFluid(L))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()))
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
+                    .inputFluids(material.getFluid(L))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()))
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_small_pipe_dust")
                     .inputItems(dust, material, 1)
@@ -145,7 +147,7 @@ public final class PipeRecipeHandler {
                     .duration((int) (material.getMass()))
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
-        } else {
+        } else if (plate.doGenerateItem(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_%s_pipe", material.getName()),
                     pipeStack, "wXh",
                     'X', new MaterialEntry(plate, material));
@@ -169,14 +171,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
-                .inputFluids(material.getFluid(L * 3))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 3)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
+                    .inputFluids(material.getFluid(L * 3))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 3)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_pipe_dust")
                     .inputItems(dust, material, 3)
@@ -185,7 +188,7 @@ public final class PipeRecipeHandler {
                     .duration((int) material.getMass() * 3)
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
-        } else {
+        } else if (plate.doGenerateItem(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("medium_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h",
                     'X', new MaterialEntry(plate, material));
@@ -209,14 +212,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
-                .inputFluids(material.getFluid(L * 6))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 6)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
+                    .inputFluids(material.getFluid(L * 6))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 6)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_large_pipe_dust")
                     .inputItems(dust, material, 6)
@@ -225,7 +229,7 @@ public final class PipeRecipeHandler {
                     .duration((int) material.getMass() * 6)
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
-        } else {
+        } else if (plate.doGenerateItem(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("large_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h", "XXX",
                     'X', new MaterialEntry(plate, material));
@@ -248,14 +252,15 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
-                .inputFluids(material.getFluid(L * 12))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 24)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
+        if (material.hasFluid()) {
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
+                    .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
+                    .inputFluids(material.getFluid(L * 12))
+                    .outputItems(pipeStack)
+                    .duration((int) (material.getMass()) * 24)
+                    .EUt(6L * getVoltageMultiplier(material))
+                    .save(provider);
+        }
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_huge_pipe_dust")
                     .inputItems(dust, material, 12)
@@ -318,18 +323,22 @@ public final class PipeRecipeHandler {
     }
 
     private static void addDuctRecipes(Consumer<FinishedRecipe> provider, Material material, int outputAmount) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
-                'X', new MaterialEntry(plate, material));
-        VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
-                'X', new MaterialEntry(plate, material));
-        VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
-                'X', new MaterialEntry(plate, material));
-        VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
-                'X', new MaterialEntry(plateDouble, material));
+        if (plate.doGenerateItem(material)) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
+                    GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
+                    'X', new MaterialEntry(plate, material));
+            VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
+                    GTBlocks.DUCT_PIPES[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
+                    'X', new MaterialEntry(plate, material));
+            VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
+                    GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                    'X', new MaterialEntry(plate, material));
+        }
+        if (plateDouble.doGenerateItem(material)) {
+            VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
+                    GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                    'X', new MaterialEntry(plateDouble, material));
+        }
     }
 
     private static int getVoltageMultiplier(Material material) {
