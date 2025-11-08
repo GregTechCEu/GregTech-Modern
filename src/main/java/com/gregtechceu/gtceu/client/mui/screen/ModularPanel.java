@@ -249,7 +249,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @MustBeInvokedByOverriders
     public void onClose() {
-        onPanelCLose();
+
         this.state = State.CLOSED;
         if (this.panelHandler != null) {
             this.panelHandler.closePanelInternal();
@@ -729,9 +729,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     final void setPanelGuiContext(@NotNull ModularGuiContext context) {
         setContext(context);
-        if (!context.getScreen().isOverlay()) {
-            context.getXeiSettings().addExclusionArea(this);
-        }
     }
 
     public boolean isOpening() {
@@ -836,20 +833,21 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     public enum State {
         /**
-         * Initial state of any panel
+         * Initial state of any panel.
          */
         IDLE,
         /**
-         * State after the panel opened
+         * State after the panel opened.
          */
         OPEN,
         /**
-         * State after panel closed
-         */
+         * State after panel closed. Panel can still be reopened in this state.
+         * */
         CLOSED,
         /**
          * State after panel disposed.
          * Panel can still be reopened in this state.
+         * State after panel disposed. The panel is now lost and has to be rebuilt, when reopening it.
          */
         DISPOSED,
         /**

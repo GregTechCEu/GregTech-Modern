@@ -441,11 +441,29 @@ public class PanelManager {
 
     public enum State {
 
+        /**
+         * Screen is created, but not yet opened.
+         */
         INIT(false),
+        /**
+         * Screen is open after init, or after it was disposed and opened again.
+         */
         OPEN(true),
+        /**
+         * Screen was closed, but is now open again.
+         */
         REOPENED(true),
+        /**
+         * Screen is closed after it was open.
+         */
         CLOSED(false),
+        /**
+         * Screen is closed and waiting to be disposed.
+         */
         WAIT_DISPOSAL(false),
+        /**
+         * Screen is disposed. Screen can be reopened in this state, but every panel has to be rebuilt.
+         */
         DISPOSED(false);
 
         public final boolean isOpen;

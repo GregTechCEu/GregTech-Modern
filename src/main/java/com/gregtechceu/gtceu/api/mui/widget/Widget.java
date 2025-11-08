@@ -233,11 +233,14 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         }
     }
 
+
     /**
-     * Called when the panel this widget belongs to closes. In this state the panel can still be reopened.
+     * Called when this widget is removed from the widget tree or after the panel is closed.
+     * Overriding this is fine, but super must be called.
      */
     @MustBeInvokedByOverriders
-    public void onPanelCLose() {
+    @Override
+    public void dispose() {
         if (isValid()) {
             if (this.guiActionListeners != null) {
                 for (IGuiAction action : this.guiActionListeners) {
@@ -247,22 +250,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
             if (isExcludeAreaInXei()) {
                 getContext().getXeiSettings().removeExclusionArea(this);
             }
-            if (hasChildren()) {
-                for (IWidget child : getChildren()) {
-                    child.dispose();
-                }
-            }
         }
-        this.timeHovered = -1;
-    }
-
-    /**
-     * Called when this widget is removed from the widget tree or after the panel is closed.
-     * Overriding this is fine, but super must be called.
-     */
-    @MustBeInvokedByOverriders
-    @Override
-    public void dispose() {
         if (hasChildren()) {
             for (IWidget child : getChildren()) {
                 child.dispose();
@@ -273,6 +261,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
             this.parent = null;
             this.context = null;
         }
+        this.timeHovered = -1;
         this.valid = false;
     }
 
