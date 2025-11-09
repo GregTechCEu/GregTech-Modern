@@ -334,6 +334,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 )
                 .child(IKey.str("Voltage").asWidget()
                         .anchorRight(0)
+                        .paddingRight(4)
                         .verticalCenter()
 
                 );
@@ -352,6 +353,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 .child(IKey.str("Amperage")
                         .asWidget()
                         .anchorRight(0)
+                        .paddingRight(4)
                         .verticalCenter())
                 .child(new ButtonWidget<>()
                         .overlay(new DynamicDrawable(() -> {
