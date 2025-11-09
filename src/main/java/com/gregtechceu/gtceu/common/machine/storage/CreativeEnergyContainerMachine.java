@@ -70,6 +70,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     @Setter
     private int tier = 0;
     @Persisted
+    @Getter
+    @Setter
     private boolean active = false;
     @Persisted
     @Getter
@@ -224,6 +226,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         IntSyncValue amps = new IntSyncValue(this::getAmps, this::setAmps);
         IntSyncValue tier = new IntSyncValue(this::getTier, this::setTier);
         BooleanSyncValue sourceSync = new BooleanSyncValue(this::isSource, this::setSource);
+        BooleanSyncValue isActive = new BooleanSyncValue(this::isActive, this::setActive);
         syncManager.syncValue("tier", tier);
 
         IPanelHandler panelSyncHandler = syncManager.panel("voltage popup",
@@ -251,7 +254,10 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                 .coverChildrenHeight()
                                 .name("Power")
                                 .coverChildrenHeight()
-                                .child(new ToggleButton())
+                                .child(new ToggleButton()
+                                        .value(isActive)
+                                        .overlay(true, GTGuiTextures.BUTTON_POWER[1])
+                                        .overlay(false, GTGuiTextures.BUTTON_POWER[0]))
                                 .child(IKey.str("Enable")
                                         .asWidget()
                                         .paddingLeft(4)
@@ -369,9 +375,9 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .coverChildrenHeight()
                         .name("button")
                         .child(new ToggleButton()
-                                .overlay(new DynamicDrawable(() ->{
-                                    if(sourceSync.getValue()) {
-                                        return GTGuiTextures.CHECK_BOX.getSubArea(0,.5f,1,1f);
+                                .overlay(new DynamicDrawable(() -> {
+                                    if (sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
                                     }
                                     return IDrawable.EMPTY;
                                 }))
@@ -385,9 +391,9 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .name("button")
                         .coverChildrenHeight()
                         .child(new ToggleButton()
-                                .overlay(new DynamicDrawable(() ->{
-                                    if(!sourceSync.getValue()) {
-                                        return GTGuiTextures.CHECK_BOX.getSubArea(0,.5f,1,1f);
+                                .overlay(new DynamicDrawable(() -> {
+                                    if (!sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
                                     }
                                     return IDrawable.EMPTY;
                                 }))
@@ -396,8 +402,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                 .asWidget()
                                 .paddingLeft(4)
 
-                        )
-                );
+                        ));
     }
 
     private ModularPanel createAmpSelector(LongSyncValue syncer, IntSyncValue tier) {
