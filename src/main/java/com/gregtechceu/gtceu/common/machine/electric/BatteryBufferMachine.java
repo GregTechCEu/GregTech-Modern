@@ -13,7 +13,9 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -209,6 +211,11 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public IGuiTexture getComponentIcon() {
         return GuiTextures.BUTTON_CHECK; // temporary
+    }
+
+    @Override
+    public IDrawable getIcon() {
+        return GTGuiTextures.BATTERY_OVERLAY;
     }
 
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {

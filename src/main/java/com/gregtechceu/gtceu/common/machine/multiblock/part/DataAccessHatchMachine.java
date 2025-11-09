@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -199,6 +201,11 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public IGuiTexture getComponentIcon() {
         return new ResourceTexture(GTCEu.id("textures/item/data_module.png")).getSubTexture(0, 0, 1, 1 / 13f);
+    }
+
+    @Override
+    public IDrawable getIcon() {
+        return UITexture.fullImage(GTCEu.MOD_ID, "textures/item/data_module.png").getSubArea(0, 0, 1, 1 / 13f);
     }
 
     @Override

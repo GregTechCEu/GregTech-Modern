@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -117,5 +119,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     @Override
     public IGuiTexture getComponentIcon() {
         return GuiTextures.BUTTON_CHECK; // temporary (until there's a texture that is not fully 16x16 for this)
+    }
+
+    @Override
+    public IDrawable getIcon() {
+        return GTGuiTextures.CROSS;
     }
 }

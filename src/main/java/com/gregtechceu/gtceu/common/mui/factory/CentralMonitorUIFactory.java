@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
+import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -12,6 +15,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -19,6 +23,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMa
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CentralMonitorUIFactory implements PanelFactory {
@@ -71,6 +77,16 @@ public class CentralMonitorUIFactory implements PanelFactory {
     }
 
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager, IPanelHandler panelHandler, CentralMonitorMachine machine, MonitorGroup group) {
+        List<List<IWidget>> matrix = new ArrayList<>();
+        for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
+            List<IWidget> curRow = new ArrayList<>();
+            matrix.add(curRow);
+            for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
+                IMonitorComponent component = machine.getComponent(row, col);
+                IDrawable texture = component == null ? GTGuiTextures.CROSS : component.getIcon();
+                curRow.add(new ButtonWidget<>().background(texture));
+            }
+        }
         return new ModularPanel("group_editor_" + group.getName())
                 .padding(10)
                 .child(Flow.column()
@@ -79,6 +95,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_name")))
                                 .child(new TextFieldWidget()
                                         .padding(4)
-                                        .value(SyncHandlers.string(group::getName, group::setName)))));
+                                        .value(SyncHandlers.string(group::getName, group::setName)))))
+                .child(new Grid().matrix(matrix));
     }
 }
