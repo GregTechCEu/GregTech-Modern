@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -480,6 +481,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder allowCoverOnFront(boolean allowCoverOnFront) {
         return (MultiblockMachineBuilder) super.allowCoverOnFront(allowCoverOnFront);
+    }
+
+    @Override
+    public MultiblockMachineBuilder UI(PanelFactory ui) {
+        return (MultiblockMachineBuilder) super.UI(ui);
     }
 
     @Override
