@@ -2,17 +2,21 @@ package com.gregtechceu.gtceu.common.mui.factory;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import java.util.stream.Collectors;
@@ -24,7 +28,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     @Override
     public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                         MetaMachine metaMachine) {
-        if (!(metaMachine instanceof CentralMonitorMachine machine)) return null;
+        if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
         return new ModularPanel("main")
                 .padding(10)
                 .child(new Flow(GuiAxis.Y)
@@ -41,15 +45,40 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(new ListWidget<>().children(
                                 machine.getMonitorGroups()
                                         .stream()
-                                        .map(group -> new Flow(GuiAxis.X)
+                                        .map(group -> {
+                                            IPanelHandler panelHandler = syncManager.panel(
+                                                    "editor_" + group.getName(),
+                                                    (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
+                                                            syncManager1, panelHandler1,
+                                                            machine, group
+                                                    ), true
+                                            );
+                                            return new Flow(GuiAxis.X)
                                                 .height(20)
                                                 .child(new TextWidget<>(group.getName()))
                                                 .child(new ButtonWidget<>()
                                                         .alignX(1)
                                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
                                                         .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                                GTGuiTextures.EDIT)))
+                                                                GTGuiTextures.EDIT)
+                                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                                            panelHandler.openPanel();
+                                                            return true;
+                                                        }));
+                                        })
                                         .collect(Collectors.toUnmodifiableList()))
                                 .widthRel(1).heightRel(.8f)));
+    }
+
+    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager, IPanelHandler panelHandler, CentralMonitorMachine machine, MonitorGroup group) {
+        return new ModularPanel("group_editor_" + group.getName())
+                .padding(10)
+                .child(Flow.column()
+                        .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
+                        .child(Flow.row()
+                                .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_name")))
+                                .child(new TextFieldWidget()
+                                        .padding(4)
+                                        .value(SyncHandlers.string(group::getName, group::setName)))));
     }
 }

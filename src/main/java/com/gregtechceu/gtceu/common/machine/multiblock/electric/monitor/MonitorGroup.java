@@ -28,8 +28,9 @@ import java.util.function.UnaryOperator;
 public class MonitorGroup {
 
     private final Set<BlockPos> monitorPositions = new HashSet<>();
+    @Setter
     @Getter
-    private final String name;
+    private String name;
     @Getter
     private final CustomItemStackHandler itemStackHandler;
     @Getter
