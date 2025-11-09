@@ -1613,6 +1613,11 @@ public class LangHandler {
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",
                 "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
@@ -1645,7 +1650,7 @@ public class LangHandler {
                 "Slot number: %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
