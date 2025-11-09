@@ -18,11 +18,13 @@ import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
@@ -71,6 +73,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     @Persisted
     private boolean active = false;
     @Persisted
+    @Getter
+    @Setter
     private boolean source = true;
     @Persisted
     private long energyIOPerSec = 0;
@@ -237,8 +241,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .coverChildrenHeight()
                         .child(createTitleRow())
                         .child(createVoltageRow(panelSyncHandler, voltage))
-
-                        .child(createAmpRow(amps, data))
+                        .child(createAmpRow(amps))
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(new Column()
@@ -246,13 +249,44 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                 .child(new Row()
                                         .coverChildrenHeight()
                                         .name("button")
-                                        .coverChildrenHeight()
-                                        .child(new ButtonWidget<>())
-                                        .child(IKey.str("Toggle")
+                                        .child(new ToggleButton()
+                                                .value(new BooleanSyncValue(() -> source, bool -> source = bool)))
+                                        .child(IKey.str("Source")
                                                 .asWidget()
+                                                .paddingLeft(4)
+                                        )
+                                        .paddingBottom(2)
+                                )
+                                .child(new Row()
+                                        .coverChildrenHeight()
+                                        .name("button")
+                                        .coverChildrenHeight()
+                                        .child(new ToggleButton()
+                                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)
+                                                )
+                                        )
+                                        .child(IKey.str("Sink")
+                                                .asWidget()
+                                                .paddingLeft(4)
+
                                         )
                                 )
+
                         )
+                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(new Row()
+                                .coverChildrenHeight()
+                                .name("Power")
+                                .coverChildrenHeight()
+                                .child(new ToggleButton())
+                                .child(IKey.str("Power")
+                                        .asWidget()
+                                        .paddingLeft(4)
+
+                                )
+                        )
+
                 );
     }
 
@@ -314,7 +348,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 );
     }
 
-    static Flow createAmpRow(IntSyncValue amps, PosGuiData data) {
+    static Flow createAmpRow(IntSyncValue amps) {
         return Flow.row()
                 .coverChildrenHeight()
                 .child(
@@ -334,13 +368,13 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if(mouseData.shift()){
-                                return IKey.str("1/2");
+                                return IKey.str("1/2x");
                             }
                             else if (mouseData.ctrl()) {
-                                return IKey.str("4");
+                                return IKey.str("4x");
                             }
                             else{
-                                return IKey.str("2");
+                                return IKey.str("2x");
                             }
 
                         }))
