@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -22,6 +23,8 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,46 +59,62 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                     "editor_" + group.getName(),
                                                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
                                                             syncManager1, panelHandler1,
-                                                            machine, group
-                                                    ), true
-                                            );
+                                                            machine, group),
+                                                    true);
                                             return new Flow(GuiAxis.X)
-                                                .height(20)
-                                                .child(new TextWidget<>(group.getName()))
-                                                .child(new ButtonWidget<>()
-                                                        .alignX(1)
-                                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
-                                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                                GTGuiTextures.EDIT)
-                                                        .onMousePressed((mouseX, mouseY, button) -> {
-                                                            panelHandler.openPanel();
-                                                            return true;
-                                                        }));
+                                                    .height(20)
+                                                    .child(new TextWidget<>(group.getName()))
+                                                    .child(new ButtonWidget<>()
+                                                            .alignX(1)
+                                                            .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
+                                                            .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                                    GTGuiTextures.EDIT)
+                                                            .onMousePressed((mouseX, mouseY, button) -> {
+                                                                panelHandler.openPanel();
+                                                                return true;
+                                                            }));
                                         })
                                         .collect(Collectors.toUnmodifiableList()))
                                 .widthRel(1).heightRel(.8f)));
     }
 
-    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager, IPanelHandler panelHandler, CentralMonitorMachine machine, MonitorGroup group) {
+    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager, IPanelHandler panelHandler,
+                                                CentralMonitorMachine machine, MonitorGroup group) {
         List<List<IWidget>> matrix = new ArrayList<>();
+        int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
             List<IWidget> curRow = new ArrayList<>();
             matrix.add(curRow);
             for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
                 IMonitorComponent component = machine.getComponent(row, col);
                 IDrawable texture = component == null ? GTGuiTextures.CROSS : component.getIcon();
-                curRow.add(new ButtonWidget<>().background(texture));
+                curRow.add(new ButtonWidget<>()
+                        .margin(1)
+                        .background(texture, new BorderDrawable(() -> {
+                            if (component == null) return 0;
+                            boolean inGroup = group.contains(component.getPos());
+                            BlockPos target = group.getTarget(syncManager.getPlayer().level());
+                            boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
+                            if (inGroup && isTarget) return 0xFFFF00FF;
+                            else if (inGroup) return 0xFF0000FF;
+                            else if (isTarget) return 0xFFFF0000;
+                            else return 0;
+                        }, 1))
+                        .hoverBackground(texture, new BorderDrawable(0xFFFFFFFF, 1)));
             }
+            matrixWidth = Math.max(matrixWidth, curRow.size() * 20);
         }
+        int matrixHeight = matrix.size() * 20;
         return new ModularPanel("group_editor_" + group.getName())
                 .padding(10)
                 .child(Flow.column()
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
                         .child(Flow.row()
-                                .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_name")))
+                                .height(20)
+                                .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_name"))
+                                        .paddingRight(4))
                                 .child(new TextFieldWidget()
-                                        .padding(4)
-                                        .value(SyncHandlers.string(group::getName, group::setName)))))
-                .child(new Grid().matrix(matrix));
+                                        .value(SyncHandlers.string(group::getName, group::setName))))
+                        .child(new Grid().matrix(matrix).alignX(0).size(matrixWidth, matrixHeight)));
     }
 }

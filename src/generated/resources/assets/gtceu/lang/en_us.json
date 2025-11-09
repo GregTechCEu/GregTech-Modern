@@ -2215,6 +2215,8 @@
   "gtceu.canner": "Canner",
   "gtceu.central_monitor.gui.create_group": "Create group",
   "gtceu.central_monitor.gui.currently_editing": "Currently editing: %s",
+  "gtceu.central_monitor.gui.group_editor": "Editing monitor group",
+  "gtceu.central_monitor.gui.group_name": "Name:",
   "gtceu.central_monitor.gui.monitor_groups": "Monitor groups",
   "gtceu.central_monitor.gui.remove_from_group": "Remove from group",
   "gtceu.central_monitor.gui.set_target": "Set target",

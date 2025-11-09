@@ -1649,6 +1649,8 @@ public class LangHandler {
         provider.add("gtceu.computer_monitor_cover.error.not_supported",
                 "This feature is not supported by this block/cover!");
         provider.add("gtceu.central_monitor.gui.monitor_groups", "Monitor groups");
+        provider.add("gtceu.central_monitor.gui.group_editor", "Editing monitor group");
+        provider.add("gtceu.central_monitor.gui.group_name", "Name:");
         provider.add("gtceu.central_monitor.gui.create_group", "Create group");
         provider.add("gtceu.central_monitor.gui.remove_from_group", "Remove from group");
         provider.add("gtceu.central_monitor.gui.set_target", "Set target");
