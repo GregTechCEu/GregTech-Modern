@@ -237,14 +237,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .coverChildrenHeight()
                         .child(createTitleRow())
                         .child(createVoltageRow(panelSyncHandler, voltage))
-                                .child(IKey.str("Voltage").asWidget()
-                                        .anchorRight(0)
-                                        .verticalCenter()
 
-                                )
-                                .paddingBottom(4))
-                        .child(createAmpRow(amps)
-                        )
+                        .child(createAmpRow(amps, data))
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(new Column()
@@ -258,39 +252,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                                 .asWidget()
                                         )
                                 )
-                        );
-    }
-
-    static Flow createAmpRow(IntSyncValue amps) {
-        return Flow.row()
-                .coverChildrenHeight()
-                .child(
-                        new TextFieldWidget()
-                                .setTextAlignment(Alignment.CENTER)
-
-                                .setNumbers(1, Integer.MAX_VALUE)
-                                .value(amps)
-                                .setDefaultNumber(1)
-                )
-                .child(IKey.str("Amperage")
-                        .asWidget()
-                        .anchorRight(0)
-                        .verticalCenter()
-                )
-                .child(new ButtonWidget<>()
-                        .size(16)
-                        .tooltip(new RichTooltip().addLine("Click to Double Amperage")
-                                .addLine("Shift to half current Amperage"))
-                        .onMousePressed((a, b, c) -> {
-                            MouseData mouseData = MouseData.create(c);
-                            if (mouseData.shift()) {
-                                amps.setValue(amps.getValue() / 2);
-                            } else {
-                                amps.setValue(amps.getValue() * 2);
-                            }
-                            return true;
-                        })
-                        .marginLeft(4 + 32 / 4));
+                        )
+                );
     }
 
     Flow createTitleRow(){
@@ -311,6 +274,92 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                 .asWidget()
                                 .heightRel(1)
                 );
+    }
+
+    private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage){
+        return Flow.row()
+                .coverChildrenHeight()
+                .paddingBottom(4)
+                .child(new TextFieldWidget()
+                        .setTextAlignment(Alignment.CENTER)
+                        .setNumbersLong(() -> 1, () -> Long.MAX_VALUE)
+                        .value(voltage))
+                .child(new ButtonWidget<>()
+                        .overlay(IKey.dynamic(() -> {
+                                    int voltageTier = GTUtil.getTierByVoltage(voltage.getLongValue());
+                                    return Component.literal(GTValues.VNF[voltageTier]);
+                                })
+                                .shadow(true)
+                                .asIcon())
+                        .height(16)
+                        .width(32)
+                        .marginLeft(4)
+                        .tooltip(new RichTooltip().add("Click to Change Tier"))
+                        .onMousePressed((a, b, c) -> {
+                                    if (panel.isPanelOpen()) {
+
+                                        panel.closePanel();
+                                    } else {
+                                        panel.openPanel();
+                                    }
+                                    return true;
+                                }
+                        )
+
+                )
+                .child(IKey.str("Voltage").asWidget()
+                        .anchorRight(0)
+                        .verticalCenter()
+
+                );
+    }
+
+    static Flow createAmpRow(IntSyncValue amps, PosGuiData data) {
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(
+                        new TextFieldWidget()
+                                .setTextAlignment(Alignment.CENTER)
+
+                                .setNumbers(1, Integer.MAX_VALUE)
+                                .value(amps)
+                                .setDefaultNumber(1)
+                )
+                .child(IKey.str("Amperage")
+                        .asWidget()
+                        .anchorRight(0)
+                        .verticalCenter()
+                )
+                .child(new ButtonWidget<>()
+                        .overlay(new DynamicDrawable(() -> {
+                            MouseData mouseData = MouseData.create(-1);
+                            if(mouseData.shift()){
+                                return IKey.str("1/2");
+                            }
+                            else if (mouseData.ctrl()) {
+                                return IKey.str("4");
+                            }
+                            else{
+                                return IKey.str("2");
+                            }
+
+                        }))
+                        .width(32)
+                        .height(16)
+                        .tooltip(new RichTooltip().addLine("Click to Double Amperage")
+                                .addLine("Shift to half current Amperage"))
+                        .onMousePressed((a, b, c) -> {
+                            MouseData mouseData = MouseData.create(c);
+                            if (mouseData.shift()) {
+                                amps.setValue(amps.getValue() / 2);
+                            } else if (mouseData.ctrl()) {
+                                amps.setValue(amps.getValue() * 4);
+                            } else {
+                                amps.setValue(amps.getValue() * 2);
+                            }
+                            return true;
+                        })
+                        .marginLeft(4));
     }
 
     private ModularPanel createAmpSelector(LongSyncValue syncer, IntSyncValue tier) {
@@ -339,36 +388,6 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 .coverChildren();
     }
 
-    private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage){
-        return Flow.row()
-                .coverChildrenHeight()
-                .child(new TextFieldWidget()
-                        .setTextAlignment(Alignment.CENTER)
-                        .setNumbersLong(() -> 1, () -> Long.MAX_VALUE)
-                        .value(voltage))
-                .child(new ButtonWidget<>()
-                        .overlay(IKey.dynamic(() -> {
-                                    int voltageTier = GTUtil.getTierByVoltage(voltage.getLongValue());
-                                    return Component.literal(GTValues.VNF[voltageTier]);
-                                })
-                                .shadow(true)
-                                .asIcon())
-                        .height(16)
-                        .width(32)
-                        .marginLeft(4)
 
-                        .tooltip(new RichTooltip().add("Click to Change Tier"))
-                        .onMousePressed((a, b, c) -> {
-                            if (panel.isPanelOpen()) {
-
-                                panel.closePanel();
-                            } else {
-                                panel.openPanel();
-                            }
-                            return true;
-                        }
-                        )
-                );
-    }
 
 }
