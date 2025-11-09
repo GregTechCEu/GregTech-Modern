@@ -58,6 +58,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
+    @Getter
     @Persisted
     @Setter
     private long voltage = 0;
@@ -99,10 +100,6 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     public void onLoad() {
         super.onLoad();
         subscribeServerTick(this::updateEnergyTick);
-    }
-
-    public long getVoltage() {
-        return voltage * amps;
     }
 
     //////////////////////////////////////
