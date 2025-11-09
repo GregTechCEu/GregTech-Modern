@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IIcon;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -45,8 +46,6 @@ import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.awt.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -224,6 +223,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         LongSyncValue voltage = new LongSyncValue(this::getVoltage, this::setVoltage);
         IntSyncValue amps = new IntSyncValue(this::getAmps, this::setAmps);
         IntSyncValue tier = new IntSyncValue(this::getTier, this::setTier);
+        BooleanSyncValue sourceSync = new BooleanSyncValue(this::isSource, this::setSource);
         syncManager.syncValue("tier", tier);
 
         IPanelHandler panelSyncHandler = syncManager.panel("voltage popup",
@@ -244,30 +244,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .child(createAmpRow(amps))
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
-                        .child(new Column()
-                                .coverChildrenHeight()
-                                .child(new Row()
-                                        .coverChildrenHeight()
-                                        .name("button")
-                                        .child(new ToggleButton()
-                                                .value(new BooleanSyncValue(() -> source, bool -> source = bool)))
-                                        .child(IKey.str("Source")
-                                                .asWidget()
-                                                .paddingLeft(4))
-                                        .paddingBottom(2))
-                                .child(new Row()
-                                        .coverChildrenHeight()
-                                        .name("button")
-                                        .coverChildrenHeight()
-                                        .child(new ToggleButton()
-                                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
-                                        .child(IKey.str("Sink")
-                                                .asWidget()
-                                                .paddingLeft(4)
-
-                                        ))
-
-                        )
+                        .child(createSourceSelector(sourceSync))
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(new Row()
@@ -275,7 +252,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                 .name("Power")
                                 .coverChildrenHeight()
                                 .child(new ToggleButton())
-                                .child(IKey.str("Power")
+                                .child(IKey.str("Enable")
                                         .asWidget()
                                         .paddingLeft(4)
 
@@ -383,6 +360,44 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                             return true;
                         })
                         .marginLeft(4));
+    }
+
+    private Flow createSourceSelector(BooleanSyncValue sourceSync) {
+        return Flow.column()
+                .coverChildrenHeight()
+                .child(new Row()
+                        .coverChildrenHeight()
+                        .name("button")
+                        .child(new ToggleButton()
+                                .overlay(new DynamicDrawable(() ->{
+                                    if(sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0,.5f,1,1f);
+                                    }
+                                    return IDrawable.EMPTY;
+                                }))
+                                .value(sourceSync))
+                        .child(IKey.str("Source")
+                                .asWidget()
+                                .paddingLeft(4))
+                        .paddingBottom(2))
+                .child(new Row()
+                        .coverChildrenHeight()
+                        .name("button")
+                        .coverChildrenHeight()
+                        .child(new ToggleButton()
+                                .overlay(new DynamicDrawable(() ->{
+                                    if(!sourceSync.getValue()) {
+                                        return GTGuiTextures.CHECK_BOX.getSubArea(0,.5f,1,1f);
+                                    }
+                                    return IDrawable.EMPTY;
+                                }))
+                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
+                        .child(IKey.str("Sink")
+                                .asWidget()
+                                .paddingLeft(4)
+
+                        )
+                );
     }
 
     private ModularPanel createAmpSelector(LongSyncValue syncer, IntSyncValue tier) {
