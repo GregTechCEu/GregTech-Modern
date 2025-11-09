@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import java.util.stream.Collectors;
 
@@ -32,7 +33,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .child(new Flow(GuiAxis.X)
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.monitor_groups"))
                                         .alignX(0))
-                                .child(new ButtonWidget<>().alignX(1))
+                                .child(new ButtonWidget<>()
+                                        .alignX(1)
+                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
+                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD))
                                 .widthRel(1).height(20))
                         .child(new ListWidget<>().children(
                                 machine.getMonitorGroups()
@@ -40,7 +44,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .map(group -> new Flow(GuiAxis.X)
                                                 .height(20)
                                                 .child(new TextWidget<>(group.getName()))
-                                                .child(new ButtonWidget<>().alignX(1)))
+                                                .child(new ButtonWidget<>()
+                                                        .alignX(1)
+                                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
+                                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                                GTGuiTextures.EDIT)))
                                         .collect(Collectors.toUnmodifiableList()))
                                 .widthRel(1).heightRel(.8f)));
     }
