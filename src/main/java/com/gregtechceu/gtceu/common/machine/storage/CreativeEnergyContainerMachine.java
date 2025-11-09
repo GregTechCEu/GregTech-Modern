@@ -46,9 +46,9 @@ import net.minecraft.world.level.Level;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.awt.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.mui.GTGuis.defaultPopupPanel;
 
@@ -253,24 +253,19 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                                 .value(new BooleanSyncValue(() -> source, bool -> source = bool)))
                                         .child(IKey.str("Source")
                                                 .asWidget()
-                                                .paddingLeft(4)
-                                        )
-                                        .paddingBottom(2)
-                                )
+                                                .paddingLeft(4))
+                                        .paddingBottom(2))
                                 .child(new Row()
                                         .coverChildrenHeight()
                                         .name("button")
                                         .coverChildrenHeight()
                                         .child(new ToggleButton()
-                                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)
-                                                )
-                                        )
+                                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
                                         .child(IKey.str("Sink")
                                                 .asWidget()
                                                 .paddingLeft(4)
 
-                                        )
-                                )
+                                        ))
 
                         )
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
@@ -284,13 +279,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                                         .asWidget()
                                         .paddingLeft(4)
 
-                                )
-                        )
+                                ))
 
                 );
     }
 
-    Flow createTitleRow(){
+    Flow createTitleRow() {
         return Flow.row()
                 .alignX(0)
                 .marginBottom(4)
@@ -301,16 +295,14 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .size(16)
                         .marginRight(4))
                 .child(IKey.lang(this
-                                        .getDefinition()
-                                        .asStack()
-                                        .getHoverName()
-                                )
-                                .asWidget()
-                                .heightRel(1)
-                );
+                        .getDefinition()
+                        .asStack()
+                        .getHoverName())
+                        .asWidget()
+                        .heightRel(1));
     }
 
-    private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage){
+    private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage) {
         return Flow.row()
                 .coverChildrenHeight()
                 .paddingBottom(4)
@@ -320,9 +312,9 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .value(voltage))
                 .child(new ButtonWidget<>()
                         .overlay(IKey.dynamic(() -> {
-                                    int voltageTier = GTUtil.getTierByVoltage(voltage.getLongValue());
-                                    return Component.literal(GTValues.VNF[voltageTier]);
-                                })
+                            int voltageTier = GTUtil.getTierByVoltage(voltage.getLongValue());
+                            return Component.literal(GTValues.VNF[voltageTier]);
+                        })
                                 .shadow(true)
                                 .asIcon())
                         .height(16)
@@ -330,15 +322,14 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .marginLeft(4)
                         .tooltip(new RichTooltip().add("Click to Change Tier"))
                         .onMousePressed((a, b, c) -> {
-                                    if (panel.isPanelOpen()) {
+                            if (panel.isPanelOpen()) {
 
-                                        panel.closePanel();
-                                    } else {
-                                        panel.openPanel();
-                                    }
-                                    return true;
-                                }
-                        )
+                                panel.closePanel();
+                            } else {
+                                panel.openPanel();
+                            }
+                            return true;
+                        })
 
                 )
                 .child(IKey.str("Voltage").asWidget()
@@ -357,23 +348,19 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
 
                                 .setNumbers(1, Integer.MAX_VALUE)
                                 .value(amps)
-                                .setDefaultNumber(1)
-                )
+                                .setDefaultNumber(1))
                 .child(IKey.str("Amperage")
                         .asWidget()
                         .anchorRight(0)
-                        .verticalCenter()
-                )
+                        .verticalCenter())
                 .child(new ButtonWidget<>()
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
-                            if(mouseData.shift()){
+                            if (mouseData.shift()) {
                                 return IKey.str("1/2x");
-                            }
-                            else if (mouseData.ctrl()) {
+                            } else if (mouseData.ctrl()) {
                                 return IKey.str("4x");
-                            }
-                            else{
+                            } else {
                                 return IKey.str("2x");
                             }
 
@@ -421,7 +408,4 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                         .coverChildren())
                 .coverChildren();
     }
-
-
-
 }
