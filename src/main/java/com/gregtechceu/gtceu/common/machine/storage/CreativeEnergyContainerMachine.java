@@ -63,13 +63,18 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     @Setter
     private long voltage = 0;
     @Persisted
-    @Getter
     @Setter
     private int amps = 1;
     @Persisted
     @Getter
     @Setter
     private int tier = 0;
+
+    public int getAmps() {
+        if(amps == 0) return 1;
+        return amps;
+    }
+
     @Persisted
     @Getter
     @Setter
