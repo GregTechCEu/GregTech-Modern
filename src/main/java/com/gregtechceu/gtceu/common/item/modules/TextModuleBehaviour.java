@@ -3,9 +3,14 @@ package com.gregtechceu.gtceu.common.item.modules;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextEditorWidget;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
@@ -66,6 +71,12 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         return new MonitorTextRenderer(
                 getText(stack).toImmutable(),
                 Math.max(getScale(stack), .0001));
+    }
+
+    @Override
+    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group, PanelSyncManager syncManager, IPanelHandler panelHandler) {
+        return new ModularPanel("text_module_editor")
+                .child(new TextEditorWidget().value(SyncHandlers.string(() -> getPlaceholderText(stack), text -> setPlaceholderText(stack, text))));
     }
 
     @Override

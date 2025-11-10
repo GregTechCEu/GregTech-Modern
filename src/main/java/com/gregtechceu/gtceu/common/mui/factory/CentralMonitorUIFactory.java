@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
@@ -17,6 +20,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -25,6 +29,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +110,25 @@ public class CentralMonitorUIFactory implements PanelFactory {
             matrixWidth = Math.max(matrixWidth, curRow.size() * 20);
         }
         int matrixHeight = matrix.size() * 20;
+        IMonitorModuleItem moduleItem = null;
+        ItemStack stack = group.getItemStackHandler().getStackInSlot(0);
+        if (stack.getItem() instanceof IComponentItem componentItem) {
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (component instanceof IMonitorModuleItem monitorModuleItem) {
+                    moduleItem = monitorModuleItem;
+                    break;
+                }
+            }
+        }
+        IMonitorModuleItem finalModuleItem = moduleItem;
+        IPanelHandler moduleEditor = moduleItem == null ? null : syncManager.panel(
+                "module_editor",
+                (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1, panelHandler1),
+                true
+        );
         return new ModularPanel("group_editor_" + group.getName())
+                .width(Math.max(matrixWidth, 100))
+                .height(matrixHeight + 60)
                 .padding(10)
                 .child(Flow.column()
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
@@ -114,7 +137,16 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_name"))
                                         .paddingRight(4))
                                 .child(new TextFieldWidget()
-                                        .value(SyncHandlers.string(group::getName, group::setName))))
+                                        .value(SyncHandlers.string(group::getName, group::setName)))
+                                .child(new ItemSlot().slot(group.getItemStackHandler(), 0))
+                                .child(new ButtonWidget<>()
+                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
+                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.EDIT)
+                                        .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                            if (moduleEditor != null) moduleEditor.openPanel();
+                                            return moduleEditor != null;
+                                        })))
                         .child(new Grid().matrix(matrix).alignX(0).size(matrixWidth, matrixHeight)));
     }
 }
