@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
@@ -147,6 +148,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             if (moduleEditor != null) moduleEditor.openPanel();
                                             return moduleEditor != null;
                                         })))
-                        .child(new Grid().matrix(matrix).alignX(0).size(matrixWidth, matrixHeight)));
+                        .child(new Grid().matrix(matrix).alignX(0).size(matrixWidth, matrixHeight)))
+                .child(SlotGroupWidget.playerInventory(true));
     }
 }
