@@ -457,6 +457,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
+            validateItems("not consumable", orePrefix);
+
             int lastChance = this.chance;
             this.chance = 0;
             inputItems(orePrefix, material);
@@ -815,6 +817,14 @@ public interface GTRecipeSchema {
         }
 
         private void validateItems(String type, OutputItem... items) {
+            for (var item : items) {
+                if (item.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateItems(String type, TagPrefix... items) {
             for (var item : items) {
                 if (item.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
