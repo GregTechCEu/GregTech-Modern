@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
@@ -56,7 +57,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
@@ -75,6 +75,8 @@ public class ClientScreenHandler {
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
     private static final ObjectArrayList<IMuiScreen> muiStack = new ObjectArrayList<>(8);
+
+    private static boolean debugToggleActive = false;
 
     // we need to know the actual gui and not some fake screen some other mod overwrites
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -96,50 +98,45 @@ public class ClientScreenHandler {
         OverlayStack.foreach(ms -> ms.onResize(event.getScreen().width, event.getScreen().height), false);
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyPressedHigh(ScreenEvent.KeyPressed.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        keyPressedEvent(event, InputPhase.EARLY);
+        // TODO: early needs to be before XEI, but emi does mixin into KeyboardHandler so it is before everything
+        if (keyPressedEvent(event, InputPhase.EARLY)) {
+            keyPressedEvent(event, InputPhase.LATE);
+        }
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyPressedLow(ScreenEvent.KeyPressed.Pre event) {
-        keyPressedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
+    private static boolean keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
         if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), true, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyReleasedHigh(ScreenEvent.KeyReleased.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+        // TODO also needs to be before XEI
+        // dont need late for release event
         keyReleasedEvent(event, InputPhase.EARLY);
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyReleasedLow(ScreenEvent.KeyReleased.Pre event) {
-        keyReleasedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
+    private static boolean keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
         if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), false, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
     // before JEI
@@ -325,25 +322,22 @@ public class ClientScreenHandler {
                     keyTyped(mcScreen, keyCode, scanCode, modifiers);
         } else {
             // releasing a key
-            if (inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers))) {
-                return true;
-            }
-            if (inputPhase.isLate() && keyCode >= ' ') {
-                return keyTyped(mcScreen, keyCode, scanCode, modifiers);
-            }
+            return inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers));
         }
-        return false;
     }
 
     private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
-        if (keyCode == 'C' &&
-                (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-            ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+        if (keyCode == 'C' && Interactable.isControl(modifiers) && Interactable.isShift(modifiers) &&
+                Interactable.isAlt(modifiers)) {
+            if (!debugToggleActive) {
+                ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+                debugToggleActive = true;
+            }
             return true;
+        } else {
+            debugToggleActive = false;
         }
         if (keyCode == InputConstants.KEY_ESCAPE && screen.shouldCloseOnEsc()) {
             onClose();
@@ -458,11 +452,9 @@ public class ClientScreenHandler {
         // mainly for invtweaks compat
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
         acc.setHoveredSlot(null);
-        graphics.pose().pushPose();
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         Lighting.setupForFlatItems();
         acc.invokeRenderLabels(graphics, mouseX, mouseY);
-        muiScreen.drawForeground(graphics, partialTicks);
 
         acc.setHoveredSlot(null);
         IGuiElement hovered = muiScreen.getContext().getTopHovered();
@@ -509,7 +501,9 @@ public class ClientScreenHandler {
             int snapBackY = acc.getSnapbackStartY() + (int) ((float) snapBackOffsetY * delta);
             drawFloatingItemStack(mcScreen, graphics, acc.getSnapbackItem(), snapBackX, snapBackY, null);
         }
-        graphics.pose().popPose();
+
+        muiScreen.drawForeground(graphics, partialTicks);
+
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
         muiScreen.getContext().getStencil().pop();

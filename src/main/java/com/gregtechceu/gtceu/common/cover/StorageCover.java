@@ -3,21 +3,27 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class StorageCover extends CoverBehavior implements IUICover {
+public class StorageCover extends CoverBehavior implements IMuiCover {
 
     @Persisted
     @DescSynced
@@ -77,20 +83,18 @@ public class StorageCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 126, 87);
-
-        group.addWidget(new LabelWidget(10, 5, LocalizationUtils.format(getUITitle())));
-
-        for (int slot = 0; slot < SIZE; slot++) {
-            group.addWidget(new SlotWidget(inventory, slot, 7 + (slot % 6) * 18, 21 + (slot / 6) * 18));
-        }
-
-        return group;
-    }
-
-    private String getUITitle() {
-        return "cover.storage.title";
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new Column()
+                .child(IMuiCover.createTitleRow(this.getAttachItem()))
+                .child(SlotGroupWidget.builder()
+                        .matrix("IIIIII", "IIIIII", "IIIIII")
+                        .key('I', i -> new ItemSlot()
+                                .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
+                        .build())
+                .rightRel(0.5F)
+                .margin(3)
+                .childPadding(3)
+                .coverChildren();
     }
 
     @Override

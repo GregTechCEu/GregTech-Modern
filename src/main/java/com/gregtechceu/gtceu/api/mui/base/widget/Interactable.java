@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * An interface that handles user interactions on {@link IWidget} objects.
@@ -166,6 +167,22 @@ public interface Interactable {
     @OnlyIn(Dist.CLIENT)
     static boolean hasAltDown() {
         return Screen.hasAltDown();
+    }
+
+    static boolean isModifierActive(int mod, int key) {
+        return (mod & key) != 0;
+    }
+
+    static boolean isControl(int mod) {
+        return isModifierActive(mod, GLFW.GLFW_MOD_CONTROL);
+    }
+
+    static boolean isShift(int mod) {
+        return isModifierActive(mod, GLFW.GLFW_MOD_SHIFT);
+    }
+
+    static boolean isAlt(int mod) {
+        return isModifierActive(mod, GLFW.GLFW_MOD_ALT);
     }
 
     /**
