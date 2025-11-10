@@ -426,6 +426,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
 
         return defaultPopupPanel("voltageSelector:")
                 .child(new Column()
+                        .child(IKey.lang("tier").asWidget()
+                                .marginBottom(3))
                         .child(list.size(54, buttonHeight * 5).childSeparator(IIcon.EMPTY_2PX))
                         .margin(5)
                         .childPadding(3)
