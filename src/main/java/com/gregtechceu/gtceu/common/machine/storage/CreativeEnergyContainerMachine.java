@@ -235,7 +235,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
                 (manager, handler) -> createAmpSelector(voltage, tier), false);
 
         return new ModularPanel("main panel")
-                .height(176)
+                .coverChildrenHeight()
                 .width(166)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(new Column()
