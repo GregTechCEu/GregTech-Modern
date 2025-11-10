@@ -17,6 +17,7 @@ public class GTGuiTextures {
     public static class IDs {
 
         public static final String STANDARD_BACKGROUND = "gregtech_standard_bg";
+        public static final String STANDARD_BACKGROUND_INVERSE = "gregtech_standard_inverse_bg";
         public static final String COVER_BACKGROUND = "gregtech_cover_bg";
         public static final String BRONZE_BACKGROUND = "gregtech_bronze_bg";
         public static final String STEEL_BACKGROUND = "gregtech_steel_bg";
@@ -64,7 +65,13 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    // todo BORDERED/BOXED backgrounds will not be ported, if possible
+    public static final UITexture BACKGROUND_INVERSE = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/base/background_inverse.png")
+            .imageSize(195, 136)
+            .adaptable(4)
+            .name(IDs.STANDARD_BACKGROUND_INVERSE)
+            .canApplyTheme()
+            .build();
 
     public static final UITexture BACKGROUND_BRONZE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_bronze.png")
