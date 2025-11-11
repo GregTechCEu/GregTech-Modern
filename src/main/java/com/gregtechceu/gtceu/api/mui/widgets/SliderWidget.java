@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
+import com.gregtechceu.gtceu.api.mui.base.widget.IValueWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
@@ -26,7 +27,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 @Accessors(chain = true)
-public class SliderWidget extends Widget<SliderWidget> implements Interactable {
+public class SliderWidget extends Widget<SliderWidget> implements Interactable, IValueWidget<Double> {
 
     private IDoubleValue<?> doubleValue;
     private IDrawable stopperDrawable = new Rectangle().setColor(Color.withAlpha(Color.WHITE.main, 0.4f));
@@ -278,5 +279,10 @@ public class SliderWidget extends Widget<SliderWidget> implements Interactable {
         this.stopperWidth = w;
         this.stopperHeight = h;
         return this;
+    }
+
+    @Override
+    public Double getWidgetValue() {
+        return doubleValue.getDoubleValue();
     }
 }

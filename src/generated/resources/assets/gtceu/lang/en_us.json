@@ -2215,6 +2215,7 @@
   "gtceu.canner": "Canner",
   "gtceu.central_monitor.gui.create_group": "Create group",
   "gtceu.central_monitor.gui.currently_editing": "Currently editing: %s",
+  "gtceu.central_monitor.gui.data_slot": "Set slot number of data stick",
   "gtceu.central_monitor.gui.group_editor": "Editing monitor group",
   "gtceu.central_monitor.gui.group_name": "Name:",
   "gtceu.central_monitor.gui.monitor_groups": "Monitor groups",

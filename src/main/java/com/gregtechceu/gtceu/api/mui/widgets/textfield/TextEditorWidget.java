@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
-import com.gregtechceu.gtceu.api.mui.base.value.IValue;
-
 /**
  * A non syncable, multiline text input widget. Meant for client only screens to edit large amounts of text.
  */
@@ -11,10 +9,5 @@ public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
 
     public TextEditorWidget() {
         this.handler.setMaxLines(10000);
-    }
-
-    public TextEditorWidget value(IValue<String> value) {
-        this.setValue(value);
-        return this;
     }
 }

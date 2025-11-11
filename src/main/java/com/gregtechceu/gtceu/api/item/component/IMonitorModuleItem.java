@@ -19,7 +19,8 @@ public interface IMonitorModuleItem extends IItemComponent {
 
     Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
-    ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group, PanelSyncManager syncManager, IPanelHandler panelHandler);
+    ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                    PanelSyncManager syncManager, IPanelHandler panelHandler);
 
     default String getType() {
         return "unknown";

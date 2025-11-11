@@ -1651,6 +1651,7 @@ public class LangHandler {
         provider.add("gtceu.central_monitor.gui.monitor_groups", "Monitor groups");
         provider.add("gtceu.central_monitor.gui.group_editor", "Editing monitor group");
         provider.add("gtceu.central_monitor.gui.group_name", "Name:");
+        provider.add("gtceu.central_monitor.gui.data_slot", "Set slot number of data stick");
         provider.add("gtceu.central_monitor.gui.create_group", "Create group");
         provider.add("gtceu.central_monitor.gui.remove_from_group", "Remove from group");
         provider.add("gtceu.central_monitor.gui.set_target", "Set target");

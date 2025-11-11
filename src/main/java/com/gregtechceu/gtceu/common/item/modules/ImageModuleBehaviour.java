@@ -28,7 +28,8 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
     }
 
     @Override
-    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group, PanelSyncManager syncManager, IPanelHandler panelHandler) {
+    public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                           PanelSyncManager syncManager, IPanelHandler panelHandler) {
         return new ModularPanel("image_module_editor")
                 .child(new TextFieldWidget().value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s))));
     }
@@ -36,7 +37,8 @@ public class ImageModuleBehaviour implements IMonitorModuleItem {
     @Override
     public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         WidgetGroup builder = new WidgetGroup();
-        com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget textField = new com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget(0, 0, 100, 10, null, null);
+        com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget textField = new com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget(
+                0, 0, 100, 10, null, null);
         textField.setCurrentString(getUrl(stack));
 
         ButtonWidget saveButton = new ButtonWidget(-40, 22, 20, 20, click -> {
