@@ -18,8 +18,10 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -519,28 +521,48 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             var filterSlot = filterHandler.getFilterSlot();
             var filterItem = filterHandler.getFilterSlot().getStackInSlot(0);
 
-            column.child(new Row().child(new ItemSlot()
-                    .slot(SyncHandlers.itemSlot(filterSlot, 0))));
 
-            IPanelHandler panelSyncHandler;
+
             // TODO: Figure out how to properly attach this to the sync manager to
             // dynamically add the button widget when a filter exists
-            if (!filterItem.isEmpty()) {
-                ItemFilter filter = ItemFilter.loadFilter(filterItem);
-                panelSyncHandler = syncManager.panel("other_panel", (a, b) -> filter.getPopupPanel(syncManager), true);
-            } else {
-                panelSyncHandler = null;
-            }
-            column.childIf((panelSyncHandler != null && !filterItem.isEmpty()), new ButtonWidget<>()
-                    .overlay(new ItemDrawable(filterItem)
+
+
+            IPanelHandler panelSyncHandler;
+
+            var panel = GTGuis.createPanel("filter");
+            panelSyncHandler = syncManager.panel("other_panel", (a, b) -> panel, true);
+
+            DynamicSyncHandler filterWidget = new DynamicSyncHandler()
+                    .widgetProvider((manager, packet) -> {
+                        if (filterItem.isEmpty()) {
+                            return new EmptyWidget();
+                        }
+                        ItemFilter filter = ItemFilter.loadFilter(filterItem);
+                        return filter.getPopupPanel(manager);
+                    });
+
+            column.child(new Row().child(new ItemSlot()
+                    .slot(SyncHandlers.itemSlot(filterSlot, 0)
+                            .changeListener((newItem, amount, client, init) -> {
+                                if(!amount) {
+                                    filterWidget.notifyUpdate(packet -> packet.writeItem(newItem));
+                                }
+                            }))));
+
+            panel.child(new DynamicSyncedWidget<>()
+                    .syncHandler(filterWidget));
+
+            column.child(new ButtonWidget<>()
+                        .overlay(new ItemDrawable(filterItem)
                             .asIcon()
                             .center()
                             .size(14))
-                    .tooltip(t -> t.addLine("Configure Filter"))
-                    .onMousePressed((mouseX, mouseY, button) -> {
-                        panelSyncHandler.openPanel();
-                        return true;
-                    }))
+                        .tooltip(t -> t.addLine("Configure Filter"))
+                        .onMousePressed((mouseX, mouseY, button) -> {
+                            panelSyncHandler.openPanel();
+                            return true;
+                        })
+                        .setEnabledIf((w) -> (!filterItem.isEmpty())))
                     .child(IKey.str(filterItem.getHoverName().getString())
                             .asWidget()
                             .align(Alignment.CenterRight));
