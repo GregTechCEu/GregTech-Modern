@@ -794,7 +794,7 @@ public interface GTRecipeSchema {
 
         private void validateItems(@NotNull String type, InputItem... items) {
             for (var stack : items) {
-                if (stack.isEmpty()) {
+                if (stack == null || stack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
