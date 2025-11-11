@@ -792,7 +792,7 @@ public interface GTRecipeSchema {
         // ********** VALIDATION ***********//
         //////////////////////////////////////
 
-        private void validateItems(String type, InputItem... items) {
+        private void validateItems(@NotNull String type, InputItem... items) {
             for (var stack : items) {
                 if (stack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
@@ -800,42 +800,46 @@ public interface GTRecipeSchema {
             }
         }
 
-        private void validateItems(String type, ItemStack... stacks) {
+        private void validateItems(@NotNull String type, ItemStack... stacks) {
             for (var stack : stacks) {
-                if (stack.isEmpty()) {
+                if (stack == null || stack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
         }
 
-        private void validateItems(String type, Ingredient... ingredients) {
+        private void validateItems(@NotNull String type, Ingredient... ingredients) {
             for (var ingredient : ingredients) {
-                if (ingredient.isEmpty()) {
+                if (ingredient == null || ingredient.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
         }
 
-        private void validateItems(String type, OutputItem... items) {
+        private void validateItems(@NotNull String type, OutputItem... items) {
             for (var item : items) {
-                if (item.item.isEmpty()) {
+                if (item == null || item.item == null || item.item.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
         }
 
-        private void validateItems(String type, TagPrefix... items) {
+        private void validateItems(@NotNull String type, TagPrefix... items) {
             for (var item : items) {
-                if (item.isEmpty()) {
+                if (item == null || item.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
         }
 
-        private void validateFluids(String type, GTRecipeComponents.FluidIngredientJS... ingredients) {
-            for (var ingredient : ingredients) {
-                for (var stack : ingredient.ingredient().getStacks()) {
-                    if (stack.isEmpty()) {
+        private void validateFluids(@NotNull String type, GTRecipeComponents.FluidIngredientJS... fluids) {
+            for (var fluid : fluids) {
+                if (fluid == null || fluid.ingredient() == null || fluid.ingredient().getStacks() == null) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                }
+
+                for (var stack : fluid.ingredient().getStacks()) {
+                    if (stack == null || stack.isEmpty()) {
                         throw new RecipeExceptionJS(
                                 String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                     }
@@ -843,9 +847,9 @@ public interface GTRecipeSchema {
             }
         }
 
-        private void validateFluids(String type, FluidStackJS... stacks) {
+        private void validateFluids(@NotNull String type, FluidStackJS... stacks) {
             for (var stack : stacks) {
-                if (stack.getFluidStack().isEmpty()) {
+                if (stack == null || stack.getFluidStack() == null || stack.getFluidStack().isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                 }
             }
