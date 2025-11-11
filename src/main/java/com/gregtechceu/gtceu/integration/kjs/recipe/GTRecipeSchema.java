@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import dev.latvian.mods.kubejs.KubeJS;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -818,7 +819,7 @@ public interface GTRecipeSchema {
 
         private void validateItems(String type, OutputItem... items) {
             for (var item : items) {
-                if (item.isEmpty()) {
+                if (item.item.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }
@@ -834,8 +835,12 @@ public interface GTRecipeSchema {
 
         private void validateFluids(String type, GTRecipeComponents.FluidIngredientJS... ingredients) {
             for (var ingredient : ingredients) {
-                if (ingredient.ingredient().isEmpty()) {
-                    throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                for (var stack : ingredient.ingredient().getStacks()) {
+                    if (stack.isEmpty()) {
+                        throw new RecipeExceptionJS(
+                                String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id)
+                        );
+                    }
                 }
             }
         }
