@@ -104,7 +104,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             group.setDataSlot(slot - 1);
                                         },
                                         new TextFieldWidget().setNumbers(1, component.getDataItems().getSlots()),
-                                        w -> Integer.parseInt(w.getText()),
+                                        w -> {
+                                            w.validateText();
+                                            return Integer.parseInt(w.getText());
+                                        },
                                         IKey.lang("gtceu.central_monitor.gui.data_slot")).setDraggable(true)
                                         .size(160, 80),
                                 true);
