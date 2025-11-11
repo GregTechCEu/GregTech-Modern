@@ -131,6 +131,14 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         return new StringKey(key);
     }
 
+    static IKey str(@NotNull Supplier<String> keySupplier) {
+        return new StringKey(keySupplier);
+    }
+
+    static IKey str(@NotNull Supplier<String> keySupplier, @Nullable Supplier<@NotNull Object[]> argsSupplier) {
+        return new StringKey(keySupplier, argsSupplier);
+    }
+
     /**
      * Creates a formatted string literal text with arguments. The arguments can be dynamic.
      * The string is formatted using {@link String#format(String, Object...)}.
