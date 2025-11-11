@@ -345,7 +345,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup group;
         if (isConfigurable) {
@@ -383,7 +383,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
-    }
+    }*/
 
     private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
         Component tooltip;

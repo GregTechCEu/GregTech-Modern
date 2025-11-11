@@ -127,7 +127,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
@@ -139,7 +139,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
 
         return group;
-    }
+    }*/
 
     ////////////////////////////////
     // ******* Interaction *******//

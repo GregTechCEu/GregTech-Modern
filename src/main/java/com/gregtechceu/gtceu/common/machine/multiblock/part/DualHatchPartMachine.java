@@ -160,7 +160,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         int slots = getInventorySize();
         int tanks = (int) Math.sqrt(slots);
@@ -187,7 +187,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
         return group;
-    }
+    }*/
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

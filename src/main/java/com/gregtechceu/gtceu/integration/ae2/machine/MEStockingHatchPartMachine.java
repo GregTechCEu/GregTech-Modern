@@ -145,10 +145,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
     }
 
-    @Override
+    /*@Override
     public void attachSideTabs(TabsWidget sideTabs) {
         sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    }*/
 
     @Override
     protected void flushInventory() {
@@ -254,12 +254,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
-    }
+    }*/
 
     ////////////////////////////////
     // ******* Interaction *******//

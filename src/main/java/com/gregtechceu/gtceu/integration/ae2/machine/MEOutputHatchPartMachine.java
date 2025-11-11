@@ -102,7 +102,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
         // ME Network status
@@ -114,7 +114,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         group.addWidget(new AEListGridWidget.Fluid(5, 20, 3, this.internalBuffer));
 
         return group;
-    }
+    }*/
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
 

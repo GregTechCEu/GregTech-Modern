@@ -269,7 +269,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    @Override
+    /*@Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         configuratorPanel.attachConfigurators(new ButtonConfigurator(
                 new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
@@ -326,7 +326,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
 
         return group;
-    }
+    }*/
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {

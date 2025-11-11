@@ -233,7 +233,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
         var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
@@ -243,5 +243,5 @@ public class RotorHolderPartMachine extends TieredPartMachine
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
         return group;
-    }
+    }*/
 }

@@ -20,7 +20,7 @@ public interface IAutoPullPart extends IMultiPart {
 
     void setAutoPullTest(Predicate<GenericStack> test);
 
-    @Override
+    /*@Override
     default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_AUTO_PULL.getSubTexture(0, 0, 1, 0.5),
@@ -28,5 +28,5 @@ public interface IAutoPullPart extends IMultiPart {
                 this::isAutoPull,
                 (clickData, pressed) -> setAutoPull(pressed))
                 .setTooltipsSupplier(pressed -> List.of(Component.translatable("gtceu.gui.me_bus.auto_pull_button"))));
-    }
+    }*/
 }

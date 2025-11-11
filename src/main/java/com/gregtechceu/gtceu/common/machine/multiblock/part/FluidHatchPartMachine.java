@@ -279,7 +279,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    @Override
+    /*@Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         super.attachConfigurators(configuratorPanel);
         if (isCircuitSlotEnabled() && this.io == IO.IN) {
@@ -336,7 +336,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
-    }
+    }*/
 
     private Component getFluidNameText(TankWidget tankWidget) {
         Component translation;
@@ -365,7 +365,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         return String.format("%,d", fluidStack.isEmpty() ? 0 : fluidStack.getAmount());
     }
 
-    protected Widget createMultiSlotGUI() {
+    /*protected Widget createMultiSlotGUI() {
         int rowSize = (int) Math.sqrt(slots);
         int colSize = rowSize;
         if (slots == 8) {
@@ -389,5 +389,5 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         group.addWidget(container);
 
         return group;
-    }
+    }*/
 }

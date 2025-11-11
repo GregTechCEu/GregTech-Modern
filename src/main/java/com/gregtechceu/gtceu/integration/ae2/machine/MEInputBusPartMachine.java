@@ -126,7 +126,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
@@ -138,7 +138,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
 
         return group;
-    }
+    }*/
 
     ////////////////////////////////
     // ******* Interaction *******//

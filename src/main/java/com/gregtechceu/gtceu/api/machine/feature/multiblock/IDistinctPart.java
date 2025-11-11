@@ -16,7 +16,7 @@ public interface IDistinctPart extends IMultiPart {
 
     void setDistinct(boolean isDistinct);
 
-    @Override
+    /*@Override
     default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         superAttachConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
@@ -32,5 +32,5 @@ public interface IDistinctPart extends IMultiPart {
 
     default void superAttachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMultiPart.super.attachConfigurators(configuratorPanel);
-    }
+    }*/
 }

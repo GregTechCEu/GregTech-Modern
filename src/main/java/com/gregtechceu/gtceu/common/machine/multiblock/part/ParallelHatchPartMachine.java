@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -20,7 +21,7 @@ import net.minecraft.util.Mth;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine, IParallelHatch {
+public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiMachine, IParallelHatch {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             ParallelHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
@@ -46,7 +47,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
         }
     }
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup parallelAmountGroup = new WidgetGroup(0, 0, 100, 20);
         parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
@@ -54,7 +55,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
                 .setMax(maxParallel));
 
         return parallelAmountGroup;
-    }
+    }*/
 
     @Override
     @NotNull

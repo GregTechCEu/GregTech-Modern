@@ -90,7 +90,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int xOffset = 18 * rowSize / 2;
@@ -105,7 +105,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             }
         }
         return group;
-    }
+    }*/
 
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

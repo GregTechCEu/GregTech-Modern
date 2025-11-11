@@ -36,7 +36,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
                 .setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
     }
 
-    @Override
+   /* @Override
     public ModularUI createUI(Player entityPlayer) {
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(IS_STEEL))
@@ -49,7 +49,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
                         GuiTextures.SLOT_STEAM.get(IS_STEEL), 7, 84, true));
-    }
+    }*/
 
     // By returning false here, we don't allow shift-clicking
     // with a screwdriver to swap the IO, since this is a

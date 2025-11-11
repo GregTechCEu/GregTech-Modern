@@ -152,12 +152,12 @@ public interface IMaintenanceMachine extends IMultiPart {
     // ******* FANCY GUI ********//
     //////////////////////////////////////
 
-    @Override
+    /*@Override
     default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
-    }
+    }*/
 
-    @Override
+    /*@Override
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(() -> GuiTextures.MAINTENANCE_ICON, () -> {
@@ -186,5 +186,5 @@ public interface IMaintenanceMachine extends IMultiPart {
                 return tooltips;
             }, this::hasMaintenanceProblems, () -> null));
         }
-    }
+    }*/
 }

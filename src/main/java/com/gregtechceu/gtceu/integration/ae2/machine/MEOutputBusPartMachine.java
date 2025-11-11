@@ -97,7 +97,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
         // ME Network status
@@ -109,7 +109,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
 
         return group;
-    }
+    }*/
 
     private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 

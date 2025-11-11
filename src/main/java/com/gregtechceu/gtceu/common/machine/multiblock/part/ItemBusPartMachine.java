@@ -15,8 +15,21 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -295,8 +308,48 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
 
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+
+
+        int rowSize = (int) Math.sqrt(getInventorySize());
+
+        ParentWidget<?> slots = new ParentWidget();
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < rowSize; j++) {
+                int index = i * rowSize + j;
+                slots.child(new ItemSlot()
+                    .slot(SyncHandlers.itemSlot(inventory, index).slotGroup("item_inv"))
+                        .left(18 * i)
+                        .top(18 * j));
+            }
+        }
+
+        int width = Math.max(176, 18 * rowSize + 16);
+        int height = Math.max(160, 18 * rowSize + 16 + 90);
+
+        var panel = GTGuis.createPanel(this, width, height);
+
+        panel
+
+                .child(new Row()
+                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                        .coverChildrenHeight()
+                        .child(new Column()
+                                .padding(5, 0)
+                                .coverChildrenWidth()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .child(slots.horizontalCenter())))
+
+
+                .child(SlotGroupWidget.playerInventory(true));
+
+
+        return panel;
+    }
+
+    /*public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
             if (hasCircuitSlot && isCircuitSlotEnabled()) {
@@ -331,5 +384,5 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         group.addWidget(container);
 
         return group;
-    }
+    }*/
 }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
@@ -37,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IUIMachine {
+public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IMuiMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MufflerPartMachine.class,
             MultiblockPartMachine.MANAGED_FIELD_HOLDER);
@@ -127,7 +128,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    @Override
+    /*@Override
     public ModularUI createUI(Player entityPlayer) {
         int rowSize = (int) Math.sqrt(inventory.getSlots());
         int xOffset = rowSize == 10 ? 9 : 0;
@@ -147,5 +148,5 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
             }
         }
         return modular;
-    }
+    }*/
 }

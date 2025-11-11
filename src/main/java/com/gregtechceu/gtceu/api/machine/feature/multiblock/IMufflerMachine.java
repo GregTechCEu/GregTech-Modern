@@ -85,7 +85,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     // ******* FANCY GUI ********//
     //////////////////////////////////////
 
-    @Override
+    /*@Override
     default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
@@ -98,5 +98,5 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 () -> !isFrontFaceFree(),
                 () -> null));
-    }
+    }*/
 }

@@ -28,7 +28,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         autoTooltipKey = io == IO.IN ? "gtceu.gui.item_auto_input.tooltip" : "gtceu.gui.item_auto_output.tooltip";
     }
 
-    @NotNull
+    /*@NotNull
     @Override
     public ModularUI createUI(@NotNull Player entityPlayer) {
         int rowSize = (int) Math.sqrt(getInventorySize());
@@ -56,7 +56,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         }
 
         return modular;
-    }
+    }*/
 
     @Override
     public boolean swapIO() {

@@ -205,7 +205,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     // ******* FANCY GUI ********//
     //////////////////////////////////////
 
-    @Override
+    /*@Override
     default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
         attachTooltips(tooltipsPanel);
     }
@@ -218,5 +218,5 @@ public interface IRotorHolderMachine extends IMultiPart {
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 () -> !isFrontFaceFree(),
                 () -> null));
-    }
+    }*/
 }

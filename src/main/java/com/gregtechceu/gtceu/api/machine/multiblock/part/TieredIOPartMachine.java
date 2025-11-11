@@ -51,7 +51,7 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
         return MANAGED_FIELD_HOLDER;
     }
 
-    @Nullable
+    /*@Nullable
     @Override
     public PageGroupingData getPageGroupingData() {
         return switch (this.io) {
@@ -60,5 +60,5 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
             case BOTH -> new PageGroupingData("gtceu.multiblock.page_switcher.io.both", 3);
             case NONE -> null;
         };
-    }
+    }*/
 }

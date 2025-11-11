@@ -96,11 +96,11 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         return getBuffer() != null;
     }
 
-    @Override
+    /*@Override
     public ModularUI createUI(Player entityPlayer) {
         assert getBuffer() != null; // UI should never be able to be opened when buffer is null
         return getBuffer().createUI(entityPlayer);
-    }
+    }*/
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

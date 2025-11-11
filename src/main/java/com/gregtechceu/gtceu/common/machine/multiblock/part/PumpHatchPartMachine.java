@@ -33,7 +33,7 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                 .setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Water.getFluidTag()));
     }
 
-    @Override
+    /*@Override
     public ModularUI createUI(Player entityPlayer) {
         return new ModularUI(176, 166, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
@@ -49,7 +49,7 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_input.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
-    }
+    }*/
 
     // By returning false here, we don't allow shift-clicking
     // with a screwdriver to swap the IO.

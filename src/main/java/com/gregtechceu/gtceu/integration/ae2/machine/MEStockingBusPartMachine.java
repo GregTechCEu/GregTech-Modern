@@ -143,10 +143,10 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
     }
 
-    @Override
+    /*@Override
     public void attachSideTabs(TabsWidget sideTabs) {
         sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    }*/
 
     @Override
     protected void flushInventory() {
@@ -271,12 +271,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
+    /*@Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
         configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
-    }
+    }*/
 
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
