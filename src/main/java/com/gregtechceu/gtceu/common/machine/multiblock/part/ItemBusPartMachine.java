@@ -325,9 +325,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         int rowSize = (int) Math.sqrt(getInventorySize());
 
         // inv is 162, 74
-        // 176 = 162 + 7 padding,
-        int panelWidth = Math.max(176, 18 * rowSize + 14);
-        int panelHeight = 74 + 36 + rowSize * 18 + 14;
+        // 176 = 162 + 7 * 2 padding,
+        int panelWidth = Math.max(176 + 18 + 3, 18 * rowSize + 18 + 14);
+        int panelHeight = 74 + Math.max(30, 9 + rowSize * 18) + 14;
 
         var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
 
@@ -383,13 +383,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
                 .child(SlotGroupWidget.playerInventory(true)
                         //.alignX(Alignment.CENTER)
-                        .left(7)
+                        .left(18 + 10)
                         .bottom(7));
 
-        panel.child(new Row()
+        panel.child(new Column()
                         .coverChildren()
                         .childPadding(3)
-                        .left(7).top(18 * rowSize + 7 + 5)
+                        //.left(7).top(18 * rowSize + 7 + 5)
+                        .left(7).bottom(7)
                         .child(new ToggleButton()
                                 .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
                                 .stateOverlay(GTGuiTextures.BUTTON_POWER)
