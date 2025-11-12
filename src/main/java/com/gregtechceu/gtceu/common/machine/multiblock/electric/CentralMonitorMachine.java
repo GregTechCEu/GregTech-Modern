@@ -77,7 +77,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private int leftDist = 0, rightDist = 0, upDist = 0, downDist = 0;
     @Persisted
-    @DescSynced
     @Getter
     @RequireRerender
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();

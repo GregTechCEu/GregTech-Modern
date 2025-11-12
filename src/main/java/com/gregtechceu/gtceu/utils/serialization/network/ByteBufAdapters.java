@@ -4,12 +4,13 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
-import com.mojang.serialization.Codec;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +27,8 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf(), null);
+    public static final IByteBufAdapter<BlockPos> BLOCK_POS = makeAdapter(BlockPos.CODEC, (a, b) -> a.asLong() == b.asLong());
+    public static final IByteBufAdapter<List<BlockPos>> BLOCK_POS_LIST = makeAdapter(BlockPos.CODEC.listOf(), null);
     // spotless:on
 
     public static <T> IByteBufAdapter<T> makeAdapter(@NotNull IByteBufDeserializer<T> deserializer,
@@ -54,6 +57,7 @@ public class ByteBufAdapters {
     public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec, @Nullable EqualityTest<T> comparator) {
         final EqualityTest<T> tester = comparator != null ? comparator : EqualityTest.defaultTester();
         return new IByteBufAdapter<>() {
+
             @Override
             public T deserialize(FriendlyByteBuf buffer) {
                 return buffer.readJsonWithCodec(codec);

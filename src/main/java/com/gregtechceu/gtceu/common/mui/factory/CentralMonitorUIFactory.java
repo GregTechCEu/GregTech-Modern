@@ -27,8 +27,8 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
 import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,7 +46,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
     public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                         MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
-        syncManager.syncValue("groups", new GenericSyncValue<>(machine::getMonitorGroups, machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS));
+        GenericSyncValue<List<MonitorGroup>> groupSync = new GenericSyncValue<>(machine::getMonitorGroups,
+                machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS);
+        syncManager.syncValue("monitor_groups_sync", groupSync);
         return new ModularPanel("main")
                 .padding(10)
                 .child(new Flow(GuiAxis.Y)
@@ -67,7 +69,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             IPanelHandler panelHandler = syncManager.panel(
                                                     "editor_" + group.getName(),
                                                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
-                                                            syncManager1, panelHandler1,
+                                                            syncManager1, groupSync,
                                                             machine, group),
                                                     true);
                                             return new Flow(GuiAxis.X)
@@ -88,8 +90,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .child(SlotGroupWidget.playerInventory(true));
     }
 
-    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager, IPanelHandler panelHandler,
+    private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
+                                                GenericSyncValue<List<MonitorGroup>> groupSync,
                                                 CentralMonitorMachine machine, MonitorGroup group) {
+        GenericSyncValue<BlockPos> targetSync = new GenericSyncValue<>(group::getTargetRaw, group::setTarget,
+                ByteBufAdapters.BLOCK_POS);
+        GenericSyncValue<List<BlockPos>> componentListSync = new GenericSyncValue<>(
+                () -> group.getRelativePositions().stream().toList(), null, null); // TODO
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
@@ -146,6 +153,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                     slotDialogHandler.openPanel();
                                 } else group.setTarget(component.getPos());
                             }
+                            groupSync.setValue(machine.getMonitorGroups(), true, true);
                             return true;
                         }));
             }
