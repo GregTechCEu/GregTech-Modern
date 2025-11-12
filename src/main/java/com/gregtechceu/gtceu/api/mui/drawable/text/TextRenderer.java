@@ -102,6 +102,7 @@ public class TextRenderer {
     }
 
     public void drawSimple(GuiGraphics graphics, FormattedCharSequence text) {
+        if (getFont() == null) return;
         float w = getFont().width(text) * this.scale;
         int y = getStartYOfLines(1), x = getStartX(w);
         draw(graphics, text, x, y);
@@ -194,7 +195,7 @@ public class TextRenderer {
         // scroll = scroll % (int) (line.width + 1);
         float max = this.maxWidth + scroll;
         FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
-        Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
+        Area.SHARED.set(this.x, -500, this.x + (int) this.maxWidth, 1000);
         context.getStencil().push(Area.SHARED);
         context.graphicsPose().pushPose();
         context.graphicsPose().translate(-scroll, 0, 0);
@@ -264,7 +265,7 @@ public class TextRenderer {
     }
 
     protected void draw(GuiGraphics graphics, FormattedCharSequence text, float x, float y) {
-        if (this.simulate) return;
+        if (this.simulate || graphics == null) return;
         RenderSystem.disableBlend();
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 0f);

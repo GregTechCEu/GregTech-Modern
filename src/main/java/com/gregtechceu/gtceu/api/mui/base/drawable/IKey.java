@@ -211,8 +211,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         renderer.setScale(getScale());
         renderer.setPos(0, 0);
         renderer.setSimulate(true);
-        // TODO figure this out
-        // renderer.draw(getGraphics(), getFormatted());
+        renderer.draw(null, getFormatted());
         renderer.setSimulate(false);
         return (int) renderer.getLastWidth();
     }
@@ -223,7 +222,7 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
         renderer.setScale(getScale());
         renderer.setPos(0, 0);
         renderer.setSimulate(true);
-        // renderer.draw(getGraphics(), getFormatted());
+        renderer.draw(null, getFormatted());
         renderer.setSimulate(false);
         return (int) renderer.getLastWidth();
     }
