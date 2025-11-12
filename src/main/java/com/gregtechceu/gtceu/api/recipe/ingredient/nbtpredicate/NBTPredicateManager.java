@@ -12,6 +12,7 @@ public class NBTPredicateManager {
 
     static {
         predicates.put(EqualsNBTPredicate.OP, EqualsNBTPredicate::fromJson);
+        predicates.put(ComparisonNBTPredicate.OP, ComparisonNBTPredicate::fromJson);
     };
 
     public static NBTPredicate fromJson(JsonObject json) {

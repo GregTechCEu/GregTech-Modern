@@ -14,7 +14,8 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.lte;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -37,8 +39,19 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
         MIXER_RECIPES.recipeBuilder("test_nbt_predicate").duration(100).EUt(VA[ULV])
                 .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
-                        new EqualsNBTPredicate("foo", "bar", Tag.TAG_STRING)))
+                        new EqualsNBTPredicate("foo", StringTag.valueOf("bar"))))
                 .outputItems(new ItemStack(Items.FERMENTED_SPIDER_EYE))
+                .save(provider);
+        MIXER_RECIPES.recipeBuilder("test_nbt_predicate_2").duration(100).EUt(VA[ULV])
+                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
+                        lte("foo.bar", 123)))
+                .outputItems(new ItemStack(Items.TORCH))
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("test_nbt_predicate_3").duration(100).EUt(VA[ULV])
+                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
+                        new EqualsNBTPredicate("foo.bar", IntTag.valueOf(123))))
+                .outputItems(new ItemStack(Items.REDSTONE_TORCH))
                 .save(provider);
 
         // Basic Terminal Recipe

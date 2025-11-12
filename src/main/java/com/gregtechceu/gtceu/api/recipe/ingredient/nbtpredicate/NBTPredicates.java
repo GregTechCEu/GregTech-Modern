@@ -1,0 +1,140 @@
+package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
+
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
+
+import dev.latvian.mods.rhino.util.HideFromJS;
+
+public class NBTPredicates {
+
+    public static NBTPredicate eq_int(String key, int value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, int value) {
+        return new EqualsNBTPredicate(key, IntTag.valueOf(value));
+    }
+
+    public static NBTPredicate eq_float(String key, float value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, float value) {
+        return new EqualsNBTPredicate(key, FloatTag.valueOf(value));
+    }
+
+    public static NBTPredicate eq_double(String key, double value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, double value) {
+        return new EqualsNBTPredicate(key, DoubleTag.valueOf(value));
+    }
+
+    // Note: Bools are handled as bytes
+    public static NBTPredicate eq_bool(String key, boolean value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, boolean value) {
+        return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
+    }
+
+    public static NBTPredicate eq_byte(String key, byte value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, byte value) {
+        return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
+    }
+
+    public static NBTPredicate eq_tag(String key, Tag value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, Tag value) {
+        return new EqualsNBTPredicate(key, value);
+    }
+
+    // TODO: maybe add helpers for arrays / composites? idk
+
+    public static NBTPredicate neq_int(String key, int value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, int value) {
+        return new EqualsNBTPredicate(key, IntTag.valueOf(value), true);
+    }
+
+    public static NBTPredicate neq_float(String key, float value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, float value) {
+        return new EqualsNBTPredicate(key, FloatTag.valueOf(value), true);
+    }
+
+    public static NBTPredicate neq_double(String key, double value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, double value) {
+        return new EqualsNBTPredicate(key, DoubleTag.valueOf(value), true);
+    }
+
+    // Note: Bools are handled as bytes
+    public static NBTPredicate neq_bool(String key, boolean value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, boolean value) {
+        return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
+    }
+
+    public static NBTPredicate neq_byte(String key, byte value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, byte value) {
+        return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
+    }
+
+    public static NBTPredicate neq_tag(String key, Tag value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, Tag value) {
+        return new EqualsNBTPredicate(key, value, true);
+    }
+
+    public static NBTPredicate lte(String key, double value) {
+        return new ComparisonNBTPredicate(key, value, true, true);
+    }
+
+    public static NBTPredicate lt(String key, double value) {
+        return new ComparisonNBTPredicate(key, value, true, false);
+    }
+
+    public static NBTPredicate gte(String key, double value) {
+        return new ComparisonNBTPredicate(key, value, false, true);
+    }
+
+    public static NBTPredicate gt(String key, double value) {
+        return new ComparisonNBTPredicate(key, value, false, false);
+    }
+}

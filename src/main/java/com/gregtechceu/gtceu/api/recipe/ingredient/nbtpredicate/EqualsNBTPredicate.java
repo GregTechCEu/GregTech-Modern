@@ -1,35 +1,43 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 
 import com.google.gson.JsonObject;
 
-public class EqualsNBTPredicate<T> extends NBTPredicate {
+import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicateUtils.getNestedTag;
+
+public class EqualsNBTPredicate extends NBTPredicate {
 
     public static String OP = "equals";
 
     private String key;
-    private String value;
-    private int type;
+    private Tag value;
+    private boolean inverted;
 
-    public EqualsNBTPredicate(String key, String value, int type) {
+    public EqualsNBTPredicate(String key, Tag value) {
+        this(key, value, false);
+    }
+
+    public EqualsNBTPredicate(String key, Tag value, boolean inverted) {
         this.key = key;
         this.value = value;
-        this.type = type;
+        this.inverted = inverted;
     }
 
     @Override
     public boolean test(CompoundTag tag) {
-        if (!tag.contains(key, type)) {
+        Tag toCompare = getNestedTag(tag, key);
+        if (toCompare == null) {
             return false;
-        }
-        switch (type) {
-            case Tag.TAG_STRING:
-                return tag.getString(key).equals(value);
-            // TODO: write all other cases or figure out something better
-            default:
-                return true;
+        } else {
+            // Mixed numeric types (e.g., int vs. double)
+            if (toCompare instanceof NumericTag toCompareNum &&
+                    value instanceof NumericTag valueNum) {
+                return inverted ^ toCompareNum.getAsDouble() == valueNum.getAsDouble();
+            }
+            return inverted ^ toCompare.equals(value);
         }
     }
 
@@ -37,22 +45,24 @@ public class EqualsNBTPredicate<T> extends NBTPredicate {
         JsonObject object = new JsonObject();
         object.addProperty("op", OP);
         object.addProperty("key", key);
-        object.addProperty("value", value);
-        object.addProperty("type", type);
+        object.add("value", NBTPredicateUtils.toJson(value));
+        object.addProperty("inverted", inverted);
         return object;
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.has("key") || !json.has("value") || !json.has("type") || !json.has("op")) {
-            throw new IllegalStateException("Could not deserialize EqualsNBTPredicate: " + json);
-        }
         if (!json.get("op").getAsString().equals(OP)) {
             throw new IllegalStateException("Trying to deserialize EqualsNBTPredicate but was something else: " + json);
         }
+        if (!json.has("key") || !json.has("value") || !json.has("op")) {
+            throw new IllegalStateException("Could not deserialize EqualsNBTPredicate: " + json);
+        }
         String key = json.get("key").getAsString();
-        String value = json.get("value").getAsString();
-        int type = json.get("type").getAsInt();
-
-        return new EqualsNBTPredicate(key, value, type);
+        Tag value = NBTPredicateUtils.fromJson(json.get("value"));
+        boolean inverted = false;
+        if (json.has("inverted")) {
+            inverted = json.get("inverted").getAsBoolean();
+        }
+        return new EqualsNBTPredicate(key, value, inverted);
     }
 }
