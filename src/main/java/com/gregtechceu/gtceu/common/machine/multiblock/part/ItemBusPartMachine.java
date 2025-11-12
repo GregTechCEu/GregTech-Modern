@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -15,20 +16,28 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -41,10 +50,13 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -113,7 +125,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected NotifiableItemStackHandler createInventory(Object... args) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io);
+        return new NotifiableItemStackHandler(this, getInventorySize(), io, IO.BOTH);
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
@@ -310,40 +322,91 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-
-
         int rowSize = (int) Math.sqrt(getInventorySize());
 
-        ParentWidget<?> slots = new ParentWidget();
-        for (int i = 0; i < rowSize; i++) {
-            for (int j = 0; j < rowSize; j++) {
-                int index = i * rowSize + j;
-                slots.child(new ItemSlot()
-                    .slot(SyncHandlers.itemSlot(inventory, index).slotGroup("item_inv"))
-                        .left(18 * i)
-                        .top(18 * j));
-            }
-        }
+        // inv is 162, 74
+        // 176 = 162 + 7 padding,
+        int panelWidth = Math.max(176, 18 * rowSize + 14);
+        int panelHeight = 74 + 36 + rowSize * 18 + 14;
 
-        int width = Math.max(176, 18 * rowSize + 16);
-        int height = Math.max(160, 18 * rowSize + 16 + 90);
+        var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
 
-        var panel = GTGuis.createPanel(this, width, height);
+        var displayItem = this.getDefinition().asStack();
+        String hatchName = displayItem.getHoverName().getString();
+        hatchName = hatchName.replaceAll("§.", "").trim();
 
-        panel
+        int borderRadius = 5;
+        int iconSize = 16;
+        int minPanelWidth = (int)(panelWidth * 0.8f) - (iconSize + (borderRadius * 2)) ;
+        int textTitleWidth = TextRenderer.getFont().width(hatchName) + iconSize + (borderRadius * 2);
 
-                .child(new Row()
-                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                        .coverChildrenHeight()
-                        .child(new Column()
-                                .padding(5, 0)
-                                .coverChildrenWidth()
-                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                                .child(slots.horizontalCenter())))
+        int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
+        int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
+        int textHeight = textHeightPerRow * textRows + borderRadius;
+
+        panel.child(new Row()
+                .coverChildrenHeight()
+                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                .widthRel(.8f)
+                .top(-(textHeight + borderRadius))
+                .rightRel(0.5f)
+                .background(GTGuiTextures.BACKGROUND)
+                .child(new ItemDrawable(displayItem)
+                        .asIcon().size(iconSize)
+                        .asWidget()
+                        .marginLeft(borderRadius))
+                .mainAxisAlignment(Alignment.MainAxis.START)
+                .child(IKey.str(hatchName)
+                        .asWidget()
+                        .paddingTop(1)
+                        .margin(borderRadius, borderRadius, borderRadius,1)
+                        .size(textTitleWidth, textHeight))
+        );
+
+        SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
+
+        panel.child(new Grid()
+                        .top(7).height(18 * rowSize)
+                        .minElementMargin(0, 0)
+                        .minColWidth(18).minRowHeight(18)
+                        .alignX(0.5f)
+                        .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
+                                .slot(SyncHandlers.itemSlot(inventory, index)
+                                        .slotGroup(group)
+                                        .changeListener((newItem, amount, client, init) -> {
+                                            if(amount) {
+                                                inventory.onContentsChanged();
+                                            }
+                                        })
+                                        .accessibility(inventory.handlerIO.support(IO.IN), true))))
 
 
-                .child(SlotGroupWidget.playerInventory(true));
+                .child(SlotGroupWidget.playerInventory(true)
+                        //.alignX(Alignment.CENTER)
+                        .left(7)
+                        .bottom(7));
+
+        panel.child(new Row()
+                        .coverChildren()
+                        .childPadding(3)
+                        .left(7).top(18 * rowSize + 7 + 5)
+                        .child(new ToggleButton()
+                                .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
+                                .stateOverlay(GTGuiTextures.BUTTON_POWER)
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder((richTooltip) -> richTooltip.add(Component.translatable(
+                                        isWorkingEnabled() ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))))
+                        .childIf(io.support(IO.IN), new ToggleButton()
+                            .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
+                            .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder((richTooltip) -> richTooltip.add(Component.translatable("gtceu.multiblock.universal.distinct")
+                                        .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
+                                        .append(Component.translatable(isDistinct() ? "gtceu.multiblock.universal.distinct.yes" :
+                                                "gtceu.multiblock.universal.distinct.no"))))))
+                        /*.childIf(io.support(IO.IN) && hasCircuitSlot && isCircuitSlotEnabled(),
+                                new ItemSlot().slot(new ModularSlot(circuitInventory.storage, 0)))*/
+                        ;
 
 
         return panel;
