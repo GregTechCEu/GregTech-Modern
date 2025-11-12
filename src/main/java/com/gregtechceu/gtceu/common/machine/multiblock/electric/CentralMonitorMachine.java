@@ -667,6 +667,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return builder;
     }
 
+    public void setMonitorGroups(List<MonitorGroup> groups) {
+        monitorGroups.clear();
+        monitorGroups.addAll(groups);
+    }
+
     @Override
     public IGuiTexture getComponentIcon() {
         return ResourceTexture.fromSpirit(GTCEu.id("block/multiblock/network_switch/overlay_front_active"));

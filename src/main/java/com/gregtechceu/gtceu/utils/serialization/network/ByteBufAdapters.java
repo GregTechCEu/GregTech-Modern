@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.utils.serialization.network;
 
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ByteBufAdapters {
 
@@ -21,6 +25,7 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<String> STRING = makeAdapter(NetworkUtils::readStringSafe, NetworkUtils::writeStringSafe, null);
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
+    public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf(), null);
     // spotless:on
 
     public static <T> IByteBufAdapter<T> makeAdapter(@NotNull IByteBufDeserializer<T> deserializer,
@@ -37,6 +42,26 @@ public class ByteBufAdapters {
             @Override
             public void serialize(FriendlyByteBuf buffer, T u) {
                 serializer.serialize(buffer, u);
+            }
+
+            @Override
+            public boolean areEqual(@NotNull T t1, @NotNull T t2) {
+                return tester.areEqual(t1, t2);
+            }
+        };
+    }
+
+    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec, @Nullable EqualityTest<T> comparator) {
+        final EqualityTest<T> tester = comparator != null ? comparator : EqualityTest.defaultTester();
+        return new IByteBufAdapter<>() {
+            @Override
+            public T deserialize(FriendlyByteBuf buffer) {
+                return buffer.readJsonWithCodec(codec);
+            }
+
+            @Override
+            public void serialize(FriendlyByteBuf buffer, T u) {
+                buffer.writeJsonWithCodec(codec, u);
             }
 
             @Override

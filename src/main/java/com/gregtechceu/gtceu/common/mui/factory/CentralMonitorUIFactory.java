@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
@@ -27,6 +28,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMa
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
@@ -44,6 +46,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     public ModularPanel buildUIFunction(PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                         MetaMachine metaMachine) {
         if (!(metaMachine instanceof CentralMonitorMachine machine)) return new ModularPanel("main");
+        syncManager.syncValue("groups", new GenericSyncValue<>(machine::getMonitorGroups, machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS));
         return new ModularPanel("main")
                 .padding(10)
                 .child(new Flow(GuiAxis.Y)

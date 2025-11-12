@@ -6,11 +6,15 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +30,16 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
+    public static final Codec<MonitorGroup> CODEC = RecordCodecBuilder
+            .create(instance -> instance.group(
+                    BlockPos.CODEC.listOf().fieldOf("monitorPositions").forGetter(g -> g.monitorPositions.stream().toList()),
+                    Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
+                    ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
+                    ItemStack.CODEC.listOf().fieldOf("placeholderItems").forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
+                    BlockPos.CODEC.fieldOf("target").forGetter(MonitorGroup::getTargetRaw),
+                    Direction.CODEC.fieldOf("targetSide").forGetter(MonitorGroup::getTargetCoverSide),
+                    Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot)
+            ).apply(instance, MonitorGroup::new));
 
     private final Set<BlockPos> monitorPositions = new HashSet<>();
     @Setter
@@ -52,6 +66,16 @@ public class MonitorGroup {
         this.name = name;
         this.itemStackHandler = handler;
         this.placeholderSlotsHandler = placeholderSlotsHandler;
+    }
+
+    public MonitorGroup(List<BlockPos> monitorPositions, String name, List<ItemStack> items, List<ItemStack> placeholderItems, BlockPos rawTarget, Direction targetCoverSide, int dataSlot) {
+        this.monitorPositions.addAll(monitorPositions);
+        this.name = name;
+        this.itemStackHandler = new CustomItemStackHandler(NonNullList.of(ItemStack.EMPTY, items.toArray(ItemStack[]::new)));
+        this.placeholderSlotsHandler = new CustomItemStackHandler(NonNullList.of(ItemStack.EMPTY, placeholderItems.toArray(ItemStack[]::new)));
+        this.target = rawTarget;
+        this.targetCoverSide = targetCoverSide;
+        this.dataSlot = dataSlot;
     }
 
     public void add(BlockPos pos) {
