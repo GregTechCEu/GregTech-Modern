@@ -171,6 +171,8 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
+        context.getGraphics().pose().pushPose();
+        context.getGraphics().pose().translate(0, 0, 400);
         GuiDraw.drawTooltipBackground(context, stack, components, area.x, area.y, area.width, area.height, this);
 
         // MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, area.x, area.y,
@@ -180,6 +182,7 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
         renderer.setPos(area.x, area.y);
         this.text.compileAndDraw(renderer, context, false);
+        context.getGraphics().pose().popPose();
 
         context.setOverrideFont(null);
     }

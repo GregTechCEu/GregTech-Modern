@@ -32,8 +32,8 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private float scale = 1f;
     private int maxWidth = -1;
 
-    private Component lastText = Component.empty();
-    private Component textForDefaultSize = Component.empty();
+    private Component lastText = null;
+    private Component textForDefaultSize = null;
 
     public TextWidget(IKey key) {
         this.key = key;
@@ -63,6 +63,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
             onTextChanged(text);
             this.lastText = text;
         }
+        this.lastText = text;
         return text;
     }
 
@@ -129,7 +130,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     }
 
     protected Component getComponentForDefaultSize() {
-        if (this.textForDefaultSize == null || this.textForDefaultSize.equals(Component.empty())) {
+        if (this.textForDefaultSize == null) {
             this.textForDefaultSize = this.key.get();
             this.lastText = this.textForDefaultSize;
         }
@@ -138,7 +139,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Override
     public void postResize() {
-        this.textForDefaultSize = Component.empty();
+        this.textForDefaultSize = null;
     }
 
     public W alignment(Alignment alignment) {

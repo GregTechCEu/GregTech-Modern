@@ -340,7 +340,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         this.context.popViewport(null);
 
         this.context.postRenderCallbacks.forEach(element -> element.accept(this.context));
-        Lighting.setupFor3DItems();
     }
 
     /**
@@ -362,8 +361,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         }
         this.context.drawDraggable(guiGraphics);
         this.context.popViewport(null);
-
-        Lighting.setupFor3DItems();
     }
 
     /**

@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -42,16 +41,14 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
     @Override
     default ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        IWidget widget = createUIWidget();
-        Area area = widget.getArea();
-        area.setRelativePos((176 - area.w()) / 2, 0);
-        return GTGuis.createPanel(this.self(), 176, area.h() + 82)
+        IWidget widget = createCoverUI(data, syncManager, settings);
+        return GTGuis.createPanel(this.self(), 176, 166)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(widget)
                 .bindPlayerInventory();
     }
 
-    IWidget createUIWidget();
+    ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings);
 
     /* Helper methods for UI creation with covers that are commonly used */
 
@@ -70,10 +67,9 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
      */
     static Flow createTitleRow(ItemStack stack) {
         return Flow.row()
-                .pos(4, 4)
                 .height(16).coverChildrenWidth()
                 .child(new ItemDrawable(stack).asWidget().size(16).marginRight(4))
-                .child(IKey.lang(stack.getDisplayName())
+                .child(IKey.lang(stack.getHoverName())
                         .color(UI_TITLE_COLOR)
                         .asWidget().heightRel(1.0f));
     }

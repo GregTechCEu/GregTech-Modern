@@ -192,14 +192,10 @@ public class TextRenderer {
             return;
         }
         float scroll = (line.getWidth() - this.maxWidth) * progress;
-        // scroll = scroll % (int) (line.width + 1);
-        float max = this.maxWidth + scroll;
-        FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
-        Area.SHARED.set(this.x, -500, this.x + (int) this.maxWidth, 1000);
-        context.getStencil().push(Area.SHARED);
+        context.getStencil().push(this.x, -500, (int) this.maxWidth, 1000);
         context.graphicsPose().pushPose();
         context.graphicsPose().translate(-scroll, 0, 0);
-        drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
+        drawMeasuredLines(graphics, Collections.singletonList(line));
         context.graphicsPose().popPose();
         context.getStencil().pop();
     }

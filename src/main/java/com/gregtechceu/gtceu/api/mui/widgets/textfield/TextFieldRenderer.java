@@ -151,7 +151,6 @@ public class TextFieldRenderer extends TextRenderer {
 
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 1);
-        RenderSystem.enableBlend();
         GuiDraw.drawRect(graphics, x0, y0, 0.6f, 9, this.cursorColor);
         graphics.pose().popPose();
     }
