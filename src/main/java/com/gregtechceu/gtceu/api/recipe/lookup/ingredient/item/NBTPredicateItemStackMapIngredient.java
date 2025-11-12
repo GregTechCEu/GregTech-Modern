@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
