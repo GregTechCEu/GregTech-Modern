@@ -489,7 +489,7 @@ public class GTRecipeBuilder {
         return inputItemsRanged(machine.asStack(), intProvider);
     }
 
-    public GTRecipeBuilder predicateNBTInput(ItemStack stack, NBTPredicate predicate) {
+    public GTRecipeBuilder NBTPredicateInput(ItemStack stack, NBTPredicate predicate) {
         if (missingIngredientError(0, true, ItemRecipeCapability.CAP, input::isEmpty)) {
             return this;
         }

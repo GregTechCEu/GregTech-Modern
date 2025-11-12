@@ -362,7 +362,7 @@ public interface GTRecipeSchema {
             return inputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
         }
 
-        public GTRecipeJS predicateNBTInput(ItemStack itemStack, NBTPredicate predicate) {
+        public GTRecipeJS NBTPredicateInput(ItemStack itemStack, NBTPredicate predicate) {
             if (itemStack.isEmpty()) {
                 throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
             }

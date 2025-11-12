@@ -4,6 +4,7 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -67,6 +68,15 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, value);
     }
 
+    public static NBTPredicate eq_string(String key, String value) {
+        return eq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate eq(String key, String value) {
+        return new EqualsNBTPredicate(key, StringTag.valueOf(value));
+    }
+
     public static NBTPredicate neq_int(String key, int value) {
         return neq(key, value);
     }
@@ -120,6 +130,15 @@ public class NBTPredicates {
     @HideFromJS
     public static NBTPredicate neq(String key, Tag value) {
         return new EqualsNBTPredicate(key, value, true);
+    }
+
+    public static NBTPredicate neq_string(String key, String value) {
+        return neq(key, value);
+    }
+
+    @HideFromJS
+    public static NBTPredicate neq(String key, String value) {
+        return new EqualsNBTPredicate(key, StringTag.valueOf(value), true);
     }
 
     public static NBTPredicate lte(String key, double value) {
