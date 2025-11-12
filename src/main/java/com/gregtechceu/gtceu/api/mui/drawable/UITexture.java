@@ -17,7 +17,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
@@ -265,7 +264,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
 
         /**
          * Set the image size. Required for {@link #tiled()}, {@link #adaptable(int, int)} and
-         * {@link #xy(int, int, int, int)}
+         * {@link #subAreaXYWH(int, int, int, int)}
          *
          * @param w image width
          * @param h image height
@@ -303,20 +302,6 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         }
 
         /**
-         * Specify a sub area of the image in pixels, with a position and a size
-         *
-         * @param x x in pixels
-         * @param y y in pixels
-         * @param w width in pixels
-         * @param h height in pixels
-         * @see #subAreaXYWH(int, int, int, int)
-         */
-        @ApiStatus.Obsolete
-        public Builder xy(int x, int y, int w, int h) {
-            return subAreaXYWH(x, y, w, h);
-        }
-
-        /**
          * Specify a sub area of the image in pixels, with a position and a size.
          *
          * @param x x in pixels
@@ -343,22 +328,6 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
          */
         public Builder subAreaLTRB(int left, int top, int right, int bottom) {
             return subAreaXYWH(left, top, right - left, bottom - top);
-        }
-
-        /**
-         * Specify a sub area of the image in relative uv values (0 - 1). u0 and v0 are start positions, while u1 and v1
-         * are end positions.
-         * This means that the relative size is u1 - u0 and v1 - v0.
-         *
-         * @param u0 x start
-         * @param v0 y start
-         * @param u1 x end
-         * @param v1 y end
-         * @see #subAreaUV(float, float, float, float)
-         */
-        @ApiStatus.Obsolete
-        public Builder uv(float u0, float v0, float u1, float v1) {
-            return subAreaUV(u0, v0, u1, v1);
         }
 
         /**
