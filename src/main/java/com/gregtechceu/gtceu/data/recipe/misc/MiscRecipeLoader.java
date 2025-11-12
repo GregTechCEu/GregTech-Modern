@@ -37,23 +37,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class MiscRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        MIXER_RECIPES.recipeBuilder("test_nbt_predicate").duration(100).EUt(VA[ULV])
-                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
-                        new EqualsNBTPredicate("foo", StringTag.valueOf("bar"))))
-                .outputItems(new ItemStack(Items.FERMENTED_SPIDER_EYE))
-                .save(provider);
-        MIXER_RECIPES.recipeBuilder("test_nbt_predicate_2").duration(100).EUt(VA[ULV])
-                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
-                        lte("foo.bar", 123)))
-                .outputItems(new ItemStack(Items.TORCH))
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("test_nbt_predicate_3").duration(100).EUt(VA[ULV])
-                .inputItems(NBTPredicateIngredient.of(new ItemStack(Items.COBBLESTONE),
-                        new EqualsNBTPredicate("foo.bar", IntTag.valueOf(123))))
-                .outputItems(new ItemStack(Items.REDSTONE_TORCH))
-                .save(provider);
-
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
                 "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',

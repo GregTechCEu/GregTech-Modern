@@ -11,8 +11,12 @@ public class NBTPredicateManager {
     public static Map<String, Function<JsonObject, NBTPredicate>> predicates = new HashMap<>();
 
     static {
+        predicates.put(TrueNBTPredicate.OP, TrueNBTPredicate::fromJson);
         predicates.put(EqualsNBTPredicate.OP, EqualsNBTPredicate::fromJson);
         predicates.put(ComparisonNBTPredicate.OP, ComparisonNBTPredicate::fromJson);
+        predicates.put(AllNBTPredicate.OP, AllNBTPredicate::fromJson);
+        predicates.put(AnyNBTPredicate.OP, AnyNBTPredicate::fromJson);
+        predicates.put(NotNBTPredicate.OP, NotNBTPredicate::fromJson);
     };
 
     public static NBTPredicate fromJson(JsonObject json) {

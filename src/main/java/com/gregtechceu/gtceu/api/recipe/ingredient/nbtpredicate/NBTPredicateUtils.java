@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
@@ -39,13 +40,57 @@ public class NBTPredicateUtils {
 
     public static Tag getNestedTag(CompoundTag tag, String path) {
         String[] parts = path.split("\\.");
+
         Tag current = tag;
-        for (String p : parts) {
-            if (!(current instanceof CompoundTag compound) || !compound.contains(p)) {
+
+        for (String part : parts) {
+            if (current == null) {
                 return null;
             }
-            current = compound.get(p);
+
+            int bracketIndex = part.indexOf('[');
+
+            if (bracketIndex == -1) {
+                // simple compound key
+                if (!(current instanceof CompoundTag compound) || !compound.contains(part)) {
+                    return null;
+                }
+                current = compound.get(part);
+            } else {
+                // compound key with array index
+                String key = part.substring(0, bracketIndex);
+                String indexSection = part.substring(bracketIndex); // e.g. "[4][2]"
+                if (!(current instanceof CompoundTag compound) || !compound.contains(key)) {
+                    return null;
+                }
+                Tag arrayTag = compound.get(key);
+                if (!(arrayTag instanceof ListTag list)) {
+                    return null;
+                }
+
+                // There can be multiple nested indices like arr[1][3]
+                Tag element = arrayTag;
+                int from = 0;
+                while (true) {
+                    int open = indexSection.indexOf('[', from);
+                    int close = indexSection.indexOf(']', from);
+                    if (open == -1 || close == -1) break;
+                    String numStr = indexSection.substring(open + 1, close);
+                    int index;
+                    try {
+                        index = Integer.parseInt(numStr);
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
+                    if (!(element instanceof ListTag listTag)) return null;
+                    if (index < 0 || index >= listTag.size()) return null;
+                    element = listTag.get(index);
+                    from = close + 1;
+                }
+                current = element;
+            }
         }
+
         return current;
     }
 }

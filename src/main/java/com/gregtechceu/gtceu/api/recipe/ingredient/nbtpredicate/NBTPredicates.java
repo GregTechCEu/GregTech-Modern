@@ -8,6 +8,8 @@ import net.minecraft.nbt.Tag;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 
+import java.util.List;
+
 public class NBTPredicates {
 
     public static NBTPredicate eq_int(String key, int value) {
@@ -64,8 +66,6 @@ public class NBTPredicates {
     public static NBTPredicate eq(String key, Tag value) {
         return new EqualsNBTPredicate(key, value);
     }
-
-    // TODO: maybe add helpers for arrays / composites? idk
 
     public static NBTPredicate neq_int(String key, int value) {
         return neq(key, value);
@@ -136,5 +136,27 @@ public class NBTPredicates {
 
     public static NBTPredicate gt(String key, double value) {
         return new ComparisonNBTPredicate(key, value, false, false);
+    }
+
+    public static NBTPredicate any(NBTPredicate... predicates) {
+        return new AnyNBTPredicate(List.of(predicates));
+    }
+
+    @HideFromJS
+    public static NBTPredicate any(List<NBTPredicate> predicates) {
+        return new AnyNBTPredicate(predicates);
+    }
+
+    public static NBTPredicate all(NBTPredicate... predicates) {
+        return new AllNBTPredicate(List.of(predicates));
+    }
+
+    @HideFromJS
+    public static NBTPredicate all(List<NBTPredicate> predicates) {
+        return new AllNBTPredicate(predicates);
+    }
+
+    public static NBTPredicate not(NBTPredicate predicate) {
+        return new NotNBTPredicate(predicate);
     }
 }
