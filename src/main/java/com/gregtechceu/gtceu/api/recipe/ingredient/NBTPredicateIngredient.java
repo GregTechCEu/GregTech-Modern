@@ -29,7 +29,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
     private final NBTPredicate predicate;
     private final ItemStack stack;
 
-    protected NBTPredicateIngredient(ItemStack stack, NBTPredicate predicate) {
+    public NBTPredicateIngredient(ItemStack stack, NBTPredicate predicate) {
         super(Stream.of(new Ingredient.ItemValue(stack)));
         this.stack = stack;
         this.predicate = predicate;
