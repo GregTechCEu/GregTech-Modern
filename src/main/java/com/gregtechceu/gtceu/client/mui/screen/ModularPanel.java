@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
@@ -128,7 +127,8 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         if (!isOpen()) return;
         closeSubPanels();
         if (isMainPanel()) {
-            // close screen and let NEA animation // TODO: since nea is not yet ported, it will just close the screen
+            // close screen and let NEA handle animation // TODO: since nea is not yet ported, it will just close the
+            // screen
             MCHelper.popScreen(getScreen().isOpenParentOnClose(), getContext().getParent());
             return;
         }
@@ -157,6 +157,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         }
     }
 
+    @Deprecated
     public void animateClose() {
         closeIfOpen();
     }
@@ -249,7 +250,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     @MustBeInvokedByOverriders
     public void onClose() {
-
         this.state = State.CLOSED;
         if (this.panelHandler != null) {
             this.panelHandler.closePanelInternal();
@@ -318,7 +318,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             if (this.hovering.isEmpty()) {
                 // no element is hovered -> try close panel
                 if (closeOnOutOfBoundsClick()) {
-                    animateClose();
+                    closeIfOpen();
                     result = true;
                 }
             } else {
@@ -708,23 +708,23 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     @NotNull
     public List<LocatedWidget> getAllHoveringList(boolean debug) {
         if (this.hovering.isEmpty()) return Collections.emptyList();
-        List<LocatedWidget> hovering = new ArrayList<>();
-        for (var iterator = this.hovering.iterator(); iterator.hasNext();) {
-            LocatedWidget lw = iterator.next();
-            if (!lw.getElement().isValid()) {
-                iterator.remove();
-                continue;
-            }
-            if (debug) {
-                hovering.add(lw);
-                continue;
-            }
-            if (lw.getElement().canHover()) {
-                hovering.add(lw);
-                if (!lw.getElement().canHoverThrough()) break;
-            }
+        return new ArrayList<>(this.hovering);
+    }
+
+    public boolean isBelowMouse(IWidget widget) {
+        if (!widget.isValid() || widget.getPanel() != this) return false;
+        for (LocatedWidget lw : this.hovering) {
+            if (lw.getElement() == widget) return true;
         }
-        return hovering.isEmpty() ? Collections.emptyList() : hovering;
+        return false;
+    }
+
+    public boolean isAnyHovered() {
+        if (this.hovering.isEmpty()) return false;
+        if (this.hovering.size() == 1 && this.hovering.get(0).getElement() instanceof ModularPanel panel) {
+            return panel.canHover();
+        }
+        return true;
     }
 
     final void setPanelGuiContext(@NotNull ModularGuiContext context) {
@@ -784,7 +784,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public boolean shouldAnimate() {
         // TODO: fix when NEA gets ported
         /* && getScreen().getCurrentTheme().getOpenCloseAnimationOverride() > 0 */
-        if (getScreen().isOverlay()) return false;
+        if (this.invisible) return false;
         if (!isMainPanel() || !getScreen().isOpenParentOnClose()) return true;
         return getContext().getParent() == null;
     }
@@ -817,7 +817,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return super.invisible();
     }
 
-    public ModularPanel fullScreenInvisible(){
+    public ModularPanel fullScreenInvisible() {
         return invisible().full();
     }
 
@@ -842,7 +842,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         OPEN,
         /**
          * State after panel closed. Panel can still be reopened in this state.
-         * */
+         */
         CLOSED,
         /**
          * State after panel disposed.

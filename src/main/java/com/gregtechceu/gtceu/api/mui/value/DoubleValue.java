@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-public class DoubleValue implements IDoubleValue<Double>, IStringValue<Double> {
+public class DoubleValue implements IDoubleValue<Double> {
 
     private double value;
 
@@ -32,16 +32,6 @@ public class DoubleValue implements IDoubleValue<Double>, IStringValue<Double> {
     @Override
     public void setDoubleValue(double val) {
         this.value = val;
-    }
-
-    @Override
-    public String getStringValue() {
-        return String.valueOf(this.value);
-    }
-
-    @Override
-    public void setStringValue(String val) {
-        setDoubleValue(Double.parseDouble(val));
     }
 
     public static class Dynamic implements IDoubleValue<Double>, IStringValue<Double> {

@@ -566,8 +566,8 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     @Override
     public boolean shouldAnimate(Area target) {
         return x != target.x || y != target.y || width != target.width || height != target.height ||
-                rx != target.rx || ry != target.ry || !margin.isEqual(target.margin) ||
-                !padding.isEqual(target.padding);
+                rx != target.rx || ry != target.ry || !getMargin().isEqual(target.getMargin()) ||
+                !getPadding().isEqual(target.getPadding());
     }
 
     @Override

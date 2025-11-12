@@ -54,22 +54,26 @@ public class PanelManager {
     }
 
     boolean tryInit() {
-        if (this.state == State.CLOSED) {
-            if (this.panels.isEmpty()) {
-                throw new IllegalStateException("Can't init in closed state!");
+        return switch (this.state) {
+            case WAIT_DISPOSAL -> throw new IllegalStateException(
+                    "Tried to open panel while its waiting to be disposed. This shouldn't happen.");
+            case OPEN, REOPENED -> false;
+            case CLOSED -> {
+                if (this.panels.isEmpty()) {
+                    throw new IllegalStateException("Can't init in closed state!");
+                }
+                this.panels.forEach(p -> p.reopen(true));
+                this.disposal.removeIf(this.panels::contains);
+                setState(State.REOPENED);
+                yield true;
             }
-            this.panels.forEach(p -> p.reopen(true));
-            this.disposal.removeIf(this.panels::contains);
-            setState(State.REOPENED);
-            return true;
-        }
-        if (this.state == State.INIT || this.state == State.DISPOSED) {
-            setState(State.OPEN);
-            openPanel(this.mainPanel, false);
-            checkDirty();
-            return true;
-        }
-        return false;
+            case INIT, DISPOSED -> {
+                setState(State.OPEN);
+                openPanel(this.mainPanel, false);
+                checkDirty();
+                yield true;
+            }
+        };
     }
 
     public boolean isMainPanel(ModularPanel panel) {
@@ -93,12 +97,28 @@ public class PanelManager {
     @NotNull
     public List<LocatedWidget> getAllHoveredWidgetsList(boolean debug) {
         for (ModularPanel panel : this.panels) {
-            List<LocatedWidget> widgets = panel.getAllHoveringList(debug);
-            if (!widgets.isEmpty()) {
-                return widgets;
+            if (panel.isAnyHovered()) {
+                return panel.getAllHoveringList(debug);
             }
         }
         return Collections.emptyList();
+    }
+
+    @Nullable
+    public ModularPanel getTopHoveredPanel() {
+        for (ModularPanel panel : this.panels) {
+            if (panel.isAnyHovered()) return panel;
+        }
+        return null;
+    }
+
+    public boolean isBelowMouseInTopPanel(IWidget widget) {
+        for (ModularPanel panel : this.panels) {
+            if (panel.isAnyHovered()) {
+                return panel.isBelowMouse(widget);
+            }
+        }
+        return false;
     }
 
     private void openPanel(ModularPanel panel, boolean resize) {
@@ -259,14 +279,13 @@ public class PanelManager {
         return this.panels.contains(panel);
     }
 
-
-    public boolean hasPanelOpen(String name){
+    public boolean hasPanelOpen(String name) {
         return getOpenPanel(name) != null;
     }
 
-    public @Nullable ModularPanel getOpenPanel(String name){
-        for(ModularPanel panel : this.panels){
-            if(panel.getName().equals(name)){
+    public @Nullable ModularPanel getOpenPanel(String name) {
+        for (ModularPanel panel : this.panels) {
+            if (panel.getName().equals(name)) {
                 return panel;
             }
         }
@@ -281,50 +300,49 @@ public class PanelManager {
         return this.panels.indexOf(panel);
     }
 
-    public int getPanelIndexOrFail(ModularPanel panel, String action){
+    public int getPanelIndexOrFail(ModularPanel panel, String action) {
         int index = getPanelIndex(panel);
-        if(index < 0){
-            throw new IllegalArgumentException("Failed to perform action '" + action + "'on panel'" + panel
-            + "', because it is not open in this screen");
+        if (index < 0) {
+            throw new IllegalArgumentException("Failed to perform action '" + action + "' on panel '" + panel +
+                    "', because it is not open in this screen");
         }
         return index;
     }
 
     public void pushUp(@NotNull ModularPanel panel) {
-        int index = getPanelIndexOrFail(panel, "pushUp");
-        movePanel(index, index-1);
+        int index = getPanelIndexOrFail(panel, "push up");
+        if (index == 0) return;
+        movePanel(index, index - 1);
     }
 
-
-
-
     public void pushDown(@NotNull ModularPanel panel) {
-       int index = getPanelIndexOrFail(panel, "push down");
-       movePanel(index, index +1);
-
+        int index = getPanelIndexOrFail(panel, "push down");
+        if (index == this.panels.size() - 1) return;
+        movePanel(index, index + 1);
     }
 
     public void pushToTop(@NotNull ModularPanel window) {
-     int index = getPanelIndexOrFail(window, "push To Top");
-     movePanel(index, 0);
+        int index = getPanelIndexOrFail(window, "push to top");
+        if (index == 0) return;
+        movePanel(index, 0);
     }
 
     public void pushToBottom(@NotNull ModularPanel window) {
-      int index = getPanelIndexOrFail(window, "push To Bottom");
-      movePanel(index, -1);
+        int index = getPanelIndexOrFail(window, "push to bottom");
+        if (index == this.panels.size() - 1) return;
+        movePanel(index, -1);
     }
 
-    public void movePanelAbove(ModularPanel panelToMove, ModularPanel target){
-
+    public void movePanelAbove(ModularPanel panelToMove, ModularPanel target) {
         int index = getPanelIndexOrFail(panelToMove, "move panel after");
-        if(index == 0) return;
+        if (index == 0) return;
         int targetIndex = getTopSubPanelIndexOf(target);
-        if(targetIndex <0 ){
+        if (targetIndex < 0) {
             throw new IllegalArgumentException("Could not find target or a sub panel of '" + target + "'.");
         }
         movePanel(index, targetIndex);
-
     }
+
     public void movePanelBelow(ModularPanel panelToMove, ModularPanel target) {
         int index = getPanelIndexOrFail(panelToMove, "move panel after");
         if (index == this.panels.size() - 1) return;
@@ -414,7 +432,7 @@ public class PanelManager {
     }
 
     private void setState(State state) {
-        this.state = state;
+        this.state = Objects.requireNonNull(state);
     }
 
     public boolean isClosed() {

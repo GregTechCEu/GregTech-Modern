@@ -61,7 +61,7 @@ public interface IDrawable {
     }
 
     /**
-     * Draws this drawable in a given area.
+     * Draws this drawable in a given area. The padding of the area is not applied here.
      *
      * @param context     current context to draw with
      * @param area        draw area
@@ -69,13 +69,26 @@ public interface IDrawable {
      */
     @OnlyIn(Dist.CLIENT)
     default void draw(GuiContext context, Area area, WidgetTheme widgetTheme) {
-        draw(context, area.x + area.getPadding().left(), area.y + area.getPadding().top(), area.paddedWidth(),
-                area.paddedHeight(), widgetTheme);
+        draw(context, area.x, area.y, area.width,
+                area.height, widgetTheme);
+    }
+
+    /**
+     * Draws this drawable in a given area with its padding applied.
+     *
+     * @param context     current context to draw with
+     * @param area        draw area
+     * @param widgetTheme current theme
+     */
+    @OnlyIn(Dist.CLIENT)
+    default void drawPadded(GuiContext context, Area area, WidgetTheme widgetTheme) {
+        draw(context, area.x + area.getPadding().left(), area.y + area.getPadding().top(),
+                area.paddedWidth(), area.paddedHeight(), widgetTheme);
     }
 
     /**
      * Draws this drawable at the current (0|0) with the given area's size. This is useful inside widgets since GL is
-     * transformed to their position when they are drawing.
+     * transformed to their position when they are drawing. The padding of the area is not applied here.
      *
      * @param context     gui context
      * @param area        draw area
@@ -83,7 +96,22 @@ public interface IDrawable {
      */
     @OnlyIn(Dist.CLIENT)
     default void drawAtZero(GuiContext context, Area area, WidgetTheme widgetTheme) {
-        draw(context, 0, 0, area.paddedWidth(), area.paddedHeight(), widgetTheme);
+        draw(context, 0, 0, area.width, area.height, widgetTheme);
+    }
+
+    /**
+     * Draws this drawable at the current (0|0) with the given area's size and its padding applied
+     * (this means its technically not at 0|0). This is useful inside widgets since GL is transformed to their position
+     * when they are drawing.
+     *
+     * @param context     gui context
+     * @param area        draw area
+     * @param widgetTheme current theme
+     */
+    @OnlyIn(Dist.CLIENT)
+    default void drawAtZeroPadded(GuiContext context, Area area, WidgetTheme widgetTheme) {
+        draw(context, area.getPadding().left(), area.getPadding().top(), area.paddedWidth(), area.paddedHeight(),
+                widgetTheme);
     }
 
     /**
@@ -109,6 +137,14 @@ public interface IDrawable {
         }
     }
 
+    default int getDefaultWidth() {
+        return 0;
+    }
+
+    default int getDefaultHeight() {
+        return 0;
+    }
+
     /**
      * @return a widget with this drawable as a background
      */
@@ -120,7 +156,7 @@ public interface IDrawable {
      * @return this drawable as an icon
      */
     default Icon asIcon() {
-        return new Icon(this);
+        return new Icon(this).size(getDefaultWidth(), getDefaultHeight());
     }
 
     /**

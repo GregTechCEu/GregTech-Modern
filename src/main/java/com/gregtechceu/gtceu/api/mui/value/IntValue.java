@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.value;
 
+import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
+public class IntValue implements IIntValue<Integer>, IDoubleValue<Integer>, IStringValue<Integer> {
 
     private int value;
 
@@ -32,6 +33,16 @@ public class IntValue implements IIntValue<Integer>, IStringValue<Integer> {
     @Override
     public void setIntValue(int val) {
         this.value = val;
+    }
+
+    @Override
+    public double getDoubleValue() {
+        return getIntValue();
+    }
+
+    @Override
+    public void setDoubleValue(double val) {
+        setIntValue((int) val);
     }
 
     @Override

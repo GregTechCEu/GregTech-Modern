@@ -84,6 +84,14 @@ public class DimensionSizer {
         this.coverChildren = coverChildren;
     }
 
+    public void setUnit(Unit unit, Unit.State pos) {
+        switch (pos) {
+            case START -> getStart(null).setFrom(unit);
+            case END -> getEnd(null).setFrom(unit);
+            case SIZE -> getSize(null).setFrom(unit);
+        }
+    }
+
     public boolean hasStart() {
         return this.start != null;
     }
@@ -105,10 +113,10 @@ public class DimensionSizer {
     }
 
     public boolean isFullSize() {
-        if(hasSize()){
+        if (hasSize()) {
             return this.size.isRelative() && this.size.getValue() >= 0.99f && this.size.getAbsOffset() < 5;
         }
-        if(hasStart() && hasEnd()){
+        if (hasStart() && hasEnd()) {
             return this.start.isCloseToZero() && this.end.isCloseToZero();
         }
         return false;
@@ -123,9 +131,9 @@ public class DimensionSizer {
     }
 
     public boolean dependsOnParent() {
-        return this.end != null ||
+        return !this.coverChildren && (this.end != null ||
                 (this.start != null && this.start.isRelative()) ||
-                (this.size != null && this.size.isRelative());
+                (this.size != null && this.size.isRelative()));
     }
 
     public void setResized(boolean all) {

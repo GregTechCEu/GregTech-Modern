@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -67,7 +68,7 @@ public class VerticalScrollData extends ScrollData {
     }
 
     @Override
-    public void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme) {
+    public void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme, IDrawable texture) {
         boolean isOtherActive = isOtherScrollBarActive(area, true);
         int l = this.getScrollBarLength(area);
         int x = isAxisStart() ? 0 : area.w() - getThickness();
@@ -82,6 +83,6 @@ public class VerticalScrollData extends ScrollData {
             y += data2.getThickness();
         }
         h = l;
-        drawScrollBar(context, x, y, w, h, widgetTheme);
+        drawScrollBar(context, x, y, w, h, widgetTheme, texture);
     }
 }

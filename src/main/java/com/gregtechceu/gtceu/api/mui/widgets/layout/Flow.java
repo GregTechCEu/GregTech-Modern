@@ -56,6 +56,49 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
     }
 
     @Override
+    public int getDefaultWidth() {
+        return this.axis.isHorizontal() ? getDefaultMainAxisSize() : getDefaultCrossAxisSize();
+    }
+
+    @Override
+    public int getDefaultHeight() {
+        return this.axis.isHorizontal() ? getDefaultCrossAxisSize() : getDefaultMainAxisSize();
+    }
+
+    public int getDefaultMainAxisSize() {
+        if (!hasChildren()) return 18;
+        GuiAxis axis = this.axis;
+        int total = getArea().getPadding().getTotal(axis);
+        for (IWidget widget : getChildren()) {
+            if (shouldIgnoreChildSize(widget) || widget.flex().hasPos(axis)) continue;
+            if (widget.flex().isExpanded() || !widget.resizer().isSizeCalculated(axis)) {
+                total += axis.isHorizontal() ? widget.getDefaultWidth() : widget.getDefaultHeight();
+            } else {
+                total += widget.getArea().getSize(axis);
+            }
+            total += widget.getArea().getMargin().getTotal(axis);
+        }
+        return total;
+    }
+
+    public int getDefaultCrossAxisSize() {
+        if (!hasChildren()) return 18;
+        GuiAxis axis = this.axis.getOther();
+        int max = 0;
+        for (IWidget widget : getChildren()) {
+            if (shouldIgnoreChildSize(widget)) continue;
+            int s = widget.getArea().getMargin().getTotal(axis);
+            if (!widget.resizer().isSizeCalculated(axis)) {
+                s += axis.isHorizontal() ? widget.getDefaultWidth() : widget.getDefaultHeight();
+            } else {
+                s += widget.getArea().getSize(axis);
+            }
+            max = Math.max(max, s);
+        }
+        return max + getArea().getPadding().getTotal(axis);
+    }
+
+    @Override
     public boolean layoutWidgets() {
         if (!hasChildren()) return true;
         final boolean hasSize = resizer().isSizeCalculated(this.axis);
@@ -63,8 +106,13 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
         final int size = getArea().getSize(axis) - padding.getTotal(this.axis);
         Alignment.MainAxis maa = this.mainAxisAlignment;
         if (!hasSize && maa != Alignment.MainAxis.START) {
-            // for anything else than start we need the size to be known
-            return false;
+            if (flex().dependsOnChildren(this.axis)) {
+                // if this flow covers the children, we can assume start
+                maa = Alignment.MainAxis.START;
+            } else {
+                // for anything else than start we need the size to be known
+                return false;
+            }
         }
         int space = this.childPadding;
 
@@ -156,15 +204,20 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
 
     @Override
     public boolean postLayoutWidgets() {
-        if (!hasChildren()) return true;
-        GuiAxis other = this.axis.getOther();
-        int width = getArea().getSize(other);
-        Box padding = getArea().getPadding();
-        boolean hasWidth = resizer().isSizeCalculated(other);
-        if (!hasWidth && this.crossAxisAlignment != Alignment.CrossAxis.START) return false;
-        for (IWidget widget : getChildren()) {
+        return Flow.layoutCrossAxisListLike(this, this.axis, this.crossAxisAlignment);
+    }
+
+    public static boolean layoutCrossAxisListLike(IWidget parent, GuiAxis axis,
+                                                  Alignment.CrossAxis crossAxisAlignment) {
+        if (!parent.hasChildren()) return true;
+        GuiAxis other = axis.getOther();
+        int width = parent.getArea().getSize(other);
+        Box padding = parent.getArea().getPadding();
+        boolean hasWidth = parent.resizer().isSizeCalculated(other);
+        if (!hasWidth && crossAxisAlignment != Alignment.CrossAxis.START) return false;
+        for (IWidget widget : parent.getChildren()) {
             // exclude children whose position of main axis is fixed
-            if (widget.flex().hasPos(this.axis)) {
+            if (widget.flex().hasPos(axis)) {
                 // this is required when the widget has a pos on the main axis, but not on the cross axis
                 widget.resizer().updateResized();
                 continue;
@@ -174,24 +227,29 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
             if (!widget.flex().hasPos(other) && widget.resizer().isSizeCalculated(other)) {
                 int crossAxisPos = margin.getStart(other) + padding.getStart(other);
                 if (hasWidth) {
-                    if (this.crossAxisAlignment == Alignment.CrossAxis.CENTER) {
+                    if (crossAxisAlignment == Alignment.CrossAxis.CENTER) {
                         crossAxisPos = (int) (width / 2f - widget.getArea().getSize(other) / 2f);
-                    } else if (this.crossAxisAlignment == Alignment.CrossAxis.END) {
+                    } else if (crossAxisAlignment == Alignment.CrossAxis.END) {
                         crossAxisPos = width - widget.getArea().getSize(other) - margin.getEnd(other) -
                                 padding.getStart(other);
                     }
                 }
                 widget.getArea().setRelativePoint(other, crossAxisPos);
-                widget.getArea().setPoint(other, getArea().getPoint(other) + crossAxisPos);
+                widget.getArea().setPoint(other, parent.getArea().getPoint(other) + crossAxisPos);
                 widget.resizer().setPosResized(other, true);
                 widget.resizer().setMarginPaddingApplied(other, true);
             }
-            if (isValid()) {
+            if (parent.isValid()) {
                 // we changed relative pos, but we need to calculate the new absolute pos and other stuff
                 widget.flex().applyPos(widget);
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean canCoverByDefaultSize(GuiAxis axis) {
+        return axis.getOther() == this.axis;
     }
 
     @Override

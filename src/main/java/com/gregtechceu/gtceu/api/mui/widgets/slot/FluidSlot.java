@@ -177,7 +177,7 @@ public class FluidSlot extends Widget<FluidSlot>
                     this.contentOffsetX, y, getArea().width - this.contentOffsetX * 2, height, 0);
         }
         if (this.overlayTexture != null) {
-            this.overlayTexture.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
+            this.overlayTexture.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
         if (content != null && this.syncHandler.controlsAmount()) {
             String s = FormattingUtil.formatNumberReadable2F(content.getAmount(), true) + getBaseUnit();

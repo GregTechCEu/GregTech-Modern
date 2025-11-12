@@ -190,7 +190,7 @@ public class TextRenderer {
             drawMeasuredLines(graphics, Collections.singletonList(line));
             return;
         }
-        float scroll = (this.maxWidth - line.getWidth()) * progress;
+        float scroll = (line.getWidth() - this.maxWidth) * progress;
         // scroll = scroll % (int) (line.width + 1);
         float max = this.maxWidth + scroll;
         FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
@@ -204,8 +204,11 @@ public class TextRenderer {
     }
 
     public List<FormattedCharSequence> wrapLine(Component line) {
-        return this.maxWidth > 0 ? getFont().split(line, (int) (this.maxWidth / this.scale)) :
-                Collections.singletonList(line.getVisualOrderText());
+        if (this.maxWidth > 0) {
+            int wrapWidth = Math.max(10, (int) (this.maxWidth / this.scale));
+            return getFont().split(line, wrapWidth);
+        }
+        return Collections.singletonList(line.getVisualOrderText());
     }
 
     public boolean wouldFit(List<String> text, boolean shouldCheckWidth) {

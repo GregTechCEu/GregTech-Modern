@@ -60,6 +60,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Getter
     private boolean enabled = true;
     private int timeHovered = -1;
+    private int timeBelowMouse = -1;
     @Getter
     private boolean excludeAreaInXei = false;
     // gui context
@@ -166,6 +167,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public void initialise(@NotNull IWidget parent, boolean late) {
         this.timeHovered = -1;
+        this.timeBelowMouse = -1;
         if (!(this instanceof ModularPanel)) {
             this.parent = parent;
             this.panel = parent.getPanel();
@@ -233,7 +235,6 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         }
     }
 
-
     /**
      * Called when this widget is removed from the widget tree or after the panel is closed.
      * Overriding this is fine, but super must be called.
@@ -262,9 +263,9 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
             this.context = null;
         }
         this.timeHovered = -1;
+        this.timeBelowMouse = -1;
         this.valid = false;
     }
-
 
     // -----------------
     // === Rendering ===
@@ -313,7 +314,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         IDrawable bg = getCurrentOverlay(context.getTheme(), widgetTheme);
         if (bg != null) {
-            bg.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
+            bg.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 
@@ -583,6 +584,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
     @Override
     public void onUpdate() {
         if (isHovering()) this.timeHovered++;
+        if (isBelowMouse()) this.timeBelowMouse++;
         if (this.onUpdateListener != null) {
             this.onUpdateListener.accept(getThis());
         }
@@ -719,6 +721,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      *
      * @param resizer resizer
      */
+    @ApiStatus.Experimental
     @Override
     public void resizer(IResizeable resizer) {
         this.resizer = resizer != null ? resizer : IUnResizeable.INSTANCE;
@@ -903,9 +906,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         this.timeHovered = -1;
     }
 
+    @MustBeInvokedByOverriders
     @Override
-    public boolean isHovering() {
-        return timeHovered >= 0;
+    public void onMouseEnterArea() {
+        this.timeBelowMouse = 0;
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void onMouseLeaveArea() {
+        this.timeBelowMouse = -1;
     }
 
     @Override
@@ -913,8 +923,17 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
         return timeHovered >= ticks;
     }
 
+    @Override
+    public boolean isBelowMouseFor(int ticks) {
+        return timeBelowMouse >= ticks;
+    }
+
     public int getTicksHovered() {
         return timeHovered;
+    }
+
+    public int getTicksBelowMouse() {
+        return timeBelowMouse;
     }
 
     @Override
