@@ -127,6 +127,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         slot -> {
                                             group.setTarget(component.getPos());
                                             group.setDataSlot(slot - 1);
+                                            groupSync.setValue(groups);
                                         },
                                         new TextFieldWidget().setNumbers(1, component.getDataItems().getSlots()),
                                         w -> {
