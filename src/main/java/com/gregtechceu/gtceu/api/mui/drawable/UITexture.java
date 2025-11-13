@@ -50,6 +50,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
     @Getter
     @Nullable
     public final ColorType colorType;
+    public final boolean nonOpaque;
 
     /**
      * Creates a drawable texture
@@ -62,6 +63,22 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
      * @param colorType a function to get which color from a widget theme should be used to color this texture.
      */
     public UITexture(ResourceLocation location, float u0, float v0, float u1, float v1, @Nullable ColorType colorType) {
+        this(location, u0, v0, u1, v1, colorType, false);
+    }
+
+    /**
+     * Creates a drawable texture
+     *
+     * @param location  location of the texture
+     * @param u0        x offset of the image (0-1)
+     * @param v0        y offset of the image (0-1)
+     * @param u1        x end offset of the image (0-1)
+     * @param v1        y end offset of the image (0-1)
+     * @param colorType a function to get which color from a widget theme should be used to color this texture.
+     * @param nonOpaque whether the texture should draw with blend (if true) or not (if false)
+     */
+    public UITexture(ResourceLocation location, float u0, float v0, float u1, float v1, @Nullable ColorType colorType,
+                     boolean nonOpaque) {
         this.colorType = colorType;
         boolean png = !location.getPath().endsWith(".png");
         boolean textures = !location.getPath().startsWith("textures/");
@@ -75,6 +92,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         this.v0 = v0;
         this.u1 = u1;
         this.v1 = v1;
+        this.nonOpaque = nonOpaque;
     }
 
     public static Builder builder() {
@@ -150,7 +168,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
                 ColorType.DEFAULT.getColor(widgetTheme));
         GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, lerpU(uStart),
                 lerpV(vStart), lerpU(uEnd),
-                lerpV(vEnd));
+                lerpV(vEnd), this.nonOpaque);
     }
 
     public static UITexture parseFromJson(JsonObject json) {
@@ -236,6 +254,7 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         private String name;
         private boolean tiled = false;
         private ColorType colorType = null;
+        private boolean nonOpaque = false;
 
         /**
          * @param loc location of the image to draw
@@ -463,6 +482,14 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         }
 
         /**
+         * Sets this texture as at least partially transparent, will not disable glBlend when drawing.
+         */
+        public Builder nonOpaque() {
+            this.nonOpaque = true;
+            return this;
+        }
+
+        /**
          * Creates the texture
          *
          * @return the created texture
@@ -506,13 +533,13 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
                     throw new IllegalArgumentException("UV values must be 0 - 1");
                 if (this.bl > 0 || this.bt > 0 || this.br > 0 || this.bb > 0) {
                     return new AdaptableUITexture(this.location, this.u0, this.v0, this.u1, this.v1, this.colorType,
-                            this.iw, this.ih, this.bl, this.bt, this.br, this.bb, this.tiled);
+                            this.nonOpaque, this.iw, this.ih, this.bl, this.bt, this.br, this.bb, this.tiled);
                 }
                 if (this.tiled) {
                     return new TiledUITexture(this.location, this.u0, this.v0, this.u1, this.v1, this.iw, this.ih,
-                            this.colorType);
+                            this.colorType, this.nonOpaque);
                 }
-                return new UITexture(this.location, this.u0, this.v0, this.u1, this.v1, this.colorType);
+                return new UITexture(this.location, this.u0, this.v0, this.u1, this.v1, this.colorType, this.nonOpaque);
             }
             throw new IllegalStateException();
         }

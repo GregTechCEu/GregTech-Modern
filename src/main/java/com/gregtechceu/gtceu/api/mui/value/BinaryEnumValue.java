@@ -10,6 +10,10 @@ import java.util.function.Supplier;
  */
 public class BinaryEnumValue<T extends Enum<T>> extends EnumValue<T> implements IBoolValue<T> {
 
+    public static <T extends Enum<T>, V extends EnumValue<T> & IBoolValue<T>> Dynamic<T> wrap(V val) {
+        return new Dynamic<>(val.getEnumClass(), val::getValue, val::setValue);
+    }
+
     public BinaryEnumValue(Class<T> enumClass, T value) {
         super(enumClass, value);
         if (enumClass.getEnumConstants().length != 2) {

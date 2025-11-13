@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
+import com.gregtechceu.gtceu.utils.ReversedList;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.function.IntFunction;
 
 @Accessors(fluent = true, chain = true)
@@ -49,6 +51,10 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
      * Whether disabled child widgets should be collapsed for display.
      */
     private boolean collapseDisabledChild = false;
+    /**
+     * Whether the children list should be laid out in reverse order
+     */
+    private boolean reverseLayout = false;
 
     public Flow(GuiAxis axis) {
         this.axis = axis;
@@ -114,6 +120,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
                 return false;
             }
         }
+        List<IWidget> childrenList = this.reverseLayout ? new ReversedList<>(getChildren()) : getChildren();
         int space = this.childPadding;
 
         int childrenSize = 0;
@@ -121,7 +128,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
         int amount = 0;
 
         // calculate total size
-        for (IWidget widget : getChildren()) {
+        for (IWidget widget : childrenList) {
             // ignore disabled child if configured as such
             if (shouldIgnoreChildSize(widget)) {
                 widget.resizer().setMarginPaddingApplied(true);
@@ -156,7 +163,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
 
         if (expandedAmount > 0 && hasSize) {
             int newSize = (size - childrenSize) / expandedAmount;
-            for (IWidget widget : getChildren()) {
+            for (IWidget widget : childrenList) {
                 // ignore disabled child if configured as such
                 if (shouldIgnoreChildSize(widget)) continue;
                 // exclude children whose position of main axis is fixed
@@ -178,7 +185,7 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
             }
         }
 
-        for (IWidget widget : getChildren()) {
+        for (IWidget widget : childrenList) {
             // ignore disabled child if configured as such
             if (shouldIgnoreChildSize(widget)) {
                 widget.resizer().updateResized();
@@ -204,18 +211,21 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
 
     @Override
     public boolean postLayoutWidgets() {
-        return Flow.layoutCrossAxisListLike(this, this.axis, this.crossAxisAlignment);
+        return Flow.layoutCrossAxisListLike(this, this.axis, this.crossAxisAlignment, this.reverseLayout);
     }
 
     public static boolean layoutCrossAxisListLike(IWidget parent, GuiAxis axis,
-                                                  Alignment.CrossAxis crossAxisAlignment) {
+                                                  Alignment.CrossAxis crossAxisAlignment, boolean reverseLayout) {
         if (!parent.hasChildren()) return true;
         GuiAxis other = axis.getOther();
         int width = parent.getArea().getSize(other);
         Box padding = parent.getArea().getPadding();
         boolean hasWidth = parent.resizer().isSizeCalculated(other);
         if (!hasWidth && crossAxisAlignment != Alignment.CrossAxis.START) return false;
-        for (IWidget widget : parent.getChildren()) {
+
+        List<IWidget> childrenList = reverseLayout ? new ReversedList<>(parent.getChildren()) : parent.getChildren();
+
+        for (IWidget widget : childrenList) {
             // exclude children whose position of main axis is fixed
             if (widget.flex().hasPos(axis)) {
                 // this is required when the widget has a pos on the main axis, but not on the cross axis
@@ -291,11 +301,22 @@ public class Flow extends ParentWidget<Flow> implements ILayoutWidget, IExpander
      * gets notified and re-layouts its children. Children which are disabled will not be considered during layout,
      * so that the flow will not appear to have empty spots. This is disabled by default on Flow.
      *
-     * @param doCollapse true if disabled children should be collapsed.
+     * @param collapse true if disabled children should be collapsed.
      * @return this
      */
-    public Flow collapseDisabledChild(boolean doCollapse) {
-        this.collapseDisabledChild = doCollapse;
+    public Flow collapseDisabledChild(boolean collapse) {
+        this.collapseDisabledChild = collapse;
+        return this;
+    }
+
+    /**
+     * Sets if the children list should be laid out in reversed or not (Default is false).
+     * 
+     * @param reverseLayout true if the children list should be laid out in reverse
+     * @return this
+     */
+    public Flow reverseLayout(boolean reverseLayout) {
+        this.reverseLayout = reverseLayout;
         return this;
     }
 
