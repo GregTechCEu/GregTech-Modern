@@ -93,10 +93,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
                                                 GenericSyncValue<List<MonitorGroup>> groupSync,
                                                 CentralMonitorMachine machine, MonitorGroup group) {
-        GenericSyncValue<BlockPos> targetSync = new GenericSyncValue<>(group::getTargetRaw, group::setTarget,
-                ByteBufAdapters.BLOCK_POS);
-        GenericSyncValue<List<BlockPos>> componentListSync = new GenericSyncValue<>(
-                () -> group.getRelativePositions().stream().toList(), null, null); // TODO
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
