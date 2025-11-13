@@ -92,13 +92,12 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (blockEntity instanceof MetaMachineBlockEntity mbe) {
                         var machine = mbe.getMetaMachine();
                         if (machine instanceof SimpleSteamMachine ssm) {
-                            EUt = (long) (EUt * ssm.getConversionRate());
+                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
                             isSteam = true;
                         } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                            EUt = (long) (EUt * smb.getConversionRate());
+                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
                             isSteam = true;
                         }
-                        if (EUt == 0) EUt = 1; //
                     }
 
                     MutableComponent text;

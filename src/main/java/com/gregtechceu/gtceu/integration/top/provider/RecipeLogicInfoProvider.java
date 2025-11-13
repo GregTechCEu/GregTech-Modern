@@ -58,11 +58,10 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                     var machine = machineBlockEntity.getMetaMachine();
                     long MBt = 0;
                     if (machine instanceof SimpleSteamMachine ssm) {
-                        MBt = (long) (EUt.getTotalEU() * ssm.getConversionRate());
+                        MBt = (long) Math.ceil(EUt.getTotalEU() * ssm.getConversionRate());
                     } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                        MBt = (long) (EUt.getTotalEU() * smb.getConversionRate());
+                        MBt = (long) Math.ceil(EUt.getTotalEU() * smb.getConversionRate());
                     }
-                    if (MBt == 0) MBt = 1;
                     if (machine instanceof SteamMachine) {
                         text = Component.translatable("gtceu.jade.fluid_use",
                                 FormattingUtil.formatNumbers(MBt) + TextStyleClass.INFO)
