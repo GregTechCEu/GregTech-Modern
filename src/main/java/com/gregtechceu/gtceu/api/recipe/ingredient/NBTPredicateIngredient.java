@@ -72,7 +72,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
         if (this.stack.hasTag()) {
             json.addProperty("nbt", this.stack.getTag().toString());
         }
-        json.add("nbt_predicate", predicate.toJson());
+        json.add("predicate", predicate.toJson());
         return json;
     }
 
@@ -89,7 +89,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
 
         public @NotNull NBTPredicateIngredient parse(@NotNull JsonObject json) {
             var stack = CraftingHelper.getItemStack(json, true);
-            var predicate = NBTPredicateManager.fromJson(json.get("nbt_predicate").getAsJsonObject());
+            var predicate = NBTPredicateManager.fromJson(json.get("predicate").getAsJsonObject());
 
             return new NBTPredicateIngredient(stack, predicate);
         }
