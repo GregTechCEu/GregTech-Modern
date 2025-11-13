@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextEditorWidget;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
@@ -74,7 +76,10 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
-        return null; // TODO
+        return new ModularPanel("text_module_editor")
+                .child(new TextEditorWidget()
+                        .value(SyncHandlers.string(() -> getPlaceholderText(stack), s -> setPlaceholderText(stack, s)))
+                        .sizeRel(.8f, .8f));
     }
 
     @Override
