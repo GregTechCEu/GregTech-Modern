@@ -38,6 +38,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
 
 public class CentralMonitorUIFactory implements PanelFactory {
@@ -135,25 +136,26 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         IKey.lang("gtceu.central_monitor.gui.data_slot")).setDraggable(true)
                                         .size(160, 80),
                                 true);
+                IntSupplier colorSupplier = () -> {
+                    if (component == null) return 0;
+                    boolean inGroup = group.contains(component.getPos());
+                    BlockPos target = group.getTargetRaw();
+                    boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
+                    if (inGroup && isTarget) return 0xFFFF00FF;
+                    else if (inGroup) return 0xFF0000FF;
+                    else if (isTarget) return 0xFFFF0000;
+                    else return 0;
+                };
                 curRow.add(new ButtonWidget<>()
                         .margin(1)
-                        .background(texture, new BorderDrawable(() -> {
-                            if (component == null) return 0;
-                            boolean inGroup = group.contains(component.getPos());
-                            BlockPos target = group.getTargetRaw();
-                            boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
-                            if (inGroup && isTarget) return 0xFFFF00FF;
-                            else if (inGroup) return 0xFF0000FF;
-                            else if (isTarget) return 0xFFFF0000;
-                            else return 0;
-                        }, 1), IKey.str(() -> {
+                        .background(texture, new BorderDrawable(colorSupplier, 1), IKey.str(() -> {
                             if (component == null || component.getDataItems() == null) return "";
                             BlockPos target = group.getTargetRaw();
                             boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
                             if (isTarget) return String.valueOf(group.getDataSlot() + 1);
                             else return "";
                         }))
-                        .hoverBackground(texture, new BorderDrawable(0xFFFFFFFF, 1))
+                        .hoverBackground(texture, new BorderDrawable(() -> colorSupplier.getAsInt() | 0x222222, 1))
                         .onMousePressed((mouseX, mouseY, button) -> {
                             if (component == null) return false;
                             if (button == InputConstants.MOUSE_BUTTON_LEFT) {
