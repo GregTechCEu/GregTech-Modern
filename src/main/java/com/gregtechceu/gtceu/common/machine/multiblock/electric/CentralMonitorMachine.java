@@ -79,6 +79,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Persisted
     @Getter
     @RequireRerender
+    @DescSynced
     private final List<MonitorGroup> monitorGroups = new ArrayList<>();
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
     private final List<IMonitorComponent> selectedTargets = new ArrayList<>();
