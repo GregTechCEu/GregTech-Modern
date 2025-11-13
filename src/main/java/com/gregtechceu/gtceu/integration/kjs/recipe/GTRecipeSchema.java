@@ -265,6 +265,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
+            validateItems("input", inputs);
+
             for (var stack : inputs) {
                 // test simple item that have pure singular material stack
                 var matStack = ChemicalHelper.getMaterialStack(stack.ingredient.getItems()[0].getItem());
@@ -287,6 +289,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
+            validateItems("input", inputs);
+
             for (ItemStack itemStack : inputs) {
                 if (itemStack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
@@ -351,10 +355,12 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItemsRanged(Ingredient ingredient, int min, int max) {
+            validateItems("ranged input", ingredient);
             return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(ingredient, 1, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS inputItemsRanged(ItemStack stack, int min, int max) {
+            validateItems("ranged input", stack);
             return input(ItemRecipeCapability.CAP, new ExtendedOutputItem(stack, UniformInt.of(min, max)));
         }
 
@@ -384,6 +390,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
+            validateItems("output", outputs);
             for (ExtendedOutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Output items is empty, id: %s", id));
@@ -421,10 +428,12 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
+            validateItems("ranged output", ingredient);
             return output(ItemRecipeCapability.CAP, new ExtendedOutputItem(ingredient, 1, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {
+            validateItems("ranged output", stack);
             return output(ItemRecipeCapability.CAP, new ExtendedOutputItem(stack, UniformInt.of(min, max)));
         }
 
@@ -433,6 +442,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS notConsumable(InputItem itemStack) {
+            validateItems("not consumable", itemStack);
+
             int lastChance = this.chance;
             this.chance = 0;
             inputItems(itemStack);
@@ -441,6 +452,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
+            validateItems("not consumable", orePrefix);
+
             int lastChance = this.chance;
             this.chance = 0;
             inputItems(orePrefix, material);
@@ -449,6 +462,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS notConsumableFluid(GTRecipeComponents.FluidIngredientJS fluid) {
+            validateFluids("not consumable", fluid);
+
             int lastChance = this.chance;
             this.chance = 0;
             inputFluids(fluid);
@@ -464,6 +479,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
+            validateItems("chanced input", stack);
+
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
@@ -481,6 +498,8 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
+            validateFluids("chanced input", stack);
+
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
@@ -497,6 +516,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance, int tierChanceBoost) {
+            validateItems("chanced output", stack);
+
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
@@ -522,9 +543,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, String fraction, int tierChanceBoost) {
-            if (stack.isEmpty()) {
-                return this;
-            }
+            validateItems("chanced output", stack);
 
             String[] split = fraction.split("/");
             if (split.length > 2) {
@@ -595,6 +614,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
+            validateFluids("chanced output", stack);
+
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
@@ -611,6 +632,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, String fraction, int tierChanceBoost) {
+            validateFluids("chanced output", stack);
+
             if (stack.getAmount() == 0) {
                 return this;
             }
@@ -719,6 +742,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            validateFluids("input", inputs);
+
             for (var fluidIng : inputs) {
                 for (var stack : fluidIng.ingredient().getStacks()) {
                     var mat = ChemicalHelper.getMaterial(stack.getFluid());
@@ -736,12 +761,14 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluidsRanged(FluidStackJS input, IntProvider range) {
+            validateFluids("ranged input", input);
             FluidStack stack = new FluidStack(input.getFluid(), (int) input.getAmount(), input.getNbt());
             return input(FluidRecipeCapability.CAP,
                     IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
         }
 
         public GTRecipeJS outputFluids(FluidStackJS... outputs) {
+            validateFluids("output", outputs);
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
@@ -750,9 +777,77 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, IntProvider range) {
+            validateFluids("ranged output", output);
             FluidStack stack = new FluidStack(output.getFluid(), (int) output.getAmount(), output.getNbt());
             return output(FluidRecipeCapability.CAP,
                     IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
+        }
+
+        //////////////////////////////////////
+        // ********** VALIDATION ***********//
+        //////////////////////////////////////
+
+        private void validateItems(@NotNull String type, InputItem... items) {
+            for (var stack : items) {
+                if (stack == null || stack.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateItems(@NotNull String type, ItemStack... stacks) {
+            for (var stack : stacks) {
+                if (stack == null || stack.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateItems(@NotNull String type, Ingredient... ingredients) {
+            for (var ingredient : ingredients) {
+                if (ingredient == null || ingredient.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateItems(@NotNull String type, OutputItem... items) {
+            for (var item : items) {
+                if (item == null || item.item == null || item.item.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateItems(@NotNull String type, TagPrefix... items) {
+            for (var item : items) {
+                if (item == null || item.isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
+                }
+            }
+        }
+
+        private void validateFluids(@NotNull String type, GTRecipeComponents.FluidIngredientJS... fluids) {
+            for (var fluid : fluids) {
+                if (fluid == null || fluid.ingredient() == null || fluid.ingredient().getStacks() == null) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                }
+
+                for (var stack : fluid.ingredient().getStacks()) {
+                    if (stack == null || stack.isEmpty()) {
+                        throw new RecipeExceptionJS(
+                                String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                    }
+                }
+            }
+        }
+
+        private void validateFluids(@NotNull String type, FluidStackJS... stacks) {
+            for (var stack : stacks) {
+                if (stack == null || stack.getFluidStack() == null || stack.getFluidStack().isEmpty()) {
+                    throw new RecipeExceptionJS(String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
+                }
+            }
         }
 
         //////////////////////////////////////

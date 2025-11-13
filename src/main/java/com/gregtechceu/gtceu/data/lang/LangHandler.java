@@ -1023,8 +1023,8 @@ public class LangHandler {
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
         multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
         multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
+        multilineLang(provider, "gtceu.gui.multiblock_all_voiding",
+                "Voiding Mode\n§7Voiding All");
         multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
         multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
