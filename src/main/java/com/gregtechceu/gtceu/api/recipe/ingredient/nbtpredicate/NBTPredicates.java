@@ -7,9 +7,13 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
+import com.google.gson.JsonObject;
 import dev.latvian.mods.rhino.util.HideFromJS;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class NBTPredicates {
 
@@ -177,5 +181,24 @@ public class NBTPredicates {
 
     public static NBTPredicate not(NBTPredicate predicate) {
         return new NotNBTPredicate(predicate);
+    }
+
+    public static Map<String, Function<JsonObject, NBTPredicate>> predicateCodecs = new HashMap<>();
+
+    static {
+        predicateCodecs.put(TrueNBTPredicate.OP, TrueNBTPredicate::fromJson);
+        predicateCodecs.put(EqualsNBTPredicate.OP, EqualsNBTPredicate::fromJson);
+        predicateCodecs.put(ComparisonNBTPredicate.OP, ComparisonNBTPredicate::fromJson);
+        predicateCodecs.put(AllNBTPredicate.OP, AllNBTPredicate::fromJson);
+        predicateCodecs.put(AnyNBTPredicate.OP, AnyNBTPredicate::fromJson);
+        predicateCodecs.put(NotNBTPredicate.OP, NotNBTPredicate::fromJson);
+    };
+
+    public static NBTPredicate fromJson(JsonObject json) {
+        if (!json.has("op")) {
+            throw new IllegalStateException("Can't deserialize JSON without operation key: " + json);
+        }
+        String op = json.get("op").getAsString();
+        return predicateCodecs.get(op).apply(json);
     }
 }

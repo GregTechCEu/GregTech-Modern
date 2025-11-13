@@ -52,7 +52,7 @@ public class AllNBTPredicate extends NBTPredicate {
 
         List<NBTPredicate> children = new ArrayList<>();
         for (JsonElement element : json.getAsJsonArray("children")) {
-            children.add(NBTPredicateManager.fromJson(element.getAsJsonObject()));
+            children.add(NBTPredicates.fromJson(element.getAsJsonObject()));
         }
 
         return new AllNBTPredicate(children);

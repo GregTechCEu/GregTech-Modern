@@ -36,7 +36,7 @@ public class NotNBTPredicate extends NBTPredicate {
             throw new IllegalStateException("Could not deserialize NotNBTPredicate: " + json);
         }
 
-        NBTPredicate child = NBTPredicateManager.fromJson(json.get("child").getAsJsonObject());
+        NBTPredicate child = NBTPredicates.fromJson(json.get("child").getAsJsonObject());
         return new NotNBTPredicate(child);
     }
 }

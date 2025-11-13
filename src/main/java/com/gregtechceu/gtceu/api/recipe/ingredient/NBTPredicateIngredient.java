@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
-import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicateManager;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.TrueNBTPredicate;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -83,13 +83,13 @@ public class NBTPredicateIngredient extends AbstractIngredient {
         public @NotNull NBTPredicateIngredient parse(FriendlyByteBuf buffer) {
             var stack = buffer.readItem();
             var json = buffer.readUtf();
-            var predicate = NBTPredicateManager.fromJson(JsonParser.parseString(json).getAsJsonObject());
+            var predicate = NBTPredicates.fromJson(JsonParser.parseString(json).getAsJsonObject());
             return new NBTPredicateIngredient(stack, predicate);
         }
 
         public @NotNull NBTPredicateIngredient parse(@NotNull JsonObject json) {
             var stack = CraftingHelper.getItemStack(json, true);
-            var predicate = NBTPredicateManager.fromJson(json.get("predicate").getAsJsonObject());
+            var predicate = NBTPredicates.fromJson(json.get("predicate").getAsJsonObject());
 
             return new NBTPredicateIngredient(stack, predicate);
         }
