@@ -208,9 +208,25 @@ public class RecipeRunner {
         }
 
         for (var entry : recipeContents.entrySet()) {
+            // void excess real output contents if it can be voided
+            if (!simulated && io == IO.OUT && this.outputVoid.test(entry.getKey())) {
+                entry.getValue().clear();
+            }
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 return ActionResult.fail(null, entry.getKey(), io);
             }
+        }
+
+        // if, post voiding, we don't have stuff, pass instead of fail
+        boolean containsStuff = false;
+        for (var entry : recipeContents.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                containsStuff = true;
+                break;
+            }
+        }
+        if (!containsStuff) {
+            return ActionResult.PASS_NO_CONTENTS;
         }
 
         return ActionResult.FAIL_NO_REASON;

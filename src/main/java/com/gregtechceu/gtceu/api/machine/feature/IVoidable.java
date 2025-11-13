@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancySelectorConfigurator;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -40,15 +40,18 @@ public interface IVoidable extends IMachineFeature {
     static void attachConfigurators(ConfiguratorPanel configuratorPanel, IVoidable controller) {
         configuratorPanel
                 .attachConfigurators(new FancySelectorConfigurator<>(VoidingMode.VALUES, controller.getVoidingMode(),
-                        controller::setVoidingMode).setTooltip(m -> (List) LangHandler.getMultiLang(m.localeName)));
+                        controller::setVoidingMode)
+                        .setTooltip(m -> List.of(Component.translatable("gtceu.gui.multiblock.voiding_mode"),
+                                Component.translatable(m.localeName))));
     }
 
     enum VoidingMode implements StringRepresentable, EnumSelectorWidget.SelectableEnum {
 
-        VOID_NONE("gtceu.gui.multiblock_no_voiding", cap -> false),
-        VOID_ITEMS("gtceu.gui.multiblock_item_voiding", cap -> cap == ItemRecipeCapability.CAP),
-        VOID_FLUIDS("gtceu.gui.multiblock_fluid_voiding", cap -> cap == FluidRecipeCapability.CAP),
-        VOID_ALL("gtceu.gui.multiblock_all_voiding", cap -> true);
+        VOID_NONE("gtceu.gui.no_voiding", cap -> false),
+        VOID_ITEMS("gtceu.gui.item_voiding", cap -> cap == ItemRecipeCapability.CAP),
+        VOID_FLUIDS("gtceu.gui.fluid_voiding", cap -> cap == FluidRecipeCapability.CAP),
+        VOID_ITEMS_FLUIDS("gtceu.gui.all_voiding",
+                cap -> cap == ItemRecipeCapability.CAP || cap == FluidRecipeCapability.CAP);
 
         public static final VoidingMode[] VALUES = values();
 
@@ -60,7 +63,7 @@ public interface IVoidable extends IMachineFeature {
         VoidingMode(String name, Predicate<RecipeCapability<?>> canVoid) {
             this.localeName = name;
             this.canVoid = canVoid;
-            this.icon = GuiTextures.BUTTON_VOID_MULTIBLOCK.getSubTexture(0, ordinal(), 1, 0.25);
+            this.icon = GuiTextures.BUTTON_VOID_MULTIBLOCK.getSubTexture(0, ordinal() * 0.25, 1, 0.25);
         }
 
         public boolean canVoid(RecipeCapability<?> capability) {
