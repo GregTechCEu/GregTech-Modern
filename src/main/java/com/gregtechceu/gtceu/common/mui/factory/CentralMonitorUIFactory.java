@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
@@ -30,6 +31,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -49,8 +51,20 @@ public class CentralMonitorUIFactory implements PanelFactory {
         GenericSyncValue<List<MonitorGroup>> groupSync = new GenericSyncValue<>(machine::getMonitorGroups,
                 machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS);
         syncManager.syncValue("monitor_groups_sync", groupSync);
+        List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
+        IPanelHandler newGroupPanelHandler = syncManager.panel(
+                "editor_" + getNewGroupName(groupSync),
+                (syncManager1, panelHandler1) -> {
+                    MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
+                    groups.add(group);
+                    groupSync.setValue(groups, true, false);
+                    return this.createGroupEditorPanel(
+                            syncManager1, groupSync,
+                            machine, group, groups);
+                },
+                true);
         return new ModularPanel("main")
-                .padding(10)
+                .padding(5)
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(.8f)
                         .widthRel(.8f)
@@ -60,17 +74,20 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new ButtonWidget<>()
                                         .alignX(1)
                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
-                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD))
+                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                            newGroupPanelHandler.openPanel();
+                                            return true;
+                                        }))
                                 .widthRel(1).height(20))
                         .child(new ListWidget<>().children(
-                                machine.getMonitorGroups()
-                                        .stream()
+                                groups.stream()
                                         .map(group -> {
                                             IPanelHandler panelHandler = syncManager.panel(
                                                     "editor_" + group.getName(),
                                                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
                                                             syncManager1, groupSync,
-                                                            machine, group),
+                                                            machine, group, groups),
                                                     true);
                                             return new Flow(GuiAxis.X)
                                                     .height(20)
@@ -92,7 +109,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
 
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
                                                 GenericSyncValue<List<MonitorGroup>> groupSync,
-                                                CentralMonitorMachine machine, MonitorGroup group) {
+                                                CentralMonitorMachine machine, MonitorGroup group,
+                                                List<MonitorGroup> groups) {
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
@@ -149,7 +167,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                     slotDialogHandler.openPanel();
                                 } else group.setTarget(component.getPos());
                             }
-                            groupSync.setValue(machine.getMonitorGroups(), true, true);
+                            groupSync.setValue(groups);
                             return true;
                         }));
             }
@@ -194,5 +212,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             return moduleEditor != null;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)));
+    }
+
+    private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {
+        return Component.translatable("gtceu.gui.central_monitor.group_default_name", groupSync.getValue().size() + 1)
+                .getString();
     }
 }

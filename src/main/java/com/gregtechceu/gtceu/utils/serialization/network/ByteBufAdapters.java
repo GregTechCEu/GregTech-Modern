@@ -4,18 +4,19 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.utils.EqualityTest;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ByteBufAdapters {
 
@@ -26,9 +27,7 @@ public class ByteBufAdapters {
     public static final IByteBufAdapter<String> STRING = makeAdapter(NetworkUtils::readStringSafe, NetworkUtils::writeStringSafe, null);
     public static final IByteBufAdapter<ByteBuf> BYTE_BUF = makeAdapter(NetworkUtils::readByteBuf, NetworkUtils::writeByteBuf, null);
     public static final IByteBufAdapter<FriendlyByteBuf> FRIENDLY_BYTE_BUF = makeAdapter(NetworkUtils::readFriendlyByteBuf, NetworkUtils::writeByteBuf, null);
-    public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf(), null);
-    public static final IByteBufAdapter<BlockPos> BLOCK_POS = makeAdapter(BlockPos.CODEC, (a, b) -> a.asLong() == b.asLong());
-    public static final IByteBufAdapter<List<BlockPos>> BLOCK_POS_LIST = makeAdapter(BlockPos.CODEC.listOf(), null);
+    public static final IByteBufAdapter<List<MonitorGroup>> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC.listOf());
     // spotless:on
 
     public static <T> IByteBufAdapter<T> makeAdapter(@NotNull IByteBufDeserializer<T> deserializer,
@@ -54,8 +53,7 @@ public class ByteBufAdapters {
         };
     }
 
-    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec, @Nullable EqualityTest<T> comparator) {
-        final EqualityTest<T> tester = comparator != null ? comparator : EqualityTest.defaultTester();
+    public static <T> IByteBufAdapter<T> makeAdapter(@NotNull Codec<T> codec) {
         return new IByteBufAdapter<>() {
 
             @Override
@@ -69,8 +67,10 @@ public class ByteBufAdapters {
             }
 
             @Override
-            public boolean areEqual(@NotNull T t1, @NotNull T t2) {
-                return tester.areEqual(t1, t2);
+            public boolean areEqual(@NotNull T a, @NotNull T b) {
+                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
+                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                return Objects.equals(encoded1, encoded2);
             }
         };
     }
