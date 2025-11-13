@@ -10,7 +10,7 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredic
 
 public class EqualsNBTPredicate extends NBTPredicate {
 
-    public static String OP = "equals";
+    public static final String OP = "equals";
 
     private String key;
     private Tag value;

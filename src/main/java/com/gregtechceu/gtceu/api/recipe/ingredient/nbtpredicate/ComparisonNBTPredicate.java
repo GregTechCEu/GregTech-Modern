@@ -10,7 +10,7 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredic
 
 public class ComparisonNBTPredicate extends NBTPredicate {
 
-    public static String OP = "compare";
+    public static final String OP = "compare";
 
     private String key;
     private double value;

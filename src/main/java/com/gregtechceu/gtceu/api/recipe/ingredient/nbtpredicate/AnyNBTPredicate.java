@@ -11,7 +11,7 @@ import java.util.List;
 
 public class AnyNBTPredicate extends NBTPredicate {
 
-    public static String OP = "any";
+    public static final String OP = "any";
 
     private final List<NBTPredicate> children;
 

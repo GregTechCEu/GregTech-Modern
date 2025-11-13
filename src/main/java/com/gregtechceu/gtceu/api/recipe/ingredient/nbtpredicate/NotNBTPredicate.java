@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 public class NotNBTPredicate extends NBTPredicate {
 
-    public static String OP = "not";
+    public static final String OP = "not";
 
     private final NBTPredicate child;
 

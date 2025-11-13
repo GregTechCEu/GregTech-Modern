@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TrueNBTPredicate extends NBTPredicate {
 
-    public static String OP = "true";
+    public static final String OP = "true";
 
     @Override
     public boolean test(CompoundTag tag) {
