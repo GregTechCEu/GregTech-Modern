@@ -13,7 +13,7 @@ import java.util.List;
 
 public class NBTPredicates {
 
-    public static NBTPredicate eq_int(String key, int value) {
+    public static NBTPredicate eqInt(String key, int value) {
         return eq(key, value);
     }
 
@@ -22,7 +22,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, IntTag.valueOf(value));
     }
 
-    public static NBTPredicate eq_float(String key, float value) {
+    public static NBTPredicate eqFloat(String key, float value) {
         return eq(key, value);
     }
 
@@ -31,7 +31,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, FloatTag.valueOf(value));
     }
 
-    public static NBTPredicate eq_double(String key, double value) {
+    public static NBTPredicate eqDouble(String key, double value) {
         return eq(key, value);
     }
 
@@ -41,7 +41,7 @@ public class NBTPredicates {
     }
 
     // Note: Bools are handled as bytes
-    public static NBTPredicate eq_bool(String key, boolean value) {
+    public static NBTPredicate eqBool(String key, boolean value) {
         return eq(key, value);
     }
 
@@ -50,7 +50,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
     }
 
-    public static NBTPredicate eq_byte(String key, byte value) {
+    public static NBTPredicate eqByte(String key, byte value) {
         return eq(key, value);
     }
 
@@ -59,7 +59,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value));
     }
 
-    public static NBTPredicate eq_tag(String key, Tag value) {
+    public static NBTPredicate eqTag(String key, Tag value) {
         return eq(key, value);
     }
 
@@ -68,7 +68,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, value);
     }
 
-    public static NBTPredicate eq_string(String key, String value) {
+    public static NBTPredicate eqString(String key, String value) {
         return eq(key, value);
     }
 
@@ -77,7 +77,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, StringTag.valueOf(value));
     }
 
-    public static NBTPredicate neq_int(String key, int value) {
+    public static NBTPredicate neqInt(String key, int value) {
         return neq(key, value);
     }
 
@@ -86,7 +86,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, IntTag.valueOf(value), true);
     }
 
-    public static NBTPredicate neq_float(String key, float value) {
+    public static NBTPredicate neqFloat(String key, float value) {
         return neq(key, value);
     }
 
@@ -95,7 +95,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, FloatTag.valueOf(value), true);
     }
 
-    public static NBTPredicate neq_double(String key, double value) {
+    public static NBTPredicate neqDouble(String key, double value) {
         return neq(key, value);
     }
 
@@ -105,7 +105,7 @@ public class NBTPredicates {
     }
 
     // Note: Bools are handled as bytes
-    public static NBTPredicate neq_bool(String key, boolean value) {
+    public static NBTPredicate neqBool(String key, boolean value) {
         return neq(key, value);
     }
 
@@ -114,7 +114,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
     }
 
-    public static NBTPredicate neq_byte(String key, byte value) {
+    public static NBTPredicate neqByte(String key, byte value) {
         return neq(key, value);
     }
 
@@ -123,7 +123,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, ByteTag.valueOf(value), true);
     }
 
-    public static NBTPredicate neq_tag(String key, Tag value) {
+    public static NBTPredicate neqTag(String key, Tag value) {
         return neq(key, value);
     }
 
@@ -132,7 +132,7 @@ public class NBTPredicates {
         return new EqualsNBTPredicate(key, value, true);
     }
 
-    public static NBTPredicate neq_string(String key, String value) {
+    public static NBTPredicate neqString(String key, String value) {
         return neq(key, value);
     }
 

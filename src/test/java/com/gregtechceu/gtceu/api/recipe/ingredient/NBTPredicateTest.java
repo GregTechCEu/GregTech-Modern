@@ -34,13 +34,13 @@ public class NBTPredicateTest {
 
         CompoundTag numberTag = new CompoundTag();
         tag.putFloat("foo", 7f);
-        helper.assertTrue(eq_double("foo", 7d).test(numberTag),
+        helper.assertTrue(eqDouble("foo", 7d).test(numberTag),
                 "Double equality failed when it shouldn't have (number conversion)");
-        helper.assertTrue(eq_int("foo", 7).test(numberTag),
+        helper.assertTrue(eqInt("foo", 7).test(numberTag),
                 "Int equality failed when it shouldn't have (number conversion)");
-        helper.assertTrue(eq_float("foo", 7).test(numberTag),
+        helper.assertTrue(eqFloat("foo", 7).test(numberTag),
                 "Float equality failed when it shouldn't have (number conversion)");
-        helper.assertTrue(eq_byte("foo", (byte) 7).test(numberTag),
+        helper.assertTrue(eqByte("foo", (byte) 7).test(numberTag),
                 "Float equality failed when it shouldn't have (number conversion)");
         helper.succeed();
     }

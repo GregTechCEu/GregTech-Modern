@@ -11,14 +11,14 @@ This system allows you to query NBT contents during recipe matching to validate 
 ### Equals
 For JavaScript, custom overloads were made:
 
-- `.eq_string(key, value)`  
-- `.eq_int(key, value)`  
-- `.eq_float(key, value)`  
-- `.eq_byte(key, value)`  
-- `.eq_double(key, value)`  
-- `.eq_tag(key, value)`  
+- `.eqString(key, value)`  
+- `.eqInt(key, value)`  
+- `.eqFloat(key, value)`  
+- `.eqByte(key, value)`  
+- `.eqDouble(key, value)`  
+- `.eqTag(key, value)`  
 
-All of these also have an `.neq_[...](key, value)` function.  
+All of these also have an `.neq[...](key, value)` function.  
 In Java, these are also available, as well as simpler `.[n]eq(key, [type] value)` overloads.  
 
 
@@ -27,7 +27,7 @@ In Java, these are also available, as well as simpler `.[n]eq(key, [type] value)
     
     ServerEvents.recipes(event => {
         event.recipes.gtceu.assembler('test_nbt')
-            .NBTPredicateInput('minecraft:dirt', NBTPredicates.eq_string("charge", "23"))
+            .NBTPredicateInput('minecraft:dirt', NBTPredicates.eqString("charge", "23"))
             .itemOutputs('minecraft:stick')
             .duration(100)
             .EUt(30)
@@ -99,7 +99,7 @@ The following list operators exist:
             .NBTPredicateInput('minecraft:dirt', 
                 NBTPredicates.all([
                     NBTPredicates.lt("charge", 23),
-                    NBTPredicates.eq_string("color", "blue")
+                    NBTPredicates.eqString("color", "blue")
                 ]))
             .itemOutputs('minecraft:stick')
             .duration(100)
@@ -116,7 +116,7 @@ The following list operators exist:
                 .NBTPredicateInput(new ItemStack(Items.dirt, 1),
                     NBTPredicates.all([
                         NBTPredicates.lt("charge", 23),
-                        NBTPredicates.eq_string("color", "blue")
+                        NBTPredicates.eqString("color", "blue")
                     ]))
                 .outputItems(new ItemStack(Items.STICK))
                 .duration(100)
@@ -142,7 +142,7 @@ The negation operators exists:
                 NBTPredicates.not(
                     NBTPredicates.all([
                         NBTPredicates.lt("charge", 23),
-                        NBTPredicates.eq_string("color", "blue")
+                        NBTPredicates.eqString("color", "blue")
                     ])
                 )
             )
@@ -162,7 +162,7 @@ The negation operators exists:
                     NBTPredicates.not(
                         NBTPredicates.all([
                             NBTPredicates.lt("charge", 23),
-                            NBTPredicates.eq_string("color", "blue")
+                            NBTPredicates.eqString("color", "blue")
                         ])
                     )
                 )
