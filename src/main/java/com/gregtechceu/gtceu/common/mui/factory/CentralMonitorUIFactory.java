@@ -158,7 +158,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         }))
                         .hoverBackground(texture, new BorderDrawable(() -> colorSupplier.getAsInt() | 0x222222, 1))
                         .onMousePressed((mouseX, mouseY, button) -> {
-                            if (component == null) return false;
+                            if (component == null) return true;
                             if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                                 if (group.contains(component.getPos())) {
                                     group.remove(component.getPos());
