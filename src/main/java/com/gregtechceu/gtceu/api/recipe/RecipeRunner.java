@@ -138,7 +138,7 @@ public class RecipeRunner {
                     if (res.isEmpty()) break;
                 }
             }
-            if (res.isEmpty()) {
+            if (!hasAnyNonVoidingContents(res)) {
                 if (!simulated) {
                     // Actually consume the contents of this handler and also all the bypassed handlers
                     recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
@@ -162,12 +162,10 @@ public class RecipeRunner {
 
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
-            boolean found = false;
 
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
                 if (copiedRecipeContents.isEmpty()) {
-                    found = true;
                     break;
                 }
             }
@@ -177,13 +175,12 @@ public class RecipeRunner {
                         Collections.emptyList())) {
                     copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
                     if (copiedRecipeContents.isEmpty()) {
-                        found = true;
                         break;
                     }
                 }
             }
 
-            if (!found) continue;
+            if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
             // Keep track of the remaining items for this RecipeHandlerGroup
@@ -230,5 +227,15 @@ public class RecipeRunner {
         }
 
         return ActionResult.FAIL_NO_REASON;
+    }
+
+    private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {
+        for (var entry : contents.entrySet()) {
+            if (outputVoid.test(entry.getKey())) continue;
+            if (!(entry.getValue() == null || entry.getValue().isEmpty())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
