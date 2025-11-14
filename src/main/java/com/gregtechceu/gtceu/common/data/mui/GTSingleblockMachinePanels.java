@@ -47,21 +47,39 @@ public class GTSingleblockMachinePanels {
 
         int topMargin = 0;
         if(slotHeight == 2) {
-            topMargin = 9;
+            topMargin = 18;
         } else if (slotHeight > 2) {
             topMargin = 18;
         }
+
+        // input slots + centering gap + output slots
+
+        /**
+         * 1 -> 1.5
+         * 2 -> 1
+         * 3 -> .5
+         * 36 - (inputWidth / 2)
+         *
+         * 1:1 -> 18 + 18 + 36
+         * 1:2 -> 18 + 36 + 27
+         * 1:3 -> 18 + 54 + 3
+         * 2 - input + 2 - output
+         */
+        int fullWidth = (inputWidth + outputWidth) + (90 - ((inputWidth + outputWidth) / 2));
+
+        boolean autoOutputItem = simpleTieredMachine.hasAutoOutputItem();
+        boolean autoOutputFluid = simpleTieredMachine.hasAutoOutputFluid();
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
 
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176))
                 .child(new Row()
                         .coverChildrenHeight()
-                        .width(inputWidth + 36 + outputWidth)
-                        .left(7 + (63 - inputWidth))
+                        .width(fullWidth)
+                        .left(7 + (36 - (inputWidth / 2)))
                         .child(new Column()
                                 .coverChildrenWidth()
-                                .childPadding(0)
+                                .childPadding(2)
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(inputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.importItems,
@@ -75,7 +93,7 @@ public class GTSingleblockMachinePanels {
                         )
                         .child(new Column()
                                 .coverChildrenWidth()
-                                .childPadding(0)
+                                .childPadding(2)
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(outputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.exportItems,
@@ -94,14 +112,16 @@ public class GTSingleblockMachinePanels {
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()
-                        .left(7)
-                        .bottom(7 + 78)
+                        .leftRelOffset(1.0f, -3)
                         .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
                         .childPadding(2)
-                        .child(GTMuiWidgets.createPowerButton(workableMachine, syncManager)))
-                .child(GTMuiWidgets.createBatterySlot(simpleTieredMachine, syncManager)
-                        .alignX(Alignment.CENTER)
-                        .bottom(7 + 78))
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(workableMachine, syncManager))
+                        .child(GTMuiWidgets.createBatterySlot(simpleTieredMachine, syncManager))
+                        .childIf(autoOutputItem, GTMuiWidgets.createAutoOutputItemButton(simpleTieredMachine, syncManager))
+                        .childIf(autoOutputFluid, GTMuiWidgets.createAutoOutputFluidButton(simpleTieredMachine, syncManager)))
                 .child(GTMuiWidgets.createGTLogo()
                         .right(7).bottom(7 + 78));
 

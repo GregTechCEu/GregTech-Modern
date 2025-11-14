@@ -85,6 +85,24 @@ public class GTMuiWidgets {
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
 
+    public static ToggleButton createAutoOutputItemButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
+        BooleanSyncValue itemOutputs = new BooleanSyncValue(machine::isAutoOutputItems,
+                machine::setAutoOutputItems);
+        syncManager.syncValue("auto_output_items", itemOutputs);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(itemOutputs::getBoolValue, itemOutputs::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT);
+    }
+
+    public static ToggleButton createAutoOutputFluidButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
+        BooleanSyncValue fluidOutputs = new BooleanSyncValue(machine::isAutoOutputFluids,
+                machine::setAutoOutputFluids);
+        syncManager.syncValue("auto_output_fluids", fluidOutputs);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(fluidOutputs::getBoolValue, fluidOutputs::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT);
+    }
+
     public static IDrawable.DrawableWidget createGTLogo() {
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
     }
