@@ -4,10 +4,19 @@ import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.ILongValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
 public class LongValue implements ILongValue<Long>, IIntValue<Long>, IStringValue<Long> {
+
+    public static Dynamic wrap(ILongValue<?> val) {
+        return new Dynamic(val::getLongValue, val::setLongValue);
+    }
+
+    public static Dynamic wrapAtomic(AtomicLong val) {
+        return new Dynamic(val::get, val::set);
+    }
 
     private long value;
 

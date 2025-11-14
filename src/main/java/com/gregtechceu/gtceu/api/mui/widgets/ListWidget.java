@@ -13,11 +13,13 @@ import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Unit;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.utils.ReversedList;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -39,6 +41,10 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     private boolean wrapTight = false;
     private Alignment.CrossAxis crossAxisAlignment = Alignment.CrossAxis.CENTER;
     private Unit mainAxisMaxSize;
+    /**
+     * Whether the children list should be laid out in reverse.
+     */
+    private boolean reverseLayout = false;
 
     public ListWidget() {
         super(null, null);
@@ -91,7 +97,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
         GuiAxis axis = getAxis();
         int separatorSize = getSeparatorSize();
         int p = getArea().getPadding().getStart(axis);
-        for (IWidget widget : getChildren()) {
+        for (IWidget widget : getOrderedChildren()) {
             if (shouldIgnoreChildSize(widget)) {
                 widget.resizer().updateResized();
                 continue;
@@ -131,7 +137,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     @Override
     public boolean postLayoutWidgets() {
-        return Flow.layoutCrossAxisListLike(this, getAxis(), this.crossAxisAlignment);
+        return Flow.layoutCrossAxisListLike(this, getAxis(), this.crossAxisAlignment, this.reverseLayout);
     }
 
     @Override
@@ -197,6 +203,10 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     public GuiAxis getAxis() {
         return this.scrollData.getAxis();
+    }
+
+    public List<IWidget> getOrderedChildren() {
+        return this.reverseLayout ? new ReversedList<>(getChildren()) : getChildren();
     }
 
     private W maxSize(float v, int offset, Unit.Measure measure) {
@@ -306,6 +316,17 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     public W crossAxisAlignment(Alignment.CrossAxis caa) {
         this.crossAxisAlignment = caa;
+        return getThis();
+    }
+
+    /**
+     * Sets if the children list should be laid out in reversed or not (Default is false).
+     *
+     * @param reverseLayout true if the children list should be layout in reverse
+     * @return this
+     */
+    public W reverseLayout(boolean reverseLayout) {
+        this.reverseLayout = reverseLayout;
         return getThis();
     }
 }

@@ -826,9 +826,10 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return this;
     }
 
+    @Deprecated
     @Override
-    public String toString() {
-        return super.toString() + "#" + getName();
+    public ModularPanel name(String name) {
+        throw new IllegalStateException("Name for ModularPanels are final!");
     }
 
     public enum State {

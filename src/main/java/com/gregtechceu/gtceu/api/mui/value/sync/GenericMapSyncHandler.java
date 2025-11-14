@@ -74,6 +74,11 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
         return false;
     }
 
+    @Override
+    public void notifyUpdate() {
+        setValue(this.getter.get(), false, true);
+    }
+
     protected boolean didValuesChange(Map<K, V> value) {
         if (this.cache.size() != value.size()) return true;
         for (Map.Entry<K, V> entry : this.cache.entrySet()) {

@@ -88,6 +88,11 @@ public class StringSyncValue extends ValueSyncHandler<String> implements IString
     }
 
     @Override
+    public void notifyUpdate() {
+        setValue(this.getter.get(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         NetworkUtils.writeStringSafe(buffer, getValue(), Short.MAX_VALUE - 74);
     }
