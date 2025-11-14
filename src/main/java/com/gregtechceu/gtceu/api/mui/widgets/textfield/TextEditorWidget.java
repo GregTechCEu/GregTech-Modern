@@ -20,8 +20,7 @@ public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
 
     public TextEditorWidget() {
         this.handler.setMaxLines(10000);
-        this.setTextAlignment(new Alignment(0, 1e-6f));
-        this.renderer.setPos(0, 10);
+        this.setTextAlignment(Alignment.TopLeft);
     }
 
     @Override
