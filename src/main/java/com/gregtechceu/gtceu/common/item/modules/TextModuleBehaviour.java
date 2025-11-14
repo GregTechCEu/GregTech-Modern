@@ -3,9 +3,12 @@ package com.gregtechceu.gtceu.common.item.modules;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextEditorWidget;
@@ -14,10 +17,12 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
@@ -70,22 +75,42 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
         return new ModularPanel("text_module_editor")
-                .child(Flow.column()
-                        .padding(5)
-                        .child(Flow.row()
-                                .height(20)
-                                .child(new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
-                                .child(new TextFieldWidget()
-                                        .setNumbersDouble(x -> Math.max(x, 0))
-                                        .setDefaultNumber(1.0)
-                                        .value(SyncHandlers.string(
-                                                () -> String.valueOf(getScale(stack)),
-                                                s -> setScale(stack, Double.parseDouble(s))))
-                                        .paddingLeft(4)))
-                        .child(new TextEditorWidget()
-                                .value(SyncHandlers.string(() -> getPlaceholderText(stack),
-                                        s -> setPlaceholderText(stack, s)))
-                                .sizeRel(.8f, .8f)));
+                .size(400, 250)
+                .child(Flow.row()
+                        .child(Flow.column()
+                                .padding(5)
+                                .child(Flow.row()
+                                        .height(20)
+                                        .child(new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
+                                        .child(new TextFieldWidget()
+                                                .setNumbersDouble(x -> Math.max(x, 0))
+                                                .setDefaultNumber(1.0)
+                                                .value(SyncHandlers.string(
+                                                        () -> String.valueOf(getScale(stack)),
+                                                        s -> setScale(stack, Double.parseDouble(s))))
+                                                .marginLeft(4)))
+                                .child(new TextEditorWidget()
+                                        .value(SyncHandlers.string(() -> getPlaceholderText(stack),
+                                                s -> setPlaceholderText(stack, s)))
+                                        .sizeRel(.95f, .8f)))
+                        .child(new SortableListWidget<String>()
+                                .children(PlaceholderHandler.getAllPlaceholderNames()
+                                        .stream()
+                                        .sorted()
+                                        .map(SortableListWidget.Item::new)
+                                        .map(w -> w
+                                                .child(new TextWidget<>(w.getWidgetValue())
+                                                        .sizeRel(1)
+                                                        .alignment(Alignment.CENTER))
+                                                .tooltip(new RichTooltip()
+                                                        .addDrawableLines(LangHandler
+                                                                .getSingleOrMultiLang(
+                                                                        "gtceu.placeholder_info." + w.getWidgetValue())
+                                                                .stream()
+                                                                .map(IKey::lang)
+                                                                .map(key -> (IDrawable) key)
+                                                                .toList())))
+                                        .toList())));
     }
 
     @Override
