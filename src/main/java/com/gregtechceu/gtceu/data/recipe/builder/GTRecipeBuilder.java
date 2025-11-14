@@ -47,6 +47,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -1117,10 +1118,18 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
-        return addCondition(new DimensionCondition(dimension).setReverse(reverse));
+        return dimension(ResourceKey.create(Registries.DIMENSION, dimension), reverse);
     }
 
     public GTRecipeBuilder dimension(ResourceLocation dimension) {
+        return dimension(dimension, false);
+    }
+
+    public GTRecipeBuilder dimension(ResourceKey<Level> dimension, boolean reverse) {
+        return addCondition(new DimensionCondition(dimension).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder dimension(ResourceKey<Level> dimension) {
         return dimension(dimension, false);
     }
 
