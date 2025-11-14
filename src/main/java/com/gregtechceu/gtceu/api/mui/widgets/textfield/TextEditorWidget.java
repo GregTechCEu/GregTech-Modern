@@ -65,7 +65,7 @@ public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
 
     @NotNull
     public String getText() {
-        return this.handler.getText().stream().reduce("", (s1, s2) -> s1 + '\n' + s2);
+        return this.handler.getText().stream().reduce("", (s1, s2) -> s1 + '\n' + s2).substring(1);
     }
 
     public void setText(@NotNull String text) {

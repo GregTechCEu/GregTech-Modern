@@ -73,19 +73,19 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .child(Flow.column()
                         .padding(5)
                         .child(Flow.row()
+                                .height(20)
                                 .child(new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
                                 .child(new TextFieldWidget()
                                         .setNumbersDouble(x -> Math.max(x, 0))
                                         .setDefaultNumber(1.0)
                                         .value(SyncHandlers.string(
                                                 () -> String.valueOf(getScale(stack)),
-                                                s -> setScale(stack, Double.parseDouble(s))
-                                        ))
+                                                s -> setScale(stack, Double.parseDouble(s))))
                                         .paddingLeft(4)))
                         .child(new TextEditorWidget()
-                                .value(SyncHandlers.string(() -> getPlaceholderText(stack), s -> setPlaceholderText(stack, s)))
-                                .sizeRel(.8f, .8f))
-                );
+                                .value(SyncHandlers.string(() -> getPlaceholderText(stack),
+                                        s -> setPlaceholderText(stack, s)))
+                                .sizeRel(.8f, .8f)));
     }
 
     @Override

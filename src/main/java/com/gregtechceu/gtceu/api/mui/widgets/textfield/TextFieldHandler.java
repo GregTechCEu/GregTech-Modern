@@ -379,7 +379,7 @@ public class TextFieldHandler {
                     this.text.set(this.cursor.y, line);
                 }
             } else {
-                if (this.cursor.x == 0) {
+                if (this.cursor.x == 0 || line.isEmpty()) {
                     if (this.cursor.y > 0) {
                         String lineAbove = this.text.get(this.cursor.y - 1);
                         this.text.set(this.cursor.y - 1, lineAbove + line);
