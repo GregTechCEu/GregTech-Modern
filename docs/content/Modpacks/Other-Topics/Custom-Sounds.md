@@ -13,7 +13,7 @@ This class prepares for registrate to register the sounds.
 An example of a custom sound can be found below.
 
 ```java
-import static com.examplemod.common.ExampleRegistration.REGISTRATE;
+import static com.examplemod.common.registry.ExampleRegistration.REGISTRATE;
 
 public class ExampleSound {
 
