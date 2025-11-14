@@ -13,7 +13,7 @@ This class prepares for registrate to register the sounds.
 An example of a custom sound can be found below.
 
 ```java
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+import static com.examplemod.common.ExampleRegistration.REGISTRATE;
 
 public class ExampleSound {
 
@@ -23,9 +23,13 @@ public class ExampleSound {
 }
 ```
 
-After you make this class and initialize it in your main mod class, you want to setup datagen for the sounds.
+Before you run datagen, the sound needs to be prepared for use. For a sound to be registered it must be in .ogg format and be inside assets/examplemod/sounds. 
+!!! note "mono vs. stereo audio"
+
+    Your audio file should be mono, as Minecraft's attentuation logic only works with single-channel audio. Stereo sounds won't fade out (they'll be played at the same volume at any distance from the source) and should only be used for background tracks such as the main menu music. 
+
+After you make this class, prepare your sound, and initialize it in your main mod class, you want to setup datagen for the sounds.
 It's a bit more complicated than normal datagen, so an example can be found below.
-It's a bit more complicated than normal datagen so an example can be found below.
 
 ```java
 @Mod.EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -44,8 +48,3 @@ public class ExampleDataGenerators {
 }
 
 ```
-
-Finally, you need to actually prepare your sound for use. For a sound to be registered it must be in .ogg format and be inside assets/examplemod/sounds. 
-!!! note "mono vs. stereo audio"
-
-    Your audio file should be mono, as Minecraft's attentuation logic only works with single-channel audio. Stereo sounds won't fade out (they'll be played at the same volume at any distance from the source) and should only be used for background tracks such as the main menu music. 
