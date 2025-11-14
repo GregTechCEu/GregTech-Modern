@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BUS_DISTINCT;
 import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BYPASS_DISTINCT;
@@ -33,6 +35,7 @@ public class RecipeRunner {
     private final boolean simulated;
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
     private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
+    private final Predicate<RecipeCapability<?>> outputVoid;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -45,6 +48,7 @@ public class RecipeRunner {
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
+        this.outputVoid = cap -> holder instanceof IVoidable voidable && voidable.canVoidRecipeOutputs(cap);
     }
 
     @NotNull
@@ -68,6 +72,7 @@ public class RecipeRunner {
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) continue;
+            if (simulated && io == IO.OUT && outputVoid.test(cap)) continue;
 
             ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
             List<Content> chancedContents = new ArrayList<>();

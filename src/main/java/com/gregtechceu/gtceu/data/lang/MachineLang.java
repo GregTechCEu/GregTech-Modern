@@ -484,6 +484,7 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.minez", "mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
+        provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
 
         provider.add("gtceu.machine.fluid_drilling_rig.description",
                 "§7Drills fluids from veins under bedrock.");
