@@ -45,4 +45,6 @@ public class ExampleDataGenerators {
 ```
 
 Finally, you need to actually prepare your sound for use. For a sound to be registered it must be in .ogg format and be inside assets/examplemod/sounds. 
-Mono sounds are localized to the area around the machine, while stereo sounds are global.
+!!! note "mono vs. stereo audio"
+
+    Your audio file should be mono, as Minecraft's attentuation logic only works with single-channel audio. Stereo sounds won't fade out (they'll be played at the same volume at any distance from the source) and should only be used for background tracks such as the main menu music. 
