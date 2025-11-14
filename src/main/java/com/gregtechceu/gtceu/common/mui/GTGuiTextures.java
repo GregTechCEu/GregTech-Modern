@@ -72,7 +72,7 @@ public class GTGuiTextures {
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
             .imageSize(16, 16)
             .adaptable(4)
-            .xy(0, 0, 1f, .75f)
+            .subAreaUV(0, 0, 1f, .75f)
             .build();
 
     public static final UITexture BACKGROUND_INVERSE = UITexture.builder()

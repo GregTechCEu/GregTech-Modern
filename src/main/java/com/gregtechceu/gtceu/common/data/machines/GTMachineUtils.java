@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
+import com.gregtechceu.gtceu.common.data.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
@@ -978,7 +979,7 @@ public class GTMachineUtils {
 
         public MachineDefinition[] register() {
             if (panelFactory == null) {
-                panelFactory = GTMuiRecipeTypePanel.RECIPE_TYPE;
+                panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
             }
             return registerTieredMachines(registrate, name,
                     (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
