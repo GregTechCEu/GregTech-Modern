@@ -76,6 +76,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                 .child(new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
                                 .child(new TextFieldWidget()
                                         .setNumbersDouble(x -> Math.max(x, 0))
+                                        .setDefaultNumber(1.0)
                                         .value(SyncHandlers.string(
                                                 () -> String.valueOf(getScale(stack)),
                                                 s -> setScale(stack, Double.parseDouble(s))
