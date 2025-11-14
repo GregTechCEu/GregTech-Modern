@@ -17,7 +17,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class ExampleSound {
 
-    public static final SoundEntry MICROVERSE = REGISTRATE.sound(examplemod.id("microverse")).build();
+    public static final SoundEntry MICROVERSE = REGISTRATE.sound("microverse").build();
 
     public static void init() {}
 }
