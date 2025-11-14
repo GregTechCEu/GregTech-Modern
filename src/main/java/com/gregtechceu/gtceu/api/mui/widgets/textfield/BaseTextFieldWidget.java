@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.theme.TextFieldTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -371,5 +372,9 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
 
     public static char getGroupSeparator() {
         return format.getDecimalFormatSymbols().getGroupingSeparator();
+    }
+
+    public List<Component> getTextAsComponents() {
+        return FontRenderHelper.asComponents(this.handler.getText());
     }
 }

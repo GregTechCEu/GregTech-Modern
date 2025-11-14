@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
-import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollArea;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -238,7 +237,7 @@ public class TextFieldHandler {
     }
 
     public List<Component> getTextAsComponents() {
-        return FontRenderHelper.asComponents(this.text);
+        return this.textFieldWidget.getTextAsComponents();
     }
 
     public boolean isTextEmpty() {
