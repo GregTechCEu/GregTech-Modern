@@ -138,21 +138,24 @@ public class RecipeRunner {
                     if (res.isEmpty()) break;
                 }
             }
-            if (!hasAnyNonVoidingContents(res)) {
-                if (!simulated) {
-                    // Actually consume the contents of this handler and also all the bypassed handlers
-                    recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                    if (!recipeContents.isEmpty()) {
-                        for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                                Collections.emptyList())) {
-                            recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                            if (recipeContents.isEmpty()) break;
-                        }
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(res)) continue;
+            } else if (io == IO.IN) {
+                if (!res.isEmpty()) continue;
+            }
+            if (!simulated) {
+                // Actually consume the contents of this handler and also all the bypassed handlers
+                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+                if (!recipeContents.isEmpty()) {
+                    for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                            Collections.emptyList())) {
+                        recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                        if (recipeContents.isEmpty()) break;
                     }
                 }
-                recipeContents.clear();
-                return ActionResult.SUCCESS;
             }
+            recipeContents.clear();
+            return ActionResult.SUCCESS;
         }
 
         // Check the other groups. For every group, try consuming the ingredients,
@@ -180,7 +183,11 @@ public class RecipeRunner {
                 }
             }
 
-            if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+            } else if (io == IO.IN) {
+                if (!copiedRecipeContents.isEmpty()) continue;
+            }
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
             // Keep track of the remaining items for this RecipeHandlerGroup
