@@ -296,6 +296,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                         if (machine.self() instanceof IMultiController && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
+                            regressRecipe();
                         }
                     }
                     runDelay = runAttempt * 60;
