@@ -23,7 +23,8 @@ public class ExampleSound {
 }
 ```
 
-After you make this class and init it inside your main mod class, you want to setup datagen for the sound.
+After you make this class and initialize it in your main mod class, you want to setup datagen for the sounds.
+It's a bit more complicated than normal datagen, so an example can be found below.
 It's a bit more complicated than normal datagen so an example can be found below.
 
 ```java
