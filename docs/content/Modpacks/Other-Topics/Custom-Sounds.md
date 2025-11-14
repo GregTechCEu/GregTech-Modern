@@ -28,7 +28,7 @@ It's a bit more complicated than normal datagen, so an example can be found belo
 It's a bit more complicated than normal datagen so an example can be found below.
 
 ```java
-@Mod.EventBusSubscriber(modid = examplemod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ExampleDataGenerators {
 
     @SubscribeEvent
