@@ -17,6 +17,7 @@ public class GTGuiTextures {
     public static class IDs {
 
         public static final String STANDARD_BACKGROUND = "gregtech_standard_bg";
+        public static final String STANDARD_BACKGROUND_INVERSE = "gregtech_standard_inverse_bg";
         public static final String COVER_BACKGROUND = "gregtech_cover_bg";
         public static final String BRONZE_BACKGROUND = "gregtech_bronze_bg";
         public static final String STEEL_BACKGROUND = "gregtech_steel_bg";
@@ -67,12 +68,19 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    // todo BORDERED/BOXED backgrounds will not be ported, if possible
     public static final UITexture BACKGROUND_TITLE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
             .imageSize(16, 16)
             .adaptable(4)
             .xy(0, 0, 1f, .75f)
+            .build();
+
+    public static final UITexture BACKGROUND_INVERSE = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/base/background_inverse.png")
+            .imageSize(16, 16)
+            .adaptable(3)
+            .name(IDs.STANDARD_BACKGROUND_INVERSE)
+            .canApplyTheme()
             .build();
 
     public static final UITexture BACKGROUND_BRONZE = UITexture.builder()
@@ -390,6 +398,8 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture RESEARCH_STATION_OVERLAY = fullImage(
             "textures/gui/overlay/research_station_overlay.png", ColorType.DEFAULT);
+    public static final UITexture OVERLAY_REDSTONE_ON = fullImage("textures/gui/overlay/redstone_on.png");
+    public static final UITexture OVERLAY_REDSTONE_OFF = fullImage("textures/gui/overlay/redstone_off.png");
 
     // BUTTONS
 
@@ -643,7 +653,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
             .imageSize(16, 32) // texture is 32x64, but this looks nicer
-            .xy(0f, 0f, 1f, 0.5f)
+            .subAreaUV(0f, 0f, 1f, 0.5f)
             .adaptable(2).tiled()
             .name("mc_button")
             .defaultColorType()
@@ -659,7 +669,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_PRESSED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button.png")
             .imageSize(16, 32)
-            .xy(0f, 0.5f, 1f, 1f)
+            .subAreaUV(0f, 0.5f, 1f, 1f)
             .adaptable(2).tiled()
             .name("mc_button_pressed")
             .defaultColorType()
@@ -668,7 +678,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_HOVERED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
             .imageSize(16, 32)
-            .xy(0f, 0f, 1f, 0.5f)
+            .subAreaUV(0f, 0f, 1f, 0.5f)
             .adaptable(2).tiled()
             .name("mc_button_hovered")
             .build();
@@ -676,7 +686,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_HOVERED_PRESSED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_hovered.png")
             .imageSize(16, 32)
-            .xy(0f, 0.5f, 1f, 1f)
+            .subAreaUV(0f, 0.5f, 1f, 1f)
             .adaptable(2).tiled()
             .name("mc_button_hovered_pressed")
             .build();
@@ -684,7 +694,7 @@ public class GTGuiTextures {
     public static final UITexture MC_BUTTON_DISABLED = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/mc_button_disabled.png")
             .imageSize(16, 16)
-            .xy(0f, 0f, 1f, 0.5f)
+            .subAreaUV(0f, 0f, 1f, 0.5f)
             .adaptable(1).tiled()
             .name("mc_button_disabled")
             .build();
@@ -752,7 +762,7 @@ public class GTGuiTextures {
                         .location(GTCEu.MOD_ID, path)
                         .imageSize(imageWidth, imageHeight)
                         .colorType(colorType)
-                        .xy(indexX * sliceWidth, indexY * sliceHeight, sliceWidth, sliceHeight)
+                        .subAreaXYWH(indexX * sliceWidth, indexY * sliceHeight, sliceWidth, sliceHeight)
                         .build();
             }
         }

@@ -160,7 +160,7 @@ public abstract class ScrollData {
      * Clamp scroll to the bounds of the scroll size;
      */
     public boolean clamp(ScrollArea area) {
-        int size = getVisibleSize(area);
+        int size = getFullVisibleSize(area);
 
         int old = this.scroll;
         if (this.scrollSize <= size) {
@@ -200,7 +200,7 @@ public abstract class ScrollData {
     }
 
     public final boolean isScrollBarActive(ScrollArea area, boolean isOtherActive) {
-        int s = getRawVisibleSize(area);
+        int s = getRawFullVisibleSize(area);
         if (s < this.scrollSize) return true;
         ScrollData data = getOtherScrollData(area);
         if (data == null || s - data.getThickness() >= this.scrollSize) return false;
@@ -216,9 +216,8 @@ public abstract class ScrollData {
     }
 
     public int getScrollBarLength(ScrollArea area) {
-        boolean isOtherActive = isOtherScrollBarActive(area, false);
-        int length = (int) (getVisibleSize(area, isOtherActive) * getFullVisibleSize(area, isOtherActive) /
-                (float) this.scrollSize);
+        float fullSize = getFullVisibleSize(area);
+        int length = (int) (fullSize * fullSize / this.scrollSize);
         return Math.max(length, getMinLength()); // min length of 4
     }
 
@@ -235,7 +234,7 @@ public abstract class ScrollData {
 
     public int getScrollBarStart(ScrollArea area, int scrollBarLength, int fullVisibleSize) {
         return ((fullVisibleSize - scrollBarLength) * getScroll()) /
-                (getScrollSize() - getVisibleSize(area, fullVisibleSize));
+                (getScrollSize() - fullVisibleSize);
     }
 
     public int getScrollBarStart(ScrollArea area, int scrollBarLength, boolean isOtherActive) {
@@ -254,11 +253,19 @@ public abstract class ScrollData {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public abstract void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme);
+    public abstract void drawScrollbar(GuiContext context, ScrollArea area, WidgetTheme widgetTheme, IDrawable texture);
 
     @OnlyIn(Dist.CLIENT)
-    protected void drawScrollBar(GuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme) {
-        IDrawable drawable = this.scrollbar != null ? this.scrollbar : widgetTheme.getBackground();
+    protected void drawScrollBar(GuiContext context, int x, int y, int w, int h, WidgetTheme widgetTheme,
+                                 IDrawable texture) {
+        IDrawable drawable;
+        if (this.scrollbar != null) {
+            drawable = this.scrollbar;
+        } else if (widgetTheme.getBackground() != null && widgetTheme.getBackground() != IDrawable.NONE) {
+            drawable = widgetTheme.getBackground();
+        } else {
+            drawable = texture;
+        }
         if (drawable == null) drawable = Scrollbar.DEFAULT;
         drawable.draw(context, x, y, w, h, widgetTheme);
     }

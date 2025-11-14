@@ -6,15 +6,20 @@ import com.gregtechceu.gtceu.api.mui.base.layout.ILayoutWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IParentWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
+import com.gregtechceu.gtceu.api.mui.widget.sizer.Unit;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 
 /**
@@ -31,6 +36,9 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     private IIcon childSeparator;
     private final IntList separatorPositions = new IntArrayList();
     private boolean collapseDisabledChild = true;
+    private boolean wrapTight = false;
+    private Alignment.CrossAxis crossAxisAlignment = Alignment.CrossAxis.CENTER;
+    private Unit mainAxisMaxSize;
 
     public ListWidget() {
         super(null, null);
@@ -40,6 +48,14 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     public void onInit() {
         if (this.scrollData == null) {
             scrollDirection(new VerticalScrollData());
+        }
+    }
+
+    @Override
+    public void beforeResize(boolean onOpen) {
+        super.beforeResize(onOpen);
+        if (this.mainAxisMaxSize != null) {
+            flex().setUnit(this.mainAxisMaxSize, getAxis(), Unit.State.SIZE);
         }
     }
 
@@ -67,8 +83,12 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     @Override
     public boolean layoutWidgets() {
+        if (!hasChildren()) return true;
+        if (this.wrapTight && !resizer().isSizeCalculated(getAxis())) {
+            return false;
+        }
         this.separatorPositions.clear();
-        GuiAxis axis = this.scrollData.getAxis();
+        GuiAxis axis = getAxis();
         int separatorSize = getSeparatorSize();
         int p = getArea().getPadding().getStart(axis);
         for (IWidget widget : getChildren()) {
@@ -94,8 +114,29 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
                 widget.flex().applyPos(widget);
             }
         }
-        getScrollData().setScrollSize(p + getArea().getPadding().getEnd(axis));
+        int size = p + getArea().getPadding().getEnd(axis);
+        getScrollData().setScrollSize(size);
+        int widgetSize = getArea().getSize(axis);
+        if (this.wrapTight && size < widgetSize) {
+            getArea().setSize(getAxis(), size);
+            resizer().setSizeResized(axis, true);
+            if (resizer().isPosCalculated(axis)) {
+                // if the position is defined with right(), bottom() or is relative, then the position is very likely
+                // invalid now let mui recalculate position
+                resizer().setPosResized(axis, false);
+            }
+        }
         return true;
+    }
+
+    @Override
+    public boolean postLayoutWidgets() {
+        return Flow.layoutCrossAxisListLike(this, getAxis(), this.crossAxisAlignment);
+    }
+
+    @Override
+    public boolean canCoverByDefaultSize(GuiAxis axis) {
+        return axis.getOther() == getAxis();
     }
 
     @Override
@@ -126,7 +167,7 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     }
 
     @Override
-    public void onChildAdd(I child) {
+    protected void onChildAdd(I child) {
         super.onChildAdd(child);
         if (isValid()) {
             scheduleResize();
@@ -135,7 +176,12 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
     }
 
     @Override
-    public void onChildRemove(I child) {
+    protected boolean removeAll() {
+        return super.removeAll();
+    }
+
+    @Override
+    protected void onChildRemove(I child) {
         super.onChildRemove(child);
         if (isValid()) {
             scheduleResize();
@@ -145,8 +191,57 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
 
     public int getSeparatorSize() {
         if (this.childSeparator == null) return 0;
-        return this.scrollData.getAxis().isHorizontal() ? this.childSeparator.getWidth() :
+        return getAxis().isHorizontal() ? this.childSeparator.getWidth() :
                 this.childSeparator.getHeight();
+    }
+
+    public GuiAxis getAxis() {
+        return this.scrollData.getAxis();
+    }
+
+    private W maxSize(float v, int offset, Unit.Measure measure) {
+        if (this.mainAxisMaxSize == null) this.mainAxisMaxSize = new Unit();
+        this.mainAxisMaxSize.setValue(v);
+        this.mainAxisMaxSize.setOffset(offset);
+        this.mainAxisMaxSize.setMeasure(measure);
+        return wrapTight();
+    }
+
+    private W maxSize(DoubleSupplier v, int offset, Unit.Measure measure) {
+        if (this.mainAxisMaxSize == null) this.mainAxisMaxSize = new Unit();
+        this.mainAxisMaxSize.setValue(v);
+        this.mainAxisMaxSize.setOffset(offset);
+        this.mainAxisMaxSize.setMeasure(measure);
+        return wrapTight();
+    }
+
+    public W maxSize(int v) {
+        return maxSize(v, 0, Unit.Measure.PIXEL);
+    }
+
+    public W maxSizeRel(float v) {
+        return maxSize(v, 0, Unit.Measure.RELATIVE);
+    }
+
+    public W maxSizeRelOffset(float v, int offset) {
+        return maxSize(v, offset, Unit.Measure.RELATIVE);
+    }
+
+    public W maxSize(DoubleSupplier v) {
+        return maxSize(v, 0, Unit.Measure.PIXEL);
+    }
+
+    public W maxSizeRel(DoubleSupplier v) {
+        return maxSize(v, 0, Unit.Measure.RELATIVE);
+    }
+
+    public W maxSizeRelOffset(DoubleSupplier v, int offset) {
+        return maxSize(v, offset, Unit.Measure.RELATIVE);
+    }
+
+    public W wrapTight() {
+        this.wrapTight = true;
+        return getThis();
     }
 
     public W scrollDirection(GuiAxis axis) {
@@ -179,6 +274,13 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
         return getThis();
     }
 
+    public <T> W children(Iterable<T> it, Function<T, I> widgetCreator) {
+        for (T t : it) {
+            child(widgetCreator.apply(t));
+        }
+        return getThis();
+    }
+
     /**
      * Sets if disabled children should be collapsed.
      */
@@ -199,6 +301,11 @@ public class ListWidget<I extends IWidget, W extends ListWidget<I, W>> extends A
      */
     public W collapseDisabledChild(boolean doCollapse) {
         this.collapseDisabledChild = doCollapse;
+        return getThis();
+    }
+
+    public W crossAxisAlignment(Alignment.CrossAxis caa) {
+        this.crossAxisAlignment = caa;
         return getThis();
     }
 }

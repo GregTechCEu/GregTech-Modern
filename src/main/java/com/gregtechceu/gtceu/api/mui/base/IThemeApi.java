@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.base;
 
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Scrollbar;
 import com.gregtechceu.gtceu.api.mui.theme.*;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
@@ -55,7 +56,7 @@ public interface IThemeApi {
             .defaultTheme(
                     SelectableTheme.whiteTextShadow(18, 18, GTGuiTextures.MC_BUTTON, GTGuiTextures.MC_BUTTON_DISABLED))
             .defaultHoverTheme(SelectableTheme.whiteTextShadow(18, 18, GTGuiTextures.MC_BUTTON_HOVERED,
-                    GTGuiTextures.MC_BUTTON_DISABLED))
+                    IDrawable.NONE))
             .register();
 
     // subwidget themes

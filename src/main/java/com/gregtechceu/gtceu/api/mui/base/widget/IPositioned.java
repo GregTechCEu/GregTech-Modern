@@ -67,6 +67,11 @@ public interface IPositioned<W extends IPositioned<W>> {
         return getThis();
     }
 
+    default W bypassLayerRestriction() {
+        flex().bypassLayerRestriction();
+        return getThis();
+    }
+
     default W left(int val) {
         flex().left(val, 0, 0, Unit.Measure.PIXEL, true);
         return getThis();

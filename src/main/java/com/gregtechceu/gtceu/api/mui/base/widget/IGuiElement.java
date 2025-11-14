@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.base.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.layout.IResizeable;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
-import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
@@ -50,20 +49,32 @@ public interface IGuiElement {
     void draw(ModularGuiContext context);
 
     /**
-     * Called when the mouse enters the area of this element
+     * Called when the mouse hovers this element. This means this element is directly below the mouse or there are
+     * widgets in between which all allow to pass hover through. This is not called when the element is at any point
+     * below the mouse.
      */
     default void onMouseStartHover() {}
 
     /**
-     * Called when the mouse leaves the area of this element
+     * Called when the mouse no longer hovers this element. This widget can still be below the mouse on some level.
      */
     default void onMouseEndHover() {}
+
+    /**
+     * Called when the mouse enters this element's area with any amount of widgets above it from the current panel.
+     */
+    default void onMouseEnterArea() {}
+
+    /**
+     * Called when the mouse leaves the area, or it started hovering a different panel.
+     */
+    default void onMouseLeaveArea() {}
 
     /**
      * @return if this widget is currently right below the mouse
      */
     default boolean isHovering() {
-        return false;
+        return isHoveringFor(0);
     }
 
     /**
@@ -72,18 +83,15 @@ public interface IGuiElement {
      * @return if this element is right below the mouse for a certain amount of time
      */
     default boolean isHoveringFor(int ticks) {
-        return isHovering();
+        return false;
     }
 
     default boolean isBelowMouse() {
-        // TODO inaccurate
-        IGuiElement hovered = getScreen().getContext().getHovered();
-        if (hovered == null) return false;
-        while (!(hovered instanceof ModularPanel)) {
-            if (hovered == this) return true;
-            hovered = hovered.getParent();
-        }
-        return hovered == this;
+        return isBelowMouseFor(0);
+    }
+
+    default boolean isBelowMouseFor(int ticks) {
+        return false;
     }
 
     /**

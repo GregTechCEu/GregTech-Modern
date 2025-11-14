@@ -16,8 +16,8 @@ import org.jetbrains.annotations.ApiStatus;
  * Using {@link #openPanel()} is the only way to open multiple panels.
  * </p>
  * <p>
- * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen()} and
- * {@link ModularPanel#animateClose()}. With the difference, that the method from this interface also works on server
+ * Panels can be closed with {@link #closePanel()}, but also with {@link ModularPanel#closeIfOpen()}.
+ * With the difference, that the method from this interface also works on server
  * side.
  * </p>
  * Synced panels must be created with {@link PanelSyncManager#panel(String, PanelSyncHandler.IPanelBuilder, boolean)}.
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
  * {@link #simple(ModularPanel, SecondaryPanel.IPanelBuilder, boolean)}
  * is likely what you need.
  */
+@ApiStatus.NonExtendable
 public interface IPanelHandler {
 
     /**

@@ -102,6 +102,7 @@ public class TextRenderer {
     }
 
     public void drawSimple(GuiGraphics graphics, FormattedCharSequence text) {
+        if (getFont() == null) return;
         float w = getFont().width(text) * this.scale;
         int y = getStartYOfLines(1), x = getStartX(w);
         draw(graphics, text, x, y);
@@ -190,22 +191,21 @@ public class TextRenderer {
             drawMeasuredLines(graphics, Collections.singletonList(line));
             return;
         }
-        float scroll = (this.maxWidth - line.getWidth()) * progress;
-        // scroll = scroll % (int) (line.width + 1);
-        float max = this.maxWidth + scroll;
-        FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
-        Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
-        context.getStencil().push(Area.SHARED);
+        float scroll = (line.getWidth() - this.maxWidth) * progress;
+        context.getStencil().push(this.x, -500, (int) this.maxWidth, 1000);
         context.graphicsPose().pushPose();
         context.graphicsPose().translate(-scroll, 0, 0);
-        drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
+        drawMeasuredLines(graphics, Collections.singletonList(line));
         context.graphicsPose().popPose();
         context.getStencil().pop();
     }
 
     public List<FormattedCharSequence> wrapLine(Component line) {
-        return this.maxWidth > 0 ? getFont().split(line, (int) (this.maxWidth / this.scale)) :
-                Collections.singletonList(line.getVisualOrderText());
+        if (this.maxWidth > 0) {
+            int wrapWidth = Math.max(10, (int) (this.maxWidth / this.scale));
+            return getFont().split(line, wrapWidth);
+        }
+        return Collections.singletonList(line.getVisualOrderText());
     }
 
     public boolean wouldFit(List<String> text, boolean shouldCheckWidth) {
@@ -261,7 +261,7 @@ public class TextRenderer {
     }
 
     protected void draw(GuiGraphics graphics, FormattedCharSequence text, float x, float y) {
-        if (this.simulate) return;
+        if (this.simulate || graphics == null) return;
         RenderSystem.disableBlend();
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 0f);
