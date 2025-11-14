@@ -138,21 +138,24 @@ public class RecipeRunner {
                     if (res.isEmpty()) break;
                 }
             }
-            if (res.isEmpty()) {
-                if (!simulated) {
-                    // Actually consume the contents of this handler and also all the bypassed handlers
-                    recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                    if (!recipeContents.isEmpty()) {
-                        for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                                Collections.emptyList())) {
-                            recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                            if (recipeContents.isEmpty()) break;
-                        }
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(res)) continue;
+            } else if (io == IO.IN) {
+                if (!res.isEmpty()) continue;
+            }
+            if (!simulated) {
+                // Actually consume the contents of this handler and also all the bypassed handlers
+                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+                if (!recipeContents.isEmpty()) {
+                    for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                            Collections.emptyList())) {
+                        recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                        if (recipeContents.isEmpty()) break;
                     }
                 }
-                recipeContents.clear();
-                return ActionResult.SUCCESS;
             }
+            recipeContents.clear();
+            return ActionResult.SUCCESS;
         }
 
         // Check the other groups. For every group, try consuming the ingredients,
@@ -162,12 +165,10 @@ public class RecipeRunner {
 
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
-            boolean found = false;
 
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
                 if (copiedRecipeContents.isEmpty()) {
-                    found = true;
                     break;
                 }
             }
@@ -177,13 +178,16 @@ public class RecipeRunner {
                         Collections.emptyList())) {
                     copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
                     if (copiedRecipeContents.isEmpty()) {
-                        found = true;
                         break;
                     }
                 }
             }
 
-            if (!found) continue;
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+            } else if (io == IO.IN) {
+                if (!copiedRecipeContents.isEmpty()) continue;
+            }
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
             // Keep track of the remaining items for this RecipeHandlerGroup
@@ -208,11 +212,37 @@ public class RecipeRunner {
         }
 
         for (var entry : recipeContents.entrySet()) {
+            // void excess real output contents if it can be voided
+            if (!simulated && io == IO.OUT && this.outputVoid.test(entry.getKey())) {
+                entry.getValue().clear();
+            }
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 return ActionResult.fail(null, entry.getKey(), io);
             }
         }
 
+        // if, post voiding, we don't have stuff, pass instead of fail
+        boolean containsStuff = false;
+        for (var entry : recipeContents.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                containsStuff = true;
+                break;
+            }
+        }
+        if (!containsStuff) {
+            return ActionResult.PASS_NO_CONTENTS;
+        }
+
         return ActionResult.FAIL_NO_REASON;
+    }
+
+    private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {
+        for (var entry : contents.entrySet()) {
+            if (outputVoid.test(entry.getKey())) continue;
+            if (!(entry.getValue() == null || entry.getValue().isEmpty())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
