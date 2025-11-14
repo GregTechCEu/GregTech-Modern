@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
@@ -19,6 +20,7 @@ public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
 
     public TextEditorWidget() {
         this.handler.setMaxLines(10000);
+        this.setTextAlignment(Alignment.TopLeft);
     }
 
     @Override
