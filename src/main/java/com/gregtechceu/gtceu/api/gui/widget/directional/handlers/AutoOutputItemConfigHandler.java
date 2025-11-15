@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -16,6 +17,7 @@ import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -55,14 +57,22 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
             public void updateScreen() {
                 super.updateScreen();
 
-                if (machine.getOutputFacingItems() == side) {
+                if (side == null) {
+                    setButtonTexture(TEXTURE_OFF);
+                    setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.item_auto_output.unselected")
+                            .toArray(Component[]::new));
+                } else if (machine.getOutputFacingItems() == side) {
                     if (machine.isAutoOutputItems()) {
                         setButtonTexture(TEXTURE_AUTO);
+                        setHoverTooltips("gtceu.gui.item_auto_output.enabled");
                     } else {
                         setButtonTexture(TEXTURE_OUTPUT);
+                        setHoverTooltips("gtceu.gui.item_auto_output.disabled");
                     }
                 } else {
                     setButtonTexture(TEXTURE_OFF);
+                    setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.item_auto_output.other_direction")
+                            .toArray(Component[]::new));
                 }
             }
         });
