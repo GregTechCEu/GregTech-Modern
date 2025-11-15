@@ -3,7 +3,7 @@ title: Custom Sounds
 ---
 
 
-## Creating a custom sound
+## Creating a Custom Sound
 
 !!! Warning
     Registering custom sounds is currently only supported in Java, though you can use your sound in kubejs scripts once it's defined.
