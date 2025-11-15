@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class NBTPredicates {
+public final class NBTPredicates {
+
+    private NBTPredicates(){};
 
     public static NBTPredicate eqInt(String key, int value) {
         return eq(key, value);
