@@ -17,11 +17,7 @@ public final class NBTPredicateUtils {
     private NBTPredicateUtils(){};
 
     public static JsonElement toJson(Tag tag) {
-        try {
-            return JsonParser.parseString(tag.getAsString());
-        } catch (Exception ignored) {
-            return new JsonPrimitive(tag.getAsString());
-        }
+        return NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tag);
     }
 
     public static Tag fromJson(JsonElement e) {
