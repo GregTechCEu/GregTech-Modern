@@ -118,6 +118,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
                 for (int zOffset = 0; zOffset < length; zOffset++) {
                     float sizeFractionZ = zOffset * 2f / length - 1;
                     float zSizeSqr = sizeFractionZ * sizeFractionZ;
+                    // OPTIMIZATION: all values in layerDiameterOffsets are in the [0,1] range, so
+                    // check if the size is >1 before doing any of that math
                     if (xSizeSqr + ySizeSqr + zSizeSqr > 1)
                         continue;
 
