@@ -1618,7 +1618,11 @@ public class LangHandler {
         provider.add("gtceu.gui.central_monitor.text_scale", "Text scale");
         provider.add("gtceu.gui.central_monitor.group", "Group: %s");
         provider.add("gtceu.gui.central_monitor.group_default_name", "Group #%d");
-        provider.add("gtceu.gui.central_monitor.none", "none");
+        provider.add("gtceu.gui.central_monitor.pause",
+                "Pause placeholder execution.\nText won't be updated, and code won't be run.");
+        provider.add("gtceu.gui.central_monitor.resume", "Unpause placeholder execution.");
+        provider.add("gtceu.gui.central_monitor.update_once",
+                "Update text and run all placeholders in it exactly once.");
         provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");

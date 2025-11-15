@@ -8,8 +8,10 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
@@ -22,6 +24,7 @@ import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -61,7 +64,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     @Override
     public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        this.updateText(stack, machine, group);
+        if (!isPaused(stack))
+            this.updateText(stack, machine, group);
     }
 
     @Override
@@ -89,7 +93,22 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                 .value(SyncHandlers.string(
                                                         () -> String.valueOf(getScale(stack)),
                                                         s -> setScale(stack, Double.parseDouble(s))))
-                                                .marginLeft(4)))
+                                                .marginLeft(4))
+                                        .child(new ToggleButton()
+                                                .value(SyncHandlers.bool(() -> isPaused(stack),
+                                                        p -> setPaused(stack, p)))
+                                                .background(false, GTGuiTextures.PAUSE)
+                                                .background(true, GTGuiTextures.PLAY)
+                                                .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
+                                                .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
+                                                .margin(4))
+                                        .child(new ButtonWidget<>()
+                                                .background(GTGuiTextures.RIGHTLOAD)
+                                                .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
+                                                .onMousePressed((mouseX, mouseY, button) -> {
+                                                    updateText(stack, machine, group);
+                                                    return true;
+                                                })))
                                 .child(new CodeEditorWidget<>()
                                         .language(PlaceholderHandler.LANG_DEFINITION)
                                         .value(SyncHandlers.string(() -> getPlaceholderText(stack),
@@ -136,6 +155,16 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public void setScale(ItemStack stack, double scale) {
         stack.getOrCreateTag().putDouble("scale", scale);
+    }
+
+    public void setPaused(ItemStack stack, boolean paused) {
+        stack.getOrCreateTag().putBoolean("paused", paused);
+    }
+
+    public boolean isPaused(ItemStack stack) {
+        if (stack.getOrCreateTag().contains("paused"))
+            return stack.getOrCreateTag().getBoolean("paused");
+        else return false;
     }
 
     public void setPlaceholderText(ItemStack stack, String text) {
