@@ -83,7 +83,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
         public @NotNull NBTPredicateIngredient parse(FriendlyByteBuf buffer) {
             var stack = buffer.readItem();
             var json = buffer.readUtf();
-            var predicate = NBTPredicates.fromJson(JsonParser.parseString(json).getAsJsonObject());
+            var predicate = NBTPredicates.fromJson(GsonHelper.parse(json));
             return new NBTPredicateIngredient(stack, predicate);
         }
 
