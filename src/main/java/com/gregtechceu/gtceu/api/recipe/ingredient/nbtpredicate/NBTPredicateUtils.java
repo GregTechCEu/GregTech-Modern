@@ -78,15 +78,15 @@ public final class NBTPredicateUtils {
                     int close = indexSection.indexOf(']', from);
                     if (open == -1 || close == -1) break;
                     String numStr = indexSection.substring(open + 1, close);
+                    if (!(element instanceof ListTag innerList)) return null;
                     int index;
                     try {
                         index = Integer.parseInt(numStr);
                     } catch (NumberFormatException e) {
                         return null;
                     }
-                    if (!(element instanceof ListTag listTag)) return null;
-                    if (index < 0 || index >= listTag.size()) return null;
-                    element = listTag.get(index);
+                    if (index < 0 || index >= innerList.size()) return null;
+                    element = innerList.get(index);
                     from = close + 1;
                 }
                 current = element;
