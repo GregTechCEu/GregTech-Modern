@@ -206,7 +206,7 @@ public class TextFieldHandler {
         if (this.text.isEmpty()) return;
         Point main = getMainCursor();
         if (main.y > 0) {
-            setCursor(main.y - 1, main.x, !shift, true);
+            setCursor(main.y - 1, Math.min(main.x, getText().get(main.y - 1).length()), !shift, true);
         } else {
             setCursor(main.y, 0, !shift, true);
         }
@@ -216,7 +216,7 @@ public class TextFieldHandler {
         if (this.text.isEmpty()) return;
         Point main = getMainCursor();
         if (main.y < this.text.size() - 1) {
-            setCursor(main.y + 1, main.x, !shift, true);
+            setCursor(main.y + 1, Math.min(main.x, getText().get(main.y + 1).length()), !shift, true);
         } else {
             setCursor(main.y, this.text.get(main.y).length(), !shift, true);
         }
@@ -378,7 +378,7 @@ public class TextFieldHandler {
                     this.text.set(this.cursor.y, line);
                 }
             } else {
-                if (this.cursor.x == 0 || line.isEmpty()) {
+                if (this.cursor.x == 0) {
                     if (this.cursor.y > 0) {
                         String lineAbove = this.text.get(this.cursor.y - 1);
                         this.text.set(this.cursor.y - 1, lineAbove + line);

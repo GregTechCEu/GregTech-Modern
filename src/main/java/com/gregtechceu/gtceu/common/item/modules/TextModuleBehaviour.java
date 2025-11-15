@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextEditorWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
@@ -90,7 +90,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                         () -> String.valueOf(getScale(stack)),
                                                         s -> setScale(stack, Double.parseDouble(s))))
                                                 .marginLeft(4)))
-                                .child(new TextEditorWidget()
+                                .child(new CodeEditorWidget<>()
+                                        .language(PlaceholderHandler.LANG_DEFINITION)
                                         .value(SyncHandlers.string(() -> getPlaceholderText(stack),
                                                 s -> setPlaceholderText(stack, s)))
                                         .sizeRel(.95f, .8f)))

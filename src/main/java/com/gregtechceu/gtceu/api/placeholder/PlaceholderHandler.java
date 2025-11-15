@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
@@ -14,15 +15,15 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.LanguageDefinition;
-import com.lowdragmc.lowdraglib.gui.widget.codeeditor.language.TokenTypes;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -40,18 +41,9 @@ public class PlaceholderHandler {
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
-    public static final LanguageDefinition LANG_DEFINITION = new LanguageDefinition(
-            "Placeholders",
-            List.of(
-                    TokenTypes.KEYWORD.createTokenType(PlaceholderHandler.getAllPlaceholderNames().stream().toList()),
-                    TokenTypes.IDENTIFIER,
-                    TokenTypes.STRING,
-                    TokenTypes.COMMENT,
-                    TokenTypes.NUMBER,
-                    TokenTypes.OPERATOR,
-                    TokenTypes.WHITESPACE,
-                    TokenTypes.OTHER),
-            Set.of());
+    public static final CodeEditorWidget.LanguageDefinition LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition(
+            List.of("\\\\.", "\\{", "\\}", " ", "\""),
+            TokenFormatter::new);
 
     public static void addPlaceholder(Placeholder placeholder) {
         if (placeholders.containsKey(placeholder.getName())) {
@@ -195,5 +187,44 @@ public class PlaceholderHandler {
         out.addWidget(placeholderReferenceLabel);
         out.addWidget(placeholderReference);
         return out;
+    }
+
+    public static class TokenFormatter implements Function<String, Component> {
+
+        private boolean prevOpenBracket = false;
+        private boolean inString = false;
+
+        @Override
+        public Component apply(String s) {
+            if (s.matches("\\\\.")) {
+                prevOpenBracket = false;
+                return Component.literal(s).withStyle(ChatFormatting.GOLD);
+            }
+            if (inString && !s.equals("\"")) {
+                prevOpenBracket = false;
+                return Component.literal(s).withStyle(ChatFormatting.DARK_GREEN);
+            }
+            switch (s) {
+                case "\"" -> {
+                    inString = !inString;
+                    return Component.literal(s).withStyle(ChatFormatting.DARK_GREEN);
+                }
+                case "{" -> {
+                    prevOpenBracket = true;
+                    return Component.literal(s);
+                }
+                case "}" -> {
+                    prevOpenBracket = false;
+                    return Component.literal(s);
+                }
+            }
+            if (prevOpenBracket) {
+                prevOpenBracket = false;
+                if (getAllPlaceholderNames().contains(s)) {
+                    return Component.literal(s).withStyle(ChatFormatting.BLUE);
+                } else return Component.literal(s).withStyle(ChatFormatting.RED);
+            }
+            return Component.literal(s);
+        }
     }
 }

@@ -7,18 +7,14 @@ import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * A syncable, multiline text input widget. Meant to edit large amounts of text.
  */
-public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
+public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFieldWidget<W> {
 
     private IStringValue<?> stringValue;
 
@@ -77,32 +73,9 @@ public class TextEditorWidget extends BaseTextFieldWidget<TextEditorWidget> {
         this.handler.getText().addAll(Arrays.stream(text.split("\n")).toList());
     }
 
-    public TextEditorWidget value(IStringValue<?> stringValue) {
+    public W value(IStringValue<?> stringValue) {
         this.stringValue = stringValue;
         setValue(stringValue);
-        return this;
-    }
-
-    protected Component processToken(String token) {
-        return Component.literal(token);
-    }
-
-    @Override
-    public List<Component> getTextAsComponents() {
-        return this.handler.getText().stream().map(line -> {
-            String token = "";
-            MutableComponent component = Component.empty();
-            for (char c : line.toCharArray()) {
-                if (Character.isWhitespace(c)) {
-                    if (!token.isEmpty())
-                        component.append(processToken(token));
-                    token = "";
-                    component.append(String.valueOf(c));
-                } else token += c;
-            }
-            if (!token.isEmpty())
-                component.append(processToken(token));
-            return (Component) component;
-        }).toList();
+        return getThis();
     }
 }
