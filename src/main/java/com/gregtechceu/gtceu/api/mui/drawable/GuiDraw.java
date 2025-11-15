@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -656,7 +655,7 @@ public class GuiDraw {
             context.graphicsPose().translate(0, 0, 100 + z);
             textRenderer.draw(context.getGraphics(), amountText);
 
-            context.poseStack().popPose();
+            context.graphicsPose().popPose();
         }
     }
 
