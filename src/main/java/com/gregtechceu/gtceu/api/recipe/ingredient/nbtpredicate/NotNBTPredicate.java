@@ -43,4 +43,11 @@ public class NotNBTPredicate extends NBTPredicate {
         NBTPredicate child = NBTPredicates.fromJson(json.get("child").getAsJsonObject());
         return new NotNBTPredicate(child);
     }
+
+    @Override
+    public String toString() {
+        return "NotNBTPredicate{" +
+                "child=" + child +
+                '}';
+    }
 }

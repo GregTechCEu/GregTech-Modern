@@ -40,7 +40,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
             // Mixed numeric types (e.g., int vs. double)
             if (toCompare instanceof NumericTag toCompareNum &&
                     value instanceof NumericTag valueNum) {
-                return inverted ^ toCompareNum.getAsDouble() == valueNum.getAsDouble();
+                return inverted ^ (toCompareNum.getAsDouble() == valueNum.getAsDouble());
             }
             return inverted ^ toCompare.equals(value);
         }
@@ -69,5 +69,14 @@ public class EqualsNBTPredicate extends NBTPredicate {
             inverted = json.get("inverted").getAsBoolean();
         }
         return new EqualsNBTPredicate(key, value, inverted);
+    }
+
+    @Override
+    public String toString() {
+        return "EqualsNBTPredicate{" +
+                "key='" + key + '\'' +
+                ", value=" + value +
+                ", inverted=" + inverted +
+                '}';
     }
 }

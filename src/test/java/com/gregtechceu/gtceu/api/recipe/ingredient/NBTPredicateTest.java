@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 
 import net.minecraft.gametest.framework.BeforeBatch;
@@ -7,16 +8,21 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
+import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.eq;
 
+@PrefixGameTestTemplate(false)
+@GameTestHolder(GTCEu.MOD_ID)
 public class NBTPredicateTest {
 
     @BeforeBatch(batch = "NBTPredicateTest")
     public static void prepare(ServerLevel level) {}
 
     @GameTest(template = "empty", batch = "NBTPredicateTest")
-    public static void NBTPredicateEqualsTestTest(GameTestHelper helper) {
+    public static void NBTPredicateEqualsTest(GameTestHelper helper) {
         CompoundTag tag = new CompoundTag();
         tag.putString("foo", "bar");
         helper.assertTrue(eq("foo", "bar").test(tag), "String equality NBTPredicate failed when it shouldn't have");
@@ -33,7 +39,7 @@ public class NBTPredicateTest {
                 "String inequality NBTPredicate failed when it shouldn't have");
 
         CompoundTag numberTag = new CompoundTag();
-        tag.putFloat("foo", 7f);
+        numberTag.putFloat("foo", 7f);
         helper.assertTrue(eqDouble("foo", 7d).test(numberTag),
                 "Double equality failed when it shouldn't have (number conversion)");
         helper.assertTrue(eqInt("foo", 7).test(numberTag),
@@ -168,5 +174,6 @@ public class NBTPredicateTest {
                 "Less-than NBTPredicate succeeded with empty tag");
         helper.assertFalse(lte("num", 9).test(tag),
                 "Less-or-equal NBTPredicate  succeeded with empty tag");
+        helper.succeed();
     }
 }

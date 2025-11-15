@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AllNBTPredicate extends NBTPredicate {
 
@@ -59,5 +60,14 @@ public class AllNBTPredicate extends NBTPredicate {
         }
 
         return new AllNBTPredicate(children);
+    }
+
+    @Override
+    public String toString() {
+        return "AllNBTPredicate{" +
+                "children=[" + children.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", ")) +
+                "]}";
     }
 }

@@ -82,4 +82,14 @@ public class ComparisonNBTPredicate extends NBTPredicate {
         boolean equals = json.get("equals").getAsBoolean();
         return new ComparisonNBTPredicate(key, value, lessThan, equals);
     }
+
+    @Override
+    public String toString() {
+        return "ComparisonNBTPredicate{" +
+                "key='" + key + '\'' +
+                ", value=" + value +
+                ", lessThan=" + lessThan +
+                ", equals=" + equals +
+                '}';
+    }
 }
