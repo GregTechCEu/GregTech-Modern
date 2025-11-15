@@ -89,7 +89,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
 
         public @NotNull NBTPredicateIngredient parse(@NotNull JsonObject json) {
             var stack = CraftingHelper.getItemStack(json, true);
-            var predicate = NBTPredicates.fromJson(json.get("predicate").getAsJsonObject());
+            var predicate = NBTPredicates.fromJson(GsonHelper.getAsJsonObject(json, "predicate"));
 
             return new NBTPredicateIngredient(stack, predicate);
         }
