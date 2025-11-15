@@ -29,6 +29,7 @@ public class AllNBTPredicate extends NBTPredicate {
         return true;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("type", TYPE);

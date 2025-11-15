@@ -19,6 +19,7 @@ public class NotNBTPredicate extends NBTPredicate {
         return !child.test(tag);
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("type", TYPE);

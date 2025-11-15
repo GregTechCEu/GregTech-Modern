@@ -41,6 +41,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
         }
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("type", TYPE);
