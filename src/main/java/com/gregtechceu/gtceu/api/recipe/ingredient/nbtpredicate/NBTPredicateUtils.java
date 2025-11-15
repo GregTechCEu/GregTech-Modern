@@ -40,10 +40,10 @@ public final class NBTPredicateUtils {
         return null;
     }
 
-    public static Tag getNestedTag(CompoundTag tag, String path) {
+    public static Tag getNestedTag(CompoundTag inputTag, String path) {
         String[] parts = path.split("\\.");
 
-        Tag current = tag;
+        Tag current = inputTag;
 
         for (String part : parts) {
             if (current == null) {
@@ -65,13 +65,13 @@ public final class NBTPredicateUtils {
                 if (!(current instanceof CompoundTag compound) || !compound.contains(key)) {
                     return null;
                 }
-                Tag arrayTag = compound.get(key);
-                if (!(arrayTag instanceof ListTag list)) {
+                Tag tag = compound.get(key);
+                if (!(tag instanceof ListTag list)) {
                     return null;
                 }
 
                 // There can be multiple nested indices like arr[1][3]
-                Tag element = arrayTag;
+                Tag element = tag;
                 int from = 0;
                 while (true) {
                     int open = indexSection.indexOf('[', from);
