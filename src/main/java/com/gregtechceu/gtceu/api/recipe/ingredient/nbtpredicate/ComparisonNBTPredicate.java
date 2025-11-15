@@ -12,10 +12,10 @@ public class ComparisonNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "compare";
 
-    private String key;
-    private double value;
-    private boolean lessThan;
-    private boolean equals;
+    private final String key;
+    private final double value;
+    private final boolean lessThan;
+    private final boolean equals;
 
     public ComparisonNBTPredicate(String key, double value) {
         this(key, value, false, false);

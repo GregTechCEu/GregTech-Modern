@@ -12,9 +12,9 @@ public class EqualsNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "equals";
 
-    private String key;
-    private Tag value;
-    private boolean inverted;
+    private final String key;
+    private final Tag value;
+    private final boolean inverted;
 
     public EqualsNBTPredicate(String key, Tag value) {
         this(key, value, false);
@@ -54,7 +54,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
         if (!json.has("key") || !json.has("value") || !json.has("type")) {
             throw new IllegalStateException("Could not deserialize EqualsNBTPredicate: " + json);
         }
-        if (!json.get("op").getAsString().equals(TYPE)) {
+        if (!json.get("type").getAsString().equals(TYPE)) {
             throw new IllegalStateException("Trying to deserialize EqualsNBTPredicate but was something else: " + json);
         }
         String key = json.get("key").getAsString();
