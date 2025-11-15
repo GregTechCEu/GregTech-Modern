@@ -132,7 +132,7 @@ public class GTSingleblockMachinePanels {
                         .rightRel(1.0f)
                         .reverseLayout(true)
                         .bottom(16)
-                        .childIf(ghostCircuit, GTMuiWidgets.createCircuitSlot(simpleTieredMachine, syncManager)))
+                        .childIf(ghostCircuit, GTMuiWidgets.createCircuitSlotPanel(simpleTieredMachine, panel, syncManager)))
                 .child(GTMuiWidgets.createGTLogo()
                         .right(7).bottom(7 + 78));
 
