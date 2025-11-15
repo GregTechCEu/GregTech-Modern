@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -61,13 +62,13 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 }
 
                 if (text == null) {
-                    var tier = GTUtil.getTierByVoltage(EUt.voltage());
+                    var tier = GTUtil.getTierByVoltage(RecipeLogicProvider.getVoltage(capability));
                     String minAmperage = FormattingUtil
                             .formatNumber2Places((float) (EUt.getTotalEU()) / GTValues.V[tier]) + TextStyleClass.INFO;
 
                     text = Component.translatable("gtceu.jade.amperage_use", minAmperage).withStyle(ChatFormatting.RED)
                             .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN))
-                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
+                            .append(GTValues.VNF[tier])
                             .append(Component.translatable("gtceu.universal.padded_parentheses",
                                     (Component.translatable("gtceu.recipe.eu.total",
                                             formatted)))
