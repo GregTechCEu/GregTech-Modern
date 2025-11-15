@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -141,11 +142,10 @@ public class GTMuiWidgets {
     }
 
     public static ButtonWidget<?> createCircuitSlotPanel(SimpleTieredMachine machine, ModularPanel parentPanel, PanelSyncManager syncManager) {
-        var circuit = machine.getCircuitInventory().getStackInSlot(0);
-        //int circuitValue = circuit.isEmpty() ? -1 : IntCircuitBehaviour.getCircuitConfiguration(circuit);
-
-        IntSyncValue circuitSyncValue = new IntSyncValue(() ->
-                IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0)),
+        IntSyncValue circuitSyncValue = new IntSyncValue(() -> {
+            if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) return -1;
+            return IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0));
+        },
                 (v) -> machine.getCircuitInventory().setStackInSlot(0, (v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v))));
         syncManager.syncValue("circuit_slot", circuitSyncValue);
 
@@ -184,38 +184,51 @@ public class GTMuiWidgets {
         return new ButtonWidget<>()
                 .size(18)
                 .onMousePressed((x, y, b) -> {
-                    circuitPanelHandler.openPanel();
-                    return true;
-                })
-                .onMouseScrolled((x, y, delta) -> {
-                    if (delta > 0) {
-                        if (circuitSyncValue.getIntValue() == IntCircuitBehaviour.CIRCUIT_MAX) {
-                            // if at max, loop around to no circuit
-                            circuitSyncValue.setValue(0, true, true);
-                        } else if (circuit.isEmpty()) {
-                            // if at no circuit, skip 0 and return 1
-                            circuitSyncValue.setValue(1, true, true);
-                        } else {
-                            // normal case: increment by 1
-                            circuitSyncValue.setValue(circuitSyncValue.getIntValue() + 1, true, true);
-                        }
-                    } else if (delta < 0) {
-                        if (circuit.isEmpty() ||
-                                (circuitSyncValue.getIntValue() == 0 && !ConfigHolder.INSTANCE.machines.ghostCircuit)) {
-                            // if at no circuit, loop around to max
-                            circuitSyncValue.setValue(IntCircuitBehaviour.CIRCUIT_MAX, true, true);
-                        } else if (circuitSyncValue.getIntValue() == 1 && ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                            // if at 1, skip 0 and return no circuit
-                            circuitSyncValue.setValue(-1, true, false);
-                        } else {
-                            // normal case: decrement by 1
-                            circuitSyncValue.setValue( circuitSyncValue.getIntValue() - 1, true, true);
-                        }
+                    if (b == InputConstants.MOUSE_BUTTON_LEFT || b == InputConstants.MOUSE_BUTTON_RIGHT) {
+                        circuitPanelHandler.openPanel();
+                    } else if (b == InputConstants.MOUSE_BUTTON_MIDDLE) {
+                        circuitSyncValue.setValue(0);
                     }
                     return true;
                 })
+                .onMouseScrolled((x, y, delta) -> {
+                    int newValue = nextCircuitValue(machine.getCircuitInventory().getStackInSlot(0), circuitSyncValue.getIntValue(), delta);
+                    circuitSyncValue.setValue(newValue);
+                    return true;
+                })
                 .overlay(new DynamicDrawable(() -> new ItemDrawable(machine.getCircuitInventory().getStackInSlot(0))
-                        .asIcon().size(16)));
+                        .asIcon().size(16)))
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("metaitem.int_circuit.configuration",
+                        (machine.getCircuitInventory().getStackInSlot(0).isEmpty() ? 0 :
+                                IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0)))))));
+    }
+
+    private static int nextCircuitValue(ItemStack stack, int current, double delta) {
+        if (delta > 0) {
+            if (current == IntCircuitBehaviour.CIRCUIT_MAX) {
+                // if at max, loop around to no circuit
+                return 0;
+            } else if (stack.isEmpty()) {
+                // if at no circuit, skip 0 and return 1
+                return 1;
+            } else {
+                // normal case: increment by 1
+                return current + 1;
+            }
+        } else {
+            if (stack.isEmpty() ||
+                    (current == 0 && !ConfigHolder.INSTANCE.machines.ghostCircuit)) {
+                // if at no circuit, loop around to max
+                return IntCircuitBehaviour.CIRCUIT_MAX;
+            } else if (current == 1 && ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                // if at 1, skip 0 and return no circuit
+                return -1;
+            } else {
+                // normal case: decrement by 1
+                return current - 1;
+            }
+        }
     }
 
     public static IDrawable.DrawableWidget createGTLogo() {
