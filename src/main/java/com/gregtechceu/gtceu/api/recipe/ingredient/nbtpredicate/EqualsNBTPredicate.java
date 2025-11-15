@@ -12,6 +12,11 @@ public class EqualsNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "equals";
 
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
     private final String key;
     private final Tag value;
     private final boolean inverted;
@@ -43,8 +48,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
 
     @Override
     public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
+        JsonObject object = super.toJson();
         object.addProperty("key", key);
         object.add("value", NBTPredicateUtils.toJson(value));
         object.addProperty("inverted", inverted);

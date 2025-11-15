@@ -13,6 +13,11 @@ public class AllNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "all";
 
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
     private final List<NBTPredicate> children;
 
     public AllNBTPredicate(List<NBTPredicate> children) {
@@ -31,8 +36,7 @@ public class AllNBTPredicate extends NBTPredicate {
 
     @Override
     public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
+        JsonObject object = super.toJson();
         JsonArray childArray = new JsonArray();
         for (NBTPredicate child : children) {
             childArray.add(child.toJson());

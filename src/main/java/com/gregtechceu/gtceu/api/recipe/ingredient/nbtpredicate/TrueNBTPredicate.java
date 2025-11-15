@@ -11,15 +11,13 @@ public class TrueNBTPredicate extends NBTPredicate {
     public static final String TYPE = "true";
 
     @Override
-    public boolean test(CompoundTag tag) {
-        return true;
+    public String getType() {
+        return TYPE;
     }
 
     @Override
-    public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
-        return object;
+    public boolean test(CompoundTag tag) {
+        return true;
     }
 
     public static NBTPredicate fromJson(JsonObject json) {

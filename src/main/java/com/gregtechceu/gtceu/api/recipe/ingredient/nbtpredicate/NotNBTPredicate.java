@@ -8,6 +8,11 @@ public class NotNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "not";
 
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
     private final NBTPredicate child;
 
     public NotNBTPredicate(NBTPredicate child) {
@@ -21,8 +26,7 @@ public class NotNBTPredicate extends NBTPredicate {
 
     @Override
     public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
+        JsonObject object = super.toJson();
         object.add("child", child.toJson());
         return object;
     }

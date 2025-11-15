@@ -12,6 +12,11 @@ public class ComparisonNBTPredicate extends NBTPredicate {
 
     public static final String TYPE = "compare";
 
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
     private final String key;
     private final double value;
     private final boolean lessThan;
@@ -50,8 +55,7 @@ public class ComparisonNBTPredicate extends NBTPredicate {
 
     @Override
     public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
+        JsonObject object = super.toJson();
         object.addProperty("key", key);
         object.addProperty("value", value);
         object.addProperty("lessThan", lessThan);
