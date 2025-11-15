@@ -43,7 +43,6 @@ public class GTGuiTheme {
                     ConfigHolder.INSTANCE.client.ui.getDefaultUIColor())
             .build();
 
-
     public static final GTGuiTheme COVER = templateBuilder("gregtech_cover")
             .panel(GTGuiTextures.IDs.COVER_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)

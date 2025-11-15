@@ -39,7 +39,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiRecipeTypePanel;
 import com.gregtechceu.gtceu.common.data.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;

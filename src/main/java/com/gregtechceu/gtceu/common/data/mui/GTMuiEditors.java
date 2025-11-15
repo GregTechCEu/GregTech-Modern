@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.WidgetUtil;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
@@ -22,7 +21,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
 
 public class GTMuiEditors {
 
@@ -46,48 +44,45 @@ public class GTMuiEditors {
                 return;
             }
             var energyContainer = simpleTieredMachine.getChargerInventory();
-            mainRow.child(new ItemSlot().
-                    slot(new ModularSlot(energyContainer, 0))
+            mainRow.child(new ItemSlot().slot(new ModularSlot(energyContainer, 0))
                     .align(Alignment.BottomCenter));
         }
     };
 
     public static PanelEditor TITLE = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                        MetaMachine machine, ModularPanel panel) -> {
-            if(machine instanceof SimpleTieredMachine simpleTieredMachine) {
+        if (machine instanceof SimpleTieredMachine simpleTieredMachine) {
 
-                var displayItem = simpleTieredMachine.getDefinition().asStack();
-                String name = displayItem.getHoverName().getString();
-                name = name.replaceAll("§.", "").trim();
-                int borderRadius = 5;
-                int minWidth = 149 - 16 - (borderRadius * 2);
-                int iconSize = 16;
-                int titleWidth = TextRenderer.getFont().width(name) + iconSize + (borderRadius * 2);
-                int widgetWidth = Math.min(minWidth, titleWidth);
-                int rows = (int) Math.ceil((double) titleWidth / minWidth);
-                int heightPerRow = (int) (IKey.renderer.getFontHeight());
-                int height = heightPerRow * rows + borderRadius;
-                panel.child(new Row()
-                        .coverChildrenHeight()
-                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                        .widthRel(.8f)
-                        .top(-height - borderRadius)
-                        .rightRel(0.5f)
-                        .background(GTGuiTextures.BACKGROUND_TITLE)
-                        .child(new ItemDrawable(displayItem)
-                                .asIcon().size(iconSize)
-                                .asWidget()
-                                .marginLeft(borderRadius))
-                                .mainAxisAlignment(Alignment.MainAxis.START)
-                        .child(IKey.str(name)
-                                .asWidget()
-                                .paddingTop(1)
-                                .margin(borderRadius, borderRadius, borderRadius,1)
-                                .size(widgetWidth - height, height))
-                );
+            var displayItem = simpleTieredMachine.getDefinition().asStack();
+            String name = displayItem.getHoverName().getString();
+            name = name.replaceAll("§.", "").trim();
+            int borderRadius = 5;
+            int minWidth = 149 - 16 - (borderRadius * 2);
+            int iconSize = 16;
+            int titleWidth = TextRenderer.getFont().width(name) + iconSize + (borderRadius * 2);
+            int widgetWidth = Math.min(minWidth, titleWidth);
+            int rows = (int) Math.ceil((double) titleWidth / minWidth);
+            int heightPerRow = (int) (IKey.renderer.getFontHeight());
+            int height = heightPerRow * rows + borderRadius;
+            panel.child(new Row()
+                    .coverChildrenHeight()
+                    .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                    .widthRel(.8f)
+                    .top(-height - borderRadius)
+                    .rightRel(0.5f)
+                    .background(GTGuiTextures.BACKGROUND_TITLE)
+                    .child(new ItemDrawable(displayItem)
+                            .asIcon().size(iconSize)
+                            .asWidget()
+                            .marginLeft(borderRadius))
+                    .mainAxisAlignment(Alignment.MainAxis.START)
+                    .child(IKey.str(name)
+                            .asWidget()
+                            .paddingTop(1)
+                            .margin(borderRadius, borderRadius, borderRadius, 1)
+                            .size(widgetWidth - height, height)));
 
-
-            }
+        }
     };
 
     public static PanelEditor PROGRESS_BAR(UITexture texture, int imageSize, ProgressWidget.Direction direction) {
@@ -110,30 +105,29 @@ public class GTMuiEditors {
     }
 
     public static PanelEditor POWER_BUTTON = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-                                           MetaMachine machine, ModularPanel panel) -> {
-        if(machine instanceof SimpleTieredMachine tieredMachine) {
+                                              MetaMachine machine, ModularPanel panel) -> {
+        if (machine instanceof SimpleTieredMachine tieredMachine) {
             var mainRow = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
             if (mainRow == null) {
                 return;
             }
             mainRow.child(new ToggleButton()
-                        .value(new BoolValue.Dynamic(() -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
-                                            tieredMachine::setWorkingEnabled))
-                        .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
-                        .align(Alignment.BottomLeft)
-                        .background(GTGuiTextures.BUTTON_POWER[1]));
+                    .value(new BoolValue.Dynamic(() -> tieredMachine.getRecipeLogic().isWorkingEnabled(),
+                            tieredMachine::setWorkingEnabled))
+                    .selectedBackground(GTGuiTextures.BUTTON_POWER[0])
+                    .align(Alignment.BottomLeft)
+                    .background(GTGuiTextures.BUTTON_POWER[1]));
         }
     };
 
     public static PanelEditor GT_LOGO = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
-    MetaMachine machine, ModularPanel panel) -> {
+                                         MetaMachine machine, ModularPanel panel) -> {
 
-        if(machine instanceof SimpleTieredMachine tieredMachine) {
+        if (machine instanceof SimpleTieredMachine tieredMachine) {
             var mainRow = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
             if (mainRow == null) {
                 return;
             }
-
 
         }
     };

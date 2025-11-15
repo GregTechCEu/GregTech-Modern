@@ -6,15 +6,12 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMuiPanels {
 
@@ -54,11 +51,8 @@ public class GTMuiPanels {
                                         .name("outputs")
                                         .widthRel(0.4f)
                                         .coverChildrenHeight()
-                                        .crossAxisAlignment(Alignment.CrossAxis.CENTER))
-                        )
+                                        .crossAxisAlignment(Alignment.CrossAxis.CENTER)))
 
-                        .child(SlotGroupWidget.playerInventory(false ))
-                );
+                        .child(SlotGroupWidget.playerInventory(false)));
     };
-
 }

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -16,9 +14,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelEditor;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.WidgetUtil;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -31,6 +27,9 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import java.util.*;
 import java.util.function.IntFunction;
@@ -49,10 +48,9 @@ public class GTMuiRecipeTypePanel {
         var input = WidgetTree.findFirstWithNameNullable(panel, "inputs", Column.class);
         var output = WidgetTree.findFirstWithNameNullable(panel, "outputs", Column.class);
 
-        if(input == null || output == null) {
+        if (input == null || output == null) {
             return;
         }
-
 
         var recipeType = workableMachine.getRecipeType();
         Table<RecipeCapability<?>, IO, SlotGroup> slotGroups = HashBasedTable.create();
@@ -100,12 +98,11 @@ public class GTMuiRecipeTypePanel {
         }
 
         /*
-             II
-              I
-            FFF
-            FFF
+         * II
+         * I
+         * FFF
+         * FFF
          */
-
 
         if (!inputSlotWidgets.isEmpty()) {
 
@@ -119,7 +116,6 @@ public class GTMuiRecipeTypePanel {
 
             input.child(slotInputWidget.align(Alignment.CenterRight));
         }
-
 
         ////////////////////////////////
         Map<Character, IntFunction<IWidget>> outputSlotWidgets = new HashMap<>();
@@ -148,7 +144,7 @@ public class GTMuiRecipeTypePanel {
             }
 
             int slotCapLimit = machine.getDefinition().getRecipeOutputLimits().getInt(recipeCap);
-            if(slotCapLimit > 0) {
+            if (slotCapLimit > 0) {
                 max = Math.min(max, slotCapLimit);
             }
             int rows = calculateRowSize(max);
@@ -184,7 +180,7 @@ public class GTMuiRecipeTypePanel {
         int maxRows = Math.max(inMatrix.size(), outMatrix.size());
         var mainUI = WidgetTree.findFirstWithNameNullable(panel, "MainUI", Row.class);
         if (mainUI != null) {
-            //mainUI.getArea().setHeight(mainUI.getArea().getHeight() - ((2 - maxRows) * 9));
+            // mainUI.getArea().setHeight(mainUI.getArea().getHeight() - ((2 - maxRows) * 9));
         }
     };
 
@@ -193,12 +189,12 @@ public class GTMuiRecipeTypePanel {
             case 1, 2, 3 -> 1;
             case 4, 5, 6 -> 2;
             case 7, 8, 9 -> 3;
-            default -> (int)Math.ceil(Math.sqrt(max));
+            default -> (int) Math.ceil(Math.sqrt(max));
         };
     }
 
-
-
-    public static PanelFactory RECIPE_TYPE = GTMuiPanels.BASE_PANEL.andThen(RECIPE_SLOTS, GTMuiEditors.TITLE, GTMuiEditors.CHARGE_SLOT,
-            GTMuiEditors.PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 30, ProgressWidget.Direction.RIGHT), GTMuiEditors.POWER_BUTTON);
+    public static PanelFactory RECIPE_TYPE = GTMuiPanels.BASE_PANEL.andThen(RECIPE_SLOTS, GTMuiEditors.TITLE,
+            GTMuiEditors.CHARGE_SLOT,
+            GTMuiEditors.PROGRESS_BAR(GTGuiTextures.PROGRESS_BAR_ARROW, 30, ProgressWidget.Direction.RIGHT),
+            GTMuiEditors.POWER_BUTTON);
 }

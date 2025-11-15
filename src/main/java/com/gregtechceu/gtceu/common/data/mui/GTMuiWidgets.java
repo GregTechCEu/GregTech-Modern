@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.DrawableStack;
 import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -23,14 +22,16 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 public class GTMuiWidgets {
 
@@ -41,14 +42,14 @@ public class GTMuiWidgets {
 
         int borderRadius = 5;
         int iconSize = 16;
-        int minPanelWidth = (int)(panelWidth * 0.9f) - (iconSize + (borderRadius * 2));
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 2));
         int textTitleWidth = TextRenderer.getFont().width(hatchName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
         int textHeight = textHeightPerRow * textRows + borderRadius;
 
-        int rowWidth = Math.min((int)(0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
+        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
         return new Row()
                 .coverChildrenHeight()
@@ -65,7 +66,7 @@ public class GTMuiWidgets {
                 .child(IKey.str(hatchName)
                         .asWidget()
                         .paddingTop(1)
-                        .margin(borderRadius, borderRadius, borderRadius,1)
+                        .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
@@ -79,13 +80,14 @@ public class GTMuiWidgets {
                 .background(GTGuiTextures.BUTTON_POWER[0])
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
-                        recipeLogicMachine.getRecipeLogic().isWorkingEnabled() ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
+                        recipeLogicMachine.getRecipeLogic().isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
+                                "behaviour.soft_hammer.disabled"))));
     }
 
     public static ProgressWidget createProgressBar(WorkableTieredMachine workableMachine, UITexture texture, int size) {
         return new ProgressWidget()
                 .texture(texture, size)
-                .progress(() -> workableMachine.getProgress() / (double)workableMachine.getMaxProgress());
+                .progress(() -> workableMachine.getProgress() / (double) workableMachine.getMaxProgress());
     }
 
     public static ItemSlot createBatterySlot(SimpleTieredMachine tieredMachine, PanelSyncManager syncManager) {
@@ -103,7 +105,8 @@ public class GTMuiWidgets {
                 .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.item_auto_output",
-                        Component.translatable(itemOutputs.getBoolValue() ? "cover.voiding.label.enabled" : "cover.voiding.label.disabled")))));
+                        Component.translatable(itemOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
+                                "cover.voiding.label.disabled")))));
     }
 
     public static ToggleButton createAutoOutputFluidButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
@@ -115,7 +118,8 @@ public class GTMuiWidgets {
                 .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.fluid_auto_output",
-                        Component.translatable(fluidOutputs.getBoolValue() ? "cover.voiding.label.enabled" : "cover.voiding.label.disabled")))));
+                        Component.translatable(fluidOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
+                                "cover.voiding.label.disabled")))));
     }
 
     public static ToggleButton createInputFromOutputItem(SimpleTieredMachine machine, PanelSyncManager syncManager) {
@@ -127,7 +131,8 @@ public class GTMuiWidgets {
                 .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.item_input_from_output",
-                        Component.translatable(inputFromOutputItem.getBoolValue() ? "cover.voiding.label.enabled" : "cover.voiding.label.disabled")))));
+                        Component.translatable(inputFromOutputItem.getBoolValue() ? "cover.voiding.label.enabled" :
+                                "cover.voiding.label.disabled")))));
     }
 
     public static ToggleButton createInputFromOutputFluid(SimpleTieredMachine machine, PanelSyncManager syncManager) {
@@ -138,15 +143,18 @@ public class GTMuiWidgets {
                 .value(new BoolValue.Dynamic(inputFromOutputFluid::getBoolValue, inputFromOutputFluid::setBoolValue))
                 .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.fluid_input_from_output",
-                        Component.translatable(inputFromOutputFluid.getBoolValue() ? "cover.voiding.label.enabled" : "cover.voiding.label.disabled")))));
+                        Component.translatable(inputFromOutputFluid.getBoolValue() ? "cover.voiding.label.enabled" :
+                                "cover.voiding.label.disabled")))));
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(SimpleTieredMachine machine, ModularPanel parentPanel, PanelSyncManager syncManager) {
+    public static ButtonWidget<?> createCircuitSlotPanel(SimpleTieredMachine machine, ModularPanel parentPanel,
+                                                         PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = new IntSyncValue(() -> {
             if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0));
         },
-                (v) -> machine.getCircuitInventory().setStackInSlot(0, (v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v))));
+                (v) -> machine.getCircuitInventory().setStackInSlot(0,
+                        (v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v))));
         syncManager.syncValue("circuit_slot", circuitSyncValue);
 
         Grid buttonGrid = new Grid()
@@ -158,7 +166,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
-                                } )));
+                                })));
 
         ModularPanel circuitPanel = new Dialog<>("circuit_panel")
                 .setDisablePanelsBelow(false)
@@ -175,8 +183,7 @@ public class GTMuiWidgets {
                         .top(3)
                         .alignX(Alignment.Center)
                         .child(IKey.lang("item.gtceu.circuit.integrated.gui").asWidget())
-                        .child(buttonGrid)
-                );
+                        .child(buttonGrid));
 
         IPanelHandler circuitPanelHandler = syncManager.panel("circuit_panel",
                 (sm, sh) -> circuitPanel, true);
@@ -192,16 +199,24 @@ public class GTMuiWidgets {
                     return true;
                 })
                 .onMouseScrolled((x, y, delta) -> {
-                    int newValue = nextCircuitValue(machine.getCircuitInventory().getStackInSlot(0), circuitSyncValue.getIntValue(), delta);
+                    int newValue = nextCircuitValue(machine.getCircuitInventory().getStackInSlot(0),
+                            circuitSyncValue.getIntValue(), delta);
                     circuitSyncValue.setValue(newValue);
                     return true;
                 })
-                .overlay(new DynamicDrawable(() -> new ItemDrawable(machine.getCircuitInventory().getStackInSlot(0))
-                        .asIcon().size(16)))
+                .overlay(new DynamicDrawable(() -> {
+                    if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) {
+                        return new DrawableStack(new ItemDrawable(IntCircuitBehaviour.stack(0)),
+                                new ItemDrawable(Items.BARRIER)).asIcon().size(16);
+                    }
+                    return new ItemDrawable(machine.getCircuitInventory().getStackInSlot(0))
+                            .asIcon().size(16);
+                }))
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("metaitem.int_circuit.configuration",
                         (machine.getCircuitInventory().getStackInSlot(0).isEmpty() ? 0 :
-                                IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0)))))));
+                                IntCircuitBehaviour
+                                        .getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0)))))));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

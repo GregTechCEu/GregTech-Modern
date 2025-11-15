@@ -174,10 +174,21 @@ public class GTMachines {
             GTRecipeTypes.FURNACE_RECIPES).register();
     public static final MachineDefinition[] ALLOY_SMELTER = new SimpleMachineBuilder("alloy_smelter",
             GTRecipeTypes.ALLOY_SMELTER_RECIPES).register();
-    public static final MachineDefinition[] ARC_FURNACE = new SimpleMachineBuilder("arc_furnace",
-            GTRecipeTypes.ARC_FURNACE_RECIPES)
-            .tankScalingFunction(hvCappedTankSizeFunction)
-            .register();
+
+    public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines("arc_furnace",
+            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+                    .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
+                    .UI(GTSingleblockMachinePanels.ARC_FURNACE)
+                    .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("arc_furnace"),
+                            GTRecipeTypes.ARC_FURNACE_RECIPES))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.ARC_FURNACE_RECIPES)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/arc_furnace"))
+                    .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
+                            GTRecipeTypes.ARC_FURNACE_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
+                    .register(),
+            ELECTRIC_TIERS);
     public static final MachineDefinition[] ASSEMBLER = new SimpleMachineBuilder("assembler",
             GTRecipeTypes.ASSEMBLER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
@@ -267,9 +278,7 @@ public class GTMachines {
             .hasPollutionDebuff(true)
             .register();
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
-            (holder, tier)
-                    -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder)
-                    -> builder
+            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .UI(GTSingleblockMachinePanels.MACERATOR)
                     .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
