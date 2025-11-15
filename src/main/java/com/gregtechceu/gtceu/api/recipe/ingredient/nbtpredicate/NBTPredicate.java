@@ -3,16 +3,11 @@ package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 import net.minecraft.nbt.CompoundTag;
 
 import com.google.gson.JsonObject;
-import org.apache.commons.lang3.NotImplementedException;
 
-public class NBTPredicate {
+public abstract class NBTPredicate {
 
-    // FromJson is handled by the NBTPredicateManager
-    public JsonObject toJson() {
-        throw new NotImplementedException();
-    }
+    // FromJson is handled by the NBTPredicates
+    public abstract JsonObject toJson();
 
-    public boolean test(CompoundTag tag) {
-        throw new NotImplementedException();
-    };
+    public abstract boolean test(CompoundTag tag);
 }

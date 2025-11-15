@@ -186,19 +186,19 @@ public class NBTPredicates {
     public static Map<String, Function<JsonObject, NBTPredicate>> predicateCodecs = new HashMap<>();
 
     static {
-        predicateCodecs.put(TrueNBTPredicate.OP, TrueNBTPredicate::fromJson);
-        predicateCodecs.put(EqualsNBTPredicate.OP, EqualsNBTPredicate::fromJson);
-        predicateCodecs.put(ComparisonNBTPredicate.OP, ComparisonNBTPredicate::fromJson);
-        predicateCodecs.put(AllNBTPredicate.OP, AllNBTPredicate::fromJson);
-        predicateCodecs.put(AnyNBTPredicate.OP, AnyNBTPredicate::fromJson);
-        predicateCodecs.put(NotNBTPredicate.OP, NotNBTPredicate::fromJson);
+        predicateCodecs.put(TrueNBTPredicate.TYPE, TrueNBTPredicate::fromJson);
+        predicateCodecs.put(EqualsNBTPredicate.TYPE, EqualsNBTPredicate::fromJson);
+        predicateCodecs.put(ComparisonNBTPredicate.TYPE, ComparisonNBTPredicate::fromJson);
+        predicateCodecs.put(AllNBTPredicate.TYPE, AllNBTPredicate::fromJson);
+        predicateCodecs.put(AnyNBTPredicate.TYPE, AnyNBTPredicate::fromJson);
+        predicateCodecs.put(NotNBTPredicate.TYPE, NotNBTPredicate::fromJson);
     };
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.has("op")) {
+        if (!json.has("type")) {
             throw new IllegalStateException("Can't deserialize JSON without operation key: " + json);
         }
-        String op = json.get("op").getAsString();
+        String op = json.get("type").getAsString();
         return predicateCodecs.get(op).apply(json);
     }
 }

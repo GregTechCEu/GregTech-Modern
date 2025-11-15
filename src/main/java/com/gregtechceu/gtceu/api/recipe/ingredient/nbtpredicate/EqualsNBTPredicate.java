@@ -10,7 +10,7 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredic
 
 public class EqualsNBTPredicate extends NBTPredicate {
 
-    public static final String OP = "equals";
+    public static final String TYPE = "equals";
 
     private String key;
     private Tag value;
@@ -43,7 +43,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
 
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("op", OP);
+        object.addProperty("type", TYPE);
         object.addProperty("key", key);
         object.add("value", NBTPredicateUtils.toJson(value));
         object.addProperty("inverted", inverted);
@@ -51,11 +51,11 @@ public class EqualsNBTPredicate extends NBTPredicate {
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.get("op").getAsString().equals(OP)) {
-            throw new IllegalStateException("Trying to deserialize EqualsNBTPredicate but was something else: " + json);
-        }
-        if (!json.has("key") || !json.has("value") || !json.has("op")) {
+        if (!json.has("key") || !json.has("value") || !json.has("type")) {
             throw new IllegalStateException("Could not deserialize EqualsNBTPredicate: " + json);
+        }
+        if (!json.get("op").getAsString().equals(TYPE)) {
+            throw new IllegalStateException("Trying to deserialize EqualsNBTPredicate but was something else: " + json);
         }
         String key = json.get("key").getAsString();
         Tag value = NBTPredicateUtils.fromJson(json.get("value"));

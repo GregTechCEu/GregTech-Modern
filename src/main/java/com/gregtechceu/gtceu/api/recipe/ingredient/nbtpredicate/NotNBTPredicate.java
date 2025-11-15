@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 public class NotNBTPredicate extends NBTPredicate {
 
-    public static final String OP = "not";
+    public static final String TYPE = "not";
 
     private final NBTPredicate child;
 
@@ -21,19 +21,18 @@ public class NotNBTPredicate extends NBTPredicate {
 
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("op", OP);
+        object.addProperty("type", TYPE);
         object.add("child", child.toJson());
         return object;
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.get("op").getAsString().equals(OP)) {
+        if (!json.has("child") || !json.has("type")) {
+            throw new IllegalStateException("Could not deserialize NotNBTPredicate: " + json);
+        }
+        if (!json.get("type").getAsString().equals(TYPE)) {
             throw new IllegalStateException(
                     "Trying to deserialize NotNBTPredicate but was something else: " + json);
-        }
-
-        if (!json.has("child")) {
-            throw new IllegalStateException("Could not deserialize NotNBTPredicate: " + json);
         }
 
         NBTPredicate child = NBTPredicates.fromJson(json.get("child").getAsJsonObject());

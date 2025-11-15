@@ -11,7 +11,7 @@ import java.util.List;
 
 public class AllNBTPredicate extends NBTPredicate {
 
-    public static final String OP = "all";
+    public static final String TYPE = "all";
 
     private final List<NBTPredicate> children;
 
@@ -31,7 +31,7 @@ public class AllNBTPredicate extends NBTPredicate {
 
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("op", OP);
+        object.addProperty("type", TYPE);
         JsonArray childArray = new JsonArray();
         for (NBTPredicate child : children) {
             childArray.add(child.toJson());
@@ -41,15 +41,13 @@ public class AllNBTPredicate extends NBTPredicate {
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.get("op").getAsString().equals(OP)) {
+        if (!json.has("children") || !json.has("type")) {
+            throw new IllegalStateException("Could not deserialize AllNBTPredicate: " + json);
+        }
+        if (!json.get("type").getAsString().equals(TYPE)) {
             throw new IllegalStateException(
                     "Trying to deserialize AllNBTPredicate but was something else: " + json);
         }
-
-        if (!json.has("children")) {
-            throw new IllegalStateException("Could not deserialize AllNBTPredicate: " + json);
-        }
-
         List<NBTPredicate> children = new ArrayList<>();
         for (JsonElement element : json.getAsJsonArray("children")) {
             children.add(NBTPredicates.fromJson(element.getAsJsonObject()));

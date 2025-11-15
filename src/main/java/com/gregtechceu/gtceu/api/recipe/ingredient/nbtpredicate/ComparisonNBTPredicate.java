@@ -10,7 +10,7 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredic
 
 public class ComparisonNBTPredicate extends NBTPredicate {
 
-    public static final String OP = "compare";
+    public static final String TYPE = "compare";
 
     private String key;
     private double value;
@@ -50,7 +50,7 @@ public class ComparisonNBTPredicate extends NBTPredicate {
 
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("op", OP);
+        object.addProperty("type", TYPE);
         object.addProperty("key", key);
         object.addProperty("value", value);
         object.addProperty("lessThan", lessThan);
@@ -60,16 +60,16 @@ public class ComparisonNBTPredicate extends NBTPredicate {
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.get("op").getAsString().equals(OP)) {
-            throw new IllegalStateException(
-                    "Trying to deserialize ComparisonNBTPredicate but was something else: " + json);
-        }
         if (!json.has("key") ||
                 !json.has("value") ||
                 !json.has("lessThan") ||
                 !json.has("equals") ||
-                !json.has("op")) {
+                !json.has("type")) {
             throw new IllegalStateException("Could not deserialize ComparisonNBTPredicate: " + json);
+        }
+        if (!json.get("type").getAsString().equals(TYPE)) {
+            throw new IllegalStateException(
+                    "Trying to deserialize ComparisonNBTPredicate but was something else: " + json);
         }
         String key = json.get("key").getAsString();
         double value = json.get("value").getAsDouble();

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TrueNBTPredicate extends NBTPredicate {
 
-    public static final String OP = "true";
+    public static final String TYPE = "true";
 
     @Override
     public boolean test(CompoundTag tag) {
@@ -18,15 +18,15 @@ public class TrueNBTPredicate extends NBTPredicate {
     @Override
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("op", OP);
+        object.addProperty("type", TYPE);
         return object;
     }
 
     public static NBTPredicate fromJson(JsonObject json) {
-        if (!json.has("op")) {
+        if (!json.has("type")) {
             throw new IllegalStateException("Could not deserialize TrueNBTPredicate: " + json);
         }
-        if (!json.get("op").getAsString().equals(OP)) {
+        if (!json.get("type").getAsString().equals(TYPE)) {
             throw new IllegalStateException("Trying to deserialize TrueNBTPredicate but was something else: " + json);
         }
         return new TrueNBTPredicate();
