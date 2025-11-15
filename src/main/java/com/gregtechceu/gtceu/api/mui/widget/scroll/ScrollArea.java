@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.api.mui.widget.scroll;
 
 import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -168,9 +170,9 @@ public class ScrollArea extends Area {
         } else {
             return;
         }
-        progress = GTMath.clamp(progress, 0f, 1f);
+        progress = Mth.clamp(progress, 0f, 1f);
         data.scrollTo(this,
-                (int) (progress * (data.getScrollSize() - data.getVisibleSize(this) + data.getThickness())));
+                (int) (progress * (data.getScrollSize() - data.getFullVisibleSize(this) + data.getThickness())));
     }
 
     public boolean isInsideScrollbarArea(int x, int y) {
@@ -196,18 +198,23 @@ public class ScrollArea extends Area {
                 (this.scrollY != null && this.scrollY.isDragging());
     }
 
+    public void applyWidgetTheme(WidgetTheme widgetTheme) {
+        if (this.scrollX != null) this.scrollX.applyWidgetTheme(widgetTheme);
+        if (this.scrollY != null) this.scrollY.applyWidgetTheme(widgetTheme);
+    }
+
     /**
      * This method is responsible for drawing a scroll bar
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScrollbar(GuiContext context) {
+    public void drawScrollbar(GuiContext context, WidgetTheme widgetTheme, IDrawable texture) {
         boolean isXActive = false; // micro optimisation
         if (this.scrollX != null && this.scrollX.isScrollBarActive(this, false)) {
             isXActive = true;
-            this.scrollX.drawScrollbar(context, this);
+            this.scrollX.drawScrollbar(context, this, widgetTheme, texture);
         }
         if (this.scrollY != null && this.scrollY.isScrollBarActive(this, isXActive)) {
-            this.scrollY.drawScrollbar(context, this);
+            this.scrollY.drawScrollbar(context, this, widgetTheme, texture);
         }
     }
 }

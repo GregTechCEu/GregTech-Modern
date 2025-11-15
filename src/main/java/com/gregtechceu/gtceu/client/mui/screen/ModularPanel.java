@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.api.mui.animation.Animator;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewport;
 import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
@@ -125,20 +126,12 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     public void closeIfOpen() {
         if (!isOpen()) return;
         closeSubPanels();
-        /*
-         * if (isMainPanel()) {
-         * // close screen and let NEA animation // TODO: since nea is not yet ported, it will just close the screen
-         *
-         * EntityPlayer player = MCHelper.getPlayer();
-         * if (player != null) {
-         * player.closeScreen();
-         * } else {
-         * // we are currently not in a world and want to display the previous screen
-         * Minecraft.getMinecraft().displayGuiScreen(getContext().getParentScreen());
-         * }
-         * return;
-         * }
-         */
+        if (isMainPanel()) {
+            // close screen and let NEA handle animation // TODO: since nea is not yet ported, it will just close the
+            // screen
+            MCHelper.popScreen(getScreen().isOpenParentOnClose(), getContext().getParent());
+            return;
+        }
         if (!shouldAnimate()) {
             this.screen.getPanelManager().closePanel(this);
             return;
@@ -164,6 +157,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         }
     }
 
+    @Deprecated
     public void animateClose() {
         closeIfOpen();
     }
@@ -174,7 +168,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     @Override
-    public WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getPanelTheme();
     }
 
@@ -208,7 +202,6 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
 
     private void findHoveredWidgets() {
         this.hovering.clear();
-        this.hovering.trim();
         if (!isEnabled()) {
             return;
         }
@@ -246,20 +239,26 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         this.state = State.OPEN;
     }
 
-    void reopen() {
-        if (this.state != State.CLOSED) throw new IllegalStateException();
+    boolean reopen(boolean strict) {
+        if (this.state != State.CLOSED) {
+            if (strict) throw new IllegalStateException();
+            return false;
+        }
         this.state = State.OPEN;
+        return true;
     }
 
     @MustBeInvokedByOverriders
     public void onClose() {
-        if (!getScreen().isOverlay()) {
-            getContext().getXeiSettings().removeExclusionArea(this);
-        }
         this.state = State.CLOSED;
         if (this.panelHandler != null) {
             this.panelHandler.closePanelInternal();
         }
+    }
+
+    @Override
+    public boolean isExcludeAreaInXei() {
+        return super.isExcludeAreaInXei() || (!getScreen().isOverlay() && !this.invisible && !flex().isFullSize());
     }
 
     @MustBeInvokedByOverriders
@@ -319,7 +318,7 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
             if (this.hovering.isEmpty()) {
                 // no element is hovered -> try close panel
                 if (closeOnOutOfBoundsClick()) {
-                    animateClose();
+                    closeIfOpen();
                     result = true;
                 }
             } else {
@@ -706,21 +705,30 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return null;
     }
 
-    @Override
-    public int getDefaultHeight() {
-        return 166;
+    @NotNull
+    public List<LocatedWidget> getAllHoveringList(boolean debug) {
+        if (this.hovering.isEmpty()) return Collections.emptyList();
+        return new ArrayList<>(this.hovering);
     }
 
-    @Override
-    public int getDefaultWidth() {
-        return 176;
+    public boolean isBelowMouse(IWidget widget) {
+        if (!widget.isValid() || widget.getPanel() != this) return false;
+        for (LocatedWidget lw : this.hovering) {
+            if (lw.getElement() == widget) return true;
+        }
+        return false;
+    }
+
+    public boolean isAnyHovered() {
+        if (this.hovering.isEmpty()) return false;
+        if (this.hovering.size() == 1 && this.hovering.get(0).getElement() instanceof ModularPanel panel) {
+            return panel.canHover();
+        }
+        return true;
     }
 
     final void setPanelGuiContext(@NotNull ModularGuiContext context) {
         setContext(context);
-        if (!context.getScreen().isOverlay()) {
-            context.getXeiSettings().addExclusionArea(this);
-        }
     }
 
     public boolean isOpening() {
@@ -774,7 +782,11 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
     }
 
     public boolean shouldAnimate() {
-        return !getScreen().isOverlay() && getScreen().getCurrentTheme().getOpenCloseAnimationOverride() > 0;
+        // TODO: fix when NEA gets ported
+        /* && getScreen().getCurrentTheme().getOpenCloseAnimationOverride() > 0 */
+        if (this.invisible) return false;
+        if (!isMainPanel() || !getScreen().isOpenParentOnClose()) return true;
+        return getContext().getParent() == null;
     }
 
     void registerSubPanel(IPanelHandler handler) {
@@ -799,9 +811,14 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return child(SlotGroupWidget.playerInventory(bottom, true));
     }
 
+    @Override
     public ModularPanel invisible() {
         this.invisible = true;
-        return background(IDrawable.EMPTY);
+        return super.invisible();
+    }
+
+    public ModularPanel fullScreenInvisible() {
+        return invisible().full();
     }
 
     public ModularPanel resizeableOnDrag(boolean resizeable) {
@@ -809,27 +826,29 @@ public class ModularPanel extends ParentWidget<ModularPanel> implements IViewpor
         return this;
     }
 
+    @Deprecated
     @Override
-    public String toString() {
-        return super.toString() + "#" + getName();
+    public ModularPanel name(String name) {
+        throw new IllegalStateException("Name for ModularPanels are final!");
     }
 
     public enum State {
         /**
-         * Initial state of any panel
+         * Initial state of any panel.
          */
         IDLE,
         /**
-         * State after the panel opened
+         * State after the panel opened.
          */
         OPEN,
         /**
-         * State after panel closed
+         * State after panel closed. Panel can still be reopened in this state.
          */
         CLOSED,
         /**
          * State after panel disposed.
          * Panel can still be reopened in this state.
+         * State after panel disposed. The panel is now lost and has to be rebuilt, when reopening it.
          */
         DISPOSED,
         /**

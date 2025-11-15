@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetSlotTheme;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.SlotTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
@@ -49,7 +50,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     protected UnaryOperator<ItemStack> itemHook;
 
     public ItemSlot() {
-        tooltip().setAutoUpdate(true);// .setHasTitleMargin(true);
+        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
         tooltipBuilder(tooltip -> {
             if (!isSynced()) return;
             ItemStack stack = getSlot().getItem();
@@ -81,7 +82,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.syncHandler == null) return;
         Lighting.setupFor3DItems();
         drawSlot(context, getSlot());
@@ -100,7 +101,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     @Override
     public void drawForeground(ModularGuiContext context) {
         RichTooltip tooltip = getTooltip();
-        if (tooltip != null && isHoveringFor(tooltip.getShowUpTimer())) {
+        if (tooltip != null && isHoveringFor(tooltip.showUpTimer())) {
             tooltip.draw(context, getSlot().getItem());
         }
     }
@@ -111,16 +112,20 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     @Override
-    public WidgetSlotTheme getWidgetThemeInternal(ITheme theme) {
-        return theme.getItemSlotTheme();
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
+        PlayerSlotType playerSlotType = this.syncHandler != null ? this.syncHandler.getPlayerSlotType() : null;
+        if (playerSlotType == null) return theme.getWidgetTheme(IThemeApi.ITEM_SLOT);
+        return switch (playerSlotType) {
+            case HOTBAR -> theme.getWidgetTheme(IThemeApi.ITEM_SLOT_PLAYER_HOTBAR);
+            case MAIN_INVENTORY -> theme.getWidgetTheme(IThemeApi.ITEM_SLOT_PLAYER_MAIN_INV);
+            case OFFHAND -> theme.getWidgetTheme(IThemeApi.ITEM_SLOT_PLAYER_OFFHAND);
+            case ARMOR -> theme.getWidgetTheme(IThemeApi.ITEM_SLOT_PLAYER_ARMOR);
+        };
     }
 
     public int getSlotHoverColor() {
-        WidgetTheme theme = getWidgetTheme(getContext().getTheme());
-        if (theme instanceof WidgetSlotTheme slotTheme) {
-            return slotTheme.getSlotHoverColor();
-        }
-        return ITheme.getDefault().getItemSlotTheme().getSlotHoverColor();
+        WidgetThemeEntry<SlotTheme> theme = getWidgetTheme(getContext().getTheme(), SlotTheme.class);
+        return theme.getTheme().getSlotHoverColor();
     }
 
     @Override
@@ -223,8 +228,8 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
         // makes sure items of different layers don't interfere with each other visually
         float z = context.getCurrentDrawingZ() + 100;
-        context.getGraphics().pose().pushPose();
-        context.getGraphics().pose().translate(0, 0, z);
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(0, 0, z);
 
         if (!flag1) {
             if (isDragPreview) {
@@ -250,7 +255,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
                 RenderSystem.disableDepthTest();
             }
         }
-        context.getGraphics().pose().popPose();
+        context.graphicsPose().popPose();
     }
 
     @Override

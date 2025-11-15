@@ -68,11 +68,7 @@ public class Rectangle implements IDrawable, IJsonSerializable<Rectangle>, IAnim
     @OnlyIn(Dist.CLIENT)
     @Override
     public void draw(GuiContext context, int x0, int y0, int width, int height, WidgetTheme widgetTheme) {
-        if (canApplyTheme()) {
-            Color.setGlColor(widgetTheme.getColor());
-        } else {
-            Color.setGlColorOpaque(Color.WHITE.main);
-        }
+        applyColor(widgetTheme.getColor());
         if (this.cornerRadius <= 0) {
             GuiDraw.drawRect(context.getGraphics(), x0, y0, width, height,
                     this.colorTL, this.colorTR, this.colorBL, this.colorBR);

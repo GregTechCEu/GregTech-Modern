@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiElement;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayManager;
 import com.gregtechceu.gtceu.api.mui.overlay.OverlayStack;
@@ -49,15 +51,16 @@ import net.minecraftforge.fml.common.Mod;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
-import java.util.Objects;
+import java.util.List;
 import java.util.function.Predicate;
 
 @ApiStatus.Internal
@@ -71,120 +74,69 @@ public class ClientScreenHandler {
     @Getter
     private static long ticks = 0L;
     private static IMuiScreen lastMui;
-    @Getter
-    private static boolean guiClosing;
+    private static final ObjectArrayList<IMuiScreen> muiStack = new ObjectArrayList<>(8);
 
+    private static boolean debugToggleActive = false;
+
+    // we need to know the actual gui and not some fake screen some other mod overwrites
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onOpenScreen(ScreenEvent.Opening event) {
-        Screen newGui = event.getNewScreen();
-        guiClosing = newGui == null;
-        defaultContext.reset();
-
-        if (newGui instanceof IMuiScreen screenWrapper) {
-            if (lastMui == null) {
-                lastMui = screenWrapper;
-            } else if (lastMui == newGui) {
-                lastMui.getScreen().getPanelManager().reopen();
-            } else {
-                if (lastMui.getScreen().getPanelManager().isOpen()) {
-                    lastMui.getScreen().getPanelManager().closeAll();
-                }
-                lastMui.getScreen().getPanelManager().dispose();
-                lastMui = screenWrapper;
-            }
-        }
-
-        if (newGui instanceof IMuiScreen muiScreen) {
-            Objects.requireNonNull(muiScreen.getScreen(), "ModularScreen must not be null!");
-            if (currentScreen == muiScreen.getScreen()) {
-                currentScreen.getPanelManager().reopen();
-            } else {
-                if (hasScreen()) {
-                    currentScreen.onCloseParent();
-                    currentScreen.getPanelManager().dispose();
-                }
-                currentScreen = muiScreen.getScreen();
-                currentScreen.getContext().setParent(Minecraft.getInstance().screen);
-                fpsCounter.reset();
-            }
-        } else if (hasScreen() && event.getCurrentScreen() != null && newGui != event.getCurrentScreen()) {
-            currentScreen.onCloseParent();
-            currentScreen.getPanelManager().dispose();
-            currentScreen = null;
-        }
-        GuiErrorHandler.INSTANCE.clear();
-        OverlayManager.onOpenScreen(event);
+        onGuiChanged(event.getCurrentScreen(), event.getNewScreen());
     }
 
     @SubscribeEvent
     public static void onCloseScreen(ScreenEvent.Closing event) {
-        if (lastMui != null) {
-            if (lastMui.getScreen().getPanelManager().isOpen()) {
-                lastMui.getScreen().getPanelManager().closeAll();
-            }
-            lastMui.getScreen().getPanelManager().dispose();
-            lastMui = null;
-        }
-        if (hasScreen() && !currentScreen.getPanelManager().isReopened()) {
-            currentScreen.onCloseParent();
-            currentScreen.getPanelManager().dispose();
-            currentScreen = null;
-        }
+        onGuiChanged(event.getScreen(), null);
     }
 
     @SubscribeEvent
     public static void onInitScreenPost(ScreenEvent.Init.Post event) {
         defaultContext.updateScreenArea(event.getScreen().width, event.getScreen().height);
-        if (checkGui(event.getScreen())) {
+        if (validateGui(event.getScreen())) {
             currentScreen.onResize(event.getScreen().width, event.getScreen().height);
         }
         OverlayStack.foreach(ms -> ms.onResize(event.getScreen().width, event.getScreen().height), false);
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyPressedHigh(ScreenEvent.KeyPressed.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        keyPressedEvent(event, InputPhase.EARLY);
+        // TODO: early needs to be before XEI, but emi does mixin into KeyboardHandler so it is before everything
+        if (keyPressedEvent(event, InputPhase.EARLY)) {
+            keyPressedEvent(event, InputPhase.LATE);
+        }
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyPressedLow(ScreenEvent.KeyPressed.Pre event) {
-        keyPressedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
-        if (checkGui(event.getScreen())) {
+    private static boolean keyPressedEvent(ScreenEvent.KeyPressed.Pre event, InputPhase phase) {
+        if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), true, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
-    // before JEI
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent
     public static void onScreenKeyReleasedHigh(ScreenEvent.KeyReleased.Pre event) {
         defaultContext.updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+        // TODO also needs to be before XEI
+        // dont need late for release event
         keyReleasedEvent(event, InputPhase.EARLY);
     }
 
-    // after JEI
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onScreenKeyReleasedLow(ScreenEvent.KeyReleased.Pre event) {
-        keyReleasedEvent(event, InputPhase.LATE);
-    }
-
-    private static void keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
-        if (checkGui(event.getScreen())) {
+    private static boolean keyReleasedEvent(ScreenEvent.KeyReleased.Pre event, InputPhase phase) {
+        if (validateGui(event.getScreen())) {
             currentScreen.getContext().updateLatestKey(event.getKeyCode(), event.getScanCode(), event.getModifiers());
         }
         if (handleKeyboardInput(currentScreen, event.getScreen(), false, phase,
                 event.getKeyCode(), event.getScanCode(), event.getModifiers())) {
             event.setCanceled(true);
+            return false;
         }
+        return true;
     }
 
     // before JEI
@@ -193,7 +145,7 @@ public class ClientScreenHandler {
         int codePoint = event.getCodePoint();
         int modifiers = event.getModifiers();
         defaultContext.updateLatestTypedChar(codePoint, modifiers);
-        if (checkGui(event.getScreen())) currentScreen.getContext().updateLatestTypedChar(codePoint, modifiers);
+        if (validateGui(event.getScreen())) currentScreen.getContext().updateLatestTypedChar(codePoint, modifiers);
 
         // vanilla also casts to char here
         if (doAction(currentScreen, ms -> ms.charTyped((char) codePoint, modifiers))) {
@@ -208,7 +160,7 @@ public class ClientScreenHandler {
         double mouseX = event.getMouseX();
         double mouseY = event.getMouseY();
         defaultContext.updateMouseButton(button);
-        if (checkGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button);
+        if (validateGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button);
 
         if (button == -1) {
             return;
@@ -227,7 +179,7 @@ public class ClientScreenHandler {
         double mouseX = event.getMouseX();
         double mouseY = event.getMouseY();
         defaultContext.updateMouseButton(button);
-        if (checkGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button);
+        if (validateGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button);
 
         if (currentScreen != null && currentScreen.handleDraggableInput(mouseX, mouseY, button, false) ||
                 doAction(currentScreen, ms -> ms.mouseReleased(mouseX, mouseY, button))) {
@@ -242,7 +194,7 @@ public class ClientScreenHandler {
         double w = event.getScrollDelta();
         if (w == 0) return;
         defaultContext.updateMouseWheel(w);
-        if (checkGui(event.getScreen())) currentScreen.getContext().updateMouseWheel(w);
+        if (validateGui(event.getScreen())) currentScreen.getContext().updateMouseWheel(w);
 
         if (doAction(currentScreen, ms -> ms.mouseScrolled(event.getMouseX(), event.getMouseY(), w))) {
             event.setCanceled(true);
@@ -266,7 +218,7 @@ public class ClientScreenHandler {
         defaultContext.setGraphics(gc);
         defaultContext.updateState(mx, my, pt);
         defaultContext.reset();
-        if (checkGui(event.getScreen())) {
+        if (validateGui(event.getScreen())) {
             currentScreen.getContext().setGraphics(gc);
             currentScreen.getContext().updateState(mx, my, pt);
             drawScreen(gc, currentScreen, currentScreen.getScreenWrapper().getWrappedScreen(), mx, my, pt);
@@ -284,7 +236,7 @@ public class ClientScreenHandler {
         if (event.phase == TickEvent.Phase.END) {
             OverlayStack.onTick();
             defaultContext.tick();
-            if (checkGui()) {
+            if (validateGui()) {
                 currentScreen.onUpdate();
             }
             ticks++;
@@ -304,6 +256,56 @@ public class ClientScreenHandler {
         if (currentScreen != null) currentScreen.onFrameUpdate();
     }
 
+    private static void onGuiChanged(Screen oldScreen, Screen newScreen) {
+        if (oldScreen == newScreen) return;
+        defaultContext.reset();
+        fpsCounter.reset();
+        GuiErrorHandler.INSTANCE.clear();
+
+        IMuiScreen lastLastMui = lastMui;
+        if (lastMui != null) {
+            // called on open and close
+            // invalidate last mui screen, but keep it in stack
+            invalidateCurrentScreen();
+        }
+
+        if (newScreen instanceof IMuiScreen muiScreen) {
+            lastMui = muiScreen;
+            currentScreen = muiScreen.getScreen();
+            muiStack.remove(muiScreen);
+            muiStack.add(muiScreen); // move screen to the top of the stack;
+            Screen lastParent = lastLastMui != null ? lastLastMui.getScreen().getContext().getParent() : null;
+            if (lastParent != muiScreen) {
+                // new screen in the stack
+                currentScreen.getContext().setParent(oldScreen);
+            } else {
+                // last parent is equal to new screen -> effectively popping the current screen from the stack
+                // the current screen will disconnect from the stack and therefore need to dispose it
+                muiStack.remove(lastLastMui);
+                lastLastMui.getScreen().getPanelManager().dispose();
+            }
+        } else if (newScreen == null) {
+            // closing -> clear stack and dispose every screen
+            invalidateMuiStack();
+        }
+
+        OverlayManager.onOpenScreen(newScreen);
+    }
+
+    private static void invalidateCurrentScreen() {
+        // reset mouse inputs, relevant when screen gets reopened
+        if (lastMui != null) {
+            lastMui.getScreen().getPanelManager().closeAll();
+            lastMui = null;
+        }
+        currentScreen = null;
+    }
+
+    private static void invalidateMuiStack() {
+        muiStack.forEach(muiScreen -> muiScreen.getScreen().getPanelManager().dispose());
+        muiStack.clear();
+    }
+
     private static boolean doAction(@Nullable ModularScreen muiScreen, Predicate<ModularScreen> action) {
         return OverlayStack.interact(action, true) || (muiScreen != null && action.test(muiScreen));
     }
@@ -320,25 +322,22 @@ public class ClientScreenHandler {
                     keyTyped(mcScreen, keyCode, scanCode, modifiers);
         } else {
             // releasing a key
-            if (inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers))) {
-                return true;
-            }
-            if (inputPhase.isLate() && keyCode >= ' ') {
-                return keyTyped(mcScreen, keyCode, scanCode, modifiers);
-            }
+            return inputPhase.isEarly() && doAction(muiScreen, ms -> ms.keyReleased(keyCode, scanCode, modifiers));
         }
-        return false;
     }
 
     private static boolean keyTyped(Screen screen, int keyCode, int scanCode, int modifiers) {
         if (currentScreen == null) return false;
         // debug mode C + CTRL + SHIFT + ALT
-        if (keyCode == 'C' &&
-                (modifiers & GLFW.GLFW_MOD_CONTROL) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_SHIFT) != 0 &&
-                (modifiers & GLFW.GLFW_MOD_ALT) != 0) {
-            ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+        if (keyCode == 'C' && Interactable.isControl(modifiers) && Interactable.isShift(modifiers) &&
+                Interactable.isAlt(modifiers)) {
+            if (!debugToggleActive) {
+                ConfigHolder.INSTANCE.dev.debugUI = !ConfigHolder.INSTANCE.dev.debugUI;
+                debugToggleActive = true;
+            }
             return true;
+        } else {
+            debugToggleActive = false;
         }
         if (keyCode == InputConstants.KEY_ESCAPE && screen.shouldCloseOnEsc()) {
             onClose();
@@ -369,7 +368,7 @@ public class ClientScreenHandler {
     public static void clickSlot(ModularScreen ms, Slot slot) {
         Screen screen = ms.getScreenWrapper().getWrappedScreen();
         if (screen instanceof ScreenAccessor acc && screen instanceof IClickableContainerScreen clickableScreen &&
-                checkGui(screen)) {
+                validateGui(screen)) {
             ModularGuiContext ctx = ms.getContext();
             var buttonList = screen.children();
             try {
@@ -452,17 +451,13 @@ public class ClientScreenHandler {
         RenderSystem.disableDepthTest();
         // mainly for invtweaks compat
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
-        graphics.pose().pushPose();
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         acc.setHoveredSlot(null);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         Lighting.setupForFlatItems();
         acc.invokeRenderLabels(graphics, mouseX, mouseY);
-        muiScreen.drawForeground(graphics, partialTicks);
-        Lighting.setupFor3DItems();
 
         acc.setHoveredSlot(null);
-        IGuiElement hovered = muiScreen.getContext().getHovered();
+        IGuiElement hovered = muiScreen.getContext().getTopHovered();
         if (hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
             acc.setHoveredSlot(vanillaSlot.getVanillaSlot());
         }
@@ -506,7 +501,9 @@ public class ClientScreenHandler {
             int snapBackY = acc.getSnapbackStartY() + (int) ((float) snapBackOffsetY * delta);
             drawFloatingItemStack(mcScreen, graphics, acc.getSnapbackItem(), snapBackX, snapBackY, null);
         }
-        graphics.pose().popPose();
+
+        muiScreen.drawForeground(graphics, partialTicks);
+
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
         muiScreen.getContext().getStencil().pop();
@@ -537,7 +534,7 @@ public class ClientScreenHandler {
         fpsCounter.onDraw();
         if (!ConfigHolder.INSTANCE.dev.debugUI) return;
         if (muiScreen == null) {
-            if (checkGui()) {
+            if (validateGui()) {
                 muiScreen = currentScreen;
             } else {
                 if (fallback == null) return;
@@ -559,18 +556,20 @@ public class ClientScreenHandler {
         GuiDraw.drawText(graphics, "Mouse Pos: " + mouseX + ", " + mouseY, 5, lineY, scale, color, true);
         lineY -= shift + 2;
         GuiDraw.drawText(graphics, "FPS: " + fpsCounter.getFps(), 5, screenH - 23, scale, color, true);
+        lineY -= shift;
+        GuiDraw.drawText(graphics, "Theme ID: " + context.getTheme().getId(), 5, lineY, scale, color, true);
         LocatedWidget locatedHovered = muiScreen.getPanelManager().getTopWidgetLocated(true);
         if (locatedHovered != null) {
             drawSegmentLine(graphics, lineY -= 4, scale, color);
             lineY -= 10;
 
-            IGuiElement hovered = locatedHovered.getElement();
+            IWidget hovered = locatedHovered.getElement();
             locatedHovered.applyMatrix(context);
             graphics.pose().pushPose();
             context.applyTo(graphics.pose());
 
             Area area = hovered.getArea();
-            IGuiElement parent = hovered.getParent();
+            IWidget parent = hovered.getParent();
 
             GuiDraw.drawBorder(graphics, 0, 0, area.width, area.height, color, scale);
             if (hovered.hasParent()) {
@@ -579,15 +578,23 @@ public class ClientScreenHandler {
             }
             graphics.pose().popPose();
             locatedHovered.unapplyMatrix(context);
-            GuiDraw.drawText(graphics, "Pos: " + area.x + ", " + area.y + "  Rel: " + area.rx + ", " + area.ry, 5,
-                    lineY, scale, color, false);
+            GuiDraw.drawText(graphics,
+                    "Widget Theme: " + hovered.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(), 5,
+                    lineY, scale, color, true);
             lineY -= shift;
             GuiDraw.drawText(graphics, "Size: " + area.width + ", " + area.height, 5, lineY, scale, color, true);
+            lineY -= shift;
+            GuiDraw.drawText(graphics, "Pos: " + area.x + ", " + area.y + "  Rel: " + area.rx + ", " + area.ry, 5,
+                    lineY, scale, color, false);
             lineY -= shift;
             GuiDraw.drawText(graphics, "Class: " + hovered, 5, lineY, 1, color, true);
             if (hovered.hasParent()) {
                 drawSegmentLine(graphics, lineY -= 4, scale, color);
                 lineY -= 10;
+                GuiDraw.drawText(graphics,
+                        "Widget Theme: " + parent.getWidgetTheme(muiScreen.getCurrentTheme()).getKey().getFullName(), 5,
+                        lineY, scale, color, true);
+                lineY -= shift;
                 area = parent.getArea();
                 GuiDraw.drawText(graphics, "Parent size: " + area.width + ", " + area.height, 5, lineY, scale, color,
                         true);
@@ -613,7 +620,9 @@ public class ClientScreenHandler {
             } else if (hovered instanceof RichTextWidget richTextWidget) {
                 drawSegmentLine(graphics, lineY -= 4, scale, color);
                 lineY -= 10;
+                locatedHovered.applyMatrix(context);
                 Object hoveredElement = richTextWidget.getHoveredElement();
+                locatedHovered.unapplyMatrix(context);
                 GuiDraw.drawText(graphics, "Hovered: " + hoveredElement, 5, lineY, scale, color, true);
             }
         }
@@ -640,22 +649,33 @@ public class ClientScreenHandler {
         return currentScreen;
     }
 
-    private static boolean checkGui() {
-        return checkGui(MCHelper.getCurrentScreen());
+    @UnmodifiableView
+    public static List<IMuiScreen> getMuiStack() {
+        return Collections.unmodifiableList(muiStack);
     }
 
-    private static boolean checkGui(Screen screen) {
-        if (currentScreen == null || !(screen instanceof IMuiScreen muiScreen)) return false;
+    private static boolean validateGui() {
+        return validateGui(MCHelper.getCurrentScreen());
+    }
+
+    private static boolean validateGui(Screen screen) {
+        if (currentScreen == null || !(screen instanceof IMuiScreen muiScreen)) {
+            // no mui screen currently open
+            return false;
+        }
         if (screen != MCHelper.getCurrentScreen() || muiScreen.getScreen() != currentScreen) {
             defaultContext.reset();
-            currentScreen = null;
+            invalidateCurrentScreen();
+            if (MCHelper.getCurrentScreen() == null) {
+                invalidateMuiStack();
+            }
             return false;
         }
         return true;
     }
 
     public static GuiContext getBestContext() {
-        if (checkGui()) {
+        if (validateGui()) {
             return currentScreen.getContext();
         }
         return defaultContext;

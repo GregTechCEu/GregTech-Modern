@@ -14,8 +14,8 @@ public class TiledUITexture extends UITexture {
      * Use {@link UITexture#builder()} with {@link Builder#tiled()}
      */
     TiledUITexture(ResourceLocation location, float u0, float v0, float u1, float v1, int imageWidth, int imageHeight,
-                   boolean canApplyTheme) {
-        super(location, u0, v0, u1, v1, canApplyTheme);
+                   ColorType colorType, boolean nonOpaque) {
+        super(location, u0, v0, u1, v1, colorType, nonOpaque);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
     }
@@ -26,7 +26,7 @@ public class TiledUITexture extends UITexture {
             super.draw(context, x, y, width, height);
             return;
         }
-        GuiDraw.drawTiledTexture(context.getLastPose(), this.location, x, y, width, height,
+        GuiDraw.drawTiledTexture(context.getLastGraphicsPose(), this.location, x, y, width, height,
                 this.u0, this.v0, this.u1, this.v1,
                 this.imageWidth, this.imageHeight, 0);
     }

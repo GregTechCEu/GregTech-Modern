@@ -3,23 +3,21 @@ package com.gregtechceu.gtceu.client.mui.screen.viewport;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.*;
-import com.gregtechceu.gtceu.client.ClientProxy;
+import com.gregtechceu.gtceu.client.mui.CursorHandler;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 
+import com.google.common.collect.AbstractIterator;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -40,11 +38,12 @@ public class ModularGuiContext extends GuiContext {
     private @Nullable Screen parent;
     @Getter
     private LocatedWidget focusedWidget = LocatedWidget.EMPTY;
+    private List<LocatedWidget> belowMouse = Collections.emptyList();
     /**
      * the hovered widget (widget directly below the mouse)
      */
-    private @Nullable LocatedWidget hovered;
-    private int timeHovered = 0;
+    private List<LocatedWidget> hovered = Collections.emptyList();
+    private LocatedWidget resizeable = null;
     private final HoveredIterable hoveredWidgets;
 
     private LocatedElement<IDraggable> draggable;
@@ -56,6 +55,21 @@ public class ModularGuiContext extends GuiContext {
 
     private UISettings settings;
 
+    private final Iterable<IWidget> hoveredIterable = () -> new AbstractIterator<>() {
+
+        private final List<LocatedWidget> currentHovered = ModularGuiContext.this.hovered;
+        private final Iterator<LocatedWidget> it = currentHovered.iterator();
+
+        @Override
+        protected @Nullable IWidget computeNext() {
+            if (ModularGuiContext.this.hovered != this.currentHovered) {
+                throw new ConcurrentModificationException("Tried to use hovered iterable over multiple ticks," +
+                        "where hovered list changed. This is not allowed.");
+            }
+            return this.it.hasNext() ? this.it.next().getElement() : computeNext();
+        }
+    };
+
     public ModularGuiContext(ModularScreen screen) {
         this.screen = screen;
         this.hoveredWidgets = new HoveredIterable(this.screen.getPanelManager());
@@ -65,14 +79,16 @@ public class ModularGuiContext extends GuiContext {
      * @return true if any widget is being hovered
      */
     public boolean isHovered() {
-        return this.hovered != null;
+        return !this.hovered.isEmpty();
     }
 
     /**
      * @return true if the widget is directly below the mouse
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
+    @Deprecated
     public boolean isHovered(IGuiElement guiElement) {
-        return isHovered() && getHovered() == guiElement;
+        return guiElement.isHovering();
     }
 
     /**
@@ -82,13 +98,30 @@ public class ModularGuiContext extends GuiContext {
      * @param ticks      time hovered
      * @return true if the widget is hovered for at least a certain number of ticks
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
+    @Deprecated
     public boolean isHoveredFor(IGuiElement guiElement, int ticks) {
         // convert from frames per second to ticks per second
-        return isHovered(guiElement) && this.timeHovered / 3 >= ticks;
+        return guiElement.isHoveringFor(ticks);
     }
 
+    /**
+     * @return the hovered widget (widget directly below the mouse)
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.7.0")
+    @Deprecated
+    @Nullable
     public IWidget getHovered() {
-        return this.hovered != null ? this.hovered.getElement() : null;
+        return getTopHovered();
+    }
+
+    public @Nullable IWidget getTopHovered() {
+        return this.hovered.isEmpty() ? null : this.hovered.get(0).getElement();
+    }
+
+    @UnmodifiableView
+    public Iterable<IWidget> getAllHovered() {
+        return this.hoveredIterable;
     }
 
     /**
@@ -235,7 +268,7 @@ public class ModularGuiContext extends GuiContext {
     }
 
     public boolean isMouseItemEmpty() {
-        LocalPlayer player = MCHelper.getPlayer();
+        Player player = MCHelper.getPlayer();
         return player == null || player.containerMenu.getCarried().isEmpty();
     }
 
@@ -263,7 +296,8 @@ public class ModularGuiContext extends GuiContext {
     public void dropDraggable() {
         this.draggable.applyMatrix(this);
         this.draggable.getElement()
-                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), getHovered()));
+                .onDragEnd(this.draggable.getElement().canDropHere(getAbsMouseX(), getAbsMouseY(), getTopHovered()));
+        // TODO: getTopHovered correct here?
         this.draggable.getElement().setMoving(false);
         this.draggable.unapplyMatrix(this);
         this.draggable = null;
@@ -312,6 +346,16 @@ public class ModularGuiContext extends GuiContext {
         }
     }
 
+    private static boolean isStillHovered(List<LocatedWidget> newHovered, LocatedWidget lw) {
+        if (newHovered == null) return false;
+        for (LocatedWidget hovered : newHovered) {
+            if (hovered.getElement() == lw.getElement()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @ApiStatus.Internal
     public void onFrameUpdate() {
         if (hasDraggable() && (this.lastDragX != getAbsMouseX() || this.lastDragY != getAbsMouseY())) {
@@ -321,42 +365,73 @@ public class ModularGuiContext extends GuiContext {
             this.draggable.getElement().onDrag(this.lastButton, this.lastClickTime);
             this.draggable.unapplyMatrix(this);
         }
-        LocatedWidget locatedHovered = this.screen.getPanelManager().getTopWidgetLocated(false);
-        IWidget hovered = locatedHovered != null ? locatedHovered.getElement() : null;
-        IWidget oldHovered = getHovered();
-        if (oldHovered != hovered) {
-            if (this.hovered != null && oldHovered != null) {
-                if (this.hovered.getAdditionalHoverInfo() instanceof ResizeDragArea) {
-                    ClientProxy.resetCursorIcon();
+        List<LocatedWidget> newBelowMouse = this.screen.getPanelManager().getAllHoveredWidgetsList(false);
+        if (!newBelowMouse.isEmpty()) {
+            List<LocatedWidget> oldBelowMouse = this.belowMouse;
+            this.belowMouse = newBelowMouse;
+            for (LocatedWidget lw : this.belowMouse) {
+                if (lw.getElement().isValid() && !lw.getElement().isBelowMouse()) {
+                    lw.getElement().onMouseEnterArea();
                 }
-                oldHovered.onMouseEndHover();
             }
 
-            this.hovered = locatedHovered;
-            this.timeHovered = 0;
-            if (this.hovered != null) {
-                if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-                    ClientProxy.setCursorResizeIcon(dragArea);
+            List<LocatedWidget> newHovered = getHoveredWidgets(newBelowMouse);
+            List<LocatedWidget> oldHovered = this.hovered;
+            this.hovered = newHovered;
+
+            checkHoverEnd(newHovered, oldHovered, IWidget::onMouseEndHover);
+            checkHoverEnd(newBelowMouse, oldBelowMouse, IWidget::onMouseLeaveArea);
+        } else {
+            checkHoverEnd(null, this.hovered, IWidget::onMouseEndHover);
+            checkHoverEnd(null, this.belowMouse, IWidget::onMouseLeaveArea);
+            this.hovered = Collections.emptyList();
+            this.belowMouse = Collections.emptyList();
+            this.resizeable = null;
+            CursorHandler.resetCursorIcon();
+        }
+    }
+
+    private List<LocatedWidget> getHoveredWidgets(List<LocatedWidget> belowMouse) {
+        Slot slot = null;
+        LocatedWidget resizeable = null;
+        ResizeDragArea newResizeDragArea = null;
+        List<LocatedWidget> newHovered = new ArrayList<>();
+        for (LocatedWidget lw : belowMouse) {
+            if (!lw.getElement().isValid()) continue;
+            if (lw.getElement().canHover()) {
+                newHovered.add(lw);
+                if (!lw.getElement().isHovering()) {
+                    lw.getElement().onMouseStartHover();
                 }
-                hovered.onMouseStartHover();
-                if (this.hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
-                    this.screen.getScreenWrapper().setHoveredSlot(vanillaSlot.getVanillaSlot());
-                } else {
-                    this.screen.getScreenWrapper().setHoveredSlot(null);
+                if (slot == null && lw.getElement() instanceof IVanillaSlot vanillaSlot &&
+                        vanillaSlot.handleAsVanillaSlot()) {
+                    slot = vanillaSlot.getVanillaSlot();
+                }
+                if (lw.getAdditionalHoverInfo() instanceof ResizeDragArea resizeDragArea) {
+                    resizeable = lw;
+                    newResizeDragArea = resizeDragArea;
+                }
+                if (!lw.getElement().canHoverThrough()) break;
+            }
+        }
+        ResizeDragArea oldResizeDragArea = this.resizeable != null ?
+                (ResizeDragArea) this.resizeable.getAdditionalHoverInfo() : null;
+        if (newResizeDragArea != oldResizeDragArea) {
+            CursorHandler.setCursorResizeIcon(newResizeDragArea);
+            this.resizeable = resizeable;
+        }
+        this.screen.getScreenWrapper().setHoveredSlot(slot);
+        return newHovered.isEmpty() ? Collections.emptyList() : newHovered;
+    }
+
+    private void checkHoverEnd(List<LocatedWidget> newList, List<LocatedWidget> oldList, Consumer<IWidget> onHoverEnd) {
+        if (!oldList.isEmpty()) {
+            for (LocatedWidget lw : oldList) {
+                if (!isStillHovered(newList, lw)) {
+                    onHoverEnd.accept(lw.getElement());
                 }
             }
-        } else if (this.hovered != null && locatedHovered != null &&
-                this.hovered.getAdditionalHoverInfo() != locatedHovered.getAdditionalHoverInfo()) {
-                    if (locatedHovered.getAdditionalHoverInfo() instanceof ResizeDragArea dragArea) {
-                        ClientProxy.setCursorResizeIcon(dragArea);
-                    } else {
-                        ClientProxy.resetCursorIcon();
-                    }
-                    // widget is unchanged, but additional info changed
-                    this.hovered = locatedHovered;
-                } else {
-                    this.timeHovered++;
-                }
+        }
     }
 
     public ITheme getTheme() {
@@ -393,6 +468,9 @@ public class ModularGuiContext extends GuiContext {
             throw new IllegalStateException("Tried to set settings twice");
         }
         this.settings = settings;
+        if (this.settings.getTheme() != null) {
+            this.screen.useTheme(this.settings.getTheme());
+        }
     }
 
     private static class HoveredIterable implements Iterable<IGuiElement> {

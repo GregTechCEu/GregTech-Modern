@@ -11,7 +11,8 @@ import com.gregtechceu.gtceu.api.mui.drawable.*;
 import com.gregtechceu.gtceu.api.mui.drawable.text.AnimatedText;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.schema.ArraySchema;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
@@ -32,6 +33,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.client.mui.schemarenderer.BlockHighlight;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -45,6 +47,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -78,6 +81,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     private long time = 0;
     private int val, val2 = 0;
     private String value = "";
+    private int intValue = 1234567;
     private double doubleValue = 1;
     private final int duration = 80;
     private int progress = 0;
@@ -161,12 +165,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         var babyFop = new Fox(EntityType.FOX, data.getLevel());
         babyFop.setAge(-1);
         panel.child(new Row()
-                .debugName("Tab row")
+                .name("Tab row")
                 .coverChildren()
                 .topRel(0f, 4, 1f)
                 .child(new PageButton(0, tabController)
                         .tab(GTGuiTextures.TAB_TOP, -1)
-                        .overlay(new EntityDrawable<>(babyFop).followMouse()))
+                        .overlay(new EntityDrawable(babyFop)))
                 .child(new PageButton(1, tabController)
                         .tab(GTGuiTextures.TAB_TOP, 0)
                         .overlay(new ItemDrawable(Items.OAK_SAPLING).asIcon()))
@@ -181,7 +185,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .overlay(new ItemDrawable(Items.ENDER_EYE).asIcon())))
 
                 .child(new Expandable()
-                        .debugName("expandable")
+                        .name("expandable")
                         .top(0)
                         .leftRelOffset(1f, 1)
                         .background(GTGuiTextures.BACKGROUND)
@@ -194,7 +198,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .interpolation(Interpolation.BOUNCE_OUT)
                         .collapsedView(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
                         .expandedView(new ParentWidget<>()
-                                .debugName("crafting tab")
+                                .name("crafting tab")
                                 .coverChildren()
                                 .child(new ItemDrawable(Blocks.CRAFTING_TABLE).asIcon().asWidget().size(20).pos(0, 0))
                                 .child(SlotGroupWidget.builder()
@@ -205,7 +209,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
                                         .key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
                                         .build()
-                                        .margin(5, 5, 20, 5).debugName("crafting"))))
+                                        .margin(5, 5, 20, 5).name("crafting"))))
 
                 .child(Flow.column()
                         .sizeRel(1f)
@@ -214,21 +218,21 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                 .expanded()
                                 .widthRel(1f)
                                 .child(new PagedWidget<>()
-                                        .debugName("root parent")
+                                        .name("root parent")
                                         .sizeRel(1f)
                                         .controller(tabController)
                                         .addPage(new ParentWidget<>()
-                                                .debugName("page 1 parent")
+                                                .name("page 1 parent")
                                                 .sizeRel(1f, 1f)
                                                 .padding(7, 0)
                                                 .child(new Row()
-                                                        .debugName("buttons, slots and more tests")
+                                                        .name("buttons, slots and more tests")
                                                         .height(137)
                                                         .coverChildrenWidth()
                                                         .alignY(Alignment.Center)
                                                         // .padding(7)
                                                         .child(new Column()
-                                                                .debugName("buttons and slots test")
+                                                                .name("buttons and slots test")
                                                                 .coverChildren()
                                                                 .marginRight(8)
                                                                 // .flex(flex -> flex.height(0.5f))
@@ -270,7 +274,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .overlay(IKey.str("Button 2")))
                                                                 .child(new TextFieldWidget()
                                                                         .size(60, 18)
-                                                                        .setTextAlignment(Alignment.Center)
+                                                                        .setTextAlignment(Alignment.CenterRight)
                                                                         .value(SyncHandlers.string(() -> this.value,
                                                                                 val -> this.value = val))
                                                                         .margin(0, 2)
@@ -284,15 +288,15 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .setNumbersDouble(DoubleUnaryOperator.identity())
                                                                         .hintText(Component.literal("number")))
                                                                 // .child(IKey.str("Test
-                                                                // string").asWidget().padding(2).debugName("test
+                                                                // string").asWidget().padding(2).name("test
                                                                 // string"))
                                                                 .child(new ScrollingTextWidget(
                                                                         IKey.str("Very very long test string"))
                                                                         .widthRel(1f).height(16))
-                                                        // .child(IKey.EMPTY.asWidget().debugName("Empty IKey"))
+                                                        // .child(IKey.EMPTY.asWidget().name("Empty IKey"))
                                                         )
                                                         .child(new Column()
-                                                                .debugName("button and slots test 2")
+                                                                .name("button and slots test 2")
                                                                 .coverChildren()
                                                                 // .widthRel(0.5f)
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
@@ -342,9 +346,21 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .child(new FluidSlot()
                                                                         .margin(2)
                                                                         .width(30)
-                                                                        .syncHandler(SyncHandlers.fluidSlot(this.fluidTankPhantom).phantom(true))))))
+                                                                        .syncHandler(SyncHandlers.fluidSlot(this.fluidTankPhantom)
+                                                                                .phantom(true)))
+                                                                .child(new Column()
+                                                                        .name("button and slots test 3")
+                                                                        .coverChildren()
+                                                                        .child(new TextFieldWidget()
+                                                                                .size(60, 20)
+                                                                                .value(SyncHandlers.intNumber(
+                                                                                        () -> this.intValue,
+                                                                                        val -> this.intValue = val))
+                                                                                .setNumbers(0, 9999999)
+                                                                                .hintText(Component
+                                                                                        .literal("integer")))))))
                                         .addPage(new Column()
-                                                .debugName("Slots test page")
+                                                .name("Slots test page")
                                                 .coverChildren()
                                                 // .height(120)
                                                 .padding(7)
@@ -366,7 +382,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                     SyncHandlers.itemSlot(this.bigInventory, index)
                                                                             .slotGroup("item_inv"));
                                                         })
-                                                        .build().debugName("9 slot inv")
+                                                        .build().name("9 slot inv")
                                                         // .marginBottom(2)
                                                         .child(new SortButtons()
                                                                 .slotGroup("item_inv")
@@ -375,10 +391,13 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                         .row("FII")
                                                         .row("FII")
                                                         .key('F', index -> new FluidSlot().syncHandler("mixer_fluids", index))
-                                                        .key('I', index -> ItemSlot.create(index >= 2).slot(
-                                                                new ModularSlot(this.mixerItems, index)
-                                                                        .slotGroup("mixer_items")))
-                                                        .build().debugName("mixer inv"))
+                                                        .key('I', index -> ItemSlot.create(index >= 2)
+                                                                .slot(new ModularSlot(this.mixerItems, index)
+                                                                        .slotGroup("mixer_items")
+                                                                        .filter(stack -> !stack
+                                                                                .getCapability(ForgeCapabilities.ITEM_HANDLER)
+                                                                                .isPresent())))
+                                                        .build().name("mixer inv"))
                                                 .child(new Row()
                                                         .coverChildrenHeight()
                                                         .child(new CycleButtonWidget()
@@ -400,7 +419,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                          * .flex(flex -> flex.width(1f).height(1f))
                                          */)
                                         .addPage(new ParentWidget<>()
-                                                .debugName("page 3 parent")
+                                                .name("page 3 parent")
                                                 .sizeRel(1f, 1f)
                                                 .padding(7)
                                                 // .child(SlotGroupWidget.playerInventory())
@@ -410,7 +429,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                         .stopper(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
                                                         .background(GTGuiTextures.FLUID_SLOT))
                                                 .child(new ButtonWidget<>()
-                                                        .debugName("color picker button")
+                                                        .name("color picker button")
                                                         .top(25)
                                                         .background(colorPickerBackground)
                                                         .disableHoverBackground()
@@ -419,7 +438,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                             return true;
                                                         }))
                                                 .child(new ListWidget<>()
-                                                        .debugName("test config list")
+                                                        .name("test config list")
                                                         .widthRel(1f).top(50).bottom(2)
                                                         /*
                                                          * .child(new Rectangle().setColor(0xFF606060).asWidget()
@@ -428,7 +447,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                          * .size(1, 40))
                                                          */
                                                         .child(new Row()
-                                                                .debugName("test config 1")
+                                                                .name("test config 1")
                                                                 .widthRel(1f).coverChildrenHeight()
                                                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                                                 .childPadding(2)
@@ -439,11 +458,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .margin(8, 4))
                                                                 .child(IKey.str("Boolean config").asWidget().height(14)))
                                                         .child(new Row()
-                                                                .debugName("test config 2")
+                                                                .name("test config 2")
                                                                 .widthRel(1f).height(14)
                                                                 .childPadding(2)
                                                                 .child(new TextFieldWidget()
                                                                         .value(new IntValue.Dynamic(() -> this.num, val -> this.num = val))
+                                                                        .disableHoverBackground()
                                                                         .setNumbers(1, Short.MAX_VALUE)
                                                                         .setTextAlignment(Alignment.Center)
                                                                         .background(new Rectangle().setColor(0xFFb1b1b1))
@@ -458,7 +478,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .tooltip(tooltip -> tooltip.showUpTimer(10)
                                                                         .addLine(IKey.str("Config title tooltip"))))
                                                         .child(new Row()
-                                                                .debugName("test config 3")
+                                                                .name("test config 3")
                                                                 .widthRel(1f).height(14)
                                                                 .childPadding(2)
                                                                 .child(new CycleButtonWidget()
@@ -467,7 +487,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .size(14, 14))
                                                                 .child(IKey.str("Boolean config 3").asWidget().height(14)))))
                                         .addPage(new ParentWidget<>()
-                                                .debugName("page 4 storage")
+                                                .name("page 4 storage")
                                                 .sizeRel(1f)
                                                 .child(new Column()
                                                         .padding(7)
@@ -502,18 +522,19 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     private IWidget createSchemaPage(GuiData data) {
         ParentWidget<?> page = new ParentWidget<>();
-        page.debugName("page 5 schema");
+        page.name("Page 5 schema");
         page.sizeRel(1f);
         page.child(IKey.str("Schema").asWidget());
 
-        /*
-         * if (getLevel().isClientSide()) {
-         * page.child(new SchemaWidget(new SchemaRenderer(ArraySchema.of(data.getPlayer(), 5))
-         * .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)))
-         * .pos(20, 20)
-         * .size(100, 100));
-         * }
-         */
+        if (getLevel().isClientSide()) {
+            page.child(new SchemaWidget(
+                    new SchemaRenderer(ArraySchema.of(data.getPlayer(), 20))
+                            .highlightRenderer(
+                                    new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
+            /* .isometric(true) */)
+                    .pos(20, 20)
+                    .size(100, 100));
+        }
 
         return page;
     }
@@ -635,8 +656,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         }
 
         @Override
-        public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
-            this.animatedKey.draw(context, 0, 0, getArea().w(), getArea().h(), widgetTheme);
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            this.animatedKey.draw(context, 0, 0, getArea().w(), getArea().h(),
+                    getActiveWidgetTheme(widgetTheme, isHovering()));
         }
 
         @Override

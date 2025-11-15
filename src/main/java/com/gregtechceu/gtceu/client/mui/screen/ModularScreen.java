@@ -45,6 +45,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -100,8 +101,9 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     private final Object2ObjectArrayMap<IWidget, Runnable> frameUpdates = new Object2ObjectArrayMap<>();
     @Getter
     private boolean pauseScreen = false;
-
     @Getter
+    private boolean openParentOnClose = false;
+
     private ITheme currentTheme;
     @Getter
     private IMuiScreen screenWrapper;
@@ -148,7 +150,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                 buildUI(this.context);
         Objects.requireNonNull(mainPanel, "The main panel must not be null!");
         this.name = mainPanel.getName();
-        this.currentTheme = IThemeApi.get().getThemeForScreen(this, null);
         this.panelManager = new PanelManager(this, mainPanel);
     }
 
@@ -221,15 +222,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         if (!isOverlay()) {
             this.screenWrapper.updateGuiArea(this.panelManager.getMainPanel().getArea());
         }
-    }
-
-    /**
-     * Called when another screen opens, but this screen is still open or this screen an overlay is and the gui screen
-     * parent closes.
-     */
-    @ApiStatus.Internal
-    public final void onCloseParent() {
-        this.panelManager.closeAll();
     }
 
     /**
@@ -330,7 +322,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
 
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
@@ -341,12 +332,14 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
             }
             WidgetTree.drawTree(panel, this.context);
+            // clear depth, so that anything drawn next will be guaranteed to be on top
+            RenderSystem.clearDepth(1);
+            RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         }
         this.context.updateZ(0);
         this.context.popViewport(null);
 
         this.context.postRenderCallbacks.forEach(element -> element.accept(this.context));
-        Lighting.setupFor3DItems();
     }
 
     /**
@@ -368,8 +361,6 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         }
         this.context.drawDraggable(guiGraphics);
         this.context.popViewport(null);
-
-        Lighting.setupFor3DItems();
     }
 
     /**
@@ -611,6 +602,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         return getCurrent() == this;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "#" + getOwner() + ":" + getName();
+    }
+
     /**
      * @return the owner and name as a {@link ResourceLocation}
      * @see #getOwner()
@@ -661,6 +657,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param action action listener
      */
     public void registerGuiActionListener(IGuiAction action) {
+        // TODO these should be linked to a IWidget, which can be checked for isValid() and is panel open on use ->
+        // proper event system
         List<IGuiAction> list = this.guiActionListeners.computeIfAbsent(getGuiActionClass(action),
                 key -> new ArrayList<>());
         if (!list.contains(action)) list.add(action);
@@ -729,6 +727,13 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         throw new IllegalArgumentException();
     }
 
+    public ITheme getCurrentTheme() {
+        if (this.currentTheme == null) {
+            useTheme(null);
+        }
+        return this.currentTheme;
+    }
+
     /**
      * Tries to use a specific theme for this screen. If the theme for this screen has been overriden via resource
      * packs, this method does
@@ -752,6 +757,11 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      */
     public ModularScreen pausesGame(boolean pausesGame) {
         this.pauseScreen = pausesGame;
+        return this;
+    }
+
+    public ModularScreen openParentOnClose(boolean openParentOnClose) {
+        this.openParentOnClose = openParentOnClose;
         return this;
     }
 

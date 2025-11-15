@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.Rectangle;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.util.Mth;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -218,19 +220,19 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     }
 
     public int requestedWidth() {
-        return this.width + this.margin.horizontal();
+        return this.width + getMargin().horizontal();
     }
 
     public int paddedWidth() {
-        return this.width - this.padding.horizontal();
+        return this.width - getPadding().horizontal();
     }
 
     public int requestedHeight() {
-        return this.height + this.margin.vertical();
+        return this.height + getMargin().vertical();
     }
 
     public int paddedHeight() {
-        return this.height - this.padding.vertical();
+        return this.height - getPadding().vertical();
     }
 
     public int requestedSize(GuiAxis axis) {
@@ -280,10 +282,10 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         int x2 = area.ex();
         int y2 = area.ey();
 
-        x1 = GTMath.clamp(x1, this.x, this.ex());
-        y1 = GTMath.clamp(y1, this.y, this.ey());
-        x2 = GTMath.clamp(x2, this.x, this.ex());
-        y2 = GTMath.clamp(y2, this.y, this.ey());
+        x1 = Mth.clamp(x1, this.x, this.ex());
+        y1 = Mth.clamp(y1, this.y, this.ey());
+        x2 = Mth.clamp(x2, this.x, this.ex());
+        y2 = Mth.clamp(y2, this.y, this.ey());
 
         area.setPos(x1, y1, x2, y2);
     }
@@ -497,7 +499,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
 
     /**
      * Transforms the four corners of this rectangle with the given pose stack. The new rectangle can be rotated.
-     * Then a min fit rectangle, which is not rotated and aligned with the screen, is put around the corner.
+     * Then a min fit rectangle, which is not rotated and aligned with the screen, is put around the corners.
      *
      * @param stack pose stack
      */
@@ -514,7 +516,7 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     }
 
     @Override
-    public boolean resize(IGuiElement guiElement) {
+    public boolean resize(IGuiElement guiElement, boolean isParentLayout) {
         guiElement.getArea().set(this);
         return true;
     }
@@ -564,8 +566,8 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
     @Override
     public boolean shouldAnimate(Area target) {
         return x != target.x || y != target.y || width != target.width || height != target.height ||
-                rx != target.rx || ry != target.ry || !margin.isEqual(target.margin) ||
-                !padding.isEqual(target.padding);
+                rx != target.rx || ry != target.ry || !getMargin().isEqual(target.getMargin()) ||
+                !getPadding().isEqual(target.getPadding());
     }
 
     @Override

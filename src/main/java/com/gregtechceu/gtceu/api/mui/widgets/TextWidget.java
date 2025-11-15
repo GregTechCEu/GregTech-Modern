@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.IntSupplier;
 
 public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
@@ -29,9 +31,10 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     private Boolean shadow = null;
     @Getter
     private float scale = 1f;
+    private int maxWidth = -1;
 
-    private Component lastText = Component.empty();
-    private Component textForDefaultSize = Component.empty();
+    private Component lastText = null;
+    private Component textForDefaultSize = null;
 
     public TextWidget(IKey key) {
         this.key = key;
@@ -42,22 +45,24 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         TextRenderer renderer = TextRenderer.SHARED;
-        this.lastText = checkString();
-        renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
+        Component text = checkString();
+        WidgetTheme theme = getActiveWidgetTheme(widgetTheme, isHovering());
+        renderer.setColor(this.color != null ? this.color.getAsInt() : theme.getTextColor());
         renderer.setAlignment(this.alignment, getArea().paddedWidth() + this.scale, getArea().paddedHeight());
-        renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
+        renderer.setShadow(this.shadow != null ? this.shadow : theme.isTextShadow());
         renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         renderer.setScale(this.scale);
         renderer.setSimulate(false);
-        renderer.draw(context.getGraphics(), this.key.getFormatted());
+        renderer.draw(context.getGraphics(), text);
     }
 
     protected Component checkString() {
         Component text = this.key.getFormatted();
-        if (this.lastText != null && !this.lastText.equals(text)) {
+        if (!Objects.equals(this.lastText, text)) {
             onTextChanged(text);
+            this.lastText = text;
         }
         return text;
     }
@@ -84,6 +89,8 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         float maxWidth;
         if (resizer().isWidthCalculated()) {
             maxWidth = getArea().width + this.scale;
+        } else if (this.maxWidth > 0) {
+            maxWidth = Math.max(this.maxWidth, 5);
         } else if (getParent().resizer().isWidthCalculated()) {
             maxWidth = getParent().getArea().width + this.scale;
         } else {
@@ -95,9 +102,13 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Override
     public int getDefaultWidth() {
-        float maxWidth = getScreen().getScreenArea().width;
-        if (getParent().resizer().isWidthCalculated()) {
+        float maxWidth;
+        if (this.maxWidth > 0) {
+            maxWidth = Math.max(this.maxWidth, 5);
+        } else if (getParent().resizer().isWidthCalculated()) {
             maxWidth = getParent().getArea().width;
+        } else {
+            maxWidth = getScreen().getScreenArea().width;
         }
         TextRenderer renderer = simulate(maxWidth);
         return getWidgetWidth(renderer.getLastWidth());
@@ -113,8 +124,13 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
         return Math.max(1, (int) Math.ceil(actualTextHeight + padding.vertical()));
     }
 
+    @Override
+    public boolean canHoverThrough() {
+        return true;
+    }
+
     protected Component getComponentForDefaultSize() {
-        if (this.textForDefaultSize == null || this.textForDefaultSize.equals(Component.empty())) {
+        if (this.textForDefaultSize == null) {
             this.textForDefaultSize = this.key.get();
             this.lastText = this.textForDefaultSize;
         }
@@ -123,7 +139,7 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     @Override
     public void postResize() {
-        this.textForDefaultSize = Component.empty();
+        this.textForDefaultSize = null;
     }
 
     public W alignment(Alignment alignment) {
@@ -152,6 +168,11 @@ public class TextWidget<W extends TextWidget<W>> extends Widget<W> {
 
     public W style(ChatFormatting formatting) {
         this.key.style(formatting);
+        return getThis();
+    }
+
+    public W maxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
         return getThis();
     }
 

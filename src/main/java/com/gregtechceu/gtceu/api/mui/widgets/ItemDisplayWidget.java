@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.ObjectValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -23,20 +22,17 @@ public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
 
     @Override
     public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        if (syncHandler instanceof GenericSyncValue<?> genericSyncValue && genericSyncValue.isOfType(ItemStack.class)) {
-            this.value = genericSyncValue.cast();
-            return true;
-        }
-        return false;
+        this.value = castIfTypeGenericElseNull(syncHandler, ItemStack.class);
+        return this.value != null;
     }
 
     @Override
-    protected WidgetTheme getWidgetThemeInternal(ITheme theme) {
+    protected WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getItemSlotTheme();
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         ItemStack item = value.getValue();
         if (!item.isEmpty()) {
             GuiDraw.drawItem(context.getGraphics(), item, 1, 1, 16, 16, context.getCurrentDrawingZ());

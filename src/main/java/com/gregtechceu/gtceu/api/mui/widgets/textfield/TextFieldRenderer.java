@@ -24,7 +24,7 @@ public class TextFieldRenderer extends TextRenderer {
 
     protected final TextFieldHandler handler;
     @Setter
-    protected int markedColor = 0x2F72A8;
+    protected int markedColor = 0xFF2F72A8;
     @Setter
     protected int cursorColor = 0xFFFFFFFF;
     protected boolean renderCursor = false;
@@ -151,7 +151,6 @@ public class TextFieldRenderer extends TextRenderer {
 
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 1);
-        RenderSystem.enableBlend();
         GuiDraw.drawRect(graphics, x0, y0, 0.6f, 9, this.cursorColor);
         graphics.pose().popPose();
     }

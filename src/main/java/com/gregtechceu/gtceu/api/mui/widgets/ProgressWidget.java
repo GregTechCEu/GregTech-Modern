@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.DoubleValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.util.Mth;
 
@@ -59,7 +61,8 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> entry) {
+        WidgetTheme widgetTheme = getActiveWidgetTheme(entry, isHovering());
         if (this.emptyTexture != null) {
             this.emptyTexture.draw(context, 0, 0, getArea().w(), getArea().h(), widgetTheme);
             Color.setGlColorOpaque(Color.WHITE.main);
@@ -102,7 +105,7 @@ public class ProgressWidget extends Widget<ProgressWidget> {
     }
 
     public float getProgressUV(float uv) {
-        if (getScreen().getCurrentTheme().getSmoothProgressBarOverride()) {
+        if (ConfigHolder.INSTANCE.client.ui.smoothProgressBar) {
             return uv;
         }
         return (float) (Math.floor(uv * this.imageSize) / this.imageSize);

@@ -11,7 +11,7 @@ public interface IUnResizeable extends IResizeable {
     IUnResizeable INSTANCE = new IUnResizeable() {
 
         @Override
-        public boolean resize(IGuiElement guiElement) {
+        public boolean resize(IGuiElement guiElement, boolean isParentLayout) {
             return true;
         }
 
@@ -49,6 +49,27 @@ public interface IUnResizeable extends IResizeable {
     default boolean isHeightCalculated() {
         return true;
     }
+
+    @Override
+    default boolean areChildrenCalculated() {
+        return true;
+    }
+
+    @Override
+    default boolean isLayoutDone() {
+        return true;
+    }
+
+    @Override
+    default boolean canRelayout(boolean isParentLayout) {
+        return false;
+    }
+
+    @Override
+    default void setChildrenResized(boolean resized) {}
+
+    @Override
+    default void setLayoutDone(boolean done) {}
 
     @Override
     default void setResized(boolean x, boolean y, boolean w, boolean h) {}

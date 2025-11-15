@@ -4,7 +4,10 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -294,8 +297,18 @@ public class GuiDraw {
 
     public static void drawTexture(Matrix4f pose, ResourceLocation location, float x0, float y0, float x1, float y1,
                                    float u0, float v0, float u1, float v1) {
+        drawTexture(pose, location, x0, y0, x1, y1, u0, v0, u1, v1, false);
+    }
+
+    public static void drawTexture(Matrix4f pose, ResourceLocation location, float x0, float y0, float x1, float y1,
+                                   float u0, float v0, float u1, float v1, boolean withBlend) {
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        if (withBlend) {
+            RenderSystem.enableBlend();
+        } else {
+            RenderSystem.disableBlend();
+        }
         drawTexture(pose, x0, y0, x1, y1, u0, v0, u1, v1, 0);
     }
 
@@ -306,6 +319,7 @@ public class GuiDraw {
 
     public static void drawTexture(Matrix4f pose, float x0, float y0, float x1, float y1,
                                    float u0, float v0, float u1, float v1, float z) {
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -334,6 +348,7 @@ public class GuiDraw {
         float fillerX = w - (countX - 1) * tileW;
         float fillerY = h - (countY - 1) * tileH;
 
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
 
@@ -370,6 +385,7 @@ public class GuiDraw {
         float fillerU = u0 + (u1 - u0) * fillerX / tileWidth;
         float fillerV = v0 + (v1 - v0) * fillerY / tileHeight;
 
+        RenderSystem.disableDepthTest();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
 
@@ -637,8 +653,7 @@ public class GuiDraw {
             textRenderer.setAlignment(alignment, width, height);
             textRenderer.setPos(x, y);
 
-            context.poseStack().pushPose();
-            context.poseStack().translate(0, 0, 100 + z);
+            context.graphicsPose().translate(0, 0, 100 + z);
             textRenderer.draw(context.getGraphics(), amountText);
 
             context.poseStack().popPose();
@@ -708,6 +723,7 @@ public class GuiDraw {
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.enableBlend();
+        RenderSystem.disableDepthTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                 GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -767,7 +783,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleFan());
+        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiOverlayTriangleFan());
         buffer.vertex(pose, x, y, 0).color(r1, g1, b1, a1).endVertex();
 
         Vector3d pos = new Vector3d();
@@ -795,7 +811,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleFan());
+        VertexConsumer buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiOverlayTriangleFan());
         /* Draw opaque base */
         buffer.vertex(pose, x, y, 0).color(r1, g1, b1, a1).endVertex();
 
@@ -867,16 +883,26 @@ public class GuiDraw {
         graphics.pose().popPose();
     }
 
-    public static void drawTooltipBackground(GuiGraphics graphics, ItemStack stack, List<ClientTooltipComponent> lines,
-                                             int x, int y, int textWidth, int height) {
+    @SuppressWarnings("UnstableApiUsage")
+    public static void drawTooltipBackground(GuiContext context, ItemStack stack, List<ClientTooltipComponent> lines,
+                                             int x, int y, int textWidth, int height, @Nullable RichTooltip tooltip) {
+        GuiGraphics graphics = context.getGraphics();
+
         // TODO theme color
         int backgroundTop = 0xF0100010;
         int backgroundBottom = backgroundTop;
         int borderColorStart = 0x505000FF;
         int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-        RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y,
-                TextRenderer.getFont(), backgroundTop,
-                borderColorStart, borderColorEnd, lines);
+        RenderTooltipEvent.Color colorEvent;
+
+        if (tooltip != null) {
+            colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
+                    backgroundTop, borderColorStart, borderColorEnd, lines, tooltip);
+        } else {
+            colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
+                    backgroundTop, borderColorStart, borderColorEnd, lines);
+        }
+
         MinecraftForge.EVENT_BUS.post(colorEvent);
         backgroundTop = colorEvent.getBackgroundStart();
         backgroundBottom = colorEvent.getBackgroundEnd();

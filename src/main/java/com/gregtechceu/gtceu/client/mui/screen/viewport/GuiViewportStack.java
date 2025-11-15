@@ -142,7 +142,7 @@ public class GuiViewportStack implements IViewportStack {
     @Override
     public void translate(float x, float y, float z) {
         checkViewport();
-        this.top.getMatrix().translate(vec(x, y, z));
+        this.top.getMatrix().translate(x, y, z);
         this.top.markDirty();
     }
 
@@ -175,9 +175,11 @@ public class GuiViewportStack implements IViewportStack {
     @Override
     public void resetCurrent() {
         checkViewport();
-        Matrix4f belowTop = this.viewportStack.size() > 1 ?
-                this.viewportStack.get(this.viewportStack.size() - 2).getMatrix() : new Matrix4f();
-        this.top.getMatrix().set(belowTop);
+        if (this.viewportStack.size() > 1) {
+            this.top.getMatrix().set(this.viewportStack.get(this.viewportStack.size() - 2).getMatrix());
+        } else {
+            this.top.getMatrix().identity();
+        }
         this.top.markDirty();
     }
 

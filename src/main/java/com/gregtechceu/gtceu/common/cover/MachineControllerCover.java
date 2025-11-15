@@ -9,15 +9,14 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.EnumSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -215,19 +214,13 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     @Override
     public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        if (controllerMode != null && getControllable(controllerMode.side) == null) {
-            setControllerMode(null);
-        }
-
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
                 this::getControllerMode, this::setControllerMode);
-        BooleanSyncValue invertedValue = new BooleanSyncValue(this::isInverted, this::setInverted);
 
         syncManager.syncValue("controllerMode", controllerModeValue);
-        syncManager.syncValue("inverted", invertedValue);
 
         return GTGuis.createPanel(this, 176, 112 + 82)
-                .background(GTGuiTextures.BACKGROUND_BRONZE)
+                .child(IMuiCover.createTitleRow(this.self().getAttachItem()))
                 .child(Flow.column()
                         .widthRel(1.0f).margin(7, 0)
                         .top(24).coverChildrenHeight()
@@ -235,20 +228,16 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(createSettingsRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BoolValue.Dynamic(invertedValue::getValue,
-                                                s -> invertedValue.setValue(true)))
-                                        .overlay(GTGuiTextures.BUTTON_REDSTONE_ON)
-                                        .selectedBackground(GTGuiTextures.MC_BUTTON_DISABLED))
-                                .child(IKey.lang("cover.machine_controller.invert").asWidget()
+                                        .value(new BooleanSyncValue(() -> isInverted, bool -> isInverted = bool))
+                                        .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
+                                .child(IKey.lang("cover.enable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(createSettingsRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BoolValue.Dynamic(() -> !invertedValue.getValue(),
-                                                $ -> invertedValue.setValue(false)))
-                                        .overlay(GTGuiTextures.BUTTON_REDSTONE_OFF)
-                                        .selectedBackground(GTGuiTextures.MC_BUTTON_DISABLED))
-                                .child(IKey.lang("cover.machine_controller.disable_with_redstone").asWidget()
+                                        .value(new BooleanSyncValue(() -> !isInverted, bool -> isInverted = !bool))
+                                        .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
+                                .child(IKey.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         // Separating line
                         .child(new Rectangle().setColor(UI_TEXT_COLOR).asWidget()
@@ -278,7 +267,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public IWidget createUIWidget() {
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return null;
     }
 
@@ -289,7 +278,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     }
 
     private Widget<?> modeButton(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode) {
-        IControllable controllable = getControllable(attachedSide);
+        IControllable controllable = getControllable(mode.side);
         if (controllable == null) {
             // Nothing to control, put a placeholder widget
             // 3 states possible here:
@@ -314,18 +303,12 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         if (controllerMode == null) {
             stack = ItemStack.EMPTY;
         } else {
-            var side = controllerMode.side;
             if (mode == ControllerMode.MACHINE && coverHolder instanceof MachineCoverContainer coverContainer) {
                 stack = coverContainer.getMachine().getDefinition().asStack();
             } else {
                 // this can't be null because we already checked IControllable, and it was not null
                 // noinspection ConstantConditions
-                var cover = coverHolder.getCoverAtSide(side);
-                if (cover != null) {
-                    stack = cover.getAttachItem().copy();
-                } else {
-                    stack = ItemStack.EMPTY;
-                }
+                stack = coverHolder.getCoverAtSide(mode.side).getAttachItem().copy();
             }
         }
 
@@ -343,40 +326,40 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
      * setControllerMode(null);
      * }
      * WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
-     * 
+     *
      * group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
      * group.addWidget(new IntInputWidget(10, 20, 131, 20,
      * this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
-     * 
+     *
      * modeButton = new ButtonWidget(10, 45, 131, 20,
      * new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
      * cd -> selectNextMode());
      * group.addWidget(modeButton);
-     * 
+     *
      * // Inverted Mode Toggle:
      * group.addWidget(new ToggleButtonWidget(
      * 146, 20, 20, 20,
      * GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
      * .isMultiLang()
      * .setTooltipText("cover.machine_controller.invert"));
-     * 
+     *
      * group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
      * group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
      * this::preventPowerFail, (data) -> {
      * preventPowerFail = data;
      * }));
-     * 
+     *
      * sideCoverSlot = new CustomItemStackHandler(1);
      * group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
-     * 
+     *
      * @Override
      * public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
      * return sideCoverSlot.getStackInSlot(0);
      * }
      * });
-     * 
+     *
      * updateUI();
-     * 
+     *
      * return group;
      * }
      */

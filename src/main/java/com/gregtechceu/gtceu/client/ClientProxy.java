@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.mui.animation.AnimatorManager;
-import com.gregtechceu.gtceu.api.mui.base.widget.ResizeDragArea;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
+import com.gregtechceu.gtceu.client.mui.CursorHandler;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
@@ -60,11 +60,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWImage;
-
-import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 
 public class ClientProxy extends CommonProxy {
 
@@ -75,93 +70,23 @@ public class ClientProxy extends CommonProxy {
     public static final BiMap<ResourceLocation, BedrockFluidDefinition> CLIENT_FLUID_VEINS = HashBiMap.create();
     public static final BiMap<ResourceLocation, BedrockOreDefinition> CLIENT_BEDROCK_ORE_VEINS = HashBiMap.create();
 
-    public static long resizeCursorDiag = Long.MIN_VALUE;
-    public static long resizeCursorDiagInverse = Long.MIN_VALUE;
-    public static long resizeCursorH = Long.MIN_VALUE;
-    public static long resizeCursorV = Long.MIN_VALUE;
-    private static long currentCursor;
-
-    private static long windowHandle;
-
     public ClientProxy() {
         super();
         init();
     }
 
     public static void init() {
-        windowHandle = Minecraft.getInstance().getWindow().getWindow();
-        AnimatorManager.init();
         if (!GTCEu.isDataGen()) {
+            CursorHandler.init();
+            AnimatorManager.init();
+            // enable stencil bits, must call on render thread
+            RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
+
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
         initializeDynamicRenders();
-        // enable stencil bits, must call on render thread
-        RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
-
-        /*
-         * try {
-         *//*
-            * BufferedImage img = ImageIO.read(ClientProxy.class.getClassLoader().getResourceAsStream(
-            * "assets/gtceu/textures/gui/cursor/cursor_resize_diag.png"));
-            * int size = img.getHeight();
-            * var image = readPixel(img, true, false);
-            * resizeCursorDiagInverse = GLFW.glfwCreateCursor(image, size, size);
-            * resizeCursorDiag = GLFW.glfwCreateCursor(readPixel(img, false, false), size / 2, size / 2);
-            * 
-            * img = ImageIO.read(ClientProxy.class.getClassLoader().getResourceAsStream(
-            * "assets/gtceu/textures/gui/cursor/cursor_resize.png"));
-            * size = img.getHeight();
-            * resizeCursorH = GLFW.glfwCreateCursor(readPixel(img, false, false), size / 2, size / 2);
-            * resizeCursorV = GLFW.glfwCreateCursor(readPixel(img, false, true), size / 2, size / 2);
-            *//*
-               * } catch(IOException e) {
-               * throw new RuntimeException(e);
-               * }
-               */
-    }
-
-    public static GLFWImage readPixel(BufferedImage img, boolean inverse, boolean transpose) {
-        int size = img.getHeight();
-        ByteBuffer buffer = ByteBuffer.allocate(4 * size * size);
-        int y = inverse ? 0 : size - 1;
-        while (inverse ? y < size : y >= 0) {
-            for (int x = 0; x < size; x++) {
-                int a, b;
-                if (transpose) {
-                    a = y;
-                    b = x;
-                } else {
-                    a = x;
-                    b = y;
-                }
-                int rgb = img.getRGB(a, b);
-                buffer.put((byte) 0xFF);
-                buffer.put((byte) ((rgb >> 16) & 0xFF));
-                buffer.put((byte) ((rgb >> 8) & 0xFF));
-                buffer.put((byte) (rgb & 0xFF));
-            }
-            if (inverse) {
-                y++;
-            } else {
-                y--;
-            }
-        }
-        buffer.flip();
-        GLFWImage image;
-        try {
-            var imgBuff = GLFWImage.create(4 * size * size);
-            imgBuff.pixels(buffer);
-            imgBuff.height(size);
-            imgBuff.width(size);
-            var i = imgBuff.get();
-            i.set(size, size, buffer);
-            image = i;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return image;
     }
 
     @SubscribeEvent
@@ -247,32 +172,5 @@ public class ClientProxy extends CommonProxy {
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
-    }
-
-    public static void setCursorResizeIcon(ResizeDragArea dragArea) {
-        // cursors failed to initialize
-        if (resizeCursorV == Long.MIN_VALUE) return;
-        if (dragArea == null) {
-            resetCursorIcon();
-            return;
-        }
-        long cursor = switch (dragArea) {
-            case TOP_LEFT, BOTTOM_RIGHT -> resizeCursorDiagInverse;
-            case TOP_RIGHT, BOTTOM_LEFT -> resizeCursorDiag;
-            case TOP, BOTTOM -> resizeCursorV;
-            case RIGHT, LEFT -> resizeCursorH;
-        };
-        GLFW.glfwSetCursor(windowHandle, cursor);
-        currentCursor = cursor;
-    }
-
-    public static void resetCursorIcon() {
-        // cursors failed to initialize
-        if (resizeCursorV == Long.MIN_VALUE) return;
-        if (currentCursor == resizeCursorDiag || currentCursor == resizeCursorDiagInverse ||
-                currentCursor == resizeCursorH || currentCursor == resizeCursorV) {
-            currentCursor = 0;
-        }
-        GLFW.glfwSetCursor(windowHandle, currentCursor);
     }
 }

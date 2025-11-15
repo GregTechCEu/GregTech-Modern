@@ -53,10 +53,10 @@ public class StyledText extends BaseKey {
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         renderer.setAlignment(this.alignment, width, height);
-        renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getColor());
+        renderer.setColor(this.color != null ? this.color.getAsInt() : widgetTheme.getTextColor());
         renderer.setScale(this.scale);
         renderer.setPos(x, y);
-        renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.getTextShadow());
+        renderer.setShadow(this.shadow != null ? this.shadow : widgetTheme.isTextShadow());
         renderer.draw(context.getGraphics(), getFormatted());
     }
 

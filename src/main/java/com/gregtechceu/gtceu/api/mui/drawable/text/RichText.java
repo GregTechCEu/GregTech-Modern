@@ -3,11 +3,14 @@ package com.gregtechceu.gtceu.api.mui.drawable.text;
 import com.gregtechceu.gtceu.api.mui.base.drawable.*;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.utils.TooltipLines;
+import com.gregtechceu.gtceu.client.mui.component.DrawableTooltipComponent;
+import com.gregtechceu.gtceu.client.mui.component.TooltipComponentIcon;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import lombok.Getter;
 
@@ -22,6 +25,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     private static final TextRenderer renderer = new TextRenderer();
 
     private final List<Object> elements = new ArrayList<>();
+    private TooltipLines componentList;
     @Getter
     private Alignment alignment = Alignment.CenterLeft;
     @Getter
@@ -39,27 +43,17 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         return this.elements.isEmpty();
     }
 
-    public List<FormattedText> getStringRepresentation() {
-        List<FormattedText> list = new ArrayList<>();
-        for (Object o : this.elements) {
-            if (o == IKey.LINE_FEED) {
-                list.add(Component.empty());
-                continue;
-            }
-            if (o instanceof IKey key) {
-                list.add(key.get());
-            } else if (o instanceof String s1) {
-                list.add(Component.literal(s1));
-            } else if (o instanceof TextIcon ti) {
-                list.add(ti.getText());
-            } else if (o instanceof Component c) {
-                list.add(c);
-            }
+    public List<FormattedText> getAsText() {
+        if (this.componentList == null) {
+            this.componentList = new TooltipLines(this.elements);
         }
-        if (!list.isEmpty() && list.get(list.size() - 1).getString().isEmpty()) {
-            list.remove(list.size() - 1);
+        return this.componentList;
+    }
+
+    private void clearComponents() {
+        if (this.componentList != null) {
+            this.componentList.clearCache();
         }
-        return list;
     }
 
     public int getMinWidth() {
@@ -90,14 +84,16 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     }
 
     @Override
-    public RichText add(Component c) {
+    public RichText add(FormattedText c) {
         addElement(c);
+        clearComponents();
         return this;
     }
 
     @Override
     public RichText add(String s) {
         addElement(s);
+        clearComponents();
         return this;
     }
 
@@ -106,12 +102,24 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         Object o = drawable;
         if (!(o instanceof IKey) && !(o instanceof IIcon)) o = drawable.asIcon();
         addElement(o);
+        clearComponents();
         return this;
+    }
+
+    @Override
+    public RichText add(TooltipComponent tooltipComponent) {
+        if (tooltipComponent instanceof DrawableTooltipComponent drawable) {
+            return add(drawable.getDrawable());
+        } else {
+            TooltipComponentIcon tci = new TooltipComponentIcon(tooltipComponent);
+            return add(tci);
+        }
     }
 
     @Override
     public RichText addLine(ITextLine line) {
         addElement(line);
+        clearComponents();
         return this;
     }
 
@@ -119,6 +127,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
     public RichText clearText() {
         this.elements.clear();
         this.cursor = 0;
+        clearComponents();
         return this;
     }
 
@@ -255,6 +264,7 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
                 } else {
                     objects.add(i + 1, Spacer.of(margin));
                 }
+                clearComponents();
                 return this;
             }
         }
@@ -263,13 +273,26 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        draw(context, x, y, width, height, widgetTheme.getTextColor(), widgetTheme.getTextShadow());
+        draw(context, x, y, width, height, widgetTheme.getTextColor(), widgetTheme.isTextShadow());
     }
 
     public void draw(GuiContext context, int x, int y, int width, int height, int color, boolean shadow) {
+        draw(renderer, context, x, y, width, height, color, shadow);
+    }
+
+    public void draw(TextRenderer renderer, GuiContext context, int x, int y, int width, int height, int color,
+                     boolean shadow) {
         renderer.setSimulate(false);
         setupRenderer(renderer, x, y, width, height, color, shadow);
         this.cachedText = renderer.compileAndDraw(context, this.elements);
+    }
+
+    public int getLastWidth() {
+        return (int) renderer.getLastWidth();
+    }
+
+    public int getLastHeight() {
+        return (int) renderer.getLastHeight();
     }
 
     public void setupRenderer(TextRenderer renderer, int x, int y, float width, float height, int color,
@@ -288,6 +311,15 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
         return this.cachedText;
     }
 
+    /**
+     * Returns the currently hovered element of this rich text or {@code null} if none is hovered.
+     * Note that this method assumes, that the {@link com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack
+     * IViewportStack}
+     * is transformed to 0,0 of this {@link IDrawable}.
+     *
+     * @param context the viewport stack with transformation to this widget
+     * @return hovered element or null
+     */
     public Object getHoveringElement(GuiContext context) {
         return getHoveringElement(context.getFont(), context.getMouseX(), context.getMouseY());
     }
@@ -302,5 +334,15 @@ public class RichText implements IDrawable, IRichTextBuilder<RichText> {
             return o;
         }
         return null;
+    }
+
+    public RichText copy() {
+        RichText copy = new RichText();
+        copy.elements.addAll(this.elements);
+        copy.alignment = this.alignment;
+        copy.scale = this.scale;
+        copy.color = this.color;
+        copy.shadow = this.shadow;
+        return copy;
     }
 }

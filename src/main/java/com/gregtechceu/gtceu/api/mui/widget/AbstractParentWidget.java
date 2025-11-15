@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.mui.widget;
 
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.widgets.VoidWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 
@@ -60,13 +60,18 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
                 IDrawable.isVisible(getHoverOverlay()) ||
                 getTooltip() != null)
             return true;
-        WidgetTheme widgetTheme = getWidgetTheme(getContext().getTheme());
-        if (getBackground() == null && IDrawable.isVisible(widgetTheme.getBackground())) return true;
-        return getHoverBackground() == null && IDrawable.isVisible(widgetTheme.getHoverBackground());
+        WidgetThemeEntry<?> widgetTheme = getWidgetTheme(getContext().getTheme());
+        if (getBackground() == null && IDrawable.isVisible(widgetTheme.getTheme().getBackground())) return true;
+        return getHoverBackground() == null && IDrawable.isVisible(widgetTheme.getHoverTheme().getBackground());
     }
 
     @Override
     public boolean canClickThrough() {
+        return !canHover();
+    }
+
+    @Override
+    public boolean canHoverThrough() {
         return !canHover();
     }
 
@@ -94,7 +99,9 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
 
     protected boolean remove(I child) {
         if (this.children.remove(child)) {
-            child.dispose();
+            if (isValid()) {
+                child.dispose();
+            }
             onChildRemove(child);
             return true;
         }
@@ -106,8 +113,20 @@ public class AbstractParentWidget<I extends IWidget, W extends AbstractParentWid
             index = getChildren().size() + index + 1;
         }
         I child = this.children.remove(index);
-        child.dispose();
+        if (this.isChildValid(child)) {
+            child.dispose();
+        }
         onChildRemove(child);
+        return true;
+    }
+
+    protected boolean removeAll() {
+        if (this.children.isEmpty()) return false;
+        for (I i : this.children) {
+            if (isValid()) i.dispose();
+            onChildRemove(i);
+        }
+        this.children.clear();
         return true;
     }
 

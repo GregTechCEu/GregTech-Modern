@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -144,15 +141,15 @@ public class FontRenderHelper {
         return value.isTrue();
     }
 
-    public static FormattedText fromSequence(FormattedCharSequence input) {
-        List<FormattedText> parts = new ArrayList<>();
+    public static Component getComponentFromCharSequence(FormattedCharSequence input) {
+        List<MutableComponent> parts = new ArrayList<>();
         StringBuilder value = new StringBuilder();
         MutableObject<Style> lastStyle = new MutableObject<>(Style.EMPTY);
         input.accept((pos, style, codePoint) -> {
             // if the style changed, add the built part and reset the string builder
             if (!style.equals(lastStyle.getValue())) {
                 lastStyle.setValue(style);
-                parts.add(FormattedText.of(value.toString(), style));
+                parts.add(Component.literal(value.toString()).setStyle(style));
                 value.setLength(0);
             } else {
                 value.append(codePoint);
@@ -161,18 +158,22 @@ public class FontRenderHelper {
         });
         // add the last component that will be left behind
         if (!value.isEmpty()) {
-            parts.add(FormattedText.of(value.toString(), lastStyle.getValue()));
+            parts.add(Component.literal(value.toString()).setStyle(lastStyle.getValue()));
         }
-        // remove completely empty components even if they're not == FormattedText.EMPTY;
-        parts.removeIf(FontRenderHelper::checkEmpty);
-        // no need to make composites from completely empty strings or singular ones
-        if (parts.isEmpty()) return FormattedText.EMPTY;
+        // remove completely empty components
+        parts.removeIf(FontRenderHelper::isEmpty);
+        // no need to join completely empty or single components
+        if (parts.isEmpty()) return Component.empty();
         else if (parts.size() == 1) return parts.get(0);
 
-        return FormattedText.composite(parts);
+        MutableComponent composite = parts.remove(0);
+        for (Component c : parts) {
+            composite.append(c);
+        }
+        return composite;
     }
 
-    public static boolean checkEmpty(FormattedText text) {
+    public static boolean isEmpty(FormattedText text) {
         if (text == FormattedText.EMPTY) return true;
         // if the text has ANY content, this will return false.
         return text.visit(content -> Optional.of(false)).orElse(true);

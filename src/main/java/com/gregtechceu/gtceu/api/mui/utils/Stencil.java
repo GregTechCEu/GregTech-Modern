@@ -20,6 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * A util class for stencil stack used as a scissor stack. The reason for using stencils over scissors is that scissors
+ * can not have transformation applied and therefore don't work with 3D holo UI's.
+ */
 public class Stencil {
 
     // Stores a stack of areas that are transformed, so it represents the actual area
@@ -100,6 +104,7 @@ public class Stencil {
         RenderSystem.stencilFunc(GL11.GL_LEQUAL, stencilValue, 0xFF);
         RenderSystem.stencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
         RenderSystem.stencilMask(0x00);
+        this.context.getGraphics().flush();
     }
 
     private void setStencilValue(Runnable stencilShape, int stencilValue, boolean remove, boolean hideStencilShape) {
@@ -123,7 +128,8 @@ public class Stencil {
     }
 
     private static void drawRectangleStencilShape(GuiGraphics graphics, int x, int y, int w, int h) {
-        RenderSystem.assertOnRenderThread();
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
         ShaderInstance lastShader = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         Matrix4f pose = graphics.pose().last().pose();
@@ -149,6 +155,7 @@ public class Stencil {
         }
         stencils.pop();
         Runnable stencilShape = stencilShapes.pop();
+        this.context.getGraphics().flush();
         if (stencils.isEmpty()) {
             reset();
             GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -160,6 +167,7 @@ public class Stencil {
         RenderSystem.stencilFunc(GL11.GL_LEQUAL, stencilValue, 0xFF);
         RenderSystem.stencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
         RenderSystem.stencilMask(0x00);
+        this.context.getGraphics().flush();
     }
 
     public static boolean isInsideScissorArea(Area area, IViewportStack stack) {

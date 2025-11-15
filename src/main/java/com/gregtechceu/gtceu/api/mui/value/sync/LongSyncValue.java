@@ -90,6 +90,11 @@ public class LongSyncValue extends ValueSyncHandler<Long>
     }
 
     @Override
+    public void notifyUpdate() {
+        setLongValue(this.getter.getAsLong(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(getLongValue());
     }

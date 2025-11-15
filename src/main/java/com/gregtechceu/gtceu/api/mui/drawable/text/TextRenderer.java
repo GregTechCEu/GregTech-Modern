@@ -90,7 +90,7 @@ public class TextRenderer {
             draw(graphics, measuredLine.text, x0, y0);
             y0 += (int) getFontHeight();
         }
-        this.lastWidth = this.maxWidth > 0 ? Math.min(maxW, this.maxWidth) : maxW;
+        this.lastWidth = maxW;
         this.lastHeight = measuredLines.size() * getFontHeight();
         this.lastWidth = Math.max(0, this.lastWidth - this.scale);
         this.lastHeight = Math.max(0, this.lastHeight - this.scale);
@@ -101,6 +101,7 @@ public class TextRenderer {
     }
 
     public void drawSimple(GuiGraphics graphics, FormattedCharSequence text) {
+        if (getFont() == null) return;
         float w = getFont().width(text) * this.scale;
         int y = getStartYOfLines(1), x = getStartX(w);
         draw(graphics, text, x, y);
@@ -141,24 +142,24 @@ public class TextRenderer {
     public void drawCompiled(GuiContext context, List<ITextLine> lines) {
         int height = 0, width = 0;
         for (ITextLine line : lines) {
-            height += line.getHeight(getFont());
+            height += line.getHeight(context.getFont());
             width = Math.max(width, line.getWidth());
         }
         if (!this.simulate) {
-            context.getGraphics().pose().pushPose();
-            context.getGraphics().pose().translate(this.x, this.y, 10);
-            context.getGraphics().pose().scale(this.scale, this.scale, 1f);
-            context.getGraphics().pose().translate(-this.x, -this.y, 0);
+            context.graphicsPose().pushPose();
+            context.graphicsPose().translate(this.x, this.y, 10);
+            context.graphicsPose().scale(this.scale, this.scale, 1f);
+            context.graphicsPose().translate(-this.x, -this.y, 0);
         }
         int y0 = getStartY(height, height);
         this.lastY = y0;
         for (ITextLine line : lines) {
             int x0 = getStartX(width, line.getWidth());
-            if (!simulate) line.draw(context, getFont(), x0, y0, this.color, this.shadow, width, height);
-            y0 += line.getHeight(getFont());
+            if (!simulate) line.draw(context, context.getFont(), x0, y0, this.color, this.shadow, width, height);
+            y0 += line.getHeight(context.getFont());
         }
         if (!this.simulate) {
-            context.getGraphics().pose().popPose();
+            context.graphicsPose().popPose();
         }
         this.lastWidth = this.maxWidth > 0 ? Math.min(width * this.scale, this.maxWidth) : width * this.scale;
         this.lastHeight = height * this.scale;
@@ -189,29 +190,28 @@ public class TextRenderer {
             drawMeasuredLines(graphics, Collections.singletonList(line));
             return;
         }
-        float scroll = (this.maxWidth - line.getWidth()) * progress;
-        // scroll = scroll % (int) (line.width + 1);
-        float max = this.maxWidth + scroll;
-        FormattedCharSequence drawString = FontRenderHelper.splitAtMax(line.text(), max);
-        Area.SHARED.set(this.x, Integer.MIN_VALUE, this.x + (int) this.maxWidth, Integer.MAX_VALUE);
-        context.getStencil().push(Area.SHARED);
-        context.getGraphics().pose().pushPose();
-        context.getGraphics().pose().translate(-scroll, 0, 0);
-        drawMeasuredLines(graphics, Collections.singletonList(line(drawString)));
-        context.getGraphics().pose().popPose();
+        float scroll = (line.getWidth() - this.maxWidth) * progress;
+        context.getStencil().push(this.x, -500, (int) this.maxWidth, 1000);
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(-scroll, 0, 0);
+        drawMeasuredLines(graphics, Collections.singletonList(line));
+        context.graphicsPose().popPose();
         context.getStencil().pop();
     }
 
     public List<FormattedCharSequence> wrapLine(Component line) {
-        return this.maxWidth > 0 ? getFont().split(line, (int) (this.maxWidth / this.scale)) :
-                Collections.singletonList(line.getVisualOrderText());
+        if (this.maxWidth > 0) {
+            int wrapWidth = Math.max(10, (int) (this.maxWidth / this.scale));
+            return getFont().split(line, wrapWidth);
+        }
+        return Collections.singletonList(line.getVisualOrderText());
     }
 
-    public boolean wouldFit(List<String> text) {
+    public boolean wouldFit(List<String> text, boolean shouldCheckWidth) {
         if (this.maxHeight > 0 && this.maxHeight < text.size() * getFontHeight() - this.scale) {
             return false;
         }
-        if (this.maxWidth > 0) {
+        if (this.maxWidth > 0 && shouldCheckWidth) {
             for (String line : text) {
                 if (this.maxWidth < getFont().width(line)) {
                     return false;
@@ -254,13 +254,13 @@ public class TextRenderer {
 
     protected int getStartX(float maxWidth, float lineWidth) {
         if (this.alignment.x > 0 && maxWidth > 0) {
-            return (int) (this.x + (maxWidth * this.alignment.x) - lineWidth * this.alignment.x);
+            return Math.max(this.x, (int) (this.x + (maxWidth * this.alignment.x) - lineWidth * this.alignment.x));
         }
         return this.x;
     }
 
     protected void draw(GuiGraphics graphics, FormattedCharSequence text, float x, float y) {
-        if (this.simulate) return;
+        if (this.simulate || graphics == null) return;
         graphics.pose().pushPose();
         graphics.pose().scale(this.scale, this.scale, 0f);
         graphics.drawString(getFont(), text, (int) (x / this.scale), (int) (y / this.scale), this.color, this.shadow);

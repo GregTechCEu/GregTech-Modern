@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.theme.WidgetTextFieldTheme;
+import com.gregtechceu.gtceu.api.mui.theme.TextFieldTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.HorizontalScrollData;
@@ -67,7 +69,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {
-        super(new HorizontalScrollData(), null);
+        super(new HorizontalScrollData(false, 4), null);
         this.handler.setRenderer(this.renderer);
         this.handler.setScrollArea(getScrollArea());
         padding(4, 0);
@@ -110,7 +112,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     @Override
     public void preDraw(ModularGuiContext context, boolean transformed) {
         if (transformed) {
-            WidgetTextFieldTheme widgetTheme = (WidgetTextFieldTheme) getWidgetTheme(context.getTheme());
+            WidgetThemeEntry<TextFieldTheme> entry = getWidgetTheme(context.getTheme(), TextFieldTheme.class);
+            TextFieldTheme widgetTheme = entry.getTheme();
             this.renderer.setColor(this.textColor != null ? this.textColor : widgetTheme.getTextColor());
             this.renderer.setCursorColor(this.textColor != null ? this.textColor : widgetTheme.getTextColor());
             this.renderer.setMarkedColor(this.markedColor != null ? this.markedColor : widgetTheme.getMarkedColor());
@@ -125,18 +128,20 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
             context.getStencil().pop();
-            getScrollArea().drawScrollbar(context);
+            WidgetThemeEntry<WidgetTheme> scrollbarTheme = context.getTheme().getScrollbarTheme();
+            getScrollArea().drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
+                    scrollbarTheme.getTheme().getBackground());
         }
     }
 
-    protected void setupDrawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
+    protected void setupDrawText(ModularGuiContext context, TextFieldTheme widgetTheme) {
         this.renderer.setSimulate(false);
         this.renderer.setPos(getArea().getPadding().left(), getArea().getPadding().top());
         this.renderer.setScale(this.scale);
-        this.renderer.setAlignment(this.textAlignment, -1, getArea().paddedHeight());
+        this.renderer.setAlignment(this.textAlignment, getArea().paddedWidth(), getArea().paddedHeight());
     }
 
-    protected void drawText(ModularGuiContext context, WidgetTextFieldTheme widgetTheme) {
+    protected void drawText(ModularGuiContext context, TextFieldTheme widgetTheme) {
         if (this.handler.isTextEmpty() && this.hintText != null) {
             int c = this.renderer.getColor();
             int hintColor = this.hintTextColor != null ? this.hintTextColor : widgetTheme.getHintColor();
@@ -150,7 +155,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     }
 
     @Override
-    public WidgetTextFieldTheme getWidgetThemeInternal(ITheme theme) {
+    public WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
         return theme.getTextFieldTheme();
     }
 
@@ -239,9 +244,9 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 }
                 return Result.SUCCESS;
             case InputConstants.KEY_ESCAPE:
-                if (ConfigHolder.INSTANCE.client.ui.escRestoreLastText) {
+                if (ConfigHolder.INSTANCE.client.ui.escRestoresLastText) {
                     this.handler.clear();
-                    this.handler.insert(this.lastText);
+                    this.handler.insert(this.lastText, canScrollHorizontally());
                 }
                 getContext().removeFocus();
                 return Result.SUCCESS;
@@ -281,7 +286,8 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
             }
             // paste copied text in marked text
-            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""));
+            this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""),
+                    canScrollHorizontally());
             return Result.SUCCESS;
         } else if (Screen.isCut(keyCode) && this.handler.hasTextMarked()) {
             // copy and delete copied text
@@ -310,10 +316,14 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
             }
             // insert typed char
-            this.handler.insert(String.valueOf(codePoint));
+            this.handler.insert(String.valueOf(codePoint), canScrollHorizontally());
             return Result.SUCCESS;
         }
         return Result.STOP;
+    }
+
+    public boolean canScrollHorizontally() {
+        return getScrollArea().getScrollX() != null;
     }
 
     public int getMaxLines() {

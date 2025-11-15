@@ -25,12 +25,14 @@ public class PopupMenu<W extends PopupMenu<W>> extends Widget<W> {
 
     @Override
     public void onMouseStartHover() {
+        super.onMouseStartHover();
         this.menu.setEnabled(true);
         this.menu.mightClose = false;
     }
 
     @Override
     public void onMouseEndHover() {
+        super.onMouseEndHover();
         this.menu.mightClose = true;
     }
 

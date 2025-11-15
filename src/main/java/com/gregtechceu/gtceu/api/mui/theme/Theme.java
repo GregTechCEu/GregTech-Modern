@@ -2,107 +2,47 @@ package com.gregtechceu.gtceu.api.mui.theme;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
-import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class Theme implements ITheme {
+public class Theme extends AbstractTheme {
 
-    public static final String FALLBACK = IThemeApi.FALLBACK;
-    public static final String PANEL = IThemeApi.PANEL;
-    public static final String BUTTON = IThemeApi.BUTTON;
-    public static final String ITEM_SLOT = IThemeApi.ITEM_SLOT;
-    public static final String FLUID_SLOT = IThemeApi.FLUID_SLOT;
-    public static final String TEXT_FIELD = IThemeApi.TEXT_FIELD;
-    public static final String TOGGLE_BUTTON = IThemeApi.TOGGLE_BUTTON;
+    private final WidgetThemeMap widgetThemes = new WidgetThemeMap();
 
-    private final Map<String, WidgetTheme> widgetThemes = new Object2ObjectOpenHashMap<>();
-
-    @Getter
-    private final String id;
-    @Getter
-    private final ITheme parentTheme;
-    @Getter
-    private final WidgetTheme fallback;
-    @Getter
-    private final WidgetTheme panelTheme;
-    @Getter
-    private final WidgetTheme buttonTheme;
-    @Getter
-    private final WidgetSlotTheme itemSlotTheme;
-    @Getter
-    private final WidgetSlotTheme fluidSlotTheme;
-    @Getter
-    private final WidgetTextFieldTheme textFieldTheme;
-    @Getter
-    private final WidgetThemeSelectable toggleButtonTheme;
-
-    @Setter
-    private int openCloseAnimationOverride = -1;
-    @Setter
-    private @Nullable Boolean smoothProgressBarOverride = null;
-    @Setter
-    private @Nullable RichTooltip.Pos tooltipPosOverride = null;
-
-    Theme(String id, ITheme parent, Map<String, WidgetTheme> widgetThemes) {
-        this.id = id;
-        this.parentTheme = parent;
+    Theme(String id, ITheme parent, WidgetThemeMap widgetThemes) {
+        super(id, parent);
         this.widgetThemes.putAll(widgetThemes);
         if (parent instanceof Theme theme) {
-            for (Map.Entry<String, WidgetTheme> entry : theme.widgetThemes.entrySet()) {
+            for (WidgetThemeEntry<?> entry : theme.widgetThemes.values()) {
                 if (!this.widgetThemes.containsKey(entry.getKey())) {
-                    this.widgetThemes.put(entry.getKey(), entry.getValue());
+                    this.widgetThemes.put(entry.getKey(), entry);
                 }
             }
-        } else if (parent == IThemeApi.get().getDefaultTheme()) {
-            if (!this.widgetThemes.containsKey(FALLBACK)) {
-                this.widgetThemes.put(FALLBACK, ThemeManager.defaultdefaultWidgetTheme);
+        } else if (parent == DefaultTheme.INSTANCE) {
+            if (!this.widgetThemes.containsKey(IThemeApi.FALLBACK)) {
+                this.widgetThemes.putTheme(IThemeApi.FALLBACK, ThemeManager.defaultFallbackWidgetTheme);
             }
-            for (Map.Entry<String, WidgetTheme> entry : ThemeAPI.INSTANCE.defaultWidgetThemes.entrySet()) {
+            for (WidgetThemeEntry<?> entry : DefaultTheme.INSTANCE.getWidgetThemes()) {
                 if (!this.widgetThemes.containsKey(entry.getKey())) {
-                    this.widgetThemes.put(entry.getKey(), entry.getValue());
+                    this.widgetThemes.put(entry.getKey(), entry);
                 }
             }
         }
-        this.panelTheme = this.widgetThemes.get(PANEL);
-        this.fallback = this.widgetThemes.get(FALLBACK);
-        this.buttonTheme = this.widgetThemes.get(BUTTON);
-        this.itemSlotTheme = (WidgetSlotTheme) this.widgetThemes.get(ITEM_SLOT);
-        this.fluidSlotTheme = (WidgetSlotTheme) this.widgetThemes.get(FLUID_SLOT);
-        this.textFieldTheme = (WidgetTextFieldTheme) this.widgetThemes.get(TEXT_FIELD);
-        this.toggleButtonTheme = (WidgetThemeSelectable) this.widgetThemes.get(TOGGLE_BUTTON);
     }
 
-    public WidgetTheme getWidgetTheme(String id) {
-        if (this.widgetThemes.containsKey(id)) {
-            return this.widgetThemes.get(id);
+    @Override
+    public @UnmodifiableView Collection<WidgetThemeEntry<?>> getWidgetThemes() {
+        return Collections.unmodifiableCollection(this.widgetThemes.values());
+    }
+
+    @Override
+    public <T extends WidgetTheme> WidgetThemeEntry<T> getWidgetTheme(WidgetThemeKey<T> key) {
+        WidgetThemeEntry<T> widgetTheme = this.widgetThemes.getTheme(key);
+        while (widgetTheme == null && key.isSubWidgetTheme()) {
+            widgetTheme = this.widgetThemes.getTheme(key.getParent());
         }
-        return getFallback();
-    }
-
-    @Override
-    public int getOpenCloseAnimationOverride() {
-        if (this.openCloseAnimationOverride != -1) {
-            return this.openCloseAnimationOverride;
-        }
-        return ConfigHolder.INSTANCE.client.ui.animationTime;
-    }
-
-    @Override
-    public boolean getSmoothProgressBarOverride() {
-        return Objects.requireNonNullElse(this.smoothProgressBarOverride,
-                ConfigHolder.INSTANCE.client.ui.smoothProgressBar);
-    }
-
-    @Override
-    public RichTooltip.Pos getTooltipPosOverride() {
-        return Objects.requireNonNullElse(this.tooltipPosOverride, ConfigHolder.INSTANCE.client.ui.tooltipPos);
+        return widgetTheme;
     }
 }

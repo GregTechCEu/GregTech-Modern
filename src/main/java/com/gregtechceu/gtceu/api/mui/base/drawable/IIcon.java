@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.base.drawable;
 
+import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
 import com.gregtechceu.gtceu.api.mui.drawable.HoverableIcon;
 import com.gregtechceu.gtceu.api.mui.drawable.InteractableIcon;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Box;
@@ -27,6 +28,20 @@ public interface IIcon extends IDrawable {
      */
     int getHeight();
 
+    default int getSize(GuiAxis axis) {
+        return axis.isHorizontal() ? getWidth() : getHeight();
+    }
+
+    @Override
+    default int getDefaultWidth() {
+        return getWrappedDrawable() != null ? getWrappedDrawable().getDefaultWidth() : 0;
+    }
+
+    @Override
+    default int getDefaultHeight() {
+        return getWrappedDrawable() != null ? getWrappedDrawable().getDefaultHeight() : 0;
+    }
+
     /**
      * @return the margin of this icon. Only used if width or height is 0
      */
@@ -41,10 +56,20 @@ public interface IIcon extends IDrawable {
         return drawable;
     }
 
+    /**
+     * This returns a hoverable wrapper of this icon. This is only used in
+     * {@link com.gregtechceu.gtceu.api.mui.drawable.text.RichText RichText}.
+     * This allows this icon to have its own tooltip.
+     */
     default HoverableIcon asHoverable() {
         return new HoverableIcon(this);
     }
 
+    /**
+     * This returns an interactable wrapper of this icon. This is only used in
+     * {@link com.gregtechceu.gtceu.api.mui.drawable.text.RichText RichText}.
+     * This allows this icon to be able to listen to clicks and other inputs.
+     */
     default InteractableIcon asInteractable() {
         return new InteractableIcon(this);
     }

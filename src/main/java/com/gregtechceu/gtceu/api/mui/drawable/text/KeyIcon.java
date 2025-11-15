@@ -21,6 +21,7 @@ public class KeyIcon implements IIcon {
     private final IKey key;
     private Font overrideFont;
     private final Box margin = new Box();
+    private boolean expandWidth, expandHeight;
 
     public KeyIcon(IKey key) {
         this.key = key;
@@ -32,11 +33,29 @@ public class KeyIcon implements IIcon {
 
     @Override
     public int getWidth() {
-        return getFont().width(key.get()) + this.margin.horizontal();
+        return expandWidth ? 0 : getActualWidth();
     }
 
     @Override
     public int getHeight() {
+        return expandHeight ? 0 : getActualHeight();
+    }
+
+    @Override
+    public int getDefaultWidth() {
+        return this.key.getDefaultWidth();
+    }
+
+    @Override
+    public int getDefaultHeight() {
+        return this.key.getDefaultHeight();
+    }
+
+    public int getActualWidth() {
+        return getFont().width(key.get()) + this.margin.horizontal();
+    }
+
+    public int getActualHeight() {
         return getFont().lineHeight + this.margin.vertical();
     }
 
@@ -52,10 +71,20 @@ public class KeyIcon implements IIcon {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        int w = getWidth(), h = getHeight();
+        int w = getActualWidth(), h = getActualHeight();
         x += (int) (width / 2f - w / 2f);
         y += (int) (height / 2f - h / 2f);
         this.key.draw(context, x, y, width, height, widgetTheme);
+    }
+
+    public KeyIcon expandWidth() {
+        this.expandWidth = true;
+        return this;
+    }
+
+    public KeyIcon expandHeight() {
+        this.expandHeight = true;
+        return this;
     }
 
     public KeyIcon margin(int left, int right, int top, int bottom) {

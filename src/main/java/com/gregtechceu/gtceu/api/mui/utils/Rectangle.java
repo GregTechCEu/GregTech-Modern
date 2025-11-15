@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -71,6 +73,7 @@ public class Rectangle {
         return new PointF(x + width / 2.0f, y + height / 2.0f);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public Rect2i asRect2i() {
         return new Rect2i(this.x, this.y, this.width, this.height);
     }

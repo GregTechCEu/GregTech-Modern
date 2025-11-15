@@ -41,7 +41,7 @@ public class DynamicDrawable implements IDrawable {
         if (drawable != null) {
             return drawable.canApplyTheme();
         } else {
-            return IDrawable.super.canApplyTheme();
+            return false;
         }
     }
 }

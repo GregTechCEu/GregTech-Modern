@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 
 public class PanelManager {
 
+    private static final int DISPOSAL_CAPACITY = 1 << 4;
+
     @Getter
     private final @NotNull ModularScreen screen;
     /**
@@ -40,7 +42,7 @@ public class PanelManager {
     private final List<WidgetWrapper> panelWrappers = new ArrayList<>();
     private final List<WidgetWrapper> panelWrappersView = Collections.unmodifiableList(this.panelWrappers);
     private final ReverseIterable<WidgetWrapper> reversePanelWrappers = new ReverseIterable<>(this.panelWrappersView);
-    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(20);
+    private final ObjectList<ModularPanel> disposal = new ObjectArrayList<>(DISPOSAL_CAPACITY);
     private final Map<String, IPanelHandler> panelHandlerMap = new Object2ObjectOpenHashMap<>();
     private boolean cantDisposeNow = false;
     private boolean dirty = false;
@@ -52,14 +54,26 @@ public class PanelManager {
     }
 
     boolean tryInit() {
-        if (this.state == State.CLOSED) throw new IllegalStateException("Can't init in closed state!");
-        if (this.state == State.INIT || this.state == State.DISPOSED) {
-            setState(State.OPEN);
-            openPanel(this.mainPanel, false);
-            checkDirty();
-            return true;
-        }
-        return false;
+        return switch (this.state) {
+            case WAIT_DISPOSAL -> throw new IllegalStateException(
+                    "Tried to open panel while its waiting to be disposed. This shouldn't happen.");
+            case OPEN, REOPENED -> false;
+            case CLOSED -> {
+                if (this.panels.isEmpty()) {
+                    throw new IllegalStateException("Can't init in closed state!");
+                }
+                this.panels.forEach(p -> p.reopen(true));
+                this.disposal.removeIf(this.panels::contains);
+                setState(State.REOPENED);
+                yield true;
+            }
+            case INIT, DISPOSED -> {
+                setState(State.OPEN);
+                openPanel(this.mainPanel, false);
+                checkDirty();
+                yield true;
+            }
+        };
     }
 
     public boolean isMainPanel(ModularPanel panel) {
@@ -78,6 +92,33 @@ public class PanelManager {
 
             this.dirty = false;
         }
+    }
+
+    @NotNull
+    public List<LocatedWidget> getAllHoveredWidgetsList(boolean debug) {
+        for (ModularPanel panel : this.panels) {
+            if (panel.isAnyHovered()) {
+                return panel.getAllHoveringList(debug);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Nullable
+    public ModularPanel getTopHoveredPanel() {
+        for (ModularPanel panel : this.panels) {
+            if (panel.isAnyHovered()) return panel;
+        }
+        return null;
+    }
+
+    public boolean isBelowMouseInTopPanel(IWidget widget) {
+        for (ModularPanel panel : this.panels) {
+            if (panel.isAnyHovered()) {
+                return panel.isBelowMouse(widget);
+            }
+        }
+        return false;
     }
 
     private void openPanel(ModularPanel panel, boolean resize) {
@@ -183,6 +224,7 @@ public class PanelManager {
 
     public boolean closeAll() {
         if (this.state.isOpen) {
+            // any open panel will be set to closed, but will not actually be removed, so it can be reopened
             this.panels.forEach(this::finalizePanel);
             setState(State.CLOSED);
             this.screen.onClose();
@@ -194,7 +236,7 @@ public class PanelManager {
     private void finalizePanel(ModularPanel panel) {
         panel.onClose();
         if (!this.disposal.contains(panel)) {
-            if (this.disposal.size() == 20) {
+            if (this.disposal.size() == DISPOSAL_CAPACITY) {
                 this.disposal.remove(0).dispose();
             }
             this.disposal.add(panel);
@@ -216,11 +258,14 @@ public class PanelManager {
     @ApiStatus.Internal
     public void dispose() {
         if (isDisposed()) return;
+        if (this.state != State.CLOSED && this.state != State.WAIT_DISPOSAL) {
+            throw new IllegalStateException("Must close screen first before disposing!");
+        }
         if (this.cantDisposeNow) {
             setState(State.WAIT_DISPOSAL);
             return;
         }
-        if (!isClosed()) throw new IllegalStateException("Must close screen first before disposing!");
+        setState(State.CLOSED);
         this.disposal.forEach(ModularPanel::dispose);
         this.disposal.clear();
         this.panels.clear();
@@ -230,50 +275,132 @@ public class PanelManager {
         setState(State.DISPOSED);
     }
 
-    @ApiStatus.Internal
-    public void reopen() {
-        if (this.panels.isEmpty()) {
-            throw new IllegalStateException("Screen is disposed. Can't be recovered!");
-        }
-        this.panels.forEach(ModularPanel::reopen);
-        this.disposal.removeIf(this.panels::contains);
-        setState(State.REOPENED);
-    }
-
     public boolean hasOpenPanel(ModularPanel panel) {
         return this.panels.contains(panel);
     }
 
-    public void pushUp(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
-        if (index == 0) return;
-        this.panels.remove(index);
-        this.panels.add(index - 1, window);
+    public boolean hasPanelOpen(String name) {
+        return getOpenPanel(name) != null;
     }
 
-    public void pushDown(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
+    public @Nullable ModularPanel getOpenPanel(String name) {
+        for (ModularPanel panel : this.panels) {
+            if (panel.getName().equals(name)) {
+                return panel;
+            }
+        }
+        return null;
+    }
+
+    public int getOpenPanelCount() {
+        return this.panels.size();
+    }
+
+    public int getPanelIndex(ModularPanel panel) {
+        return this.panels.indexOf(panel);
+    }
+
+    public int getPanelIndexOrFail(ModularPanel panel, String action) {
+        int index = getPanelIndex(panel);
+        if (index < 0) {
+            throw new IllegalArgumentException("Failed to perform action '" + action + "' on panel '" + panel +
+                    "', because it is not open in this screen");
+        }
+        return index;
+    }
+
+    public void pushUp(@NotNull ModularPanel panel) {
+        int index = getPanelIndexOrFail(panel, "push up");
+        if (index == 0) return;
+        movePanel(index, index - 1);
+    }
+
+    public void pushDown(@NotNull ModularPanel panel) {
+        int index = getPanelIndexOrFail(panel, "push down");
         if (index == this.panels.size() - 1) return;
-        this.panels.remove(index);
-        this.panels.add(index + 1, window);
+        movePanel(index, index + 1);
     }
 
     public void pushToTop(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
+        int index = getPanelIndexOrFail(window, "push to top");
         if (index == 0) return;
-        this.panels.remove(index);
-        this.panels.add(0, window);
+        movePanel(index, 0);
     }
 
     public void pushToBottom(@NotNull ModularPanel window) {
-        int index = this.panels.indexOf(window);
-        if (index < 0) throw new IllegalStateException();
+        int index = getPanelIndexOrFail(window, "push to bottom");
         if (index == this.panels.size() - 1) return;
-        this.panels.remove(index);
-        this.panels.add(window);
+        movePanel(index, -1);
+    }
+
+    public void movePanelAbove(ModularPanel panelToMove, ModularPanel target) {
+        int index = getPanelIndexOrFail(panelToMove, "move panel after");
+        if (index == 0) return;
+        int targetIndex = getTopSubPanelIndexOf(target);
+        if (targetIndex < 0) {
+            throw new IllegalArgumentException("Could not find target or a sub panel of '" + target + "'.");
+        }
+        movePanel(index, targetIndex);
+    }
+
+    public void movePanelBelow(ModularPanel panelToMove, ModularPanel target) {
+        int index = getPanelIndexOrFail(panelToMove, "move panel after");
+        if (index == this.panels.size() - 1) return;
+        int targetIndex = getBottomSubPanelIndexOf(target);
+        if (targetIndex < 0) {
+            throw new IllegalArgumentException("Could not find target or a sub panel of '" + target + "'.");
+        }
+        movePanel(index, targetIndex + 1);
+    }
+
+    private void movePanel(int panelIndex, int target) {
+        if (target < 0) target += this.panels.size();
+        else if (panelIndex < target) target--;
+        ModularPanel panel = this.panels.remove(panelIndex);
+        this.panels.add(target, panel);
+        this.dirty = true;
+    }
+
+    private int getTopSubPanelIndexOf(ModularPanel target) {
+        int targetIndex = -1;
+        for (int i = this.panels.size() - 1; i >= 0; i--) {
+            ModularPanel panel = this.panels.get(i);
+            if (isSubPanelOf(panel, target)) {
+                targetIndex = i;
+                continue;
+            }
+            break;
+        }
+        return targetIndex;
+    }
+
+    private int getBottomSubPanelIndexOf(ModularPanel target) {
+        int targetIndex = -1;
+        for (int i = 0; i < this.panels.size(); i++) {
+            ModularPanel panel = this.panels.get(i);
+            if (isSubPanelOf(panel, target)) {
+                targetIndex = i;
+                continue;
+            }
+            break;
+        }
+        return targetIndex;
+    }
+
+    public boolean isSubPanelOf(ModularPanel panel, ModularPanel target) {
+        if (panel == target) return true;
+        IPanelHandler panelHandler = this.panelHandlerMap.get(panel.getName());
+        while (panelHandler != null) {
+            if (panelHandler instanceof SecondaryPanel secPanel) {
+                if (secPanel.getParent() == target) {
+                    return true;
+                }
+                panelHandler = this.panelHandlerMap.get(secPanel.getParent().getName());
+            } else {
+                break;
+            }
+        }
+        return false;
     }
 
     @NotNull
@@ -305,7 +432,7 @@ public class PanelManager {
     }
 
     private void setState(State state) {
-        this.state = state;
+        this.state = Objects.requireNonNull(state);
     }
 
     public boolean isClosed() {
@@ -332,11 +459,29 @@ public class PanelManager {
 
     public enum State {
 
+        /**
+         * Screen is created, but not yet opened.
+         */
         INIT(false),
+        /**
+         * Screen is open after init, or after it was disposed and opened again.
+         */
         OPEN(true),
+        /**
+         * Screen was closed, but is now open again.
+         */
         REOPENED(true),
+        /**
+         * Screen is closed after it was open.
+         */
         CLOSED(false),
-        WAIT_DISPOSAL(true),
+        /**
+         * Screen is closed and waiting to be disposed.
+         */
+        WAIT_DISPOSAL(false),
+        /**
+         * Screen is disposed. Screen can be reopened in this state, but every panel has to be rebuilt.
+         */
         DISPOSED(false);
 
         public final boolean isOpen;

@@ -9,6 +9,10 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
 
+/**
+ * This class is a <a href="https://en.wikipedia.org/wiki/9-slice_scaling">9-slice texture</a>. It can be created using
+ * {@link UITexture.Builder#adaptable(int, int, int, int)}.
+ */
 public class AdaptableUITexture extends UITexture {
 
     private final int imageWidth, imageHeight, bl, bt, br, bb;
@@ -17,9 +21,10 @@ public class AdaptableUITexture extends UITexture {
     /**
      * Use {@link UITexture#builder()} with {@link Builder#adaptable(int, int)}
      */
-    AdaptableUITexture(ResourceLocation location, float u0, float v0, float u1, float v1, boolean background,
-                       int imageWidth, int imageHeight, int bl, int bt, int br, int bb, boolean tiled) {
-        super(location, u0, v0, u1, v1, background);
+    AdaptableUITexture(ResourceLocation location, float u0, float v0, float u1, float v1, ColorType colorType,
+                       boolean nonOpaque, int imageWidth, int imageHeight, int bl, int bt, int br, int bb,
+                       boolean tiled) {
+        super(location, u0, v0, u1, v1, colorType, nonOpaque);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
         this.bl = bl;
@@ -32,7 +37,8 @@ public class AdaptableUITexture extends UITexture {
     @Override
     public AdaptableUITexture getSubArea(float uStart, float vStart, float uEnd, float vEnd) {
         return new AdaptableUITexture(this.location, lerpU(uStart), lerpV(vStart), lerpU(uEnd), lerpV(vEnd),
-                this.canApplyTheme, this.imageWidth, this.imageHeight, this.bl, this.bt, this.br, this.bb, this.tiled);
+                this.colorType, this.nonOpaque, this.imageWidth, this.imageHeight, this.bl, this.bt, this.br, this.bb,
+                this.tiled);
     }
 
     @Override
@@ -49,13 +55,17 @@ public class AdaptableUITexture extends UITexture {
     }
 
     public void drawStretched(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastPose();
+        Matrix4f pose = context.getLastGraphicsPose();
 
         if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
             super.draw(context, x, y, width, height);
             return;
         }
-        RenderSystem.enableBlend();
+        if (this.nonOpaque) {
+            RenderSystem.enableBlend();
+        } else {
+            RenderSystem.disableBlend();
+        }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.location);
 
@@ -110,14 +120,18 @@ public class AdaptableUITexture extends UITexture {
     }
 
     public void drawTiled(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastPose();
+        Matrix4f pose = context.getLastGraphicsPose();
 
         if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
             GuiDraw.drawTiledTexture(pose, this.location, x, y, width, height, this.u0, this.v0, this.u1, this.v1,
                     this.imageWidth, this.imageHeight, 0);
             return;
         }
-        RenderSystem.enableBlend();
+        if (this.nonOpaque) {
+            RenderSystem.enableBlend();
+        } else {
+            RenderSystem.disableBlend();
+        }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.location);
 

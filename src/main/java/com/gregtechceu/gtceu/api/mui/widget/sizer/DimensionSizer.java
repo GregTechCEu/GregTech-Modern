@@ -36,6 +36,7 @@ public class DimensionSizer {
     @Getter
     @Setter
     private boolean marginPaddingApplied = false;
+    private boolean canRelayout = false;
 
     public DimensionSizer(GuiAxis axis) {
         this.axis = axis;
@@ -83,6 +84,14 @@ public class DimensionSizer {
         this.coverChildren = coverChildren;
     }
 
+    public void setUnit(Unit unit, Unit.State pos) {
+        switch (pos) {
+            case START -> getStart(null).setFrom(unit);
+            case END -> getEnd(null).setFrom(unit);
+            case SIZE -> getSize(null).setFrom(unit);
+        }
+    }
+
     public boolean hasStart() {
         return this.start != null;
     }
@@ -103,14 +112,28 @@ public class DimensionSizer {
         return this.size != null;
     }
 
+    public boolean isFullSize() {
+        if (hasSize()) {
+            return this.size.isRelative() && this.size.getValue() >= 0.99f && this.size.getAbsOffset() < 5;
+        }
+        if (hasStart() && hasEnd()) {
+            return this.start.isCloseToZero() && this.end.isCloseToZero();
+        }
+        return false;
+    }
+
+    public boolean canRelayout() {
+        return this.canRelayout;
+    }
+
     public boolean dependsOnChildren() {
         return this.coverChildren;
     }
 
     public boolean dependsOnParent() {
-        return this.end != null ||
+        return !this.coverChildren && (this.end != null ||
                 (this.start != null && this.start.isRelative()) ||
-                (this.size != null && this.size.isRelative());
+                (this.size != null && this.size.isRelative()));
     }
 
     public void setResized(boolean all) {
@@ -120,6 +143,7 @@ public class DimensionSizer {
     public void setResized(boolean pos, boolean size) {
         this.posCalculated = pos;
         this.sizeCalculated = size;
+        this.canRelayout &= !(pos && size);
     }
 
     private boolean needsSize(Unit unit) {
@@ -148,7 +172,7 @@ public class DimensionSizer {
             // pos was calculated before
             p = area.getRelativePoint(this.axis);
             if (this.size != null) {
-                s = this.coverChildren ? 18 : calcSize(this.size, padding, parentSize, calcParent);
+                s = calcSize(this.size, padding, parentSize, calcParent);
             } else {
                 s = defaultSize.getAsInt();
                 this.sizeCalculated = s > 0;
@@ -159,11 +183,14 @@ public class DimensionSizer {
                 p = 0;
                 if (this.size == null) {
                     s = defaultSize.getAsInt();
-                    this.sizeCalculated = s > 0 && !this.expanded;
+                    this.sizeCalculated = s > 0 && !this.expanded && !this.coverChildren;
                 } else {
                     s = calcSize(this.size, padding, parentSize, calcParent);
                 }
                 this.posCalculated = true;
+                // children in layout widgets have no position, but if the size can only be calculated later than we
+                // need to tell the parent layout that this position is not final
+                this.canRelayout = true;
             } else {
                 if (this.size == null) {
                     if (this.start != null && this.end != null) {
@@ -292,7 +319,8 @@ public class DimensionSizer {
     }
 
     private int calcSize(Unit s, Box padding, int parentSize, boolean parentSizeCalculated) {
-        if (this.coverChildren) return 18; // placeholder value
+        // placeholder value, size is calculated externally
+        if (this.coverChildren || this.expanded) return 18;
         float val = s.getValue();
         if (s.isRelative()) {
             if (!parentSizeCalculated) return (int) val;

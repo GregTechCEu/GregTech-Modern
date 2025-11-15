@@ -80,7 +80,7 @@ public class EmiScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
 
     @Override
     public EmiStackInteraction getStackAt(T screen, int x, int y) {
-        IGuiElement hovered = screen.getScreen().getContext().getHovered();
+        IGuiElement hovered = screen.getScreen().getContext().getTopHovered();
         if (hovered instanceof IngredientProvider<?> provider) {
             var override = provider.ingredientOverride();
             if (override != null) {

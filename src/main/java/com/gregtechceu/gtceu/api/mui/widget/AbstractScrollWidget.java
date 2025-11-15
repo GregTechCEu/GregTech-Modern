@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.mui.base.layout.IViewportStack;
 import com.gregtechceu.gtceu.api.mui.base.widget.IGuiAction;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.HoveredWidgetList;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.HorizontalScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollArea;
@@ -68,6 +70,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
 
     public void beforeResize(boolean onOpen) {
         super.beforeResize(onOpen);
+        this.scroll.applyWidgetTheme(getContext().getTheme().getScrollbarTheme().getTheme(isHovering()));
         if (onOpen) checkScrollbarActive(true);
         getScrollArea().getScrollPadding().scrollPaddingAll(0);
         applyAdditionalOffset(this.scroll.getScrollX());
@@ -103,7 +106,7 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
         ModularGuiContext context = getContext();
         if (this.scroll.mouseClicked(context)) {
-            return Result.STOP;
+            return Result.SUCCESS;
         }
         return Result.IGNORE;
     }
@@ -136,7 +139,9 @@ public abstract class AbstractScrollWidget<I extends IWidget, W extends Abstract
     public void postDraw(ModularGuiContext context, boolean transformed) {
         if (!transformed) {
             context.getStencil().pop();
-            this.scroll.drawScrollbar(context);
+            WidgetThemeEntry<WidgetTheme> scrollbarTheme = context.getTheme().getScrollbarTheme();
+            this.scroll.drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
+                    scrollbarTheme.getTheme().getBackground());
         }
     }
 
