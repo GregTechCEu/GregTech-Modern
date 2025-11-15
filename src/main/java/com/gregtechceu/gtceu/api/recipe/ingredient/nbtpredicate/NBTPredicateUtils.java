@@ -21,19 +21,7 @@ public final class NBTPredicateUtils {
     }
 
     public static Tag fromJson(JsonElement e) {
-        if (e.isJsonPrimitive()) {
-            JsonPrimitive p = e.getAsJsonPrimitive();
-            if (p.isBoolean()) return ByteTag.valueOf(p.getAsBoolean());
-            if (p.isNumber()) return DoubleTag.valueOf(p.getAsDouble());
-            return StringTag.valueOf(p.getAsString());
-        } else if (e.isJsonObject() || e.isJsonArray()) {
-            try {
-                return TagParser.parseTag(e.toString());
-            } catch (Exception ex) {
-                throw new IllegalArgumentException("Invalid NBT value: " + e, ex);
-            }
-        }
-        return null;
+        return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, e);
     }
 
     public static Tag getNestedTag(CompoundTag inputTag, String path) {
