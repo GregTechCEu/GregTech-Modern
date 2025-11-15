@@ -374,7 +374,7 @@ public interface GTRecipeSchema {
             }
             gatherMaterialInfoFromStacks(itemStack);
 
-            return input(ItemRecipeCapability.CAP, new NBTPredicateIngredient(itemStack, predicate));
+            return itemInputs(InputItem.of(new NBTPredicateIngredient(itemStack, predicate), itemStack.getCount()));
         }
 
         public GTRecipeJS itemOutputs(ExtendedOutputItem... outputs) {
