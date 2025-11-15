@@ -51,7 +51,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
         if (input == null) {
             return false;
         } else {
-            return this.stack.getItem() == input.getItem() && this.stack.getDamageValue() == input.getDamageValue() &&
+            return this.stack.getItem() == input.getItem() &&
                     predicate.test(input.getOrCreateTag());
         }
     }
