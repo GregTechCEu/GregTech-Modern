@@ -23,7 +23,7 @@ public class ExampleSound {
 }
 ```
 
-Before you run datagen, the sound needs to be prepared for use. For a sound to be registered it must be in .ogg format and be inside assets/examplemod/sounds. 
+Before you run datagen, the sound needs to be prepared for use. For a sound to be registered it must be in .ogg format and be inside `assets/examplemod/sounds`. 
 !!! note "mono vs. stereo audio"
 
     Your audio file should be mono, as Minecraft's attentuation logic only works with single-channel audio. Stereo sounds won't fade out (they'll be played at the same volume at any distance from the source) and should only be used for background tracks such as the main menu music. 
