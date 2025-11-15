@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
@@ -185,7 +186,7 @@ public final class NBTPredicates {
         return new NotNBTPredicate(predicate);
     }
 
-    public static Map<String, Function<JsonObject, NBTPredicate>> predicateCodecs = new HashMap<>();
+    public static final Map<String, Function<JsonObject, NBTPredicate>> predicateCodecs = new Object2ObjectOpenHashMap<>();
 
     static {
         predicateCodecs.put(TrueNBTPredicate.TYPE, TrueNBTPredicate::fromJson);
