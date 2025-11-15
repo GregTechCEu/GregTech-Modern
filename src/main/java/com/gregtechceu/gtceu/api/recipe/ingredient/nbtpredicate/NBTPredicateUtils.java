@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagParser;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
 
 public final class NBTPredicateUtils {
 
-    private NBTPredicateUtils(){};
+    private NBTPredicateUtils() {};
 
     public static JsonElement toJson(Tag tag) {
         return NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tag);

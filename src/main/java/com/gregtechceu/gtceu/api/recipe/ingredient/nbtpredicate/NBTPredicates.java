@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
@@ -10,15 +9,15 @@ import net.minecraft.nbt.Tag;
 
 import com.google.gson.JsonObject;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public final class NBTPredicates {
 
-    private NBTPredicates(){};
+    private NBTPredicates() {};
 
     public static NBTPredicate eqInt(String key, int value) {
         return eq(key, value);
