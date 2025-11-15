@@ -30,8 +30,6 @@ public class GTMuiMachineUtil {
                                                                NotifiableFluidTank fluidTank,
                                                                String syncHandlerName, int maxSlots, char key,
                                                                String... matrix) {
-        // SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-
         for (int i = 0; i < maxSlots; i++) {
             syncManager.syncValue(syncHandlerName, i, SyncHandlers.fluidSlot(fluidTank.getStorages()[i]));
         }

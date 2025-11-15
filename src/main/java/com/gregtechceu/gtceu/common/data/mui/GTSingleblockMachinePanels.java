@@ -81,7 +81,6 @@ public class GTSingleblockMachinePanels {
                         .left(7 + (36 - (inputWidth / 2)))
                         .child(new Column()
                                 .coverChildrenWidth()
-                                .childPadding(0)
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(inputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.importItems,
@@ -97,7 +96,6 @@ public class GTSingleblockMachinePanels {
                                 .align(Alignment.CenterLeft))
                         .child(new Column()
                                 .coverChildrenWidth()
-                                .childPadding(0)
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .childIf(!(outputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.exportItems,
@@ -206,18 +204,20 @@ public class GTSingleblockMachinePanels {
         } else {
             outputGrid = new String[] { "i" };
         }
-
-        boolean shiftOutput = workableMachine.getTier() < 3;
-
-        int slotHeight = simpleTieredMachine.getTier() > 3 ? 2 : 1;
         boolean ghostCircuit = simpleTieredMachine.isCircuitSlotEnabled();
         boolean autoOutputItem = simpleTieredMachine.hasAutoOutputItem();
+
+        int inputWidth = 18 *
+                Math.min(3, Math.max(workableMachine.importItems.getSize(), workableMachine.importFluids.getSize()));
+        int outputWidth = 18 * outputGrid[0].length();
+
+        int fullWidth = (inputWidth + outputWidth) + (90 - ((inputWidth + outputWidth) / 2));
 
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176))
                 .child(new Row()
                         .coverChildrenHeight()
-                        .width((shiftOutput ? 5 : 6) * 18 + (workableMachine.getTier() == 3 ? 18 : 0))
-                        .left(7 + 36)
+                        .width(fullWidth)
+                        .left(7 + (36 - (inputWidth / 2)))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.importItems,
                                 "input_inv", 1, 'i', "i")
                                 .align(Alignment.CenterLeft))
@@ -227,7 +227,7 @@ public class GTSingleblockMachinePanels {
                         .top(30))
                 .child(GTMuiWidgets.createProgressBar(workableMachine, GTGuiTextures.PROGRESS_BAR_MACERATE, 16)
                         .alignX(Alignment.CENTER)
-                        .top(30 + (slotHeight > 3 ? 9 : 0)))
+                        .top(30))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()
@@ -279,10 +279,8 @@ public class GTSingleblockMachinePanels {
         boolean ghostCircuit = simpleTieredMachine.isCircuitSlotEnabled();
         boolean autoOutputItem = simpleTieredMachine.hasAutoOutputItem();
 
-        int inputWidth = 18 *
-                Math.min(3, Math.max(workableMachine.importItems.getSize(), workableMachine.importFluids.getSize()));
-        int outputWidth = 18 *
-                Math.min(3, Math.max(workableMachine.exportItems.getSize(), workableMachine.exportFluids.getSize()));
+        int inputWidth = 18;
+        int outputWidth = 18 * 2;
 
         int fullWidth = (inputWidth + outputWidth) + (90 - ((inputWidth + outputWidth) / 2));
 
@@ -295,7 +293,6 @@ public class GTSingleblockMachinePanels {
                         .left(7 + (36 - (inputWidth / 2)))
                         .child(new Column()
                                 .coverChildrenWidth()
-                                .childPadding(0)
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(workableMachine.importItems,
                                         "input_inv", 1, 'i', "i")
