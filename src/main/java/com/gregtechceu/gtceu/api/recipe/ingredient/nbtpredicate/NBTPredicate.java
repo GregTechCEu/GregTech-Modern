@@ -4,7 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 
 import com.google.gson.JsonObject;
 
-public abstract class NBTPredicate {
+import java.util.function.Predicate;
+
+public abstract class NBTPredicate implements Predicate<CompoundTag> {
 
     // FromJson is handled by the NBTPredicates
     public abstract JsonObject toJson();
