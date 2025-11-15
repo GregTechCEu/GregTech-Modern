@@ -61,6 +61,7 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
                 i++;
             }
             if (i != betweenTokens.size()) tokens.add(betweenTokens.get(i));
+            tokens.add("\0");
             return tokens;
         }
 

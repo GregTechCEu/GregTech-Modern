@@ -15,7 +15,7 @@ public class BorderDrawable implements IDrawable {
 
     @Getter
     @Setter
-    private IntSupplier color = () -> 0xFF0000FF;
+    private IntSupplier color = () -> 0xFFFFFFFF;
     @Getter
     @Setter
     private int borderWidth = 2;

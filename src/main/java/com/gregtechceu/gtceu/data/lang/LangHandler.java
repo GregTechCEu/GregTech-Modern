@@ -1623,6 +1623,10 @@ public class LangHandler {
         provider.add("gtceu.gui.central_monitor.resume", "Unpause placeholder execution.");
         provider.add("gtceu.gui.central_monitor.update_once",
                 "Update text and run all placeholders in it exactly once.");
+        provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
+        provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
+        provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
+        provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
         provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");

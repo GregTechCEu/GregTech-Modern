@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -104,6 +105,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                 .margin(4))
                                         .child(new ButtonWidget<>()
                                                 .background(GTGuiTextures.RIGHTLOAD)
+                                                .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
                                                 .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
                                                 .onMousePressed((mouseX, mouseY, button) -> {
                                                     updateText(stack, machine, group);

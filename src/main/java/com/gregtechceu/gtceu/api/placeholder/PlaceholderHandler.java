@@ -18,8 +18,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -193,9 +192,24 @@ public class PlaceholderHandler {
 
         private boolean prevOpenBracket = false;
         private boolean inString = false;
+        private int unclosedBrackets = 0;
 
         @Override
         public Component apply(String s) {
+            if (s.equals("\0")) {
+                if (unclosedBrackets > 0) {
+                    Component.literal(" ").withStyle(Style.EMPTY
+                            .withUnderlined(true)
+                            .withColor(0xFF0000)
+                            .withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    unclosedBrackets == 1 ?
+                                            Component.translatable("gtceu.placeholder_editor.unclosed_bracket") :
+                                            Component.translatable("gtceu.placeholder_editor.unclosed_brackets",
+                                                    unclosedBrackets))));
+                }
+                return Component.empty();
+            }
             if (s.matches("\\\\.")) {
                 prevOpenBracket = false;
                 return Component.literal(s).withStyle(ChatFormatting.GOLD);
@@ -211,10 +225,20 @@ public class PlaceholderHandler {
                 }
                 case "{" -> {
                     prevOpenBracket = true;
+                    unclosedBrackets++;
                     return Component.literal(s);
                 }
                 case "}" -> {
                     prevOpenBracket = false;
+                    unclosedBrackets--;
+                    if (unclosedBrackets < 0) {
+                        unclosedBrackets = 0;
+                        return Component.literal(s).withStyle(Style.EMPTY
+                                .withColor(0xFF0000)
+                                .withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
+                    }
                     return Component.literal(s);
                 }
             }
@@ -222,7 +246,11 @@ public class PlaceholderHandler {
                 prevOpenBracket = false;
                 if (getAllPlaceholderNames().contains(s)) {
                     return Component.literal(s).withStyle(ChatFormatting.BLUE);
-                } else return Component.literal(s).withStyle(ChatFormatting.RED);
+                } else return Component.literal(s).withStyle(Style.EMPTY
+                        .withColor(0xFF0000)
+                        .withHoverEvent(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.translatable("gtceu.placeholder_editor.no_placeholder", s))));
             }
             return Component.literal(s);
         }
