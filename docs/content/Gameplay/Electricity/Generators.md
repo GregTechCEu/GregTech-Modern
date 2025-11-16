@@ -95,12 +95,15 @@ output of the Turbine (doubling the power output and fuel consumption per Rotor 
 fuel efficiency of the turbine (reducing fuel consumption by 10% per tier above the Turbine's minimum requirement).
 Unlike with smaller generators, this reduced fuel consumption is applied as *increased fuel burn duration*.
 
-Additionally, Large Turbines require several minutes to spin up to their full output, and then spin down when inactive 
-or their Dynamo Hatch is full of energy. Energy production scales exponentially with turbine RPM, meaning that for much 
-of the spinup time the turbine's output will be quite low. When active, RPM increases by 1 per tick, and when inactive 
-RPM decreases by 3 per tick. To compensate for this behavior, Large Turbines are best run either continuously, or in 
-limited bursts to fill an energy storage, activated via Machine Controller Cover when the storage is low and deactivated
-when the storage is nearly full.
+Additionally, Large Turbines require several minutes to spin up to their full output, and then spin down when inactive.
+Energy production scales exponentially with turbine RPM, meaning that for much of the spinup time the turbine's output 
+will be quite low. When active, RPM increases by 1 per tick, and when inactive RPM decreases by 3 per tick. To manage 
+this behavior, Large Turbines are best run either continuously, or in limited bursts to fill an energy storage, 
+activated via Machine Controller Cover when the storage is low and deactivated when the storage is nearly full.
+
+If the Dynamo Hatch of a Large Turbine fills with EU, the Turbine will stop consuming fuel and start spinning down. 
+This behavior can be overridden by enabling Voiding Mode on the turbine, which will cause it to retain its full speed, 
+fuel consumption, and energy production, even if the energy has nowhere to go.
 
 The total EU/t output and fuel consumption of a Large Turbine is determined by:
 
