@@ -75,7 +75,9 @@ public class LayeredVeinGenerator extends VeinGenerator {
         if (patternPool.isEmpty())
             return Map.of();
 
-        GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
+        // minor optimization, usually only one layer pool exists
+        GTLayerPattern layerPattern = patternPool.size() == 1 ?
+                patternPool.get(0) : patternPool.get(random.nextInt(patternPool.size()));
 
         int size = entry.clusterSize().sample(random);
         float density = entry.density();
@@ -101,37 +103,54 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
         for (int xOffset = 0; xOffset < width; xOffset++) {
             float sizeFractionX = xOffset * 2f / width - 1;
-            if ((sizeFractionX * sizeFractionX) > 1)
+            float xSizeSqr = sizeFractionX * sizeFractionX;
+            if (xSizeSqr > 1)
                 continue;
 
             for (int yOffset = 0; yOffset < height; yOffset++) {
                 float sizeFractionY = yOffset * 2f / height - 1;
-                if ((sizeFractionX * sizeFractionX) + (sizeFractionY * sizeFractionY) > 1)
+                float ySizeSqr = sizeFractionY * sizeFractionY;
+                if (xSizeSqr + ySizeSqr > 1)
                     continue;
                 if (level.isOutsideBuildHeight(yMin + yOffset))
                     continue;
 
                 for (int zOffset = 0; zOffset < length; zOffset++) {
                     float sizeFractionZ = zOffset * 2f / length - 1;
+                    float zSizeSqr = sizeFractionZ * sizeFractionZ;
+                    // OPTIMIZATION: all values in layerDiameterOffsets are in the [0,1] range, so
+                    // check if the size is >1 before doing any of that math
+                    if (xSizeSqr + ySizeSqr + zSizeSqr > 1)
+                        continue;
 
                     int layerIndex = layerCoordinate == 0 ? zOffset : layerCoordinate == 1 ? xOffset : yOffset;
-                    if (slantyCoordinate != layerCoordinate)
+                    if (slantyCoordinate != layerCoordinate) {
                         layerIndex += Mth.floor(
                                 slantyCoordinate == 0 ? zOffset : slantyCoordinate == 1 ? xOffset : yOffset) * slope;
+                    }
 
                     while (layerIndex >= resolvedLayers.size()) {
                         GTLayerPattern.Layer next = layerPattern.rollNext(
                                 resolvedLayers.isEmpty() ? null : resolvedLayers.get(resolvedLayers.size() - 1),
                                 random);
-                        float offset = random.nextFloat() * .5f + .5f;
+
+                        float offset = random.nextFloat() * 0.5f + 0.5f;
+                        // insert the previous layer if this one is null (e.g. invalid)
+                        if (next == null) {
+                            if (resolvedLayers.isEmpty()) {
+                                continue;
+                            }
+                            resolvedLayers.add(resolvedLayers.get(resolvedLayers.size() - 1));
+                            layerDiameterOffsets.add(offset);
+                            continue;
+                        }
                         for (int i = 0; i < next.minSize + random.nextInt(1 + next.maxSize - next.minSize); i++) {
                             resolvedLayers.add(next);
                             layerDiameterOffsets.add(offset);
                         }
                     }
 
-                    if ((sizeFractionX * sizeFractionX) + (sizeFractionY * sizeFractionY) +
-                            (sizeFractionZ * sizeFractionZ) > 1 * layerDiameterOffsets.getFloat(layerIndex))
+                    if (xSizeSqr + ySizeSqr + zSizeSqr > layerDiameterOffsets.getFloat(layerIndex))
                         continue;
 
                     GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);
