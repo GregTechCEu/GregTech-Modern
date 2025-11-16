@@ -82,7 +82,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     }
 
     default int getIncrementValue() {
-        return getIncrementValue(MouseData.create(0));
+        return getIncrementValue(MouseData.create(-1));
     }
 
     default int getIncrementValue(MouseData data) {
