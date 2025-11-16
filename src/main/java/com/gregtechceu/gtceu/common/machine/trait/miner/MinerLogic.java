@@ -364,14 +364,13 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         ItemStack oreDrop = new ItemStack(blockState.getBlock());
         if (oreDrop.isEmpty()) return false;
 
-        outputItemHandler.storage.clear();
-
-        GTRecipe recipe = null; // attempt ore block that has a static gt recipe
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
+        outputItemHandler.storage.clear();
 
         var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
 
+        GTRecipe recipe = null; // attempt ore block that has a static gt recipe
         while (matches.hasNext()) {
             GTRecipe match = matches.next();
             if (match == null) continue;
