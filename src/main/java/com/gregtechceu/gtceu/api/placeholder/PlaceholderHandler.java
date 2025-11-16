@@ -134,6 +134,7 @@ public class PlaceholderHandler {
                     }
                     default -> GTUtil.getLast(stack.peek()).append(c);
                 }
+                if (stack.isEmpty()) break;
             }
             escape = escapeNext;
             escapeNext = false;
