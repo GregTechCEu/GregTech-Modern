@@ -45,7 +45,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -187,7 +187,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.tier(tier);
     }
 
-    public MultiblockMachineBuilder recipeOutputLimits(Object2IntMap<RecipeCapability<?>> map) {
+    public MultiblockMachineBuilder recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
         return (MultiblockMachineBuilder) super.recipeOutputLimits(map);
     }
 
