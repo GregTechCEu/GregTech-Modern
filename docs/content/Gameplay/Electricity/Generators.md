@@ -101,13 +101,14 @@ will be quite low. When active, RPM increases by 1 per tick, and when inactive R
 this behavior, Large Turbines are best run either continuously, or in limited bursts to fill an energy storage, 
 activated via Machine Controller Cover when the storage is low and deactivated when the storage is nearly full.
 
-If the Dynamo Hatch of a Large Turbine fills with EU, the Turbine will stop consuming fuel and start spinning down. 
-This behavior can be overridden by enabling Voiding Mode on the turbine, which will cause it to retain its full speed, 
-fuel consumption, and energy production, even if the energy has nowhere to go.
+Large Turbine behavior was changed slightly in 7.3.0. Prior to this version, if a Large Turbine's Dynamo Hatch filled with
+EU, the Turbine would stop consuming fuel and spin down. As of 7.3.0, Large Turbines ignore the contents of their Dynamo
+and Output Hatches, and continue running at full speed, even if the produced EU or Fluids have nowhere to go. While this
+does result in the excess outputs being voided, it means the Turbines retain their full speed and output.
 
 The total EU/t output and fuel consumption of a Large Turbine is determined by:
 
 * EU/t Output = [Turbine base EU/t] x [2 ^ Rotor Holder Tier - minimum tier] x [Turbine Power Mutiplier] x [Current RPM / Max RPM]^2
-* Fuel Consumption = [EU/t output] / [Fuel base generation rate]
+* Fuel Consumption = [EU/t output] / [Fuel base generation rate] (rounded up)
 * Fuel Duration = [1 + 0.1 x [Rotor Holder Tier - minimum tier]] x [Rotor Efficiency Multiplier]
 
