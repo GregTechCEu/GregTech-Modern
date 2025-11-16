@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
@@ -82,7 +83,8 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
                         } else output.addAll(lines);
                         return Optional.empty();
                     }, Style.EMPTY);
-            return output.stream().map(c -> (Component) c).toList();
+            return output.stream()
+                    .map(c -> (Component) c.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT))).toList();
         }
     }
 }

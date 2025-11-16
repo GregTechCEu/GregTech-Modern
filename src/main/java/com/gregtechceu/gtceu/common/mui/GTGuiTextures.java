@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.mui.drawable.ColorType;
 import com.gregtechceu.gtceu.api.mui.drawable.TabTexture;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 
+import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 
 public class GTGuiTextures {
@@ -31,6 +33,8 @@ public class GTGuiTextures {
 
         public static final String STANDARD_BUTTON = "gregtech_standard_button";
     }
+
+    public static final ResourceLocation MONOCRAFT_FONT = GTCEu.id("monocraft");
 
     // ICONS
     /** @apiNote You may want {@link GTGuiTextures#getLogo} instead. */
