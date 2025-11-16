@@ -91,7 +91,6 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
         }
     }
 
-
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
