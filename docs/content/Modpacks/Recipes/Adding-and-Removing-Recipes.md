@@ -124,10 +124,12 @@ ServerEvents.recipes(event => {
     - Valid options for chanced logic are:
         - `or` - (default) Any item/fluid which succeeds on its chance roll is produced/consumed.
         - `and` - If _all_ items/fluids succeed on their chance roll, all are produced/consumed together. Otherwise, none are. 
-        - `xor` - Guarantees that exactly one of the chanced items/fluids will be produced/consumed on every run. 
-        Behavior was changed in 7.0.0.
+        - `xor` - Normalizes ingredient chances, and guarantees that exactly one of the chanced items/fluids will be 
+        produced/consumed on every run. XOR's behavior was changed in 7.0.0.
         - `first` - Makes a chance roll for each item/fluid, in order of registration. Only the first item which succeeds 
-        on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic.
+        on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic. 
+            - Because of its unpredictable behavior, FIRST has been Deprecated as of 7.3.0, and is scheduled for removal
+            in 8.0.0.
 - Ranged Ingredients:
     - Item or Fluid ingredients that will be consumed or produced in a random amount within a `min, max` range (inclusive).
 - Circuits

@@ -83,7 +83,7 @@ public interface GTShapedRecipeSchema {
                 for (char c : pattern[i].toCharArray()) { // Inject tool symbol mappings
                     if (tools.contains(c) && !addedTools.contains(c)) {
                         var tool = ToolHelper.getToolFromSymbol(c);
-                        keyEntries.add(new TinyMap.Entry<>(c, InputItem.of(tool.itemTags.get(0))));
+                        keyEntries.add(new TinyMap.Entry<>(c, InputItem.of(tool.craftingTags.get(0))));
                         addedTools.add(c);
                     }
                 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -177,7 +178,16 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.pipeLength = 0;
     }
 
-    private static BlockState findMiningReplacementBlock(Level level) {
+    private static BlockState findMiningReplacementBlock(Level level, BlockPos pos) {
+        if (ConfigHolder.INSTANCE.machines.replaceWithCobbleVersion) {
+            BlockState oreState = level.getBlockState(pos);
+            if (oreState.getBlock().asItem() instanceof MaterialBlockItem matBlockItem) {
+                var prefix = matBlockItem.tagPrefix;
+                if (!GTBlocks.COBBLE_BLOCKS.containsKey(prefix)) return Blocks.COBBLESTONE.defaultBlockState();
+                return GTBlocks.COBBLE_BLOCKS.get(prefix).get();
+            }
+        }
+
         try {
             return BlockStateParser.parseForBlock(level.holderLookup(Registries.BLOCK),
                     ConfigHolder.INSTANCE.machines.replaceMinedBlocksWith, false).blockState();
@@ -423,10 +433,11 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (handler != null) {
             if (GTTransferUtils.addItemsToItemHandler(handler, true, blockDrops)) {
                 GTTransferUtils.addItemsToItemHandler(handler, false, blockDrops);
-                world.setBlock(blocksToMine.getFirst(), findMiningReplacementBlock(world), 3);
-                mineX = blocksToMine.getFirst().getX();
-                mineZ = blocksToMine.getFirst().getZ();
-                mineY = blocksToMine.getFirst().getY();
+                var pos = blocksToMine.getFirst();
+                world.setBlock(pos, findMiningReplacementBlock(world, pos), 3);
+                mineX = pos.getX();
+                mineZ = pos.getZ();
+                mineY = pos.getY();
                 blocksToMine.removeFirst();
                 onMineOperation();
 
