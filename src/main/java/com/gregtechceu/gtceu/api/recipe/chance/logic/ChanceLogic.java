@@ -117,7 +117,9 @@ public abstract class ChanceLogic {
 
     /**
      * Chanced Output Logic where only the first ingredient succeeding its roll will be produced
+     * Deprecated following the rewrite of XOR
      */
+    @Deprecated
     public static final ChanceLogic FIRST = new ChanceLogic("first") {
 
         @Override

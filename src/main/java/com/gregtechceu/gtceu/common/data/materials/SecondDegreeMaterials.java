@@ -61,7 +61,7 @@ public class SecondDegreeMaterials {
                 .gem().ore(2, 1)
                 .color(0xa7e404).secondaryColor(0x166439).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
-                .components(Magnesium, 2, Iron, 1, SiliconDioxide, 2)
+                .components(Magnesium, 1, Iron, 1, SiliconDioxide, 2)
                 .buildAndRegister();
 
         Opal = new Material.Builder(GTCEu.id("opal"))
@@ -229,14 +229,14 @@ public class SecondDegreeMaterials {
                 .dust().ore(3, 1)
                 .color(0xede8a3).secondaryColor(0xcdb44c).iconSet(ROUGH)
                 .flags(DISABLE_DECOMPOSITION)
-                .components(Sodium, 1, Magnesium, 6, Silicon, 12, Hydrogen, 4, Water, 5, Oxygen, 36)
+                .components(Sodium, 1, Magnesium, 6, Silicon, 12, Hydrogen, 6, Water, 5, Oxygen, 36)
                 .buildAndRegister();
 
         FullersEarth = new Material.Builder(GTCEu.id("fullers_earth"))
                 .langValue("Fuller's Earth")
                 .dust().ore(2, 1)
                 .color(0xf3efbb).secondaryColor(0xb8d066).iconSet(FINE)
-                .components(Magnesium, 1, Silicon, 4, Hydrogen, 1, Water, 4, Oxygen, 11)
+                .components(Magnesium, 2, Silicon, 4, Oxygen, 14, Hydrogen, 4, Water, 1)
                 .buildAndRegister();
 
         Pitchblende = new Material.Builder(GTCEu.id("pitchblende"))
@@ -276,8 +276,7 @@ public class SecondDegreeMaterials {
         Zeolite = new Material.Builder(GTCEu.id("zeolite"))
                 .dust().ore(3, 1)
                 .color(0xf2e3e0).secondaryColor(0xeabeb4)
-                .flags(DISABLE_DECOMPOSITION)
-                .components(Sodium, 1, Calcium, 4, Silicon, 27, Aluminium, 9, Water, 28, Oxygen, 72)
+                .components(Sodium, 2, Aluminium, 2, Silicon, 3, Oxygen, 10, Water, 2)
                 .buildAndRegister();
 
         Concrete = new Material.Builder(GTCEu.id("concrete"))

@@ -1021,11 +1021,12 @@ public class LangHandler {
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
         multilineLang(provider, "gtceu.gui.chunkmode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        provider.add("gtceu.gui.multiblock.voiding_mode", "Voiding Mode:");
+        provider.add("gtceu.gui.item_voiding", "§7Voiding §6Items");
+        provider.add("gtceu.gui.fluid_voiding", "§7Voiding §9Fluids");
+        provider.add("gtceu.gui.all_voiding",
+                "§7Voiding §cAll");
+        provider.add("gtceu.gui.no_voiding", "§7Voiding Nothing");
         multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
@@ -1248,10 +1249,36 @@ public class LangHandler {
                 "allow items input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
                 "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
                 "allow fluids input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
                 "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
