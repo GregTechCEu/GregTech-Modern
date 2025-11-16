@@ -88,7 +88,7 @@ Properties can be applied to a material to decide how they behave. An example of
     - `string newMaterial` -> Is what is obtained through polarizing the material.
 - `.arcSmeltInto(string newMaterial)`
     - `string newMaterial` -> Is what is obtained through arc smelting the material.
-- `.maceratesInto(string newMaterial)`
+- `.macerateInto(string newMaterial)`
     - `string newMaterial` -> Is what is obtained through macerating the material.
 - `.ingotSmeltInto(string newMaterial)`
     - `string newMaterial` -> Is what is obtained when smelting a material's ingot.
