@@ -288,7 +288,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
-            if (player.getItemInHand(hand).is(GTToolType.WRENCH.itemTags.get(0))) return false;
+            if (GTToolType.WRENCH.matchTags.stream().anyMatch(player.getItemInHand(hand)::is)) return false;
             if (!stored.isEmpty()) { // pull
                 var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
