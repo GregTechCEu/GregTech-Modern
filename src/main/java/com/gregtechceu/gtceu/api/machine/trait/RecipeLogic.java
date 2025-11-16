@@ -296,6 +296,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                         if (machine.self() instanceof IMultiController && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
+                            regressRecipe();
                         }
                     }
                     runDelay = runAttempt * 60;
@@ -463,6 +464,21 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean isActive() {
         return isWorking() || isWaiting() || (isSuspend() && isActive);
+    }
+
+    public boolean hasCustomProgressLine() {
+        return false;
+    }
+
+    /**
+     * Show the customized progress line instead of the regular duration progress time in the machine display.
+     * <p>
+     * Must override and return {@code true} in {@link #hasCustomProgressLine()}.
+     *
+     * @return the customized progress line
+     */
+    public @Nullable Component getCustomProgressLine() {
+        return null;
     }
 
     public void onRecipeFinish() {
