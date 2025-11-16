@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -225,5 +226,17 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        inner.toNetwork(buffer);
+        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
+    }
+
+    public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        int[] range = buffer.readVarIntArray(2);
+        IntProvider provider = UniformInt.of(range[0], range[1]);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 }
