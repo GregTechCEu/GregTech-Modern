@@ -116,7 +116,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
+                IO.BOTH);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
@@ -125,7 +126,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                this.tankScalingFunction.applyAsInt(this.getTier()), IO.IN);
+                this.tankScalingFunction.applyAsInt(this.getTier()), IO.IN, IO.BOTH);
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {

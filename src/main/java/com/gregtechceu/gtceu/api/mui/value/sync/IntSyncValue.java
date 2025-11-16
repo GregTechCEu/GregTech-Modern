@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.base.value.sync.IDoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.base.value.sync.IIntSyncValue;
 import com.gregtechceu.gtceu.api.mui.base.value.sync.IStringSyncValue;
 
@@ -15,7 +16,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
 public class IntSyncValue extends ValueSyncHandler<Integer>
-                          implements IIntSyncValue<Integer>, IStringSyncValue<Integer> {
+                          implements IIntSyncValue<Integer>, IDoubleSyncValue<Integer>, IStringSyncValue<Integer> {
 
     private int cache;
     private final IntSupplier getter;
@@ -80,12 +81,27 @@ public class IntSyncValue extends ValueSyncHandler<Integer>
     }
 
     @Override
+    public void setDoubleValue(double value, boolean setSource, boolean sync) {
+        setIntValue((int) value, setSource, sync);
+    }
+
+    @Override
+    public double getDoubleValue() {
+        return cache;
+    }
+
+    @Override
     public boolean updateCacheFromSource(boolean isFirstSync) {
         if (isFirstSync || this.getter.getAsInt() != this.cache) {
             setIntValue(this.getter.getAsInt(), false, false);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void notifyUpdate() {
+        setIntValue(this.getter.getAsInt(), false, true);
     }
 
     @Override

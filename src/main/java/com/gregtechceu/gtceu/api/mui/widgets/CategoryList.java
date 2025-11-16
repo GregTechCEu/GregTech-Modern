@@ -28,9 +28,9 @@ public class CategoryList extends AbstractParentWidget<IWidget, CategoryList> im
     public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawOverlay(context, widgetTheme);
         if (this.expanded) {
-            this.expandedOverlay.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
+            this.expandedOverlay.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         } else {
-            this.collapsedOverlay.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
+            this.collapsedOverlay.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 

@@ -724,11 +724,12 @@ public class Color {
      * @return average ARGB color
      */
     public static int average(int... colors) {
-        float r = 0, g = 0, b = 0, a = 0;
+        float r = 0, g = 0, b = 0;
+        int a = 0;
         for (int color : colors) {
-            r += getRed(color);
-            g += getGreen(color);
-            b += getBlue(color);
+            r += getRedSq(color);
+            g += getGreenSq(color);
+            b += getBlueSq(color);
             a += getAlpha(color);
         }
         return argb((int) Math.sqrt(r / colors.length), (int) Math.sqrt(g / colors.length),

@@ -218,25 +218,23 @@ public class InternalWidgetTree {
             }
         }
 
-        if (init || !resizer.areChildrenCalculated() || !resizer.isLayoutDone()) {
+        boolean shouldLayout = init || !resizer.areChildrenCalculated() || !resizer.isLayoutDone();
+        if (shouldLayout || !selfFullyCalculated) {
             boolean layoutSuccessful = true;
-            // we need to keep track of which widgets are not yet fully calculated, so we can call onResized ont those
-            // which later are
-            // fully calculated
+            // we need to keep track of which widgets are not yet fully calculated, so we can call onResized on those
+            // which later are fully calculated
             BitSet state = getCalculatedState(anotherResize, isLayout);
-            if (layout != null) {
+            if (layout != null && shouldLayout) {
                 layoutSuccessful = layout.layoutWidgets();
             }
 
             // post resize this widget if possible
-            if (!selfFullyCalculated) {
-                resizer.postResize(widget);
-            }
+            resizer.postResize(widget);
 
-            if (layout != null) {
+            if (layout != null && shouldLayout) {
                 layoutSuccessful &= layout.postLayoutWidgets();
             }
-            resizer.setLayoutDone(layoutSuccessful);
+            if (shouldLayout) resizer.setLayoutDone(layoutSuccessful);
             checkFullyCalculated(anotherResize, state, isLayout);
         }
 

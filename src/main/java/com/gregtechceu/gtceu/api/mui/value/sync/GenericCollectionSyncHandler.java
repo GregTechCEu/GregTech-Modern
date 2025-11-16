@@ -66,6 +66,11 @@ public abstract class GenericCollectionSyncHandler<T, C extends Collection<T>> e
         return false;
     }
 
+    @Override
+    public void notifyUpdate() {
+        setValue(this.getter.get(), false, true);
+    }
+
     protected abstract boolean didValuesChange(C newValues);
 
     @Override

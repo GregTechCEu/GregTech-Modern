@@ -49,6 +49,18 @@ public interface IValueSyncHandler<T> extends IValue<T> {
     boolean updateCacheFromSource(boolean isFirstSync);
 
     /**
+     * Updates the cache from source and syncs it to the other sides.
+     * <p>
+     * Usually this is
+     * <code>
+     * setValue(getter.get(), false, true);
+     * </code>
+     * </p>
+     * Where {@code getter} is the source.
+     */
+    void notifyUpdate();
+
+    /**
      * Writes the current value to the buffer
      *
      * @param buffer buffer to write to
