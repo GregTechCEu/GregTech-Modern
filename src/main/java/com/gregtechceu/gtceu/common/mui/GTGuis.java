@@ -84,7 +84,7 @@ public class GTGuis {
         private PopupPanel(@NotNull String name) {
             super(name);
             align(Alignment.Center);
-            background(GTGuiTextures.BACKGROUND_POPUP);
+            background(GTGuiTextures.BACKGROUND);
             child(ButtonWidget.panelCloseButton().top(5).right(5)
                     .onMousePressed((mouseX, mouseY, button) -> {
                         if (button == 0 || button == 1) {

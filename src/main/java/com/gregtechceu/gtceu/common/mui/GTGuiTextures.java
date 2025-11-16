@@ -405,6 +405,8 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_REDSTONE_OFF = fullImage("textures/gui/widget/button_redstone_off.png");
     public static final UITexture BUTTON_THROTTLE_PLUS = fullImage("textures/gui/widget/button_throttle_plus.png");
     public static final UITexture BUTTON_THROTTLE_MINUS = fullImage("textures/gui/widget/button_throttle_minus.png");
+    public static final UITexture BUTTON_EU = fullImage("textures/gui/overlay/mode_eu.png");
+    public static final UITexture BUTTON_PERCENT = fullImage("textures/gui/overlay/mode_percent.png");
 
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(

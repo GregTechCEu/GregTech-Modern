@@ -4,10 +4,25 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.LongSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -20,6 +35,8 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,11 +46,12 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.mui.GTGuis.defaultPopupPanel;
 import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeLatchedRedstoneBetweenValues;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IUICover {
+public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IMuiCover {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             AdvancedEnergyDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
@@ -110,7 +128,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         var wasPercent = this.usePercent;
         this.usePercent = usePercent;
 
-        initializeMinMaxInputs(wasPercent);
+        updateEUValues(wasPercent);
     }
 
     //////////////////////////////////////
@@ -118,6 +136,81 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
+        return new Column()
+                .child(IMuiCover.createTitleRow(this.getAttachItem()))
+                .child(new Row()
+                        .child(new Column()
+                                .child(IKey.lang("cover.advanced_energy_detector.min").asWidget().alignY(0.15F))
+                                .child(IKey.lang("cover.advanced_energy_detector.max").asWidget().alignY(0.85F))
+                                .heightRel(1F)
+                                .coverChildrenWidth())
+                        .child(new Column()
+                                .child(createFieldRow(new LongSyncValue(this::getMinValue, this::setMinValue)))
+                                .child(createFieldRow(new LongSyncValue(this::getMaxValue, this::setMaxValue)))
+                                .childPadding(6)
+                                .expanded()
+                                .coverChildrenHeight())
+                        .widthRel(1F)
+                        .coverChildrenHeight())
+                .child(new Row()
+                        .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                                .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
+                                .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
+                                .tooltip(false, t -> {
+                                    for (MutableComponent text : LangHandler
+                                            .getMultiLang("cover.advanced_energy_detector.invert.disabled")) {
+                                        t.addLine(text);
+                                    }
+                                })
+                                .tooltip(true, t -> {
+                                    for (MutableComponent text : LangHandler
+                                            .getMultiLang("cover.advanced_energy_detector.invert.enabled")) {
+                                        t.addLine(text);
+                                    }
+                                }))
+                        .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
+                                .selectedBackground(ThemeAPI.INSTANCE.getTheme(settings.getTheme())
+                                        .getToggleButtonTheme().getTheme().getBackground())
+                                .overlay(false, GTGuiTextures.BUTTON_EU)
+                                .overlay(true, GTGuiTextures.BUTTON_PERCENT)
+                                .tooltip(false, t -> {
+                                    for (MutableComponent text : LangHandler
+                                            .getMultiLang("cover.advanced_energy_detector.use_percent.disabled")) {
+                                        t.addLine(text);
+                                    }
+                                })
+                                .tooltip(true, t -> {
+                                    for (MutableComponent text : LangHandler
+                                            .getMultiLang("cover.advanced_energy_detector.use_percent.enabled")) {
+                                        t.addLine(text);
+                                    }
+                                }))
+                        .childPadding(5)
+                        .coverChildren())
+                .rightRel(0.5F)
+                .margin(3)
+                .childPadding(3)
+                .coverChildren();
+    }
+
+    private Flow createFieldRow(LongSyncValue voltageSyncer) {
+        return new Row()
+                .child(new TextFieldWidget().value(voltageSyncer)
+                        .tooltip(t -> t.add(Component.translatable("gtceu.creative.energy.voltage")))
+                        .setNumbersLong(num -> {
+                            if (usePercent) {
+                                return GTMath.clamp(num, 0, 100);
+                            } else return GTMath.clamp(num, 0, Long.MAX_VALUE);
+                        })
+                        .size(123, 16)
+                        .margin(2, 0))
+                .child(IKey.dynamic(() -> Component.literal(isUsePercent() ? "%" : "EU")).asWidget())
+                .widthRel(1F)
+                .coverChildrenHeight();
+    }
+
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 176, 105);
         group.addWidget(new LabelWidget(10, 5, "cover.advanced_energy_detector.label"));
@@ -130,7 +223,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
 
         minValueInput = new LongInputWidget(40, 50, 176 - 40 - 10, 20, this::getMinValue, this::setMinValue);
         maxValueInput = new LongInputWidget(40, 75, 176 - 40 - 10, 20, this::getMaxValue, this::setMaxValue);
-        initializeMinMaxInputs(usePercent);
+        updateEUValues(usePercent);
         group.addWidget(minValueInput);
         group.addWidget(maxValueInput);
 
@@ -151,9 +244,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         return group;
     }
 
-    private void initializeMinMaxInputs(boolean wasPercent) {
-        if (GTCEu.isClientThread() || minValueInput == null || maxValueInput == null)
-            return;
+    private void updateEUValues(boolean wasPercent) {
+        if (GTCEu.isClientThread()) return;
 
         long energyCapacity;
         try {
@@ -162,28 +254,13 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             energyCapacity = Long.MAX_VALUE;
         }
 
-        minValueInput.setMin(0L);
-        maxValueInput.setMin(0L);
-
-        if (usePercent) {
-            // This needs to be before setting the maximum, because otherwise the value would be limited to 100 EU
-            // before converting to percent.
-            if (!wasPercent) {
-                minValueInput.setValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
-                maxValueInput.setValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
-            }
-
-            minValueInput.setMax(100L);
-            maxValueInput.setMax(100L);
+        if (usePercent && !wasPercent) {
+            minValue = GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100);
+            maxValue = GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100);
         } else {
-            minValueInput.setMax(energyCapacity);
-            maxValueInput.setMax(energyCapacity);
-
-            // This needs to be after setting the maximum, because otherwise the converted value would be
-            // limited to 100.
             if (wasPercent) {
-                minValueInput.setValue(GTMath.clamp((long) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
-                maxValueInput.setValue(GTMath.clamp((long) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValue = GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity);
+                maxValue = GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity);
             }
         }
     }
