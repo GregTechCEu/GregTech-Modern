@@ -607,7 +607,19 @@ public class ToolHelper {
             return gtTool.getToolClasses(tool);
         }
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) types.add(toolType);
+            if (toolType.matchTags.stream().anyMatch(tool::is)) types.add(toolType);
+        }
+        return types;
+    }
+
+    @NotNull
+    public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
+        Set<GTToolType> types = new HashSet<>();
+        if (tool.getItem() instanceof IGTTool gtTool) {
+            return gtTool.getToolClasses(tool);
+        }
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            if (toolType.craftingTags.stream().anyMatch(tool::is)) types.add(toolType);
         }
         return types;
     }
@@ -617,7 +629,7 @@ public class ToolHelper {
      */
     public static boolean isTool(ItemStack tool, GTToolType... toolClasses) {
         for (GTToolType toolType : toolClasses) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) return true;
+            if (toolType.matchTags.stream().anyMatch(tool::is)) return true;
         }
 
         if (tool.getItem() instanceof IGTTool igtTool) {

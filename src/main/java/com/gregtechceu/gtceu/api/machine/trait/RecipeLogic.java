@@ -296,6 +296,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                         if (machine.self() instanceof IMultiController && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
+                            regressRecipe();
                         }
                     }
                     runDelay = runAttempt * 60;
@@ -465,6 +466,21 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return isWorking() || isWaiting() || (isSuspend() && isActive);
     }
 
+    public boolean hasCustomProgressLine() {
+        return false;
+    }
+
+    /**
+     * Show the customized progress line instead of the regular duration progress time in the machine display.
+     * <p>
+     * Must override and return {@code true} in {@link #hasCustomProgressLine()}.
+     *
+     * @return the customized progress line
+     */
+    public @Nullable Component getCustomProgressLine() {
+        return null;
+    }
+
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
@@ -472,6 +488,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             runDelay = 0;
             consecutiveRecipes++;
             handleRecipeIO(lastRecipe, IO.OUT);
+            // Don't ready the next recipe after finish if suspend is set
+            // so that the modifiers won't be applied until re-starting.
+            if (suspendAfterFinish) {
+                setStatus(Status.SUSPEND);
+                consecutiveRecipes = 0;
+                progress = 0;
+                duration = 0;
+                isActive = false;
+                // Force a recipe recheck.
+                lastRecipe = null;
+                return;
+            }
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
@@ -486,16 +514,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             // try it again
             var recipeCheck = checkRecipe(lastRecipe);
-            if (!recipeDirty && !suspendAfterFinish && recipeCheck.isSuccess()) {
+            if (!recipeDirty && recipeCheck.isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
-                if (suspendAfterFinish) {
-                    setStatus(Status.SUSPEND);
-                } else {
-                    setStatus(Status.IDLE);
-                    if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
-                        waitingReason = recipeCheck.reason();
-                    }
+                setStatus(Status.IDLE);
+                if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
+                    waitingReason = recipeCheck.reason();
                 }
                 consecutiveRecipes = 0;
                 progress = 0;

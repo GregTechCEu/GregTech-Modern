@@ -592,7 +592,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTargets.isEmpty()) {
-                        if (selectedTargets.get(0) == component) {
+                        if (selectedTargets.get(0).getPos() == component.getPos()) {
                             selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
@@ -603,7 +603,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             dataSlotInput.setVisible(false);
                             return;
                         } else {
-                            rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                            try {
+                                rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                            } catch (StackOverflowError e) {
+                                GTCEu.LOGGER.error(
+                                        "Stack overflow when right-clicking monitor component {} at {} (selectedTarget is {} at {})",
+                                        component, component.getPos(), selectedTargets.get(0),
+                                        selectedTargets.get(0).getPos());
+                            }
                         }
                     }
                     selectedTargets.add(component);

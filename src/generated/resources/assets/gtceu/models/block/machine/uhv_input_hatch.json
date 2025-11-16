@@ -13,8 +13,8 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uhv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "side": "gtceu:block/casings/voltage/uhv/side",
           "top": "gtceu:block/casings/voltage/uhv/top"
         }
@@ -25,8 +25,8 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uhv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "side": "gtceu:block/casings/voltage/uhv/side",
           "top": "gtceu:block/casings/voltage/uhv/top"
         }
@@ -37,8 +37,8 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uhv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "side": "gtceu:block/casings/voltage/uhv/side",
           "top": "gtceu:block/casings/voltage/uhv/top"
         }
@@ -49,8 +49,8 @@
         "parent": "gtceu:block/machine/template/part/hatch_machine_emissive_color_ring",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/uhv/bottom",
-          "overlay": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-          "overlay_emissive": "gtceu:block/overlay/machine/overlay_fluid_hatch",
+          "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
           "side": "gtceu:block/casings/voltage/uhv/side",
           "top": "gtceu:block/casings/voltage/uhv/top"
         }

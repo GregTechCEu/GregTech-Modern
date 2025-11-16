@@ -308,7 +308,8 @@ public class GTMachines {
             .langValue("Long Distance Item Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
-            .blockModel(GTModels.createModelBlockState(GTCEu.id("block/machine/long_distance_item_pipeline_endpoint")))
+            .modelProperty(IS_FORMED, false)
+            .overlayTieredHullModel("long_distance_item_pipeline_endpoint")
             .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
@@ -323,14 +324,15 @@ public class GTMachines {
             .langValue("Long Distance Fluid Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
-            .blockModel(GTModels.createModelBlockState(GTCEu.id("block/machine/long_distance_fluid_pipeline_endpoint")))
+            .modelProperty(IS_FORMED, false)
+            .overlayTieredHullModel("long_distance_fluid_pipeline_endpoint")
             .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.1"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.2"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
                     tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
-                            ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
+                            ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance));
                 }
             })
             .register();
@@ -606,7 +608,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_ITEMS)
                     .modelProperty(IS_FORMED, false)
-                    .colorOverlayTieredHullModel("overlay_pipe_in_emissive", null, OVERLAY_ITEM_HATCH)
+                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -621,7 +623,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.EXPORT_ITEMS)
                     .modelProperty(IS_FORMED, false)
-                    .colorOverlayTieredHullModel("overlay_pipe_out_emissive", null, OVERLAY_ITEM_HATCH)
+                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -832,7 +834,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
-            .colorOverlaySteamHullModel("overlay_pipe_in_emissive", null, OVERLAY_ITEM_HATCH)
+            .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
             .langValue("Steam Input Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -845,7 +847,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
-            .colorOverlaySteamHullModel("overlay_pipe_out_emissive", null, OVERLAY_ITEM_HATCH)
+            .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
             .langValue("Steam Output Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),

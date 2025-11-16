@@ -14,7 +14,7 @@ toolStats has the following arguments:
     - This applies to both crafting use and in-world use.
       Crafting generally consumes 2 points of durability per use.
 - `harvestLevel: int` is the tier of block it can break. 
-    - Can take an integer between 1-6 with 1 being wood, 6 being neutronium.
+    - Can take an integer between 0-6 with 0 being wood, 6 being neutronium.
 - `types: GTToolType[]` is an array of tools in an object.
     - Must pass these as an array, using the [] notation.  
       This argument can be left out if you want your material to apply to all tool types.
