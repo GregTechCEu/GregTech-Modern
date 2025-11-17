@@ -1623,6 +1623,26 @@ public class LangHandler {
         provider.add("gtceu.gui.central_monitor.resume", "Unpause placeholder execution.");
         provider.add("gtceu.gui.central_monitor.update_once",
                 "Update text and run all placeholders in it exactly once.");
+        provider.add("gtceu.gui.central_monitor.help",
+                """
+                        A monitor group is a collection of any amount of monitors in the multiblock.
+                        For a group to display anything, it needs 2 things:
+                         - you to select the monitors that you want to display something on
+                         - an inserted and configured monitor module
+                        A module must be inserted in the slot to the right of the group name textbox.
+                        When you insert it, a button will appear to configure the module (for example just enter the text to display)
+                        Then you have to select at least 1 monitor in the grid below the group name textbox, here are types of selections:""");
+        provider.add("gtceu.gui.central_monitor.in_group",
+                "Monitors selected this way are added to the group, and will be used to display stuff");
+        provider.add("gtceu.gui.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
+        provider.add("gtceu.gui.central_monitor.target",
+                "The block selected this way is considered a target, to be used with placeholders in a text module.");
+        provider.add("gtceu.gui.central_monitor.right_click",
+                "Select a block by right-clicking it. Only 1 block can be a target.");
+        provider.add("gtceu.gui.central_monitor.in_group_and_target",
+                "The monitor selected this way is used for displaying and as a target at the same time.");
+        provider.add("gtceu.gui.central_monitor.data_hatch_target",
+                "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
         provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
         provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
         provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");

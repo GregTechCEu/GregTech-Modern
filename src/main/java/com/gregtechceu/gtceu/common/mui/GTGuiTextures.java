@@ -717,6 +717,10 @@ public class GTGuiTextures {
             GuiAxis.X, true,
             32, 28, 4);
 
+    public static final UITexture MONITOR = UITexture.fullImage(GTCEu.MOD_ID, "item/computer_monitor_cover");
+    public static final UITexture DATA_HATCH = UITexture.fullImage(GTCEu.MOD_ID, "textures/item/data_module.png")
+            .getSubArea(0, 0, 1, 1 / 13f);
+
     // MISC
 
     public static void init() {/**/}

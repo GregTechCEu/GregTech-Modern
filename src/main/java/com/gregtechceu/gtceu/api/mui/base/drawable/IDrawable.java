@@ -146,16 +146,17 @@ public interface IDrawable {
      */
     class DrawableWidget extends Widget<DrawableWidget> {
 
-        private final IDrawable drawable;
+        private final IDrawable[] drawables;
 
-        public DrawableWidget(IDrawable drawable) {
-            this.drawable = drawable;
+        public DrawableWidget(IDrawable... drawables) {
+            this.drawables = drawables;
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            this.drawable.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
+            for (IDrawable drawable : this.drawables)
+                drawable.drawAtZero(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
     }
 }

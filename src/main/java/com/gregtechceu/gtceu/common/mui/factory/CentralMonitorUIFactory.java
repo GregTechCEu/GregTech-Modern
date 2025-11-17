@@ -143,8 +143,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     BlockPos target = group.getTargetRaw();
                     boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
                     if (inGroup && isTarget) return 0xFFFF00FF;
-                    else if (inGroup) return 0xFF0000FF;
-                    else if (isTarget) return 0xFFFF0000;
+                    else if (inGroup) return 0xFFFF0000;
+                    else if (isTarget) return 0xFF0000FF;
                     else return 0;
                 };
                 curRow.add(new ButtonWidget<>()
@@ -193,6 +193,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1,
                         panelHandler1),
                 true);
+        IPanelHandler helpPanel = syncManager.panel(
+                "help_panel",
+                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1),
+                true);
         return new ModularPanel("group_editor_" + group.getName())
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
@@ -213,8 +217,52 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .onMousePressed((mouseX, mouseY, button) -> {
                                             if (moduleEditor != null) moduleEditor.openPanel();
                                             return moduleEditor != null;
+                                        }))
+                                .child(new ButtonWidget<>()
+                                        .background(GTGuiTextures.HELP)
+                                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                        .align(Alignment.TopRight)
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                            helpPanel.openPanel();
+                                            return true;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)));
+    }
+
+    private ModularPanel createHelpPanel(PanelSyncManager syncManager) {
+        return new ModularPanel("help_panel")
+                .width(500)
+                .height(300)
+                .child(Flow.column()
+                        .margin(5)
+                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.help")))
+                        .child(Flow.row()
+                                .padding(5)
+                                .height(50)
+                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF0000, 1),
+                                        GTGuiTextures.MONITOR))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group"))
+                                        .widthRel(.5f))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.left_click"))))
+                        .child(Flow.row()
+                                .padding(5)
+                                .height(50)
+                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1)))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.target"))
+                                        .widthRel(.5f))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.right_click"))))
+                        .child(Flow.row()
+                                .padding(5)
+                                .height(50)
+                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF00FF, 1),
+                                        GTGuiTextures.MONITOR))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group_and_target"))))
+                        .child(Flow.row()
+                                .padding(5)
+                                .height(50)
+                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1),
+                                        GTGuiTextures.DATA_HATCH, IKey.str("7")))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.data_hatch_target")))));
     }
 
     private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {

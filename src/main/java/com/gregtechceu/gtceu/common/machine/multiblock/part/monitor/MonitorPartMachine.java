@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -30,7 +30,7 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
 
     @Override
     public IDrawable getIcon() {
-        return UITexture.fullImage(GTCEu.MOD_ID, "item/computer_monitor_cover");
+        return GTGuiTextures.MONITOR;
     }
 
     @Override
