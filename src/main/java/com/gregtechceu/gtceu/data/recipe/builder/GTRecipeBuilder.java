@@ -490,7 +490,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItemNbtPredicate(ItemStack stack, NBTPredicate predicate) {
-        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, input::isEmpty)) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, stack::isEmpty)) {
             return this;
         }
         gatherMaterialInfoFromStack(stack);
