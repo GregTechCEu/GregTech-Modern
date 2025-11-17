@@ -221,7 +221,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new ButtonWidget<>()
                                         .background(GTGuiTextures.HELP)
                                         .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
-                                        .align(Alignment.TopRight)
                                         .onMousePressed((mouseX, mouseY, button) -> {
                                             helpPanel.openPanel();
                                             return true;
@@ -242,27 +241,37 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF0000, 1),
                                         GTGuiTextures.MONITOR))
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group"))
-                                        .widthRel(.5f))
+                                        .widthRel(.5f)
+                                        .padding(5)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.left_click"))))
                         .child(Flow.row()
                                 .padding(5)
                                 .height(50)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1)))
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.target"))
-                                        .widthRel(.5f))
+                                        .widthRel(.5f)
+                                        .padding(5)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.right_click"))))
                         .child(Flow.row()
                                 .padding(5)
                                 .height(50)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF00FF, 1),
                                         GTGuiTextures.MONITOR))
-                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group_and_target"))))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group_and_target"))
+                                        .padding(5)
+                                        .background(new BorderDrawable(0xFF888888, 1))))
                         .child(Flow.row()
                                 .padding(5)
                                 .height(50)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1),
                                         GTGuiTextures.DATA_HATCH, IKey.str("7")))
-                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.data_hatch_target")))));
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.data_hatch_target"))
+                                        .padding(5)
+                                        .background(new BorderDrawable(0xFF888888, 1)))));
     }
 
     private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {
