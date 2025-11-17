@@ -2,7 +2,7 @@
     "providers": [
         {
             "type": "reference",
-            "id": "minecraft:include/space"
+            "id": "gtceu:include/mono_space"
         },
         {
             "type": "reference",
