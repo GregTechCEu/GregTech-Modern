@@ -636,7 +636,7 @@ public class GCYMMachines {
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
                         .aisle("##X##", "#XAX#", "XAPAX", "#XAX#", "##X##").setRepeatable(1, 12)
-                        .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
+                        .aisle("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
                                 .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
@@ -646,7 +646,6 @@ public class GCYMMachines {
                         .where('X', casingPredicate.or(exportPredicate))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
-                        .where('C', abilities(MUFFLER))
                         .where('A', air())
                         .where('#', any())
                         .build();
