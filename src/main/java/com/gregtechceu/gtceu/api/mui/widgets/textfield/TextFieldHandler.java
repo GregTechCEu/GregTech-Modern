@@ -100,7 +100,8 @@ public class TextFieldHandler {
                 if (this.scrollArea.getScrollX().isScrollBarActive(this.scrollArea)) {
                     String line = this.text.get(main.y);
                     int scrollTo = (int) this.renderer
-                            .getPosOf(this.renderer.measureStringLines(Collections.singletonList(line)), main).x;
+                            .getPosOf(this.renderer.measureStringLines(Collections.singletonList(line)),
+                                    new Point(main.x, 0)).x;
                     scrollTo -= this.scrollArea.getScrollX().getVisibleSize(this.scrollArea) / 2;
                     if (animate) {
                         this.scrollArea.getScrollX().animateTo(this.scrollArea, scrollTo);
