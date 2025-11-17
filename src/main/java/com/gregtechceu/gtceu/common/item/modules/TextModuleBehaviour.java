@@ -81,6 +81,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
         return new ModularPanel("text_module_editor")
                 .size(400, 250)
+                .resizeableOnDrag(true)
                 .child(Flow.row()
                         .child(Flow.column()
                                 .widthRel(.8f)
@@ -118,6 +119,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                         .sizeRel(.95f, .8f)))
                         .child(new SortableListWidget<String>()
                                 .widthRel(.2f)
+                                .paddingBottom(5)
                                 .children(PlaceholderHandler.getAllPlaceholderNames()
                                         .stream()
                                         .sorted()
