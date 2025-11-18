@@ -208,7 +208,7 @@ can influence how the material behaves, as well as which items are generated for
     - Required Properties: `PropertyKey.INGOT`.
 
 - `IS_MAGNETIC`
-    - Description: Add this to your Material if it is a magnetized form of another material.
+    - Description: Add this to your Material if it is a magnetized form of another material. When this flag is on a material, it macerates into the non magnetic version.
     - Required Properties: `PropertyKey.INGOT`.
 
 # Gem Flags
