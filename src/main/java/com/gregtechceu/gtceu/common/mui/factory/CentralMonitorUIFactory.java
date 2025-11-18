@@ -233,6 +233,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         return new ModularPanel("help_panel")
                 .width(500)
                 .height(300)
+                .resizeableOnDrag(true)
                 .child(Flow.column()
                         .margin(5)
                         .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.help")))
