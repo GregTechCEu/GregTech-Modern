@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectB
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockOre;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +31,6 @@ public class GTNetwork {
     private static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(GTCEu.id("network"),
             () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
-
     private static void protectedSend(PacketDistributor.PacketTarget target, INetPacket packet) {
         try {
             INSTANCE.send(target, packet);
@@ -47,8 +45,6 @@ public class GTNetwork {
         try {
             INSTANCE.sendToServer(packet);
         } catch (Exception e) {
-            // If the send failed because the server connection was lost, ignore the error.
-            if (Minecraft.getInstance().getConnection() == null) return;
             GTCEu.LOGGER.warn("Failed to send packet: {}", e.getLocalizedMessage());
         }
     }
