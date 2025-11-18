@@ -771,19 +771,19 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder chancedInput (ItemStack stack, int chance, int tierChanceBoost){
+    public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
         return chancedInput(Ingredient.of(stack), chance, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedInput (FluidStack stack, int chance, int tierChanceBoost){
+    public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
         return chancedInput(FluidIngredient.of(stack), chance, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput (ItemStack stack, int chance, int tierChanceBoost){
+    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
         return chancedOutput(Ingredient.of(stack), chance, tierChanceBoost);
     }
 
-    public GTRecipeBuilder chancedOutput (FluidStack stack, int chance, int tierChanceBoost){
+    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
         return chancedOutput(FluidIngredient.of(stack), chance, tierChanceBoost);
     }
 

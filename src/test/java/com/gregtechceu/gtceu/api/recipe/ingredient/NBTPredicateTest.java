@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
-
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -30,6 +29,7 @@ import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class NBTPredicateTest {
+
     private static GTRecipeType CR_RECIPE_TYPE;
 
     @BeforeBatch(batch = "NBTPredicateTest")
@@ -56,7 +56,7 @@ public class NBTPredicateTest {
         CR_RECIPE_TYPE.getLookup().addRecipe(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_ranged")
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
-                                new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0,4)))
+                                new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0, 4)))
                         .outputItems(new ItemStack(Items.COBBLESTONE))
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)
@@ -66,7 +66,7 @@ public class NBTPredicateTest {
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced_ranged")
                         .chance(4000)
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
-                                new ItemStack(Items.FEATHER), eq("bash", "botch")), UniformInt.of(0,4)))
+                                new ItemStack(Items.FEATHER), eq("bash", "botch")), UniformInt.of(0, 4)))
                         .chance(10000)
                         .outputItems(new ItemStack(Items.DEEPSLATE))
                         .EUt(GTValues.V[GTValues.HV])
@@ -230,7 +230,6 @@ public class NBTPredicateTest {
         helper.succeed();
     }
 
-
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestSucceeds(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -246,7 +245,8 @@ public class NBTPredicateTest {
         inputStack.getOrCreateTag().putString("foo", "bar");
         itemIn.setStackInSlot(0, inputStack);
         helper.runAfterDelay(10, () -> {
-            helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COAL)), "NBT Predicate test didn't run when it should have.");
+            helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COAL)),
+                    "NBT Predicate test didn't run when it should have.");
             helper.succeed();
         });
     }
@@ -266,7 +266,8 @@ public class NBTPredicateTest {
         inputStack.getOrCreateTag().putString("foo", "baz");
         itemIn.setStackInSlot(0, inputStack);
         helper.runAfterDelay(10, () -> {
-            helper.assertFalse(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COAL)), "NBT Predicate test ran when it shouldn't have.");
+            helper.assertFalse(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COAL)),
+                    "NBT Predicate test ran when it shouldn't have.");
             helper.succeed();
         });
     }
@@ -282,15 +283,15 @@ public class NBTPredicateTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        var inputStack = new ItemStack(Items.FEATHER, 15); //one short, a chance roll needs to fail
+        var inputStack = new ItemStack(Items.FEATHER, 15); // one short, a chance roll needs to fail
         inputStack.getOrCreateTag().putString("bin", "bar");
         itemIn.setStackInSlot(0, inputStack);
-        helper.runAfterDelay(4*16+1, () -> {
+        helper.runAfterDelay(4 * 16 + 1, () -> {
             helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.CHARCOAL)),
                     "NBT Predicate Chanced test ran the wrong recipe!");
             helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
-                    "NBT Predicate Chanced test didn't complete enough recipe runs, completed ["+
-                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+                    "NBT Predicate Chanced test didn't complete enough recipe runs, completed [" +
+                            itemOut.getStackInSlot(0).getCount() + "], not [16]");
             helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
                     "NBT Predicate Chanced test didn't consume items");
             helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
@@ -310,15 +311,15 @@ public class NBTPredicateTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        var inputStack = new ItemStack(Items.FEATHER, 63); //one short, a range needs to roll not max
+        var inputStack = new ItemStack(Items.FEATHER, 63); // one short, a range needs to roll not max
         inputStack.getOrCreateTag().putString("bash", "bar");
         itemIn.setStackInSlot(0, inputStack);
-        helper.runAfterDelay(4*16+1, () -> {
+        helper.runAfterDelay(4 * 16 + 1, () -> {
             helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COBBLESTONE)),
                     "NBT Predicate Ranged test ran the wrong recipe!");
             helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
-                    "NBT Predicate Ranged test didn't complete enough recipe runs, completed ["+
-                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+                    "NBT Predicate Ranged test didn't complete enough recipe runs, completed [" +
+                            itemOut.getStackInSlot(0).getCount() + "], not [16]");
             helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
                     "NBT Predicate Ranged test didn't consume items");
             helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
@@ -338,15 +339,15 @@ public class NBTPredicateTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        var inputStack = new ItemStack(Items.FEATHER, 63); //one short, a chance or range needs to not max
+        var inputStack = new ItemStack(Items.FEATHER, 63); // one short, a chance or range needs to not max
         inputStack.getOrCreateTag().putString("bash", "botch");
         itemIn.setStackInSlot(0, inputStack);
-        helper.runAfterDelay(4*16+1, () -> {
+        helper.runAfterDelay(4 * 16 + 1, () -> {
             helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.DEEPSLATE)),
                     "NBT Predicate Chanced Ranged test ran the wrong recipe!");
             helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
-                    "NBT Predicate Chanced Ranged test didn't complete enough recipe runs, completed ["+
-                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+                    "NBT Predicate Chanced Ranged test didn't complete enough recipe runs, completed [" +
+                            itemOut.getStackInSlot(0).getCount() + "], not [16]");
             helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
                     "NBT Predicate Chanced Ranged test didn't consume items");
             helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
