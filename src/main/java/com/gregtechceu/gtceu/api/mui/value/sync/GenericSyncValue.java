@@ -132,6 +132,11 @@ public class GenericSyncValue<T> extends ValueSyncHandler<T> {
     }
 
     @Override
+    public void notifyUpdate() {
+        setValue(this.getter.get(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         this.serializer.serialize(buffer, this.cache);
     }

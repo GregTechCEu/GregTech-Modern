@@ -8,12 +8,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Objects;
 
 public class SecondaryPanel implements IPanelHandler {
 
+    @Getter
     private final ModularPanel parent;
     private final IPanelBuilder provider;
     private final boolean subPanel;
@@ -32,7 +34,7 @@ public class SecondaryPanel implements IPanelHandler {
     @Override
     public void closePanel() {
         if (!this.open) return;
-        this.panel.animateClose();
+        this.panel.closeIfOpen();
     }
 
     @Override

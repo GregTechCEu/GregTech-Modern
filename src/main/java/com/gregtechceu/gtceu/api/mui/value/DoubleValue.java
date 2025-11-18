@@ -1,12 +1,23 @@
 package com.gregtechceu.gtceu.api.mui.value;
 
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
+import com.gregtechceu.gtceu.api.mui.base.value.IFloatValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+
+import com.google.common.util.concurrent.AtomicDouble;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-public class DoubleValue implements IDoubleValue<Double>, IStringValue<Double> {
+public class DoubleValue implements IDoubleValue<Double>, IFloatValue<Double>, IStringValue<Double> {
+
+    public static Dynamic wrap(IDoubleValue<?> val) {
+        return new Dynamic(val::getDoubleValue, val::setDoubleValue);
+    }
+
+    public static Dynamic wrapAtomic(AtomicDouble val) {
+        return new Dynamic(val::get, val::set);
+    }
 
     private double value;
 
@@ -42,6 +53,16 @@ public class DoubleValue implements IDoubleValue<Double>, IStringValue<Double> {
     @Override
     public void setStringValue(String val) {
         setDoubleValue(Double.parseDouble(val));
+    }
+
+    @Override
+    public float getFloatValue() {
+        return (float) getDoubleValue();
+    }
+
+    @Override
+    public void setFloatValue(float val) {
+        setDoubleValue(val);
     }
 
     public static class Dynamic implements IDoubleValue<Double>, IStringValue<Double> {

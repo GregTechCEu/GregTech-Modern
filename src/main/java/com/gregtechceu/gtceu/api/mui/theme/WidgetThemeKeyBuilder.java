@@ -34,15 +34,25 @@ public class WidgetThemeKeyBuilder<T extends WidgetTheme> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public WidgetThemeKey<T> register() {
         Objects.requireNonNull(this.id, "Id for widget theme must not be null");
         Objects.requireNonNull(this.defaultTheme,
                 "Default theme for widget theme must not be null, but is null for id '" + this.id + "'.");
         if (parser == null) parser = createParserWithReflection();
-        if (defaultHoverTheme == null) defaultHoverTheme = defaultTheme;
+        if (defaultHoverTheme == null) {
+            WidgetTheme hover = this.defaultTheme.withNoHoverBackground();
+            if (hover.getClass() != this.defaultTheme.getClass()) {
+                throw new IllegalArgumentException(
+                        "Tried to create a default hover theme, but method withNoHoverBackground()" +
+                                "is not overridden to create its type");
+            }
+            defaultHoverTheme = (T) hover;
+        }
         return IThemeApi.get().registerWidgetTheme(this.id, this.defaultTheme, this.defaultHoverTheme, this.parser);
     }
 
+    @SuppressWarnings("unchecked")
     private WidgetThemeParser<T> createParserWithReflection() {
         Class<T> type = (Class<T>) this.defaultTheme.getClass();
         try {

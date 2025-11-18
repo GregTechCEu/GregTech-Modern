@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.base.widget;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Marks a widget as synced
@@ -40,8 +44,29 @@ public interface ISynced<W extends IWidget> {
     }
 
     default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz) {
+        return castIfTypeElseNull(syncHandler, clazz, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T> T castIfTypeElseNull(SyncHandler syncHandler, Class<T> clazz, @Nullable Consumer<T> setup) {
         if (syncHandler != null && clazz.isAssignableFrom(syncHandler.getClass())) {
-            return (T) syncHandler;
+            T t = (T) syncHandler;
+            if (setup != null) setup.accept(t);
+            return t;
+        }
+        return null;
+    }
+
+    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz) {
+        return castIfTypeGenericElseNull(syncHandler, clazz, null);
+    }
+
+    default <T> GenericSyncValue<T> castIfTypeGenericElseNull(SyncHandler syncHandler, Class<T> clazz,
+                                                              @Nullable Consumer<GenericSyncValue<T>> setup) {
+        if (syncHandler instanceof GenericSyncValue<?> genericSyncValue && genericSyncValue.isOfType(clazz)) {
+            GenericSyncValue<T> t = genericSyncValue.cast();
+            if (setup != null) setup.accept(t);
+            return t;
         }
         return null;
     }
@@ -60,7 +85,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param name sync handler key name
      * @param id   sync handler key id
@@ -70,7 +95,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param key sync handler name
      * @return this
@@ -81,7 +106,7 @@ public interface ISynced<W extends IWidget> {
 
     /**
      * Sets the sync handler key. The sync handler will be obtained in
-     * {@link #initialiseSyncHandler(ModularSyncManager)}
+     * {@link #initialiseSyncHandler(ModularSyncManager, boolean)}
      *
      * @param id sync handler id
      * @return this

@@ -28,12 +28,9 @@ public class DynamicSyncedWidget<W extends DynamicSyncedWidget<W>> extends Widge
 
     @Override
     public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        if (syncHandler instanceof DynamicSyncHandler dynamicSyncHandler) {
-            this.syncHandler = dynamicSyncHandler;
-            dynamicSyncHandler.attachDynamicWidgetListener(this::updateChild);
-            return true;
-        }
-        return false;
+        this.syncHandler = castIfTypeElseNull(syncHandler, DynamicSyncHandler.class,
+                t -> t.attachDynamicWidgetListener(this::updateChild));
+        return this.syncHandler != null;
     }
 
     @Override

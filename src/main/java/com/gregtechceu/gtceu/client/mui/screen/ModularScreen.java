@@ -657,6 +657,8 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
      * @param action action listener
      */
     public void registerGuiActionListener(IGuiAction action) {
+        // TODO these should be linked to a IWidget, which can be checked for isValid() and is panel open on use ->
+        // proper event system
         List<IGuiAction> list = this.guiActionListeners.computeIfAbsent(getGuiActionClass(action),
                 key -> new ArrayList<>());
         if (!list.contains(action)) list.add(action);

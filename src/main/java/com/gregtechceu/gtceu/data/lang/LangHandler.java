@@ -1303,6 +1303,11 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
         provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
 
+        provider.add("gtceu.gui.item_auto_output", "Item Output: %s");
+        provider.add("gtceu.gui.item_input_from_output", "Item Input from Output: %s");
+        provider.add("gtceu.gui.fluid_auto_output", "Fluid Output: %s");
+        provider.add("gtceu.gui.fluid_input_from_output", "Fluid Input from Output: %s");
+
         // Decor Stuff
         replace(provider, "block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");
         replace(provider, "block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
