@@ -195,13 +195,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 true);
         IPanelHandler helpPanel = syncManager.panel(
                 "help_panel",
-                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1),
+                (syncManager1, panelHandler1) -> createHelpPanel(),
                 true);
         return new ModularPanel("group_editor_" + group.getName())
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
-                .padding(10)
                 .child(Flow.column()
+                        .padding(10)
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
                         .child(Flow.row()
                                 .height(20)
@@ -217,18 +217,19 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .onMousePressed((mouseX, mouseY, button) -> {
                                             if (moduleEditor != null) moduleEditor.openPanel();
                                             return moduleEditor != null;
-                                        }))
-                                .child(new ButtonWidget<>()
-                                        .background(GTGuiTextures.HELP)
-                                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
-                                        .onMousePressed((mouseX, mouseY, button) -> {
-                                            helpPanel.openPanel();
-                                            return true;
                                         })))
-                        .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)));
+                        .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
+                .child(new ButtonWidget<>()
+                        .align(Alignment.TopRight)
+                        .background(GTGuiTextures.HELP)
+                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                        .onMousePressed((mouseX, mouseY, button) -> {
+                            helpPanel.openPanel();
+                            return true;
+                        }));
     }
 
-    private ModularPanel createHelpPanel(PanelSyncManager syncManager) {
+    private ModularPanel createHelpPanel() {
         return new ModularPanel("help_panel")
                 .width(500)
                 .height(300)
@@ -236,40 +237,77 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .margin(5)
                         .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.help")))
                         .child(Flow.row()
-                                .padding(5)
-                                .height(50)
+                                .marginTop(10)
+                                .height(40)
+                                .widthRel(1)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF0000, 1),
-                                        GTGuiTextures.MONITOR))
+                                        GTGuiTextures.MONITOR)
+                                        .heightRel(1)
+                                        .width(40)
+                                        .padding(11)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group"))
                                         .widthRel(.5f)
+                                        .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.left_click"))))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.left_click"))
+                                        .padding(5)
+                                        .widthRelOffset(.5f, -40)
+                                        .heightRel(1)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground()))
                         .child(Flow.row()
-                                .padding(5)
-                                .height(50)
-                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1)))
+                                .height(40)
+                                .widthRel(1)
+                                .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1))
+                                        .heightRel(1)
+                                        .width(40)
+                                        .padding(11)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.target"))
                                         .widthRel(.5f)
+                                        .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.right_click"))))
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.right_click"))
+                                        .padding(5)
+                                        .widthRelOffset(.5f, -40)
+                                        .heightRel(1)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground()))
                         .child(Flow.row()
-                                .padding(5)
-                                .height(50)
+                                .height(40)
+                                .widthRel(1)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFFFF00FF, 1),
-                                        GTGuiTextures.MONITOR))
+                                        GTGuiTextures.MONITOR)
+                                        .heightRel(1)
+                                        .width(40)
+                                        .padding(11)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.in_group_and_target"))
+                                        .widthRelOffset(1, -40)
+                                        .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1))))
                         .child(Flow.row()
-                                .padding(5)
-                                .height(50)
+                                .height(40)
+                                .widthRel(1)
                                 .child(new IDrawable.DrawableWidget(new BorderDrawable(0xFF0000FF, 1),
-                                        GTGuiTextures.DATA_HATCH, IKey.str("7")))
+                                        GTGuiTextures.DATA_HATCH, IKey.str("7").color(0xFFFFFFFF))
+                                        .heightRel(1)
+                                        .width(40)
+                                        .padding(11)
+                                        .background(new BorderDrawable(0xFF888888, 1))
+                                        .disableHoverBackground())
                                 .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.data_hatch_target"))
+                                        .widthRelOffset(1, -40)
+                                        .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1)))));
     }
