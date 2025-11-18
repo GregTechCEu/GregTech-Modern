@@ -56,7 +56,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
         Function<SortableListWidget.Item<MonitorGroup>, SortableListWidget.Item<MonitorGroup>> processGroupItem = item -> {
             IPanelHandler panelHandler = syncManager.panel(
-                    "editor_" + item.getWidgetValue().getName(),
+                    "editor_" + groups.indexOf(item.getWidgetValue()),
                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
                             syncManager1, groupSync,
                             machine, item.getWidgetValue(), groups),
@@ -84,7 +84,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                             })));
         };
         IPanelHandler newGroupPanelHandler = syncManager.panel(
-                "editor_" + getNewGroupName(groupSync),
+                "editor_" + groups.size(),
                 (syncManager1, panelHandler1) -> {
                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
                     groups.add(group);
