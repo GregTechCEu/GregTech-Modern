@@ -16,8 +16,10 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -40,31 +42,36 @@ public class NBTPredicateTest {
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(5)
                         .buildRawRecipe());
-/*
+
         CR_RECIPE_TYPE.getLookup().addRecipe(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced")
-                        .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("foo", "bar"))
-                        .outputItems(new ItemStack(Items.COAL))
+                        .chance(4000)
+                        .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("bin", "bar"))
+                        .chance(10000)
+                        .outputItems(new ItemStack(Items.CHARCOAL))
                         .EUt(GTValues.V[GTValues.HV])
-                        .duration(5)
+                        .duration(4)
                         .buildRawRecipe());
 
         CR_RECIPE_TYPE.getLookup().addRecipe(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_ranged")
-                        .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("foo", "bar"))
-                        .outputItems(new ItemStack(Items.COAL))
+                        .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
+                                new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0,4)))
+                        .outputItems(new ItemStack(Items.COBBLESTONE))
                         .EUt(GTValues.V[GTValues.HV])
-                        .duration(5)
+                        .duration(4)
                         .buildRawRecipe());
 
         CR_RECIPE_TYPE.getLookup().addRecipe(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced_ranged")
-                        .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("foo", "bar"))
-                        .outputItems(new ItemStack(Items.COAL))
+                        .chance(4000)
+                        .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
+                                new ItemStack(Items.FEATHER), eq("bash", "botch")), UniformInt.of(0,4)))
+                        .chance(10000)
+                        .outputItems(new ItemStack(Items.DEEPSLATE))
                         .EUt(GTValues.V[GTValues.HV])
-                        .duration(5)
+                        .duration(4)
                         .buildRawRecipe());
- */
     }
 
     @GameTest(template = "empty", batch = "NBTPredicateTest")
@@ -260,6 +267,90 @@ public class NBTPredicateTest {
         itemIn.setStackInSlot(0, inputStack);
         helper.runAfterDelay(10, () -> {
             helper.assertFalse(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COAL)), "NBT Predicate test ran when it shouldn't have.");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
+    public static void NBTPredicateMachineCRTestChanced(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        var inputStack = new ItemStack(Items.FEATHER, 15); //one short, a chance roll needs to fail
+        inputStack.getOrCreateTag().putString("bin", "bar");
+        itemIn.setStackInSlot(0, inputStack);
+        helper.runAfterDelay(4*16+1, () -> {
+            helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.CHARCOAL)),
+                    "NBT Predicate Chanced test ran the wrong recipe!");
+            helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
+                    "NBT Predicate Chanced test didn't complete enough recipe runs, completed ["+
+                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+            helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
+                    "NBT Predicate Chanced test didn't consume items");
+            helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
+                    "NBT Predicate Chanced test consumed too many items");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
+    public static void NBTPredicateMachineCRTestRanged(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        var inputStack = new ItemStack(Items.FEATHER, 63); //one short, a range needs to roll not max
+        inputStack.getOrCreateTag().putString("bash", "bar");
+        itemIn.setStackInSlot(0, inputStack);
+        helper.runAfterDelay(4*16+1, () -> {
+            helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.COBBLESTONE)),
+                    "NBT Predicate Ranged test ran the wrong recipe!");
+            helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
+                    "NBT Predicate Ranged test didn't complete enough recipe runs, completed ["+
+                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+            helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
+                    "NBT Predicate Ranged test didn't consume items");
+            helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
+                    "NBT Predicate Ranged test consumed too many items");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
+    public static void NBTPredicateMachineCRTestChancedRanged(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        var inputStack = new ItemStack(Items.FEATHER, 63); //one short, a chance or range needs to not max
+        inputStack.getOrCreateTag().putString("bash", "botch");
+        itemIn.setStackInSlot(0, inputStack);
+        helper.runAfterDelay(4*16+1, () -> {
+            helper.assertTrue(ItemStack.isSameItemSameTags(itemOut.getStackInSlot(0), new ItemStack(Items.DEEPSLATE)),
+                    "NBT Predicate Chanced Ranged test ran the wrong recipe!");
+            helper.assertTrue(itemOut.getStackInSlot(0).getCount() == 16,
+                    "NBT Predicate Chanced Ranged test didn't complete enough recipe runs, completed ["+
+                    itemOut.getStackInSlot(0).getCount()+"], not [16]");
+            helper.assertFalse(itemIn.getStackInSlot(0).getCount() == 15,
+                    "NBT Predicate Chanced Ranged test didn't consume items");
+            helper.assertFalse(itemIn.getStackInSlot(0).isEmpty(),
+                    "NBT Predicate Chanced Ranged test consumed too many items");
             helper.succeed();
         });
     }

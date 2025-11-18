@@ -464,12 +464,12 @@ public class GTRecipeBuilder {
         return inputItems(machine.asStack(count));
     }
 
-    public GTRecipeBuilder inputItemsRanged(IntProviderIngredient provider) {
+    public GTRecipeBuilder inputItemRanged(IntProviderIngredient provider) {
         return inputItems(provider);
     }
 
     public GTRecipeBuilder inputItemsRanged(ItemStack input, IntProvider intProvider) {
-        return inputItemsRanged(IntProviderIngredient.of(input, intProvider));
+        return inputItemRanged(IntProviderIngredient.of(input, intProvider));
     }
 
     public GTRecipeBuilder inputItemsRanged(Item input, IntProvider intProvider) {
@@ -618,12 +618,12 @@ public class GTRecipeBuilder {
         return output(ItemRecipeCapability.CAP, ingredient);
     }
 
-    public GTRecipeBuilder outputItemsRanged(IntProviderIngredient provider) {
+    public GTRecipeBuilder outputItemRanged(IntProviderIngredient provider) {
         return outputItems(provider);
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return outputItemsRanged(IntProviderIngredient.of(output, intProvider));
+        return outputItemRanged(IntProviderIngredient.of(output, intProvider));
     }
 
     public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {
