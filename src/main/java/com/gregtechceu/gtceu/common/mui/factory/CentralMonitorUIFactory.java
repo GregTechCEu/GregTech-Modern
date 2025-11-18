@@ -38,8 +38,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
-import java.util.stream.Collectors;
 
 public class CentralMonitorUIFactory implements PanelFactory {
 
@@ -53,11 +53,42 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 machine::setMonitorGroups, ByteBufAdapters.MONITOR_GROUPS);
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
+        SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
+        Function<SortableListWidget.Item<MonitorGroup>, SortableListWidget.Item<MonitorGroup>> processGroupItem = item -> {
+            IPanelHandler panelHandler = syncManager.panel(
+                    "editor_" + item.getWidgetValue().getName(),
+                    (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
+                            syncManager1, groupSync,
+                            machine, item.getWidgetValue(), groups),
+                    true);
+            return item.child(Flow.row()
+                    .height(20)
+                    .child(new TextWidget<>(item.getWidgetValue().getName())
+                            .paddingLeft(5)
+                            .widthRelOffset(1, -36))
+                    .child(new ButtonWidget<>()
+                            .background(GTGuiTextures.EDIT)
+                            .hoverBackground(GTGuiTextures.EDIT, new BorderDrawable())
+                            .onMousePressed((mouseX, mouseY, button) -> {
+                                panelHandler.openPanel();
+                                return true;
+                            }))
+                    .child(new ButtonWidget<>()
+                            .background(GTGuiTextures.CLOSE)
+                            .hoverBackground(GTGuiTextures.CLOSE, new BorderDrawable())
+                            .onMousePressed((mouseX, mouseY, button) -> {
+                                groups.remove(item.getWidgetValue());
+                                groupSync.setValue(groups);
+                                item.removeSelfFromList();
+                                return true;
+                            })));
+        };
         IPanelHandler newGroupPanelHandler = syncManager.panel(
                 "editor_" + getNewGroupName(groupSync),
                 (syncManager1, panelHandler1) -> {
                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
                     groups.add(group);
+                    listWidget.child(processGroupItem.apply(new SortableListWidget.Item<>(group)));
                     groupSync.setValue(groups, true, false);
                     return this.createGroupEditorPanel(
                             syncManager1, groupSync,
@@ -81,29 +112,12 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             return true;
                                         }))
                                 .widthRel(1).height(20))
-                        .child(new ListWidget<>().children(
+                        .child(listWidget.children(
                                 groups.stream()
-                                        .map(group -> {
-                                            IPanelHandler panelHandler = syncManager.panel(
-                                                    "editor_" + group.getName(),
-                                                    (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
-                                                            syncManager1, groupSync,
-                                                            machine, group, groups),
-                                                    true);
-                                            return new Flow(GuiAxis.X)
-                                                    .height(20)
-                                                    .child(new TextWidget<>(group.getName()))
-                                                    .child(new ButtonWidget<>()
-                                                            .alignX(1)
-                                                            .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
-                                                            .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
-                                                                    GTGuiTextures.EDIT)
-                                                            .onMousePressed((mouseX, mouseY, button) -> {
-                                                                panelHandler.openPanel();
-                                                                return true;
-                                                            }));
-                                        })
-                                        .collect(Collectors.toUnmodifiableList()))
+                                        .map(SortableListWidget.Item::new)
+                                        .map(processGroupItem)
+                                        .toList())
+                                .onChange(groupSync::setValue)
                                 .widthRel(1).heightRel(.8f)))
                 .child(SlotGroupWidget.playerInventory(true));
     }
@@ -197,7 +211,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 "help_panel",
                 (syncManager1, panelHandler1) -> createHelpPanel(),
                 true);
-        return new ModularPanel("group_editor_" + group.getName())
+        return new ModularPanel("editor_" + group.getName())
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
                 .child(Flow.column()
