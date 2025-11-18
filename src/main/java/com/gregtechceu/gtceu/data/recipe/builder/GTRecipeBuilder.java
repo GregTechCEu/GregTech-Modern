@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -376,23 +377,8 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack input) {
         if (missingIngredientError(0, true, ItemRecipeCapability.CAP, input::isEmpty)) {
             return this;
-        } else {
-            var matInfo = ItemMaterialData.getMaterialInfo(input.getItem());
-            var unresolvedMatInfo = ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.get(input);
-            if (chance == maxChance && chance != 0) {
-                if (unresolvedMatInfo != null) {
-                    tempItemStacks.add(input);
-                }
-                if (matInfo != null) {
-                    for (var matStack : matInfo.getMaterials()) {
-                        tempItemMaterialStacks.add(matStack.multiply(input.getCount()));
-                    }
-                } else if (unresolvedMatInfo == null) {
-                    tempItemStacks.add(input);
-                }
-
-            }
         }
+        gatherMaterialInfoFromStack(input);
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
     }
 
@@ -403,16 +389,7 @@ public class GTRecipeBuilder {
             if (missingIngredientError(i, true, ItemRecipeCapability.CAP, itemStack::isEmpty)) {
                 return this;
             } else {
-                var matInfo = ItemMaterialData.getMaterialInfo(itemStack.getItem());
-                if (chance == maxChance && chance != 0) {
-                    if (matInfo != null) {
-                        for (var matStack : matInfo.getMaterials()) {
-                            tempItemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
-                        }
-                    } else {
-                        tempItemStacks.add(itemStack);
-                    }
-                }
+                gatherMaterialInfoFromStack(itemStack);
                 ingredients.add(SizedIngredient.create(itemStack));
             }
         }
@@ -510,6 +487,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
         return inputItemsRanged(machine.asStack(), intProvider);
+    }
+
+    public GTRecipeBuilder inputItemNbtPredicate(ItemStack stack, NBTPredicate predicate) {
+        if (missingIngredientError(0, true, ItemRecipeCapability.CAP, input::isEmpty)) {
+            return this;
+        }
+        gatherMaterialInfoFromStack(stack);
+        return inputItems(NBTPredicateIngredient.of(stack, predicate));
     }
 
     public GTRecipeBuilder outputItems(Object output) {
@@ -1553,6 +1538,24 @@ public class GTRecipeBuilder {
         tempFluidStacks = null;
 
         consumer.accept(build());
+    }
+
+    private void gatherMaterialInfoFromStack(ItemStack input) {
+        var matInfo = ItemMaterialData.getMaterialInfo(input.getItem());
+        var unresolvedMatInfo = ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.get(input);
+        if (chance == maxChance && chance != 0) {
+            if (unresolvedMatInfo != null) {
+                tempItemStacks.add(input);
+            }
+            if (matInfo != null) {
+                for (var matStack : matInfo.getMaterials()) {
+                    tempItemMaterialStacks.add(matStack.multiply(input.getCount()));
+                }
+            } else if (unresolvedMatInfo == null) {
+                tempItemStacks.add(input);
+            }
+
+        }
     }
 
     private void addOutputMaterialInfo() {

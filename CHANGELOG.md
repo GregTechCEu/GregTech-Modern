@@ -1,5 +1,41 @@
 # ChangeLog
 
+## Version [v7.3.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.2.1-1.20.1...v7.3.0-1.20.1)
+### Added
+
+- Re-enable using Screwdriver to toggle Drum auto output, if Allow Input From Output Side is disabled by @DilithiumThoride in [#4163](https://github.com/GregTechCEu/GregTech-Modern/pull/4163)
+- Implement voiding mode by @nutant233 in [#3924](https://github.com/GregTechCEu/GregTech-Modern/pull/3924)
+- Turbine Energy Voiding by @YoungOnionMC in [#4177](https://github.com/GregTechCEu/GregTech-Modern/pull/4177)
+- Max Parallel Setting on place by @YoungOnionMC in [#4186](https://github.com/GregTechCEu/GregTech-Modern/pull/4186)
+- Miner block replacement by @YoungOnionMC in [#4021](https://github.com/GregTechCEu/GregTech-Modern/pull/4021)
+- Change some formulas to make them more accurate by @TarLaboratories in [#4017](https://github.com/GregTechCEu/GregTech-Modern/pull/4017)
+
+### Fixed
+
+- Fix CC integration with the monitor cover by @TarLaboratories in [#4143](https://github.com/GregTechCEu/GregTech-Modern/pull/4143)
+- Add material existing checks before making pipe recipes by @jurrejelle in [#4146](https://github.com/GregTechCEu/GregTech-Modern/pull/4146)
+- Fix toggling Advanced Energy Detector Cover between EU and % modes causing values to decrement by @DilithiumThoride in [#4159](https://github.com/GregTechCEu/GregTech-Modern/pull/4159)
+- Fix Stone Pressure Plate / Button recipe conflict by @DilithiumThoride in [#4131](https://github.com/GregTechCEu/GregTech-Modern/pull/4131)
+- Re-enable using Screwdriver to toggle Drum auto output, if Allow Input From Output Side is disabled by @DilithiumThoride in [#4163](https://github.com/GregTechCEu/GregTech-Modern/pull/4163)
+- Validate KubeJS recipes to ensure no invalid/missing ingredients by @mikerooni in [#4170](https://github.com/GregTechCEu/GregTech-Modern/pull/4170)
+- fix (steam) multiblocks not resetting progress on powerfail by @DilithiumThoride in [#4181](https://github.com/GregTechCEu/GregTech-Modern/pull/4181)
+- Add missing tooltips for auto-output buttons in machine UIs by @mikerooni in [#4180](https://github.com/GregTechCEu/GregTech-Modern/pull/4180)
+- Fix XEI display for recipes with IO and TickIO of the same ingredient type by @DilithiumThoride in [#4137](https://github.com/GregTechCEu/GregTech-Modern/pull/4137)
+- Fix Jade provider displaying no energy for addon steam machines consuming 1mB/t by @DilithiumThoride in [#4127](https://github.com/GregTechCEu/GregTech-Modern/pull/4127)
+- Fix ore veins with only one layer causing crashes by @screret in [#4183](https://github.com/GregTechCEu/GregTech-Modern/pull/4183)
+- Fix Ranged Fluid Ingredients deserializing incorrectly in SMP by @DilithiumThoride in [#4150](https://github.com/GregTechCEu/GregTech-Modern/pull/4150)
+- Swap Diluted HCl to return HCl on Circuit 1 by @DilithiumThoride in [#4125](https://github.com/GregTechCEu/GregTech-Modern/pull/4125)
+- Fix Tool Matching using every Item tag by @YoungOnionMC in [#3945](https://github.com/GregTechCEu/GregTech-Modern/pull/3945)
+- Ore Maceration Changes by @YoungOnionMC in [#4020](https://github.com/GregTechCEu/GregTech-Modern/pull/4020)
+
+### Changed
+
+- update ja_jp by @code-onigiri in [#4099](https://github.com/GregTechCEu/GregTech-Modern/pull/4099)
+- Deprecate ChanceLogic.FIRST by @DilithiumThoride in [#4109](https://github.com/GregTechCEu/GregTech-Modern/pull/4109)
+- Holistic Rebalance to the Large and Small Boiler by @Ghostipedia in [#4075](https://github.com/GregTechCEu/GregTech-Modern/pull/4075)
+- Ore Maceration Changes by @YoungOnionMC in [#4020](https://github.com/GregTechCEu/GregTech-Modern/pull/4020)
+
+ 
 ## Version [v7.2.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v.7.2.0-1.20.1...v7.2.1-1.20.1)
 ### Added
 
