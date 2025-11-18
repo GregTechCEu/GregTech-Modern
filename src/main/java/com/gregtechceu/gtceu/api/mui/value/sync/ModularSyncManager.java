@@ -114,7 +114,7 @@ public class ModularSyncManager {
             psm.receiveWidgetUpdate(mapKey, action, id, buf);
         } else if (!this.panelHistory.contains(panelName)) {
             GTCEu.LOGGER.throwing(new IllegalStateException(
-                    "A packet was send to panel '\" + panelName + \"' which was not opened yet!"));
+                    "A packet was send to panel '" + panelName + "' which was not opened yet!"));
         }
         // else the panel was open at some point
         // we simply discard the packet silently and assume the packet was correctly send, but the panel closed earlier

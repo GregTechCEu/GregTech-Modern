@@ -134,10 +134,12 @@ public class CentralMonitorUIFactory implements PanelFactory {
             for (int col = 0; col <= machine.getLeftDist() + machine.getRightDist(); col++) {
                 IMonitorComponent component = machine.getComponent(row, col);
                 IDrawable texture = component == null ? GTGuiTextures.CROSS : component.getIcon();
+                int finalCol = col;
+                int finalRow = row;
                 IPanelHandler slotDialogHandler = component == null || component.getDataItems() == null ?
                         null : syncManager.panel("slotDialog",
                                 (syncManager1, panelHandler1) -> new SimpleDialog<>(
-                                        "slot_number_dialog",
+                                        "slot_number_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
                                         slot -> {
                                             group.setTarget(component.getPos());
                                             group.setDataSlot(slot - 1);
@@ -203,12 +205,12 @@ public class CentralMonitorUIFactory implements PanelFactory {
         }
         IMonitorModuleItem finalModuleItem = moduleItem;
         IPanelHandler moduleEditor = moduleItem == null ? null : syncManager.panel(
-                "module_editor",
+                "module_editor_" + groups.indexOf(group),
                 (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1,
                         panelHandler1),
                 true);
         IPanelHandler helpPanel = syncManager.panel(
-                "help_panel",
+                "help_panel_" + groups.indexOf(group),
                 (syncManager1, panelHandler1) -> createHelpPanel(),
                 true);
         return new ModularPanel("editor_" + group.getName())
