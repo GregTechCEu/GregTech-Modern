@@ -1669,9 +1669,11 @@ public class LangHandler {
                 "Input string to display on line %d here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
                 "Placeholders can also be inside other placeholders.");
-        multiLang(provider, "gtceu.gui.computer_monitor_cover.slot_tooltip",
-                "A slot for items that some placeholders can reference",
-                "Slot number: %d");
+        provider.add("gtceu.gui.computer_monitor_cover.slot_tooltip",
+                """
+                        A slot for items that some placeholders can reference
+                        Slot number: %d
+                        """);
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");

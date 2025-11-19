@@ -9,11 +9,9 @@ import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
@@ -84,6 +82,15 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .resizeableOnDrag(true)
                 .child(Flow.row()
                         .child(Flow.column()
+                                .coverChildren()
+                                .paddingLeft(4)
+                                .children(
+                                        group.getPlaceholderSlotsHandler().getSlots(),
+                                        i -> new ItemSlot()
+                                                .slot(group.getPlaceholderSlotsHandler(), i)
+                                                .addTooltipLine(
+                                                        IKey.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
+                        .child(Flow.column()
                                 .widthRel(.8f)
                                 .padding(5)
                                 .child(Flow.row()
@@ -116,7 +123,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                         .language(PlaceholderHandler.LANG_DEFINITION)
                                         .value(SyncHandlers.string(() -> getPlaceholderText(stack),
                                                 s -> setPlaceholderText(stack, s)))
-                                        .sizeRel(.95f, .8f)))
+                                        .widthRel(.95f)
+                                        .heightRelOffset(() -> 1, -25)))
                         .child(new SortableListWidget<String>()
                                 .widthRel(.2f)
                                 .paddingBottom(5)
