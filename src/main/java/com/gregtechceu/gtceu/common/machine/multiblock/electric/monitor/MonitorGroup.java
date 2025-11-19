@@ -95,6 +95,7 @@ public class MonitorGroup {
     }
 
     public List<BlockPos> getRow(int row, UnaryOperator<BlockPos> toRelative) throws IndexOutOfBoundsException {
+        if (monitorPositions.isEmpty()) return List.of(new BlockPos(0, 0, 0));
         IntSet yLevelsSet = new IntOpenHashSet();
         for (BlockPos pos : monitorPositions) {
             yLevelsSet.add(toRelative.apply(pos).getY());
