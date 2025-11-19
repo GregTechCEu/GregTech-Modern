@@ -125,7 +125,6 @@ public class GTToolType {
                     .aoe(2, 2, 2)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
-            .constructor(GTHoeItem::new)
             .toolClassNames("scythe")
             .toolClasses(GTToolType.HOE)
             .defaultActions(ToolActions.HOE_DIG)
