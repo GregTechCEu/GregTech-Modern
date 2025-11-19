@@ -75,10 +75,22 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     @Override
     public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
+        IPanelHandler helpPanel = syncManager.panel("text_module_help",
+                (syncManager1, panelHandler1) -> createHelpPanel(), true);
         return new ModularPanel("text_module_editor")
                 .size(400, 250)
                 .resizeableOnDrag(true)
+                .excludeAreaInXei()
                 .child(Flow.row()
+                        .child(new ButtonWidget<>()
+                                .background(GTGuiTextures.HELP)
+                                .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                .padding(4)
+                                .align(Alignment.TopRight)
+                                .onMousePressed((mouseX, mouseY, button) -> {
+                                    helpPanel.openPanel();
+                                    return true;
+                                }))
                         .child(Flow.column()
                                 .coverChildren()
                                 .paddingLeft(4)
@@ -126,6 +138,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                         .child(new SortableListWidget<String>()
                                 .widthRel(.2f)
                                 .paddingBottom(5)
+                                .excludeAreaInXei()
                                 .children(PlaceholderHandler.getAllPlaceholderNames()
                                         .stream()
                                         .sorted()
@@ -143,6 +156,27 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))
                                         .toList())));
+    }
+
+    public ModularPanel createHelpPanel() {
+        return new ModularPanel("text_module_help")
+                .coverChildren()
+                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help"))
+                        .padding(5))
+                .child(new CodeEditorWidget<>()
+                        .padding(5)
+                        .setText(
+                                """
+                                        Energy: {calc {energy}00.0 / {energyCapacity}}%
+                                        Bar: {repeat {calc {energy}0.0 / {energyCapacity}} {color green {block}}}
+                                        Status: \\
+                                        {if {cmp {energy} >= {calc 0.7 * {energyCapacity}}} {color green OK} \\
+                                        {if {cmp {energy} >= {calc 0.4 * {energyCapacity}}} {color yellow WARNING} \\
+                                        {if {cmp {energy} >= {calc 0.2 * {energyCapacity}}} {color red LOW} \\
+                                        {color red CRITICAL}}}}
+
+                                        {eval {if {cmp {energy} < {calc 0.5 * {energyCapacity}}} "{redstone set 15}" "{redstone set 0}"}
+                                        """));
     }
 
     @Override

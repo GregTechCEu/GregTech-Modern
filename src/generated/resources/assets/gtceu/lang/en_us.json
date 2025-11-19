@@ -2361,6 +2361,7 @@
   "gtceu.gui.central_monitor.resume": "Unpause placeholder execution.",
   "gtceu.gui.central_monitor.right_click": "Select a block by right-clicking it. Only 1 block can be a target.",
   "gtceu.gui.central_monitor.target": "The block selected this way is considered a target, to be used with placeholders in a text module.",
+  "gtceu.gui.central_monitor.text_module_help": "This module displays text that can have placeholders.\nPlaceholders are strings like \"{energy}\" that when displayed, will display their value instead (in this case the amount of energy).\nThey can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.\nSome placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the\ncentral monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.\nSelect a target in the monitor group editing window, check out the help page there for more info.\nHere's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:\n",
   "gtceu.gui.central_monitor.text_scale": "Text scale",
   "gtceu.gui.central_monitor.update_once": "Update text and run all placeholders in it exactly once.",
   "gtceu.gui.charger_slot.tooltip.0": "§fCharger Slot§r",

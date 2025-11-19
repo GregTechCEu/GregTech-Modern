@@ -1648,6 +1648,16 @@ public class LangHandler {
                 "The monitor selected this way is used for displaying and as a target at the same time.");
         provider.add("gtceu.gui.central_monitor.data_hatch_target",
                 "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
+        provider.add("gtceu.gui.central_monitor.text_module_help",
+                """
+                        This module displays text that can have placeholders.
+                        Placeholders are strings like "{energy}" that when displayed, will display their value instead (in this case the amount of energy).
+                        They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.
+                        Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the
+                        central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.
+                        Select a target in the monitor group editing window, check out the help page there for more info.
+                        Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
+                        """);
         provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
         provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
         provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
