@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -145,11 +143,6 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))
                                         .toList())));
-    }
-
-    @Override
-    public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        return null;
     }
 
     @Override
