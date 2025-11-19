@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 
 public class ImageCache {
 
-    public static final long REFRESH_SECS = 120;
-    public static final long EXPIRE_SECS = 300;
+    public static final long REFRESH_SECS = 10;
+    public static final long EXPIRE_SECS = 30;
     private static final byte[] NULL_MARKER = new byte[0];
 
     private static boolean downloading = false;
