@@ -68,10 +68,9 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
         return this.handler.getText().stream().reduce("", (s1, s2) -> s1 + '\n' + s2).substring(1);
     }
 
-    public W setText(@NotNull String text) {
+    public void setText(@NotNull String text) {
         this.handler.getText().clear();
         this.handler.getText().addAll(Arrays.stream(text.split("\n")).toList());
-        return getThis();
     }
 
     public W value(IStringValue<?> stringValue) {

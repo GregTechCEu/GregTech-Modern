@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
@@ -82,15 +83,6 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .resizeableOnDrag(true)
                 .excludeAreaInXei()
                 .child(Flow.row()
-                        .child(new ButtonWidget<>()
-                                .background(GTGuiTextures.HELP)
-                                .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
-                                .padding(4)
-                                .align(Alignment.TopRight)
-                                .onMousePressed((mouseX, mouseY, button) -> {
-                                    helpPanel.openPanel();
-                                    return true;
-                                }))
                         .child(Flow.column()
                                 .coverChildren()
                                 .paddingLeft(4)
@@ -128,6 +120,14 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                 .onMousePressed((mouseX, mouseY, button) -> {
                                                     updateText(stack, machine, group);
                                                     return true;
+                                                }))
+                                        .child(new ButtonWidget<>()
+                                                .background(GTGuiTextures.HELP)
+                                                .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                                .margin(4)
+                                                .onMousePressed((mouseX, mouseY, button) -> {
+                                                    helpPanel.openPanel();
+                                                    return true;
                                                 })))
                                 .child(new CodeEditorWidget<>()
                                         .language(PlaceholderHandler.LANG_DEFINITION)
@@ -160,23 +160,27 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
 
     public ModularPanel createHelpPanel() {
         return new ModularPanel("text_module_help")
-                .coverChildren()
-                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help"))
-                        .padding(5))
-                .child(new CodeEditorWidget<>()
+                .size(500, 250)
+                .child(Flow.column()
                         .padding(5)
-                        .setText(
-                                """
-                                        Energy: {calc {energy}00.0 / {energyCapacity}}%
-                                        Bar: {repeat {calc {energy}0.0 / {energyCapacity}} {color green {block}}}
-                                        Status: \\
-                                        {if {cmp {energy} >= {calc 0.7 * {energyCapacity}}} {color green OK} \\
-                                        {if {cmp {energy} >= {calc 0.4 * {energyCapacity}}} {color yellow WARNING} \\
-                                        {if {cmp {energy} >= {calc 0.2 * {energyCapacity}}} {color red LOW} \\
-                                        {color red CRITICAL}}}}
+                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
+                        .child(new CodeEditorWidget<>()
+                                .padding(5)
+                                .widthRel(.95f)
+                                .height(100)
+                                .language(PlaceholderHandler.LANG_DEFINITION)
+                                .value(new StringValue(
+                                        """
+                                                Energy: {calc {energy}00.0 / {energyCapacity}}%
+                                                Bar: {repeat {calc {energy}0.0 / {energyCapacity}} {color green {block}}}
+                                                Status: \\
+                                                {if {cmp {energy} >= {calc 0.7 * {energyCapacity}}} {color green OK} \\
+                                                {if {cmp {energy} >= {calc 0.4 * {energyCapacity}}} {color yellow WARNING} \\
+                                                {if {cmp {energy} >= {calc 0.2 * {energyCapacity}}} {color red LOW} \\
+                                                {color red CRITICAL}}}}
 
-                                        {eval {if {cmp {energy} < {calc 0.5 * {energyCapacity}}} "{redstone set 15}" "{redstone set 0}"}
-                                        """));
+                                                {eval {if {cmp {energy} < {calc 0.5 * {energyCapacity}}} "{redstone set 15}" "{redstone set 0}"}
+                                                """))));
     }
 
     @Override

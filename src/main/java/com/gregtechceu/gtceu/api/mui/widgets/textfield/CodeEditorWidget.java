@@ -31,7 +31,7 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
 
     @Override
     public List<Component> getTextAsComponents() {
-        if (language() == null) return this.handler.getTextAsComponents();
+        if (language() == null) return super.getTextAsComponents();
         return language().formatCode(this.handler.getTextAsString());
     }
 
