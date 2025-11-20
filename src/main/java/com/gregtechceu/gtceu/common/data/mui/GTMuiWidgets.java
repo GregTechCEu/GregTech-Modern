@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
@@ -248,5 +249,33 @@ public class GTMuiWidgets {
 
     public static IDrawable.DrawableWidget createGTLogo() {
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
+    }
+
+    public static String[] createGrid(int amount, int rowSize, boolean output, char key) {
+        int rows = (int) Math.ceil((float) amount / rowSize);
+        String[] grid = new String[rows];
+        for (int i = 0; i < rows; i++) {
+            StringBuilder r = new StringBuilder();
+            if (output) {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.insert(0, " ");
+                    } else {
+                        r.insert(0, key);
+                    }
+                }
+            } else {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.append(" ");
+                    } else {
+                        r.append(key);
+                    }
+                }
+            }
+            grid[i] = r.toString();
+        }
+
+        return grid;
     }
 }

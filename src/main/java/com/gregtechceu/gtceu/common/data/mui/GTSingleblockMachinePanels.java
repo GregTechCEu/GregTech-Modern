@@ -35,10 +35,10 @@ public class GTSingleblockMachinePanels {
             return panel;
         }
 
-        var inputItemGrid = createGrid(workableMachine.importItems.getSize(), 3, false, 'i');
-        var inputFluidGrid = createGrid(workableMachine.importFluids.getSize(), 3, false, 'f');
-        var outputItemGrid = createGrid(workableMachine.exportItems.getSize(), 3, true, 'i');
-        var outputFluidGrid = createGrid(workableMachine.exportFluids.getSize(), 3, true, 'f');
+        var inputItemGrid = GTMuiWidgets.createGrid(workableMachine.importItems.getSize(), 3, false, 'i');
+        var inputFluidGrid = GTMuiWidgets.createGrid(workableMachine.importFluids.getSize(), 3, false, 'f');
+        var outputItemGrid = GTMuiWidgets.createGrid(workableMachine.exportItems.getSize(), 3, true, 'i');
+        var outputFluidGrid = GTMuiWidgets.createGrid(workableMachine.exportFluids.getSize(), 3, true, 'f');
 
         int inputWidth = 18 *
                 Math.min(3, Math.max(workableMachine.importItems.getSize(), workableMachine.importFluids.getSize()));
@@ -149,34 +149,6 @@ public class GTSingleblockMachinePanels {
 
         return panel;
     };
-
-    private static String[] createGrid(int amount, int rowSize, boolean output, char key) {
-        int rows = (int) Math.ceil((float) amount / rowSize);
-        String[] grid = new String[rows];
-        for (int i = 0; i < rows; i++) {
-            StringBuilder r = new StringBuilder();
-            if (output) {
-                for (int j = 0; j < rowSize; j++) {
-                    if ((i * rowSize + j) > (amount - 1)) {
-                        r.insert(0, " ");
-                    } else {
-                        r.insert(0, key);
-                    }
-                }
-            } else {
-                for (int j = 0; j < rowSize; j++) {
-                    if ((i * rowSize + j) > (amount - 1)) {
-                        r.append(" ");
-                    } else {
-                        r.append(key);
-                    }
-                }
-            }
-            grid[i] = r.toString();
-        }
-
-        return grid;
-    }
 
     public static PanelFactory MACERATOR = (PosGuiData data, PanelSyncManager syncManager, UISettings settings,
                                             MetaMachine machine) -> {
@@ -354,10 +326,10 @@ public class GTSingleblockMachinePanels {
         UITexture background = steamMachine.isHighPressure() ? GTGuiTextures.BACKGROUND_STEEL : GTGuiTextures.BACKGROUND_BRONZE;
 
         panel.background(background);
-        panel.widgetTheme(GTGuiTheme.BRONZE.getId());
+        //panel.widgetTheme(GTGuiTheme.BRONZE.getId());
 
-        var inputItemGrid = createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
-        var outputItemGrid = createGrid(steamMachine.exportItems.getSize(), 3, true, 'i');
+        var inputItemGrid = GTMuiWidgets.createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
+        var outputItemGrid = GTMuiWidgets.createGrid(steamMachine.exportItems.getSize(), 3, true, 'i');
 
         int inputWidth = 18 * Math.min(3, steamMachine.importItems.getSize());
         int outputWidth = 18 * Math.min(3, steamMachine.exportItems.getSize());
@@ -452,10 +424,10 @@ public class GTSingleblockMachinePanels {
         UITexture background = steamMachine.isHighPressure() ? GTGuiTextures.BACKGROUND_STEEL : GTGuiTextures.BACKGROUND_BRONZE;
 
         panel.background(background);
-        panel.widgetTheme(GTGuiTheme.BRONZE.getId());
+        //panel.widgetTheme(GTGuiTheme.BRONZE.getId());
 
-        var inputItemGrid = createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
-        var outputItemGrid = createGrid(1, 3, true, 'i');
+        var inputItemGrid = GTMuiWidgets.createGrid(steamMachine.importItems.getSize(), 3, false, 'i');
+        var outputItemGrid = GTMuiWidgets.createGrid(1, 3, true, 'i');
 
         int inputWidth = 18 * Math.min(3, steamMachine.importItems.getSize());
         int outputWidth = 18 * Math.min(3, steamMachine.exportItems.getSize());

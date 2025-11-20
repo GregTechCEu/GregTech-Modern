@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
@@ -11,14 +12,33 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -38,6 +58,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -72,7 +93,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FisherMachine extends TieredEnergyMachine
-                           implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IWorkable {
+                           implements IAutoOutputItem, IMuiMachine, IMachineLife, IWorkable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -380,7 +401,131 @@ public class FisherMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel panel = new ModularPanel(getDefinition().getName());
+
+
+        var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int)Math.sqrt(cache.getSize()), true, 'i');
+
+
+        int inputWidth = 18;
+        int outputWidth = 18 * outputItemGrid.length;
+
+        int slotHeight = outputItemGrid.length;
+
+        int topMargin = 0;
+        if (slotHeight == 2) {
+            topMargin = 9;
+        } else if (slotHeight > 2) {
+            topMargin = 18;
+        }
+
+        // input slots + centering gap + output slots
+
+        /**
+         * 1 -> 1.5
+         * 2 -> 1
+         * 3 -> .5
+         * 36 - (inputWidth / 2)
+         *
+         * 1:1 -> 18 + 18 + 36
+         * 1:2 -> 18 + 36 + 27
+         * 1:3 -> 18 + 54 + 3
+         * 2 - input + 2 - output
+         */
+        int fullWidth = (inputWidth + outputWidth) + (90 - ((inputWidth + outputWidth) / 2));
+
+        int inputShift = 0;
+        if (tier < 3) {
+            inputShift = (4 - tier) * 9;
+        }
+
+        boolean autoOutputItem = hasAutoOutputItem();
+
+        BooleanSyncValue power = new BooleanSyncValue(() -> active,
+                (b) -> active = b);
+        syncManager.syncValue("working_enabled", power);
+
+        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(getChargerInventory(), 0));
+        syncManager.syncValue("battery", battery);
+
+        panel.size(176, 124 + Math.max(36, 18 * slotHeight));
+
+        panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
+                .child(new Row()
+                        .coverChildrenHeight()
+                        .width(fullWidth - inputShift)
+                        .left(7 + inputShift)
+                        .child(new Column()
+                                .coverChildrenWidth()
+                                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                                .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
+                                .align(Alignment.CenterLeft))
+                        .child(new Column()
+                                .coverChildrenWidth()
+                                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                                .childIf(!(outputItemGrid.length == 0),
+                                        GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                                        "output_item_inv", cache.getSize(), 'i',
+                                                        outputItemGrid)
+                                                .alignX(Alignment.CenterRight))
+                                .align(Alignment.CenterRight))
+                        .top(30 - topMargin))
+                .child(new ProgressWidget()
+                        .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
+                        .progress(() -> progress / (double) maxProgress)
+                        .left(7 + 27 + inputShift)
+                        .top(30 + (slotHeight > 3 ? 9 : 0)))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(new ToggleButton()
+                                .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
+                                .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
+                                .background(GTGuiTextures.BUTTON_POWER[0])
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
+                                        active ? "behaviour.soft_hammer.enabled" :
+                                                "behaviour.soft_hammer.disabled")))))
+                        .child(new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY))
+                        .child(new ToggleButton()
+                                .value(new BoolValue.Dynamic(this::isJunkEnabled, this::setJunkEnabled))
+                                .overlay(new ItemDrawable(Items.NAME_TAG))
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder((r) -> {
+                                    var lines = LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
+                                            GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
+                                    for (var line : lines) {
+                                        r.addLine(line);
+                                    }
+                                })
+                        )
+                )
+                        /*.child(new Column()
+                        .coverChildren()
+                        .rightRel(1.0f)
+                        .reverseLayout(true)
+                        .padding(0, 8, 4, 4)
+                        .bottom(16)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0f, 0f, 0.75f, 1.0f))
+                        .childIf(ghostCircuit,
+                                GTMuiWidgets.createCircuitSlotPanel(simpleTieredMachine, panel, syncManager)))*/
+                .child(GTMuiWidgets.createGTLogo()
+                        .right(7).bottom(7 + 78));
+
+        return panel;
+    }
+
+    /*public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
             .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
                 var template = createTemplate(inventorySize).createDefault();
                 var energyBar = createEnergyBar().createDefault();
@@ -486,7 +631,7 @@ public class FisherMachine extends TieredEnergyMachine
                 slot.setCanPutItems(true);
             });
         });
-    }
+    }*/
 
     //////////////////////////////////////
     // ******* Rendering ********//
