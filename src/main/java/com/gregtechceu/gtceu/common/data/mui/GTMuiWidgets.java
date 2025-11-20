@@ -35,7 +35,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 public class GTMuiWidgets {
 
-    public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
+    public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
         String hatchName = displayItem.getHoverName().getString();
         hatchName = hatchName.replaceAll("§.", "").trim();
@@ -57,7 +57,7 @@ public class GTMuiWidgets {
                 .width(rowWidth)
                 .top(-(textHeight + borderRadius))
                 .rightRel(0.45f)
-                .background(GTGuiTextures.BACKGROUND)
+                .background(background)
                 .child(new ItemDrawable(displayItem)
                         .asIcon().size(iconSize)
                         .asWidget()
@@ -84,7 +84,7 @@ public class GTMuiWidgets {
                                 "behaviour.soft_hammer.disabled"))));
     }
 
-    public static ProgressWidget createProgressBar(WorkableTieredMachine workableMachine, UITexture texture, int size) {
+    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, UITexture texture, int size) {
         return new ProgressWidget()
                 .texture(texture, size)
                 .progress(() -> workableMachine.getProgress() / (double) workableMachine.getMaxProgress());
