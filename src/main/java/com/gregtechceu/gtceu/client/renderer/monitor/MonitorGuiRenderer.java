@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
@@ -61,7 +60,8 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
 
     public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
                           float partialTick) {
-        GuiGraphics guiGraphics = new GuiGraphics(Minecraft.getInstance(), (MultiBufferSource.BufferSource) buffer);
+        GuiGraphics guiGraphics = new GuiGraphics(MCHelper.getMc(), (MultiBufferSource.BufferSource) buffer);
+        poseStack.scale(1 / 256f, 1 / 256f, 1 / 256e3f);
         ((GuiGraphicsAccessor) guiGraphics).setPose(poseStack);
         screen.getContext().setGraphics(guiGraphics);
         boolean resized = false;

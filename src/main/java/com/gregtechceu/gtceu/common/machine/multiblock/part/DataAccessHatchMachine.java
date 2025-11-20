@@ -29,6 +29,7 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -61,6 +62,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Getter
     private final boolean isCreative;
     @Persisted
+    @DescSynced
     public final NotifiableItemStackHandler importItems;
 
     public DataAccessHatchMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {
