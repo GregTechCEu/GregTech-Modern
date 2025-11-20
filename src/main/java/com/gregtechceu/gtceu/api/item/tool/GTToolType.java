@@ -113,6 +113,7 @@ public class GTToolType {
                     .durabilityMultiplier(3.0F)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, GrassPathBehavior.INSTANCE,
                             DouseCampfireBehavior.INSTANCE))
+            .constructor(GTShovelItem::new)
             .toolClasses(GTToolType.SHOVEL)
             .defaultActions(ToolActions.SHOVEL_DIG)
             .materialAmount(3 * GTValues.M)
@@ -125,6 +126,7 @@ public class GTToolType {
                     .aoe(2, 2, 2)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
+            .constructor(GTHoeItem::new)
             .toolClassNames("scythe")
             .toolClasses(GTToolType.HOE)
             .defaultActions(ToolActions.HOE_DIG)
