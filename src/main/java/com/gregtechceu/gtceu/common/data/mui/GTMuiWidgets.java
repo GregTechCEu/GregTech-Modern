@@ -57,7 +57,7 @@ public class GTMuiWidgets {
                 .width(rowWidth)
                 .top(-(textHeight + borderRadius))
                 .rightRel(0.45f)
-                .background(background)
+                .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
                 .child(new ItemDrawable(displayItem)
                         .asIcon().size(iconSize)
                         .asWidget()
