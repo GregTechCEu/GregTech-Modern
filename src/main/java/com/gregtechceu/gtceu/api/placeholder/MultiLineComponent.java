@@ -16,16 +16,8 @@ import java.util.Objects;
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
     public static final Codec<MultiLineComponent> CODEC = ComponentSerialization.CODEC.listOf()
-            .xmap(list -> {
-                if (((List<? extends Component>) list) instanceof MultiLineComponent multiLine) {
-                    return multiLine;
-                }
-                MultiLineComponent multiLine = new MultiLineComponent();
-                for (Component c : list) {
-                    multiLine.add(c.copy());
-                }
-                return multiLine;
-            }, MultiLineComponent::toImmutable);
+            .xmap(components -> new MultiLineComponent(components.stream().map(Component::copy).toList()),
+                    MultiLineComponent::toImmutable);
 
     public MultiLineComponent() {}
 
