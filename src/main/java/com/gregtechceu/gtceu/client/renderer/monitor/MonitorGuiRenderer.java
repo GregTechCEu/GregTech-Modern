@@ -54,6 +54,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
                     factory.createContainer(windowId);
             menu.construct(MCHelper.getPlayer(), syncManager, settings, panel.getName(), data);
+            factory.createScreenWrapper(menu, screen);
             screen.onResize(width, height);
         } else screen = null;
     }
