@@ -1659,6 +1659,8 @@ public class LangHandler {
                         Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
                         """);
         provider.add("gtceu.gui.central_monitor.url", "Input image URL:");
+        provider.add("gtceu.gui.central_monitor.gui_module_info",
+                "To select a block to get the GUI from, select a target in the monitor group editor.");
         provider.add("gtceu.item.tooltip.image_url", "Image URL: %s");
         provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
         provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");

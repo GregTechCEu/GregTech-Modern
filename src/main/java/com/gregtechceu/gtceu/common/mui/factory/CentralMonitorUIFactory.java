@@ -176,6 +176,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .onMousePressed((mouseX, mouseY, button) -> {
                             if (component == null) return true;
                             if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+                                if (!component.isMonitor()) return true;
                                 if (group.contains(component.getPos())) {
                                     group.remove(component.getPos());
                                 } else {
