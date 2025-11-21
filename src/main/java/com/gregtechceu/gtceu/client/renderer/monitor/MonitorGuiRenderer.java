@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -60,6 +62,13 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             vanillaScreen = factory.createScreenWrapper(menu, screen).getWrappedScreen();
             vanillaScreen.init(MCHelper.getMc(), width, height);
             screen.onResize(width, height);
+            for (IWidget child : mainPanel.getChildren()) {
+                if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
+                    slotGroupWidget.disabled();
+                    mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
+                    mainPanel.scheduleResize();
+                }
+            }
         } else {
             screen = null;
             vanillaScreen = null;
@@ -84,6 +93,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (resized) screen.onResize(width, height);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
         screen.onFrameUpdate();
+        if (partialTick == 0) screen.onUpdate();
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
         ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
     }
