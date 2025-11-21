@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.IThemeApi;
-import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IVanillaSlot;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
@@ -225,7 +224,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         boolean isDragPreview = false;
         boolean flag1 = slotIn == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
                 !acc.getIsSplittingStack();
-        ItemStack carried = MCHelper.getPlayer().containerMenu.getCarried();
+        ItemStack carried = guiScreen.getMinecraft().player.containerMenu.getCarried();
         int amount = -1;
         String format = null;
 

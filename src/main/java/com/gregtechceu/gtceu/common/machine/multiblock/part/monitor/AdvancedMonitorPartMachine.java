@@ -4,14 +4,12 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2d;
 
 @MethodsReturnNonnullByDefault
 public class AdvancedMonitorPartMachine extends MonitorPartMachine implements IInteractedMachine {
@@ -53,14 +52,9 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
         if (hit.getDirection() != getFrontFacing())
             return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
         clicked = true;
-        clickPosX = hit.getLocation()
-                .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
-        clickPosY = hit.getLocation()
-                .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
-        clickPosX -= Math.floor(clickPosX);
-        if (clickPosX < 0) clickPosX++;
-        clickPosY -= Math.floor(clickPosY);
-        if (clickPosY < 0) clickPosY++;
+        Vector2d clickPos = getMousePos(hit);
+        clickPosX = clickPos.x();
+        clickPosY = clickPos.y();
         return InteractionResult.SUCCESS;
     }
 

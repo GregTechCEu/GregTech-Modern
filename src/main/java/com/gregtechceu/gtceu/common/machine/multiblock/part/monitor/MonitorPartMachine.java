@@ -3,14 +3,19 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+
+import org.joml.Vector2d;
 
 public class MonitorPartMachine extends MonitorComponentPartMachine {
 
@@ -36,5 +41,19 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
         return false;
+    }
+
+    public Vector2d getMousePos(HitResult hitResult) {
+        if (hitResult instanceof BlockHitResult hit) {
+            double x = hit.getLocation()
+                    .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
+            double y = hit.getLocation()
+                    .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
+            x -= Math.floor(x);
+            if (x < 0) x++;
+            y -= Math.floor(y);
+            if (y < 0) y++;
+            return new Vector2d(x, y);
+        } else return new Vector2d();
     }
 }
