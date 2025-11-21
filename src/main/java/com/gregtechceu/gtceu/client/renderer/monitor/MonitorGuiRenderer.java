@@ -83,6 +83,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         }
         if (resized) screen.onResize(width, height);
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
+        ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
     }
 
     @Override
