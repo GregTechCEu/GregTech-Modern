@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -134,7 +135,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     int outputStorageLimit = 0;
                     for (int slot = 0; slot < storage.getSlots(); ++slot) {
                         ItemStack stack = storage.getStackInSlot(slot);
-                        if (stack.isEmpty() || ItemStack.isSameItemSameTags(stack, output)) {
+                        if (stack.isEmpty() || (ItemStack.isSameItem(stack, output) &&
+                                Objects.equals(stack.getTag(), output.getTag()))) {
                             outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
                         }
                     }
@@ -175,7 +177,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || ItemStack.isSameItemSameTags(visited[slot], output)) {
+                    if (visited[slot] == null || (ItemStack.isSameItem(visited[slot], output) &&
+                            Objects.equals(visited[slot].getTag(), output.getTag()))) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);
