@@ -99,7 +99,7 @@ public class RecipeRunner {
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
+                chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache,
                         recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
