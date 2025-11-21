@@ -53,7 +53,7 @@ public abstract class ChanceLogic {
                 int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                 int totalChance = times * newChance;
                 int guaranteed = totalChance / maxChance;
-                if (guaranteed > 0) builder.add(entry.copy(cap, ContentModifier.multiplier(guaranteed)));
+                if (guaranteed > 0) builder.add(entry.copyChanced(cap, ContentModifier.multiplier(guaranteed)));
                 newChance = totalChance % maxChance;
 
                 int cached = getCachedChance(entry, cache);
@@ -218,7 +218,7 @@ public abstract class ChanceLogic {
                     int totalChance = times * newChance;
                     int guaranteed = totalChance / 10000;
                     if (guaranteed > 0) {
-                        builder.add(entry.copy(cap, ContentModifier.multiplier(guaranteed)));
+                        builder.add(entry.copyChanced(cap, ContentModifier.multiplier(guaranteed)));
                         nonGuaranteedTimes -= guaranteed;
                     }
                 }
