@@ -82,6 +82,8 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
             resized = true;
         }
         if (resized) screen.onResize(width, height);
+        screen.getContext().updateState(mouseX, mouseY, partialTick);
+        screen.onFrameUpdate();
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
         ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
     }
@@ -96,14 +98,14 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         poseStack.translate(rel.getX(), rel.getY(), rel.getZ());
         Player player = MCHelper.getPlayer();
         HitResult hit = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()), partialTick, false);
-        double mouseX = 0, mouseY = 0;
+        double mouseX = -1, mouseY = -1;
         if (hit instanceof BlockHitResult blockHit) {
             BlockPos pos = blockHit.getBlockPos();
             BlockPos relPos = machine.toRelative(pos);
             if (MetaMachine.getMachine(player.level(), pos) instanceof MonitorPartMachine monitor) {
                 Vector2d monitorMousePos = monitor.getMousePos(hit);
                 mouseX = relPos.getX() - rel.getX() + monitorMousePos.x();
-                mouseY = relPos.getY() - rel.getY() + monitorMousePos.y();
+                mouseY = rel.getY() - relPos.getY() + 1 - monitorMousePos.y();
             }
         }
         renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
