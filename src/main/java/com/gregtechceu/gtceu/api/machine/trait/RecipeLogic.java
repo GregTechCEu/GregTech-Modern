@@ -394,7 +394,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (this.status == Status.WORKING) {
                 this.totalContinuousRunningTime = 0;
             }
-            if (status == Status.SUSPEND && suspendAfterFinish) {
+            if ((status == Status.WAITING || status == Status.SUSPEND) && suspendAfterFinish) {
+                status = Status.SUSPEND;
                 suspendAfterFinish = false;
             }
             machine.notifyStatusChanged(this.status, status);
