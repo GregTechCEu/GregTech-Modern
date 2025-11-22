@@ -5,39 +5,46 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -55,14 +62,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IControllable {
+                                 implements IAutoOutputItem, IMuiMachine, IMachineLife, IControllable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -354,78 +360,174 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-                var template = createTemplate(inventorySize).createDefault();
-                var energyBar = createEnergyBar().createDefault();
-                var batterySlot = createBatterySlot().createDefault();
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+    /*
+     * public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+     * .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+     * var template = createTemplate(inventorySize).createDefault();
+     * var energyBar = createEnergyBar().createDefault();
+     * var batterySlot = createBatterySlot().createDefault();
+     * var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
+     * batterySlot.setSelfPosition(
+     * new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
+     * energyGroup.addWidget(energyBar);
+     * energyGroup.addWidget(batterySlot);
+     * var group = new WidgetGroup(0, 0,
+     * Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
+     * Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
+     * var size = group.getSize();
+     * energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+     * 
+     * template.setSelfPosition(new Position(
+     * (size.width - 4 - template.getSize().width) / 2 + 4,
+     * (size.height - template.getSize().height) / 2));
+     * 
+     * group.addWidget(energyGroup);
+     * group.addWidget(template);
+     * return group;
+     * }, (template, machine) -> {
+     * if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
+     * createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
+     * createEnergyBar().setupUI(template, blockBreakerMachine);
+     * createBatterySlot().setupUI(template, blockBreakerMachine);
+     * }
+     * }));
+     * 
+     * protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
+     * return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
+     * var slotWidget = new SlotWidget();
+     * slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
+     * return slotWidget;
+     * }, (slotWidget, machine) -> {
+     * slotWidget.setHandlerSlot(machine.chargerInventory, 0);
+     * slotWidget.setCanPutItems(true);
+     * slotWidget.setCanTakeItems(true);
+     * slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+     * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+     * });
+     * }
+     * 
+     * protected static EditableUI<WidgetGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
+     * return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
+     * int rowSize = (int) Math.sqrt(inventorySize);
+     * WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8, rowSize * 18 + 8);
+     * for (int y = 0; y < rowSize; y++) {
+     * for (int x = 0; x < rowSize; x++) {
+     * int index = y * rowSize + x;
+     * SlotWidget slotWidget = new SlotWidget();
+     * slotWidget.initTemplate();
+     * slotWidget.setSelfPosition(new Position(4 + x * 18, 4 + y * 18));
+     * slotWidget.setBackground(GuiTextures.SLOT);
+     * slotWidget.setId("slot_" + index);
+     * main.addWidget(slotWidget);
+     * }
+     * }
+     * main.setBackground(GuiTextures.BACKGROUND_INVERSE);
+     * return main;
+     * }, (group, machine) -> {
+     * WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
+     * var index = WidgetUtils.widgetIdIndex(slot);
+     * if (index >= 0 && index < machine.cache.getSlots()) {
+     * slot.setHandlerSlot(machine.cache, index);
+     * slot.setCanTakeItems(true);
+     * slot.setCanPutItems(false);
+     * }
+     * });
+     * });
+     * }
+     */
 
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
-
-                group.addWidget(energyGroup);
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
-                    createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
-                    createEnergyBar().setupUI(template, blockBreakerMachine);
-                    createBatterySlot().setupUI(template, blockBreakerMachine);
-                }
-            }));
-
-    protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
+    // TODO: Needs EIO type side selection widget when that's done
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ModularPanel panel = new ModularPanel(this.getDefinition().getName());
+        var slotHeight = (int) Math.sqrt(inventorySize);
+        var outputGrid = createGrid(inventorySize, slotHeight, true, 'o');
+        panel
+                .size(176, 104 + 18 * slotHeight)
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 190))
+                .child(new Column()
+                        .coverChildren()
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(this.cache,
+                                "output_cache", this.cache.getSize(), 'o',
+                                outputGrid))
+                        .alignX(Alignment.CENTER)
+                        .top(10))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(createPowerButton(syncManager))
+                        .child(createBatterySlot(syncManager))
+                        .child(createAutoOutputItemButton(syncManager))
+                        .excludeAreaInXei());
+        return panel;
     }
 
-    protected static EditableUI<WidgetGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
-            int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8, rowSize * 18 + 8);
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < rowSize; x++) {
-                    int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(4 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
+    public ToggleButton createPowerButton(PanelSyncManager syncManager) {
+        BooleanSyncValue power = new BooleanSyncValue(this::isWorkingEnabled,
+                this::setWorkingEnabled);
+        syncManager.syncValue("working_enabled", power);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
+                .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
+                .background(GTGuiTextures.BUTTON_POWER[0])
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
+                        this.isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
+                                "behaviour.soft_hammer.disabled"))));
+    }
+
+    public ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {
+        BooleanSyncValue itemOutputs = new BooleanSyncValue(this::isAutoOutputItems,
+                this::setAutoOutputItems);
+        syncManager.syncValue("auto_output_items", itemOutputs);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(itemOutputs::getBoolValue, itemOutputs::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable("gtceu.gui.item_auto_output",
+                        Component.translatable(itemOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
+                                "cover.voiding.label.disabled")))));
+    }
+
+    public ItemSlot createBatterySlot(PanelSyncManager syncManager) {
+        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(this.chargerInventory, 0));
+        syncManager.syncValue("battery", battery);
+        return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
+    }
+
+    // TODO: when onion branch is merged, call this from GTMuiUtils instead
+    private static String[] createGrid(int amount, int rowSize, boolean output, char key) {
+        int rows = (int) Math.ceil((float) amount / rowSize);
+        String[] grid = new String[rows];
+        for (int i = 0; i < rows; i++) {
+            StringBuilder r = new StringBuilder();
+            if (output) {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.insert(0, " ");
+                    } else {
+                        r.insert(0, key);
+                    }
+                }
+            } else {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.append(" ");
+                    } else {
+                        r.append(key);
+                    }
                 }
             }
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
-            return main;
-        }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < machine.cache.getSlots()) {
-                    slot.setHandlerSlot(machine.cache, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
-                }
-            });
-        });
+            grid[i] = r.toString();
+        }
+
+        return grid;
     }
 
     //////////////////////////////////////
