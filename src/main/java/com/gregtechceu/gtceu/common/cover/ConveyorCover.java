@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -280,7 +281,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -312,7 +313,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {

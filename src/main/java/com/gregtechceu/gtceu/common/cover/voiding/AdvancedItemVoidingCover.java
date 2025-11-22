@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -73,7 +74,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack is = handler.getStackInSlot(slot);
-                if (!is.isEmpty() && ItemStack.isSameItemSameTags(is, itemInfo.itemStack)) {
+                if (!is.isEmpty() && GTUtil.isSameItemSameTags(is, itemInfo.itemStack)) {
                     ItemStack extracted = handler.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {
