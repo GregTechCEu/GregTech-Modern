@@ -21,7 +21,12 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
     private final @NotNull ModularScreen screen;
 
     public ContainerScreenWrapper(ModularContainerMenu container, @NotNull ModularScreen screen) {
-        super(container, container.getPlayer().getInventory(), Component.empty());
+        super(container, new Inventory(container.getPlayer()) {
+
+            public Component getName() {
+                return Component.empty();
+            }
+        }, Component.empty());
         this.screen = screen;
         this.screen.construct(this);
     }
