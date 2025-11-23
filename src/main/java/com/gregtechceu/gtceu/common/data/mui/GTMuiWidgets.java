@@ -43,7 +43,7 @@ public class GTMuiWidgets {
 
         int borderRadius = 5;
         int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 2));
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
         int textTitleWidth = TextRenderer.getFont().width(hatchName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);

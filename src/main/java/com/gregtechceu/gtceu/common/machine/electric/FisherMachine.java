@@ -435,12 +435,28 @@ public class FisherMachine extends TieredEnergyMachine
          * 1:3 -> 18 + 54 + 3
          * 2 - input + 2 - output
          */
-        int fullWidth = (inputWidth + outputWidth) + (90 - ((inputWidth + outputWidth) / 2));
+        int fullWidth = (inputWidth + outputWidth) + (77 - ((inputWidth + outputWidth) / 2));
 
-        int inputShift = 0;
-        if (tier < 3) {
-            inputShift = (4 - tier) * 9;
-        }
+        int inputShift = switch (tier) {
+            case 1 -> 27;
+            case 2 -> 27;
+            case 3 -> 18;
+            case 4 -> 0;
+            case 5 -> 0;
+            case 6 -> -2;
+            default -> 0;
+        };
+
+        int padding = switch (tier) {
+            case 1 -> 10;
+            case 2 -> 7;
+            case 3 -> 7;
+            case 4 -> 10;
+            case 5 -> 5;
+            case 6 -> 2;
+            default -> 2;
+        };
+
 
         boolean autoOutputItem = hasAutoOutputItem();
 
@@ -456,14 +472,20 @@ public class FisherMachine extends TieredEnergyMachine
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .coverChildrenHeight()
-                        .width(fullWidth - inputShift)
+                        .width(fullWidth + 16 - inputShift)
                         .left(7 + inputShift)
+                        .childPadding(padding)
+                        .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                         .child(new Column()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                                 .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
-                                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
-                                .align(Alignment.CenterLeft))
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY)))
+                        .child(new ProgressWidget()
+                                .alignY(Alignment.Center)
+                                .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
+                                .progress(() -> progress / (double) maxProgress)
+                        )
                         .child(new Column()
                                 .coverChildrenWidth()
                                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
@@ -474,11 +496,7 @@ public class FisherMachine extends TieredEnergyMachine
                                                 .alignX(Alignment.CenterRight))
                                 .align(Alignment.CenterRight))
                         .top(30 - topMargin))
-                .child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_BAR_ARROW, 16)
-                        .progress(() -> progress / (double) maxProgress)
-                        .left(7 + 27 + inputShift)
-                        .top(30 + (slotHeight > 3 ? 9 : 0)))
+
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()
