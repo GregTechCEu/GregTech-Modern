@@ -426,12 +426,7 @@ public class GTGuiTextures {
 
     public static final UITexture BUTTON_DISTINCT = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
-            .xy(0, 0, 16, 16)
-            .build();
-
-    public static final UITexture BUTTON_POWER = UITexture.builder()
-            .location(GTCEu.MOD_ID, "textures/gui/widget/button_power.png")
-            .xy(0, 0, 16, 16)
+            .subAreaXYWH(0, 0, 16, 16)
             .build();
 
     // PROGRESS BARS

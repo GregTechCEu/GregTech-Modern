@@ -2,14 +2,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -24,14 +19,12 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -42,9 +35,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -337,7 +327,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         int borderRadius = 5;
         int iconSize = 16;
-        int minPanelWidth = (int)(panelWidth * 0.8f) - (iconSize + (borderRadius * 2)) ;
+        int minPanelWidth = (int) (panelWidth * 0.8f) - (iconSize + (borderRadius * 2));
         int textTitleWidth = TextRenderer.getFont().width(hatchName) + iconSize + (borderRadius * 2);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
@@ -359,94 +349,100 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .child(IKey.str(hatchName)
                         .asWidget()
                         .paddingTop(1)
-                        .margin(borderRadius, borderRadius, borderRadius,1)
-                        .size(textTitleWidth, textHeight))
-        );
+                        .margin(borderRadius, borderRadius, borderRadius, 1)
+                        .size(textTitleWidth, textHeight)));
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
 
         panel.child(new Grid()
-                        .top(7).height(18 * rowSize)
-                        .minElementMargin(0, 0)
-                        .minColWidth(18).minRowHeight(18)
-                        .alignX(0.5f)
-                        .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
-                                .slot(SyncHandlers.itemSlot(inventory, index)
-                                        .slotGroup(group)
-                                        .changeListener((newItem, amount, client, init) -> {
-                                            if(amount) {
-                                                inventory.onContentsChanged();
-                                            }
-                                        })
-                                        .accessibility(inventory.handlerIO.support(IO.IN), true))))
-
+                .top(7).height(18 * rowSize)
+                .minElementMargin(0, 0)
+                .minColWidth(18).minRowHeight(18)
+                .alignX(0.5f)
+                .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(inventory, index)
+                                .slotGroup(group)
+                                .changeListener((newItem, amount, client, init) -> {
+                                    if (amount) {
+                                        inventory.onContentsChanged();
+                                    }
+                                })
+                                .accessibility(inventory.handlerIO.support(IO.IN), true))))
 
                 .child(SlotGroupWidget.playerInventory(true)
-                        //.alignX(Alignment.CENTER)
+                        // .alignX(Alignment.CENTER)
                         .left(18 + 10)
                         .bottom(7));
 
         panel.child(new Column()
-                        .coverChildren()
-                        .childPadding(3)
-                        //.left(7).top(18 * rowSize + 7 + 5)
-                        .left(7).bottom(7)
-                        .child(new ToggleButton()
-                                .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
-                                .stateOverlay(GTGuiTextures.BUTTON_POWER)
-                                .tooltipAutoUpdate(true)
-                                .tooltipBuilder((richTooltip) -> richTooltip.add(Component.translatable(
-                                        isWorkingEnabled() ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))))
-                        .childIf(io.support(IO.IN), new ToggleButton()
-                            .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
-                            .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
-                                .tooltipAutoUpdate(true)
-                                .tooltipBuilder((richTooltip) -> richTooltip.add(Component.translatable("gtceu.multiblock.universal.distinct")
-                                        .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
-                                        .append(Component.translatable(isDistinct() ? "gtceu.multiblock.universal.distinct.yes" :
-                                                "gtceu.multiblock.universal.distinct.no"))))))
-                        /*.childIf(io.support(IO.IN) && hasCircuitSlot && isCircuitSlotEnabled(),
-                                new ItemSlot().slot(new ModularSlot(circuitInventory.storage, 0)))*/
-                        ;
-
+                .coverChildren()
+                .childPadding(3)
+                // .left(7).top(18 * rowSize + 7 + 5)
+                .left(7).bottom(7)
+                .child(new ToggleButton()
+                        .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
+                        .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
+                        .background(GTGuiTextures.BUTTON_POWER[0])
+                        .tooltipAutoUpdate(true)
+                        .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
+                                isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
+                                        "behaviour.soft_hammer.disabled")))))
+                .childIf(io.support(IO.IN), new ToggleButton()
+                        .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
+                        .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
+                        .tooltipAutoUpdate(true)
+                        .tooltipBuilder((
+                                         richTooltip) -> richTooltip
+                                                 .add(Component.translatable("gtceu.multiblock.universal.distinct")
+                                                         .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
+                                                         .append(Component.translatable(isDistinct() ?
+                                                                 "gtceu.multiblock.universal.distinct.yes" :
+                                                                 "gtceu.multiblock.universal.distinct.no"))))))
+        /*
+         * .childIf(io.support(IO.IN) && hasCircuitSlot && isCircuitSlotEnabled(),
+         * new ItemSlot().slot(new ModularSlot(circuitInventory.storage, 0)))
+         */
+        ;
 
         return panel;
     }
 
-    /*public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io == IO.IN) {
-            IDistinctPart.super.attachConfigurators(configuratorPanel);
-            if (hasCircuitSlot && isCircuitSlotEnabled()) {
-                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-            }
-        } else {
-            super.attachConfigurators(configuratorPanel);
-        }
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int colSize = rowSize;
-        if (getInventorySize() == 8) {
-            rowSize = 4;
-            colSize = 2;
-        }
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
-        int index = 0;
-        for (int y = 0; y < colSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                container.addWidget(
-                        new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                                .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-            }
-        }
-
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-
-        return group;
-    }*/
+    /*
+     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+     * if (this.io == IO.IN) {
+     * IDistinctPart.super.attachConfigurators(configuratorPanel);
+     * if (hasCircuitSlot && isCircuitSlotEnabled()) {
+     * configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+     * }
+     * } else {
+     * super.attachConfigurators(configuratorPanel);
+     * }
+     * }
+     * 
+     * @Override
+     * public Widget createUIWidget() {
+     * int rowSize = (int) Math.sqrt(getInventorySize());
+     * int colSize = rowSize;
+     * if (getInventorySize() == 8) {
+     * rowSize = 4;
+     * colSize = 2;
+     * }
+     * var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+     * var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
+     * int index = 0;
+     * for (int y = 0; y < colSize; y++) {
+     * for (int x = 0; x < rowSize; x++) {
+     * container.addWidget(
+     * new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
+     * .setBackgroundTexture(GuiTextures.SLOT)
+     * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+     * }
+     * }
+     * 
+     * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+     * group.addWidget(container);
+     * 
+     * return group;
+     * }
+     */
 }
