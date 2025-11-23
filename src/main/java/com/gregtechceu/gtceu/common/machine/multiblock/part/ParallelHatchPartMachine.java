@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -22,6 +22,9 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 
+import com.gregtechceu.gtceu.utils.GTMath;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -63,7 +66,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
      * parallelAmountGroup.addWidget(new IntInputWidget(this::getCurrentParallel, this::setCurrentParallel)
      * .setMin(MIN_PARALLEL)
      * .setMax(maxParallel));
-     * 
+     *
      * return parallelAmountGroup;
      * }
      */
@@ -91,7 +94,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
         return panel;
     }
 
-    static Flow createParallelRow(IntSyncValue parallels) {
+    private Flow createParallelRow(IntSyncValue parallels) {
         return Flow.row()
                 .align(Alignment.CENTER)
                 .child(new ButtonWidget<>()
@@ -112,13 +115,13 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .onMousePressed((a, b, c) -> {
                             MouseData mouseData = MouseData.create(c);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                parallels.setValue(parallels.getValue() / 16);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() / 16, 1, this.maxParallel));
                             } else if (mouseData.ctrl()) {
-                                parallels.setValue(parallels.getValue() / 8);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() / 8, 1, this.maxParallel));
                             } else if (mouseData.shift()) {
-                                parallels.setValue(parallels.getValue() / 4);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() / 4, 1, this.maxParallel));
                             } else {
-                                parallels.setValue(parallels.getValue() / 2);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() / 2, 1, this.maxParallel));
                             }
                             return true;
                         })
@@ -128,7 +131,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         new TextFieldWidget()
                                 .width(40)
                                 .setTextAlignment(Alignment.CENTER)
-                                .setNumbers(1, Integer.MAX_VALUE)
+                                .setNumbers(1, this.maxParallel)
                                 .value(parallels)
                                 .setDefaultNumber(1)
                                 .marginLeft(4)
@@ -151,13 +154,13 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .onMousePressed((a, b, c) -> {
                             MouseData mouseData = MouseData.create(c);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                parallels.setValue(parallels.getValue() * 16);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() * 16, 1, this.maxParallel));
                             } else if (mouseData.ctrl()) {
-                                parallels.setValue(parallels.getValue() * 8);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() * 8, 1, this.maxParallel));
                             } else if (mouseData.shift()) {
-                                parallels.setValue(parallels.getValue() * 4);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() * 4, 1, this.maxParallel));
                             } else {
-                                parallels.setValue(parallels.getValue() * 2);
+                                parallels.setValue((int) GTMath.clamp(parallels.getValue() * 2, 1, this.maxParallel));
                             }
                             return true;
                         })
