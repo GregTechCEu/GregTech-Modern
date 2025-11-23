@@ -373,6 +373,7 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
+                        .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());

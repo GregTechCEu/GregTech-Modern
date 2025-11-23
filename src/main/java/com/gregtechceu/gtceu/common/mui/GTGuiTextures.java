@@ -424,6 +424,11 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_EU = fullImage("textures/gui/overlay/mode_eu.png");
     public static final UITexture BUTTON_PERCENT = fullImage("textures/gui/overlay/mode_percent.png");
 
+    public static final UITexture BUTTON_DISTINCT = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
+            .subAreaXYWH(0, 0, 16, 16)
+            .build();
+
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);

@@ -1,16 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -21,17 +15,11 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -63,7 +51,6 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.stacks.*;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
@@ -269,64 +256,66 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        configuratorPanel.attachConfigurators(new ButtonConfigurator(
-                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
-                .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
-        if (isHasCircuitSlot() && isCircuitSlotEnabled()) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-        }
-        configuratorPanel.attachConfigurators(new FancyInvConfigurator(
-                shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
-                .setTooltips(List.of(
-                        Component.translatable("gui.gtceu.share_inventory.desc.0"),
-                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
-        configuratorPanel.attachConfigurators(new FancyTankConfigurator(
-                shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
-                .setTooltips(List.of(
-                        Component.translatable("gui.gtceu.share_tank.desc.0"),
-                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        int rowSize = 9;
-        int colSize = 3;
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        int index = 0;
-        for (int y = 0; y < colSize; ++y) {
-            for (int x = 0; x < rowSize; ++x) {
-                int finalI = index;
-                var slot = new AEPatternViewSlotWidget(patternInventory, index++, 8 + x * 18, 14 + y * 18)
-                        .setOccupiedTexture(GuiTextures.SLOT)
-                        .setItemHook(stack -> {
-                            if (!stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem iep) {
-                                final ItemStack out = iep.getOutput(stack);
-                                if (!out.isEmpty()) {
-                                    return out;
-                                }
-                            }
-                            return stack;
-                        })
-                        .setChangeListener(() -> onPatternChange(finalI))
-                        .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
-                group.addWidget(slot);
-            }
-        }
-        // ME Network status
-        group.addWidget(new LabelWidget(
-                8,
-                2,
-                () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"));
-
-        group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
-                .setText(customName)
-                .setOnConfirm(this::setCustomName)
-                .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
-
-        return group;
-    }
+    /*
+     * @Override
+     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+     * configuratorPanel.attachConfigurators(new ButtonConfigurator(
+     * new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
+     * .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
+     * if (isHasCircuitSlot() && isCircuitSlotEnabled()) {
+     * configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+     * }
+     * configuratorPanel.attachConfigurators(new FancyInvConfigurator(
+     * shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
+     * .setTooltips(List.of(
+     * Component.translatable("gui.gtceu.share_inventory.desc.0"),
+     * Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+     * configuratorPanel.attachConfigurators(new FancyTankConfigurator(
+     * shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
+     * .setTooltips(List.of(
+     * Component.translatable("gui.gtceu.share_tank.desc.0"),
+     * Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+     * }
+     * 
+     * @Override
+     * public Widget createUIWidget() {
+     * int rowSize = 9;
+     * int colSize = 3;
+     * var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+     * int index = 0;
+     * for (int y = 0; y < colSize; ++y) {
+     * for (int x = 0; x < rowSize; ++x) {
+     * int finalI = index;
+     * var slot = new AEPatternViewSlotWidget(patternInventory, index++, 8 + x * 18, 14 + y * 18)
+     * .setOccupiedTexture(GuiTextures.SLOT)
+     * .setItemHook(stack -> {
+     * if (!stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem iep) {
+     * final ItemStack out = iep.getOutput(stack);
+     * if (!out.isEmpty()) {
+     * return out;
+     * }
+     * }
+     * return stack;
+     * })
+     * .setChangeListener(() -> onPatternChange(finalI))
+     * .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
+     * group.addWidget(slot);
+     * }
+     * }
+     * // ME Network status
+     * group.addWidget(new LabelWidget(
+     * 8,
+     * 2,
+     * () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"));
+     * 
+     * group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
+     * .setText(customName)
+     * .setOnConfirm(this::setCustomName)
+     * .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
+     * 
+     * return group;
+     * }
+     */
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
