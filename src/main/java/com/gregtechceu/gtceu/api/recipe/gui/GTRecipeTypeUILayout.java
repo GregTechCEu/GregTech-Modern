@@ -1,34 +1,24 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
-import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
-import com.gregtechceu.gtceu.api.mui.drawable.text.RichText;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.IntFunction;
 
 public class GTRecipeTypeUILayout {
 
@@ -42,9 +32,7 @@ public class GTRecipeTypeUILayout {
 
     private ParentWidget<?> parentWidget = null;
 
-
-    public GTRecipeTypeUILayout() {
-    }
+    public GTRecipeTypeUILayout() {}
 
     public ParentWidget<?> getMainWidget() {
         if (recipeType != null) {
@@ -55,8 +43,6 @@ public class GTRecipeTypeUILayout {
             var outputItemGrid = createGrid(recipeType.getMaxOutputs(ItemRecipeCapability.CAP), 3, true, 'i');
             var outputFluidGrid = createGrid(recipeType.getMaxOutputs(FluidRecipeCapability.CAP), 3, true, 'f');
 
-
-
             parentWidget.size(170, 64)
                     .padding(4)
                     .coverChildren()
@@ -64,10 +50,10 @@ public class GTRecipeTypeUILayout {
             Row mainRow = new Row();
             int width = 0;
 
-            var IOs = new IO[] {IO.IN, IO.OUT};
+            var IOs = new IO[] { IO.IN, IO.OUT };
 
-            for(var io : IOs) {
-                //var io = ioMap.getKey();
+            for (var io : IOs) {
+                // var io = ioMap.getKey();
                 var caps = (io == IO.IN ? recipeType.maxInputs : recipeType.maxOutputs);
                 int slotHeight = 0;
 
@@ -76,7 +62,8 @@ public class GTRecipeTypeUILayout {
                 int ioWidth = 0;
 
                 for (var recipeCap : caps.keySet()) {
-                    var maxSlots = (io == IO.IN ? recipeType.getMaxInputs(recipeCap) : recipeType.getMaxOutputs(recipeCap));
+                    var maxSlots = (io == IO.IN ? recipeType.getMaxInputs(recipeCap) :
+                            recipeType.getMaxOutputs(recipeCap));
                     if (maxSlots == 0 || recipeCap == EURecipeCapability.CAP) continue;
                     char key = (recipeCap == ItemRecipeCapability.CAP ? 'i' : 'f');
                     var grid = createGrid(maxSlots, 3, io == IO.OUT, key);
@@ -89,11 +76,9 @@ public class GTRecipeTypeUILayout {
                     SlotGroupWidget.Builder slotWidget = SlotGroupWidget.builder()
                             .matrix(grid);
 
-
-
                     slotWidget.key(key, i -> {
                         var widget = new IDrawable.DrawableWidget(defaultSlotBackground);
-                        if(overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
+                        if (overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
                             widget.overlay(overlays.get(io).get(recipeCap).get(i));
                         }
                         return widget;
@@ -105,8 +90,7 @@ public class GTRecipeTypeUILayout {
                     ioWidth = Math.max(ioWidth, Math.min(maxSlots, grid[0].length()) * 18);
                 }
                 width += ioWidth;
-                mainRow.child(ioColumn.
-                        align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
+                mainRow.child(ioColumn.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
             }
 
             width += (90 - (width / 2));
@@ -198,7 +182,5 @@ public class GTRecipeTypeUILayout {
             layout.overlays = overlays;
             return layout;
         }
-
     }
-
 }

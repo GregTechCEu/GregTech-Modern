@@ -26,7 +26,8 @@ public class GTMuiMachineUtil {
         return slotWidget;
     }
 
-    public static SlotGroupWidget createSlotGroupFromMatrix(String slotGroupName, int maxSlots, char key, String... matrix) {
+    public static SlotGroupWidget createSlotGroupFromMatrix(String slotGroupName, int maxSlots, char key,
+                                                            String... matrix) {
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
         SlotGroupWidget slotWidget = SlotGroupWidget.builder()
                 .matrix(matrix)

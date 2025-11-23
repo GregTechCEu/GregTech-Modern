@@ -12,5 +12,4 @@ public class GTRecipeTypeUIs {
     public static void addRecipeTypeUI(GTRecipeType recipeType, GTRecipeTypeUILayout layout) {
         recipeTypeUIs.put(recipeType, layout);
     }
-
 }

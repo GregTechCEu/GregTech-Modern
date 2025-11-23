@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 public class GTRecipeTypeUIXEI {
 
@@ -21,20 +18,12 @@ public class GTRecipeTypeUIXEI {
     }
 
     public ParentWidget<? extends ParentWidget<?>> getWidget() {
-        if(overrideWidget != null) {
+        if (overrideWidget != null) {
             return overrideWidget;
         }
-
-
 
         ParentWidget<?> parent = new ParentWidget<>();
 
         return parent;
     }
-
-
-
-
-
-
 }
