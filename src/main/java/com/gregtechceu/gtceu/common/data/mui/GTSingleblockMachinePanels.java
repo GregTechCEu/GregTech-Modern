@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -73,6 +74,8 @@ public class GTSingleblockMachinePanels {
         boolean ghostCircuit = simpleTieredMachine.isCircuitSlotEnabled();
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
+
+        boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(workableMachine.getRecipeType());
 
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176))
                 .child(new Row()
@@ -143,7 +146,11 @@ public class GTSingleblockMachinePanels {
                                 GTMuiWidgets.createCircuitSlotPanel(simpleTieredMachine, panel, syncManager)))
                 .child(GTMuiWidgets.createGTLogo()
                         .right(7).bottom(7 + 78));
-
+        if(hasXEI) {
+            panel.child(GTMuiWidgets.createXEIWidget(GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType()))
+                    .left(190));
+        }
+        panel.excludeAreaInXei();
         return panel;
     };
 
