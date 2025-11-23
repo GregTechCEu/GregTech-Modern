@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -22,9 +21,11 @@ import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -448,18 +449,14 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         ModularPanel panel = GTGuis.createPanel(this, 176, 192 + 18);
 
         return panel.child(IMuiCover.createTitleRow(this.self().getAttachItem()))
-                .child(createUI(data, syncManager))
+                .child(createCoverUI(data, syncManager, settings))
                 .bindPlayerInventory();
 
         // return IMuiCover.super.buildUI(data, syncManager, settings);
     }
 
     @Override
-    public IWidget createUIWidget() {
-        return null;
-    }
-
-    protected ParentWidget<Flow> createUI(SidedPosGuiData data, PanelSyncManager syncManager) {
+    public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         Flow column = Flow.column()
                 .top(24).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight();
@@ -521,52 +518,45 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             var filterSlot = filterHandler.getFilterSlot();
             var filterItem = filterHandler.getFilterSlot().getStackInSlot(0);
 
-
-
             // TODO: Figure out how to properly attach this to the sync manager to
             // dynamically add the button widget when a filter exists
 
+            IPanelHandler[] filterPanelHandler = new IPanelHandler[1];
 
-            IPanelHandler panelSyncHandler;
-
-            var panel = GTGuis.createPanel("filter");
-            panelSyncHandler = syncManager.panel("other_panel", (a, b) -> panel, true);
-
-            DynamicSyncHandler filterWidget = new DynamicSyncHandler()
+            DynamicSyncHandler filterWidgetHandler = new DynamicSyncHandler()
                     .widgetProvider((manager, packet) -> {
-                        if (filterItem.isEmpty()) {
+                        ItemStack stack = packet.readItem();
+                        var filter = ItemFilter.loadFilter(stack);
+                        if (stack.isEmpty()) {
                             return new EmptyWidget();
                         }
-                        ItemFilter filter = ItemFilter.loadFilter(filterItem);
-                        return filter.getPopupPanel(manager);
+
+                        return new Column()
+                                .coverChildrenWidth()
+                                .child(new ButtonWidget<>()
+                                        .overlay(new ItemDrawable(stack).asIcon().center().size(14))
+                                        .tooltip(t -> t.addLine("Configure Filter"))
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+
+                                            filterPanelHandler[0] = syncManager.panel("filter_panel",
+                                                    (a, b) -> filter.getPopupPanel(a), true);
+                                            // filterPanel.child(filter.getPopupPanel(manager));
+                                            filterPanelHandler[0].openPanel();
+                                            return true;
+                                        }))
+                                .child(IKey.str(stack.getHoverName().getString()).asWidget());
                     });
 
-            column.child(new Row().child(new ItemSlot()
-                    .slot(SyncHandlers.itemSlot(filterSlot, 0)
-                            .changeListener((newItem, amount, client, init) -> {
-                                if(!amount) {
-                                    filterWidget.notifyUpdate(packet -> packet.writeItem(newItem));
-                                }
-                            }))));
+            column.child(new Row()
+                    .child(new ItemSlot()
+                            .slot(new ModularSlot(filterSlot, 0)
+                                    .changeListener((newItem, amount, client, init) -> {
 
-            panel.child(new DynamicSyncedWidget<>()
-                    .syncHandler(filterWidget));
+                                        filterWidgetHandler.notifyUpdate(packet -> packet.writeItem(newItem));
 
-            column.child(new ButtonWidget<>()
-                        .overlay(new ItemDrawable(filterItem)
-                            .asIcon()
-                            .center()
-                            .size(14))
-                        .tooltip(t -> t.addLine("Configure Filter"))
-                        .onMousePressed((mouseX, mouseY, button) -> {
-                            panelSyncHandler.openPanel();
-                            return true;
-                        })
-                        .setEnabledIf((w) -> (!filterItem.isEmpty())))
-                    .child(IKey.str(filterItem.getHoverName().getString())
-                            .asWidget()
-                            .align(Alignment.CenterRight));
-
+                                    })))
+                    .child(new DynamicSyncedWidget<>()
+                            .syncHandler(filterWidgetHandler)));
         }
 
         if (createConveyorIORow()) {
@@ -582,13 +572,11 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             column.child(new EnumRowBuilder<>(DistributionMode.class)
                     .value(distMode)
                     .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
-                    .lang(IKey
-                            .dynamic(() -> Component.translatable(distributionMode.localeName)))
+                    .lang(IKey.dynamic(() -> Component.translatable(distributionMode.localeName)))
                     .build());
         }
 
         if (createManualIOModeRow()) {
-
             column.child(new EnumRowBuilder<>(ManualIOMode.class)
                     .value(manualMode)
                     .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
