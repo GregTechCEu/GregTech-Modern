@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -25,8 +23,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -90,22 +86,24 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
-    @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int xOffset = 18 * rowSize / 2;
-        WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
-
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                group.addWidget(new SlotWidget(importItems, index,
-                        rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-                        .setBackgroundTexture(GuiTextures.SLOT));
-            }
-        }
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * int rowSize = (int) Math.sqrt(getInventorySize());
+     * int xOffset = 18 * rowSize / 2;
+     * WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
+     * 
+     * for (int y = 0; y < rowSize; y++) {
+     * for (int x = 0; x < rowSize; x++) {
+     * int index = y * rowSize + x;
+     * group.addWidget(new SlotWidget(importItems, index,
+     * rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
+     * .setBackgroundTexture(GuiTextures.SLOT));
+     * }
+     * }
+     * return group;
+     * }
+     */
 
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

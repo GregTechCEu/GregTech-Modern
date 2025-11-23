@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
@@ -130,6 +132,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (io == IO.OUT || io == IO.BOTH) {
             maxOutputs.put(cap, max);
         }
+        return this;
+    }
+
+    public GTRecipeType UI(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
+        var recipeLayout = builder.apply(new GTRecipeTypeUILayout.Builder()).build();
+        recipeLayout.setRecipeType(this);
+        GTRecipeTypeUIs.addRecipeTypeUI(this, recipeLayout);
         return this;
     }
 

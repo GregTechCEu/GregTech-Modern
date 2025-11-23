@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 
 public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
 
-    private static final int pauseTime = 60;
     private TextRenderer.Line line;
     private float progress = 0;
     private IAnimator animator;
@@ -37,7 +36,9 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
     @Override
     public void dispose() {
         super.dispose();
-        this.animator.stop(true);
+        if (this.animator != null) {
+            this.animator.stop(true);
+        }
     }
 
     @Override
@@ -96,8 +97,8 @@ public class ScrollingTextWidget extends TextWidget<ScrollingTextWidget> {
 
     /**
      * Sets the scroll speed when hovered. This sets not the speed directly, but the duration per pixel in milliseconds.
-     * So if the text is 100 lines long and the "speed" is set to 10, then the whole animation is 1000 milliseconds
-     * long.
+     * So if the text is
+     * 100 lines long and the "speed" is set to 10, then the whole animation is 1000 milliseconds long.
      *
      * @param speed duration per pixel in milliseconds (default is 15)
      * @return this

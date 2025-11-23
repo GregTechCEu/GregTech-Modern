@@ -89,6 +89,11 @@ public class BooleanSyncValue extends ValueSyncHandler<Boolean>
     }
 
     @Override
+    public void notifyUpdate() {
+        setBoolValue(this.getter.getAsBoolean(), false, true);
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(getBoolValue());
     }

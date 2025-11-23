@@ -303,10 +303,19 @@ public class GuiDraw {
     }
 
     public static void drawTexture(Matrix4f pose, ResourceLocation location, float x0, float y0, float x1, float y1,
-                                   float u0, float v0,
-                                   float u1, float v1) {
+                                   float u0, float v0, float u1, float v1) {
+        drawTexture(pose, location, x0, y0, x1, y1, u0, v0, u1, v1, false);
+    }
+
+    public static void drawTexture(Matrix4f pose, ResourceLocation location, float x0, float y0, float x1, float y1,
+                                   float u0, float v0, float u1, float v1, boolean withBlend) {
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        if (withBlend) {
+            RenderSystem.enableBlend();
+        } else {
+            RenderSystem.disableBlend();
+        }
         drawTexture(pose, x0, y0, x1, y1, u0, v0, u1, v1, 0);
     }
 

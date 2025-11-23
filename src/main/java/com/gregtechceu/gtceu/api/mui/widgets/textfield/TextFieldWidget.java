@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.drawable.ITextLine;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.math.ParseResult;
@@ -32,6 +35,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
     @Getter
     private String mathFailMessage = null;
     private double defaultNumber = 0;
+    private boolean tooltipOverride = false;
 
     public double parse(String num) {
         ParseResult result = GTMath.parseExpression(num, this.defaultNumber, true);
@@ -54,8 +58,10 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
             this.stringValue = new StringValue("");
         }
         setText(this.stringValue.getStringValue());
-        if (!hasTooltip()) {
+        if (!hasTooltip() && !tooltipOverride) {
             tooltipBuilder(tooltip -> tooltip.addLine(IKey.str(getText())));
+            // set back to false so this won't get triggered
+            tooltipOverride = false;
         }
     }
 
@@ -86,7 +92,7 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
 
     @Override
     public void drawForeground(ModularGuiContext context) {
-        if (hasTooltip() && getScrollData().isScrollBarActive(getScrollArea()) &&
+        if (hasTooltip() && (tooltipOverride || getScrollData().isScrollBarActive(getScrollArea())) &&
                 isHoveringFor(getTooltip().showUpTimer())) {
             getTooltip().draw(getContext());
         }
@@ -215,5 +221,91 @@ public class TextFieldWidget extends BaseTextFieldWidget<TextFieldWidget> {
         this.stringValue = stringValue;
         setValue(stringValue);
         return this;
+    }
+
+    /**
+     * Normally, Tooltips on text field widgets are used to display the contents of the widget when the scrollbar is
+     * active
+     * This value is an override, that allows the methods provided by
+     * {@link com.gregtechceu.gtceu.api.mui.base.widget.ITooltip} to be used
+     * Every method that adds a tooltip from ITooltip is overridden to enable the tooltipOverride
+     * 
+     * @param value - sets the tooltip override on or off
+     */
+    public TextFieldWidget setTooltipOverride(boolean value) {
+        this.tooltipOverride = value;
+        return this;
+    }
+
+    @Override
+    public TextFieldWidget tooltipBuilder(Consumer<RichTooltip> tooltipBuilder) {
+        tooltipOverride = true;
+        return super.tooltipBuilder(tooltipBuilder);
+    }
+
+    @Override
+    public TextFieldWidget tooltip(RichTooltip tooltip) {
+        tooltipOverride = true;
+        return super.tooltip(tooltip);
+    }
+
+    @Override
+    public TextFieldWidget tooltip(Consumer<RichTooltip> tooltipConsumer) {
+        tooltipOverride = true;
+        return super.tooltip(tooltipConsumer);
+    }
+
+    @Override
+    public @NotNull RichTooltip tooltip() {
+        tooltipOverride = true;
+        return super.tooltip();
+    }
+
+    @Override
+    public TextFieldWidget tooltipDynamic(Consumer<RichTooltip> tooltipBuilder) {
+        tooltipOverride = true;
+        return super.tooltipDynamic(tooltipBuilder);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipDrawableLines(Iterable<IDrawable> lines) {
+        tooltipOverride = true;
+        return super.addTooltipDrawableLines(lines);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipElement(String s) {
+        tooltipOverride = true;
+        return super.addTooltipElement(s);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipElement(IDrawable drawable) {
+        tooltipOverride = true;
+        return super.addTooltipElement(drawable);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipLine(String line) {
+        tooltipOverride = true;
+        return super.addTooltipLine(line);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipLine(ITextLine line) {
+        tooltipOverride = true;
+        return super.addTooltipLine(line);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipLine(IDrawable drawable) {
+        tooltipOverride = true;
+        return super.addTooltipLine(drawable);
+    }
+
+    @Override
+    public TextFieldWidget addTooltipStringLines(Iterable<String> lines) {
+        tooltipOverride = true;
+        return super.addTooltipStringLines(lines);
     }
 }

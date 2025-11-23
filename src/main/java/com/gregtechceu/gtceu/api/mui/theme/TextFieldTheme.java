@@ -36,6 +36,12 @@ public class TextFieldTheme extends WidgetTheme {
         this.hintColor = JsonHelper.getColorWithFallback(json, fallback, parent.getHintColor(), IThemeApi.HINT_COLOR);
     }
 
+    @Override
+    public WidgetTheme withNoHoverBackground() {
+        return new TextFieldTheme(getDefaultWidth(), getDefaultHeight(), IDrawable.NONE, getColor(), getTextColor(),
+                isTextShadow(), getIconColor(), this.markedColor, this.hintColor);
+    }
+
     public static class Builder<T extends TextFieldTheme, B extends TextFieldTheme.Builder<T, B>>
                                extends WidgetThemeBuilder<T, B> {
 

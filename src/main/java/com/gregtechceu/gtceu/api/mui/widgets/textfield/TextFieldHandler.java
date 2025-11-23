@@ -102,7 +102,7 @@ public class TextFieldHandler {
                     String line = this.text.get(main.y);
                     int scrollTo = (int) this.renderer
                             .getPosOf(this.renderer.measureStringLines(Collections.singletonList(line)), main).x;
-                    scrollTo -= this.scrollArea.getScrollX().getVisibleSize(this.scrollArea) / 2;
+                    scrollTo -= this.scrollArea.getScrollX().getFullVisibleSize(this.scrollArea) / 2;
                     if (animate) {
                         this.scrollArea.getScrollX().animateTo(this.scrollArea, scrollTo);
                     } else {

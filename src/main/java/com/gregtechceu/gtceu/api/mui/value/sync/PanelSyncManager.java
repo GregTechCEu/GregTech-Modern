@@ -13,6 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import io.netty.buffer.Unpooled;
@@ -33,7 +34,7 @@ public class PanelSyncManager {
     private final Map<String, SyncHandler> syncHandlers = new Object2ObjectLinkedOpenHashMap<>();
     private final Map<String, SlotGroup> slotGroups = new Object2ObjectOpenHashMap<>();
     private final Map<SyncHandler, String> reverseSyncHandlers = new Object2ObjectOpenHashMap<>();
-    private final Map<String, ISyncedAction> syncedActions = new Object2ObjectOpenHashMap<>();
+    private final Map<String, SyncedAction> syncedActions = new Object2ObjectOpenHashMap<>();
     private final Map<String, SyncHandler> subPanels = new Object2ObjectArrayMap<>();
     private ModularSyncManager modularSyncManager;
     @Getter
@@ -136,15 +137,21 @@ public class PanelSyncManager {
     }
 
     private boolean invokeSyncedAction(String mapKey, FriendlyByteBuf buf) {
-        ISyncedAction syncedAction = this.syncedActions.get(mapKey);
+        SyncedAction syncedAction = this.syncedActions.get(mapKey);
         if (syncedAction == null) {
             GTCEu.LOGGER.warn("SyncAction '{}' does not exist for panel '{}'!.", mapKey, panelName);
             return false;
         }
-        allowTemporarySyncHandlerRegistration(true);
-        syncedAction.invoke(buf);
-        allowTemporarySyncHandlerRegistration(false);
-        return true;
+        if (this.allowSyncHandlerRegistration || !syncedAction.isExecuteClient() || !syncedAction.isExecuteServer()) {
+            syncedAction.invoke(this.client, buf);
+        } else {
+            // only allow sync handler registration if it is executed on client and server
+            allowTemporarySyncHandlerRegistration(true);
+            syncedAction.invoke(this.client, buf);
+            allowTemporarySyncHandlerRegistration(false);
+        }
+        // true if the action should be executed on the other side
+        return syncedAction.isExecute(!this.client);
     }
 
     public ItemStack getCursorItem() {
@@ -331,7 +338,26 @@ public class PanelSyncManager {
     }
 
     public PanelSyncManager registerSyncedAction(String mapKey, ISyncedAction action) {
-        this.syncedActions.put(mapKey, action);
+        return registerSyncedAction(mapKey, true, true, action);
+    }
+
+    public PanelSyncManager registerSyncedAction(String mapKey, Side side, ISyncedAction action) {
+        return registerSyncedAction(mapKey, side.isClient(), side.isServer(), action);
+    }
+
+    public PanelSyncManager registerClientSyncedAction(String mapKey, ISyncedAction action) {
+        return registerSyncedAction(mapKey, true, false, action);
+    }
+
+    public PanelSyncManager registerServerSyncedAction(String mapKey, ISyncedAction action) {
+        return registerSyncedAction(mapKey, false, true, action);
+    }
+
+    public PanelSyncManager registerSyncedAction(String mapKey, boolean executeClient, boolean executeServer,
+                                                 ISyncedAction action) {
+        if (executeClient || executeServer) {
+            this.syncedActions.put(mapKey, new SyncedAction(action, executeClient, executeServer));
+        }
         return this;
     }
 

@@ -186,10 +186,16 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     @OnlyIn(Dist.CLIENT)
     @Override
     default void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+        drawAligned(context, x, y, width, height, widgetTheme, Alignment.CENTER);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    default void drawAligned(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme,
+                             Alignment alignment) {
         renderer.setColor(widgetTheme.getTextColor());
         renderer.setShadow(widgetTheme.isTextShadow());
-        renderer.setAlignment(Alignment.Center, width, height);
-        renderer.setScale(1f);
+        renderer.setAlignment(alignment, width, height);
+        renderer.setScale(getScale());
         renderer.setPos(x, y);
         renderer.draw(context.getGraphics(), getFormatted());
     }
@@ -197,6 +203,32 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
     @Override
     default boolean canApplyTheme() {
         return true;
+    }
+
+    @Override
+    default int getDefaultWidth() {
+        renderer.setAlignment(Alignment.TopLeft, -1, -1);
+        renderer.setScale(getScale());
+        renderer.setPos(0, 0);
+        renderer.setSimulate(true);
+        renderer.draw(null, getFormatted());
+        renderer.setSimulate(false);
+        return (int) renderer.getLastWidth();
+    }
+
+    @Override
+    default int getDefaultHeight() {
+        renderer.setAlignment(Alignment.TopLeft, -1, -1);
+        renderer.setScale(getScale());
+        renderer.setPos(0, 0);
+        renderer.setSimulate(true);
+        renderer.draw(null, getFormatted());
+        renderer.setSimulate(false);
+        return (int) renderer.getLastWidth();
+    }
+
+    default float getScale() {
+        return 1f;
     }
 
     @Override

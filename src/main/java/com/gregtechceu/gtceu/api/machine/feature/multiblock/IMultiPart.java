@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
+public interface IMultiPart extends IMachineFeature, IMuiMachine {
 
     /**
      * Can it be shared among multi multiblock.

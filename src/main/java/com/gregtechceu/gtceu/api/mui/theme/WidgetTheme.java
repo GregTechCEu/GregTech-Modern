@@ -83,8 +83,8 @@ public class WidgetTheme {
         return false;
     }
 
-    public WidgetTheme withColor(int color) {
-        return new WidgetTheme(this.defaultWidth, this.defaultHeight, this.background, color, this.textColor,
+    public WidgetTheme withNoHoverBackground() {
+        return new WidgetTheme(this.defaultWidth, this.defaultHeight, IDrawable.NONE, this.color, this.textColor,
                 this.textShadow, this.iconColor);
     }
 }

@@ -7,16 +7,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -126,19 +121,21 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
-        // ME Network status
-        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-
-        // Config slots
-        group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
-
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * WidgetGroup group = new WidgetGroup(new Position(0, 0));
+     * // ME Network status
+     * group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
+     * "gtceu.gui.me_network.online" :
+     * "gtceu.gui.me_network.offline"));
+     * 
+     * // Config slots
+     * group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
+     * 
+     * return group;
+     * }
+     */
 
     ////////////////////////////////
     // ******* Interaction *******//
