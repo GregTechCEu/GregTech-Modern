@@ -7,6 +7,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated use {@link ObjectValue.Dynamic} instead
+ */
+@Deprecated
 public class DynamicValue<T> implements IValue<T> {
 
     private final Supplier<T> getter;

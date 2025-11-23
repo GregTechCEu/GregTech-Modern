@@ -33,6 +33,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.UnaryOperator;
 
@@ -46,12 +47,13 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
     private static final TextRenderer textRenderer = new TextRenderer();
     private ItemSlotSH syncHandler;
+    private RichTooltip tooltip;
     @Setter
     protected UnaryOperator<ItemStack> itemHook;
 
     public ItemSlot() {
-        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
-        tooltipBuilder(tooltip -> {
+        itemTooltip().autoUpdate(true);// .setHasTitleMargin(true);
+        itemTooltip().tooltipBuilder(tooltip -> {
             if (!isSynced()) return;
             ItemStack stack = getSlot().getItem();
             buildTooltip(stack, tooltip);
@@ -165,6 +167,36 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
             throw new IllegalStateException("Widget is not initialised!");
         }
         return this.syncHandler;
+    }
+
+    public RichTooltip getItemTooltip() {
+        return super.getTooltip();
+    }
+
+    public RichTooltip itemTooltip() {
+        return super.tooltip();
+    }
+
+    @Override
+    public @Nullable RichTooltip getTooltip() {
+        if (isSynced() && !getSlot().getItem().isEmpty()) {
+            return getItemTooltip();
+        }
+        return tooltip;
+    }
+
+    @Override
+    public ItemSlot tooltip(RichTooltip tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
+
+    @Override
+    public @NotNull RichTooltip tooltip() {
+        if (this.tooltip == null) {
+            this.tooltip = new RichTooltip().parent(this);
+        }
+        return this.tooltip;
     }
 
     public ItemSlot slot(ModularSlot slot) {

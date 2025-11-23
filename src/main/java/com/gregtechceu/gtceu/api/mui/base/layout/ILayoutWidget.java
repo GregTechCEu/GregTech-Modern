@@ -33,6 +33,10 @@ public interface ILayoutWidget extends INotifyEnabled {
         return true;
     }
 
+    default boolean canCoverByDefaultSize(GuiAxis axis) {
+        return false;
+    }
+
     /**
      * Called when determining wrapping size of this widget.
      * If this method returns true, size and margin of the queried child will be ignored for calculation.

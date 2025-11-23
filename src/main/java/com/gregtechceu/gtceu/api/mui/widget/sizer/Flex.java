@@ -24,13 +24,14 @@ import java.util.function.DoubleSupplier;
  */
 public class Flex implements IResizeable, IPositioned<Flex> {
 
-    private final DimensionSizer x = new DimensionSizer(GuiAxis.X);
-    private final DimensionSizer y = new DimensionSizer(GuiAxis.Y);
+    private final DimensionSizer x;
+    private final DimensionSizer y;
     @Getter
     private boolean expanded = false;
     private final IGuiElement parent;
     private Area relativeTo;
     private boolean relativeToParent = true;
+    private boolean bypassLayerRestriction = false;
 
     private boolean childrenCalculated = false;
     @Setter
@@ -39,6 +40,12 @@ public class Flex implements IResizeable, IPositioned<Flex> {
 
     public Flex(IGuiElement parent) {
         this.parent = parent;
+        this.x = createDimensionSizer(GuiAxis.X);
+        this.y = createDimensionSizer(GuiAxis.Y);
+    }
+
+    protected DimensionSizer createDimensionSizer(GuiAxis axis) {
+        return new DimensionSizer(axis);
     }
 
     public void reset() {
@@ -152,6 +159,13 @@ public class Flex implements IResizeable, IPositioned<Flex> {
 
     public Flex relativeToParent() {
         this.relativeToParent = true;
+        scheduleResize();
+        return this;
+    }
+
+    @Override
+    public Flex bypassLayerRestriction() {
+        this.bypassLayerRestriction = true;
         scheduleResize();
         return this;
     }
@@ -294,6 +308,10 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         return this;
     }
 
+    public void setUnit(Unit unit, GuiAxis axis, Unit.State pos) {
+        (axis.isHorizontal() ? this.x : this.y).setUnit(unit, pos);
+    }
+
     private IResizeable getRelativeTo() {
         IGuiElement parent = this.parent.getParent();
         IResizeable relativeTo = this.relativeToParent && parent != null ? parent.resizer() : this.relativeTo;
@@ -314,6 +332,14 @@ public class Flex implements IResizeable, IPositioned<Flex> {
 
     public boolean hasWidth() {
         return this.x.hasSize();
+    }
+
+    public boolean hasStartPos(GuiAxis axis) {
+        return axis.isHorizontal() ? this.x.hasStart() : this.y.hasStart();
+    }
+
+    public boolean hasEndPos(GuiAxis axis) {
+        return axis.isHorizontal() ? this.x.hasEnd() : this.y.hasEnd();
     }
 
     public boolean hasPos(GuiAxis axis) {
@@ -341,6 +367,11 @@ public class Flex implements IResizeable, IPositioned<Flex> {
     }
 
     public boolean hasFixedSize() {
+        return this.x.hasFixedSize() && this.y.hasFixedSize();
+    }
+
+    public boolean isFullSize() {
+        if (!hasHeight() || !hasWidth()) return false;
         return this.x.hasFixedSize() && this.y.hasFixedSize();
     }
 
@@ -394,8 +425,13 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         Area relativeArea = relativeTo.getArea();
         byte panelLayer = this.parent.getArea().getPanelLayer();
 
-        if (relativeArea.getPanelLayer() > panelLayer ||
-                (relativeArea.getPanelLayer() == panelLayer && relativeArea.z() >= this.parent.getArea().z())) {
+        if (!this.bypassLayerRestriction && (relativeArea.getPanelLayer() > panelLayer ||
+                (relativeArea.getPanelLayer() == panelLayer && relativeArea.z() >= this.parent.getArea().z()))) {
+            Area area = guiElement.getArea();
+            area.setSize(18, 18);
+            area.rx = 0;
+            area.ry = 0;
+            guiElement.resizer().setResized(true);
             GuiError.throwNew(this.parent, GuiError.Type.SIZING,
                     "Widget can't be relative to a widget at the same level or above");
             return true;
@@ -409,14 +445,16 @@ public class Flex implements IResizeable, IPositioned<Flex> {
 
     @Override
     public boolean postResize(IGuiElement guiElement) {
-        if (!this.x.dependsOnChildren() && !this.y.dependsOnChildren()) return isSelfFullyCalculated();
+        boolean coverWidth = this.x.dependsOnChildren();
+        boolean coverHeight = this.y.dependsOnChildren();
+        if (!coverWidth && !coverHeight) return isSelfFullyCalculated();
         if (!(this.parent instanceof IWidget widget) || !widget.hasChildren()) {
             coverChildrenForEmpty();
             return isSelfFullyCalculated();
         }
-        if (this.parent instanceof ILayoutWidget) {
+        if (this.parent instanceof ILayoutWidget layout) {
             // layout widgets handle widget layout's themselves, so we only need to fit the right and bottom border
-            coverChildrenForLayout(widget);
+            coverChildrenForLayout(layout, widget);
             return isSelfFullyCalculated();
         }
         // non layout widgets can have their children in any position
@@ -431,43 +469,61 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         // first calculate the area the children span
         int x0 = Integer.MAX_VALUE, x1 = Integer.MIN_VALUE, y0 = Integer.MAX_VALUE, y1 = Integer.MIN_VALUE;
         int w = 0, h = 0;
+        boolean hasIndependentChildX = false;
+        boolean hasIndependentChildY = false;
         for (IWidget child : children) {
             Box margin = child.getArea().getMargin();
             IResizeable resizeable = child.resizer();
             Area area = child.getArea();
-            if (this.x.dependsOnChildren() && resizeable.isWidthCalculated()) {
-                // minimum width this widget requests
-                w = Math.max(w, area.requestedWidth() + padding.horizontal());
-                if (resizeable.isXCalculated()) {
-                    // if pos is calculated use that
-                    x0 = Math.min(x0, area.rx - padding.left() - margin.left());
-                    x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
+            if (coverWidth) {
+                if (!child.flex().x.dependsOnParent()) {
+                    hasIndependentChildX = true;
+
+                    if (resizeable.isWidthCalculated() && resizeable.isXCalculated()) {
+                        w = Math.max(w, area.requestedWidth() + padding.horizontal());
+                        // if pos is calculated use that
+                        x0 = Math.min(x0, area.rx - padding.left() - margin.left());
+                        x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
+                    } else {
+                        return isSelfFullyCalculated();
+                    }
                 }
             }
-            if (this.y.dependsOnChildren() && resizeable.isHeightCalculated()) {
-                h = Math.max(h, area.requestedHeight() + padding.vertical());
-                if (resizeable.isYCalculated()) {
-                    y0 = Math.min(y0, area.ry - padding.top() - margin.top());
-                    y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
+            if (coverHeight) {
+                if (!child.flex().y.dependsOnParent()) {
+                    hasIndependentChildY = true;
+                    if (resizeable.isHeightCalculated() && resizeable.isYCalculated()) {
+                        h = Math.max(h, area.requestedHeight() + padding.vertical());
+                        y0 = Math.min(y0, area.ry - padding.top() - margin.top());
+                        y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
+
+                    } else {
+                        return isSelfFullyCalculated();
+                    }
                 }
             }
+        }
+        if ((coverWidth && !hasIndependentChildX) || (coverHeight && !hasIndependentChildY)) {
+            GuiError.throwNew(this.parent, GuiError.Type.SIZING,
+                    "Can't cover children when all children depend on their parent!");
+            return false;
         }
         if (x1 == Integer.MIN_VALUE) x1 = 0;
         if (y1 == Integer.MIN_VALUE) y1 = 0;
         if (x0 == Integer.MAX_VALUE) x0 = 0;
         if (y0 == Integer.MAX_VALUE) y0 = 0;
-        if (w > x1 - x0)
-            x1 = x0 + w; // we found at least one widget which was wider than what was calculated by start and end pos
+        // we found at least one widget which was wider than what was calculated by start and end pos
+        if (w > x1 - x0) x1 = x0 + w;
         if (h > y1 - y0) y1 = y0 + h;
 
-        // now calculate new x, y, width and height based on the children's area
+        // now calculate new x, y, width and height based on the children area
         Area relativeTo = getRelativeTo().getArea();
-        if (this.x.dependsOnChildren()) {
+        if (coverWidth) {
             // apply the size to this widget
             // the return value is the amount of pixels we need to move the children
             moveChildrenX = this.x.postApply(this.parent.getArea(), relativeTo, x0, x1);
         }
-        if (this.y.dependsOnChildren()) {
+        if (coverHeight) {
             moveChildrenY = this.y.postApply(this.parent.getArea(), relativeTo, y0, y1);
         }
         // since the edges might have been moved closer to the widgets, the widgets should move back into it's original
@@ -483,40 +539,76 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         return isSelfFullyCalculated();
     }
 
-    private void coverChildrenForLayout(IWidget widget) {
+    private void coverChildrenForLayout(ILayoutWidget layout, IWidget widget) {
         List<IWidget> children = widget.getChildren();
         Box padding = this.parent.getArea().getPadding();
         // first calculate the area the children span
         int x1 = Integer.MIN_VALUE, y1 = Integer.MIN_VALUE;
         int w = 0, h = 0;
+        int withDefaultW = 0, withDefaultH = 0;
+        boolean coverWidth = this.x.dependsOnChildren();
+        boolean coverHeight = this.y.dependsOnChildren();
+        boolean hasIndependentChildX = false;
+        boolean hasIndependentChildY = false;
+        boolean coverByDefaultSizeX = coverWidth && layout.canCoverByDefaultSize(GuiAxis.X);
+        boolean coverByDefaultSizeY = coverHeight && layout.canCoverByDefaultSize(GuiAxis.Y);
         for (IWidget child : children) {
-            final boolean shouldIgnoreChildSize = ((ILayoutWidget) this.parent).shouldIgnoreChildSize(child);
-            Box margin = shouldIgnoreChildSize ? Box.ZERO : child.getArea().getMargin();
+            if (layout.shouldIgnoreChildSize(child)) continue;
+            Area area = child.getArea();
+            Box margin = area.getMargin();
             IResizeable resizeable = child.resizer();
-            Area area = shouldIgnoreChildSize ? Area.ZERO : child.getArea();
-            if (this.x.dependsOnChildren() && resizeable.isWidthCalculated()) {
-                w = Math.max(w, area.requestedWidth() + padding.horizontal());
-                if (resizeable.isXCalculated()) {
-                    x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
+            if (coverWidth) {
+                if (!child.flex().x.dependsOnParent()) {
+                    hasIndependentChildX = true;
+                    if (resizeable.isWidthCalculated() && resizeable.isXCalculated()) {
+                        int s = area.requestedWidth() + padding.horizontal();
+                        w = Math.max(w, s);
+                        withDefaultW = Math.max(withDefaultW, s);
+                        x1 = Math.max(x1, area.rx + area.width + padding.right + margin.right);
+                    } else {
+                        return;
+                    }
+                } else if (coverByDefaultSizeX) {
+                    withDefaultW = Math.max(withDefaultW,
+                            child.getDefaultWidth() + margin.horizontal() + padding.horizontal());
                 }
             }
-            if (this.y.dependsOnChildren() && resizeable.isHeightCalculated()) {
-                h = Math.max(h, area.requestedHeight() + padding.vertical());
-                if (resizeable.isYCalculated()) {
-                    y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
+            if (coverHeight) {
+                if (!child.flex().y.dependsOnParent()) {
+                    hasIndependentChildY = true;
+                    if (resizeable.isHeightCalculated() && resizeable.isYCalculated()) {
+                        int s = area.requestedHeight() + padding.vertical();
+                        h = Math.max(h, s);
+                        withDefaultH = Math.max(withDefaultH, s);
+                        y1 = Math.max(y1, area.ry + area.height + padding.bottom + margin.bottom);
+                    } else {
+                        return;
+                    }
+                } else if (coverByDefaultSizeY) {
+                    withDefaultH = Math.max(withDefaultH,
+                            child.getDefaultHeight() + margin.vertical() + padding.vertical());
                 }
             }
         }
+        if ((coverWidth && !hasIndependentChildX && !coverByDefaultSizeX) ||
+                (coverHeight && !hasIndependentChildY && !coverByDefaultSizeY)) {
+            GuiError.throwNew(this.parent, GuiError.Type.SIZING,
+                    "Can't cover children when all children depend on their parent!");
+            return;
+        }
+        // only use default sizes, if no size is defined
+        if (w == 0) w = withDefaultW;
+        if (h == 0) h = withDefaultH;
         if (x1 == Integer.MIN_VALUE) x1 = 0;
         if (y1 == Integer.MIN_VALUE) y1 = 0;
         if (w > x1) x1 = w;
         if (h > y1) y1 = h;
 
         Area relativeTo = getRelativeTo().getArea();
-        if (this.x.dependsOnChildren()) {
+        if (coverWidth) {
             this.x.postApply(getArea(), relativeTo, 0, x1);
         }
-        if (this.y.dependsOnChildren()) {
+        if (coverHeight) {
             this.y.postApply(getArea(), relativeTo, 0, y1);
         }
     }
@@ -542,7 +634,7 @@ public class Flex implements IResizeable, IPositioned<Flex> {
         Area parentArea = parent.getParentArea();
         area.rx = area.x - parentArea.x;
         area.ry = area.y - parentArea.y;
-        if (parent instanceof IVanillaSlot vanillaSlot) {
+        if (parent instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
             // special treatment for minecraft slots
             SlotAccessor slot = (SlotAccessor) vanillaSlot.getVanillaSlot();
             Area mainArea = parent.getScreen().getMainPanel().getArea();

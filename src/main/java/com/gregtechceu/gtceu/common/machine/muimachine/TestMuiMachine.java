@@ -206,7 +206,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .row("III  D")
                                         .row("III  O")
                                         .row("III   ")
-                                        .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i)))
+                                        .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i))
+                                                .addTooltipLine("This slot is empty"))
                                         .key('O',
                                                 new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
                                         .key('D',

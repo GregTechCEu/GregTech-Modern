@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.widget.IFocusedWidget;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.theme.TextFieldTheme;
+import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
@@ -120,6 +121,16 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             drawText(context, widgetTheme);
         } else {
             context.getStencil().push(1, 1, getArea().w() - 2, getArea().h() - 2);
+        }
+    }
+
+    @Override
+    public void postDraw(ModularGuiContext context, boolean transformed) {
+        if (!transformed) {
+            context.getStencil().pop();
+            WidgetThemeEntry<WidgetTheme> scrollbarTheme = context.getTheme().getScrollbarTheme();
+            getScrollArea().drawScrollbar(context, scrollbarTheme.getTheme(isHovering()),
+                    scrollbarTheme.getTheme().getBackground());
         }
     }
 
