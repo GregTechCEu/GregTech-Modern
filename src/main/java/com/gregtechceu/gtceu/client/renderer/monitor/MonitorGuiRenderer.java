@@ -112,7 +112,8 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (hit instanceof BlockHitResult blockHit) {
             BlockPos pos = blockHit.getBlockPos();
             BlockPos relPos = machine.toRelative(pos);
-            if (MetaMachine.getMachine(player.level(), pos) instanceof MonitorPartMachine monitor) {
+            if (MetaMachine.getMachine(player.level(), pos) instanceof MonitorPartMachine monitor &&
+                    monitor.getControllers().contains(machine)) {
                 Vector2d monitorMousePos = monitor.getMousePos(hit);
                 mouseX = relPos.getX() - rel.getX() + monitorMousePos.x();
                 mouseY = rel.getY() - relPos.getY() + 1 - monitorMousePos.y();

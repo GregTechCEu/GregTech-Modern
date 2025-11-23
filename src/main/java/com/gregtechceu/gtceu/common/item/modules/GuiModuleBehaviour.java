@@ -36,6 +36,8 @@ public class GuiModuleBehaviour implements IMonitorModuleItem {
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
         return new ModularPanel("gui_module_info")
                 .coverChildren()
-                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.gui_module_info")));
+                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.gui_module_info"))
+                        .height(50)
+                        .width(200));
     }
 }
