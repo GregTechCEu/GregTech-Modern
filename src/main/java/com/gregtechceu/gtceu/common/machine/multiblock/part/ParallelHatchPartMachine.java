@@ -103,13 +103,13 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                return IKey.str("1/16x");
+                                return IKey.str("/16");
                             } else if (mouseData.ctrl()) {
-                                return IKey.str("1/8x");
+                                return IKey.str("/8");
                             } else if (mouseData.shift()) {
-                                return IKey.str("1/4x");
+                                return IKey.str("/4");
                             } else {
-                                return IKey.str("1/2x");
+                                return IKey.str("/2");
                             }
                         }))
                         .width(32)
@@ -142,13 +142,13 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                return IKey.str("16x");
+                                return IKey.str("x16");
                             } else if (mouseData.ctrl()) {
-                                return IKey.str("8x");
+                                return IKey.str("x8");
                             } else if (mouseData.shift()) {
-                                return IKey.str("4x");
+                                return IKey.str("x4");
                             } else {
-                                return IKey.str("2x");
+                                return IKey.str("x2");
                             }
                         }))
                         .width(32)
