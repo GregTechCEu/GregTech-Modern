@@ -71,6 +71,9 @@ public class GCYMMachines {
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .modelProperty(IS_FORMED, false)
                     .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                    .UI((guiData, syncManager, uiSettings, machine) -> {
+                        return ((ParallelHatchPartMachine) machine).buildUI(guiData, syncManager, uiSettings);
+                    })
                     .model(createWorkableTieredHullMachineModel(
                             GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                             .andThen((ctx, prov, model) -> {
