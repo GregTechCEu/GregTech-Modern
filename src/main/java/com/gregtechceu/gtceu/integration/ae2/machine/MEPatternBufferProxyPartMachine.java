@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -96,11 +95,13 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         return getBuffer() != null;
     }
 
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        assert getBuffer() != null; // UI should never be able to be opened when buffer is null
-        return getBuffer().createUI(entityPlayer);
-    }
+    /*
+     * @Override
+     * public ModularUI createUI(Player entityPlayer) {
+     * assert getBuffer() != null; // UI should never be able to be opened when buffer is null
+     * return getBuffer().createUI(entityPlayer);
+     * }
+     */
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

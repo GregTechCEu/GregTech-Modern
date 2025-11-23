@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -19,7 +17,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -31,7 +28,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -345,45 +341,47 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup group;
-        if (isConfigurable) {
-            group = new WidgetGroup(0, 0, 150, 70);
-            group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
-                    .addWidget(new ComponentPanelWidget(4, 5, list -> {
-                        list.add(getTextWidgetText("duration", this::getDurationMultiplier));
-                        list.add(getTextWidgetText("time", this::getTimeMultiplier));
-                        var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-                        list.add(buttonText);
-                    }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
-                        if (!clickData.isRemote) {
-                            if (componentData.equals("sub")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            } else if (componentData.equals("add")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            }
-                        }
-                    })));
-
-        } else {
-            group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
-        }
-        group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
-        group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
-                data -> fixMaintenanceProblems(group.getGui().entityPlayer))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * WidgetGroup group;
+     * if (isConfigurable) {
+     * group = new WidgetGroup(0, 0, 150, 70);
+     * group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
+     * .addWidget(new ComponentPanelWidget(4, 5, list -> {
+     * list.add(getTextWidgetText("duration", this::getDurationMultiplier));
+     * list.add(getTextWidgetText("time", this::getTimeMultiplier));
+     * var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
+     * buttonText.append(" ");
+     * buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
+     * buttonText.append(" ");
+     * buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
+     * list.add(buttonText);
+     * }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
+     * if (!clickData.isRemote) {
+     * if (componentData.equals("sub")) {
+     * durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
+     * MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
+     * } else if (componentData.equals("add")) {
+     * durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
+     * MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
+     * }
+     * }
+     * })));
+     * 
+     * } else {
+     * group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
+     * }
+     * group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
+     * .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
+     * .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
+     * group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
+     * data -> fixMaintenanceProblems(group.getGui().entityPlayer))
+     * .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
+     * group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+     * return group;
+     * }
+     */
 
     private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
         Component tooltip;

@@ -7,12 +7,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -97,19 +93,21 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
-        // ME Network status
-        group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-        group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // display list
-        group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
-
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
+     * // ME Network status
+     * group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
+     * "gtceu.gui.me_network.online" :
+     * "gtceu.gui.me_network.offline"));
+     * group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
+     * // display list
+     * group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
+     * 
+     * return group;
+     * }
+     */
 
     private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 

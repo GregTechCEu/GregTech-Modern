@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -143,10 +140,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
     }
 
-    @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    /*
+     * @Override
+     * public void attachSideTabs(TabsWidget sideTabs) {
+     * sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
+     * }
+     */
 
     @Override
     protected void flushInventory() {
@@ -271,12 +270,14 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
-    }
+    /*
+     * @Override
+     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+     * IMEStockingPart.super.attachConfigurators(configuratorPanel);
+     * super.attachConfigurators(configuratorPanel);
+     * configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
+     * }
+     */
 
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,

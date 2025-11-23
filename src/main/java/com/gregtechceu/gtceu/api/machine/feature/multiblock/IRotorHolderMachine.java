@@ -1,24 +1,16 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public interface IRotorHolderMachine extends IMultiPart {
 
@@ -205,18 +197,20 @@ public interface IRotorHolderMachine extends IMultiPart {
     // ******* FANCY GUI ********//
     //////////////////////////////////////
 
-    @Override
-    default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
-        attachTooltips(tooltipsPanel);
-    }
-
-    @Override
-    default void attachTooltips(TooltipsPanel tooltipsPanel) {
-        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
-                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
-                () -> !isFrontFaceFree(),
-                () -> null));
-    }
+    /*
+     * @Override
+     * default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
+     * attachTooltips(tooltipsPanel);
+     * }
+     * 
+     * @Override
+     * default void attachTooltips(TooltipsPanel tooltipsPanel) {
+     * tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
+     * () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+     * () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
+     * .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+     * () -> !isFrontFaceFree(),
+     * () -> null));
+     * }
+     */
 }
