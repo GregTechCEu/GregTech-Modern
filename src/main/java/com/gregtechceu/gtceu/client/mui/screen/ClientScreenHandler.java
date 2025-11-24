@@ -454,7 +454,7 @@ public class ClientScreenHandler {
         acc.setHoveredSlot(null);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         Lighting.setupForFlatItems();
-        acc.invokeRenderLabels(graphics, mouseX, mouseY);
+        // acc.invokeRenderLabels(graphics, mouseX, mouseY);
 
         acc.setHoveredSlot(null);
         IGuiElement hovered = muiScreen.getContext().getTopHovered();
