@@ -1,18 +1,17 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
-import com.gregtechceu.gtceu.api.mui.base.UIFactory;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
@@ -27,18 +26,28 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import org.joml.Vector2d;
+import org.lwjgl.glfw.GLFW;
 
 public class MonitorGuiRenderer implements IMonitorRenderer {
 
-    private final ModularScreen screen;
-    private final Screen vanillaScreen;
+    private ModularScreen screen;
+    private Screen vanillaScreen;
+    private ModularContainerMenu menu;
     private int width = 200, height = 200;
+    private final Level targetLevel;
+    private final BlockPos targetPos;
 
     public MonitorGuiRenderer(Pair<Level, BlockPos> target) {
+        MinecraftForge.EVENT_BUS.register(this);
+        this.targetLevel = target.getFirst();
+        this.targetPos = target.getSecond();
         if (target.getSecond() == null) {
             screen = null;
             vanillaScreen = null;
@@ -47,32 +56,61 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         MetaMachine targetMachine = MetaMachine.getMachine(target.getFirst(), target.getSecond());
         if (targetMachine != null &&
                 (targetMachine.getDefinition().getUI() != null || targetMachine instanceof IMuiMachine)) {
-            UISettings settings = new UISettings();
-            settings.getXeiSettings().forceDisabled();
-            UIFactory<PosGuiData> factory = MachineUIFactory.INSTANCE;
-            PosGuiData data = new PosGuiData(MCHelper.getPlayer(), target.getSecond());
-            PanelSyncManager syncManager = new PanelSyncManager(true);
-            ModularPanel mainPanel = factory.createPanel(data, syncManager, settings);
-            WidgetTree.collectSyncValues(syncManager, mainPanel);
-            screen = factory.createScreen(data, mainPanel);
-            int windowId = GTValues.RNG.nextInt();
-            ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
-                    factory.createContainer(windowId);
-            menu.construct(MCHelper.getPlayer(), syncManager, settings, mainPanel.getName(), data);
-            vanillaScreen = factory.createScreenWrapper(menu, screen).getWrappedScreen();
-            vanillaScreen.init(MCHelper.getMc(), width, height);
-            screen.onResize(width, height);
-            for (IWidget child : mainPanel.getChildren()) {
-                if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
-                    slotGroupWidget.disabled();
-                    mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
-                    mainPanel.scheduleResize();
-                }
-            }
+            GuiManager.openFromClient(MachineUIFactory.INSTANCE,
+                    new PosGuiData(MCHelper.getPlayer(), target.getSecond()), true);
+            // UISettings settings = new UISettings();
+            // settings.getXeiSettings().forceDisabled();
+            // UIFactory<PosGuiData> factory = MachineUIFactory.INSTANCE;
+            // PosGuiData data = new PosGuiData(MCHelper.getPlayer(), target.getSecond());
+            // PanelSyncManager syncManager = new PanelSyncManager(true);
+            // ModularPanel mainPanel = factory.createPanel(data, syncManager, settings);
+            // WidgetTree.collectSyncValues(syncManager, mainPanel);
+            // screen = factory.createScreen(data, mainPanel);
+            // int windowId = GTValues.RNG.nextInt();
+            // ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
+            // factory.createContainer(windowId);
+            // menu.construct(MCHelper.getPlayer(), syncManager, settings, mainPanel.getName(), data);
+            // vanillaScreen = factory.createScreenWrapper(menu, screen).getWrappedScreen();
+            // vanillaScreen.init(MCHelper.getMc(), width, height);
+            // screen.onResize(width, height);
+            // for (IWidget child : mainPanel.getChildren()) {
+            // if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
+            // slotGroupWidget.disabled();
+            // mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
+            // mainPanel.scheduleResize();
+            // }
+            // }
         } else {
             screen = null;
             vanillaScreen = null;
         }
+    }
+
+    @SubscribeEvent
+    public void openClientInWorldUI(InWorldMUIOpenEvent event) {
+        if (this.targetPos != null && event.getGuiData() instanceof PosGuiData posGuiData) {
+            if (posGuiData.getBlockPos().asLong() == targetPos.asLong() && posGuiData.getLevel() == targetLevel) {
+                this.menu = event.getMenu();
+                this.screen = event.getScreen();
+                this.vanillaScreen = event.getVanillaScreen();
+                this.vanillaScreen.init(MCHelper.getMc(), this.width, this.height);
+                this.screen.onResize(this.width, this.height);
+                ModularPanel mainPanel = this.screen.getMainPanel();
+                for (IWidget child : mainPanel.getChildren()) {
+                    if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
+                        slotGroupWidget.disabled();
+                        mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
+                        mainPanel.scheduleResize();
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.PlayerTickEvent event) {
+        if (this.menu != null) this.menu.onUpdate();
+        if (this.screen != null) this.screen.onUpdate();
     }
 
     public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
@@ -93,7 +131,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (resized) screen.onResize(width, height);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
         screen.onFrameUpdate();
-        if (partialTick == 0) screen.onUpdate();
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
         ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
     }
@@ -117,6 +154,13 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 Vector2d monitorMousePos = monitor.getMousePos(hit);
                 mouseX = relPos.getX() - rel.getX() + monitorMousePos.x();
                 mouseY = rel.getY() - relPos.getY() + 1 - monitorMousePos.y();
+                if (monitor instanceof AdvancedMonitorPartMachine advancedMonitor) {
+                    if (advancedMonitor.isClickedThisFrame()) {
+                        // this.screen.onMousePressed(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                        this.vanillaScreen.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                        advancedMonitor.setClickedThisFrame(false);
+                    }
+                }
             }
         }
         renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));

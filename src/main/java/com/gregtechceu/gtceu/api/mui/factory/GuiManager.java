@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
 import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
@@ -46,6 +47,7 @@ public class GuiManager {
             16);
 
     private static final List<Player> openedContainers = new ArrayList<>(4);
+    private static final List<ModularContainerMenu> openedInWorldContainers = new ArrayList<>();
 
     public static void registerFactory(UIFactory<?> factory) {
         Objects.requireNonNull(factory);
@@ -68,8 +70,13 @@ public class GuiManager {
 
     public static <T extends GuiData> void open(@NotNull UIFactory<T> factory, @NotNull T guiData,
                                                 ServerPlayer player) {
+        open(factory, false, guiData, player);
+    }
+
+    public static <T extends GuiData> void open(@NotNull UIFactory<T> factory, boolean inWorldUI, @NotNull T guiData,
+                                                ServerPlayer player) {
         if (player instanceof FakePlayer || openedContainers.contains(player)) return;
-        openedContainers.add(player);
+        if (!inWorldUI) openedContainers.add(player);
         // create panel, collect sync handlers and create menu
         UISettings settings = new UISettings(XeiSettings.DUMMY);
         settings.defaultCanInteractWith(factory, guiData);
@@ -79,7 +86,7 @@ public class GuiManager {
 
         // create the menu
         player.nextContainerCounter();
-        if (player.containerMenu != player.inventoryMenu) {
+        if (player.containerMenu != player.inventoryMenu && !inWorldUI) {
             player.closeContainer();
         }
         int windowId = player.containerCounter;
@@ -90,17 +97,20 @@ public class GuiManager {
         // sync to client
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         factory.writeGuiData(guiData, buffer);
-        GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, factory, buffer));
+        GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, factory, buffer, inWorldUI));
         // open the menu // this mimics forge behaviour
-        player.initMenu(menu);
-        player.containerMenu = menu;
+        if (!inWorldUI) {
+            player.initMenu(menu);
+            player.containerMenu = menu;
+        } else openedInWorldContainers.add(menu);
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
     }
 
     @ApiStatus.Internal
     @OnlyIn(Dist.CLIENT)
-    public static <T extends GuiData> void openFromClient(int windowId, @NotNull UIFactory<T> factory,
+    public static <T extends GuiData> void openFromClient(int windowId, boolean inWorldUI,
+                                                          @NotNull UIFactory<T> factory,
                                                           @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
@@ -119,15 +129,27 @@ public class GuiManager {
         }
         if (guiContainer.getMenu() != container)
             throw new IllegalStateException("Custom Containers are not yet allowed!");
-        MCHelper.setScreen(wrapper.getWrappedScreen());
-        player.containerMenu = guiContainer.getMenu();
+        GTCEu.LOGGER.info(inWorldUI);
+        if (inWorldUI) {
+            MinecraftForge.EVENT_BUS
+                    .post(new InWorldMUIOpenEvent(guiData, wrapper.getWrappedScreen(), screen, container));
+        } else {
+            MCHelper.setScreen(wrapper.getWrappedScreen());
+            player.containerMenu = guiContainer.getMenu();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <T extends GuiData> void openFromClient(@NotNull UIFactory<T> factory, @NotNull T guiData) {
+        openFromClient(factory, guiData, false);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <T extends GuiData> void openFromClient(@NotNull UIFactory<T> factory, @NotNull T guiData,
+                                                          boolean inWorldUI) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         factory.writeGuiData(guiData, buffer);
-        GTNetwork.sendToServer(new OpenGuiPacket<>(0, factory, buffer));
+        GTNetwork.sendToServer(new OpenGuiPacket<>(0, factory, buffer, inWorldUI));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -153,6 +175,7 @@ public class GuiManager {
     public static void onTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             openedContainers.clear();
+            openedInWorldContainers.forEach(ModularContainerMenu::onUpdate);
         }
     }
 

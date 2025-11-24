@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
@@ -39,6 +40,10 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
     @Persisted
     private boolean resetClickedNextTick = false;
 
+    @Getter
+    @Setter
+    private boolean clickedThisFrame = false;
+
     @Nullable
     private TickableSubscription clickResetSubscription;
 
@@ -52,6 +57,7 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
         if (hit.getDirection() != getFrontFacing())
             return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
         clicked = true;
+        clickedThisFrame = true;
         Vector2d clickPos = getMousePos(hit);
         clickPosX = clickPos.x();
         clickPosY = clickPos.y();
