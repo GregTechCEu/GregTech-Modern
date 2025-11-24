@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -23,8 +23,6 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -82,9 +80,9 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
         return false;
     }
 
-    // TODO: This is called by .UI, will want this to implement IMuiMachine later
-    // @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
         IntSyncValue parallels = new IntSyncValue(this::getCurrentParallel, this::setCurrentParallel);
         ModularPanel panel = new ModularPanel(this.getDefinition().getName());
         panel
@@ -168,7 +166,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         })
                         .marginLeft(4)
                         .verticalCenter())
-                .child(IKey.str("Parallels")
+                .child(IKey.lang("gtceu.machine.parallel_hatch.parallel_ui")
                         .asWidget()
                         .marginLeft(4)
                         .marginRight(4)

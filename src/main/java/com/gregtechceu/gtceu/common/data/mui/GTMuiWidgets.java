@@ -36,6 +36,10 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 public class GTMuiWidgets {
 
+    public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
+        return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
+    }
+
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
         String hatchName = displayItem.getHoverName().getString();
