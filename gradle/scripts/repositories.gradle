@@ -25,7 +25,7 @@ repositories {
         }
     }
     exclusiveContent { // Configuration
-        forRepository { maven { url = "https://api.repsy.io/mvn/toma/public/" } }
+        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public/" } }
         filter { includeGroup('dev.toma.configuration') }
     }
     exclusiveContent { // FTB mods
