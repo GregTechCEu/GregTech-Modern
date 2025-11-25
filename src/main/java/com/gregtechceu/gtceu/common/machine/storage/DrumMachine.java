@@ -232,6 +232,11 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                                 .translatable("gtceu.machine.basic.input_from_output_side." +
                                         (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
                                 .append(Component.translatable("gtceu.creative.tank.fluid")));
+            } else if (!playerIn.isShiftKeyDown()) {
+                setAutoOutputFluids(!isAutoOutputFluids());
+                playerIn.sendSystemMessage(Component
+                        .translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
+                return InteractionResult.SUCCESS;
             }
             return InteractionResult.SUCCESS;
         }
@@ -261,14 +266,14 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return super.shouldRenderGrid(player, pos, state, held, toolTypes) ||
-                toolTypes.contains(GTToolType.SOFT_MALLET) ||
-                (canInputFluidsFromOutputSide() && toolTypes.contains(GTToolType.SCREWDRIVER));
+                toolTypes.contains(GTToolType.SOFT_MALLET) || toolTypes.contains(GTToolType.SCREWDRIVER);
     }
 
     @Override
     public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                               Direction side) {
-        if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+        if (toolTypes.contains(GTToolType.SOFT_MALLET) ||
+                (!canInputFluidsFromOutputSide() && toolTypes.contains(GTToolType.SCREWDRIVER))) {
             if (side == getOutputFacingFluids()) {
                 return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
             }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -52,6 +53,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         super(inner.values, provider.getMaxValue(), null);
         this.inner = inner;
         this.countProvider = provider;
+    }
+
+    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
+        super(inner.values, provider.getMaxValue(), null);
+        this.inner = inner;
+        this.countProvider = provider;
+        this.sampledCount = sampledCount;
     }
 
     @Override
@@ -152,6 +160,14 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     /**
+     * Resets the random roll on this ingredient
+     */
+    public void reroll() {
+        sampledCount = -1;
+        fluidStacks = null;
+    }
+
+    /**
      * @param inner    {@link FluidIngredient}
      * @param provider usually as {@link UniformInt#of(int, int)}
      */
@@ -181,6 +197,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("inner", inner.toJson());
+        json.addProperty("sampledCount", sampledCount);
         return json;
     }
 
@@ -198,8 +215,9 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
+        int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
         FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
-        return new IntProviderFluidIngredient(inner, amount);
+        return new IntProviderFluidIngredient(inner, amount, sampledCount);
     }
 
     public CompoundTag toNBT() {
@@ -208,5 +226,17 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        inner.toNetwork(buffer);
+        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
+    }
+
+    public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        int[] range = buffer.readVarIntArray(2);
+        IntProvider provider = UniformInt.of(range[0], range[1]);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 }

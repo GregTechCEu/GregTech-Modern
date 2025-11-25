@@ -31,35 +31,47 @@ public class GTNetwork {
     private static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(GTCEu.id("network"),
             () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
+    private static void protectedSend(PacketDistributor.PacketTarget target, INetPacket packet) {
+        try {
+            INSTANCE.send(target, packet);
+        } catch (Exception e) {
+            GTCEu.LOGGER.warn("Failed to send packet: {}", e.getLocalizedMessage());
+        }
+    }
+
     private static int nextPacketId = 0;
 
     public static void sendToServer(INetPacket packet) {
-        INSTANCE.sendToServer(packet);
+        try {
+            INSTANCE.sendToServer(packet);
+        } catch (Exception e) {
+            GTCEu.LOGGER.warn("Failed to send packet: {}", e.getLocalizedMessage());
+        }
     }
 
     public static void sendToPlayersInLevel(ResourceKey<Level> level, INetPacket packet) {
-        INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), packet);
+        protectedSend(PacketDistributor.DIMENSION.with(() -> level), packet);
     }
 
     public static void sendToPlayersNearPoint(PacketDistributor.TargetPoint point, INetPacket packet) {
-        INSTANCE.send(PacketDistributor.NEAR.with(() -> point), packet);
+        protectedSend(PacketDistributor.NEAR.with(() -> point), packet);
     }
 
     public static void sendToAllPlayersTrackingEntity(Entity entity, boolean includeSelf, INetPacket packet) {
-        INSTANCE.send(includeSelf ? PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity) :
+        protectedSend(includeSelf ? PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity) :
                 PacketDistributor.TRACKING_ENTITY.with(() -> entity), packet);
     }
 
     public static void sendToAllPlayersTrackingChunk(LevelChunk chunk, INetPacket packet) {
-        INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
+        protectedSend(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
     }
 
     public static void sendToAll(INetPacket packet) {
-        INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+        protectedSend(PacketDistributor.ALL.noArg(), packet);
     }
 
     public static void sendToPlayer(ServerPlayer player, INetPacket packet) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), packet);
+        protectedSend(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 
     public static void reply(NetworkEvent.Context context, INetPacket packet) {

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -30,8 +29,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @Persisted
     @DescSynced
     public final NotifiableEnergyContainer energyContainer;
-    protected TickableSubscription explosionSubs;
-    protected ISubscription energyListener;
+    protected TickableSubscription explosionSub;
 
     public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
@@ -58,40 +56,29 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        // if machine need do check explosion conditions
         if (!isRemote() && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion &&
                 shouldWeatherOrTerrainExplosion()) {
-            energyListener = energyContainer.addChangedListener(this::updateExplosionSubscription);
-            updateExplosionSubscription();
+            explosionSub = subscribeServerTick(this::checkExplosion);
+            checkExplosion();
         }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (energyListener != null) {
-            energyListener.unsubscribe();
-            energyListener = null;
+        if (explosionSub != null) {
+            explosionSub.unsubscribe();
+            explosionSub = null;
         }
     }
 
     //////////////////////////////////////
     // ******** Explosion ********//
     //////////////////////////////////////
-
-    protected void updateExplosionSubscription() {
-        if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion && shouldWeatherOrTerrainExplosion() &&
-                energyContainer.getEnergyStored() > 0) {
-            explosionSubs = subscribeServerTick(explosionSubs, this::checkExplosion);
-        } else if (explosionSubs != null) {
-            explosionSubs.unsubscribe();
-            explosionSubs = null;
-        }
-    }
-
     protected void checkExplosion() {
-        checkWeatherOrTerrainExplosion(tier, tier * 10);
-        updateExplosionSubscription();
+        if (energyContainer.getEnergyStored() > 0) {
+            checkWeatherOrTerrainExplosion(tier, tier * 10);
+        }
     }
 
     //////////////////////////////////////
