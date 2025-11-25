@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManag
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -145,7 +146,7 @@ public class GTRecipeLookup {
             if (index > 0) {
                 for (ItemStack unique : uniqueItems) {
                     if (unique == null) break;
-                    else if (ItemStack.isSameItemSameTags(input, unique)) {
+                    else if (GTUtil.isSameItemSameTags(input, unique)) {
                         continue main;
                     }
                 }

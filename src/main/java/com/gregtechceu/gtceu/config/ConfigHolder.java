@@ -689,7 +689,7 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
         @Configurable
-        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
+        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
         @Configurable
