@@ -134,7 +134,6 @@ public class GuiManager {
         }
         if (guiContainer.getMenu() != container)
             throw new IllegalStateException("Custom Containers are not yet allowed!");
-        GTCEu.LOGGER.info(inWorldUI);
         if (inWorldUI) {
             container.inWorldID = clientInWorldContainers.size();
             clientInWorldContainers.add(container);
