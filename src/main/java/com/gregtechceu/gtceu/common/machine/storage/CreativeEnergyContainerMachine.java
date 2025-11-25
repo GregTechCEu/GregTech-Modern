@@ -71,7 +71,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     private int tier = 0;
 
     public int getAmps() {
-        if(amps == 0) return 1;
+        if (amps == 0) return 1;
         return amps;
     }
 
