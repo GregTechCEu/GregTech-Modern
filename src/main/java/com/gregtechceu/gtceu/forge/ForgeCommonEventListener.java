@@ -387,11 +387,11 @@ public class ForgeCommonEventListener {
                 speedBoost = 0.0f;
             } else {
                 var state = player.level().getBlockState(player.getOnPos());
-                if (state.is(CustomTags.SPEED_CONCRETES)) {
+                if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.6f; // value that is added to the base MC speed
-                } else if (state.is(CustomTags.SPEED_STUDS)) {
+                } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.25f; // slower to walk on studs
-                } else if (state.is(CustomTags.SLOW_FRAMES)) {
+                } else if (state.is(CustomTags.SLOW_WALKABLE_BLOCKS)) {
                     speedBoost = -0.20f; // slower on frames
                 }
             }
