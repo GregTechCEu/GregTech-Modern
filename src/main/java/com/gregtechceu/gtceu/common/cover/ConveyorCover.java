@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -514,49 +515,34 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createFilterRow()) {
-            // TODO: Figure why the filter handler does not resync when opening the gui, tldr it voids
             var filterSlot = filterHandler.getFilterSlot();
-            var filterItem = filterHandler.getFilterSlot().getStackInSlot(0);
 
-            // TODO: Figure out how to properly attach this to the sync manager to
-            // dynamically add the button widget when a filter exists
-
-            IPanelHandler[] filterPanelHandler = new IPanelHandler[1];
-
-            DynamicSyncHandler filterWidgetHandler = new DynamicSyncHandler()
-                    .widgetProvider((manager, packet) -> {
-                        ItemStack stack = packet.readItem();
-                        var filter = ItemFilter.loadFilter(stack);
-                        if (stack.isEmpty()) {
-                            return new EmptyWidget();
-                        }
-
-                        return new Column()
-                                .coverChildrenWidth()
-                                .child(new ButtonWidget<>()
-                                        .overlay(new ItemDrawable(stack).asIcon().center().size(14))
-                                        .tooltip(t -> t.addLine("Configure Filter"))
-                                        .onMousePressed((mouseX, mouseY, button) -> {
-
-                                            filterPanelHandler[0] = syncManager.panel("filter_panel",
-                                                    (a, b) -> filter.getPopupPanel(a), true);
-                                            // filterPanel.child(filter.getPopupPanel(manager));
-                                            filterPanelHandler[0].openPanel();
-                                            return true;
-                                        }))
-                                .child(IKey.str(stack.getHoverName().getString()).asWidget());
-                    });
+            var filterPanelHandler = syncManager.panel("filter_panel",
+                    (psm, ph) -> ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0)).getPopupPanel(syncManager), true);
 
             column.child(new Row()
                     .child(new ItemSlot()
-                            .slot(new ModularSlot(filterSlot, 0)
-                                    .changeListener((newItem, amount, client, init) -> {
-
-                                        filterWidgetHandler.notifyUpdate(packet -> packet.writeItem(newItem));
-
-                                    })))
-                    .child(new DynamicSyncedWidget<>()
-                            .syncHandler(filterWidgetHandler)));
+                            .slot(new ModularSlot(filterSlot, 0).changeListener((newStack, amount, client, init) -> {
+                                if (newStack.isEmpty() || newStack.equals(filterHandler.getFilterSlot().getStackInSlot(0))) {
+                                    filterPanelHandler.closePanel();
+                                }
+                            })).marginRight(4))
+                    .child(new Row()
+                            .coverChildrenWidth()
+                            .childPadding(3)
+                            .child(new ButtonWidget<>()
+                                    .overlay(new DynamicDrawable(() -> new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0))).asIcon().center().size(14))
+                                    .tooltip(t -> t.addLine("Configure Filter"))
+                                    .onMousePressed((mouseX, mouseY, button) -> {
+                                        if (!ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0)).getPopupPanel(syncManager).isOpen()) {
+                                            filterPanelHandler.openPanel();
+                                        }
+                                        return true;
+                                    }))
+                            .child(IKey.dynamic(() -> filterHandler.getFilterSlot().getStackInSlot(0).getHoverName()).asWidget())
+                            .setEnabledIf((flow) -> !filterHandler.getFilterSlot().getStackInSlot(0).isEmpty())
+                            .alignX(Alignment.CenterRight))
+            );
         }
 
         if (createConveyorIORow()) {

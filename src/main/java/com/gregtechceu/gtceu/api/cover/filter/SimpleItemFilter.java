@@ -129,7 +129,8 @@ public class SimpleItemFilter implements ItemFilter {
         this.popupPanel = makePanel(syncManager);
         if (this.popupPanel instanceof Dialog<?> dialog) {
             dialog.setDraggable(true)
-                    .setDisablePanelsBelow(false);
+                    .setDisablePanelsBelow(false)
+                    .closeOnOutOfBoundsClick();
         }
     }
 
