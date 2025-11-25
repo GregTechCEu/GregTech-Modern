@@ -2393,6 +2393,8 @@
   "gtceu.gui.content.units.per_second": "/s",
   "gtceu.gui.content.units.per_tick": "/t",
   "gtceu.gui.cover_setting.title": "Cover Settings",
+  "gtceu.gui.directional_setting.tab_tooltip": "Change Directional Setting",
+  "gtceu.gui.directional_setting.title": "Directional Setting",
   "gtceu.gui.editor.group.recipe_type": "cap",
   "gtceu.gui.editor.tips.citation": "Number of citations",
   "gtceu.gui.fisher_mode.tooltip.0": "Toggle junk items",
