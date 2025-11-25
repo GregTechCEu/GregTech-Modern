@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -81,6 +82,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
@@ -94,7 +96,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+                         IFancyTooltip, IPaintable, IRedstoneSignalMachine, ICopyable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
@@ -842,5 +844,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public CompoundTag gatherConfig(CompoundTag tag) {
+        return ICopyable.super.gatherConfig(tag);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void loadConfigTag(CompoundTag tag) {
+        ICopyable.super.loadConfigTag(tag);
     }
 }

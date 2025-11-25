@@ -725,10 +725,16 @@ public class LangHandler {
         provider.add("behaviour.prospecting", "Usable for Prospecting");
         provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
         provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
-        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
-        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
-        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
-        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
+        provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
+        provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
+        provider.add("behaviour.setting.tooltip.allow_input_from_output_item", "Item input from output side is %s");
+        provider.add("behaviour.setting.tooltip.output_direction_item", "Item output direction: %s");
+        provider.add("behaviour.setting.tooltip.item_auto_output", "Item auto-output is %s");
+        provider.add("behaviour.setting.tooltip.allow_input_from_output_fluid", "Fluid input from output side is %s");
+        provider.add("behaviour.setting.tooltip.output_direction_fluid", "Fluid output direction: %s");
+        provider.add("behaviour.setting.tooltip.fluid_auto_output", "Fluid auto-output is %s");
+        provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
+        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: §e%s");
         provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
