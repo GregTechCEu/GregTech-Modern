@@ -47,7 +47,8 @@ public class GuiManager {
             16);
 
     private static final List<Player> openedContainers = new ArrayList<>(4);
-    private static final List<ModularContainerMenu> openedInWorldContainers = new ArrayList<>();
+    private static final Object2ObjectMap<ServerPlayer, List<ModularContainerMenu>> openedInWorldContainers = new Object2ObjectOpenHashMap<>();
+    private static final List<ModularContainerMenu> clientInWorldContainers = new ArrayList<>();
 
     public static void registerFactory(UIFactory<?> factory) {
         Objects.requireNonNull(factory);
@@ -102,7 +103,11 @@ public class GuiManager {
         if (!inWorldUI) {
             player.initMenu(menu);
             player.containerMenu = menu;
-        } else openedInWorldContainers.add(menu);
+        } else {
+            List<ModularContainerMenu> tmp = openedInWorldContainers.computeIfAbsent(player, p -> new ArrayList<>());
+            menu.inWorldID = tmp.size();
+            tmp.add(menu);
+        }
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
     }
@@ -131,6 +136,8 @@ public class GuiManager {
             throw new IllegalStateException("Custom Containers are not yet allowed!");
         GTCEu.LOGGER.info(inWorldUI);
         if (inWorldUI) {
+            container.inWorldID = clientInWorldContainers.size();
+            clientInWorldContainers.add(container);
             MinecraftForge.EVENT_BUS
                     .post(new InWorldMUIOpenEvent(guiData, wrapper.getWrappedScreen(), screen, container));
         } else {
@@ -175,7 +182,16 @@ public class GuiManager {
     public static void onTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             openedContainers.clear();
-            openedInWorldContainers.forEach(ModularContainerMenu::onUpdate);
+            openedInWorldContainers.values().forEach(arr -> arr.forEach(ModularContainerMenu::onUpdate));
+            openedInWorldContainers.values().forEach(arr -> arr.forEach(ModularContainerMenu::broadcastChanges));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            clientInWorldContainers.forEach(ModularContainerMenu::onUpdate);
+            clientInWorldContainers.forEach(ModularContainerMenu::broadcastChanges);
         }
     }
 
@@ -187,5 +203,13 @@ public class GuiManager {
                 syncManager.onOpen();
             }
         }
+    }
+
+    public static ModularContainerMenu getClientInWorldMenu(int inWorldID) {
+        return clientInWorldContainers.get(inWorldID);
+    }
+
+    public static ModularContainerMenu getServerInWorldMenu(ServerPlayer player, int inWorldID) {
+        return openedInWorldContainers.get(player).get(inWorldID);
     }
 }

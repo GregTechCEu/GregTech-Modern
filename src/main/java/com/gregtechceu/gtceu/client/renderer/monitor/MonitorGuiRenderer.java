@@ -27,7 +27,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -107,12 +106,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         }
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.PlayerTickEvent event) {
-        if (this.menu != null) this.menu.onUpdate();
-        if (this.screen != null) this.screen.onUpdate();
-    }
-
     public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
                           float partialTick, int mouseX, int mouseY) {
         GuiGraphics guiGraphics = new GuiGraphics(MCHelper.getMc(), (MultiBufferSource.BufferSource) buffer);
@@ -156,7 +149,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 mouseY = rel.getY() - relPos.getY() + 1 - monitorMousePos.y();
                 if (monitor instanceof AdvancedMonitorPartMachine advancedMonitor) {
                     if (advancedMonitor.isClickedThisFrame()) {
-                        // this.screen.onMousePressed(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         this.vanillaScreen.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         advancedMonitor.setClickedThisFrame(false);
                     }

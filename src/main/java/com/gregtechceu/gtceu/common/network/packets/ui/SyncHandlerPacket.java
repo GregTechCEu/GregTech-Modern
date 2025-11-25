@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.network.packets.ui;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SyncHandlerPacket implements GTNetwork.INetPacket {
 
+    private int inWorldID;
     private String panel;
     private String key;
     private boolean action;
@@ -26,6 +28,7 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(this.inWorldID);
         NetworkUtils.writeStringSafe(buf, this.panel);
         NetworkUtils.writeStringSafe(buf, this.key, 64, true);
         buf.writeBoolean(this.action);
@@ -33,6 +36,7 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
     }
 
     public SyncHandlerPacket(FriendlyByteBuf buf) {
+        this.inWorldID = buf.readVarInt();
         this.panel = NetworkUtils.readStringSafe(buf);
         this.key = NetworkUtils.readStringSafe(buf);
         this.action = buf.readBoolean();
@@ -42,12 +46,14 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
     @Override
     public void execute(NetworkEvent.Context handler) {
         if (handler.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-            ModularScreen screen = ModularScreen.getCurrent();
+            ModularScreen screen = inWorldID == -1 ? ModularScreen.getCurrent() :
+                    GuiManager.getClientInWorldMenu(inWorldID).getScreen();
             if (screen != null) {
                 executeFromManager(screen.getSyncManager());
             }
         } else {
-            AbstractContainerMenu menu = handler.getSender().containerMenu;
+            AbstractContainerMenu menu = inWorldID == -1 ? handler.getSender().containerMenu :
+                    GuiManager.getServerInWorldMenu(handler.getSender(), inWorldID);
             if (menu instanceof ModularContainerMenu modularMenu) {
                 executeFromManager(modularMenu.getSyncManager());
             }

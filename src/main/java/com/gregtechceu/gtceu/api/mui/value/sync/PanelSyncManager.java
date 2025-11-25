@@ -363,7 +363,8 @@ public class PanelSyncManager {
 
     public void callSyncedAction(String mapKey, FriendlyByteBuf packet) {
         if (invokeSyncedAction(mapKey, packet)) {
-            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.panelName, mapKey, true, packet);
+            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.getContainer().inWorldID, this.panelName,
+                    mapKey, true, packet);
             if (isClient()) {
                 GTNetwork.sendToServer(packetSyncHandler);
             } else {

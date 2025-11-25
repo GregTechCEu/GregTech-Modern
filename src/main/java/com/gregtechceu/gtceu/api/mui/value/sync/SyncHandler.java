@@ -167,7 +167,8 @@ public abstract class SyncHandler {
             throw new IllegalStateException();
         }
         GTNetwork.sendToPlayer((ServerPlayer) syncHandler.syncManager.getPlayer(),
-                new SyncHandlerPacket(panel, syncHandler.getKey(), false, buffer));
+                new SyncHandlerPacket(syncHandler.syncManager.getContainer().inWorldID, panel, syncHandler.getKey(),
+                        false, buffer));
     }
 
     public static void sendToServer(String panel, FriendlyByteBuf buffer, SyncHandler syncHandler) {
@@ -176,6 +177,7 @@ public abstract class SyncHandler {
         if (!syncHandler.isValid()) {
             throw new IllegalStateException();
         }
-        GTNetwork.sendToServer(new SyncHandlerPacket(panel, syncHandler.getKey(), false, buffer));
+        GTNetwork.sendToServer(new SyncHandlerPacket(syncHandler.syncManager.getContainer().inWorldID, panel,
+                syncHandler.getKey(), false, buffer));
     }
 }
