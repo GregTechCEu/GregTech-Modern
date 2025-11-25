@@ -10,7 +10,22 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -99,6 +114,58 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
      * .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
      * }
      */
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 166)
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .heightRel(0.5f)
+                        .child(internalUI(syncManager)))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
+    private Widget<?> internalUI(PanelSyncManager syncManager) {
+        SlotGroup objectGroup = new SlotGroup("object_slot", 1);
+        SlotGroup orbGroup = new SlotGroup("orb_slot", 1);
+
+        ItemSlotSH dataSlot = new ItemSlotSH(new ModularSlot(heldItems, 1)
+                .slotGroup(orbGroup));
+        syncManager.syncValue("data", dataSlot);
+
+        ItemSlotSH objectSlot = new ItemSlotSH(new ModularSlot(heldItems, 0)
+                .slotGroup(objectGroup));
+        syncManager.syncValue("object", objectSlot);
+
+        return Flow.row()
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .align(Alignment.CENTER)
+                .coverChildren()
+                .child(SlotGroupWidget.builder()
+                        .matrix("i")
+                        .key('i', i -> new ItemSlot().syncHandler("data")
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY))
+                        .build()
+                        .marginLeft(30)
+                        .marginRight(30)
+                        .verticalCenter())
+
+                .child(GTGuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE.asWidget()
+                        .size(84, 60)
+                        .pos(75, 0))
+
+                .child(SlotGroupWidget.builder()
+                        .matrix("i")
+                        .key('i', i -> new ItemSlot()
+                                .syncHandler("object")
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY))
+                        .build()
+                        .marginLeft(30)
+                        .marginRight(30)
+                        .verticalCenter());
+    }
 
     @Override
     public void setFrontFacing(Direction frontFacing) {
