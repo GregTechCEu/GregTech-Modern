@@ -231,6 +231,7 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     // ********** GUI *********** //
     ////////////////////////////////
 
+    // TODO MUI: Needs EIO widget
     @Override
     public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
                                          @NotNull UISettings settings) {
@@ -286,7 +287,8 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
                         .child(createAutoOutputItemButton(syncManager))
                         .child(createAutoOutputFluidButton(syncManager))
                         .child(createInputFromOutputItem(syncManager))
-                        .child(createInputFromOutputFluid(syncManager)));
+                        .child(createInputFromOutputFluid(syncManager))
+                        .excludeAreaInXei());
     }
 
     private ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {
