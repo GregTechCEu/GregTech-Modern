@@ -154,6 +154,8 @@ public class TextRenderer {
         }
         int y0 = getStartY(height, height);
         this.lastY = y0;
+        new TextLine(Component.literal(" "), 10).draw(context, context.getFont(), 0, y0, this.color, this.shadow, width,
+                height);
         for (ITextLine line : lines) {
             int x0 = getStartX(width, line.getWidth());
             if (!simulate) line.draw(context, context.getFont(), x0, y0, this.color, this.shadow, width, height);
