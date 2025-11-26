@@ -12,14 +12,22 @@ import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
+import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetContent;
+import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetData;
+import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetSlot;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerSynchronizer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GuiManager {
@@ -49,6 +58,48 @@ public class GuiManager {
     private static final List<Player> openedContainers = new ArrayList<>(4);
     private static final Object2ObjectMap<ServerPlayer, List<ModularContainerMenu>> openedInWorldContainers = new Object2ObjectOpenHashMap<>();
     private static final List<ModularContainerMenu> clientInWorldContainers = new ArrayList<>();
+    private static final Function<ServerPlayer, ContainerSynchronizer> inWorldSynchronizer = player -> new ContainerSynchronizer() {
+
+        @Override
+        public void sendInitialData(@NotNull AbstractContainerMenu container, @NotNull NonNullList<ItemStack> items,
+                                    @NotNull ItemStack carriedItem, int @NotNull [] initialData) {
+            GTNetwork.sendToPlayer(player, new SContainerSetContent(getInWorldId(container),
+                    container.incrementStateId(), items, carriedItem));
+
+            for (int i = 0; i < initialData.length; ++i) {
+                this.broadcastDataValue(container, i, initialData[i]);
+            }
+        }
+
+        @Override
+        public void sendSlotChange(@NotNull AbstractContainerMenu container, int slot, @NotNull ItemStack itemStack) {
+            GTNetwork.sendToPlayer(player,
+                    new SContainerSetSlot(getInWorldId(container), container.incrementStateId(), slot, itemStack));
+            player.connection.send(new ClientboundContainerSetSlotPacket(container.containerId,
+                    container.incrementStateId(), slot, itemStack));
+        }
+
+        @Override
+        public void sendCarriedChange(@NotNull AbstractContainerMenu containerMenu, @NotNull ItemStack stack) {
+            // in-world UIs shouldn't allow moving stacks by hand
+            // player.connection.send(new ClientboundContainerSetSlotPacket(-1, containerMenu.incrementStateId(), -1,
+            // stack));
+        }
+
+        @Override
+        public void sendDataChange(@NotNull AbstractContainerMenu container, int id, int value) {
+            this.broadcastDataValue(container, id, value);
+        }
+
+        private void broadcastDataValue(AbstractContainerMenu container, int id, int value) {
+            GTNetwork.sendToPlayer(player, new SContainerSetData(getInWorldId(container), id, value));
+        }
+
+        private int getInWorldId(AbstractContainerMenu container) {
+            if (container instanceof ModularContainerMenu modularContainer) return modularContainer.inWorldID;
+            return -1;
+        }
+    };
 
     public static void registerFactory(UIFactory<?> factory) {
         Objects.requireNonNull(factory);
@@ -107,6 +158,7 @@ public class GuiManager {
             List<ModularContainerMenu> tmp = openedInWorldContainers.computeIfAbsent(player, p -> new ArrayList<>());
             menu.inWorldID = tmp.size();
             tmp.add(menu);
+            menu.setSynchronizer(inWorldSynchronizer.apply(player));
         }
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
