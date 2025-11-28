@@ -176,6 +176,11 @@ public class MixinHelpers {
                         }
                     }
                 }
+
+                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                            .addAll(entries);
+                }
             });
 
             GTRegistries.MACHINES.forEach(machine -> {

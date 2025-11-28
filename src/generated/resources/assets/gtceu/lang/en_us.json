@@ -1731,7 +1731,6 @@
   "command.gtceu.share_prospection_data.notification": "%s is sharing prospecting data with you!",
   "config.gtceu.option.addLoot": "addLoot",
   "config.gtceu.option.ae2": "ae2",
-  "config.gtceu.option.allUniqueStoneTypes": "allUniqueStoneTypes",
   "config.gtceu.option.allowDrumsInputFluidsFromOutputSide": "allowDrumsInputFluidsFromOutputSide",
   "config.gtceu.option.animationTime": "animationTime",
   "config.gtceu.option.arcRecyclingYield": "arcRecyclingYield",

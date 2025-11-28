@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.tags;
 
+import com.gregtechceu.gtceu.common.block.StoneTypes;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -27,6 +29,17 @@ public class BlockTagLoader {
                         Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER,
                         Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER,
                         Blocks.BLACK_CONCRETE_POWDER);
+
+        var speedConcretes = provider.addTag(CustomTags.VERY_FAST_WALKABLE_BLOCKS);
+        speedConcretes.add(GTBlocks.LIGHT_CONCRETE.get(), GTBlocks.DARK_CONCRETE.get());
+
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_LIGHT)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_DARK)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+
+        var studs = provider.addTag(CustomTags.FAST_WALKABLE_BLOCKS);
+        GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
 
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
 

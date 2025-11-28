@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -14,28 +12,29 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
+public class NBTPredicateItemStackMapIngredient extends ItemStackMapIngredient {
 
-    protected StrictNBTIngredient nbtIngredient;
+    protected NBTPredicateIngredient nbtIngredient;
 
-    public StrictNBTItemStackMapIngredient(ItemStack s, StrictNBTIngredient nbtIngredient) {
-        super(s);
+    public NBTPredicateItemStackMapIngredient(ItemStack stack, NBTPredicateIngredient nbtIngredient) {
+        super(stack, nbtIngredient);
         this.nbtIngredient = nbtIngredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull StrictNBTIngredient ingredient) {
+    public static List<AbstractMapIngredient> from(@NotNull NBTPredicateIngredient ingredient) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : ingredient.getItems()) {
-            list.add(new StrictNBTItemStackMapIngredient(s, ingredient));
+            list.add(new NBTPredicateItemStackMapIngredient(s, ingredient));
         }
         return list;
     }
 
     @NotNull
     public static List<AbstractMapIngredient> from(@NotNull ItemStack stack) {
-        if (stack.hasTag()) {
-            return Collections.singletonList(new StrictNBTItemStackMapIngredient(stack, StrictNBTIngredient.of(stack)));
+        if (stack.getShareTag() != null) {
+            return Collections.singletonList(new NBTPredicateItemStackMapIngredient(stack,
+                    NBTPredicateIngredient.of(stack)));
         }
         return Collections.emptyList();
     }
@@ -50,14 +49,20 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof StrictNBTItemStackMapIngredient other) {
+        if (obj instanceof NBTPredicateItemStackMapIngredient other) {
             if (this.stack.getItem() != other.stack.getItem()) {
                 return false;
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return GTUtil.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
-                            ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
+                    if (this.nbtIngredient.getItems().length != other.nbtIngredient.getItems().length)
+                        return false;
+                    for (ItemStack stack : this.nbtIngredient.getItems()) {
+                        if (!other.nbtIngredient.test(stack)) {
+                            return false;
+                        }
+                    }
+                    return true;
                 } else {
                     this.nbtIngredient.test(other.stack);
                 }
@@ -70,7 +75,7 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     @Override
     public String toString() {
-        return "StrictNBTItemStackMapIngredient{" + "item=" + stack + "}";
+        return "NBTPredicateItemStackMapIngredient{" + "item=" + stack + "}";
     }
 
     @Override

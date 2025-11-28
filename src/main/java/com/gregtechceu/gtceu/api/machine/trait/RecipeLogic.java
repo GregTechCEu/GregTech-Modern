@@ -296,7 +296,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                         if (machine.self() instanceof IMultiController && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
-                            regressRecipe();
                         }
                     }
                     runDelay = runAttempt * 60;
@@ -305,7 +304,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         } else {
             setWaiting(conditionResult.reason());
         }
-        if (isWaiting()) {
+        if (isWaiting() || isSuspend()) {
             regressRecipe();
         }
     }
@@ -394,7 +393,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (this.status == Status.WORKING) {
                 this.totalContinuousRunningTime = 0;
             }
-            if (status == Status.SUSPEND && suspendAfterFinish) {
+            if ((status == Status.WAITING || status == Status.SUSPEND) && suspendAfterFinish) {
+                status = Status.SUSPEND;
                 suspendAfterFinish = false;
             }
             machine.notifyStatusChanged(this.status, status);
