@@ -175,6 +175,12 @@ public class SimpleItemFilter implements ItemFilter {
             public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 return matches[slot] = stack;
             }
+
+            @Override
+            public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+                super.setStackInSlot(slot, stack);
+                matches[slot] = stack;
+            }
         };
 
         SlotGroup filterInv = new SlotGroup("filter_inv", 3, 1000, true);
