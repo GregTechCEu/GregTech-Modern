@@ -124,9 +124,10 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                     monitor.getControllers().contains(machine)) {
                 Vector2d monitorMousePos = monitor.getMousePos(hit);
                 mouseX = relPos.getX() - rel.getX() + monitorMousePos.x();
-                mouseY = rel.getY() - relPos.getY() + 1 - monitorMousePos.y();
+                mouseY = relPos.getY() - rel.getY() + 1 - monitorMousePos.y();
                 if (monitor instanceof AdvancedMonitorPartMachine advancedMonitor && mouseX >= 0 && mouseY >= 0 && mouseX <= width && mouseY <= height) {
                     if (advancedMonitor.isClickedThisFrame()) {
+                        this.screen.onMousePressed(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         this.vanillaScreen.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         advancedMonitor.setClickedThisFrame(false);
                     }
