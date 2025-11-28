@@ -109,7 +109,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     @Override
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (screen == null) return;
+        if (screen == null || group.isEmpty()) return;
         BlockPos rel = group.getRow(0, machine::toRelative).get(0);
         BlockPos size = GTUtil.getLast(group.getRow(-1, machine::toRelative))
                 .offset(-rel.getX() + 1, -rel.getY() + 1, -rel.getZ() + 1);

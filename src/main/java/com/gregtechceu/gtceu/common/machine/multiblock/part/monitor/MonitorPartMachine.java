@@ -6,9 +6,6 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -29,11 +26,6 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
     }
 
     @Override
-    public IGuiTexture getComponentIcon() {
-        return ResourceTexture.fromSpirit(GTCEu.id("item/computer_monitor_cover"));
-    }
-
-    @Override
     public IDrawable getIcon() {
         return GTGuiTextures.MONITOR;
     }
@@ -45,8 +37,11 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
 
     public Vector2d getMousePos(HitResult hitResult) {
         if (hitResult instanceof BlockHitResult hit) {
-            double x = hit.getLocation()
-                    .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
+            Direction direction = RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false);
+            double x = hit.getLocation().get(direction.getAxis());
+            if (direction.getAxisDirection().getStep() == 1) {
+                x = 1 - x;
+            }
             double y = hit.getLocation()
                     .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
             x -= Math.floor(x);

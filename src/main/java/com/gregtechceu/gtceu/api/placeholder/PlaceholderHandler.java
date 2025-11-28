@@ -81,8 +81,7 @@ public class PlaceholderHandler {
                     GTUtil.getLast(stack.peek()).appendNewline();
                     line++;
                     symbol = 0;
-                } else if (c == NEWLINE) continue;
-                else GTUtil.getLast(stack.peek()).append(c);
+                } else if (c != NEWLINE) GTUtil.getLast(stack.peek()).append(c);
             } else {
                 switch (c) {
                     case ESCAPE -> escapeNext = true;

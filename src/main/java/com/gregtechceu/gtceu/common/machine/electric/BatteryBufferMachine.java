@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -206,11 +205,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public void onMachineRemoved() {
         clearInventory(batteryInventory);
-    }
-
-    @Override
-    public IGuiTexture getComponentIcon() {
-        return GuiTextures.BUTTON_CHECK; // temporary
     }
 
     @Override
