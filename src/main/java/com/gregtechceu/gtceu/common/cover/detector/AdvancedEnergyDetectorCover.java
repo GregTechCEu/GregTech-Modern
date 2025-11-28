@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -30,7 +29,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 import lombok.Getter;
 
@@ -162,35 +160,17 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                                .tooltip(false, t -> {
-                                    for (MutableComponent text : LangHandler
-                                            .getMultiLang("cover.advanced_energy_detector.invert.disabled")) {
-                                        t.addLine(text);
-                                    }
-                                })
-                                .tooltip(true, t -> {
-                                    for (MutableComponent text : LangHandler
-                                            .getMultiLang("cover.advanced_energy_detector.invert.enabled")) {
-                                        t.addLine(text);
-                                    }
-                                }))
+                                .tooltip(false, t -> t.addMultiLine("cover.advanced_energy_detector.invert.disabled"))
+                                .tooltip(true, t -> t.addMultiLine("cover.advanced_energy_detector.invert.enabled")))
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
                                 .selectedBackground(ThemeAPI.INSTANCE.getTheme(settings.getTheme())
                                         .getToggleButtonTheme().getTheme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
-                                .tooltip(false, t -> {
-                                    for (MutableComponent text : LangHandler
-                                            .getMultiLang("cover.advanced_energy_detector.use_percent.disabled")) {
-                                        t.addLine(text);
-                                    }
-                                })
-                                .tooltip(true, t -> {
-                                    for (MutableComponent text : LangHandler
-                                            .getMultiLang("cover.advanced_energy_detector.use_percent.enabled")) {
-                                        t.addLine(text);
-                                    }
-                                }))
+                                .tooltip(false,
+                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.disabled"))
+                                .tooltip(true,
+                                        t -> t.addMultiLine("cover.advanced_energy_detector.use_percent.enabled")))
                         .childPadding(5)
                         .coverChildren())
                 .rightRel(0.5F)

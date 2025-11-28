@@ -442,8 +442,6 @@ public class GTMachines {
             BlockBreakerMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
-                    .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"),
-                            (tier + 1) * (tier + 1)))
                     .workableTieredHullModel(GTCEu.id("block/machines/block_breaker"))
                     .langValue("%s Block Breaker %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.block_breaker.tooltip"),
