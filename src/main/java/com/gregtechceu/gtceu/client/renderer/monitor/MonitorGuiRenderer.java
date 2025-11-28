@@ -57,28 +57,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 (targetMachine.getDefinition().getUI() != null || targetMachine instanceof IMuiMachine)) {
             GuiManager.openFromClient(MachineUIFactory.INSTANCE,
                     new PosGuiData(MCHelper.getPlayer(), target.getSecond()), true);
-            // UISettings settings = new UISettings();
-            // settings.getXeiSettings().forceDisabled();
-            // UIFactory<PosGuiData> factory = MachineUIFactory.INSTANCE;
-            // PosGuiData data = new PosGuiData(MCHelper.getPlayer(), target.getSecond());
-            // PanelSyncManager syncManager = new PanelSyncManager(true);
-            // ModularPanel mainPanel = factory.createPanel(data, syncManager, settings);
-            // WidgetTree.collectSyncValues(syncManager, mainPanel);
-            // screen = factory.createScreen(data, mainPanel);
-            // int windowId = GTValues.RNG.nextInt();
-            // ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
-            // factory.createContainer(windowId);
-            // menu.construct(MCHelper.getPlayer(), syncManager, settings, mainPanel.getName(), data);
-            // vanillaScreen = factory.createScreenWrapper(menu, screen).getWrappedScreen();
-            // vanillaScreen.init(MCHelper.getMc(), width, height);
-            // screen.onResize(width, height);
-            // for (IWidget child : mainPanel.getChildren()) {
-            // if (child instanceof SlotGroupWidget slotGroupWidget && slotGroupWidget.isPlayerInventory()) {
-            // slotGroupWidget.disabled();
-            // mainPanel.height(mainPanel.getArea().height - slotGroupWidget.getArea().height);
-            // mainPanel.scheduleResize();
-            // }
-            // }
         } else {
             screen = null;
             vanillaScreen = null;
