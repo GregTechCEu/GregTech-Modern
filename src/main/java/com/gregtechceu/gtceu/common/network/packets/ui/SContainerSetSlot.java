@@ -37,7 +37,9 @@ public class SContainerSetSlot implements GTNetwork.INetPacket {
     public void execute(NetworkEvent.Context context) {
         ModularContainerMenu menu = GuiManager.getClientInWorldMenu(inWorldId);
         if (menu != null) {
-            menu.setItem(slot, stateId, stack);
+            if (slot == -1) {
+                menu.setCarried(stack);
+            } else menu.setItem(slot, stateId, stack);
         }
     }
 }

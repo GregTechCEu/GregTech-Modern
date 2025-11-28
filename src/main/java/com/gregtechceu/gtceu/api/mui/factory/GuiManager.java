@@ -75,15 +75,11 @@ public class GuiManager {
         public void sendSlotChange(@NotNull AbstractContainerMenu container, int slot, @NotNull ItemStack itemStack) {
             GTNetwork.sendToPlayer(player,
                     new SContainerSetSlot(getInWorldId(container), container.incrementStateId(), slot, itemStack));
-            player.connection.send(new ClientboundContainerSetSlotPacket(container.containerId,
-                    container.incrementStateId(), slot, itemStack));
         }
 
         @Override
         public void sendCarriedChange(@NotNull AbstractContainerMenu containerMenu, @NotNull ItemStack stack) {
-            // in-world UIs shouldn't allow moving stacks by hand
-            // player.connection.send(new ClientboundContainerSetSlotPacket(-1, containerMenu.incrementStateId(), -1,
-            // stack));
+            GTNetwork.sendToPlayer(player, new SContainerSetSlot(getInWorldId(containerMenu), containerMenu.incrementStateId(), -1, stack));
         }
 
         @Override
