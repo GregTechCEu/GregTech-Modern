@@ -150,38 +150,51 @@ public class SimpleItemFilter implements ItemFilter {
         return this.popupPanel;
     }
 
+    private static class FilterItemStackHandler extends CustomItemStackHandler {
+
+        private ItemStack[] matches;
+        private SimpleItemFilter filter;
+
+        public FilterItemStackHandler(ItemStack[] matches, SimpleItemFilter simpleItemFilter) {
+            super(matches.length);
+            this.matches = matches;
+            this.filter = simpleItemFilter;
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return matches[slot];
+        }
+
+        @Override
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (amount >= matches[slot].getCount()) {
+                matches[slot] = ItemStack.EMPTY;
+            }
+            return matches[slot];
+        }
+
+        // Pretty sure this is unused? PhantomSlot only calls setStackInSlot
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            return matches[slot] = stack;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+            super.setStackInSlot(slot, stack);
+            matches[slot] = stack;
+            filter.onUpdated.accept(filter);
+        }
+    }
+
     private ModularPanel makePanel(PanelSyncManager syncManager) {
-        var handler = new CustomItemStackHandler(matches.length) {
-
-            @Override
-            public @NotNull ItemStack getStackInSlot(int slot) {
-                return matches[slot];
-            }
-
-            @Override
-            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-                return 1;
-            }
-
-            @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-                if (amount >= matches[slot].getCount()) {
-                    matches[slot] = ItemStack.EMPTY;
-                }
-                return matches[slot];
-            }
-
-            @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                return matches[slot] = stack;
-            }
-
-            @Override
-            public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-                super.setStackInSlot(slot, stack);
-                matches[slot] = stack;
-            }
-        };
+        var handler = new FilterItemStackHandler(matches, this);
 
         SlotGroup filterInv = new SlotGroup("filter_inv", 3, 1000, true);
 

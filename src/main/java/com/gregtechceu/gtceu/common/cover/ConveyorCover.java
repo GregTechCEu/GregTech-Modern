@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
@@ -18,11 +17,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -518,12 +514,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             var filterSlot = filterHandler.getFilterSlot();
 
             var filterPanelHandler = syncManager.panel("filter_panel",
-                    (psm, ph) -> ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0)).getPopupPanel(syncManager), true);
+                    (psm, ph) -> ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0))
+                            .getPopupPanel(syncManager),
+                    true);
 
             column.child(new Row()
                     .child(new ItemSlot()
                             .slot(new ModularSlot(filterSlot, 0).changeListener((newStack, amount, client, init) -> {
-                                if (newStack.isEmpty() || newStack.equals(filterHandler.getFilterSlot().getStackInSlot(0))) {
+                                if (newStack.isEmpty() ||
+                                        newStack.equals(filterHandler.getFilterSlot().getStackInSlot(0))) {
                                     filterPanelHandler.closePanel();
                                 }
                             })).marginRight(4))
@@ -531,18 +530,21 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                             .coverChildrenWidth()
                             .childPadding(3)
                             .child(new ButtonWidget<>()
-                                    .overlay(new DynamicDrawable(() -> new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0))).asIcon().center().size(14))
+                                    .overlay(new DynamicDrawable(
+                                            () -> new ItemDrawable(filterHandler.getFilterSlot().getStackInSlot(0)))
+                                            .asIcon().center().size(14))
                                     .tooltip(t -> t.addLine("Configure Filter"))
                                     .onMousePressed((mouseX, mouseY, button) -> {
-                                        if (!ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0)).getPopupPanel(syncManager).isOpen()) {
+                                        if (!ItemFilter.loadFilter(filterHandler.getFilterSlot().getStackInSlot(0))
+                                                .getPopupPanel(syncManager).isOpen()) {
                                             filterPanelHandler.openPanel();
                                         }
                                         return true;
                                     }))
-                            .child(IKey.dynamic(() -> filterHandler.getFilterSlot().getStackInSlot(0).getHoverName()).asWidget())
+                            .child(IKey.dynamic(() -> filterHandler.getFilterSlot().getStackInSlot(0).getHoverName())
+                                    .asWidget())
                             .setEnabledIf((flow) -> !filterHandler.getFilterSlot().getStackInSlot(0).isEmpty())
-                            .alignX(Alignment.CenterRight))
-            );
+                            .alignX(Alignment.CenterRight)));
         }
 
         if (createConveyorIORow()) {
