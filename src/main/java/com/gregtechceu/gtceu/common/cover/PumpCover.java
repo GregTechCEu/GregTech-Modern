@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
+import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -369,10 +370,15 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return 0;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return 0;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.fill(resource, action);
+                }
             }
-            if (!filterHandler.test(resource) && manualIOMode == ManualIOMode.FILTERED) {
+            if (!filterHandler.test(resource)) {
                 return 0;
             }
             return super.fill(resource, action);
@@ -380,10 +386,15 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return FluidStack.EMPTY;
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return FluidStack.EMPTY;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.drain(resource, action);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(resource)) {
+            if (!filterHandler.test(resource)) {
                 return FluidStack.EMPTY;
             }
             return super.drain(resource, action);
