@@ -764,7 +764,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof  FluidFilterCover filterCover) {
+            if (cover instanceof FluidFilterCover filterCover) {
                 if (!filterCover.getFilterMode().filters(io)) {
                     if (filterCover.getAllowFlow() == ManualIOMode.DISABLED) {
                         return fluid -> false;
