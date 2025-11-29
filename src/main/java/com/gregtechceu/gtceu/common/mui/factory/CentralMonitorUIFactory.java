@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -216,7 +217,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new ItemSlot()
                                         .slot(group.getItemStackHandler(), 0)
                                         .name("module_slot")
-                                        .onUpdateListener(slot -> moduleEditor.set(0, createModulePanelHandler(syncManager, slot.getSlot().getItem(), group, machine))))
+                                        .slot(new ModularSlot(group.getItemStackHandler(), 0)
+                                                .changeListener((item, amount, client, init) -> {
+                                                    if (amount) return;
+                                                    moduleEditor.set(0, createModulePanelHandler(syncManager, item, group, machine));
+                                                })))
                                 .child(new ButtonWidget<>()
                                         .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
                                         .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.EDIT)

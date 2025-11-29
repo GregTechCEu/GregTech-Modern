@@ -121,6 +121,7 @@ public class GuiManager {
                                                           @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
+        if (inWorldUI) settings.getXeiSettings().forceDisabled();
         settings.defaultCanInteractWith(factory, guiData);
         PanelSyncManager syncManager = new PanelSyncManager(true);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
