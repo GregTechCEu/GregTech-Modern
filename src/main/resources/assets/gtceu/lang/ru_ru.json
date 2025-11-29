@@ -5896,5 +5896,6 @@
     "item.gtceu.tool.behavior.prospecting.ore": "Обнаружена руда: %s",
     "item.gtceu.tool.behavior.prospecting.water": "Обнаружена вода",
     "item.gtceu.tool.tooltip.default_enchantments": "§5Стандартные чары:",
-    "item.gtceu.wireless_transmitter_cover": "Беспроводной передатчик"
+    "item.gtceu.wireless_transmitter_cover": "Беспроводной передатчик",
+    "config.gtceu.option.replaceWithCobbleVersion": "replaceWithCobbleVersion"
 }
