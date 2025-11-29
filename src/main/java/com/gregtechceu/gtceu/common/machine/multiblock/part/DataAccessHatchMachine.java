@@ -13,8 +13,20 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -86,6 +98,45 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
+    // TODO MUI: Might need EIO widget? Not sure
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        SlotGroup slotGroup = new SlotGroup("inventory", getInventorySize());
+
+        int size = (int) Math.sqrt(getInventorySize());
+        String[] matrix = new String[size];
+        for (int i = 0; i < size; i++) {
+            var row = new StringBuilder(size + 1);
+            for (int j = 0; j < size; j++) {
+                row.append("I");
+            }
+            matrix[i] = row.toString();
+        }
+
+        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
+                .matrix(matrix)
+                .key('I', i -> new ItemSlot()
+                        .slot(new ModularSlot(importItems, i)
+                                .slotGroup(slotGroup)))
+                .build();
+
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 100 + (18 * size))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * size)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(slotWidget
+                                        .marginLeft(30)
+                                        .marginRight(30)
+                                        .verticalCenter())))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
     /*
      * @Override
      * public Widget createUIWidget() {
