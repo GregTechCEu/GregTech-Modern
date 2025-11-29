@@ -19,9 +19,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -54,6 +51,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquareSlotGroupFromInventory;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -102,24 +101,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
                                          @NotNull UISettings settings) {
-        SlotGroup slotGroup = new SlotGroup("inventory", getInventorySize());
-
         int size = (int) Math.sqrt(getInventorySize());
-        String[] matrix = new String[size];
-        for (int i = 0; i < size; i++) {
-            var row = new StringBuilder(size + 1);
-            for (int j = 0; j < size; j++) {
-                row.append("I");
-            }
-            matrix[i] = row.toString();
-        }
-
-        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
-                .matrix(matrix)
-                .key('I', i -> new ItemSlot()
-                        .slot(new ModularSlot(importItems, i)
-                                .slotGroup(slotGroup)))
-                .build();
 
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
@@ -131,7 +113,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .align(Alignment.CENTER)
                                 .coverChildren()
-                                .child(slotWidget
+                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory")
                                         .marginLeft(30)
                                         .marginRight(30)
                                         .verticalCenter())))
