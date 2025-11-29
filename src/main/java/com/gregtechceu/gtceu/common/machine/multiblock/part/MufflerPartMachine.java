@@ -9,7 +9,19 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -24,6 +36,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;
 
@@ -121,6 +134,52 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        SlotGroup slotGroup = new SlotGroup("inventory", inventory.getSlots());
+
+        int size = (int) Math.sqrt(inventory.getSlots());
+        String[] matrix = new String[size];
+        for (int i = 0; i < size; i++) {
+            var row = new StringBuilder(size + 1);
+            for (int j = 0; j < size; j++) {
+                row.append("I");
+            }
+            matrix[i] = row.toString();
+        }
+
+        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
+                .matrix(matrix)
+                .key('I', i -> new ItemSlot()
+                        .slot(new ModularSlot(inventory, i)
+                                .slotGroup(slotGroup)))
+                .build();
+
+        return new ModularPanel(this.getDefinition().getName())
+                .size(Math.max(176, 20 + (18 * size)), 100 + (18 * size))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * size)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(slotWidget
+                                        .marginLeft(30)
+                                        .marginRight(30)
+                                        .verticalCenter())))
+                .child(new ParentWidget<>()
+                        .bottom(7)
+                        .widthRel(1)
+                        .height(76)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER).coverChildren().child(
+                                        SlotGroupWidget.playerInventory(false))));
+    }
+
     /*
      * @Override
      * public ModularUI createUI(Player entityPlayer) {
