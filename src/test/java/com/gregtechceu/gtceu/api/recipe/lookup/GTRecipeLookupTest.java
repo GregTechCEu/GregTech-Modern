@@ -36,6 +36,7 @@ public class GTRecipeLookupTest {
     private static final Predicate<GTRecipe> ALWAYS_FALSE = gtRecipe -> false;
     private static GTRecipe SMELT_STONE, SMELT_ACACIA_WOOD, SMELT_BIRCH_WOOD, SMELT_CHERRY_WOOD;
     private static GTRecipe RANGED_INPUT_ITEM, RANGED_INPUT_FLUID, RANGED_INPUT_BOTH;
+
     @BeforeBatch(batch = "GTRecipeLookup")
     public static void prepare(ServerLevel level) {
         GTRecipeType recipeType = TestUtils.createRecipeType("recipe_lookup");
