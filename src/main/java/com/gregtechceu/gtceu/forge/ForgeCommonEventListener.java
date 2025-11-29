@@ -82,6 +82,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -317,15 +318,14 @@ public class ForgeCommonEventListener {
         if (player instanceof ServerPlayer serverPlayer) {
             GTNetwork.sendToPlayer(serverPlayer, new SPacketSendWorldID());
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
-                return;
-
-            ServerLevel level = serverPlayer.serverLevel();
-            var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                ServerLevel level = serverPlayer.serverLevel();
+                var data = EnvironmentalHazardSavedData.getOrCreate(level);
+                GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            }
+            CapeRegistry.detectNewCapes(serverPlayer);
+            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
         }
-        CapeRegistry.detectNewCapes(player);
-        CapeRegistry.loadCurrentCapesOnLogin(player);
     }
 
     @SubscribeEvent
