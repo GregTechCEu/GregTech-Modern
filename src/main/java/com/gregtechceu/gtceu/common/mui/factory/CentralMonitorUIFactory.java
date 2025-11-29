@@ -65,7 +65,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     true);
             return item.child(Flow.row()
                     .height(20)
-                    .child(new TextWidget<>(item.getWidgetValue().getName())
+                    .child(new TextWidget<>(IKey.str(() -> item.getWidgetValue().getName()))
                             .paddingLeft(5)
                             .widthRelOffset(1, -36))
                     .child(new ButtonWidget<>()
