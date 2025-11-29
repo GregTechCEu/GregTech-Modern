@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
@@ -131,21 +130,16 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
         SlotGroup objectGroup = new SlotGroup("object_slot", 1);
         SlotGroup orbGroup = new SlotGroup("orb_slot", 1);
 
-        ItemSlotSH dataSlot = new ItemSlotSH(new ModularSlot(heldItems, 1)
-                .slotGroup(orbGroup));
-        syncManager.syncValue("data", dataSlot);
-
-        ItemSlotSH objectSlot = new ItemSlotSH(new ModularSlot(heldItems, 0)
-                .slotGroup(objectGroup));
-        syncManager.syncValue("object", objectSlot);
-
         return Flow.row()
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .align(Alignment.CENTER)
                 .coverChildren()
                 .child(SlotGroupWidget.builder()
                         .matrix("i")
-                        .key('i', i -> new ItemSlot().syncHandler("data")
+                        .key('i', i -> new ItemSlot()
+                                .slot(
+                                        new ModularSlot(heldItems, 1)
+                                                .slotGroup(orbGroup))
                                 .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY))
                         .build()
                         .marginLeft(30)
@@ -159,7 +153,9 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
                 .child(SlotGroupWidget.builder()
                         .matrix("i")
                         .key('i', i -> new ItemSlot()
-                                .syncHandler("object")
+                                .slot(
+                                        new ModularSlot(heldItems, 0)
+                                                .slotGroup(objectGroup))
                                 .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY))
                         .build()
                         .marginLeft(30)
