@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -28,8 +27,8 @@ import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
-
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -251,8 +250,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
                                          @NotNull UISettings settings) {
         SlotGroup rotorSlotGroup = new SlotGroup("rotor", 1);
 
-
-
         var slot = new ItemSlot()
                 .slot(new ModularSlot(inventory, 0)
                         .slotGroup(rotorSlotGroup))
@@ -266,7 +263,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
             boolean canEdit = rotorSync.getIntValue() == 0;
             slot.getSlot().accessibility(canEdit, canEdit);
         });
-
 
         syncManager.syncValue("rotor_speed", rotorSync);
 
