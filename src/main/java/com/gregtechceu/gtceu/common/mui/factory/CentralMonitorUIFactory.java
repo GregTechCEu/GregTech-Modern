@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -204,8 +203,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
             matrixWidth = Math.max(matrixWidth, curRow.size() * 20);
         }
         int matrixHeight = matrix.size() * 20;
-        IPanelHandler moduleEditor = createModulePanelHandler(syncManager,
-                group.getItemStackHandler().getStackInSlot(0), group, machine);
+        IPanelHandler moduleEditor = createModulePanelHandler(
+                syncManager,
+                group.getItemStackHandler().getStackInSlot(0),
+                group, machine, groups.indexOf(group));
         IPanelHandler helpPanel = syncManager.panel(
                 "help_panel_" + groups.indexOf(group),
                 (syncManager1, panelHandler1) -> createHelpPanel(),
@@ -349,7 +350,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     }
 
     private IPanelHandler createModulePanelHandler(PanelSyncManager syncManager, ItemStack stack, MonitorGroup group,
-                                                   CentralMonitorMachine machine) {
+                                                   CentralMonitorMachine machine, int index) {
         IMonitorModuleItem moduleItem = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
@@ -361,7 +362,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         }
         IMonitorModuleItem finalModuleItem = moduleItem;
         return moduleItem == null ? null : syncManager.panel(
-                "module_editor_" + GTValues.RNG.nextInt(),
+                "module_editor_" + index,
                 (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1,
                         panelHandler1),
                 true);
