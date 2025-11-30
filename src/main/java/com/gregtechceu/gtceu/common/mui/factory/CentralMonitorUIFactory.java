@@ -58,12 +58,17 @@ public class CentralMonitorUIFactory implements PanelFactory {
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
         SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
+        IPanelHandler helpPanel = syncManager.panel(
+                "help_panel",
+                (syncManager1, panelHandler1) -> createHelpPanel(),
+                true);
         Function<SortableListWidget.Item<MonitorGroup>, SortableListWidget.Item<MonitorGroup>> processGroupItem = item -> {
             IPanelHandler panelHandler = syncManager.panel(
                     "editor_" + groups.indexOf(item.getWidgetValue()),
                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
                             syncManager1, groupSync,
-                            machine, item.getWidgetValue(), groups),
+                            machine, item.getWidgetValue(),
+                            groups, helpPanel),
                     true);
             return item.child(Flow.row()
                     .height(20)
@@ -96,7 +101,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     groupSync.setValue(groups, true, false);
                     return this.createGroupEditorPanel(
                             syncManager1, groupSync,
-                            machine, group, groups);
+                            machine, group, groups, helpPanel);
                 },
                 true);
         return new Dialog<>("main")
@@ -133,7 +138,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
                                                 GenericSyncValue<List<MonitorGroup>> groupSync,
                                                 CentralMonitorMachine machine, MonitorGroup group,
-                                                List<MonitorGroup> groups) {
+                                                List<MonitorGroup> groups,
+                                                IPanelHandler helpPanel) {
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         for (int row = 0; row <= machine.getDownDist() + machine.getUpDist(); row++) {
@@ -207,10 +213,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 syncManager,
                 group.getItemStackHandler().getStackInSlot(0),
                 group, machine, groups.indexOf(group));
-        IPanelHandler helpPanel = syncManager.panel(
-                "help_panel_" + groups.indexOf(group),
-                (syncManager1, panelHandler1) -> createHelpPanel(),
-                true);
         List<Boolean> moduleChanged = new ArrayList<>();
         moduleChanged.add(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
