@@ -68,7 +68,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     .height(20)
                     .child(new TextWidget<>(IKey.str(() -> item.getWidgetValue().getName()))
                             .paddingLeft(5)
-                            .widthRelOffset(1, -36))
+                            .widthRelOffset(1, -38))
                     .child(new ButtonWidget<>()
                             .background(GTGuiTextures.EDIT)
                             .hoverBackground(GTGuiTextures.EDIT, new BorderDrawable())
@@ -102,8 +102,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .padding(5)
                 .excludeAreaInXei()
                 .child(new Flow(GuiAxis.Y)
-                        .heightRel(.8f)
-                        .widthRel(.8f)
+                        .heightRel(1)
+                        .widthRel(1)
+                        .padding(2)
                         .child(new Flow(GuiAxis.X)
                                 .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.monitor_groups"))
                                         .alignX(0))
@@ -122,8 +123,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .map(processGroupItem)
                                         .toList())
                                 .onChange(groupSync::setValue)
-                                .widthRel(1).heightRel(.8f)))
-                .child(SlotGroupWidget.playerInventory(true));
+                                .widthRel(1).heightRelOffset(() -> 1, -96))
+                        .child(SlotGroupWidget.playerInventory(false)));
     }
 
     private ModularPanel createGroupEditorPanel(PanelSyncManager syncManager,
