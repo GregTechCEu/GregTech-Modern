@@ -16,26 +16,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Accessors(chain = true, fluent = true)
-public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorWidget<W> {
+public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextEditorWidget<W> {
 
     @Setter
     @Getter
     @Nullable
-    protected LanguageDefinition language;
+    protected LanguageDefinition<T> language;
+
+    @Setter
+    @Getter
+    @Nullable
+    protected T langContext;
+
+    public CodeEditorWidget() {}
+
+    public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
+        this.language = language;
+    }
 
     @Override
     public List<Component> getTextAsComponents() {
         if (language() == null) return super.getTextAsComponents();
-        return language().formatCode(this.handler.getTextAsString());
+        return language().formatCode(this.handler.getTextAsString(), langContext);
     }
 
-    public record LanguageDefinition(Pattern tokenPattern, Supplier<Function<String, Component>> tokenFormatter) {
+    public record LanguageDefinition<T>(Pattern tokenPattern, Supplier<ITokenFormatter<T>> tokenFormatter) {
 
         private static String makeSeparator(List<String> separators) {
             if (separators.isEmpty()) return "\\X+";
@@ -44,7 +54,7 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
             }
         }
 
-        public LanguageDefinition(List<String> separators, Supplier<Function<String, Component>> tokenFormatter) {
+        public LanguageDefinition(List<String> separators, Supplier<ITokenFormatter<T>> tokenFormatter) {
             this(Pattern.compile(makeSeparator(separators)), tokenFormatter);
         }
 
@@ -66,10 +76,11 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
             return tokens;
         }
 
-        public List<Component> formatCode(String code) {
+        public List<Component> formatCode(String code, T context) {
             List<MutableComponent> output = new ArrayList<>();
+            ITokenFormatter<T> formatter = tokenFormatter.get();
             splitIntoTokens(code).stream()
-                    .map(tokenFormatter.get())
+                    .map(token -> formatter.apply(token, context))
                     .map(Component::copy)
                     .reduce(Component.empty(), MutableComponent::append)
                     .visit((style, s) -> {
@@ -86,5 +97,10 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W>> extends TextEditorW
             return output.stream()
                     .map(c -> (Component) c.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT))).toList();
         }
+    }
+
+    public interface ITokenFormatter<T> {
+
+        Component apply(String s, @Nullable T context);
     }
 }

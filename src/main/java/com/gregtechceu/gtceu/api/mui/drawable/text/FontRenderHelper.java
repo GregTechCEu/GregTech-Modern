@@ -212,7 +212,7 @@ public class FontRenderHelper {
         return (sink) -> {
             MutableInt globalPos = new MutableInt();
             return str.accept((pos, style, codePoint) -> {
-                int current = globalPos.addAndGet(1);
+                int current = style.getInsertion() == null ? globalPos.addAndGet(1) : globalPos.intValue();
                 if (current >= end) {
                     return false;
                 } else if (current >= start) {

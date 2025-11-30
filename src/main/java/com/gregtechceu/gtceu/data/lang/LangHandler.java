@@ -1663,12 +1663,14 @@ public class LangHandler {
                 "To select a block to get the GUI from, select a target in the monitor group editor.");
         provider.add("gtceu.gui.central_monitor.module_editor_disabled",
                 "You recently changed the module, please re-open this GUI to edit it");
-        provider.add("gtceu.gui.central_monitor.module_editor_button", "Edit module");
+        provider.add("gtceu.gui.central_monitor.module_editor_button", "Edit module");;
         provider.add("gtceu.item.tooltip.image_url", "Image URL: %s");
         provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
         provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
         provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
         provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
+        provider.add("gtceu.placeholder_editor.constant_value",
+                "This expression always evaluates to the same result.\nConsider replacing it with a constant.");
         provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");

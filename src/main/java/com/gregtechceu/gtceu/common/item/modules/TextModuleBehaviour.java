@@ -43,20 +43,23 @@ import java.util.UUID;
 
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
+    private PlaceholderContext getContext(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        return new PlaceholderContext(
+                group.getTargetLevel(machine.getLevel()),
+                group.getTarget(machine.getLevel()),
+                group.getTargetCoverSide(),
+                group.getPlaceholderSlotsHandler(),
+                group.getTargetCover(machine.getLevel()),
+                null,
+                stack.getOrCreateTag().getUUID("placeholderUUID"));
+    }
+
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         if (!stack.getOrCreateTag().contains("placeholderUUID")) {
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
-                getPlaceholderText(stack),
-                new PlaceholderContext(
-                        group.getTargetLevel(machine.getLevel()),
-                        group.getTarget(machine.getLevel()),
-                        group.getTargetCoverSide(),
-                        group.getPlaceholderSlotsHandler(),
-                        group.getTargetCover(machine.getLevel()),
-                        null,
-                        stack.getOrCreateTag().getUUID("placeholderUUID")));
+                getPlaceholderText(stack), getContext(stack, machine, group));
         stack.getOrCreateTag().put("text", text.toTag());
     }
 
@@ -129,10 +132,10 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                     helpPanel.openPanel();
                                                     return true;
                                                 })))
-                                .child(new CodeEditorWidget<>()
-                                        .language(PlaceholderHandler.LANG_DEFINITION)
+                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
                                         .value(SyncHandlers.string(() -> getPlaceholderText(stack),
                                                 s -> setPlaceholderText(stack, s)))
+                                        .langContext(getContext(stack, machine, group))
                                         .widthRel(.95f)
                                         .heightRelOffset(() -> 1, -25)))
                         .child(new SortableListWidget<String>()
@@ -164,11 +167,10 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .child(Flow.column()
                         .padding(5)
                         .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
-                        .child(new CodeEditorWidget<>()
+                        .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
                                 .padding(5)
                                 .widthRel(.95f)
                                 .height(100)
-                                .language(PlaceholderHandler.LANG_DEFINITION)
                                 .value(new StringValue(
                                         """
                                                 Energy: {calc {energy}00.0 / {energyCapacity}}%

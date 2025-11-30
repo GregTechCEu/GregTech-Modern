@@ -22,8 +22,8 @@ import net.minecraft.network.chat.*;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -40,7 +40,7 @@ public class PlaceholderHandler {
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
-    public static final CodeEditorWidget.LanguageDefinition LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition(
+    public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
             List.of("\\\\.", "\\{", "\\}", " ", "\""),
             TokenFormatter::new);
 
@@ -57,16 +57,17 @@ public class PlaceholderHandler {
     }
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                        PlaceholderContext context) throws PlaceholderException {
+                                                        @Nullable PlaceholderContext context) throws PlaceholderException {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
+        if (context != null && context.level().isClientSide &&
+                !placeholders.get(placeholder.get(0).toString()).isView())
+            GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         return placeholders.get(placeholder.get(0).toString()).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
-    public static MultiLineComponent processPlaceholders(String s, PlaceholderContext ctx) {
-        if (ctx.level().isClientSide)
-            GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
+    public static MultiLineComponent processPlaceholders(String s, @Nullable PlaceholderContext ctx) {
         List<Exception> exceptions = new ArrayList<>();
         boolean escape = false;
         boolean escapeNext = false;
@@ -188,18 +189,23 @@ public class PlaceholderHandler {
         return out;
     }
 
-    public static class TokenFormatter implements Function<String, Component> {
+    public static class TokenFormatter implements CodeEditorWidget.ITokenFormatter<PlaceholderContext> {
 
         private boolean prevOpenBracket = false;
         private boolean inString = false;
         private int unclosedBrackets = 0;
+        private final StringBuilder everything = new StringBuilder();
+        private final Stack<Integer> pureStarts = new Stack<>();
+        private final Stack<Integer> viewStarts = new Stack<>();
 
         @Override
-        public Component apply(String s) {
+        public Component apply(String s, @Nullable PlaceholderContext ctx) {
             if (s.equals("\0")) {
                 if (unclosedBrackets > 0) {
+                    onEncounteredError();
                     return Component.literal(" ").withStyle(Style.EMPTY
                             .withUnderlined(true)
+                            .withInsertion("")
                             .withColor(0xFF0000)
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
@@ -212,20 +218,24 @@ public class PlaceholderHandler {
             }
             if (s.matches("\\\\.")) {
                 prevOpenBracket = false;
+                everything.append(s);
                 return Component.literal(s).withStyle(ChatFormatting.GOLD);
             }
             if (inString && !s.equals("\"")) {
                 prevOpenBracket = false;
+                everything.append(s);
                 return Component.literal(s).withStyle(ChatFormatting.DARK_GREEN);
             }
             switch (s) {
                 case "\"" -> {
                     inString = !inString;
+                    everything.append(s);
                     return Component.literal(s).withStyle(ChatFormatting.DARK_GREEN);
                 }
                 case "{" -> {
                     prevOpenBracket = true;
                     unclosedBrackets++;
+                    everything.append(s);
                     return Component.literal(s);
                 }
                 case "}" -> {
@@ -233,26 +243,66 @@ public class PlaceholderHandler {
                     unclosedBrackets--;
                     if (unclosedBrackets < 0) {
                         unclosedBrackets = 0;
+                        onEncounteredError();
                         return Component.literal(s).withStyle(Style.EMPTY
                                 .withColor(0xFF0000)
                                 .withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
                                         Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
                     }
+                    everything.append(s);
+                    if (!pureStarts.empty()) {
+                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx).toString();
+                        pureStarts.pop();
+                        viewStarts.pop();
+                        if (result.length() > 10) {
+                            result = result.substring(0, 10) + "…";
+                        }
+                        return Component.literal("}")
+                                .append(Component.literal("='%s'".formatted(result))
+                                        .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
+                                        .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                                                HoverEvent.Action.SHOW_TEXT,
+                                                Component.translatable("gtceu.placeholder_editor.constant_value")))
+                                                .withInsertion("")));
+                    }
+                    if (!viewStarts.empty() && ctx != null) {
+                        String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
+                        viewStarts.pop();
+                        return Component.literal("}")
+                                .append(Component.literal("='%s'".formatted(result))
+                                        .withStyle(ChatFormatting.DARK_GRAY));
+                    } else if (!viewStarts.empty()) viewStarts.pop();
                     return Component.literal(s);
                 }
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
                 if (getAllPlaceholderNames().contains(s)) {
+                    if (placeholders.get(s).isPure()) {
+                        pureStarts.push(everything.length() - 1);
+                    } else pureStarts.clear();
+                    if (placeholders.get(s).isView()) {
+                        viewStarts.push(everything.length() - 1);
+                    } else viewStarts.clear();
+                    everything.append(s);
                     return Component.literal(s).withStyle(ChatFormatting.BLUE);
-                } else return Component.literal(s).withStyle(Style.EMPTY
-                        .withColor(0xFF0000)
-                        .withHoverEvent(new HoverEvent(
-                                HoverEvent.Action.SHOW_TEXT,
-                                Component.translatable("gtceu.placeholder_editor.no_placeholder", s))));
+                } else {
+                    onEncounteredError();
+                    return Component.literal(s).withStyle(Style.EMPTY
+                            .withColor(0xFF0000)
+                            .withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    Component.translatable("gtceu.placeholder_editor.no_placeholder", s))));
+                }
             }
+            everything.append(s);
             return Component.literal(s);
+        }
+
+        private void onEncounteredError() {
+            viewStarts.clear();
+            pureStarts.clear();
         }
     }
 }

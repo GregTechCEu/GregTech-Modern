@@ -93,12 +93,14 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import org.mariuszgromada.math.mxparser.License;
 
 import java.util.List;
 
 public class CommonProxy {
 
     public CommonProxy() {
+        License.iConfirmNonCommercialUse("GTCEu Modern");
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
