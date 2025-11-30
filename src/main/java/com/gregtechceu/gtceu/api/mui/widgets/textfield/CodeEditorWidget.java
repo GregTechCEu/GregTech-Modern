@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
 import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -14,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,30 +40,60 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
     @Nullable
     protected T langContext;
 
-    private final GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
-            this::getTextAsComponents, this::formattedText, ByteBufAdapters.COMPONENT);
-
     @Setter(AccessLevel.PRIVATE)
-    @Getter(AccessLevel.PRIVATE)
     private List<Component> formattedText;
+
+    private long lastEdited = -1;
 
     public CodeEditorWidget() {}
 
-    public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
+    public CodeEditorWidget(@Nullable LanguageDefinition<T> language, PanelSyncManager panelSyncManager) {
         this.language = language;
+        GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
+                this::getTextAsComponents, this::formattedText, ByteBufAdapters.COMPONENT);
+        panelSyncManager.syncValue("formatted_code", formattedTextSync);
     }
 
     @Override
     public List<Component> getTextAsComponents() {
         if (language() == null) return super.getTextAsComponents();
-        if (getSyncHandler().getSyncManager().isClient()) return formattedText;
-        return language().formatCode(this.handler.getTextAsString(), langContext);
+        if (getSyncHandler().getSyncManager().isClient()) {
+            if (formattedText != null && notEditedForSomeTime()) return formattedText;
+            else return language().formatCode(this.handler.getTextAsString(), langContext);
+        } else {
+            return language().formatCode(this.stringValue.getStringValue(), langContext);
+        }
     }
 
     @Override
-    public void initialiseSyncHandler(ModularSyncManager syncManager, boolean late) {
-        super.initialiseSyncHandler(syncManager, late);
-        formattedTextSync.init("formattedText", syncManager.getPanelSyncManager(getPanel().getName()));
+    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+        lastEdited = Util.getEpochMillis();
+        return super.onCharTyped(codePoint, modifiers);
+    }
+
+    @Override
+    public @NotNull Result onKeyPressed(int keyCode, int scanCode, int modifiers) {
+        lastEdited = Util.getEpochMillis();
+        return super.onKeyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void onRemoveFocus(ModularGuiContext context) {
+        super.onRemoveFocus(context);
+        lastEdited = 0;
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if (notEditedForSomeTime() && getSyncHandler().getSyncManager().isClient() && lastEdited != -1) {
+            this.stringValue.setStringValue(getText());
+            lastEdited = -1;
+        }
+    }
+
+    public boolean notEditedForSomeTime() {
+        return Util.getEpochMillis() - 3000 > lastEdited;
     }
 
     public record LanguageDefinition<T>(Pattern tokenPattern, Supplier<ITokenFormatter<T>> tokenFormatter) {

@@ -89,6 +89,7 @@ public class TextFieldHandler {
 
     public void setMainCursor(int linePos, int charPos, boolean animate) {
         Point main = getMainCursor();
+        if (linePos >= this.text.size()) linePos = this.text.size() - 1;
         if (main.x != charPos || main.y != linePos) {
             main.set(charPos, linePos);
             if (!this.text.isEmpty() && this.renderer != null && this.scrollArea != null) {

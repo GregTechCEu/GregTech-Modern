@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFieldWidget<W> {
 
-    private IStringValue<?> stringValue;
+    protected IStringValue<?> stringValue;
 
     public TextEditorWidget() {
         this.handler.setMaxLines(10000);

@@ -275,7 +275,7 @@ public class PlaceholderHandler {
                                                 Component.translatable("gtceu.placeholder_editor.constant_value")))
                                                 .withInsertion("")));
                     }
-                    if (!viewStarts.empty() && ctx != null) {
+                    if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
                         String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
                         result = result.replaceAll("\\n", "\\\\n");
                         if (result.length() > 10) {
@@ -316,7 +316,8 @@ public class PlaceholderHandler {
                             .withColor(0xFF0000)
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.placeholder_editor.no_placeholder", s.replaceAll("\\n", "\\\\n")))));
+                                    Component.translatable("gtceu.placeholder_editor.no_placeholder",
+                                            s.replaceAll("\\n", "\\\\n")))));
                 }
             }
             everything.append(s);

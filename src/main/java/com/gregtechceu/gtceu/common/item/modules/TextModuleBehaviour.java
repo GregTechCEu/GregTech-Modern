@@ -80,7 +80,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     public ModularPanel createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
                                            PanelSyncManager syncManager, IPanelHandler panelHandler) {
         IPanelHandler helpPanel = syncManager.panel("text_module_help",
-                (syncManager1, panelHandler1) -> createHelpPanel(), true);
+                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1), true);
         return new ModularPanel("text_module_editor")
                 .size(400, 250)
                 .resizeableOnDrag(true)
@@ -132,7 +132,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                                     helpPanel.openPanel();
                                                     return true;
                                                 })))
-                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
+                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION, syncManager)
                                         .value(SyncHandlers.string(() -> getPlaceholderText(stack),
                                                 s -> setPlaceholderText(stack, s)))
                                         .langContext(getContext(stack, machine, group))
@@ -161,13 +161,13 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                                         .toList())));
     }
 
-    public ModularPanel createHelpPanel() {
+    public ModularPanel createHelpPanel(PanelSyncManager syncManager) {
         return new ModularPanel("text_module_help")
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)
                         .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
-                        .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
+                        .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION, syncManager)
                                 .padding(5)
                                 .widthRel(.95f)
                                 .height(100)
