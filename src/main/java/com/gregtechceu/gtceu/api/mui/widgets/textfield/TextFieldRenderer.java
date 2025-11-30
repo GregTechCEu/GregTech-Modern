@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.FontRenderHelper;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.utils.PointF;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -91,22 +92,22 @@ public class TextFieldRenderer extends TextRenderer {
         }
     }
 
-    public Point getCursorPos(List<String> lines, int x, int y) {
+    public Point getCursorPos(List<Component> lines, List<String> realLines, int x, int y) {
         if (lines.isEmpty()) {
             return new Point();
         }
-        List<Line> measuredLines = measureStringLines(lines);
+        List<Line> measuredLines = measureLines(lines);
         y -= getStartY(measuredLines.size());
         int lineIndex = (int) (y / (getFontHeight()));
         if (lineIndex < 0) return new Point();
-        if (lineIndex >= measuredLines.size()) {
-            return new Point(FontRenderHelper.length(measuredLines.get(measuredLines.size() - 1).text()),
+        if (lineIndex >= realLines.size()) {
+            return new Point(GTUtil.getLast(realLines).length(),
                     measuredLines.size() - 1);
         }
         Line line = measuredLines.get(lineIndex);
         x -= getStartX(line.width());
         if (line.width() <= 0) return new Point(0, lineIndex);
-        if (line.width() < x) return new Point(FontRenderHelper.length(line.text()), lineIndex);
+        if (line.width() < x) return new Point(realLines.get(lineIndex).length(), lineIndex);
 
         final float fx = x;
         final MutableFloat currentX = new MutableFloat();
@@ -124,6 +125,8 @@ public class TextFieldRenderer extends TextRenderer {
             xIndex.increment();
             return true;
         });
+        if (lineIndex >= realLines.size()) return new Point(GTUtil.getLast(realLines).length(), realLines.size() - 1);
+        xIndex.setValue(Math.min(xIndex.intValue(), realLines.get(lineIndex).length()));
         return new Point(xIndex.intValue(), lineIndex);
     }
 
