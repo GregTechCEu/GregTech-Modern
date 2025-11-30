@@ -28,6 +28,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -98,9 +100,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                             machine, group, groups);
                 },
                 true);
-        return new ModularPanel("main")
+        return new Dialog<>("main")
+                .setDraggable(true)
                 .padding(5)
                 .excludeAreaInXei()
+                .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR, 176))
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(1)
                         .widthRel(1)
