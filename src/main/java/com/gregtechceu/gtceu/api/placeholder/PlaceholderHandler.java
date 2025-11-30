@@ -316,7 +316,7 @@ public class PlaceholderHandler {
                             .withColor(0xFF0000)
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.placeholder_editor.no_placeholder", s))));
+                                    Component.translatable("gtceu.placeholder_editor.no_placeholder", s.replaceAll("\\n", "\\\\n")))));
                 }
             }
             everything.append(s);
