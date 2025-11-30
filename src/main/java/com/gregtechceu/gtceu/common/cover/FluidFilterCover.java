@@ -103,20 +103,34 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow == ManualIOMode.UNFILTERED)
-                return super.fill(resource, action);
-            if (filterMode != FilterMode.FILTER_EXTRACT && getFluidFilter().test(resource))
-                return super.fill(resource, action);
-            return 0;
+            if (filterMode == FilterMode.FILTER_EXTRACT) {
+                if (allowFlow == ManualIOMode.DISABLED) {
+                    return 0;
+                }
+                if (allowFlow == ManualIOMode.UNFILTERED) {
+                    return super.fill(resource, action);
+                }
+            }
+            if (!getFluidFilter().test(resource)) {
+                return 0;
+            }
+            return super.fill(resource, action);
         }
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if ((filterMode == FilterMode.FILTER_INSERT) && allowFlow == ManualIOMode.UNFILTERED)
-                return super.drain(resource, action);
-            if (filterMode != FilterMode.FILTER_INSERT && getFluidFilter().test(resource))
-                return super.drain(resource, action);
-            return FluidStack.EMPTY;
+            if (filterMode == FilterMode.FILTER_INSERT) {
+                if (allowFlow == ManualIOMode.DISABLED) {
+                    return FluidStack.EMPTY;
+                }
+                if (allowFlow == ManualIOMode.UNFILTERED) {
+                    return super.drain(resource, action);
+                }
+            }
+            if (!getFluidFilter().test(resource)) {
+                return FluidStack.EMPTY;
+            }
+            return super.drain(resource, action);
         }
     }
 }

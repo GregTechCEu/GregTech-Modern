@@ -55,7 +55,7 @@ public class GTCapes {
     }
 
     public static void giveDevCapes(RegisterGTCapesEvent event) {
-        // updated on 7.9.2025 - DilithiumThoride
+        // updated on 25.11.2025 - Reabstraction
         event.unlockCapeFor(UUID.fromString("a24a9108-23d2-43fc-8db7-43f809d017db"), GREGTECH_CAPE); // ALongStringOfNumbers
         event.unlockCapeFor(UUID.fromString("fbd96f69-60f9-481c-b71e-4b190cd5fc72"), GREGTECH_CAPE); // Anne-Marie
         event.unlockCapeFor(UUID.fromString("77e2129d-8f68-4025-9394-df946f1f3aee"), GREGTECH_CAPE); // Brachy84
@@ -75,6 +75,7 @@ public class GTCapes {
         event.unlockCapeFor(UUID.fromString("5cb66945-2ca4-498d-8c9a-29a676769363"), GREGTECH_CAPE); // omergunr100
         event.unlockCapeFor(UUID.fromString("4a57640e-c1b1-4413-a6ab-e9a8b60ec167"), GREGTECH_CAPE); // PrototypeTrousers
         event.unlockCapeFor(UUID.fromString("12892f29-9eef-47ed-b8fb-df3e0e90db0c"), GREGTECH_CAPE); // Quarri6343
+        event.unlockCapeFor(UUID.fromString("0dcf2321-0b68-4e37-95bc-6a3c72f8ca4d"), GREGTECH_CAPE); // Reabstraction
         event.unlockCapeFor(UUID.fromString("1184eb79-5831-4f7d-b8f4-3a46fccf7a1d"), GREGTECH_CAPE); // screret
         event.unlockCapeFor(UUID.fromString("a82fb558-64f9-4dd6-a87d-84040e84bb43"), GREGTECH_CAPE); // serenibyss
         event.unlockCapeFor(UUID.fromString("f76fc8b3-ac6b-44b9-9023-76edaf3d5909"), GREGTECH_CAPE); // spicierspace153
