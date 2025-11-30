@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -139,7 +140,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 int finalCol = col;
                 int finalRow = row;
                 IPanelHandler slotDialogHandler = component == null || component.getDataItems() == null ?
-                        null : syncManager.panel("slot_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
+                        null :
+                        syncManager.panel("slot_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
                                 (syncManager1, panelHandler1) -> new SimpleDialog<>(
                                         "slot_number_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
                                         slot -> {
@@ -196,12 +198,14 @@ public class CentralMonitorUIFactory implements PanelFactory {
             matrixWidth = Math.max(matrixWidth, curRow.size() * 20);
         }
         int matrixHeight = matrix.size() * 20;
-        List<IPanelHandler> moduleEditor = new ArrayList<>();
-        moduleEditor.add(createModulePanelHandler(syncManager, group.getItemStackHandler().getStackInSlot(0), group, machine));
+        IPanelHandler moduleEditor = createModulePanelHandler(syncManager,
+                group.getItemStackHandler().getStackInSlot(0), group, machine);
         IPanelHandler helpPanel = syncManager.panel(
                 "help_panel_" + groups.indexOf(group),
                 (syncManager1, panelHandler1) -> createHelpPanel(),
                 true);
+        List<Boolean> moduleChanged = new ArrayList<>();
+        moduleChanged.add(false);
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
@@ -219,15 +223,26 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .name("module_slot")
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
-                                                    if (amount) return;
-                                                    moduleEditor.set(0, createModulePanelHandler(syncManager, item, group, machine));
+                                                    if (!amount && !init)
+                                                        moduleChanged.set(0, true);
                                                 })))
                                 .child(new ButtonWidget<>()
-                                        .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.EDIT)
-                                        .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.EDIT)
+                                        .background(
+                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                        GTGuiTextures.MC_BUTTON_DISABLED :
+                                                        GTGuiTextures.MC_BUTTON),
+                                                GTGuiTextures.EDIT)
+                                        .hoverBackground(
+                                                new DynamicDrawable(() -> moduleChanged.get(0) ?
+                                                        GTGuiTextures.MC_BUTTON_DISABLED :
+                                                        GTGuiTextures.MC_BUTTON_HOVERED),
+                                                GTGuiTextures.EDIT)
                                         .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
+                                        .addTooltipLine(IKey.lang(() -> moduleChanged.get(0) ?
+                                                "gtceu.gui.central_monitor.module_editor_disabled" :
+                                                "gtceu.gui.central_monitor.module_editor_button"))
                                         .onMousePressed((mouseX, mouseY, button) -> {
-                                            if (moduleEditor.get(0) != null) moduleEditor.get(0).openPanel();
+                                            if (moduleEditor != null && !moduleChanged.get(0)) moduleEditor.openPanel();
                                             return true;
                                         })))
                         .child(new Grid().matrix(matrix).alignX(Alignment.CENTER).size(matrixWidth, matrixHeight)))
@@ -325,7 +340,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .background(new BorderDrawable(0xFF888888, 1)))));
     }
 
-    private IPanelHandler createModulePanelHandler(PanelSyncManager syncManager, ItemStack stack, MonitorGroup group, CentralMonitorMachine machine) {
+    private IPanelHandler createModulePanelHandler(PanelSyncManager syncManager, ItemStack stack, MonitorGroup group,
+                                                   CentralMonitorMachine machine) {
         IMonitorModuleItem moduleItem = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {

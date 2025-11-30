@@ -2358,6 +2358,8 @@
   "gtceu.gui.central_monitor.in_group": "Monitors selected this way are added to the group, and will be used to display stuff",
   "gtceu.gui.central_monitor.in_group_and_target": "The monitor selected this way is used for displaying and as a target at the same time.",
   "gtceu.gui.central_monitor.left_click": "Select/unselect a monitor by left-clicking it",
+  "gtceu.gui.central_monitor.module_editor_button": "Edit module",
+  "gtceu.gui.central_monitor.module_editor_disabled": "You recently changed the module, please re-open this GUI to edit it",
   "gtceu.gui.central_monitor.pause": "Pause placeholder execution.\nText won't be updated, and code won't be run.",
   "gtceu.gui.central_monitor.resume": "Unpause placeholder execution.",
   "gtceu.gui.central_monitor.right_click": "Select a block by right-clicking it. Only 1 block can be a target.",

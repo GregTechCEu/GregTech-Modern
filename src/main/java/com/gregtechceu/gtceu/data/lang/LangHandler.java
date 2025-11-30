@@ -1661,6 +1661,9 @@ public class LangHandler {
         provider.add("gtceu.gui.central_monitor.url", "Input image URL:");
         provider.add("gtceu.gui.central_monitor.gui_module_info",
                 "To select a block to get the GUI from, select a target in the monitor group editor.");
+        provider.add("gtceu.gui.central_monitor.module_editor_disabled",
+                "You recently changed the module, please re-open this GUI to edit it");
+        provider.add("gtceu.gui.central_monitor.module_editor_button", "Edit module");
         provider.add("gtceu.item.tooltip.image_url", "Image URL: %s");
         provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
         provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
