@@ -4,14 +4,17 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetContent;
 import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetData;
 import com.gregtechceu.gtceu.common.network.packets.ui.SContainerSetSlot;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 
 public class InWorldContainerSynchronizer implements ContainerSynchronizer {
+
     private final ServerPlayer player;
 
     public InWorldContainerSynchronizer(ServerPlayer player) {
@@ -37,7 +40,8 @@ public class InWorldContainerSynchronizer implements ContainerSynchronizer {
 
     @Override
     public void sendCarriedChange(@NotNull AbstractContainerMenu containerMenu, @NotNull ItemStack stack) {
-        GTNetwork.sendToPlayer(player, new SContainerSetSlot(getInWorldId(containerMenu), containerMenu.incrementStateId(), -1, stack));
+        GTNetwork.sendToPlayer(player,
+                new SContainerSetSlot(getInWorldId(containerMenu), containerMenu.incrementStateId(), -1, stack));
     }
 
     @Override
