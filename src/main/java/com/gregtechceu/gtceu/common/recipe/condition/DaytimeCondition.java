@@ -17,18 +17,20 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
-public class DaytimeCondition extends RecipeCondition {
+public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
+    // spotless:off
     public static final Codec<DaytimeCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
                     .apply(instance, DaytimeCondition::new));
+    // spotless:off
 
     public DaytimeCondition(boolean isReverse) {
         super(isReverse);
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<DaytimeCondition> getType() {
         return GTRecipeConditions.DAYTIME;
     }
 
@@ -48,7 +50,7 @@ public class DaytimeCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public DaytimeCondition createTemplate() {
         return new DaytimeCondition();
     }
 }

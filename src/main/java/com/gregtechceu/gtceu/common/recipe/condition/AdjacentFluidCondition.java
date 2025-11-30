@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class AdjacentFluidCondition extends RecipeCondition {
+public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidCondition> {
 
     // spotless:off
     public static final Codec<AdjacentFluidCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
@@ -87,7 +87,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<AdjacentFluidCondition> getType() {
         return GTRecipeConditions.ADJACENT_FLUID;
     }
 
@@ -161,7 +161,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public AdjacentFluidCondition createTemplate() {
         return new AdjacentFluidCondition();
     }
 }

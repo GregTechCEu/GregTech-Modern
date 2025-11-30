@@ -86,7 +86,7 @@ public class GTRecipeBuilder {
     public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogic = new IdentityHashMap<>();
     public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogic = new IdentityHashMap<>();
 
-    public final List<RecipeCondition> conditions = new ArrayList<>();
+    public final List<RecipeCondition<?>> conditions = new ArrayList<>();
 
     @NotNull
     public CompoundTag data = new CompoundTag();

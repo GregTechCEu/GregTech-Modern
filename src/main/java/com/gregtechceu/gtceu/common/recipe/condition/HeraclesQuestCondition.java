@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class HeraclesQuestCondition extends RecipeCondition {
+public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestCondition> {
 
     public static final Codec<HeraclesQuestCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
@@ -40,7 +40,7 @@ public class HeraclesQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<HeraclesQuestCondition> getType() {
         return GTRecipeConditions.HERACLES_QUEST;
     }
 
@@ -71,7 +71,7 @@ public class HeraclesQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public HeraclesQuestCondition createTemplate() {
         return new HeraclesQuestCondition();
     }
 }

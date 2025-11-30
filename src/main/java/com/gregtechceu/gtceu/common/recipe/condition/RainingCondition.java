@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class RainingCondition extends RecipeCondition {
+public class RainingCondition extends RecipeCondition<RainingCondition> {
 
     public static final Codec<RainingCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
@@ -35,7 +35,7 @@ public class RainingCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<RainingCondition> getType() {
         return GTRecipeConditions.RAINING;
     }
 
@@ -55,7 +55,7 @@ public class RainingCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public RainingCondition createTemplate() {
         return new RainingCondition();
     }
 }

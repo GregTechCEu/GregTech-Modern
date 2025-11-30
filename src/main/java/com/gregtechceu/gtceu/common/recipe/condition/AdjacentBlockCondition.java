@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class AdjacentBlockCondition extends RecipeCondition {
+public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockCondition> {
 
     // spotless:off
     public static final Codec<AdjacentBlockCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
@@ -84,7 +84,7 @@ public class AdjacentBlockCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<AdjacentBlockCondition> getType() {
         return GTRecipeConditions.ADJACENT_BLOCK;
     }
 
@@ -157,7 +157,7 @@ public class AdjacentBlockCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public AdjacentBlockCondition createTemplate() {
         return new AdjacentBlockCondition();
     }
 }

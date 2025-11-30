@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class VentCondition extends RecipeCondition {
+public class VentCondition extends RecipeCondition<VentCondition> {
 
     public static final Codec<VentCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
@@ -27,7 +27,7 @@ public class VentCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<VentCondition> getType() {
         return GTRecipeConditions.VENT;
     }
 
@@ -45,7 +45,7 @@ public class VentCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public VentCondition createTemplate() {
         return new VentCondition();
     }
 }
