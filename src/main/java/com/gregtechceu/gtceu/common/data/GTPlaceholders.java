@@ -207,6 +207,11 @@ public class GTPlaceholders {
                     return args.get(1);
                 }
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("color") {
 

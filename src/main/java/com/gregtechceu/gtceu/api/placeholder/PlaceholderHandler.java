@@ -197,6 +197,8 @@ public class PlaceholderHandler {
         private final StringBuilder everything = new StringBuilder();
         private final Stack<Integer> pureStarts = new Stack<>();
         private final Stack<Integer> viewStarts = new Stack<>();
+        private final Stack<String> openPlaceholders = new Stack<>();
+        private int ifDepth = 0;
 
         @Override
         public Component apply(String s, @Nullable PlaceholderContext ctx) {
@@ -251,14 +253,21 @@ public class PlaceholderHandler {
                                         Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
                     }
                     everything.append(s);
+                    if (!openPlaceholders.empty()) {
+                        if (openPlaceholders.peek().equals("if")) ifDepth--;
+                        openPlaceholders.pop();
+                    }
                     if (!pureStarts.empty()) {
                         String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx).toString();
+                        result = result.replaceAll("\\n", "\\\\n");
+                        int popped = pureStarts.peek();
                         pureStarts.pop();
                         viewStarts.pop();
+                        if (!everything.substring(popped).contains(" ")) return Component.literal(s);
                         if (result.length() > 10) {
                             result = result.substring(0, 10) + "…";
                         }
-                        return Component.literal("}")
+                        return Component.literal(s)
                                 .append(Component.literal("='%s'".formatted(result))
                                         .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
                                         .withStyle(style -> style.withHoverEvent(new HoverEvent(
@@ -268,10 +277,15 @@ public class PlaceholderHandler {
                     }
                     if (!viewStarts.empty() && ctx != null) {
                         String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
+                        result = result.replaceAll("\\n", "\\\\n");
+                        if (result.length() > 10) {
+                            result = result.substring(0, 10) + "…";
+                        }
                         viewStarts.pop();
-                        return Component.literal("}")
+                        return Component.literal(s)
                                 .append(Component.literal("='%s'".formatted(result))
-                                        .withStyle(ChatFormatting.DARK_GRAY));
+                                        .withStyle(ChatFormatting.DARK_GRAY)
+                                        .withStyle(style -> style.withInsertion("")));
                     } else if (!viewStarts.empty()) viewStarts.pop();
                     return Component.literal(s);
                 }
@@ -286,6 +300,15 @@ public class PlaceholderHandler {
                         viewStarts.push(everything.length() - 1);
                     } else viewStarts.clear();
                     everything.append(s);
+                    openPlaceholders.push(s);
+                    if (s.equals("if")) ifDepth++;
+                    else if (ifDepth > 0 && !placeholders.get(s).isView()) {
+                        return Component.literal(s)
+                                .withStyle(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
+                                .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Component.translatable("gtceu.placeholder_editor.write_in_if"))));
+                    }
                     return Component.literal(s).withStyle(ChatFormatting.BLUE);
                 } else {
                     onEncounteredError();
@@ -303,6 +326,8 @@ public class PlaceholderHandler {
         private void onEncounteredError() {
             viewStarts.clear();
             pureStarts.clear();
+            openPlaceholders.clear();
+            ifDepth = 0;
         }
     }
 }

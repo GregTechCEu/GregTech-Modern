@@ -1,12 +1,16 @@
 package com.gregtechceu.gtceu.api.mui.widgets.textfield;
 
+import com.gregtechceu.gtceu.api.mui.value.sync.GenericListSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -33,6 +37,13 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
     @Nullable
     protected T langContext;
 
+    private final GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
+            this::getTextAsComponents, this::formattedText, ByteBufAdapters.COMPONENT);
+
+    @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    private List<Component> formattedText;
+
     public CodeEditorWidget() {}
 
     public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
@@ -42,7 +53,14 @@ public class CodeEditorWidget<W extends CodeEditorWidget<W, T>, T> extends TextE
     @Override
     public List<Component> getTextAsComponents() {
         if (language() == null) return super.getTextAsComponents();
+        if (getSyncHandler().getSyncManager().isClient()) return formattedText;
         return language().formatCode(this.handler.getTextAsString(), langContext);
+    }
+
+    @Override
+    public void initialiseSyncHandler(ModularSyncManager syncManager, boolean late) {
+        super.initialiseSyncHandler(syncManager, late);
+        formattedTextSync.init("formattedText", syncManager.getPanelSyncManager(getPanel().getName()));
     }
 
     public record LanguageDefinition<T>(Pattern tokenPattern, Supplier<ITokenFormatter<T>> tokenFormatter) {

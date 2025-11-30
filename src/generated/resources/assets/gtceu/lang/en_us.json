@@ -3518,6 +3518,7 @@
   "gtceu.placeholder_editor.no_placeholder": "Placeholder with name '%s' does not exist",
   "gtceu.placeholder_editor.unclosed_bracket": "Unclosed bracket ('}')",
   "gtceu.placeholder_editor.unclosed_brackets": "%d brackets ('}') are unclosed",
+  "gtceu.placeholder_editor.write_in_if": "Placeholders inside {if} are executed regardless of the condition.\nThis means that, for example, \"{if 0 {redstone set 15}}\" will produce redstone output.\nTo avoid this, use \"{eval {if <condition> \"<code>\" \"<else_code>\"}}\".",
   "gtceu.placeholder_info.active.0": "Returns a 1 if the block the cover is attached to is currently running a recipe, 0 otherwise.",
   "gtceu.placeholder_info.active.1": "Usage:",
   "gtceu.placeholder_info.active.2": "  {active} -> whether there's a currently running recipe",

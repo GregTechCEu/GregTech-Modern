@@ -1671,6 +1671,10 @@ public class LangHandler {
         provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
         provider.add("gtceu.placeholder_editor.constant_value",
                 "This expression always evaluates to the same result.\nConsider replacing it with a constant.");
+        provider.add("gtceu.placeholder_editor.write_in_if", """
+                Placeholders inside {if} are executed regardless of the condition.
+                This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
+                To avoid this, use "{eval {if <condition> "<code>" "<else_code>"}}".""");
         provider.add("gtceu.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gtceu.computer_monitor_cover.error.invalid_number", "Invalid number '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.wrong_number_of_args", "Expected %d args, got %d!");
