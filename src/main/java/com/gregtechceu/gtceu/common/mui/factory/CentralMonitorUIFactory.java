@@ -100,6 +100,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 true);
         return new ModularPanel("main")
                 .padding(5)
+                .excludeAreaInXei()
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(.8f)
                         .widthRel(.8f)
@@ -209,6 +210,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         return new ModularPanel("editor_" + groups.indexOf(group) + "_panel")
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
+                .excludeAreaInXei()
                 .child(Flow.column()
                         .padding(10)
                         .child(new TextWidget<>(IKey.lang("gtceu.central_monitor.gui.group_editor")))
@@ -258,6 +260,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
 
     private ModularPanel createHelpPanel() {
         return new ModularPanel("help_panel")
+                .excludeAreaInXei()
                 .width(500)
                 .height(300)
                 .resizeableOnDrag(true)
