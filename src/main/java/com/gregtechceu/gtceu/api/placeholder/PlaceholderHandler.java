@@ -198,7 +198,7 @@ public class PlaceholderHandler {
         public Component apply(String s) {
             if (s.equals("\0")) {
                 if (unclosedBrackets > 0) {
-                    Component.literal(" ").withStyle(Style.EMPTY
+                    return Component.literal(" ").withStyle(Style.EMPTY
                             .withUnderlined(true)
                             .withColor(0xFF0000)
                             .withHoverEvent(new HoverEvent(
