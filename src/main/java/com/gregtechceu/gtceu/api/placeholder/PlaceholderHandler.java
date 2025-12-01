@@ -41,7 +41,7 @@ public class PlaceholderHandler {
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
     public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
-            List.of("\\\\.", "\\{", "\\}", " ", "\""),
+            List.of("\\\\.", "\\{", "\\}", " ", "\"", "\\n"),
             TokenFormatter::new);
 
     public static void addPlaceholder(Placeholder placeholder) {
@@ -199,6 +199,7 @@ public class PlaceholderHandler {
         private final Stack<Integer> viewStarts = new Stack<>();
         private final Stack<String> openPlaceholders = new Stack<>();
         private int ifDepth = 0;
+        private Component endOfLineValue = null;
 
         @Override
         public Component apply(String s, @Nullable PlaceholderContext ctx) {
@@ -267,13 +268,13 @@ public class PlaceholderHandler {
                         if (result.length() > 10) {
                             result = result.substring(0, 10) + "…";
                         }
-                        return Component.literal(s)
-                                .append(Component.literal("='%s'".formatted(result))
-                                        .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
-                                        .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                        endOfLineValue = Component.literal("='%s'".formatted(result))
+                                .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
+                                .withStyle(style -> style.withHoverEvent(new HoverEvent(
                                                 HoverEvent.Action.SHOW_TEXT,
                                                 Component.translatable("gtceu.placeholder_editor.constant_value")))
-                                                .withInsertion("")));
+                                        .withInsertion(""));
+                        return Component.literal(s);
                     }
                     if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
                         String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
@@ -321,6 +322,11 @@ public class PlaceholderHandler {
                 }
             }
             everything.append(s);
+            if (s.equals("\n") && endOfLineValue != null) {
+                Component ret = endOfLineValue.copy().append(s);
+                endOfLineValue = null;
+                return ret;
+            }
             return Component.literal(s);
         }
 
