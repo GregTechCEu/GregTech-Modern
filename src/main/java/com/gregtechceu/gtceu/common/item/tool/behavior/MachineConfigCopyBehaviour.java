@@ -35,9 +35,6 @@ import java.util.Objects;
 public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInformation {
 
     private static final String NONE_DIRECTION = "null";
-
-
-
     private static final String CONFIG_DATA = "config_data";
 
     private static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
@@ -167,13 +164,34 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pastePipeConfig(PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
-        if (tag.contains(PIPE_CONNECTIONS)) pipe.setConnections(tag.getInt(PIPE_CONNECTIONS));
-        if (tag.contains(PIPE_BLOCKED_CONNECTIONS)) pipe.setBlockedConnections(tag.getInt(PIPE_BLOCKED_CONNECTIONS));
+        if (tag.contains(PIPE_CONNECTIONS)) {
+            var connections = tag.getInt(PIPE_CONNECTIONS);
+
+            // Connections have to be set like this due to pipenet jank.
+            if (PipeBlockEntity.isConnected(connections, Direction.UP)) pipe.setConnection(Direction.UP, true, false);
+            if (PipeBlockEntity.isConnected(connections, Direction.DOWN)) pipe.setConnection(Direction.DOWN, true, false);
+            if (PipeBlockEntity.isConnected(connections, Direction.NORTH)) pipe.setConnection(Direction.NORTH, true, false);
+            if (PipeBlockEntity.isConnected(connections, Direction.SOUTH)) pipe.setConnection(Direction.SOUTH, true, false);
+            if (PipeBlockEntity.isConnected(connections, Direction.EAST)) pipe.setConnection(Direction.EAST, true, false);
+            if (PipeBlockEntity.isConnected(connections, Direction.WEST)) pipe.setConnection(Direction.WEST, true, false);
+
+        }
+        if (tag.contains(PIPE_BLOCKED_CONNECTIONS)) {
+            var blockedConnections = tag.getInt(PIPE_BLOCKED_CONNECTIONS);
+
+            // Connections have to be set like this due to pipenet jank.
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.UP)) pipe.setBlocked(Direction.UP, true);
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.DOWN)) pipe.setBlocked(Direction.DOWN, true);
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.NORTH)) pipe.setBlocked(Direction.NORTH, true);
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.SOUTH)) pipe.setBlocked(Direction.SOUTH, true);
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.EAST)) pipe.setBlocked(Direction.EAST, true);
+            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.WEST)) pipe.setBlocked(Direction.WEST, true);
+
+        }
     }
 
     private static CompoundTag gatherMachineConfig(MetaMachine machine) {
         var tag = new CompoundTag();
-
 
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
@@ -237,8 +255,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag) {
 
-        if (tag.contains(PIPE_CONNECTIONS)) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_connections", directionListComponent(tag.getInt(PIPE_CONNECTIONS))));
-        if (tag.contains(PIPE_BLOCKED_CONNECTIONS)) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_blocked_connections", directionListComponent(tag.getInt(PIPE_BLOCKED_CONNECTIONS))));
+        if (tag.contains(PIPE_CONNECTIONS) && tag.getInt(PIPE_CONNECTIONS) != 0) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_connections", directionListComponent(tag.getInt(PIPE_CONNECTIONS))));
+        if (tag.contains(PIPE_BLOCKED_CONNECTIONS) && tag.getInt(PIPE_BLOCKED_CONNECTIONS) != 0) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_blocked_connections", directionListComponent(tag.getInt(PIPE_BLOCKED_CONNECTIONS))));
 
         directionTooltip(tooltip, tag, "behaviour.setting.tooltip.output_direction_item", ITEM_OUTPUT_SIDE);
         booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.item_auto_output", ITEM_AUTO_OUTPUT);
@@ -250,7 +268,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         booleanTooltip(tooltip, tag, "behaviour.setting.muffled.tooltip", MUFFLED);
 
-        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.circuit_config", tag.getBoolean(CIRCUIT)));
+        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config", tag.getInt(CIRCUIT)));
 
     }
 
