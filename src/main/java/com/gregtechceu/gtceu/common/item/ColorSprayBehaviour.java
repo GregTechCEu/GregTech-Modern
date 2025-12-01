@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item;
 
-import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
@@ -41,6 +40,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.TriPredicate;
 
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
@@ -207,7 +207,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
         if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
             List<IColorableBlockEntity> collected;
-            if(first instanceof CableBusBlockEntity) {
+            if (first instanceof CableBusBlockEntity) {
                 collected = AE2CallWrapper.collect(first, limit).stream().map(i -> (IColorableBlockEntity) i).toList();
             } else {
                 collected = List.of((IColorableBlockEntity) first);
