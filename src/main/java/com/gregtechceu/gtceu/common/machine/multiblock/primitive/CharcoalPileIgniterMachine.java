@@ -57,7 +57,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
-    private static final int MAX_HEIGHT = 6;
+    private static final int MAX_HEIGHT = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
     @DescSynced
