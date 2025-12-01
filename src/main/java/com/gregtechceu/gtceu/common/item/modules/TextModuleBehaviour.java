@@ -83,7 +83,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .size(400, 250)
                 .resizeableOnDrag(true)
                 .excludeAreaInXei()
-                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, pause, scale, updateText));
+                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, pause, null,
+                        updateText));
     }
 
     @Override

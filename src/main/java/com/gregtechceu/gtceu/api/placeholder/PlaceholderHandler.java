@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
+import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
@@ -211,12 +211,13 @@ public class PlaceholderHandler {
         return out;
     }
 
-    public static IWidget createPlaceholderEditor(PanelSyncManager syncManager,
-                                                  PlaceholderContext ctx,
-                                                  IStringValue<?> code,
-                                                  @Nullable IBoolValue<?> pause,
-                                                  @Nullable IDoubleValue<?> scaleDouble,
-                                                  @Nullable Runnable updateText) {
+    public static Flow createPlaceholderEditor(PanelSyncManager syncManager,
+                                               PlaceholderContext ctx,
+                                               IStringValue<?> code,
+                                               @Nullable IDoubleValue<?> scaleDouble,
+                                               @Nullable IIntValue<?> updateInterval,
+                                               @Nullable IBoolValue<?> pause,
+                                               @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.panel("placeholder_language_help",
                 (syncManager1, panelHandler1) -> createHelpPanel(syncManager1), true);
         // because the args are nullable, intellij complains about everything, even though childIf is used
@@ -237,13 +238,22 @@ public class PlaceholderHandler {
                         .child(Flow.row()
                                 .height(20)
                                 .childIf(scaleDouble != null,
-                                        new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
+                                        new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_scale")))
                                 .childIf(scaleDouble != null, () -> new TextFieldWidget()
                                         .setNumbersDouble(x -> Math.max(x, 0))
                                         .setDefaultNumber(1.0)
                                         .value(SyncHandlers.string(
                                                 () -> String.valueOf(scaleDouble.getDoubleValue()),
                                                 s -> scaleDouble.setDoubleValue(Double.parseDouble(s))))
+                                        .marginLeft(4))
+                                .childIf(updateInterval != null,
+                                        new TextWidget<>(IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
+                                .childIf(updateInterval != null, () -> new TextFieldWidget()
+                                        .setNumbers(1, 1000)
+                                        .setDefaultNumber(1)
+                                        .value(SyncHandlers.string(
+                                                () -> String.valueOf(updateInterval.getIntValue()),
+                                                s -> updateInterval.setIntValue(Integer.parseInt(s))))
                                         .marginLeft(4))
                                 .childIf(pause != null, () -> new ToggleButton()
                                         .value(pause)
