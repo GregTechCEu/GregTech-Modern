@@ -1,11 +1,33 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
+import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
+import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.StringValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SortableListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.CodeEditorWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -189,6 +211,115 @@ public class PlaceholderHandler {
         return out;
     }
 
+    public static IWidget createPlaceholderEditor(PanelSyncManager syncManager,
+                                                  PlaceholderContext ctx,
+                                                  IStringValue<?> code,
+                                                  @Nullable IBoolValue<?> pause,
+                                                  @Nullable IDoubleValue<?> scaleDouble,
+                                                  @Nullable Runnable updateText) {
+        IPanelHandler helpPanel = syncManager.panel("placeholder_language_help",
+                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1), true);
+        // because the args are nullable, intellij complains about everything, even though childIf is used
+        // noinspection DataFlowIssue
+        return Flow.row()
+                .childIf(ctx.itemStackHandler() != null, () -> Flow.column()
+                        .coverChildren()
+                        .paddingLeft(4)
+                        .children(
+                                ctx.itemStackHandler().getSlots(),
+                                i -> new ItemSlot()
+                                        .slot(ctx.itemStackHandler(), i)
+                                        .addTooltipLine(
+                                                IKey.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
+                .child(Flow.column()
+                        .widthRel(.8f)
+                        .padding(5)
+                        .child(Flow.row()
+                                .height(20)
+                                .childIf(scaleDouble != null,
+                                        new TextWidget<>(IKey.str("gtceu.gui.central_monitor.text_scale")))
+                                .childIf(scaleDouble != null, () -> new TextFieldWidget()
+                                        .setNumbersDouble(x -> Math.max(x, 0))
+                                        .setDefaultNumber(1.0)
+                                        .value(SyncHandlers.string(
+                                                () -> String.valueOf(scaleDouble.getDoubleValue()),
+                                                s -> scaleDouble.setDoubleValue(Double.parseDouble(s))))
+                                        .marginLeft(4))
+                                .childIf(pause != null, () -> new ToggleButton()
+                                        .value(pause)
+                                        .background(false, GTGuiTextures.PAUSE)
+                                        .background(true, GTGuiTextures.PLAY)
+                                        .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
+                                        .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
+                                        .margin(4))
+                                .childIf(updateText != null, () -> new ButtonWidget<>()
+                                        .background(GTGuiTextures.RIGHTLOAD)
+                                        .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
+                                        .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                            if (updateText != null) updateText.run();
+                                            return true;
+                                        }))
+                                .child(new ButtonWidget<>()
+                                        .background(GTGuiTextures.HELP)
+                                        .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())
+                                        .margin(4)
+                                        .onMousePressed((mouseX, mouseY, button) -> {
+                                            helpPanel.openPanel();
+                                            return true;
+                                        })))
+                        .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION, syncManager)
+                                .value(code)
+                                .langContext(ctx)
+                                .widthRel(.95f)
+                                .heightRelOffset(() -> 1, -25)))
+                .child(new SortableListWidget<String>()
+                        .widthRel(.2f)
+                        .paddingBottom(5)
+                        .excludeAreaInXei()
+                        .children(PlaceholderHandler.getAllPlaceholderNames()
+                                .stream()
+                                .sorted()
+                                .map(SortableListWidget.Item::new)
+                                .map(w -> w
+                                        .child(new TextWidget<>(w.getWidgetValue())
+                                                .sizeRel(1)
+                                                .alignment(Alignment.CENTER))
+                                        .tooltip(new RichTooltip()
+                                                .addDrawableLines(LangHandler
+                                                        .getSingleOrMultiLang(
+                                                                "gtceu.placeholder_info." + w.getWidgetValue())
+                                                        .stream()
+                                                        .map(IKey::lang)
+                                                        .map(key -> (IDrawable) key)
+                                                        .toList())))
+                                .toList()));
+    }
+
+    public static ModularPanel createHelpPanel(PanelSyncManager syncManager) {
+        return new ModularPanel("placeholder_language_help")
+                .size(500, 250)
+                .child(Flow.column()
+                        .padding(5)
+                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
+                        .child(new CodeEditorWidget<>(LANG_DEFINITION, syncManager)
+                                .padding(5)
+                                .widthRel(.95f)
+                                .height(100)
+                                .value(new StringValue(
+                                        """
+                                                Energy: {calc {energy}00.0 / {energyCapacity}}%
+                                                Bar: {repeat {calc {energy}0.0 / {energyCapacity}} {color green {block}}}
+                                                Status: \\
+                                                {if {cmp {energy} >= {calc 0.7 * {energyCapacity}}} {color green OK} \\
+                                                {if {cmp {energy} >= {calc 0.4 * {energyCapacity}}} {color yellow WARNING} \\
+                                                {if {cmp {energy} >= {calc 0.2 * {energyCapacity}}} {color red LOW} \\
+                                                {color red CRITICAL}}}}
+
+                                                {eval {if {cmp {energy} < {calc 0.5 * {energyCapacity}}} "{redstone set 15}" "{redstone set 0}"}
+                                                """))));
+    }
+
     public static class TokenFormatter implements CodeEditorWidget.ITokenFormatter<PlaceholderContext> {
 
         private boolean prevOpenBracket = false;
@@ -274,8 +405,8 @@ public class PlaceholderHandler {
                                 .append(Component.literal("='%s'".formatted(result))
                                         .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
                                         .withStyle(style -> style.withHoverEvent(new HoverEvent(
-                                                        HoverEvent.Action.SHOW_TEXT,
-                                                        Component.translatable("gtceu.placeholder_editor.constant_value")))
+                                                HoverEvent.Action.SHOW_TEXT,
+                                                Component.translatable("gtceu.placeholder_editor.constant_value")))
                                                 .withInsertion("")));
                     }
                     if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
