@@ -41,7 +41,7 @@ public class PlaceholderHandler {
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
     public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
-            List.of("\\\\.", "\\{", "\\}", " ", "\"", "\\n"),
+            List.of("\\\\.", "\\{", "\\}", " ", "\""),
             TokenFormatter::new);
 
     public static void addPlaceholder(Placeholder placeholder) {
@@ -256,6 +256,7 @@ public class PlaceholderHandler {
                     everything.append(s);
                     if (!openPlaceholders.empty()) {
                         if (openPlaceholders.peek().equals("if")) ifDepth--;
+
                         openPlaceholders.pop();
                     }
                     if (!pureStarts.empty()) {
@@ -268,13 +269,14 @@ public class PlaceholderHandler {
                         if (result.length() > 10) {
                             result = result.substring(0, 10) + "…";
                         }
-                        endOfLineValue = Component.literal("='%s'".formatted(result))
-                                .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
-                                .withStyle(style -> style.withHoverEvent(new HoverEvent(
-                                                HoverEvent.Action.SHOW_TEXT,
-                                                Component.translatable("gtceu.placeholder_editor.constant_value")))
-                                        .withInsertion(""));
-                        return Component.literal(s);
+                        endOfLineValue = null;
+                        return Component.literal(s)
+                                .append(Component.literal("='%s'".formatted(result))
+                                        .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
+                                        .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                                                        HoverEvent.Action.SHOW_TEXT,
+                                                        Component.translatable("gtceu.placeholder_editor.constant_value")))
+                                                .withInsertion("")));
                     }
                     if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
                         String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
@@ -283,10 +285,10 @@ public class PlaceholderHandler {
                             result = result.substring(0, 10) + "…";
                         }
                         viewStarts.pop();
-                        return Component.literal(s)
-                                .append(Component.literal("='%s'".formatted(result))
-                                        .withStyle(ChatFormatting.DARK_GRAY)
-                                        .withStyle(style -> style.withInsertion("")));
+                        endOfLineValue = Component.literal("='%s'".formatted(result))
+                                .withStyle(ChatFormatting.DARK_GRAY)
+                                .withStyle(style -> style.withInsertion(""));
+                        return Component.literal(s);
                     } else if (!viewStarts.empty()) viewStarts.pop();
                     return Component.literal(s);
                 }
@@ -322,8 +324,10 @@ public class PlaceholderHandler {
                 }
             }
             everything.append(s);
-            if (s.equals("\n") && endOfLineValue != null) {
-                Component ret = endOfLineValue.copy().append(s);
+            if (s.contains("\n") && endOfLineValue != null) {
+                String start = s.substring(0, s.indexOf('\n'));
+                String end = s.substring(s.indexOf('\n'));
+                Component ret = Component.literal(start).append(endOfLineValue).append(end);
                 endOfLineValue = null;
                 return ret;
             }
@@ -334,6 +338,7 @@ public class PlaceholderHandler {
             viewStarts.clear();
             pureStarts.clear();
             openPlaceholders.clear();
+            endOfLineValue = null;
             ifDepth = 0;
         }
     }
