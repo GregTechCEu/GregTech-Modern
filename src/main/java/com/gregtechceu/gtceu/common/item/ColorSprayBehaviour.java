@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
+import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
@@ -204,8 +205,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
-            var collected = AE2CallWrapper.collect(first, limit);
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
+            List<IColorableBlockEntity> collected;
+            if(first instanceof CableBusBlockEntity) {
+                collected = AE2CallWrapper.collect(first, limit).stream().map(i -> (IColorableBlockEntity) i).toList();
+            } else {
+                collected = List.of((IColorableBlockEntity) first);
+            }
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
@@ -479,8 +485,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     limit, limit * 6);
         }
 
-        static boolean isAE2Cable(BlockEntity be) {
-            return be instanceof CableBusBlockEntity;
+        static boolean isColorable(BlockEntity be) {
+            return be instanceof IColorableBlockEntity;
         }
 
         static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {
