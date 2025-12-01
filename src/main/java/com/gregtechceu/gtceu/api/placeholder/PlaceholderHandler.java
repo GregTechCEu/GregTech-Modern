@@ -61,7 +61,7 @@ public class PlaceholderHandler {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context != null && context.level().isClientSide &&
-                !placeholders.get(placeholder.get(0).toString()).isView())
+                !placeholders.get(placeholder.get(0).toString()).isPure())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         return placeholders.get(placeholder.get(0).toString()).apply(context,
                 placeholder.subList(1, placeholder.size()));
