@@ -723,8 +723,13 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
-        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
-        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
+
+        provider.add("behaviour.memory_card.tooltip.copy", "§7Sneak + R-Click to copy machine configuration");
+        provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration, or clear stored data if no machine is targeted");
+        provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
+        provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
+        provider.add("behaviour.memory_card.client_msg.copied", "Copied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.pasted", "Applied machine configuration");
         provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
         provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
         provider.add("behaviour.setting.tooltip.allow_input_from_output_item", "Item input from output side is %s");
@@ -735,7 +740,6 @@ public class LangHandler {
         provider.add("behaviour.setting.tooltip.fluid_auto_output", "Fluid auto-output is %s");
         provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
         provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: §e%s");
-        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
