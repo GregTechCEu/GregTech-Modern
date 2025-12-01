@@ -146,7 +146,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
                         .pos(75, 0))
 
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 1).slotGroup(objectGroup))
+                        .slot(new ModularSlot(heldItems, 0).slotGroup(objectGroup))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY)
                         .marginLeft(30)
                         .marginRight(30)
