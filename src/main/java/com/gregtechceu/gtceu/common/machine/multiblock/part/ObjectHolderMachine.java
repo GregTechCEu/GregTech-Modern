@@ -100,19 +100,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
         clearInventory(this.heldItems.storage);
     }
 
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * return new WidgetGroup(new Position(0, 0))
-     * .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
-     * .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)
-     * .setIsBlocked(this::isLocked)
-     * .setBackground(GuiTextures.SLOT, GuiTextures.RESEARCH_STATION_OVERLAY))
-     * .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 36)
-     * .setIsBlocked(this::isLocked)
-     * .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
-     * }
-     */
     @Override
     public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
                                          @NotNull UISettings settings) {
