@@ -206,11 +206,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             return false;
         }
         if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
-            List<IColorableBlockEntity> collected;
+            Set<? extends IColorableBlockEntity> collected;
             if (first instanceof CableBusBlockEntity) {
-                collected = AE2CallWrapper.collect(first, limit).stream().map(i -> (IColorableBlockEntity) i).toList();
+                collected = AE2CallWrapper.collect(first, limit);
             } else {
-                collected = List.of((IColorableBlockEntity) first);
+                collected = Set.of((IColorableBlockEntity) first);
             }
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
