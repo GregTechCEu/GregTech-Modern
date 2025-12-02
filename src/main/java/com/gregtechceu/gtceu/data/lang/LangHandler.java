@@ -840,6 +840,7 @@ public class LangHandler {
         provider.add("gtceu.machine.workbench.tab.container", "Container");
 
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
+        provider.add("gtceu.machine.parallel_hatch.parallel_ui", "Parallels");
         provider.add("gtceu.machine.basic.input_from_output_side.allow", "Allow Input from Output Side: ");
         provider.add("gtceu.machine.basic.input_from_output_side.disallow",
                 "Disallow Input from Output Side: ");

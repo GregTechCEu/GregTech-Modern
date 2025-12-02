@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -15,8 +13,17 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -27,6 +34,8 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -46,6 +55,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquareSlotGroupFromInventory;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -91,22 +102,46 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
+    // TODO MUI: Might need EIO widget? Not sure
     @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int xOffset = 18 * rowSize / 2;
-        WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        int size = (int) Math.sqrt(getInventorySize());
 
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                group.addWidget(new SlotWidget(importItems, index,
-                        rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-                        .setBackgroundTexture(GuiTextures.SLOT));
-            }
-        }
-        return group;
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 100 + (18 * size))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * size)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory")
+                                        .marginLeft(30)
+                                        .marginRight(30)
+                                        .verticalCenter())))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * int rowSize = (int) Math.sqrt(getInventorySize());
+     * int xOffset = 18 * rowSize / 2;
+     * WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
+     * 
+     * for (int y = 0; y < rowSize; y++) {
+     * for (int x = 0; x < rowSize; x++) {
+     * int index = y * rowSize + x;
+     * group.addWidget(new SlotWidget(importItems, index,
+     * rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
+     * .setBackgroundTexture(GuiTextures.SLOT));
+     * }
+     * }
+     * return group;
+     * }
+     */
 
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -36,13 +37,17 @@ import com.mojang.blaze3d.platform.InputConstants;
 public class GTMuiWidgets {
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
+        return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
+    }
+
+    public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
         String hatchName = displayItem.getHoverName().getString();
         hatchName = hatchName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
         int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 2));
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
         int textTitleWidth = TextRenderer.getFont().width(hatchName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
@@ -57,7 +62,7 @@ public class GTMuiWidgets {
                 .width(rowWidth)
                 .top(-(textHeight + borderRadius))
                 .rightRel(0.45f)
-                .background(GTGuiTextures.BACKGROUND)
+                .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
                 .child(new ItemDrawable(displayItem)
                         .asIcon().size(iconSize)
                         .asWidget()
@@ -84,7 +89,7 @@ public class GTMuiWidgets {
                                 "behaviour.soft_hammer.disabled"))));
     }
 
-    public static ProgressWidget createProgressBar(WorkableTieredMachine workableMachine, UITexture texture, int size) {
+    public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, UITexture texture, int size) {
         return new ProgressWidget()
                 .texture(texture, size)
                 .progress(() -> workableMachine.getProgress() / (double) workableMachine.getMaxProgress());
@@ -248,5 +253,37 @@ public class GTMuiWidgets {
 
     public static IDrawable.DrawableWidget createGTLogo() {
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
+    }
+
+    public static String[] createGrid(int amount, int rowSize, boolean output, char key) {
+        int rows = (int) Math.ceil((float) amount / rowSize);
+        String[] grid = new String[rows];
+        for (int i = 0; i < rows; i++) {
+            StringBuilder r = new StringBuilder();
+            if (output) {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.insert(0, " ");
+                    } else {
+                        r.insert(0, key);
+                    }
+                }
+            } else {
+                for (int j = 0; j < rowSize; j++) {
+                    if ((i * rowSize + j) > (amount - 1)) {
+                        r.append(" ");
+                    } else {
+                        r.append(key);
+                    }
+                }
+            }
+            grid[i] = r.toString();
+        }
+
+        return grid;
+    }
+
+    public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
+        return layout.getMainWidget();
     }
 }

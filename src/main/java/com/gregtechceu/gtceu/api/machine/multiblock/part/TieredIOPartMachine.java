@@ -13,7 +13,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -51,14 +50,17 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
         return MANAGED_FIELD_HOLDER;
     }
 
-    @Nullable
-    @Override
-    public PageGroupingData getPageGroupingData() {
-        return switch (this.io) {
-            case IN -> new PageGroupingData("gtceu.multiblock.page_switcher.io.import", 1);
-            case OUT -> new PageGroupingData("gtceu.multiblock.page_switcher.io.export", 2);
-            case BOTH -> new PageGroupingData("gtceu.multiblock.page_switcher.io.both", 3);
-            case NONE -> null;
-        };
-    }
+    /*
+     * @Nullable
+     * 
+     * @Override
+     * public PageGroupingData getPageGroupingData() {
+     * return switch (this.io) {
+     * case IN -> new PageGroupingData("gtceu.multiblock.page_switcher.io.import", 1);
+     * case OUT -> new PageGroupingData("gtceu.multiblock.page_switcher.io.export", 2);
+     * case BOTH -> new PageGroupingData("gtceu.multiblock.page_switcher.io.both", 3);
+     * case NONE -> null;
+     * };
+     * }
+     */
 }

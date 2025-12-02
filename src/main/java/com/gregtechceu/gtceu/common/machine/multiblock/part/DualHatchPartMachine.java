@@ -1,18 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -160,34 +154,36 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        int slots = getInventorySize();
-        int tanks = (int) Math.sqrt(slots);
-        var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);
-        var container = new WidgetGroup(4, 4, 18 * (tanks + 1) + 8, 18 * tanks + 8);
-
-        int index = 0;
-        for (int y = 0; y < tanks; y++) {
-            for (int x = 0; x < tanks; x++) {
-                container.addWidget(new SlotWidget(
-                        getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                        .setBackgroundTexture(GuiTextures.SLOT)
-                        .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-            }
-        }
-
-        index = 0;
-        for (int y = 0; y < tanks; y++) {
-            container.addWidget(new TankWidget(
-                    tank.getStorages()[index++], 4 + tanks * 18, 4 + y * 18, true, io.support(IO.IN))
-                    .setBackground(GuiTextures.FLUID_SLOT));
-        }
-
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * int slots = getInventorySize();
+     * int tanks = (int) Math.sqrt(slots);
+     * var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);
+     * var container = new WidgetGroup(4, 4, 18 * (tanks + 1) + 8, 18 * tanks + 8);
+     * 
+     * int index = 0;
+     * for (int y = 0; y < tanks; y++) {
+     * for (int x = 0; x < tanks; x++) {
+     * container.addWidget(new SlotWidget(
+     * getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
+     * .setBackgroundTexture(GuiTextures.SLOT)
+     * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+     * }
+     * }
+     * 
+     * index = 0;
+     * for (int y = 0; y < tanks; y++) {
+     * container.addWidget(new TankWidget(
+     * tank.getStorages()[index++], 4 + tanks * 18, 4 + y * 18, true, io.support(IO.IN))
+     * .setBackground(GuiTextures.FLUID_SLOT));
+     * }
+     * 
+     * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
+     * group.addWidget(container);
+     * return group;
+     * }
+     */
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
