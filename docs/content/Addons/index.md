@@ -33,7 +33,6 @@ When you're ready, start [here](./Setup.md)!
 
 !!! link "Addons you can use as reference"
 
-    - [CosmicCore](https://github.com/Frontiers-PackForge/CosmicCore)
     - [Gregtech: Extended Chemistry Extended](https://github.com/jmoiron/Gregtech-Extended-Chemistry)
-    - [Juiceycality](https://github.com/JuiceyBeans/Juiceycality)
-    - [Gregicality Rocketry](https://github.com/Argent-Matter/gcyr/)
+    - [GTE: Misc](https://github.com/GirixK/GiriTech-Energies-Misc)
+    - [GT Community Additions](https://github.com/mordgren/GTCA)

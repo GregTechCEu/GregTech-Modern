@@ -10,7 +10,7 @@ Ready? Let's begin!
 
 ## Setting up your workspace
 
-First, clone or download a ZIP of the [addon template](https://github.com/JuiceyBeans/GregTech-Addon-Template). This comes prepackaged with all the required dependencies, and starter classes
+First, clone or download a ZIP of the [addon template](https://github.com/GregTechCEu/GregTech-Addon-Template). This comes prepackaged with all the required dependencies, and starter classes
 
 If you're more experienced with Java, you can setup your mod from scratch too! 
 
@@ -28,15 +28,14 @@ If you're more experienced with Java, you can setup your mod from scratch too!
     - Jade
     - Configuration (by Toma)
 
-Open the cloned repo/unzipped folder into your IDE of choice (IntelliJ IDEA is highly recommended!) 
-Installing the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) is optional, but recommended.
+Open the cloned repo/unzipped folder into your IDE of choice (IntelliJ IDEA is highly recommended!)
+
+Installing the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) is optional, but recommended as well.
 
 ### Quick changes
 
 Your mod folder should look like this once its imported:
 ![image](./assets/addon_hierachy.png)
-
-The only folder we need to concern ourselves with here us `src`
 
 You will need to refactor a couple of things to your own namespace real quick!
 
@@ -50,7 +49,7 @@ This is your mod's main class, and where you'll add listeners for your event bus
 
 ### The GTAddon class
 
-This is where your stuff that extends IGTAddon is registered (remember to link to GH for that). You can override methods here to register custom recipes elements, machine covers, tag prefixes, recipe capabilities, ore and fluid veins, vein generators, etc., as well as specify if your mod requires higher tier content (UV and above tiers, disabled by default)
+This is where your GT-related content is registered. You can override methods here to register custom recipe elements, machine covers, tag prefixes, recipe capabilities, ore and fluid veins, vein generators, etc., as well as specify if your mod requires higher tier content (UV and above tiers, disabled by default).
 
 This class needs to implement IGTAddon, and is required to have the following methods:
 
@@ -72,6 +71,9 @@ public String addonModId() { // (3)
 1. Register your mod's GTRegistrate. This is how you'll register GT materials, machines, etc.
 2. Loads your addon's custom GT content after GT itself has loaded, to prevent problems
 3. Sets up the mod ID for your addon content. Make sure this is the same as your mod id in your Main class
+
+
+A full list of available methods can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/addon/IGTAddon.java)
 
 ### Registering your content
 
@@ -103,4 +105,4 @@ Most content in your addon (including recipes, machines, recipe types, items, et
     ```
     
 !!! note
-    `init()` does NOT need to be empty, or even called `init()`. As long as any method from the appropriate class is called in the appropriate method or registered in the appropriate event bus listener, it will register your content.
+    `init()` does NOT need to be empty, or even called `init()`. As long as any method from the appropriate class is called in the appropriate method, or registered in the appropriate event bus listener, it will register your content.
