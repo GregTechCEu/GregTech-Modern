@@ -112,7 +112,7 @@ public class GTRecipeSerializerTest {
         AdjacentFluidCondition condition = new AdjacentFluidCondition(fluidSetIn);
 
         helper.assertTrue(equalHolderSetLists(condition.getOrInitFluids(null), fluidSetIn),
-                "AdjacentFluidCondition store its data properly");
+                "AdjacentFluidCondition did not store its data properly");
 
         JsonObject jsonConfig = condition.serialize();
         AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition.deserialize(jsonConfig);
