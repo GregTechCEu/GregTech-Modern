@@ -50,6 +50,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -854,7 +855,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void loadConfigTag(CompoundTag tag) {
-        ICopyable.super.loadConfigTag(tag);
+    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.loadConfigTag(player, tag);
     }
 }

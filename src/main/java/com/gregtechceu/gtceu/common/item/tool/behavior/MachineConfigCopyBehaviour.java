@@ -11,10 +11,12 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -91,7 +93,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 stack.addTagElement(CONFIG_DATA, gatherMachineConfig(machineEntity.getMetaMachine()));
                 if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
             } else if (stack.getTagElement(CONFIG_DATA) != null) {
-                pasteMachineConfig(machineEntity.getMetaMachine(), Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
+                if (player instanceof LocalPlayer) return InteractionResult.PASS;
+                pasteMachineConfig((ServerPlayer)player, machineEntity.getMetaMachine(), Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
                 if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
             }
         }
@@ -101,7 +104,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 stack.addTagElement(CONFIG_DATA, gatherPipeConfig(pipeBE));
                 if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
             } else if (stack.getTagElement(CONFIG_DATA) != null) {
-                pastePipeConfig(pipeBE, Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
+                if (player instanceof LocalPlayer) return InteractionResult.PASS;
+                pastePipeConfig((ServerPlayer)player, pipeBE, Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
                 if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
             }
         }
@@ -160,7 +164,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         return tag;
     }
 
-    private static void pastePipeConfig(PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
+    private static void pastePipeConfig(ServerPlayer player, PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
         if (tag.contains(PIPE_CONNECTIONS)) {
             var connections = tag.getInt(PIPE_CONNECTIONS);
 
@@ -215,13 +219,15 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             }
         }
 
+        tag.put(COVER, machine.getCoverContainer().gatherConfig(new CompoundTag()));
+
         tag = machine.gatherConfig(tag);
 
         return tag;
     }
 
 
-    private static void pasteMachineConfig(MetaMachine machine, CompoundTag tag) {
+    private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
 
         Direction facingDir = Direction.byName(tag.getString(FACING_DIR));
         if (facingDir != null) machine.setFrontFacing(facingDir);
@@ -246,7 +252,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (tag.contains(CIRCUIT)) circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
         }
 
-        machine.loadConfigTag(tag);
+        machine.loadConfigTag(player, tag);
 
     }
 

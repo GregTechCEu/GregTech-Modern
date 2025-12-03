@@ -1,16 +1,23 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -31,7 +38,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription {
+public interface ICoverable extends ITickSubscription, ICopyable {
 
     Level getLevel();
 
@@ -273,4 +280,73 @@ public interface ICoverable extends ITickSubscription {
         }
         return null;
     }
+
+
+    @SuppressWarnings("deprecation")
+    private CompoundTag createCoverConfigTag(@Nullable CoverBehavior cover) {
+        if (cover == null) return new CompoundTag();
+        var tag = new CompoundTag();
+        tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
+        tag.putString("item", BuiltInRegistries.ITEM.getKey(cover.getAttachItem().getItem()).toString());
+        tag.put("data", cover.gatherConfig(new CompoundTag()));
+        return tag;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
+        if (tag.isEmpty()) return;
+        var def = GTRegistries.COVERS.get(new ResourceLocation(tag.getString("id")));
+        Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(tag.getString("item")));
+        if (def == null) return;
+
+        placeCoverOnSide(dir, new ItemStack(item), def, player);
+
+        CoverBehavior placedCover = getCoverAtSide(dir);
+        if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty()) placedCover.loadConfigTag(player, tag.getCompound("data"));
+    }
+
+    @Override
+    default CompoundTag gatherConfig(CompoundTag tag) {
+        tag.put("up", hasCover(Direction.UP) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.UP)));
+        tag.put("down", hasCover(Direction.DOWN) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.DOWN)));
+        tag.put("north", hasCover(Direction.NORTH) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.NORTH)));
+        tag.put("south", hasCover(Direction.SOUTH) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.SOUTH)));
+        tag.put("east", hasCover(Direction.EAST) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.EAST)));
+        tag.put("west", hasCover(Direction.WEST) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(Direction.WEST)));
+
+        List<ItemStack> drops = new ArrayList<>();
+        for (Direction side : GTUtil.DIRECTIONS) {
+            var cover = getCoverAtSide(side);
+            if (cover == null) continue;
+
+            drops.addAll(cover.getAdditionalDrops());
+            drops.add(cover.getPickItem());
+        }
+
+        var dropsTag = new ListTag();
+        drops.forEach(s -> dropsTag.add(s.serializeNBT()));
+        tag.put("drops", dropsTag);
+        return tag;
+    }
+
+    @Override
+    default void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            removeCover(side, player);
+        }
+
+        applyCoverConfigTag(player, Direction.UP, tag.getCompound("up"));
+        applyCoverConfigTag(player, Direction.DOWN, tag.getCompound("down"));
+        applyCoverConfigTag(player, Direction.NORTH, tag.getCompound("north"));
+        applyCoverConfigTag(player, Direction.SOUTH, tag.getCompound("south"));
+        applyCoverConfigTag(player, Direction.EAST, tag.getCompound("east"));
+        applyCoverConfigTag(player, Direction.WEST, tag.getCompound("west"));
+    }
+
+    @Override
+    default List<ItemStack> getItemsRequiredToPaste(CompoundTag tag, List<ItemStack> items) {
+
+        return ICopyable.super.getItemsRequiredToPaste(tag, items);
+    }
+
 }
