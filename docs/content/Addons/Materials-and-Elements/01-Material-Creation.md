@@ -123,7 +123,7 @@ You can change the properties of the material by adding any combination of the f
     These values are arrays containing the respective EU/t values for each tier.  
     For example, you can get a full amp of EV power, adjusted for cable loss like this:
 
-    ```js
+    ```java
     GTValues.VA[GTValues.EV]
     ```
 
