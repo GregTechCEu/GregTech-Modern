@@ -208,7 +208,7 @@ public class IntProviderIngredientTest {
                 "IntProviderIngredient should have item equal to what it was made with");
         helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
                 "IntProviderIngredient.getItems shouldn't change between getStacks calls");
-        ingredient.reroll();
+        ingredient.reset();
         helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
                 "IntProviderIngredient.getItems should have changed after rerolling");
         helper.succeed();

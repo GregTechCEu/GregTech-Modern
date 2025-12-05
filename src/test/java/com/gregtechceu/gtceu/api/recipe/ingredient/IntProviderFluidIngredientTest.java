@@ -215,7 +215,7 @@ public class IntProviderFluidIngredientTest {
                 "IntProviderFluidIngredient should have fluid equal to what it was made with");
         helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
-        ingredient.reroll();
+        ingredient.reset();
         helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks should have changed after rerolling");
         helper.succeed();
