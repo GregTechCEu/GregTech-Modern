@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -31,7 +30,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
@@ -42,7 +40,6 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -107,17 +104,14 @@ public class ComputerMonitorCover extends CoverBehavior
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        renderer = new CoverTextRenderer(this::getText);
+        renderer = new CoverTextRenderer(this::getText, this::getScale);
         placeholderUUID = UUID.randomUUID();
         for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
     }
 
     public List<MutableComponent> getRenderedText() {
-        String s = formatStringLines.stream().reduce((a, b) -> a + "\n" + b).orElse("");
-        List<String> tmp = new ArrayList<>(formatStringArgs);
-        tmp = tmp.stream().map(str -> '{' + str + '}').toList();
         return PlaceholderHandler.processPlaceholders(
-                GTStringUtils.replace(s, "\\{}", tmp),
+                placeholderText,
                 getPlaceholderContext());
     }
 
@@ -136,7 +130,7 @@ public class ComputerMonitorCover extends CoverBehavior
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
+    public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -211,12 +205,7 @@ public class ComputerMonitorCover extends CoverBehavior
     @Override
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         CompoundTag tag = dataStick.getOrCreateTagElement("computer_monitor_cover_config");
-        ListTag stringLinesTag = new ListTag();
-        formatStringLines.forEach(line -> stringLinesTag.add(StringTag.valueOf(line)));
-        tag.put("lines", stringLinesTag);
-        ListTag stringArgsTag = new ListTag();
-        formatStringArgs.forEach(line -> stringArgsTag.add(StringTag.valueOf(line)));
-        tag.put("args", stringArgsTag);
+        tag.putString("code", placeholderText);
         tag.putInt("updateInterval", updateInterval);
         return InteractionResult.SUCCESS;
     }

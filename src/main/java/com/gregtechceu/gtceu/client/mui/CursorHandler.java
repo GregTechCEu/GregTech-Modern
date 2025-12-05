@@ -66,16 +66,16 @@ public class CursorHandler {
 
         // GLFW will switch to the default cursor when 0 is passed into glfwSetCursor
         CURSOR_NORMAL = 0; // GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
-        CURSOR_TEXT_INPUT = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
-        CURSOR_CROSSHAIR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
-        CURSOR_POINT_HOVERED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_POINTING_HAND_CURSOR);
-        CURSOR_NOT_ALLOWED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_NOT_ALLOWED_CURSOR);
-
-        CURSOR_RESIZE_HORIZONTAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_EW_CURSOR);
-        CURSOR_RESIZE_VERTICAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NS_CURSOR);
-        CURSOR_RESIZE_TR_BL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NESW_CURSOR);
-        CURSOR_RESIZE_TL_BR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
-        CURSOR_RESIZE_ALL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_ALL_CURSOR);
+        // CURSOR_TEXT_INPUT = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
+        // CURSOR_CROSSHAIR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
+        // CURSOR_POINT_HOVERED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_POINTING_HAND_CURSOR);
+        // CURSOR_NOT_ALLOWED = GLFW.glfwCreateStandardCursor(GLFW.GLFW_NOT_ALLOWED_CURSOR);
+        //
+        // CURSOR_RESIZE_HORIZONTAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_EW_CURSOR);
+        // CURSOR_RESIZE_VERTICAL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NS_CURSOR);
+        // CURSOR_RESIZE_TR_BL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NESW_CURSOR);
+        // CURSOR_RESIZE_TL_BR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
+        // CURSOR_RESIZE_ALL = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_ALL_CURSOR);
     }
 
     public static GLFWImage readGLImage(BufferedImage img, boolean inverse, boolean transpose) {

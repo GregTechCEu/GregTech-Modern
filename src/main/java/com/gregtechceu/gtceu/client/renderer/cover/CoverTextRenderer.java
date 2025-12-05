@@ -14,6 +14,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class CoverTextRenderer implements IDynamicCoverRenderer {
@@ -22,21 +23,24 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
 
     @Setter
     private Supplier<List<? extends Component>> text;
+    private final DoubleSupplier scale;
 
-    public CoverTextRenderer(Supplier<List<? extends Component>> text) {
+    public CoverTextRenderer(Supplier<List<? extends Component>> text, DoubleSupplier scale) {
         this.text = text;
+        this.scale = scale;
     }
 
     @Override
     public void render(MetaMachine machine, Direction face, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
         poseStack.translate(3 / 16f, 3 / 16f, 0);
-        poseStack.scale(TEXT_SCALE, TEXT_SCALE, TEXT_SCALE);
+        float scale = (float) this.scale.getAsDouble();
+        poseStack.scale(TEXT_SCALE * scale, TEXT_SCALE * scale, TEXT_SCALE * scale);
         int y = 0;
         for (Component s : text.get()) {
             boolean didAnything = false;
-            for (FormattedCharSequence line : Minecraft.getInstance().font.split(s, 90)) {
-                if (y >= 90) return;
+            for (FormattedCharSequence line : Minecraft.getInstance().font.split(s, (int) (90/scale))) {
+                if (y >= 90/scale) return;
                 Minecraft.getInstance().font.drawInBatch(
                         line,
                         0, y,
