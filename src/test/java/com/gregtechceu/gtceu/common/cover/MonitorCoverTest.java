@@ -27,10 +27,7 @@ public class MonitorCoverTest {
         machine.getBatteryInventory().insertItem(0, GTItems.BATTERY_HV_LITHIUM.asStack(), false);
         ComputerMonitorCover cover = (ComputerMonitorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_SCREEN.asStack(), Direction.UP);
-        cover.getFormatStringLines().add("Energy: {}/{} EU");
-        cover.getFormatStringArgs().addAll(List.of(
-                "energy",
-                "energyCapacity"));
+        cover.setPlaceholderText("Energy: {energy}/{energyCapacity} EU");
         cover.setUpdateInterval(1);
         helper.runAtTickTime(5, () -> {
             TestUtils.assertEqual(helper, cover.getText(),
@@ -45,8 +42,7 @@ public class MonitorCoverTest {
                 GTMachines.BATTERY_BUFFER_4[GTValues.HV]);
         ComputerMonitorCover cover = (ComputerMonitorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_SCREEN.asStack(), Direction.UP);
-        cover.getFormatStringLines()
-                .add("{if 1 {combine test 1 2 3 lol {repeat 5 \"a \"}} \"if placeholder failed somehow\"}");
+        cover.setPlaceholderText("{if 1 {combine test 1 2 3 lol {repeat 5 \"a \"}} \"if placeholder failed somehow\"}");
         cover.setUpdateInterval(1);
         helper.runAtTickTime(5, () -> {
             TestUtils.assertEqual(helper, cover.getText(), "test 1 2 3 lol a a a a a ");
