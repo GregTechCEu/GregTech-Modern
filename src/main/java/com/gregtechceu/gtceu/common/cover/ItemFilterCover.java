@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -136,5 +137,21 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
             }
             return ItemStack.EMPTY;
         }
+    }
+
+    @Override
+    public CompoundTag gatherConfig(CompoundTag tag) {
+        tag.putInt("manualIO", getAllowFlow().ordinal());
+        tag.putInt("filterMode", getFilterMode().ordinal());
+        tag.put("filter", attachItem.serializeNBT());
+        return super.gatherConfig(tag);
+    }
+
+    @Override
+    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
+        itemFilter = ItemFilter.loadFilter(ItemStack.of(tag.getCompound("filter")));
+        super.loadConfigTag(player, tag);
     }
 }

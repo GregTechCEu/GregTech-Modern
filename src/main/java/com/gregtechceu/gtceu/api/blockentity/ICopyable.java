@@ -11,7 +11,5 @@ public interface ICopyable {
 
     default void loadConfigTag(ServerPlayer player, CompoundTag tag) {}
 
-    default void getItemsRequiredToPaste(CompoundTag tag) {
-    }
-
+    default void getItemsRequiredToPaste(CompoundTag tag) {}
 }

@@ -15,6 +15,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -164,5 +166,19 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public CompoundTag gatherConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalVoidingLimit());
+        return super.gatherConfig(tag);
+    }
+
+    @Override
+    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        globalVoidingLimit = tag.getInt("voidSize");
+        super.loadConfigTag(player, tag);
     }
 }

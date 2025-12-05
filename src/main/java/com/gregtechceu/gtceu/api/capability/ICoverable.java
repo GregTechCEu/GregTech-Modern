@@ -268,7 +268,6 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         return null;
     }
 
-
     private CompoundTag createCoverConfigTag(@Nullable CoverBehavior cover) {
         if (cover == null) return new CompoundTag();
         var tag = new CompoundTag();
@@ -287,14 +286,14 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         placeCoverOnSide(dir, stack, def, player);
 
         CoverBehavior placedCover = getCoverAtSide(dir);
-        if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty()) placedCover.loadConfigTag(player, tag.getCompound("data"));
+        if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
+            placedCover.loadConfigTag(player, tag.getCompound("data"));
     }
 
     @Override
     default CompoundTag gatherConfig(CompoundTag tag) {
-
-        for (Direction dir: GTUtil.DIRECTIONS) {
-            tag.put(dir.getName(), hasCover(dir) ? new CompoundTag() : createCoverConfigTag(getCoverAtSide(dir)));
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
 
         return tag;
@@ -306,29 +305,27 @@ public interface ICoverable extends ITickSubscription, ICopyable {
             removeCover(side, player);
         }
 
-        for (Direction dir: GTUtil.DIRECTIONS) {
+        for (Direction dir : GTUtil.DIRECTIONS) {
             applyCoverConfigTag(player, dir, tag.getCompound(dir.getName()));
         }
     }
 
     @Override
     default void getItemsRequiredToPaste(CompoundTag tag) {
-
         Map<Item, Integer> allDrops = new HashMap<>();
         List<ItemStack> rawDrops = new ArrayList<>();
 
-        for (Direction side: GTUtil.DIRECTIONS) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             var cover = getCoverAtSide(side);
             if (cover != null) rawDrops.add(cover.getAttachItem());
         }
 
-        for (Direction side: GTUtil.DIRECTIONS) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             var cover = getCoverAtSide(side);
             if (cover != null) rawDrops.addAll(cover.getAdditionalDrops());
         }
 
-
-        for (var drop: rawDrops) {
+        for (var drop : rawDrops) {
             if (allDrops.containsKey(drop.getItem())) {
                 allDrops.put(drop.getItem(), allDrops.get(drop.getItem()) + drop.getCount());
             } else {
@@ -336,10 +333,8 @@ public interface ICoverable extends ITickSubscription, ICopyable {
             }
         }
 
-
         var dropsTag = new ListTag();
         allDrops.forEach((k, v) -> dropsTag.add(new ItemStack(k, v).serializeNBT()));
         tag.put("itemsToPaste", dropsTag);
     }
-
 }

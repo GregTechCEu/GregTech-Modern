@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +27,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -315,8 +312,9 @@ public class GTTransferUtils {
     public static boolean extractItemsFromPlayerInv(Player player, List<ItemStack> items, boolean simulate) {
         var inventory = player.getInventory();
 
-        for (var stack: items) {
-            var found = ContainerHelper.clearOrCountMatchingItems(inventory, (s)-> s.is(stack.getItem()), stack.getCount(), simulate);
+        for (var stack : items) {
+            var found = ContainerHelper.clearOrCountMatchingItems(inventory, (s) -> s.is(stack.getItem()),
+                    stack.getCount(), simulate);
             if (found != stack.getCount()) return false;
         }
 

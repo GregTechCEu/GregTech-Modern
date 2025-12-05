@@ -724,13 +724,16 @@ public class LangHandler {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
 
-        provider.add("behaviour.memory_card.tooltip.copy", "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("behaviour.memory_card.tooltip.copy",
+                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
         provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
         provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
         provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
         provider.add("behaviour.memory_card.client_msg.copied", "Copied machine configuration");
         provider.add("behaviour.memory_card.client_msg.pasted", "Applied machine configuration");
-        provider.add("behaviour.memory_card.tooltip.items_to_paste", "The following items are needed to paste this configuration:");
+        provider.add("behaviour.memory_card.client_msg.missing_items", "Missing items required to paste configuration");
+        provider.add("behaviour.memory_card.tooltip.items_to_paste",
+                "The following items are needed to paste this configuration:");
         provider.add("behaviour.memory_card.enabled", "§aEnabled§r");
         provider.add("behaviour.memory_card.disabled", "§cDisabled§r");
         provider.add("behaviour.memory_card.copy_target", "Copying: %s");
