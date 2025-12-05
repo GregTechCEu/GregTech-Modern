@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.api.blockentity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public interface ICopyable {
 
@@ -14,8 +11,7 @@ public interface ICopyable {
 
     default void loadConfigTag(ServerPlayer player, CompoundTag tag) {}
 
-    default List<ItemStack> getItemsRequiredToPaste(CompoundTag tag, List<ItemStack> items) {
-        return items;
+    default void getItemsRequiredToPaste(CompoundTag tag) {
     }
 
 }

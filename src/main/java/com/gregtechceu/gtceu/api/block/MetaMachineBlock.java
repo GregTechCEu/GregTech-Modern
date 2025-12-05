@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.tool.behavior.MachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -301,6 +302,12 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
             }
             if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
         }
+
+/*
+        if (itemStack.is(GTItems.MACHINE_MEMORY_CARD.get())) {
+            return itemStack.getItem().useOn(new UseOnContext(player, hand, hit));
+        }
+*/
 
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
             return itemStack.getItem().use(world, player, hand).getResult();

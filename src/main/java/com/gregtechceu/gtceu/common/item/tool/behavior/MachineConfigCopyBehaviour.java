@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -32,31 +34,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInformation {
 
     private static final String NONE_DIRECTION = "null";
     private static final String CONFIG_DATA = "config_data";
+    private static final String COPY_SOURCE = "copy_source";
 
-    private static final Component ENABLED = Component.translatable("cover.voiding.label.enabled")
-            .withStyle(ChatFormatting.GREEN);
-    private static final Component DISABLED = Component.translatable("cover.voiding.label.disabled")
-            .withStyle(ChatFormatting.RED);
-
+    private static final Component ENABLED = Component.translatable("behaviour.memory_card.enabled");
+    private static final Component DISABLED = Component.translatable("behaviour.memory_card.disabled");
     private static final String[] DIRECTION_STRINGS = {"§eDown§r", "§eUp§r", "§eNorth§r", "§eSouth§r", "§eWest§r", "§eEast§r"};
-
-    private static void directionTooltip(List<Component> tooltips, CompoundTag tag, String langKey, String nbtKey) {
-        if (!tag.contains(nbtKey)) return;
-        Direction dir = stringToDirection(tag.getString(nbtKey));
-        if (dir == null) return;
-        tooltips.add(Component.translatable(langKey, Component.literal(DIRECTION_STRINGS[dir.ordinal()])));
-    }
-
-    private static void booleanTooltip(List<Component> tooltips, CompoundTag tag, String langKey, String nbtKey) {
-        if (!tag.contains(nbtKey)) return;
-        tooltips.add(Component.translatable(langKey, tag.getBoolean(nbtKey) ? ENABLED : DISABLED));
-    }
 
     private static String directionToString(@Nullable Direction direction) {
         if (direction == null) return NONE_DIRECTION;
@@ -80,59 +67,66 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+        var stack = player.getItemInHand(usedHand);
 
-        var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
-        var player = context.getPlayer();
-
-        if (blockEntity instanceof IMachineBlockEntity machineEntity) {
-            if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machineEntity.getMetaMachine())) {
-                return InteractionResult.FAIL;
-            }
-            if (context.isSecondaryUseActive()) {
-                stack.addTagElement(CONFIG_DATA, gatherMachineConfig(machineEntity.getMetaMachine()));
-                if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
-            } else if (stack.getTagElement(CONFIG_DATA) != null) {
-                if (player instanceof LocalPlayer) return InteractionResult.PASS;
-                pasteMachineConfig((ServerPlayer)player, machineEntity.getMetaMachine(), Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
-                if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
-            }
-        }
-
-        if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
-            if (context.isSecondaryUseActive()) {
-                stack.addTagElement(CONFIG_DATA, gatherPipeConfig(pipeBE));
-                if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
-            } else if (stack.getTagElement(CONFIG_DATA) != null) {
-                if (player instanceof LocalPlayer) return InteractionResult.PASS;
-                pastePipeConfig((ServerPlayer)player, pipeBE, Objects.requireNonNull(stack.getTagElement(CONFIG_DATA)));
-                if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
-            }
-        }
-
-        if (context.isSecondaryUseActive() && context.getLevel().getBlockState(context.getClickedPos()).isAir()) {
+        if (player.isShiftKeyDown()) {
             stack.removeTagKey(CONFIG_DATA);
-            if (player != null) player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
-            return InteractionResult.SUCCESS;
+            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
+            return InteractionResultHolder.success(stack);
         }
-        return InteractionResult.SUCCESS;
+        return IInteractionItem.super.use(item, level, player, usedHand);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.copy"));
-        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.paste"));
-        CompoundTag data = stack.getTagElement(CONFIG_DATA);
-        if (data == null) return;
-        if (Screen.hasShiftDown()) {
-            tooltipComponents.add(CommonComponents.EMPTY);
-            addConfigTooltips(tooltipComponents, data);
-        } else {
-            tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.view_stored"));
-        }
-    }
+    public InteractionResult useOn(UseOnContext context) {
+        var stack = context.getItemInHand();
+        var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+        var player = context.getPlayer();
 
+        if (player == null || player instanceof LocalPlayer) return InteractionResult.PASS;
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && !MachineOwner.canOpenOwnerMachine(context.getPlayer(), machineBlockEntity.getMetaMachine())) return InteractionResult.FAIL;
+
+        if (context.isSecondaryUseActive()) {
+
+            var configTag = stack.getOrCreateTagElement(CONFIG_DATA);
+
+            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
+                configTag.putString(COPY_SOURCE, (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
+                configTag.merge(gatherMachineConfig(machineBlockEntity.getMetaMachine()));
+                machineBlockEntity.getMetaMachine().getCoverContainer().getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
+            }
+
+            if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
+                configTag.putString(COPY_SOURCE, (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
+                configTag.merge(gatherPipeConfig(pipeBE));
+                pipeBE.getCoverContainer().getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
+            }
+
+
+            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
+
+        } else {
+            var tag = stack.getTagElement(CONFIG_DATA);
+            if (tag == null) return InteractionResult.FAIL;
+
+            List<ItemStack> items = new ArrayList<>();
+            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+                if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
+            });
+
+            if (!GTTransferUtils.extractItemsFromPlayerInv(player, items, true)) return InteractionResult.FAIL;
+            GTTransferUtils.extractItemsFromPlayerInv(player, items, false);
+
+            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) pasteMachineConfig((ServerPlayer)player, machineBlockEntity.getMetaMachine(), tag);
+            if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) pastePipeConfig(pipeBE, tag);
+
+            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
+
+        }
+
+        return InteractionResult.SUCCESS;
+    }
 
     //// Logic for actual config options
 
@@ -164,29 +158,22 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         return tag;
     }
 
-    private static void pastePipeConfig(ServerPlayer player, PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
+    private static void pastePipeConfig(PipeBlockEntity<?, ?> pipe, CompoundTag tag) {
+
         if (tag.contains(PIPE_CONNECTIONS)) {
             var connections = tag.getInt(PIPE_CONNECTIONS);
 
-            // Connections have to be set like this due to pipenet jank.
-            if (PipeBlockEntity.isConnected(connections, Direction.UP)) pipe.setConnection(Direction.UP, true, false);
-            if (PipeBlockEntity.isConnected(connections, Direction.DOWN)) pipe.setConnection(Direction.DOWN, true, false);
-            if (PipeBlockEntity.isConnected(connections, Direction.NORTH)) pipe.setConnection(Direction.NORTH, true, false);
-            if (PipeBlockEntity.isConnected(connections, Direction.SOUTH)) pipe.setConnection(Direction.SOUTH, true, false);
-            if (PipeBlockEntity.isConnected(connections, Direction.EAST)) pipe.setConnection(Direction.EAST, true, false);
-            if (PipeBlockEntity.isConnected(connections, Direction.WEST)) pipe.setConnection(Direction.WEST, true, false);
+            for (var dir: GTUtil.DIRECTIONS) {
+                if (PipeBlockEntity.isConnected(connections, dir)) pipe.setConnection(dir, true, false);
+            }
 
         }
         if (tag.contains(PIPE_BLOCKED_CONNECTIONS)) {
             var blockedConnections = tag.getInt(PIPE_BLOCKED_CONNECTIONS);
 
-            // Connections have to be set like this due to pipenet jank.
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.UP)) pipe.setBlocked(Direction.UP, true);
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.DOWN)) pipe.setBlocked(Direction.DOWN, true);
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.NORTH)) pipe.setBlocked(Direction.NORTH, true);
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.SOUTH)) pipe.setBlocked(Direction.SOUTH, true);
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.EAST)) pipe.setBlocked(Direction.EAST, true);
-            if (PipeBlockEntity.isFaceBlocked(blockedConnections, Direction.WEST)) pipe.setBlocked(Direction.WEST, true);
+            for (var dir: GTUtil.DIRECTIONS) {
+                if (PipeBlockEntity.isFaceBlocked(blockedConnections, dir)) pipe.setBlocked(dir, true);
+            }
 
         }
     }
@@ -258,21 +245,73 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag) {
 
+        tooltip.add(Component.translatable("behaviour.memory_card.copy_target", tag.getString(COPY_SOURCE)));
+        tooltip.add(Component.empty());
+
         if (tag.contains(PIPE_CONNECTIONS) && tag.getInt(PIPE_CONNECTIONS) != 0) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_connections", directionListComponent(tag.getInt(PIPE_CONNECTIONS))));
         if (tag.contains(PIPE_BLOCKED_CONNECTIONS) && tag.getInt(PIPE_BLOCKED_CONNECTIONS) != 0) tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_blocked_connections", directionListComponent(tag.getInt(PIPE_BLOCKED_CONNECTIONS))));
 
-        directionTooltip(tooltip, tag, "behaviour.setting.tooltip.output_direction_item", ITEM_OUTPUT_SIDE);
-        booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.item_auto_output", ITEM_AUTO_OUTPUT);
-        booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.allow_input_from_output_item", ALLOW_ITEM_IN_FROM_OUT);
+        if (tag.contains(ITEM_OUTPUT_SIDE) && tag.contains(ITEM_AUTO_OUTPUT) && tag.contains(ALLOW_ITEM_IN_FROM_OUT)) {
+            Component outputMode;
+            if (tag.getBoolean(ITEM_AUTO_OUTPUT) && tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT)) outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
+            else if (tag.getBoolean(ITEM_AUTO_OUTPUT)) outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
+            else if (tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT)) outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
+            else outputMode = Component.empty();
 
-        directionTooltip(tooltip, tag, "behaviour.setting.tooltip.output_direction_fluid", FLUID_OUTPUT_SIDE);
-        booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.fluid_auto_output", FLUID_AUTO_OUTPUT);
-        booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.allow_input_from_output_fluid", ALLOW_FLUID_IN_FROM_OUT);
+            Direction dir = stringToDirection(tag.getString(ITEM_OUTPUT_SIDE));
+            if (dir == null) return;
 
-        booleanTooltip(tooltip, tag, "behaviour.setting.tooltip.muffled", MUFFLED);
+            tooltip.add(Component.translatable("behaviour.setting.tooltip.item_io", Component.literal(DIRECTION_STRINGS[dir.ordinal()]), outputMode));
+        }
 
+        if (tag.contains(FLUID_OUTPUT_SIDE) && tag.contains(FLUID_AUTO_OUTPUT) && tag.contains(ALLOW_FLUID_IN_FROM_OUT)) {
+            Component outputMode;
+            if (tag.getBoolean(FLUID_AUTO_OUTPUT) && tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT)) outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
+            else if (tag.getBoolean(FLUID_AUTO_OUTPUT)) outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
+            else if (tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT)) outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
+            else outputMode = Component.empty();
+
+            Direction dir = stringToDirection(tag.getString(FLUID_OUTPUT_SIDE));
+            if (dir == null) return;
+
+            tooltip.add(Component.translatable("behaviour.setting.tooltip.fluid_io", Component.literal(DIRECTION_STRINGS[dir.ordinal()]), outputMode));
+        }
+
+        if (tag.contains(MUFFLED)) tooltip.add(Component.translatable("behaviour.setting.tooltip.muffled", tag.getBoolean(MUFFLED) ? ENABLED : DISABLED));
         if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config", tag.getInt(CIRCUIT)));
 
+
+        if (tag.contains("itemsToPaste")) {
+            List<ItemStack> items = new ArrayList<>();
+            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+                if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
+            });
+
+            if (items.isEmpty()) return;
+
+            tooltip.add(Component.empty());
+            tooltip.add(Component.translatable("behaviour.memory_card.tooltip.items_to_paste"));
+
+            for (var item: items) {
+                tooltip.add(Component.literal("- " + item.getCount() + "x ").append(item.getDisplayName()).withStyle(ChatFormatting.DARK_GREEN));
+            }
+        }
+
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.copy"));
+        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.paste"));
+        CompoundTag data = stack.getTagElement(CONFIG_DATA);
+        if (data == null) return;
+        if (Screen.hasShiftDown()) {
+            tooltipComponents.add(CommonComponents.EMPTY);
+            addConfigTooltips(tooltipComponents, data);
+        } else {
+            tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.view_stored"));
+        }
     }
 
 }
