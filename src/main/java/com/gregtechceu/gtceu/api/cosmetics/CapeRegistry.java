@@ -287,14 +287,13 @@ public class CapeRegistry extends SavedData {
 
     // Runs on login and gives the player all free capes & capes they've already unlocked.
     public static void detectNewCapes(ServerPlayer serverPlayer) {
-            var playerCapes = UNLOCKED_CAPES.get(serverPlayer.getUUID());
-            if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
-                for (ResourceLocation cape : FREE_CAPES) {
-                    unlockCape(serverPlayer.getUUID(), cape);
-                }
-                save();
+        var playerCapes = UNLOCKED_CAPES.get(serverPlayer.getUUID());
+        if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
+            for (ResourceLocation cape : FREE_CAPES) {
+                unlockCape(serverPlayer.getUUID(), cape);
             }
-
+            save();
+        }
     }
 
     private static final Comparator<ResourceLocation> SET_COMPARATOR = (o1, o2) -> {
