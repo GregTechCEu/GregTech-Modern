@@ -303,12 +303,6 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
             if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
         }
 
-/*
-        if (itemStack.is(GTItems.MACHINE_MEMORY_CARD.get())) {
-            return itemStack.getItem().useOn(new UseOnContext(player, hand, hit));
-        }
-*/
-
         if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
             return itemStack.getItem().use(world, player, hand).getResult();
         }

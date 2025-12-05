@@ -724,7 +724,7 @@ public class LangHandler {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
 
-        provider.add("behaviour.memory_card.tooltip.copy", "§7Sneak + R-Click to copy machine configuration, or clear stored data if no machine is targeted");
+        provider.add("behaviour.memory_card.tooltip.copy", "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
         provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
         provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
         provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
@@ -743,7 +743,7 @@ public class LangHandler {
         provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
         provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
         provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
-        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: §e%s");
+        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: ");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");

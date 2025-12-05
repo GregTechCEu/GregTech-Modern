@@ -67,18 +67,6 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        var stack = player.getItemInHand(usedHand);
-
-        if (player.isShiftKeyDown()) {
-            stack.removeTagKey(CONFIG_DATA);
-            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
-            return InteractionResultHolder.success(stack);
-        }
-        return IInteractionItem.super.use(item, level, player, usedHand);
-    }
-
-    @Override
     public InteractionResult useOn(UseOnContext context) {
         var stack = context.getItemInHand();
         var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
@@ -95,12 +83,14 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 configTag.putString(COPY_SOURCE, (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
                 configTag.merge(gatherMachineConfig(machineBlockEntity.getMetaMachine()));
                 machineBlockEntity.getMetaMachine().getCoverContainer().getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
-            }
-
-            if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
+            } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
                 configTag.putString(COPY_SOURCE, (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
                 configTag.merge(gatherPipeConfig(pipeBE));
                 pipeBE.getCoverContainer().getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
+            } else {
+                stack.removeTagKey(CONFIG_DATA);
+                player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
+                return InteractionResult.SUCCESS;
             }
 
 
@@ -278,7 +268,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         }
 
         if (tag.contains(MUFFLED)) tooltip.add(Component.translatable("behaviour.setting.tooltip.muffled", tag.getBoolean(MUFFLED) ? ENABLED : DISABLED));
-        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config", tag.getInt(CIRCUIT)));
+        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config").append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
 
 
         if (tag.contains("itemsToPaste")) {

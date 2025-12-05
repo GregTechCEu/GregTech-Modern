@@ -313,12 +313,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return InteractionResult.FAIL;
         }
 
-/*
-        if (itemStack.is(GTItems.MACHINE_MEMORY_CARD.get())) {
-            itemStack.getItem().useOn(new UseOnContext(player, hand, hit));
-        }
-*/
-
         if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
             if (frameBlock != null) {
