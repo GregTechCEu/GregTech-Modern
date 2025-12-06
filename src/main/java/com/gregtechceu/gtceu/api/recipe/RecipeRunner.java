@@ -169,7 +169,7 @@ public class RecipeRunner {
             if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
             if (handlerListEntry.getKey() instanceof RecipeHandlerGroupColor coloredGroup) {
-                if (io == IO.IN && !isTick) {
+                if (io == IO.IN && simulated && !isTick) {
                     groupColor = coloredGroup.color();
                 } else if (coloredGroup.color() != -1 && coloredGroup.color() != groupColor) {
                     continue;
