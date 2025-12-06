@@ -15,7 +15,8 @@ import java.util.function.UnaryOperator;
 
 public class GTMuiMachineUtil {
 
-    public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName, int maxSlots, char key, String... matrix) {
+    public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
+                                                               int maxSlots, char key, String... matrix) {
         return createSlotGroupFromInventory(itemHandler, slotGroupName, maxSlots, key, i -> i, matrix);
     }
 
@@ -44,7 +45,8 @@ public class GTMuiMachineUtil {
 
     public static SlotGroupWidget createSquareSlotGroupFromInventory(IItemHandler itemHandler,
                                                                      String slotGroupName) {
-        return createSlotGroupFromMatrix(slotGroupName, itemHandler.getSlots(), 'I', createSquareMatrix(itemHandler.getSlots(), 'I'));
+        return createSlotGroupFromMatrix(slotGroupName, itemHandler.getSlots(), 'I',
+                createSquareMatrix(itemHandler.getSlots(), 'I'));
     }
 
     public static SlotGroupWidget createSlotGroupFromMatrix(String slotGroupName, int maxSlots, char key,

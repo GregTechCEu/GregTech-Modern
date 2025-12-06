@@ -110,7 +110,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix;
-        if (inventorySize == 8) matrix = new String[]{"BB", "BB", "BB", "BB"};
+        if (inventorySize == 8) matrix = new String[] { "BB", "BB", "BB", "BB" };
         else matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
         return new ModularPanel("battery_buffer")
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
@@ -118,16 +118,17 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         .height(90)
                         .padding(5)
                         .child(new ProgressWidget()
-                                .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL, GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
+                                .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
+                                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
                                 .progress(this::getEnergyPercentage)
                                 .marginRight(20)
                                 .size(18, 60))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(
-                            batteryInventory, "batteries",
-                            inventorySize, 'B',
-                            slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
-                            matrix)))
+                                batteryInventory, "batteries",
+                                inventorySize, 'B',
+                                slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
+                                matrix)))
                 .bindPlayerInventory();
     }
 
