@@ -157,20 +157,20 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IU
     }
 
     @Override
-    public CompoundTag gatherConfig(CompoundTag tag) {
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
         tag.putInt("min", minValue);
         tag.putInt("max", maxValue);
         tag.putBoolean("latched", isLatched);
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.gatherConfig(tag);
+        return super.saveCopyConfig(tag);
     }
 
     @Override
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         setMinValue(tag.getInt("min"));
         setMaxValue(tag.getInt("max"));
         setLatched(tag.getBoolean("latched"));
         filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
-        super.loadConfigTag(player, tag);
+        super.loadCopyConfig(player, tag);
     }
 }

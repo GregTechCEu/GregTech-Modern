@@ -273,7 +273,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
         tag.put("item", cover.getAttachItem().serializeNBT());
-        tag.put("data", cover.gatherConfig(new CompoundTag()));
+        tag.put("data", cover.saveCopyConfig(new CompoundTag()));
         return tag;
     }
 
@@ -287,11 +287,11 @@ public interface ICoverable extends ITickSubscription, ICopyable {
 
         CoverBehavior placedCover = getCoverAtSide(dir);
         if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
-            placedCover.loadConfigTag(player, tag.getCompound("data"));
+            placedCover.loadCopyConfig(player, tag.getCompound("data"));
     }
 
     @Override
-    default CompoundTag gatherConfig(CompoundTag tag) {
+    default CompoundTag saveCopyConfig(CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
@@ -300,7 +300,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
     }
 
     @Override
-    default void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    default void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         for (Direction side : GTUtil.DIRECTIONS) {
             removeCover(side, player);
         }

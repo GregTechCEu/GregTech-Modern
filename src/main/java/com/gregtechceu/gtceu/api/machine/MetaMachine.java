@@ -849,13 +849,13 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public CompoundTag gatherConfig(CompoundTag tag) {
-        return ICopyable.super.gatherConfig(tag);
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
+        return ICopyable.super.saveCopyConfig(tag);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.loadConfigTag(player, tag);
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.loadCopyConfig(player, tag);
     }
 }

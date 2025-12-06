@@ -540,22 +540,22 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     @Override
-    public CompoundTag gatherConfig(CompoundTag tag) {
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
         tag.putInt("transferRate", getTransferRate());
         tag.putInt("io", getIo().ordinal());
         tag.putInt("distributionMode", getDistributionMode().ordinal());
         tag.putInt("manualIO", getManualIOMode().ordinal());
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.gatherConfig(tag);
+        return super.saveCopyConfig(tag);
     }
 
     @Override
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         setTransferRate(tag.getInt("transferRate"));
         setIo(IO.values()[tag.getInt("io")]);
         setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
         setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
         filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
-        super.loadConfigTag(player, tag);
+        super.loadCopyConfig(player, tag);
     }
 }

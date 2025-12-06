@@ -171,7 +171,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         }
 
-        pipe.getCoverContainer().loadConfigTag(player, tag.getCompound(COVER));
+        pipe.getCoverContainer().loadCopyConfig(player, tag.getCompound(COVER));
     }
 
     private static CompoundTag gatherMachineConfig(MetaMachine machine) {
@@ -203,9 +203,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             }
         }
 
-        tag.put(COVER, machine.getCoverContainer().gatherConfig(new CompoundTag()));
+        tag.put(COVER, machine.getCoverContainer().saveCopyConfig(new CompoundTag()));
 
-        tag = machine.gatherConfig(tag);
+        tag = machine.saveCopyConfig(tag);
 
         return tag;
     }
@@ -239,9 +239,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
         }
 
-        machine.getCoverContainer().loadConfigTag(player, tag.getCompound(COVER));
+        machine.getCoverContainer().loadCopyConfig(player, tag.getCompound(COVER));
 
-        machine.loadConfigTag(player, tag);
+        machine.loadCopyConfig(player, tag);
     }
 
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag) {

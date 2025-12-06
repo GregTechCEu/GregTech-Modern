@@ -5,11 +5,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 public interface ICopyable {
 
-    default CompoundTag gatherConfig(CompoundTag tag) {
+    default CompoundTag saveCopyConfig(CompoundTag tag) {
         return tag;
     }
 
-    default void loadConfigTag(ServerPlayer player, CompoundTag tag) {}
+    default void loadCopyConfig(ServerPlayer player, CompoundTag tag) {}
 
     default void getItemsRequiredToPaste(CompoundTag tag) {}
 }

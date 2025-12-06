@@ -190,18 +190,18 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     @Override
-    public CompoundTag gatherConfig(CompoundTag tag) {
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalTransferSizeMillibuckets());
         tag.putInt("voidBucketMode", getTransferBucketMode().ordinal());
-        return super.gatherConfig(tag);
+        return super.saveCopyConfig(tag);
     }
 
     @Override
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
         setTransferBucketMode(BucketMode.values()[tag.getInt("voidBucketMode")]);
         setCurrentBucketModeTransferSize(tag.getInt("voidSize"));
-        super.loadConfigTag(player, tag);
+        super.loadCopyConfig(player, tag);
     }
 }

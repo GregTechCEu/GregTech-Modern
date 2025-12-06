@@ -259,18 +259,18 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    public CompoundTag gatherConfig(CompoundTag tag) {
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
         tag.putInt("transferBucket", transferBucketMode.ordinal());
-        return super.gatherConfig(tag);
+        return super.saveCopyConfig(tag);
     }
 
     @Override
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
         globalTransferLimit = (tag.getInt("transferLimit"));
         setTransferBucketMode(BucketMode.values()[tag.getInt("transferBucket")]);
-        super.loadConfigTag(player, tag);
+        super.loadCopyConfig(player, tag);
     }
 }

@@ -140,18 +140,18 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public CompoundTag gatherConfig(CompoundTag tag) {
+    public CompoundTag saveCopyConfig(CompoundTag tag) {
         tag.putInt("manualIO", getAllowFlow().ordinal());
         tag.putInt("filterMode", getFilterMode().ordinal());
         tag.put("filter", attachItem.serializeNBT());
-        return super.gatherConfig(tag);
+        return super.saveCopyConfig(tag);
     }
 
     @Override
-    public void loadConfigTag(ServerPlayer player, CompoundTag tag) {
+    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
         setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
         setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
         itemFilter = ItemFilter.loadFilter(ItemStack.of(tag.getCompound("filter")));
-        super.loadConfigTag(player, tag);
+        super.loadCopyConfig(player, tag);
     }
 }
