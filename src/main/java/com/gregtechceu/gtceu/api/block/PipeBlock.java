@@ -487,5 +487,4 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 .map(Map.Entry::getValue)
                 .reduce(Shapes.empty(), Shapes::or);
     }
-
 }

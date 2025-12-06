@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 

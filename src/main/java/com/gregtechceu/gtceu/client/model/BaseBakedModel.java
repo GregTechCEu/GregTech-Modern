@@ -9,8 +9,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 
-import org.jetbrains.annotations.NotNull;
-
 public abstract class BaseBakedModel implements IDynamicBakedModel {
 
     public BaseBakedModel() {}

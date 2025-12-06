@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -9,9 +8,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
-import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
-import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -20,6 +17,10 @@ import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+
+import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
+import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -101,7 +102,6 @@ public class PipeModel {
         this.side = side;
         this.end = end;
 
-
         thickness *= 16.0f;
         float min = (16.0f - thickness) / 2.0f;
         float max = min + thickness;
@@ -109,7 +109,8 @@ public class PipeModel {
         ResourceLocation baseModelId = blockId.withPath(path -> "block/pipe/" + path + "/");
 
         centerModel = makePartModel(baseModelId.withSuffix("center"), null, min, min, min, max, max, max);
-        connectionModel = makePartModel(baseModelId.withSuffix("connection"), Direction.DOWN, min, 0, min, max, min, max);
+        connectionModel = makePartModel(baseModelId.withSuffix("connection"), Direction.DOWN, min, 0, min, max, min,
+                max);
     }
 
     /**

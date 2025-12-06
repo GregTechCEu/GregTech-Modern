@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,8 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
     private final Map<@Nullable Direction, UnbakedModel> parts;
     private final Map<@NotNull Direction, UnbakedModel> blockers;
 
-    public UnbakedPipeModel(Map<@Nullable Direction, UnbakedModel> parts, Map<@NotNull Direction, UnbakedModel> blockers) {
+    public UnbakedPipeModel(Map<@Nullable Direction, UnbakedModel> parts,
+                            Map<@NotNull Direction, UnbakedModel> blockers) {
         this.parts = parts;
         this.blockers = blockers;
     }

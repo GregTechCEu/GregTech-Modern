@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,6 +26,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,9 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer,
-        IBlockEntityRendererBakedModel<PipeBlockEntity<?, ?>> {
+                            IBlockEntityRendererBakedModel<PipeBlockEntity<?, ?>> {
 
     public final static int ITEM_CONNECTIONS = 0b001100;
 
@@ -76,7 +77,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 }
             }
         }
-        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeNode)) {
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode)) {
             return quads;
         }
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
@@ -126,7 +127,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 .with(GTModelProperties.LEVEL, level)
                 .with(GTModelProperties.POS, pos);
 
-        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity<?,?> blockEntity)) {
+        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> blockEntity)) {
             return builder.build();
         }
         return builder.with(GTModelProperties.PIPE_CONNECTION_MASK, blockEntity.getVisualConnections())
@@ -147,7 +148,5 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     @Override
     public void render(PipeBlockEntity<?, ?> blockEntity, float partialTick, PoseStack poseStack,
-                       MultiBufferSource buffer, int packedLight, int packedOverlay) {
-
-    }
+                       MultiBufferSource buffer, int packedLight, int packedOverlay) {}
 }

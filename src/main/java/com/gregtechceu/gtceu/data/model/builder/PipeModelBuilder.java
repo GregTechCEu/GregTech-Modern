@@ -1,24 +1,26 @@
 package com.gregtechceu.gtceu.data.model.builder;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
 import com.gregtechceu.gtceu.core.mixins.forge.ConfiguredModelBuilderAccessor;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.BlockStateProvider.ConfiguredModelList;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.joml.Vector3f;
@@ -30,7 +32,8 @@ import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.confi
 @SuppressWarnings("UnusedReturnValue")
 public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
-    public static <T extends ModelBuilder<T>> PipeModelBuilder<T> begin(T parent, ExistingFileHelper existingFileHelper) {
+    public static <T extends ModelBuilder<T>> PipeModelBuilder<T> begin(T parent,
+                                                                        ExistingFileHelper existingFileHelper) {
         return new PipeModelBuilder<>(parent, existingFileHelper);
     }
 
@@ -279,13 +282,13 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
             getParts().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Comparator.nullsFirst(Direction::compareTo)))
                     .forEach(entry -> {
-                        String key = entry.getKey() != null ? entry.getKey().getName() : PipeModelLoader.PRIMARY_CENTER_KEY;
+                        String key = entry.getKey() != null ? entry.getKey().getName() :
+                                PipeModelLoader.PRIMARY_CENTER_KEY;
                         parts.add(key, configuredModelListToJSON(entry.getValue()));
                     });
 
             json.add("parts", parts);
         }
-
 
         final JsonObject blockers = new JsonObject();
         float min = (16.0f - thickness) / 2.0f;
@@ -297,7 +300,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
                     var coords = GTMath.getCoordinates(dir, min, max);
                     Vector3f minPos = coords.getLeft();
                     Vector3f maxPos = coords.getRight();
-                    BlockModelBuilder model = new BlockModelBuilder(new ResourceLocation("dummy:dummy"), this.existingFileHelper)
+                    BlockModelBuilder model = new BlockModelBuilder(new ResourceLocation("dummy:dummy"),
+                            this.existingFileHelper)
                             .texture("restrictor", RESTRICTOR_MAP.get(mask))
                             .element()
                             .from(minPos.x, minPos.y, minPos.z)
@@ -322,7 +326,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UP = GTCEu.id("block/pipe/blocked/pipe_blocked_up");
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DOWN = GTCEu.id("block/pipe/blocked/pipe_blocked_down");
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_LEFT = GTCEu.id("block/pipe/blocked/pipe_blocked_left");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_RIGHT = GTCEu.id("block/pipe/blocked/pipe_blocked_right");
+    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_RIGHT = GTCEu
+            .id("block/pipe/blocked/pipe_blocked_right");
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NU = GTCEu.id("block/pipe/blocked/pipe_blocked_nu");
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_ND = GTCEu.id("block/pipe/blocked/pipe_blocked_nd");
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NL = GTCEu.id("block/pipe/blocked/pipe_blocked_nl");
@@ -379,7 +384,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         return sideMap;
     }
 
-    private static void addRestrictor(Int2ObjectMap<ResourceLocation> map, ResourceLocation texture, Border... borders) {
+    private static void addRestrictor(Int2ObjectMap<ResourceLocation> map, ResourceLocation texture,
+                                      Border... borders) {
         int mask = 0;
         for (Border border : borders) {
             mask |= border.mask;

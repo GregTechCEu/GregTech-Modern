@@ -192,8 +192,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             RandomSource rand,
-                                             ModelData modelData, @Nullable RenderType renderType) {
+                                    RandomSource rand,
+                                    ModelData modelData, @Nullable RenderType renderType) {
         // If there is a root transform, undo the ModelState transform, apply it,
         // then re-apply the ModelState transform.
         // This is necessary because of things like UV locking, which should only respond to the ModelState,

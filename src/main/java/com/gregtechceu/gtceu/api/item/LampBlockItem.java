@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.renderer.ItemWithBERModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.block.LampBlock;
@@ -17,15 +16,15 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.block.LampBlock.isBloomEnabled;
 import static com.gregtechceu.gtceu.common.block.LampBlock.isInverted;
@@ -86,7 +85,6 @@ public class LampBlockItem extends BlockItem {
     private static class ClientCallWrapper {
 
         private static void registerEventListener(LampBlockItem item) {
-
             ModelUtils.registerBakeEventListener(false, event -> {
                 ResourceLocation model = BuiltInRegistries.ITEM.getKey(item).withPrefix("item/");
                 BakedModel original = event.getModels().get(model);

@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipePrope
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
-
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;

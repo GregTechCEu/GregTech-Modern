@@ -72,7 +72,6 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
         return OpticalPipeProperties.INSTANCE;
     }
 
-
     @OnlyIn(Dist.CLIENT)
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {

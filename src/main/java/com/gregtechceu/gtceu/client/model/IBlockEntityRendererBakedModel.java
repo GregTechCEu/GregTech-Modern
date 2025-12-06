@@ -12,13 +12,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IBlockEntityRendererBakedModel<T extends BlockEntity>
                                                extends IDynamicBakedModel, BlockEntityRenderer<T> {
 
-    @Nullable BlockEntityType<? extends T> getBlockEntityType();
+    @Nullable
+    BlockEntityType<? extends T> getBlockEntityType();
 
     void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                 int packedLight, int packedOverlay);

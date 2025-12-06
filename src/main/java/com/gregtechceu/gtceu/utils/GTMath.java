@@ -100,8 +100,8 @@ public class GTMath {
         return q;
     }
 
-    public static float min(float @NotNull ... values) {
-        //noinspection ConstantValue
+    public static float min(float @NotNull... values) {
+        // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.min(values[0], values[1]);
@@ -114,8 +114,8 @@ public class GTMath {
         return min;
     }
 
-    public static float max(float @NotNull ... values) {
-        //noinspection ConstantValue
+    public static float max(float @NotNull... values) {
+        // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.max(values[0], values[1]);

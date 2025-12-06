@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
