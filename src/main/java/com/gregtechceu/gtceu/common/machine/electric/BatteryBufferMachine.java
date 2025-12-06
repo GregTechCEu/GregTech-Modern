@@ -108,6 +108,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
+    // TODO add EIO widget
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix;
