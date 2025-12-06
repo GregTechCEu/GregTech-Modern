@@ -130,16 +130,17 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 batteryInventory, "batteries",
                                 inventorySize, 'B',
                                 slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
-                                matrix))
-                        .child(new Column()
-                                .coverChildren()
-                                .leftRel(1.0f)
-                                .reverseLayout(true)
-                                .bottom(16)
-                                .padding(0, 8, 4, 4)
-                                .childPadding(2)
-                                .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
-                                        syncManager))))
+                                matrix)))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager)))
                 .bindPlayerInventory();
     }
 

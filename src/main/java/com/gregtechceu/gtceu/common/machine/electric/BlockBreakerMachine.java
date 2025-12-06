@@ -458,25 +458,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .child(createPowerButton(syncManager))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager))
                         .child(createBatterySlot(syncManager))
                         .child(createAutoOutputItemButton(syncManager))
                         .excludeAreaInXei());
         return panel;
-    }
-
-    public ToggleButton createPowerButton(PanelSyncManager syncManager) {
-        BooleanSyncValue power = new BooleanSyncValue(this::isWorkingEnabled,
-                this::setWorkingEnabled);
-        syncManager.syncValue("working_enabled", power);
-        return new ToggleButton()
-                .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
-                .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
-                .background(GTGuiTextures.BUTTON_POWER[0])
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
-                        this.isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
-                                "behaviour.soft_hammer.disabled"))));
     }
 
     public ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {
