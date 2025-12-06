@@ -534,7 +534,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
-                if (isFacingValid(side)) {
+                if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() side == getFrontFacing()) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
