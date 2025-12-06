@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -128,7 +129,16 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 batteryInventory, "batteries",
                                 inventorySize, 'B',
                                 slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
-                                matrix)))
+                                matrix))
+                        .child(new Column()
+                                .coverChildren()
+                                .leftRel(1.0f)
+                                .reverseLayout(true)
+                                .bottom(16)
+                                .padding(0, 8, 4, 4)
+                                .childPadding(2)
+                                .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                        syncManager))))
                 .bindPlayerInventory();
     }
 
