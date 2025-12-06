@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
@@ -37,5 +39,10 @@ public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepre
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block) {
+        return PipeModel.create(block, LaserPipeType.NORMAL.getThickness(),
+                GTCEu.id("block/pipe/pipe_laser_side"), GTCEu.id("block/pipe/pipe_laser_in"));
     }
 }

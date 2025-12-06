@@ -37,13 +37,13 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public @NotNull ItemOverrides getOverrides() {
+    public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public @NotNull TextureAtlasSprite getParticleIcon() {
+    public TextureAtlasSprite getParticleIcon() {
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(MissingTextureAtlasSprite.getLocation());
     }

@@ -13,16 +13,14 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -62,10 +60,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -74,14 +71,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
         WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
-                               implements EntityBlock, IBlockRendererProvider, SimpleWaterloggedBlock {
+                               implements EntityBlock, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
+
+    protected final Map<Direction, VoxelShape> shapes = new IdentityHashMap<>();
 
     public PipeBlock(Properties properties, PipeType pipeType) {
         super(properties);
         this.pipeType = pipeType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
+
+        float min = (1 - pipeType.getThickness()) / 2f;
+        float max = min + pipeType.getThickness();
+        shapes.put(null, Shapes.box(min, min, min, max, max, max));
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            var coords = GTMath.getCoordinates(dir, min, max);
+            Vector3f minCoord = coords.getLeft();
+            Vector3f maxCoord = coords.getRight();
+            shapes.put(dir, Shapes.box(minCoord.x, minCoord.y, minCoord.z, maxCoord.x, maxCoord.y, maxCoord.z));
+        }
     }
 
     @Override
@@ -129,11 +138,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
      */
     public abstract NodeDataType getFallbackType();
 
-    @Nullable
-    @Override
-    public abstract PipeBlockRenderer getRenderer(BlockState state);
-
-    protected abstract PipeModel getPipeModel();
+    public abstract PipeModel createPipeModel();
 
     public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
                                        IPipeNode<PipeType, NodeDataType> pipeTile) {
@@ -400,7 +405,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 return Shapes.block();
             }
             connections = pipeNode.getVisualConnections();
-            VoxelShape shape = getPipeModel().getShapes(connections);
+            VoxelShape shape = getShapes(connections);
             shape = Shapes.or(shape, pipeNode.getCoverContainer().addCoverCollisionBoundingBox());
 
             if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
@@ -424,7 +429,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             }
             return shape;
         }
-        return getPipeModel().getShapes(connections);
+        return getShapes(connections);
     }
 
     @Nullable
@@ -475,4 +480,12 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public GTToolType getPipeTuneTool() {
         return GTToolType.WRENCH;
     }
+
+    public VoxelShape getShapes(int connections) {
+        return this.shapes.entrySet().stream()
+                .filter(entry -> PipeBlockEntity.isConnected(connections, entry.getKey()))
+                .map(Map.Entry::getValue)
+                .reduce(Shapes.empty(), Shapes::or);
+    }
+
 }

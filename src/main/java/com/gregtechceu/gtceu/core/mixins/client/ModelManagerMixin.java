@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
@@ -37,6 +38,8 @@ public abstract class ModelManagerMixin {
 
         long startTime = System.currentTimeMillis();
         // turns out these do have to be init in here after all, as they check for asset existence. whoops.
+        PipeModel.initModels();
+
         MaterialBlockRenderer.reinitModels();
         TagPrefixItemRenderer.reinitModels();
         OreBlockRenderer.reinitModels();

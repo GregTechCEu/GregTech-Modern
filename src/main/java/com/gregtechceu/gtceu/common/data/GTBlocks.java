@@ -151,7 +151,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> OpticalPipeBlock::tintedColor)
-                .item(OpticalPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
@@ -178,7 +178,7 @@ public class GTBlocks {
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
-                .item(DuctPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();

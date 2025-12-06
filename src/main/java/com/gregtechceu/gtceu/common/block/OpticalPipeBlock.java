@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,20 +32,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProperties, LevelOpticalPipeNet> {
 
-    public final PipeBlockRenderer renderer;
-    @Getter
-    public final PipeModel pipeModel;
-
-    private final OpticalPipeType pipeType;
     private final OpticalPipeProperties properties;
 
-    public OpticalPipeBlock(BlockBehaviour.Properties properties, @NotNull OpticalPipeType pipeType) {
+    public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeType pipeType) {
         super(properties, pipeType);
-        this.pipeType = pipeType;
         this.properties = OpticalPipeProperties.INSTANCE;
-        this.pipeModel = new PipeModel(pipeType.getThickness(), () -> GTCEu.id("block/pipe/pipe_optical_side"),
-                () -> GTCEu.id("block/pipe/pipe_optical_in"), null, null);
-        this.renderer = new PipeBlockRenderer(this.pipeModel);
+    }
+
+    @Override
+    public @NotNull PipeModel createPipeModel() {
+        return PipeModel.create(this, pipeType.getThickness(),
+                GTCEu.id("block/pipe/pipe_optical_side"), GTCEu.id("block/pipe/pipe_optical_in"));
     }
 
     @Override
@@ -77,10 +72,6 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
         return OpticalPipeProperties.INSTANCE;
     }
 
-    @Override
-    public @Nullable PipeBlockRenderer getRenderer(BlockState state) {
-        return renderer;
-    }
 
     @OnlyIn(Dist.CLIENT)
     public static BlockColor tintedColor() {

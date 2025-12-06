@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class LaserPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {
+public class LaserPipeBlockItem extends PipeBlockItem {
 
     public LaserPipeBlockItem(PipeBlock block, Properties properties) {
         super(block, properties);
@@ -36,12 +36,5 @@ public class LaserPipeBlockItem extends PipeBlockItem implements IItemRendererPr
             }
             return -1;
         };
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(ItemStack stack) {
-        return getBlock().getRenderer(getBlock().defaultBlockState());
     }
 }

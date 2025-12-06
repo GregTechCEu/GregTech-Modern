@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {
+public class MaterialPipeBlockItem extends PipeBlockItem {
 
     public MaterialPipeBlockItem(MaterialPipeBlock block, Properties properties) {
         super(block, properties);
@@ -40,13 +40,6 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
             }
             return -1;
         };
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(ItemStack stack) {
-        return getBlock().getRenderer(getBlock().defaultBlockState());
     }
 
     @Override

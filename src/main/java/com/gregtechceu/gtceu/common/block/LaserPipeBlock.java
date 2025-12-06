@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeProperties;
@@ -33,23 +32,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> {
 
-    public final PipeBlockRenderer renderer;
-    public final PipeModel model;
     private final LaserPipeProperties properties;
 
     public LaserPipeBlock(Properties properties, LaserPipeType type) {
         super(properties, type);
         this.properties = LaserPipeProperties.INSTANCE;
-        this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"),
-                () -> GTCEu.id("block/pipe/pipe_laser_in"), null, null);
-        this.renderer = new PipeBlockRenderer(this.model);
     }
 
     @OnlyIn(Dist.CLIENT)
     public static BlockColor tintedColor() {
-        return (blockState, level, blockPos, index) -> {
-            if (blockPos != null && level != null &&
-                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
+        return (state, level, pos, index) -> {
+            if (pos != null && level != null &&
+                    level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipe) {
                 if (!pipe.getFrameMaterial().isNull()) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();
@@ -93,13 +87,9 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     }
 
     @Override
-    public @Nullable PipeBlockRenderer getRenderer(BlockState state) {
-        return renderer;
-    }
-
-    @Override
-    protected PipeModel getPipeModel() {
-        return model;
+    public PipeModel createPipeModel() {
+        return PipeModel.create(this, LaserPipeType.NORMAL.getThickness(),
+                GTCEu.id("block/pipe/pipe_laser_side"), GTCEu.id("block/pipe/pipe_laser_in"));
     }
 
     @Override
