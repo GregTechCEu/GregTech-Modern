@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -39,8 +40,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -73,9 +73,15 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return MANAGED_FIELD_HOLDER;
     }
 
-    //////////////////////////////////////
-    // ****** Recipe Logic ******//
-    //////////////////////////////////////
+    @Override
+    protected RecipeLogic createRecipeLogic(Object... args) {
+        return new LargeBoilerMachine.LargeBoilerRecipeLogic(this);
+    }
+
+    @Override
+    public LargeBoilerMachine.LargeBoilerRecipeLogic getRecipeLogic() {
+        return (LargeBoilerMachine.LargeBoilerRecipeLogic) super.getRecipeLogic();
+    }
 
     @Override
     public void onStructureFormed() {
@@ -193,7 +199,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     /**
      * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Duration is multiplied by {@code 100 / throttle} if throttle is less than 100
+     * Does not modify recipe. Real recipe duration is determined by
+     * {@link LargeBoilerRecipeLogic#modifyFuelBurnTime(int)}
      * </p>
      * 
      * @param machine a {@link LargeBoilerMachine}
@@ -201,13 +208,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
      * @return A {@link ModifierFunction} for the given Large Boiler and recipe
      */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (!(machine instanceof LargeBoilerMachine largeBoilerMachine)) {
-            return RecipeModifier.nullWrongType(LargeBoilerMachine.class, machine);
-        }
-        if (largeBoilerMachine.throttle == 100) return ModifierFunction.IDENTITY;
-        return ModifierFunction.builder()
-                .durationMultiplier(100.0 / largeBoilerMachine.throttle)
-                .build();
+        return ModifierFunction.IDENTITY;
     }
 
     public void addDisplayText(List<Component> textList) {
@@ -237,11 +238,43 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         if (!clickData.isRemote) {
             int result = componentData.equals("add") ? 5 : -5;
             this.throttle = Mth.clamp(throttle + result, 25, 100);
+            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
         }
     }
 
     @Override
     public IGuiTexture getScreenTexture() {
         return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+    }
+
+    public static class LargeBoilerRecipeLogic extends RecipeLogic {
+
+        @Persisted
+        @DescSynced
+        @Getter
+        int currentThrottle;
+
+        public LargeBoilerRecipeLogic(IRecipeLogicMachine machine) {
+            super(machine);
+            currentThrottle = 100;
+        }
+
+        @Override
+        public void setupRecipe(GTRecipe recipe) {
+            super.setupRecipe(recipe);
+            if (lastRecipe != null) {
+                currentThrottle = ((LargeBoilerMachine) machine).getThrottle();
+                duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
+            }
+        }
+
+        public void modifyFuelBurnTime(int newThrottle) {
+            if (lastRecipe != null) {
+                double newThrottleMultiplier = (double) currentThrottle / newThrottle;
+                duration = (int) Math.round(lastRecipe.duration / (newThrottle / 100.0));
+                progress = (int) Math.round(newThrottleMultiplier * progress);
+            }
+            currentThrottle = newThrottle;
+        }
     }
 }
