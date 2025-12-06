@@ -40,9 +40,4 @@ public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepre
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
-
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block) {
-        return PipeModel.create(block, LaserPipeType.NORMAL.getThickness(),
-                GTCEu.id("block/pipe/pipe_laser_side"), GTCEu.id("block/pipe/pipe_laser_in"));
-    }
 }
