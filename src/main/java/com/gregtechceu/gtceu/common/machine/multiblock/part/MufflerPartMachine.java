@@ -148,7 +148,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .align(Alignment.CENTER)
                                 .coverChildren()
-                                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory")
+                                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager)
                                         .marginLeft(30)
                                         .marginRight(30)
                                         .verticalCenter())))

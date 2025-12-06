@@ -446,7 +446,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 190))
                 .child(new Column()
                         .coverChildren()
-                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache"))
+                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
+                                syncManager))
                         .alignX(Alignment.CENTER)
                         .top(10))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
