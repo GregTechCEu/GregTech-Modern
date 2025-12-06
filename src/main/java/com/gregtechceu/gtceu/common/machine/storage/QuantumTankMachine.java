@@ -343,6 +343,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+    // TODO: Needs AOI widget
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         LongSyncValue bucketSyncer = new LongSyncValue(this::getStoredAmount, (ignored) -> {});
