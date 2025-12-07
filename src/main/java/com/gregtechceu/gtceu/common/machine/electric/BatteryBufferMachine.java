@@ -53,13 +53,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     protected final CustomItemStackHandler batteryInventory;
 
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
-        super(holder, tier, new TieredEnergyMachineTraits() {
-
-            @Override
-            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                return new EnergyBatteryTrait((BatteryBufferMachine) machine, inventorySize);
-            }
-        });
+        super(holder, tier,
+                (TieredEnergyMachine machine) -> new EnergyBatteryTrait((BatteryBufferMachine) machine, inventorySize));
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;
         this.batteryInventory = createBatteryInventory();

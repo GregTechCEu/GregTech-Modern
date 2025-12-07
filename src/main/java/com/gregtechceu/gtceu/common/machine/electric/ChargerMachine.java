@@ -76,13 +76,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private State state;
 
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
-        super(holder, tier, new TieredEnergyMachineTraits() {
-
-            @Override
-            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                return new EnergyBatteryTrait((ChargerMachine) machine, inventorySize);
-            }
-        });
+        super(holder, tier,
+                (TieredEnergyMachine machine) -> new EnergyBatteryTrait((ChargerMachine) machine, inventorySize));
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;
         this.chargerInventory = createChargerInventory();

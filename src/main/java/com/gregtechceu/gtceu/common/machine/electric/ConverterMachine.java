@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -36,13 +35,7 @@ public class ConverterMachine extends TieredEnergyMachine {
     public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
 
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps) {
-        super(holder, tier, new TieredEnergyMachineTraits() {
-
-            @Override
-            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                return new ConverterTrait((ConverterMachine) machine, amps);
-            }
-        });
+        super(holder, tier, (TieredEnergyMachine machine) -> new ConverterTrait((ConverterMachine) machine, amps));
     }
 
     //////////////////////////////////////

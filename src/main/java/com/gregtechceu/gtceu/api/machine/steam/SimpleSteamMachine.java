@@ -55,7 +55,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     private boolean needsVenting;
 
     public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder, isHighPressure, new SteamWorkableMachineTraits());
+        super(holder, isHighPressure);
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
 

@@ -87,13 +87,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private TickableSubscription tickSubs;
 
     public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, new TieredEnergyMachineTraits() {
-
-            @Override
-            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                long tierVoltage = GTValues.V[machine.getTier()];
-                return new NotifiableEnergyContainer(machine, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
-            }
+        super(holder, tier, (TieredEnergyMachine machine) -> {
+            long tierVoltage = GTValues.V[machine.getTier()];
+            return new NotifiableEnergyContainer(machine, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
         });
         this.speed = (int) Math.pow(2, tier);
         this.successLimit = SUCCESS_LIMITS[tier - 1];
