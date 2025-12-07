@@ -235,7 +235,7 @@ public class ForgeClientEventListener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void preRegisterDynamicAssets(RegisterDynamicAssetsEvent event) {
+    public static void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         PipeModel.MODELS.clear();
     }
 
@@ -269,7 +269,7 @@ public class ForgeClientEventListener {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void postRegisterDynamicAssets(RegisterDynamicAssetsEvent event) {
+    public static void postRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         // do this last so addons can easily add new variants to the registered model set
         PipeModel.initModels();
 
