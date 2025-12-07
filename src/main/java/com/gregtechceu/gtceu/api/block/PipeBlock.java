@@ -483,7 +483,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     public VoxelShape getShapes(int connections) {
         return this.shapes.entrySet().stream()
-                .filter(entry -> PipeBlockEntity.isConnected(connections, entry.getKey()))
+                .filter(entry -> entry.getKey() == null || PipeBlockEntity.isConnected(connections, entry.getKey()))
                 .map(Map.Entry::getValue)
                 .reduce(Shapes.empty(), Shapes::or);
     }
