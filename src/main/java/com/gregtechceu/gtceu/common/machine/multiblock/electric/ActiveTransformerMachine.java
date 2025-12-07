@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -36,8 +37,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                                       implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
 

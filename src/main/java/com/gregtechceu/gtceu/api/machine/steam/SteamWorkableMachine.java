@@ -10,10 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
@@ -75,11 +72,18 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     protected final List<ISubscription> traitSubscriptions;
 
-    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
+    public static class SteamWorkableMachineTraits extends SteamMachineTraits {
+
+        public RecipeLogic recipeLogic(SteamWorkableMachine machine) {
+            return new RecipeLogic(machine);
+        }
+    }
+
+    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, SteamWorkableMachineTraits traits) {
+        super(holder, isHighPressure, traits);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.recipeLogic = createRecipeLogic(args);
+        this.recipeLogic = traits.recipeLogic(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
@@ -107,10 +111,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
             this.addHandlerList(handlerList);
             traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
-    }
-
-    protected RecipeLogic createRecipeLogic(@SuppressWarnings("unused") Object... args) {
-        return new RecipeLogic(this);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,6 +34,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Accessors(fluent = true)

@@ -80,6 +80,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
@@ -118,6 +119,8 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     protected final List<MachineTrait> traits;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
+
+    public static abstract class MetaMachineTraits {}
 
     public MetaMachine(IMachineBlockEntity holder) {
         this.holder = holder;
@@ -199,6 +202,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         return holder.self().isRemoved();
     }
 
+    @OverridingMethodsMustInvokeSuper
     public void onUnload() {
         traits.forEach(MachineTrait::onMachineUnLoad);
         coverContainer.onUnload();
@@ -208,6 +212,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         serverTicks.clear();
     }
 
+    @OverridingMethodsMustInvokeSuper
     public void onLoad() {
         traits.forEach(MachineTrait::onMachineLoad);
         coverContainer.onLoad();
@@ -293,7 +298,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
      *         animations will be played
      */
     @Override
-    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolType, ItemStack itemStack,
+    public final Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, ItemStack itemStack,
                                                                  UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
@@ -475,7 +480,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
-                Block.popResource(getLevel(), getPos(), stackInSlot);
+                Block.popResource(Objects.requireNonNull(getLevel()), getPos(), stackInSlot);
             }
         }
     }
@@ -551,7 +556,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         return !hasFrontFacing() || getFrontFacing() != direction;
     }
 
-    public static @NotNull Direction getFrontFacing(@Nullable MetaMachine machine) {
+    public static Direction getFrontFacing(@Nullable MetaMachine machine) {
         return machine == null ? Direction.NORTH : machine.getFrontFacing();
     }
 
@@ -588,7 +593,8 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
 
         var blockState = getBlockState();
         if (isFacingValid(facing)) {
-            getLevel().setBlockAndUpdate(getPos(), blockState.setValue(getRotationState().property, facing));
+            Objects.requireNonNull(getLevel()).setBlockAndUpdate(getPos(),
+                    blockState.setValue(getRotationState().property, facing));
         }
 
         if (getLevel() != null && !getLevel().isClientSide) {
@@ -596,7 +602,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         }
     }
 
-    public static @NotNull Direction getUpwardFacing(@Nullable MetaMachine machine) {
+    public static Direction getUpwardFacing(@Nullable MetaMachine machine) {
         return machine == null || !machine.allowExtendedFacing() ? Direction.NORTH :
                 machine.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING);
     }
@@ -606,7 +612,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
                 Direction.NORTH;
     }
 
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
@@ -617,7 +623,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getPos(),
+            Objects.requireNonNull(getLevel()).setBlockAndUpdate(getPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
@@ -685,8 +691,6 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
 
     @Override
     public boolean canConnectRedstone(Direction side) {
-        if (side == null) return false;
-
         // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover == null) return false;

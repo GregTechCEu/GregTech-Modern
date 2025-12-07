@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 
@@ -26,11 +28,19 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     @SaveField
     public final NotifiableFluidTank steamTank;
 
-    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
+    public static abstract class SteamMachineTraits extends MetaMachineTraits {
+
+        public NotifiableFluidTank steamTank(SteamMachine machine) {
+            NotifiableFluidTank tank = new NotifiableFluidTank(machine, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
+            tank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
+            return tank;
+        }
+    }
+
+    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, SteamMachineTraits traits) {
         super(holder);
         this.isHighPressure = isHighPressure;
-        this.steamTank = createSteamTank(args);
-        this.steamTank.setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        this.steamTank = traits.steamTank(this);
     }
 
     //////////////////////////////////////
@@ -41,6 +51,4 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     public int getTier() {
         return isHighPressure ? 1 : 0;
     }
-
-    protected abstract NotifiableFluidTank createSteamTank(Object... args);
 }

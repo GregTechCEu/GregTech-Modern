@@ -10,16 +10,23 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SteamSolarBoiler extends SteamBoilerMachine {
 
-    public SteamSolarBoiler(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
+    public SteamSolarBoiler(IMachineBlockEntity holder, boolean isHighPressure) {
+        super(holder, isHighPressure);
     }
 
     @Override
@@ -36,13 +43,13 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     @Override
     protected void updateSteamSubscription() {
         if (temperatureSubs == null) {
-            temperatureSubs = subscribeServerTick(temperatureSubs, this::updateCurrentTemperature);
+            temperatureSubs = subscribeServerTick(null, this::updateCurrentTemperature);
         }
     }
 
     @Override
     protected void updateCurrentTemperature() {
-        if (GTUtil.canSeeSunClearly(getLevel(), getPos())) {
+        if (GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getPos())) {
             recipeLogic.setStatus(RecipeLogic.Status.WORKING);
         } else {
             recipeLogic.setStatus(RecipeLogic.Status.IDLE);
@@ -63,7 +70,9 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     @Override
     public ModularUI createUI(Player entityPlayer) {
         return super.createUI(entityPlayer)
-                .widget(new ProgressWidget(() -> GTUtil.canSeeSunClearly(getLevel(), getPos()) ? 1.0 : 0.0, 114, 44, 20,
+                .widget(new ProgressWidget(
+                        () -> GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getPos()) ? 1.0 : 0.0, 114,
+                        44, 20,
                         20)
                         .setProgressTexture(
                                 GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
