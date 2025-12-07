@@ -42,13 +42,8 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     private final int tier;
 
     public FluidDrillMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+        super(holder, (m) -> new FluidDrillLogic((FluidDrillMachine)m));
         this.tier = tier;
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new FluidDrillLogic(this);
     }
 
     @NotNull
@@ -59,7 +54,6 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
 
     public int getEnergyTier() {
         var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        if (energyContainer == null) return this.tier;
         var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
                 .map(IEnergyContainer.class::cast).toList());
 

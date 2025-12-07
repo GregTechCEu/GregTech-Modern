@@ -36,8 +36,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    public CokeOvenMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public CokeOvenMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     @Override

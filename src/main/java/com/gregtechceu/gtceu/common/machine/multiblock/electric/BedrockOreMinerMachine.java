@@ -41,13 +41,8 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     private final int tier;
 
     public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+        super(holder, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine)m));
         this.tier = tier;
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new BedrockOreMinerLogic(this);
     }
 
     @Override
@@ -57,7 +52,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
     public int getEnergyTier() {
         var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        if (energyContainer == null) return this.tier;
         var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
                 .map(IEnergyContainer.class::cast).toList());
         return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));

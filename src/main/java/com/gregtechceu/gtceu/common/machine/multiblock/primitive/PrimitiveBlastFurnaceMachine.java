@@ -56,18 +56,18 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     @Override
-    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createImportItemHandler() {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
                 IO.NONE);
     }
 
     @Override
-    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createExportItemHandler() {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
                 IO.NONE);
     }

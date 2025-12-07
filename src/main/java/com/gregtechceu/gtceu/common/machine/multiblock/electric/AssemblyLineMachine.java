@@ -46,17 +46,12 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     protected boolean allowCircuitSlots;
 
     public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
-        super(holder);
+        super(holder, AsslineRecipeLogic::new);
         this.allowCircuitSlots = allowCircuitSlots;
     }
 
     public AssemblyLineMachine(IMachineBlockEntity holder) {
         this(holder, false);
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new AsslineRecipeLogic(this);
     }
 
     public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {

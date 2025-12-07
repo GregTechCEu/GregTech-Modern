@@ -49,7 +49,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     @Getter
     @Setter
-    private int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
+    private int maxParallels;
 
     @Nullable
     private SteamEnergyRecipeHandler steamEnergy = null;
@@ -57,11 +57,13 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
     public static final double CONVERSION_RATE = 2.0;
 
-    public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
+    public SteamParallelMultiblockMachine(IMachineBlockEntity holder, int maxParallels) {
         super(holder);
-        if (args.length > 0 && args[0] instanceof Integer i) {
-            this.maxParallels = i;
-        }
+        this.maxParallels = maxParallels;
+    }
+
+    public SteamParallelMultiblockMachine(IMachineBlockEntity holder) {
+        this(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount);
     }
 
     @Override

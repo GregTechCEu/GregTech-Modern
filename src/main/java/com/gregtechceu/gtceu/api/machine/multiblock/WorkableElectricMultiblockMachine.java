@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -50,8 +52,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Getter
     protected boolean batchEnabled;
 
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
+        super(holder, recipeLogicSupplier);
+    }
+
+    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     //////////////////////////////////////

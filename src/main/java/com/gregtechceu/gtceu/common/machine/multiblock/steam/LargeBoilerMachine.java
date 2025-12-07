@@ -58,8 +58,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     protected TickableSubscription temperatureSubs;
     private int steamGenerated;
 
-    public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
-        super(holder, args);
+    public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed) {
+        super(holder);
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;
         this.throttle = 100;

@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -78,14 +79,18 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
+    public WorkableMultiblockMachine(IMachineBlockEntity holder, Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
         super(holder);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.recipeLogic = createRecipeLogic(args);
+        this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
+    }
+
+    public WorkableMultiblockMachine(IMachineBlockEntity holder) {
+        this(holder, RecipeLogic::new);
     }
 
     public void setMuffled(boolean muffled) {
@@ -103,10 +108,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         recipeLogic.inValid();
-    }
-
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new RecipeLogic(this);
     }
 
     //////////////////////////////////////

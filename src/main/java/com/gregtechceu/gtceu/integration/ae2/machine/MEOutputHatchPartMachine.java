@@ -52,12 +52,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (isRemote()) return;
-    }
-
-    @Override
     public void onMachineRemoved() {
         var grid = getMainNode().getGrid();
         if (grid != null && !internalBuffer.isEmpty()) {

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.*;
@@ -82,7 +83,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     private static TraceabilityPredicate MULTI_PREDICATE = null;
 
     public CentralMonitorMachine(IMachineBlockEntity holder) {
-        super(holder);
+        super(holder, CentralMonitorLogic::new);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {
@@ -110,11 +111,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public CentralMonitorLogic getRecipeLogic() {
         return (CentralMonitorLogic) super.getRecipeLogic();
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new CentralMonitorLogic(this);
     }
 
     public @Nullable EnergyContainerList getFormedEnergyContainer() {

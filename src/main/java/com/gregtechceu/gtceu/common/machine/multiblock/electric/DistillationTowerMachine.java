@@ -58,13 +58,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
      * @param yOffset The Y difference between the controller and the first fluid output
      */
     public DistillationTowerMachine(IMachineBlockEntity holder, int yOffset) {
-        super(holder);
+        super(holder, DistillationTowerLogic::new);
         this.yOffset = yOffset;
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new DistillationTowerLogic(this);
     }
 
     @Override

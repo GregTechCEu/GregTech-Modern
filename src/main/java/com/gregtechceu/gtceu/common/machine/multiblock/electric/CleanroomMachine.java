@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -99,14 +100,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     private Collection<ICleanroomReceiver> cleanroomReceivers;
 
     public CleanroomMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId);
+        super(metaTileEntityId, (m) -> new CleanroomLogic((CleanroomMachine) m));
     }
 
     //////////////////////////////////////
     // ****** Initialization ******//
     //////////////////////////////////////
 
-    protected RecipeLogic createRecipeLogic(Object... args) {
+
+    protected RecipeLogic createRecipeLogic() {
         return new CleanroomLogic(this);
     }
 

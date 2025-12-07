@@ -69,7 +69,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private boolean hasAir = false;
 
     public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
-        super(holder);
+        super(holder, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine)m));
     }
 
     @Override
@@ -87,11 +87,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             }
         }
         this.getRecipeLogic().setDuration(Math.max(1, (int) Math.sqrt(logPos.size() * 240_000)));
-    }
-
-    @Override
-    protected @NotNull CharcoalRecipeLogic createRecipeLogic(Object @NotNull... args) {
-        return new CharcoalRecipeLogic(this);
     }
 
     @Override
