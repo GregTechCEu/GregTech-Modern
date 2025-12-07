@@ -34,7 +34,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     @Nullable
     protected ISubscription outputInventorySubs, outputTankSubs;
 
-    public CokeOvenHatch(IMachineBlockEntity holder, Object... args) {
+    public CokeOvenHatch(IMachineBlockEntity holder) {
         super(holder);
         this.inputInventory = new ItemHandlerProxyTrait(this, IO.IN);
         this.outputInventory = new ItemHandlerProxyTrait(this, IO.OUT);

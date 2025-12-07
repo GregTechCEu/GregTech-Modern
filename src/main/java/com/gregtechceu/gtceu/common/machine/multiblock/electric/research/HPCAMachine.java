@@ -89,8 +89,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public HPCAMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public HPCAMachine(IMachineBlockEntity holder) {
+        super(holder);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.progressSupplier = new TimedProgressSupplier(200, 47, false);
         this.hpcaHandler = new HPCAGridHandler(this);

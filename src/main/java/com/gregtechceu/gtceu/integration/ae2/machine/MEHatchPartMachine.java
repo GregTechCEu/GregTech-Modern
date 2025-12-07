@@ -35,8 +35,8 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     protected final IActionSource actionSource;
 
-    public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
-        super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE, args);
+    public MEHatchPartMachine(IMachineBlockEntity holder, IO io) {
+        super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE);
         this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }

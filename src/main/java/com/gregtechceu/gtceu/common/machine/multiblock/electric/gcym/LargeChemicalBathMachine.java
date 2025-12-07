@@ -28,8 +28,8 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
     @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public LargeChemicalBathMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public LargeChemicalBathMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     public void setFluidBlockOffsets(Set<BlockPos> offsets) {

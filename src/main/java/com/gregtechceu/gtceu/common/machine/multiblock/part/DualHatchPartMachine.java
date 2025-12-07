@@ -40,7 +40,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     private boolean hasFluidHandler;
     private boolean hasItemHandler;
 
-    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
         this.tank = new NotifiableFluidTank(this, (int) Math.sqrt(getInventorySize()), getTankCapacity(INITIAL_TANK_CAPACITY, getTier()), io);
     }

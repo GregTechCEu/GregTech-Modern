@@ -28,8 +28,8 @@ public class LargeMixerMachine extends WorkableElectricMultiblockMachine impleme
     @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public LargeMixerMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public LargeMixerMachine(IMachineBlockEntity holder) {
+        super(holder);
     }
 
     public void setFluidBlockOffsets(Set<BlockPos> offsets) {

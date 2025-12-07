@@ -41,7 +41,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @Getter
     private final int baseAmp;
 
-    public TransformerMachine(IMachineBlockEntity holder, int tier, int amp, Object... args) {
+    public TransformerMachine(IMachineBlockEntity holder, int tier, int amp) {
         super(holder, tier, new TieredEnergyMachineTraits() {
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
