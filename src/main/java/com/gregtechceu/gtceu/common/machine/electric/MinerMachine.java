@@ -95,6 +95,7 @@ public class MinerMachine extends WorkableTieredMachine
 
     public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune) {
         super(holder, tier, GTMachineUtils.defaultTankSizeFunction, new WorkableTieredMachineTraits() {
+
             @Override
             public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {
                 return new NotifiableItemStackHandler(machine, 0, IO.IN);

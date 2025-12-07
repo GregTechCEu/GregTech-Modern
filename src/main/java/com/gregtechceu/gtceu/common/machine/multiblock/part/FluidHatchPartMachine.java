@@ -50,7 +50,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -75,7 +74,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
 
-
     public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots) {
         super(holder, tier, io);
         this.slots = slots;
@@ -83,7 +81,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
         if (io == IO.IN) {
             this.circuitSlotEnabled = true;
-            this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
+            this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
         } else {
             this.circuitSlotEnabled = false;
             this.circuitInventory = new NotifiableItemStackHandler(this, 0, IO.NONE).shouldSearchContent(false);

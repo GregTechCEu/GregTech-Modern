@@ -88,6 +88,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier, new TieredEnergyMachineTraits() {
+
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
                 long tierVoltage = GTValues.V[machine.getTier()];

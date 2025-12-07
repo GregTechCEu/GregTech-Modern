@@ -28,19 +28,11 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     @SaveField
     public final NotifiableFluidTank steamTank;
 
-    public static abstract class SteamMachineTraits extends MetaMachineTraits {
-
-        public NotifiableFluidTank steamTank(SteamMachine machine) {
-            NotifiableFluidTank tank = new NotifiableFluidTank(machine, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
-            tank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
-            return tank;
-        }
-    }
-
-    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, SteamMachineTraits traits) {
+    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure) {
         super(holder);
         this.isHighPressure = isHighPressure;
-        this.steamTank = traits.steamTank(this);
+        this.steamTank = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN)
+                .setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
     }
 
     //////////////////////////////////////

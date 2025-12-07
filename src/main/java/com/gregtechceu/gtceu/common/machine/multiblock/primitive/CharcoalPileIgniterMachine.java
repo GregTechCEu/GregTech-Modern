@@ -69,7 +69,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private boolean hasAir = false;
 
     public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
-        super(holder, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine)m));
+        super(holder, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine) m));
     }
 
     @Override

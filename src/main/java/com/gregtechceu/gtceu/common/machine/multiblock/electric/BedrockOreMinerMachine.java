@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -41,7 +40,7 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     private final int tier;
 
     public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine)m));
+        super(holder, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine) m));
         this.tier = tier;
     }
 

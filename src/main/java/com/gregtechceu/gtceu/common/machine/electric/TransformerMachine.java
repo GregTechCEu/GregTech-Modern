@@ -43,11 +43,13 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
 
     public TransformerMachine(IMachineBlockEntity holder, int tier, int amp) {
         super(holder, tier, new TieredEnergyMachineTraits() {
+
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
                 NotifiableEnergyContainer energyContainer;
                 long tierVoltage = GTValues.V[machine.getTier()];
-                energyContainer = new NotifiableEnergyContainer(machine, tierVoltage * 8L, tierVoltage * 4, amp, tierVoltage,
+                energyContainer = new NotifiableEnergyContainer(machine, tierVoltage * 8L, tierVoltage * 4, amp,
+                        tierVoltage,
                         4L * amp);
                 return energyContainer;
             }

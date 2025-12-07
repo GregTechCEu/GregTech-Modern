@@ -42,7 +42,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        this.tank = new NotifiableFluidTank(this, (int) Math.sqrt(getInventorySize()), getTankCapacity(INITIAL_TANK_CAPACITY, getTier()), io);
+        this.tank = new NotifiableFluidTank(this, (int) Math.sqrt(getInventorySize()),
+                getTankCapacity(INITIAL_TANK_CAPACITY, getTier()), io);
     }
 
     ////////////////////////////////

@@ -77,7 +77,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
     public PumpMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
-        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
+        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
+                IO.OUT);
     }
 
     //////////////////////////////////////

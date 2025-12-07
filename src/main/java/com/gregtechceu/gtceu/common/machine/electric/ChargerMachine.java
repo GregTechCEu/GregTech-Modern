@@ -77,9 +77,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
         super(holder, tier, new TieredEnergyMachineTraits() {
+
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                return new EnergyBatteryTrait((ChargerMachine)machine, inventorySize);
+                return new EnergyBatteryTrait((ChargerMachine) machine, inventorySize);
             }
         });
         this.isWorkingEnabled = true;
@@ -193,7 +194,9 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     protected static class EnergyBatteryTrait extends NotifiableEnergyContainer {
+
         private ChargerMachine machine;
+
         protected EnergyBatteryTrait(ChargerMachine machine, int inventorySize) {
             super(machine, GTValues.V[machine.tier] * inventorySize * 32L, GTValues.V[machine.tier],
                     inventorySize * AMPS_PER_ITEM, 0L, 0L);

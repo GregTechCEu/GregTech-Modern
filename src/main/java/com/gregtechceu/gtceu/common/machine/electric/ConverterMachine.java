@@ -37,9 +37,10 @@ public class ConverterMachine extends TieredEnergyMachine {
 
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps) {
         super(holder, tier, new TieredEnergyMachineTraits() {
+
             @Override
             public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-                return new ConverterTrait((ConverterMachine)machine, amps);
+                return new ConverterTrait((ConverterMachine) machine, amps);
             }
         });
     }

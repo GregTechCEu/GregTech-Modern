@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -72,22 +73,20 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     protected final List<ISubscription> traitSubscriptions;
 
-    public static class SteamWorkableMachineTraits extends SteamMachineTraits {
-
-        public RecipeLogic recipeLogic(SteamWorkableMachine machine) {
-            return new RecipeLogic(machine);
-        }
-    }
-
-    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure, SteamWorkableMachineTraits traits) {
-        super(holder, isHighPressure, traits);
+    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure,
+                                Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
+        super(holder, isHighPressure);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.recipeLogic = traits.recipeLogic(this);
+        this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
+    }
+
+    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure) {
+        this(holder, isHighPressure, RecipeLogic::new);
     }
 
     //////////////////////////////////////

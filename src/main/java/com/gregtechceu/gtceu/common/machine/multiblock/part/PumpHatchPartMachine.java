@@ -29,7 +29,8 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
 
     @Override
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Water.getFluidTag()));
+        return super.createTank(initialCapacity, slots)
+                .setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Water.getFluidTag()));
     }
 
     @Override

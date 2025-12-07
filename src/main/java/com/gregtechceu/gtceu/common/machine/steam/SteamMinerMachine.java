@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
@@ -68,13 +67,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     public SteamMinerMachine(IMachineBlockEntity holder, boolean isHighPressure, int speed, int maximumRadius,
                              int fortune, int energyPerTick) {
-        super(holder, isHighPressure, new SteamWorkableMachineTraits() {
-
-            @Override
-            public RecipeLogic recipeLogic(SteamWorkableMachine machine) {
-                return new SteamMinerLogic(machine, fortune, speed, maximumRadius);
-            }
-        });
+        super(holder, isHighPressure, (m) -> new SteamMinerLogic(m, fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;

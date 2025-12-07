@@ -65,16 +65,19 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean previouslyMuffled = true;
 
     public static class WorkableTieredMachineTraits {
+
         public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
             return new RecipeLogic(machine);
         }
 
         public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {
-            return new NotifiableItemStackHandler(machine, machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+            return new NotifiableItemStackHandler(machine,
+                    machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
         }
 
         public NotifiableItemStackHandler exportItemHandler(WorkableTieredMachine machine) {
-            return new NotifiableItemStackHandler(machine, machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+            return new NotifiableItemStackHandler(machine,
+                    machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
         }
 
         public NotifiableFluidTank importFluidTank(WorkableTieredMachine machine) {
@@ -96,7 +99,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         }
     }
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, WorkableTieredMachineTraits traits) {
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+                                 WorkableTieredMachineTraits traits) {
         super(holder, tier);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();

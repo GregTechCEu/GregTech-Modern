@@ -79,7 +79,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder, Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
+    public WorkableMultiblockMachine(IMachineBlockEntity holder,
+                                     Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
         super(holder);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
