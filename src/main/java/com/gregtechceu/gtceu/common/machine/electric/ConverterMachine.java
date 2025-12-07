@@ -35,21 +35,18 @@ public class ConverterMachine extends TieredEnergyMachine {
 
     public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
 
-    public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
-        super(holder, tier, args, amps);
+    public ConverterMachine(IMachineBlockEntity holder, int tier, int amps) {
+        super(holder, tier, new TieredEnergyMachineTraits() {
+            @Override
+            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
+                return new ConverterTrait((ConverterMachine)machine, amps);
+            }
+        });
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        if (args.length > 0 && args[args.length - 1] instanceof Integer ampsValue) {
-            return new ConverterTrait(this, ampsValue);
-        }
-        throw new IllegalArgumentException("ConverterMachine need args [amps] for initialization");
-    }
 
     public ConverterTrait getConverterTrait() {
         return (ConverterTrait) energyContainer;

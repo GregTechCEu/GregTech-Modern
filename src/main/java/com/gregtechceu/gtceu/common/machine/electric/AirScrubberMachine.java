@@ -40,8 +40,8 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     @Getter
     private float removedLastSecond;
 
-    public AirScrubberMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachineUtils.largeTankSizeFunction, args);
+    public AirScrubberMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier, GTMachineUtils.largeTankSizeFunction);
         this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION;
     }
 

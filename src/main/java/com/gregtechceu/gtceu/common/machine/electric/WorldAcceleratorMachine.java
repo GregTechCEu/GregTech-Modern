@@ -87,18 +87,19 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private boolean active = false;
     private TickableSubscription tickSubs;
 
-    public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, args);
+    public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier, new TieredEnergyMachineTraits() {
+            @Override
+            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
+                long tierVoltage = GTValues.V[machine.getTier()];
+                return new NotifiableEnergyContainer(machine, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
+            }
+        });
         this.speed = (int) Math.pow(2, tier);
         this.successLimit = SUCCESS_LIMITS[tier - 1];
         this.randRange = (getTier() << 1) + 1;
     }
 
-    @Override
-    protected @NotNull NotifiableEnergyContainer createEnergyContainer(Object @NotNull... args) {
-        long tierVoltage = GTValues.V[getTier()];
-        return new NotifiableEnergyContainer(this, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
-    }
 
     public void updateSubscription() {
         if (isWorkingEnabled && drainEnergy(true)) {

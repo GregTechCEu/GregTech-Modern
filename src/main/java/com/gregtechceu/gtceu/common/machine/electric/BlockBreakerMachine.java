@@ -94,7 +94,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @SyncToClient
     private boolean isWorkingEnabled = true;
 
-    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
+    public BlockBreakerMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.cache = createCacheItemHandler();

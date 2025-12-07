@@ -28,9 +28,24 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSub;
 
-    public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public static class TieredEnergyMachineTraits extends MetaMachineTraits {
+        public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
+            long tierVoltage = GTValues.V[machine.getTier()];
+            if (machine.isEnergyEmitter()) {
+                return NotifiableEnergyContainer.emitterContainer(machine,
+                        tierVoltage * 64L, tierVoltage, machine.getMaxInputOutputAmperage());
+            } else return NotifiableEnergyContainer.receiverContainer(machine,
+                    tierVoltage * 64L, tierVoltage, machine.getMaxInputOutputAmperage());
+        }
+    }
+
+    public TieredEnergyMachine(IMachineBlockEntity holder, int tier, TieredEnergyMachineTraits traits) {
         super(holder, tier);
-        energyContainer = createEnergyContainer(args);
+        energyContainer = traits.energyContainer(this);
+    }
+
+    public TieredEnergyMachine(IMachineBlockEntity holder, int tier) {
+        this(holder, tier, new TieredEnergyMachineTraits());
     }
 
     //////////////////////////////////////
@@ -115,9 +130,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
             progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
             return progressBar;
-        }, (progressBar, machine) -> {
-            progressBar.setProgressSupplier(
-                    () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
-        });
+        }, (progressBar, machine) -> progressBar.setProgressSupplier(
+                () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity()));
     }
 }

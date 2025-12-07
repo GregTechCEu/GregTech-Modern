@@ -105,40 +105,42 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
-                               Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    public static class SimpleTieredMachineTraits extends WorkableTieredMachineTraits {
+        public CustomItemStackHandler chargerItemHandler(SimpleTieredMachine machine) {
+            var handler = new CustomItemStackHandler() {
+
+                public int getSlotLimit(int slot) {
+                    return 1;
+                }
+            };
+            handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+                    (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                            GTCapabilityHelper.getForgeEnergyItem(item) != null));
+            return handler;
+        }
+
+        public NotifiableItemStackHandler circuitItemHandler(SimpleTieredMachine machine) {
+            return new NotifiableItemStackHandler(machine, 1, IO.IN, IO.NONE)
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        }
+    }
+
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, SimpleTieredMachineTraits traits) {
+        super(holder, tier, tankScalingFunction, traits);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args);
+        this.chargerInventory = traits.chargerItemHandler(this);
+        this.circuitInventory = traits.circuitItemHandler(this);
+    }
+
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction) {
+        this(holder, tier, tankScalingFunction, new SimpleTieredMachineTraits());
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
-        var handler = new CustomItemStackHandler() {
-
-            public int getSlotLimit(int slot) {
-                return 1;
-            }
-        };
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
     @Override
     public void onLoad() {
         super.onLoad();

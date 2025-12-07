@@ -15,9 +15,8 @@ import java.util.Collection;
 public class DummyRecipeLogicMachine extends WorkableTieredMachine implements IRecipeLogicMachine {
 
     public DummyRecipeLogicMachine(IMachineBlockEntity be, int tier, Int2IntFunction tankScalingFunction,
-                                   Collection<RecipeHandlerList> handlers,
-                                   Object... args) {
-        super(be, tier, tankScalingFunction, args);
+                                   Collection<RecipeHandlerList> handlers) {
+        super(be, tier, tankScalingFunction);
         reinitializeHandlers(handlers);
     }
 

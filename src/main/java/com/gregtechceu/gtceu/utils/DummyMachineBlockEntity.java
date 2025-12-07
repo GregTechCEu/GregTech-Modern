@@ -35,14 +35,13 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
 
     // TODO: Fix the proxy parameter
     public DummyMachineBlockEntity(int tier, GTRecipeType type, Int2IntFunction tankScalingFunction,
-                                   Collection<RecipeHandlerList> handlers,
-                                   Object... args) {
+                                   Collection<RecipeHandlerList> handlers) {
         this.definition = new MachineDefinition(GTCEu.id("dummy"));
         this.definition.setRecipeTypes(new GTRecipeType[] { type });
         this.definition.setTier(tier);
 
         this.renderState = getDefinition().defaultRenderState();
-        this.metaMachine = new DummyRecipeLogicMachine(this, tier, tankScalingFunction, handlers, args);
+        this.metaMachine = new DummyRecipeLogicMachine(this, tier, tankScalingFunction, handlers);
     }
 
     @Override

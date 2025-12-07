@@ -93,10 +93,24 @@ public class MinerMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, energySubs;
 
-    public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune,
-                        Object... args) {
-        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, args, (tier + 1) * (tier + 1), fortune, speed,
-                maximumRadius);
+    public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune) {
+        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, new WorkableTieredMachineTraits() {
+            @Override
+            public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {
+                return new NotifiableItemStackHandler(machine, 0, IO.IN);
+            }
+
+            @Override
+            public NotifiableItemStackHandler exportItemHandler(WorkableTieredMachine machine) {
+                return new NotifiableItemStackHandler(machine, (tier + 1) * (tier + 1), IO.OUT);
+            }
+
+            @Override
+            public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
+                return new MinerLogic(machine, fortune, speed, maximumRadius);
+            }
+        });
+
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }
@@ -105,36 +119,12 @@ public class MinerMachine extends WorkableTieredMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+    protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
         handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
         return handler;
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 0, IO.IN);
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        if (args.length > 3 && args[args.length - 4] instanceof Integer invSize) {
-            return new NotifiableItemStackHandler(this, invSize, IO.OUT);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        if (args.length > 2 && args[args.length - 3] instanceof Integer fortune &&
-                args[args.length - 2] instanceof Integer speed && args[args.length - 1] instanceof Integer maxRadius) {
-            return new MinerLogic(this, fortune, speed, maxRadius);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
 
     @Override

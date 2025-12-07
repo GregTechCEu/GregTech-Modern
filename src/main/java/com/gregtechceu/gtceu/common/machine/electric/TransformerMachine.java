@@ -41,10 +41,22 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @Getter
     private final int baseAmp;
 
-    public TransformerMachine(IMachineBlockEntity holder, int tier, int baseAmp, Object... args) {
-        super(holder, tier, baseAmp, args);
+    public TransformerMachine(IMachineBlockEntity holder, int tier, int amp, Object... args) {
+        super(holder, tier, new TieredEnergyMachineTraits() {
+            @Override
+            public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
+                NotifiableEnergyContainer energyContainer;
+                long tierVoltage = GTValues.V[machine.getTier()];
+                energyContainer = new NotifiableEnergyContainer(machine, tierVoltage * 8L, tierVoltage * 4, amp, tierVoltage,
+                        4L * amp);
+                return energyContainer;
+            }
+        });
+
+        energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
+        energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         this.isWorkingEnabled = true;
-        this.baseAmp = baseAmp;
+        this.baseAmp = amp;
     }
 
     //////////////////////////////////////
@@ -55,19 +67,6 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @ClientFieldChangeListener(fieldName = "isTransformUp")
     private void onTransformUpdated() {
         updateEnergyContainer(isTransformUp);
-    }
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        var amp = (args.length > 0 && args[0] instanceof Integer a) ? a : 1;
-        NotifiableEnergyContainer energyContainer;
-        long tierVoltage = GTValues.V[getTier()];
-        // Since this.baseAmp is not yet initialized, we substitute with 1A as default
-        energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 8L, tierVoltage * 4, amp, tierVoltage,
-                4L * amp);
-        energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
-        energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
-        return energyContainer;
     }
 
     @Override
