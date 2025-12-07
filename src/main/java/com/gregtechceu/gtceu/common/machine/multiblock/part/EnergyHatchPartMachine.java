@@ -29,17 +29,17 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     @Getter
     protected int amperage;
 
-    public EnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage, Object... args) {
+    public EnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage) {
         super(holder, tier, io);
         this.amperage = amperage;
-        this.energyContainer = createEnergyContainer(args);
+        this.energyContainer = createEnergyContainer();
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
+    protected NotifiableEnergyContainer createEnergyContainer() {
         NotifiableEnergyContainer container;
         if (io == IO.OUT) {
             container = NotifiableEnergyContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,

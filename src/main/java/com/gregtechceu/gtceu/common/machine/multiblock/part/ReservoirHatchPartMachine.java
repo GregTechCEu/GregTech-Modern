@@ -23,8 +23,8 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
     public static final int FLUID_AMOUNT = 2_000_000_000;
 
-    public ReservoirHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, GTValues.EV, IO.IN, FLUID_AMOUNT, 1, args);
+    public ReservoirHatchPartMachine(IMachineBlockEntity holder) {
+        super(holder, GTValues.EV, IO.IN, FLUID_AMOUNT, 1);
     }
 
     //////////////////////////////////
@@ -32,7 +32,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     //////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.waterTank = new InfiniteWaterTank(initialCapacity);
         // allow both importing and exporting from the tank
         return new NotifiableFluidTank(this, Collections.singletonList(waterTank), io, IO.BOTH);

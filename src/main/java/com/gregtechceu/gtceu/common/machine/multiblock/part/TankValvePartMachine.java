@@ -24,19 +24,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class TankValvePartMachine extends MultiblockPartMachine {
 
-    private FluidTankProxyTrait tankProxy;
-    private ConditionalSubscriptionHandler autoIOSubscription;
+    private final FluidTankProxyTrait tankProxy;
+    private final ConditionalSubscriptionHandler autoIOSubscription;
     private ISubscription tankChangeListener;
 
-    public TankValvePartMachine(IMachineBlockEntity holder, boolean isMetal, Object... args) {
+    public TankValvePartMachine(IMachineBlockEntity holder, boolean isMetal) {
         super(holder);
 
-        tankProxy = createTank(args);
+        tankProxy = new FluidTankProxyTrait(this, IO.BOTH);
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
-    }
-
-    protected FluidTankProxyTrait createTank(Object... args) {
-        return new FluidTankProxyTrait(this, IO.BOTH);
     }
 
     @Override
@@ -105,8 +101,6 @@ public class TankValvePartMachine extends MultiblockPartMachine {
         if (!isFormed()) return false;
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;
-        if (getTargetTank() == null) return false;
-
-        return true;
+        return getTargetTank() != null;
     }
 }

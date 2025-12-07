@@ -66,8 +66,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingBusPartMachine(IMachineBlockEntity holder) {
+        super(holder);
         this.autoPullTest = $ -> false;
     }
 
@@ -88,7 +88,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }

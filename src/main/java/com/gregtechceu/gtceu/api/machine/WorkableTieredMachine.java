@@ -71,6 +71,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean previouslyMuffled = true;
 
     public static class WorkableTieredMachineTraits extends TieredEnergyMachineTraits {
+        @Override
+        public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
+            long tierVoltage = GTValues.V[machine.getTier()];
+            if (machine.isEnergyEmitter()) {
+                return RecipeAmperageEnergyContainer.makeEmitterContainer((IRecipeLogicMachine) machine, tierVoltage * 64L,
+                        tierVoltage, machine.getMaxInputOutputAmperage());
+            } else {
+                return RecipeAmperageEnergyContainer.makeReceiverContainer((IRecipeLogicMachine)machine, tierVoltage * 64L,
+                        tierVoltage, machine.getMaxInputOutputAmperage());
+            }
+        }
+
         public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
             return new RecipeLogic(machine);
         }
@@ -127,30 +139,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        long tierVoltage = GTValues.V[getTier()];
-        if (isEnergyEmitter()) {
-            return RecipeAmperageEnergyContainer.makeEmitterContainer(this, tierVoltage * 64L,
-                    tierVoltage, getMaxInputOutputAmperage());
-        } else {
-            return RecipeAmperageEnergyContainer.makeReceiverContainer(this, tierVoltage * 64L,
-                    tierVoltage, getMaxInputOutputAmperage());
-        }
-    }
-
-    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
-    }
-
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new RecipeLogic(this);
-    }
 
     @Override
     public void onLoad() {

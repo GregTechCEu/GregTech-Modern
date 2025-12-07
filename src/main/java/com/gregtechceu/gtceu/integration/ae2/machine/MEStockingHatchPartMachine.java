@@ -70,8 +70,8 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingHatchPartMachine(IMachineBlockEntity holder) {
+        super(holder);
         this.autoPullTest = $ -> false;
     }
 
@@ -92,7 +92,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
         return this.aeFluidHandler;
     }

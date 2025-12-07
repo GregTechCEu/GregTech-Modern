@@ -50,6 +50,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -74,36 +75,31 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
 
-    // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
-    // We can't use fields here because those won't be available while createTank() is called.
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots,
-                                 Object... args) {
+
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots) {
         super(holder, tier, io);
         this.slots = slots;
-        this.tank = createTank(initialCapacity, slots, args);
-        this.circuitSlotEnabled = true;
-        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        this.tank = createTank(initialCapacity, slots);
+
+        if (io == IO.IN) {
+            this.circuitSlotEnabled = true;
+            this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
+        } else {
+            this.circuitSlotEnabled = false;
+            this.circuitInventory = new NotifiableItemStackHandler(this, 0, IO.NONE).shouldSearchContent(false);
+        }
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {
         return initialCapacity * (1 << Math.min(9, tier));
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        }
     }
 
     @Override

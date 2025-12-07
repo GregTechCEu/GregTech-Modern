@@ -39,8 +39,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     protected ExportOnlyAEItemList aeItemHandler;
 
-    public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+    public MEInputBusPartMachine(IMachineBlockEntity holder) {
+        super(holder, IO.IN);
     }
 
     /////////////////////////////////
@@ -53,7 +53,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }

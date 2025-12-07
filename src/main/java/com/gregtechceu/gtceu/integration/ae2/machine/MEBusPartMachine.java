@@ -34,8 +34,8 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
 
     protected final IActionSource actionSource;
 
-    public MEBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
-        super(holder, GTValues.LuV, io, args);
+    public MEBusPartMachine(IMachineBlockEntity holder, IO io) {
+        super(holder, GTValues.LuV, io);
         this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }

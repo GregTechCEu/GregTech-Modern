@@ -75,9 +75,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SyncToClient
     private boolean isDistinct = false;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        this.inventory = createInventory(args);
+        this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
@@ -91,12 +91,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return sizeRoot * sizeRoot;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, getInventorySize(), io);
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {

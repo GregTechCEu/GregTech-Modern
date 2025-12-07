@@ -132,32 +132,17 @@ public class FisherMachine extends TieredEnergyMachine
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];
-        this.cache = createCacheItemHandler();
-        this.baitHandler = createBaitItemHandler();
-        this.chargerInventory = createChargerItemHandler();
-        setOutputFacingItems(getFrontFacing());
-    }
+        this.cache = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
 
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
+        this.baitHandler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
+        baitHandler.setFilter(item -> item.is(Items.STRING));
 
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+        this.chargerInventory = new CustomItemStackHandler();
+        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
 
-    protected NotifiableItemStackHandler createCacheItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
-    }
-
-    protected NotifiableItemStackHandler createBaitItemHandler() {
-        var handler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
-        handler.setFilter(item -> item.is(Items.STRING));
-        return handler;
+        setOutputFacingItems(getFrontFacing());
     }
 
     public void setWorkingEnabled(boolean enabled) {
