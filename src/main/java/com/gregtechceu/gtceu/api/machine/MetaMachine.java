@@ -120,8 +120,6 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
-    public static abstract class MetaMachineTraits {}
-
     public MetaMachine(IMachineBlockEntity holder) {
         this.holder = holder;
         this.coverContainer = new MachineCoverContainer(this);

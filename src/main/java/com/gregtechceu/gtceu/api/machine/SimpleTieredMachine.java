@@ -105,36 +105,25 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public static class SimpleTieredMachineTraits extends WorkableTieredMachineTraits {
-        public CustomItemStackHandler chargerItemHandler(SimpleTieredMachine machine) {
-            var handler = new CustomItemStackHandler() {
-
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
-            };
-            handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                    (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                            GTCapabilityHelper.getForgeEnergyItem(item) != null));
-            return handler;
-        }
-
-        public NotifiableItemStackHandler circuitItemHandler(SimpleTieredMachine machine) {
-            return new NotifiableItemStackHandler(machine, 1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        }
-    }
-
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, SimpleTieredMachineTraits traits) {
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, WorkableTieredMachineTraits traits) {
         super(holder, tier, tankScalingFunction, traits);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = traits.chargerItemHandler(this);
-        this.circuitInventory = traits.circuitItemHandler(this);
+
+        this.chargerInventory = new CustomItemStackHandler() {
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
+        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+
+        this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction) {
-        this(holder, tier, tankScalingFunction, new SimpleTieredMachineTraits());
+        this(holder, tier, tankScalingFunction, new WorkableTieredMachineTraits());
     }
 
     //////////////////////////////////////

@@ -28,24 +28,17 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSub;
 
-    public static class TieredEnergyMachineTraits extends MetaMachineTraits {
-        public NotifiableEnergyContainer energyContainer(TieredEnergyMachine machine) {
-            long tierVoltage = GTValues.V[machine.getTier()];
-            if (machine.isEnergyEmitter()) {
-                return NotifiableEnergyContainer.emitterContainer(machine,
-                        tierVoltage * 64L, tierVoltage, machine.getMaxInputOutputAmperage());
-            } else return NotifiableEnergyContainer.receiverContainer(machine,
-                    tierVoltage * 64L, tierVoltage, machine.getMaxInputOutputAmperage());
-        }
-    }
-
-    public TieredEnergyMachine(IMachineBlockEntity holder, int tier, TieredEnergyMachineTraits traits) {
-        super(holder, tier);
-        energyContainer = traits.energyContainer(this);
-    }
-
     public TieredEnergyMachine(IMachineBlockEntity holder, int tier) {
-        this(holder, tier, new TieredEnergyMachineTraits());
+        super(holder, tier);
+
+        long tierVoltage = GTValues.V[getTier()];
+        if (isEnergyEmitter()) {
+            energyContainer = NotifiableEnergyContainer.emitterContainer(this,
+                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+        } else {
+            energyContainer = NotifiableEnergyContainer.receiverContainer(this,
+                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+        }
     }
 
     //////////////////////////////////////
