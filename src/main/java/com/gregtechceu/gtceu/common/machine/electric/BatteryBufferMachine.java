@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -32,6 +34,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -112,7 +115,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         String[] matrix;
-        if (inventorySize == 8) matrix = new String[] { "BB", "BB", "BB", "BB" };
+        if (inventorySize == 8) matrix = new String[] { "BBBB", "BBBB" };
         else matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
         return new ModularPanel("battery_buffer")
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
@@ -124,8 +127,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
                                 .direction(ProgressWidget.Direction.UP)
                                 .progress(this::getEnergyPercentage)
-                                .marginRight(20)
-                                .size(18, 60))
+                                .marginRight(50)
+                                .size(18, 60)
+                                .label(IKey.dynamic(() -> Component
+                                        .literal(GTStringUtils.formatInt(energyContainer.getEnergyStored()))
+                                        .append(" EU")),
+                                        100, 20))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(
                                 batteryInventory, "batteries",
                                 inventorySize, 'B',
