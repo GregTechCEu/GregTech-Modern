@@ -8,13 +8,25 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
+import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
@@ -37,6 +49,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -219,5 +232,49 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ClientCacheManager.clearCaches();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void preRegisterDynamicAssets(RegisterDynamicAssetsEvent event) {
+        PipeModel.MODELS.clear();
+    }
+
+    @SubscribeEvent
+    public static void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
+        // regenerate all pipe models in case their textures changed
+        // cables may do this, others too if something's removed
+        for (var block : GTBlocks.LASER_PIPES) block.get().createPipeModel();
+        for (var block : GTBlocks.OPTICAL_PIPES) block.get().createPipeModel();
+        for (var block : GTBlocks.DUCT_PIPES) block.get().createPipeModel();
+        for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel();
+        }
+        for (var block : GTMaterialBlocks.FLUID_PIPE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel();
+        }
+        for (var block : GTMaterialBlocks.ITEM_PIPE_BLOCKS.values()) {
+            if (block == null) continue;
+            block.get().createPipeModel();
+        }
+
+        MaterialBlockRenderer.reinitModels();
+        TagPrefixItemRenderer.reinitModels();
+        OreBlockRenderer.reinitModels();
+        ToolItemRenderer.reinitModels();
+        ArmorItemRenderer.reinitModels();
+        SurfaceRockRenderer.reinitModels();
+        GTModels.registerMaterialFluidModels();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void postRegisterDynamicAssets(RegisterDynamicAssetsEvent event) {
+        // do this last so addons can easily add new variants to the registered model set
+        PipeModel.initModels();
+
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            GregTechKubeJSPlugin.generateMachineBlockModels();
+        }
     }
 }

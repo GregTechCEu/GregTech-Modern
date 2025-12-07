@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -27,7 +25,7 @@ import java.util.*;
 
 public class PipeModel {
 
-    private static final Set<PipeModel> MODELS = new HashSet<>();
+    public static final Set<PipeModel> MODELS = new HashSet<>();
 
     public static PipeModel create(PipeBlock<?, ?, ?> block, float thickness,
                                    ResourceLocation sideTexture, ResourceLocation endTexture) {
@@ -37,25 +35,6 @@ public class PipeModel {
     }
 
     public static void initModels() {
-        MODELS.clear();
-        // regenerate all pipe models in case their textures changed
-        // cables may do this, others too if something's removed
-        for (var block : GTBlocks.LASER_PIPES) block.get().createPipeModel();
-        for (var block : GTBlocks.OPTICAL_PIPES) block.get().createPipeModel();
-        for (var block : GTBlocks.DUCT_PIPES) block.get().createPipeModel();
-        for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
-            if (block == null) continue;
-            block.get().createPipeModel();
-        }
-        for (var block : GTMaterialBlocks.FLUID_PIPE_BLOCKS.values()) {
-            if (block == null) continue;
-            block.get().createPipeModel();
-        }
-        for (var block : GTMaterialBlocks.ITEM_PIPE_BLOCKS.values()) {
-            if (block == null) continue;
-            block.get().createPipeModel();
-        }
-
         for (PipeModel generator : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(generator.block);
             GTDynamicResourcePack.addModel(generator.centerModel.getLocation(), generator.centerModel.toJson());

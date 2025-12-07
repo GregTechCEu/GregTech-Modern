@@ -1,0 +1,26 @@
+name: Apply Spotless formatting
+
+on:
+  workflow_dispatch:
+
+jobs:
+  apply-spotless:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # do a full checkout instead of a shallow clone of HEAD so spotless's ratchetFrom works
+    - name: Setup Build
+      uses: ./.github/actions/build_setup
+    - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          
+          ./gradlew spotlessApply
+          
+          git commit -am "Apply spotless formatting"
+          git push
