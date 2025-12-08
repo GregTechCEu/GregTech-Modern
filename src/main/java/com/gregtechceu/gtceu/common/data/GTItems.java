@@ -334,6 +334,8 @@ public class GTItems {
                     attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
             .register();
 
+    public static ItemEntry<Item> PIPENET_DEBUG_VIEWER = REGISTRATE.item("pipenet_debug_viewer", Item::new).lang("Pipenet Debug Viewer").properties(p -> p.stacksTo(1)).register();
+
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {
         return (itemStack, index) -> {

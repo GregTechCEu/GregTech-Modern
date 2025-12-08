@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
+import com.gregtechceu.gtceu.client.renderer.PipenetDebugRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
@@ -65,6 +66,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -89,11 +91,13 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
+            MinecraftForge.EVENT_BUS.addListener(PipenetDebugRenderer::hook);
         }
         initializeDynamicRenders();
     }
 
     @SubscribeEvent
+    @SuppressWarnings("UnstableApiUsage")
     public void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);

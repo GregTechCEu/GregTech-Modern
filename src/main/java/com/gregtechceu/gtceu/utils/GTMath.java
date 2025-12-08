@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -160,4 +162,29 @@ public class GTMath {
         }
         return ImmutablePair.of(new Vector3f(x1, y1, z1), new Vector3f(x2, y2, z2));
     }
+
+    public static Vec3 getFirstPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 up = Math.abs(normal.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+
+        return normal.cross(up).normalize();
+    }
+
+    public static Vec3 getSecondPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 law = getFirstPerpendicular(a, b);
+
+        return normal.cross(law).normalize();
+    }
+
+    public static Vec3 getCenter(BlockPos a, BlockPos b) {
+        Vec3 ac = a.getCenter();
+        Vec3 bc = b.getCenter();
+        return ac.add(bc).scale(0.5F);
+    }
+
 }
