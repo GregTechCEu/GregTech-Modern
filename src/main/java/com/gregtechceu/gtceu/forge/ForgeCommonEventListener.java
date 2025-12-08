@@ -416,7 +416,9 @@ public class ForgeCommonEventListener {
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
+        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }
