@@ -200,7 +200,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
 
             boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
-            if (toggleBootsTimer == 0 && KeyBind.STEP_ASSIST_ENABLE.isKeyDown(player)) {
+            if (toggleBootsTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component

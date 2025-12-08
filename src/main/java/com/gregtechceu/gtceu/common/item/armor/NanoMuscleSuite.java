@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,7 +56,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         byte toggleStepTimer = data.getByte("toggleStepTimer");
         if (type == ArmorItem.Type.BOOTS) {
             boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
-            if (toggleStepTimer == 0 && KeyBind.STEP_ASSIST_ENABLE.isKeyDown(player)) {
+            if (toggleStepTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleStepTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
