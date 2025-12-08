@@ -38,7 +38,7 @@ public enum KeyBind {
     VANILLA_LEFT(() -> () -> Minecraft.getInstance().options.keyLeft),
     VANILLA_RIGHT(() -> () -> Minecraft.getInstance().options.keyRight),
     ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
-    TOGGLE_STEP_ASSIST("gtceu.toggle_step_assist", KeyConflictContext.IN_GAME, InputConstants.KEY_APOSTROPHE),
+    STEP_ASSIST_ENABLE("gtceu.key.enable_step_assist", KeyConflictContext.IN_GAME, InputConstants.KEY_APOSTROPHE),
     ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
     JETPACK_ENABLE("gtceu.key.enable_jetpack", KeyConflictContext.IN_GAME, InputConstants.KEY_G),
     BOOTS_ENABLE("gtceu.key.enable_boots", KeyConflictContext.IN_GAME, InputConstants.KEY_PERIOD),

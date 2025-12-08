@@ -200,11 +200,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
 
             boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
-            if (toggleBootsTimer == 0 && KeyBind.TOGGLE_STEP_ASSIST.isKeyDown(player)) {
+            if (toggleBootsTimer == 0 && KeyBind.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.stepassist." + (stepAssist ? "enabled" : "disabled")), true);
+                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -366,8 +366,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.BOOTS) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             if (nbtData.getBoolean("stepAssist"))
-                lines.add(Component.translatable("metaarmor.message.stepassist.enabled"));
-            else lines.add(Component.translatable("metaarmor.message.stepassist.disabled"));
+                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
+            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }

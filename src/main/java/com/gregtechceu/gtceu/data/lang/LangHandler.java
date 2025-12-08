@@ -1204,6 +1204,7 @@ public class LangHandler {
         provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
+        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");

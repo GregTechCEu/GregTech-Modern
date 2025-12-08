@@ -55,11 +55,11 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         byte toggleStepTimer = data.getByte("toggleStepTimer");
         if (type == ArmorItem.Type.BOOTS) {
             boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
-            if (toggleStepTimer == 0 && KeyBind.TOGGLE_STEP_ASSIST.isKeyDown(player)) {
+            if (toggleStepTimer == 0 && KeyBind.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleStepTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.stepassist." + (stepAssist ? "enabled" : "disabled")), true);
+                        .translatable("metaarmor.nms.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -188,8 +188,8 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (nbtData.getBoolean("stepAssist"))
-                lines.add(Component.translatable("metaarmor.message.stepassist.enabled"));
-            else lines.add(Component.translatable("metaarmor.message.stepassist.disabled"));
+                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
+            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
         }
     }
