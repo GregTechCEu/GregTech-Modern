@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.factory.inventory.InventoryType;
@@ -77,6 +78,15 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
     @Override
     public @NotNull IUIHolder<PlayerInventoryGuiData<?>> getGuiHolder(PlayerInventoryGuiData<?> data) {
         return Objects.requireNonNull(castUIHolder(data.getUsedItemStack().getItem()), "Item was not a gui holder!");
+    }
+
+    @Override
+    protected IUIHolder<PlayerInventoryGuiData<?>> castUIHolder(Object o) {
+        if (o instanceof IItemUIHolder holder) {
+            if (holder.shouldOpenUI()) return holder;
+            else return null;
+        }
+        return super.castUIHolder(o);
     }
 
     @Override
