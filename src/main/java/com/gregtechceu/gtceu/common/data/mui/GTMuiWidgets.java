@@ -156,7 +156,8 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter, Supplier<ItemStack> circuitGetter) {
+    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
+                                                           Supplier<ItemStack> circuitGetter) {
         return new IntSyncValue(() -> {
             if (circuitGetter.get().isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
@@ -193,7 +194,8 @@ public class GTMuiWidgets {
                         .child(buttonGrid));
     }
 
-    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter, Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
+                                                      Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }

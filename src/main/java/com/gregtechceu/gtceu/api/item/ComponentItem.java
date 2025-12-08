@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryUIFactory;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -56,7 +56,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem, IItemUIHolder {
+                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem,
+                           IItemUIHolder {
 
     protected int burnTime = -1;
 
@@ -455,7 +456,8 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public @Nullable ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
+    public @Nullable ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
+                                          UISettings settings) {
         for (IItemComponent component : getComponents()) {
             if (component instanceof IItemUIHolder uiHolder) {
                 return uiHolder.buildUI(data, syncManager, settings);
