@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-
 import net.minecraft.core.Direction;
 import net.minecraftforge.items.IItemHandler;
 
@@ -36,7 +35,7 @@ public class ItemDetectorCover extends DetectorCover {
             return;
 
         for (int i = 0; i < handler.getSlots(); i++) {
-            if (handler.getStackInSlot(i).is(GTItems.PROGRAMMED_CIRCUIT.asItem())) continue;
+            if (handler.getStackInSlot(i).is(CustomTags.SKIP_ITEM_DETECTOR)) continue;
             storedItems += handler.getStackInSlot(i).getCount();
         }
 
