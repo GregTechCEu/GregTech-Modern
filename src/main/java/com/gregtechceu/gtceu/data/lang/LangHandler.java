@@ -305,12 +305,16 @@ public class LangHandler {
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
-        provider.add("metaarmor.nms.boosted_jump.enabled", "NanoMuscle™ Suite: Jump Boost Enabled");
-        provider.add("metaarmor.nms.boosted_jump.disabled", "NanoMuscle™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
         provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
         provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
+        provider.add("metaarmor.nms.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.nms.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
+        provider.add("metaarmor.qts.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
+        provider.add("metaarmor.qts.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
+        provider.add("metaarmor.qts.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
         provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
         provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
         provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
