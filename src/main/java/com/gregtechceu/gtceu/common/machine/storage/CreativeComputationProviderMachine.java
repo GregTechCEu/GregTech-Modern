@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -122,9 +121,10 @@ public class CreativeComputationProviderMachine extends MetaMachine
                 .height(100)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(Flow.column()
-                        .padding(5)
+                        .padding(10)
                         .childPadding(5)
                         .child(Flow.row()
+                                .alignX(0)
                                 .childPadding(5)
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.max_usage")))
@@ -134,26 +134,26 @@ public class CreativeComputationProviderMachine extends MetaMachine
                         .child(new Rectangle().setColor(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
+                                .alignX(0)
                                 .childPadding(5)
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
-                                        () -> new Object[] { lastRequestedCWUt })))))
-                .child(new Column()
-                        .coverChildren()
-                        .excludeAreaInXei()
-                        .leftRel(1.0f)
-                        .reverseLayout(true)
-                        .bottom(16)
-                        .padding(0, 8, 4, 4)
-                        .childPadding(2)
-                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .child(new ToggleButton()
-                                .value(new BooleanSyncValue(this::isActive, this::setActive))
-                                .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
-                                .background(GTGuiTextures.BUTTON_POWER[0])
-                                .tooltipAutoUpdate(true)
-                                .tooltipBuilder((r) -> r.addLine(IKey.lang(() -> this.isActive() ?
-                                        "behaviour.soft_hammer.enabled" :
-                                        "behaviour.soft_hammer.disabled")))));
+                                        () -> new Object[] { lastRequestedCWUt }))))
+                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(Flow.row()
+                                .alignX(0)
+                                .childPadding(5)
+                                .coverChildren()
+                                .child(new ToggleButton()
+                                        .value(new BooleanSyncValue(this::isActive, this::setActive))
+                                        .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
+                                        .background(GTGuiTextures.BUTTON_POWER[0])
+                                        .tooltipAutoUpdate(true)
+                                        .tooltipBuilder((r) -> r.addLine(IKey.lang(() -> this.isActive() ?
+                                                "behaviour.soft_hammer.enabled" :
+                                                "behaviour.soft_hammer.disabled"))))
+                                .child(new TextWidget<>(IKey
+                                        .lang(() -> "gtceu.creative.activity." + (this.isActive() ? "on" : "off"))))));
     }
 }
