@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.Rectangle;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
@@ -24,7 +25,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -119,7 +119,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return new ModularPanel(this.getDefinition().getName())
-                .height(50)
+                .height(100)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
                 .child(Flow.column()
                         .padding(5)
@@ -127,16 +127,17 @@ public class CreativeComputationProviderMachine extends MetaMachine
                         .child(Flow.row()
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(IKey.str("CWUt: ")))
+                                .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.max_usage")))
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(this::getMaxCWUt, this::setMaxCWUt))))
+                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average")))
-                                .child(new TextWidget<>(
-                                        IKey.dynamic(() -> Component.literal(String.valueOf(lastRequestedCWUt)))))))
+                                .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
+                                        () -> new Object[] { lastRequestedCWUt })))))
                 .child(new Column()
                         .coverChildren()
                         .excludeAreaInXei()
