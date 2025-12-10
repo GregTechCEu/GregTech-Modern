@@ -73,7 +73,7 @@ public class FluidSlot extends Widget<FluidSlot>
     protected void addTooltip(RichTooltip tooltip) {
         IFluidTank fluidTank = getFluidTank();
         FluidStack fluid = this.syncHandler.getValue();
-        if (fluid != null) {
+        if (fluid != null && !fluid.isEmpty()) {
             tooltip.addLine(IKey.lang(fluid.getDisplayName())).spaceLine(2);
         }
         if (this.syncHandler.phantom()) {
@@ -83,8 +83,8 @@ public class FluidSlot extends Widget<FluidSlot>
                             formatFluidTooltipAmount(fluid.getAmount()), getUnit()));
                 }
             } else {
-                tooltip.addLine(IKey.lang("modularui.fluid.empty"));
-                tooltip.addLine(IKey.lang("modularui.fluid.capacity", formatFluidTooltipAmount(fluidTank.getCapacity()),
+                tooltip.addLine(IKey.lang("gtceu.fluid.empty"));
+                tooltip.addLine(IKey.lang("gtceu.fluid_pipe.capacity", formatFluidTooltipAmount(fluidTank.getCapacity()),
                         getUnit()));
             }
             if (this.syncHandler.controlsAmount()) {
@@ -92,24 +92,24 @@ public class FluidSlot extends Widget<FluidSlot>
             }
         } else {
             if (fluid != null) {
-                tooltip.addLine(IKey.lang("modularui.fluid.amount", formatFluidTooltipAmount(fluid.getAmount()),
+                tooltip.addLine(IKey.lang("gtceu.fluid.amount", formatFluidTooltipAmount(fluid.getAmount()),
                         formatFluidTooltipAmount(fluidTank.getCapacity()), getUnit()));
                 addAdditionalFluidInfo(tooltip, fluid);
             } else {
-                tooltip.addLine(IKey.lang("modularui.fluid.empty"));
+                tooltip.addLine(IKey.lang("gtceu.fluid.empty"));
             }
             if (this.syncHandler.canFillSlot() || this.syncHandler.canDrainSlot()) {
                 tooltip.addLine(IKey.EMPTY); // Add an empty line to separate from the bottom material tooltips
                 if (Interactable.hasShiftDown()) {
                     if (this.syncHandler.canFillSlot() && this.syncHandler.canDrainSlot()) {
-                        tooltip.addLine(IKey.lang("modularui.fluid.click_combined"));
+                        tooltip.addLine(IKey.lang("gtceu.fluid.click_combined"));
                     } else if (this.syncHandler.canDrainSlot()) {
-                        tooltip.addLine(IKey.lang("modularui.fluid.click_to_fill"));
+                        tooltip.addLine(IKey.lang("gtceu.fluid.click_to_fill"));
                     } else if (this.syncHandler.canFillSlot()) {
-                        tooltip.addLine(IKey.lang("modularui.fluid.click_to_empty"));
+                        tooltip.addLine(IKey.lang("gtceu.fluid.click_to_empty"));
                     }
                 } else {
-                    tooltip.addLine(IKey.lang("modularui.tooltip.shift"));
+                    tooltip.addLine(IKey.lang("gtceu.tooltip.hold_shift"));
                 }
             }
         }
@@ -188,8 +188,9 @@ public class FluidSlot extends Widget<FluidSlot>
         if (this.overlayTexture != null) {
             this.overlayTexture.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
-        if (content != null && this.syncHandler.controlsAmount()) {
-            String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), true) +
+        if (content != null && !content.isEmpty() && this.syncHandler.controlsAmount()) {
+
+            String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), false) +
                     getBaseUnit();
             this.textRenderer.setAlignment(Alignment.CenterRight, getArea().width - this.contentOffsetX - 1f);
             this.textRenderer.setPos((int) (this.contentOffsetX + 0.5f), (int) (getArea().height - 5.5f));

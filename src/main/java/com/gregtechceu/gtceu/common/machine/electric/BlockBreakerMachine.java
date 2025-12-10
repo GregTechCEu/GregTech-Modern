@@ -441,7 +441,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = new ModularPanel(this.getDefinition().getName());
         var slotHeight = (int) Math.sqrt(inventorySize);
-        var outputGrid = createGrid(inventorySize, slotHeight, true, 'o');
+        var outputGrid = GTMuiWidgets.createGrid(inventorySize, slotHeight, true, 'o');
         panel
                 .size(176, 104 + 18 * slotHeight)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 190))
@@ -499,35 +499,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         ItemSlotSH battery = new ItemSlotSH(new ModularSlot(this.chargerInventory, 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
-    }
-
-    // TODO: when onion branch is merged, call this from GTMuiUtils instead
-    private static String[] createGrid(int amount, int rowSize, boolean output, char key) {
-        int rows = (int) Math.ceil((float) amount / rowSize);
-        String[] grid = new String[rows];
-        for (int i = 0; i < rows; i++) {
-            StringBuilder r = new StringBuilder();
-            if (output) {
-                for (int j = 0; j < rowSize; j++) {
-                    if ((i * rowSize + j) > (amount - 1)) {
-                        r.insert(0, " ");
-                    } else {
-                        r.insert(0, key);
-                    }
-                }
-            } else {
-                for (int j = 0; j < rowSize; j++) {
-                    if ((i * rowSize + j) > (amount - 1)) {
-                        r.append(" ");
-                    } else {
-                        r.append(key);
-                    }
-                }
-            }
-            grid[i] = r.toString();
-        }
-
-        return grid;
     }
 
     //////////////////////////////////////

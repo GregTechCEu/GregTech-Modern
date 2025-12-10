@@ -440,6 +440,8 @@ public class GTGuiTextures {
             "textures/gui/progress_bar/progress_bar_arrow_steel.png");
     public static final UITexture PROGRESS_BAR_ARROW_MULTIPLE = progressBar(
             "textures/gui/progress_bar/progress_bar_arrow_multiple.png", ColorType.DEFAULT);
+    public static final UITexture PROGRESS_BAR_ASSEMBLER = progressBar("textures/gui/progress_bar/progress_bar_assembler.png",
+            ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_BATH = progressBar("textures/gui/progress_bar/progress_bar_bath.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_BENDING = progressBar(
