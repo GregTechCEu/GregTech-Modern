@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import net.minecraft.core.Direction;
 import net.minecraftforge.items.IItemHandler;
 
