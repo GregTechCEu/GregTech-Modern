@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.block.IActivableBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
-
-import lombok.Getter;
+import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
+import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
+import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -18,86 +18,64 @@ import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
-
-import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
-import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-public class PipeModel {
+public class ActivablePipeModel<T extends PipeBlock<?, ?, ?> & IActivableBlock> extends PipeModel {
 
-    public static final Set<PipeModel> MODELS = new HashSet<>();
-
-    public static PipeModel create(PipeBlock<?, ?, ?> block, float thickness,
-                                   ResourceLocation sideTexture, ResourceLocation endTexture) {
-        PipeModel model = new PipeModel(block, thickness, sideTexture, endTexture);
+    public static <T extends PipeBlock<?, ?, ?> & IActivableBlock> ActivablePipeModel<T> createActivable(T block, float thickness,
+                                                                                                         ResourceLocation sideTexture,
+                                                                                                         ResourceLocation endTexture) {
+        ActivablePipeModel<T> model = new ActivablePipeModel<>(block, thickness, sideTexture, endTexture);
         MODELS.add(model);
         return model;
     }
 
     public static void initModels() {
-        for (PipeModel generator : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(generator.getBlock());
+        for (PipeModel gen : MODELS) {
+            // skip over non-activable generators
+            if (!(gen instanceof ActivablePipeModel<?> generator)) continue;
+
+            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(generator.block);
             GTDynamicResourcePack.addModel(generator.centerModel.getLocation(), generator.centerModel.toJson());
             GTDynamicResourcePack.addModel(generator.connectionModel.getLocation(), generator.connectionModel.toJson());
 
-            GTDynamicResourcePack.addBlockModel(blockId, generator.createBlockModelJson(blockId));
-            GTDynamicResourcePack.addBlockState(blockId, generator.createBlockStateJson(blockId));
+            // spotless:off
+            // make the "default" model be based on the center part's model
+            BlockModelBuilder defaultModel = new BlockModelBuilder(blockId, RuntimeExistingFileHelper.INSTANCE)
+                    .parent(generator.centerModel)
+                    .customLoader(PipeModelBuilder::begin)
+                        .connectionModels()
+                            .modelFile(generator.connectionModel)
+                        .addModel()
+                        .centerModel()
+                            .modelFile(generator.centerModel)
+                        .addModel()
+                    .end()
+                    .parent(new ModelFile.UncheckedModelFile("block/block"));
+
+            GTDynamicResourcePack.addBlockModel(blockId, defaultModel.toJson());
+            GTDynamicResourcePack.addBlockState(blockId,
+                    BlockModelGenerators.createSimpleBlock(generator.getBlock(), blockId.withPrefix("block/")));
+
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(generator.getBlock().asItem()),
                     new DelegatedModel(ModelLocationUtils.getModelLocation(generator.getBlock())));
+            // spotless:on
         }
     }
 
-    @Getter
-    private final PipeBlock<?, ?, ?> block;
-    @Setter
-    public ResourceLocation side, end;
-    @Setter
-    public @Nullable ResourceLocation sideSecondary, endSecondary;
-    @Setter
-    public @Nullable ResourceLocation sideOverlay, endOverlay;
-
-    protected final BlockModelBuilder centerModel;
-    protected final BlockModelBuilder connectionModel;
-
-    protected PipeModel(PipeBlock<?, ?, ?> block, float thickness,
-                        ResourceLocation side, ResourceLocation end) {
-        this.block = block;
-        this.side = side;
-        this.end = end;
-
-        thickness *= 16.0f;
-        float min = (16.0f - thickness) / 2.0f;
-        float max = min + thickness;
-        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(this.block);
-        ResourceLocation baseModelId = blockId.withPath(path -> "block/pipe/" + path + "/");
-
-        centerModel = makePartModel(baseModelId.withSuffix("center"), null, min, min, min, max, max, max);
-        connectionModel = makePartModel(baseModelId.withSuffix("connection"), Direction.DOWN, min, 0, min, max, min,
-                max);
+    protected ActivablePipeModel(T block, float thickness,
+                                 ResourceLocation side, ResourceLocation end) {
+        super(block, thickness, side, end);
     }
 
-    protected JsonObject createBlockModelJson(ResourceLocation modelName) {
-        // spotless:off
-        return new BlockModelBuilder(modelName, RuntimeExistingFileHelper.INSTANCE)
-                // make the "default" model be based on the center part's model
-                .parent(this.centerModel)
-                .customLoader(PipeModelBuilder::begin)
-                    .connectionModels()
-                        .modelFile(this.connectionModel)
-                    .addModel()
-                    .centerModel()
-                        .modelFile(this.centerModel)
-                    .addModel()
-                .end()
-                .toJson();
-        // spotless:on
-    }
-
-    protected JsonElement createBlockStateJson(ResourceLocation modelName) {
-        return BlockModelGenerators.createSimpleBlock(this.getBlock(), modelName.withPrefix("block/")).get();
+    @SuppressWarnings("unchecked")
+    @Override
+    public T getBlock() {
+        return (T) super.getBlock();
     }
 
     /**
@@ -178,18 +156,7 @@ public class PipeModel {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof PipeModel pipeModel)) return false;
-        return block == pipeModel.block &&
-                Objects.equals(side, pipeModel.side) &&
-                Objects.equals(end, pipeModel.end) &&
-                Objects.equals(sideSecondary, pipeModel.sideSecondary) &&
-                Objects.equals(endSecondary, pipeModel.endSecondary) &&
-                Objects.equals(sideOverlay, pipeModel.sideOverlay) &&
-                Objects.equals(endOverlay, pipeModel.endOverlay);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(block, side, end, sideSecondary, endSecondary, sideOverlay, endOverlay);
+        if (!(o instanceof ActivablePipeModel<?>)) return false;
+        return super.equals(o);
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -18,7 +19,7 @@ import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.AC
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends Block {
+public class ActiveBlock extends Block implements IActivableBlock {
 
     public ActiveBlock(Properties properties) {
         super(properties);
@@ -54,5 +55,15 @@ public class ActiveBlock extends Block {
     public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         return defaultBlockState();
+    }
+
+    @Override
+    public boolean isActive(BlockState state, @Nullable BlockEntity blockEntity) {
+        return state.getValue(ACTIVE);
+    }
+
+    @Override
+    public BlockState setActive(boolean value, BlockState currentState, @Nullable BlockEntity blockEntity) {
+        return currentState.setValue(ACTIVE, value);
     }
 }

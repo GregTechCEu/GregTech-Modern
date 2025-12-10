@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.IActivableBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -30,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> {
+public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> implements IActivableBlock {
 
     private final LaserPipeProperties properties;
 
@@ -107,5 +108,18 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
+    }
+
+    @Override
+    public boolean isActive(BlockState state, @Nullable BlockEntity blockEntity) {
+        if (!(blockEntity instanceof LaserPipeBlockEntity laserPipe)) return false;
+        return laserPipe.isActive();
+    }
+
+    @Override
+    public BlockState setActive(boolean value, BlockState currentState, @Nullable BlockEntity blockEntity) {
+        if (!(blockEntity instanceof LaserPipeBlockEntity laserPipe)) return currentState;
+        laserPipe.setActive(value, 100);
+        return currentState;
     }
 }

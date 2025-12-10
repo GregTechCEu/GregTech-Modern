@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -87,16 +88,20 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         ResourceLocation end = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "end", true);
 
+        PipeModel model = PipeModel.create(block, thickness,
+                isCable ? GTCEu.id("block/cable/insulation_5") : side, end);
+
         ResourceLocation sideSecondary = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side_overlay", true);
         ResourceLocation endSecondary = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "end_overlay", true);
 
-        PipeModel model = PipeModel.create(block, thickness,
-                isCable ? GTCEu.id("block/cable/insulation_5") : side, end);
-
-        model.setSideSecondary(sideSecondary);
-        model.setEndSecondary(endSecondary);
+        if (sideSecondary != null && !sideSecondary.equals(GTModels.BLANK_TEXTURE)) {
+            model.setSideSecondary(sideSecondary);
+        }
+        if (endSecondary != null && !endSecondary.equals(GTModels.BLANK_TEXTURE)) {
+            model.setEndSecondary(endSecondary);
+        }
         if (isCable) {
             model.setEndOverlay(GTCEu.id("block/cable/insulation_%s".formatted(insulationLevel)));
         }

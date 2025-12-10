@@ -11,4 +11,6 @@ public class GTModelProperties {
 
     public static final ModelProperty<Integer> PIPE_CONNECTION_MASK = new ModelProperty<>();
     public static final ModelProperty<Integer> PIPE_BLOCKED_MASK = new ModelProperty<>();
+
+    public static final ModelProperty<Boolean> PIPE_ACTIVE = new ModelProperty<>();
 }

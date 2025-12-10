@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.common.pipelike.laser.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
@@ -20,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -140,6 +142,13 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         if (duration > 0 && active) {
             this.ticksActive = 0;
         }
+    }
+
+    @Override
+    public @NotNull ModelData getModelData() {
+        return ModelData.builder()
+                .with(GTModelProperties.PIPE_ACTIVE, this.isActive())
+                .build();
     }
 
     public boolean queueDisconnect() {
