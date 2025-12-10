@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
@@ -17,18 +16,15 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2IntSortedMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceArrayMap;
+import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,23 +38,24 @@ public class GTRecipeTypeUILayout {
 
     @Setter
     private GTRecipeType recipeType;
-    @Getter
     private UITexture progressBar;
     private int progressSize;
     private ProgressWidget.Direction progressDirection;
-    @Getter
     private Map<IO, Map<RecipeCapability<?>, Int2ObjectOpenHashMap<IDrawable>>> overlays = new EnumMap<>(IO.class);
     private Map<IO, Map<RecipeCapability<?>, Int2IntArrayMap>> gridLength = new EnumMap<>(IO.class);
     private Map<IO, Map<RecipeCapability<?>, Int2IntArrayMap>> gridWidths = new EnumMap<>(IO.class);
 
-    private Int2ReferenceArrayMap<ParentWidget<?>> backedSlotsPanels = new Int2ReferenceArrayMap<>();
     private ParentWidget<?> parentWidget = null;
 
     public GTRecipeTypeUILayout() {}
 
-    public ParentWidget<?> getBackedSlotsRow(@NotNull PanelSyncManager syncManager, @Nullable NotifiableItemStackHandler inputItems, @Nullable NotifiableItemStackHandler outputItems,
-                                             @Nullable NotifiableFluidTank inputFluids, @Nullable NotifiableFluidTank outputFluids, DoubleSupplier progressSupplier, int tier) {
-        if (recipeType != null && backedSlotsPanels.get(tier) == null) {
+    public ParentWidget<?> getBackedSlotsRow(@NotNull PanelSyncManager syncManager,
+                                             @Nullable NotifiableItemStackHandler inputItems,
+                                             @Nullable NotifiableItemStackHandler outputItems,
+                                             @Nullable NotifiableFluidTank inputFluids,
+                                             @Nullable NotifiableFluidTank outputFluids,
+                                             DoubleSupplier progressSupplier, int tier) {
+        if (recipeType != null) {
             var backedSlotsPanel = new ParentWidget<>();
             backedSlotsPanel.coverChildren();
             var backedSlotsRow = new Row();
@@ -84,17 +81,22 @@ public class GTRecipeTypeUILayout {
                 int slotGroupHeightPx = 0;
 
                 Column ioColumn = new Column();
-                //ioColumn.coverChildrenWidth();
+                // ioColumn.coverChildrenWidth();
                 int slotGroupWidthPx = 0;
 
                 var widgetGroups = new ArrayList<ParentWidget<?>>();
 
                 for (var recipeCap : caps.keySet()) {
-                    var maxSlots = (in ? recipeType.getMaxInputs(recipeCap) :
-                            recipeType.getMaxOutputs(recipeCap));
-                    if (maxSlots == 0 || recipeCap == EURecipeCapability.CAP) continue;
+                    int maxRecipeTypeSlots = caps.get(recipeCap);
+                    int maxMachineSlots = 0;
+                    if (maxRecipeTypeSlots == 0 || recipeCap == EURecipeCapability.CAP) continue;
+                    if (recipeCap == ItemRecipeCapability.CAP) {
+                        maxMachineSlots = in ? inputItems.getSlots() : outputItems.getSlots();
+                    } else if (recipeCap == FluidRecipeCapability.CAP) {
+                        maxMachineSlots = in ? inputFluids.getTanks() : outputFluids.getTanks();
+                    }
 
-                    var grid = createGrid(io, recipeCap, 's', tier);
+                    var grid = createGrid(io, recipeCap, 's', tier, maxMachineSlots);
 
                     slotGroupHeightPx += 18 * grid.length;
 
@@ -106,22 +108,25 @@ public class GTRecipeTypeUILayout {
 
                     if (recipeCap == ItemRecipeCapability.CAP) {
                         var handler = in ? inputItems : outputItems;
+                        SlotGroup group = new SlotGroup("item_" + io.name(), grid[0].length());
                         if (handler != null) {
                             slotWidgetBuilder.key('s', i -> {
-                                        var overlay = IDrawable.EMPTY;
+                                var overlay = IDrawable.EMPTY;
 
-                                        if (overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
-                                            overlay = overlays.get(io).get(recipeCap).get(i) != null ? overlays.get(io).get(recipeCap).get(i) : IDrawable.EMPTY;
-                                        }
+                                if (overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
+                                    overlay = overlays.get(io).get(recipeCap).get(i) != null ?
+                                            overlays.get(io).get(recipeCap).get(i) : IDrawable.EMPTY;
+                                }
 
-                                        return new ItemSlot().slot(new ModularSlot(handler, i))
-                                                .background(defaultSlotBackground, overlay);
+                                return new ItemSlot().slot(new ModularSlot(handler, i)
+                                        .slotGroup(group))
+                                        .background(defaultSlotBackground, overlay);
                             });
                         }
                     } else if (recipeCap == FluidRecipeCapability.CAP) {
                         var handler = in ? inputFluids : outputFluids;
                         String syncHandlerName = "fluid_" + io.name();
-                        for (int i = 0; i < maxSlots; i++) {
+                        for (int i = 0; i < maxMachineSlots; i++) {
                             syncManager.syncValue(syncHandlerName, i, SyncHandlers.fluidSlot(handler.getStorages()[i]));
                         }
                         if (handler != null) {
@@ -129,7 +134,8 @@ public class GTRecipeTypeUILayout {
                                 var overlay = IDrawable.EMPTY;
 
                                 if (overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
-                                    overlay = overlays.get(io).get(recipeCap).get(i) != null ? overlays.get(io).get(recipeCap).get(i) : IDrawable.EMPTY;
+                                    overlay = overlays.get(io).get(recipeCap).get(i) != null ?
+                                            overlays.get(io).get(recipeCap).get(i) : IDrawable.EMPTY;
                                 }
 
                                 return new FluidSlot()
@@ -140,7 +146,7 @@ public class GTRecipeTypeUILayout {
                     }
 
                     // calculate full width of each column
-                    slotGroupWidthPx = Math.max(slotGroupWidthPx, Math.min(maxSlots, grid[0].length()) * 18);
+                    slotGroupWidthPx = Math.max(slotGroupWidthPx, Math.min(maxRecipeTypeSlots, grid[0].length()) * 18);
 
                     widgetGroups.add(slotWidgetBuilder.build()
                             .name(recipeCap.name + "_" + io.name())
@@ -175,14 +181,14 @@ public class GTRecipeTypeUILayout {
                     .progress(progressSupplier)
                     .name("progressBar")
                     .texture(progressBar, progressSize)
-                            .size(progressSize)
+                    .size(progressSize)
                     .direction(progressDirection));
-            backedSlotsPanels.put(tier, backedSlotsPanel);
+            return backedSlotsPanel;
         }
-        return backedSlotsPanels.get(tier);
+        return GTGuis.createPanel("empty");
     }
 
-    private String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier) {
+    private String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier, int maxMachineSlots) {
         int maxWidth = 3;
         if (gridWidths.containsKey(io) && gridWidths.get(io).containsKey(cap)) {
             int width = gridWidths.get(io).get(cap).get(tier);
@@ -193,6 +199,7 @@ public class GTRecipeTypeUILayout {
             int length = gridLength.get(io).get(cap).get(tier);
             if (length != 0) maxSlots = length;
         }
+        maxSlots = Math.min(maxMachineSlots, maxSlots);
         maxWidth = Math.min(maxSlots, maxWidth);
         return GTMuiWidgets.createGrid(maxSlots, maxWidth, io.support(IO.OUT), key);
     }
@@ -201,10 +208,14 @@ public class GTRecipeTypeUILayout {
         if (recipeType != null) {
             parentWidget = new ParentWidget<>();
 
-            var inputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(ItemRecipeCapability.CAP), 3, false, 'i');
-            var inputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(FluidRecipeCapability.CAP), 3, false, 'f');
-            var outputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(ItemRecipeCapability.CAP), 3, true, 'i');
-            var outputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(FluidRecipeCapability.CAP), 3, true, 'f');
+            var inputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(ItemRecipeCapability.CAP), 3, false,
+                    'i');
+            var inputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(FluidRecipeCapability.CAP), 3, false,
+                    'f');
+            var outputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(ItemRecipeCapability.CAP), 3, true,
+                    'i');
+            var outputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(FluidRecipeCapability.CAP), 3, true,
+                    'f');
 
             parentWidget.size(170, 64)
                     .padding(4)

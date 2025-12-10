@@ -55,13 +55,16 @@ public class GTSingleblockMachinePanels {
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                            .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems, simpleTieredMachine.exportItems,
-                                    simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids, () -> (double) simpleTieredMachine.getProgress() / simpleTieredMachine.getMaxProgress(), -1)
-                            .alignX(Alignment.CENTER))
+                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                        simpleTieredMachine.exportItems,
+                                        simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
+                                        () -> (double) simpleTieredMachine.getProgress() /
+                                                simpleTieredMachine.getMaxProgress(),
+                                        -1)
+                                .alignX(Alignment.CENTER))
                         .coverChildrenHeight()
-                        //.left(7)
-                        .bottom(76 + 7 + 18 + 9)
-                )
+                        // .left(7)
+                        .bottom(76 + 7 + 18 + 9))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()
@@ -135,13 +138,16 @@ public class GTSingleblockMachinePanels {
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems, simpleTieredMachine.exportItems,
-                                        simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids, () -> (double) simpleTieredMachine.getProgress() / simpleTieredMachine.getMaxProgress(), simpleTieredMachine.getTier())
+                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                        simpleTieredMachine.exportItems,
+                                        simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
+                                        () -> (double) simpleTieredMachine.getProgress() /
+                                                simpleTieredMachine.getMaxProgress(),
+                                        simpleTieredMachine.getTier())
                                 .alignX(Alignment.CENTER))
                         .coverChildrenHeight()
-                        //.left(7)
-                        .bottom(76 + 7 + 18 + 9)
-                )
+                        // .left(7)
+                        .bottom(76 + 7 + 18 + 9))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()
@@ -215,13 +221,16 @@ public class GTSingleblockMachinePanels {
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems, simpleTieredMachine.exportItems,
-                                        simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids, () -> (double) simpleTieredMachine.getProgress() / simpleTieredMachine.getMaxProgress(), 0)
+                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                        simpleTieredMachine.exportItems,
+                                        simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
+                                        () -> (double) simpleTieredMachine.getProgress() /
+                                                simpleTieredMachine.getMaxProgress(),
+                                        0)
                                 .alignX(Alignment.CENTER))
                         .coverChildrenHeight()
-                        //.left(7)
-                        .bottom(76 + 7 + 18 + 9)
-                )
+                        // .left(7)
+                        .bottom(76 + 7 + 18 + 9))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
                 .child(new Column()
                         .coverChildren()

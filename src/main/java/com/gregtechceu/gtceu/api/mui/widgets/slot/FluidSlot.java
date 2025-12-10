@@ -84,8 +84,9 @@ public class FluidSlot extends Widget<FluidSlot>
                 }
             } else {
                 tooltip.addLine(IKey.lang("gtceu.fluid.empty"));
-                tooltip.addLine(IKey.lang("gtceu.fluid_pipe.capacity", formatFluidTooltipAmount(fluidTank.getCapacity()),
-                        getUnit()));
+                tooltip.addLine(
+                        IKey.lang("gtceu.fluid_pipe.capacity", formatFluidTooltipAmount(fluidTank.getCapacity()),
+                                getUnit()));
             }
             if (this.syncHandler.controlsAmount()) {
                 tooltip.addLine(IKey.lang("modularui.fluid.phantom.control"));
