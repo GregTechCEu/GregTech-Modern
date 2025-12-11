@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.client.CharTypedEvent;
+import com.gregtechceu.gtceu.client.EarlyKeyPressEvent;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -18,6 +20,7 @@ import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,6 +43,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     private ModularScreen screen;
     private Screen vanillaScreen;
     private int width = 200, height = 200;
+    private int mouseX = -1, mouseY = -1;
     private final Level targetLevel;
     private final BlockPos targetPos;
 
@@ -81,6 +85,27 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void keyPressedEvent(EarlyKeyPressEvent event) {
+        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null) return;
+        screen.getContext().updateLatestKey(event.getKey(), event.getScanCode(), event.getModifiers());
+        boolean early = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen, event.getAction() == InputConstants.PRESS,
+                ClientScreenHandler.InputPhase.EARLY, event.getKey(), event.getScanCode(), event.getModifiers());
+        if (early) event.setCanceled(true);
+        else {
+            boolean late = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen, event.getAction() == InputConstants.PRESS,
+                    ClientScreenHandler.InputPhase.LATE, event.getKey(), event.getScanCode(), event.getModifiers());
+            if (late) event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void charTyped(CharTypedEvent event) {
+        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null) return;
+        screen.getContext().updateLatestTypedChar(event.getCodepoint(), event.getModifiers());
+        if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
     }
 
     public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
@@ -128,13 +153,15 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 if (monitor instanceof AdvancedMonitorPartMachine advancedMonitor && mouseX >= 0 && mouseY >= 0 &&
                         mouseX <= width && mouseY <= height) {
                     if (advancedMonitor.isClickedThisFrame()) {
-                        this.screen.onMousePressed(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-                        this.vanillaScreen.mouseClicked(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                        this.screen.onMousePressed(mouseX * 256, mouseY * 256, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                        this.vanillaScreen.mouseClicked(mouseX * 256, mouseY * 256, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         advancedMonitor.setClickedThisFrame(false);
                     }
                 }
             }
         }
+        this.mouseX = (int) (mouseX * 256);
+        this.mouseY = (int) (mouseY * 256);
         renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
     }
 }

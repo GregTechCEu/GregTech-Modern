@@ -313,7 +313,7 @@ public class ClientScreenHandler {
     /**
      * This replicates vanilla behavior while also injecting custom behavior for consistency
      */
-    private static boolean handleKeyboardInput(@Nullable ModularScreen muiScreen, Screen mcScreen,
+    public static boolean handleKeyboardInput(@Nullable ModularScreen muiScreen, Screen mcScreen,
                                                boolean isPress, InputPhase inputPhase,
                                                int keyCode, int scanCode, int modifiers) {
         if (isPress) {
@@ -681,7 +681,7 @@ public class ClientScreenHandler {
         return defaultContext;
     }
 
-    private enum InputPhase {
+    public enum InputPhase {
 
         // for mui interactions
         EARLY,
