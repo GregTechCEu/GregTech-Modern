@@ -68,7 +68,7 @@ import java.util.*;
  *              .gtBlockstate(GTModels::createPipeBlockModel)
  *              ...more builder things...
  *              .item(...)
- *              .model(GTModels::createPipeItemModel)
+ *              .model(NonNullBiConsumer.noop())
  *              ...more builder things...
  * }
  * </pre>
