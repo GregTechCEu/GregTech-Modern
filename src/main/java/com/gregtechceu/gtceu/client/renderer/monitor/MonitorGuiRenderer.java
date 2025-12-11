@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.monitor;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
+import com.gregtechceu.gtceu.api.mui.animation.AnimatorManager;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
@@ -38,7 +39,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
 
     private ModularScreen screen;
     private Screen vanillaScreen;
-    private ModularContainerMenu menu;
     private int width = 200, height = 200;
     private final Level targetLevel;
     private final BlockPos targetPos;
@@ -67,7 +67,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     public void openClientInWorldUI(InWorldMUIOpenEvent event) {
         if (this.targetPos != null && event.getGuiData() instanceof PosGuiData posGuiData) {
             if (posGuiData.getBlockPos().asLong() == targetPos.asLong() && posGuiData.getLevel() == targetLevel) {
-                this.menu = event.getMenu();
                 this.screen = event.getScreen();
                 this.vanillaScreen = event.getVanillaScreen();
                 this.vanillaScreen.init(MCHelper.getMc(), this.width, this.height);
@@ -102,6 +101,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (resized) screen.onResize(width, height);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
         screen.onFrameUpdate();
+        AnimatorManager.INSTANCE.onDraw(null);
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
         ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
     }
