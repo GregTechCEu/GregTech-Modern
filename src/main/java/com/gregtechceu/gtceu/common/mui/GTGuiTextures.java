@@ -423,6 +423,7 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_THROTTLE_MINUS = fullImage("textures/gui/widget/button_throttle_minus.png");
     public static final UITexture BUTTON_EU = fullImage("textures/gui/overlay/mode_eu.png");
     public static final UITexture BUTTON_PERCENT = fullImage("textures/gui/overlay/mode_percent.png");
+    public static final UITexture BUTTON_MAINTENANCE = fullImage("textures/gui/widget/button_maintenance.png");
 
     public static final UITexture BUTTON_DISTINCT = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
