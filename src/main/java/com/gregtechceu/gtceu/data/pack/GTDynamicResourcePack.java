@@ -57,7 +57,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     private static final FileToIdConverter ATLAS_ID_CONVERTER = FileToIdConverter.json("atlases");
     private static final FileToIdConverter TEXTURE_ID_CONVERTER = SpriteSource.TEXTURE_ID_CONVERTER;
-    private static final FileToIdConverter BLOCKSTATE_ID_CONVERTER = FileToIdConverter.json("blockstates");
+    public static final FileToIdConverter BLOCKSTATE_ID_CONVERTER = FileToIdConverter.json("blockstates");
     private static final FileToIdConverter MODEL_ID_CONVERTER = FileToIdConverter.json("models");
 
     private final String name;
@@ -123,13 +123,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addModel(ResourceLocation loc, JsonElement obj) {
         loc = MODEL_ID_CONVERTER.idToFile(loc);
-        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeJson(loc, null, parent, modelBytes);
-        }
-        CONTENTS.addToData(loc, modelBytes);
+        addResource(loc, obj);
     }
 
     public static void addModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -141,14 +135,8 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
-        ResourceLocation l = BLOCKSTATE_ID_CONVERTER.idToFile(loc);
-        byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeJson(l, null, parent, stateBytes);
-        }
-        CONTENTS.addToData(l, stateBytes);
+        loc = BLOCKSTATE_ID_CONVERTER.idToFile(loc);
+        addResource(loc, stateJson);
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
@@ -163,17 +151,11 @@ public class GTDynamicResourcePack implements PackResources {
         addAtlasSpriteSourceList(atlasLoc, Collections.singletonList(source));
     }
 
-    public static void addAtlasSpriteSourceList(ResourceLocation atlasLoc, List<SpriteSource> sources) {
-        ResourceLocation l = ATLAS_ID_CONVERTER.idToFile(atlasLoc);
+    public static void addAtlasSpriteSourceList(ResourceLocation loc, List<SpriteSource> sources) {
+        loc = ATLAS_ID_CONVERTER.idToFile(loc);
         JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, sources)
                 .getOrThrow(false, error -> GTCEu.LOGGER.error("Failed to encode atlas sprite source. {}", error));
-        byte[] sourceBytes = sourceJson.toString().getBytes(StandardCharsets.UTF_8);
-
-        if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
-            writeJson(l, null, parent, sourceBytes);
-        }
-        CONTENTS.addToData(l, sourceBytes);
+        addResource(loc, sourceJson);
     }
 
     public static void addBlockTexture(ResourceLocation loc, byte[] data) {

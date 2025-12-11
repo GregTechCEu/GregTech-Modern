@@ -46,7 +46,8 @@ public class RuntimeBlockstateProvider extends GTBlockstateProvider {
         processModelProvider(itemModels());
 
         for (Map.Entry<Block, IGeneratedBlockState> entry : registeredBlocks.entrySet()) {
-            ResourceLocation loc = BuiltInRegistries.BLOCK.getKey(entry.getKey()).withPrefix("blockstates/");
+            ResourceLocation loc = GTDynamicResourcePack.BLOCKSTATE_ID_CONVERTER
+                    .idToFile(BuiltInRegistries.BLOCK.getKey(entry.getKey()));
             this.consumer.accept(loc, entry.getValue().toJson());
         }
         // only clear the data *after* saving so we can keep track of it during the KJS event

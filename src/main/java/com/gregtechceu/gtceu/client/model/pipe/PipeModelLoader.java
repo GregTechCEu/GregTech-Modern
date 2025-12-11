@@ -53,7 +53,7 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
                 if (direction == null) {
                     throw new JsonParseException("Invalid pipe model part specifier " + entry.getKey());
                 }
-                parts.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
+                restrictors.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
             }
         }
 
