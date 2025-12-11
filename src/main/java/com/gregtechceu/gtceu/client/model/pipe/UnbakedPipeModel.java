@@ -18,12 +18,12 @@ import java.util.function.Function;
 public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
 
     private final Map<@Nullable Direction, UnbakedModel> parts;
-    private final Map<@NotNull Direction, UnbakedModel> blockers;
+    private final Map<@NotNull Direction, UnbakedModel> restrictors;
 
     public UnbakedPipeModel(Map<@Nullable Direction, UnbakedModel> parts,
-                            Map<@NotNull Direction, UnbakedModel> blockers) {
+                            Map<@NotNull Direction, UnbakedModel> restrictors) {
         this.parts = parts;
-        this.blockers = blockers;
+        this.restrictors = restrictors;
     }
 
     @Override
@@ -34,10 +34,10 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
         this.parts.forEach((direction, unbaked) -> {
             bakedParts.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
         });
-        Map<Direction, BakedModel> bakedBlockers = new IdentityHashMap<>();
-        this.blockers.forEach((direction, unbaked) -> {
-            bakedBlockers.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
+        Map<Direction, BakedModel> bakedRestrictors = new IdentityHashMap<>();
+        this.restrictors.forEach((direction, unbaked) -> {
+            bakedRestrictors.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
         });
-        return new BakedPipeModel(bakedParts, bakedBlockers);
+        return new BakedPipeModel(bakedParts, bakedRestrictors);
     }
 }

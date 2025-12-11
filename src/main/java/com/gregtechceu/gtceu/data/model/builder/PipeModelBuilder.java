@@ -317,7 +317,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
                 }
             }
         }
-        json.add("blockers", blockers);
+            json.add("restrictors", restrictors);
 
         return json;
     }

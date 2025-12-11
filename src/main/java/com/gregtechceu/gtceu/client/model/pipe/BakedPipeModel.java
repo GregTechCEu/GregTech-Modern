@@ -41,11 +41,11 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
     public final static int ITEM_CONNECTIONS = 0b001100;
 
     private final Map<Direction, BakedModel> parts;
-    private final Map<Direction, BakedModel> blockers;
+    private final Map<Direction, BakedModel> restrictors;
 
-    public BakedPipeModel(Map<Direction, BakedModel> parts, Map<Direction, BakedModel> blockers) {
+    public BakedPipeModel(Map<Direction, BakedModel> parts, Map<Direction, BakedModel> restrictors) {
         this.parts = parts;
-        this.blockers = blockers;
+        this.restrictors = restrictors;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
             if (PipeBlockEntity.isConnected(connectionMask, dir)) {
                 quads.addAll(parts.get(dir).getQuads(state, side, rand, modelData, renderType));
                 if (blockedMask != null && PipeBlockEntity.isFaceBlocked(blockedMask, dir)) {
-                    quads.addAll(blockers.get(dir).getQuads(state, side, rand, modelData, renderType));
+                    quads.addAll(restrictors.get(dir).getQuads(state, side, rand, modelData, renderType));
                 }
             }
         }

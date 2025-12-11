@@ -44,10 +44,10 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
                 parts.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
             }
         }
-        // and the blockers
-        final Map<Direction, UnbakedModel> blockers = new HashMap<>();
-        if (json.has("blockers")) {
-            JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "blockers");
+        // and the restrictors
+        final Map<Direction, UnbakedModel> restrictors = new HashMap<>();
+        if (json.has("restrictors")) {
+            JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "restrictors");
             for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
                 Direction direction = Direction.byName(entry.getKey());
                 if (direction == null) {
@@ -57,6 +57,6 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
             }
         }
 
-        return new UnbakedPipeModel(parts, blockers);
+        return new UnbakedPipeModel(parts, restrictors);
     }
 }
