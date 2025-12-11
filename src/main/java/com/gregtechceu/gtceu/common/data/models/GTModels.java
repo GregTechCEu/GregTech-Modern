@@ -9,8 +9,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
@@ -25,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.gson.JsonObject;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -271,6 +274,30 @@ public class GTModels {
                     .partialState().with(GTBlockStateProperties.ACTIVE, true)
                     .modelForState().modelFile(active).addModel();
         };
+    }
+
+    public static void createPipeBlockModel(DataGenContext<Block, ? extends PipeBlock<?, ?, ?>> ctx,
+                                            GTBlockstateProvider prov) {
+        ExistingFileHelper existingFileHelper = prov.models().existingFileHelper;
+
+        PipeBlock<?, ?, ?> block = ctx.getEntry();
+        PipeModel pipeModel = block.createPipeModel(existingFileHelper);
+        for (BlockModelBuilder modelBuilder : pipeModel.getBlockModels()) {
+            existingFileHelper.trackGenerated(modelBuilder.getLocation(), GTBlockstateProvider.MODEL);
+            prov.models().generatedModels.putIfAbsent(modelBuilder.getLocation(), modelBuilder);
+        }
+        prov.addVanillaGenerator(block, pipeModel.createBlockState());
+    }
+
+    public static void createPipeItemModel(DataGenContext<Item, ? extends PipeBlockItem> ctx, ItemModelProvider prov) {
+        ExistingFileHelper existingFileHelper = prov.existingFileHelper;
+
+        PipeBlockItem item = ctx.getEntry();
+        PipeModel pipeModel = item.getBlock().createPipeModel(existingFileHelper);
+
+        ItemModelBuilder modelBuilder = pipeModel.getItemModel();
+        existingFileHelper.trackGenerated(modelBuilder.getLocation(), GTBlockstateProvider.MODEL);
+        prov.generatedModels.putIfAbsent(modelBuilder.getLocation(), modelBuilder);
     }
 
     // endregion

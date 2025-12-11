@@ -243,9 +243,6 @@ public class ForgeClientEventListener {
     public static void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
         // regenerate all pipe models in case their textures changed
         // cables may do this, others too if something's removed
-        for (var block : GTBlocks.LASER_PIPES) block.get().createPipeModel();
-        for (var block : GTBlocks.OPTICAL_PIPES) block.get().createPipeModel();
-        for (var block : GTBlocks.DUCT_PIPES) block.get().createPipeModel();
         for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
             if (block == null) continue;
             block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();

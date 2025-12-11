@@ -9,6 +9,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSources;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +19,9 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
@@ -87,15 +92,29 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
-        addModel(loc.withPrefix("block/"), obj);
+        if (!loc.getPath().startsWith("block/")) {
+            loc = loc.withPrefix("block/");
+        }
+        addModel(loc, obj);
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
         addBlockModel(loc, obj.get());
     }
 
+    public static void addBlockModel(BlockModelBuilder builder) {
+        addBlockModel(builder.getLocation(), builder.toJson());
+    }
+
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
-        addModel(loc.withPrefix("item/"), obj);
+        if (!loc.getPath().startsWith("item/")) {
+            loc = loc.withPrefix("item/");
+        }
+        addModel(loc, obj);
+    }
+
+    public static void addItemModel(ItemModelBuilder builder) {
+        addItemModel(builder.getLocation(), builder.toJson());
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -117,6 +136,10 @@ public class GTDynamicResourcePack implements PackResources {
         addModel(loc, obj.get());
     }
 
+    public static <T extends ModelBuilder<T>> void addModel(T builder) {
+        addModel(builder.getLocation(), builder.toJson());
+    }
+
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
         ResourceLocation l = BLOCKSTATE_ID_CONVERTER.idToFile(loc);
         byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
@@ -130,6 +153,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
         addBlockState(loc, generator.get());
+    }
+
+    public static void addBlockState(BlockStateGenerator generator) {
+        addBlockState(BuiltInRegistries.BLOCK.getKey(generator.getBlock()), generator.get());
     }
 
     public static void addAtlasSpriteSource(ResourceLocation atlasLoc, SpriteSource source) {

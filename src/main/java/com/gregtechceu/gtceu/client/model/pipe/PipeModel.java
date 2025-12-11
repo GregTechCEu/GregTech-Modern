@@ -1,31 +1,87 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.registry.registrate.GTBlockBuilder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
-import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.DelegatedModel;
-import net.minecraft.data.models.model.ModelLocationUtils;
+import net.minecraft.data.models.blockstates.BlockStateGenerator;
+import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
 import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
+import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * This is an automatic pipe model generator.
+ *
+ * <h2>For material pipes</h2>
+ * If the pipe this model belongs to is generated from a material property (or equivalent),
+ * you should call {@link #dynamicModel()}, which adds the model to {@link #DYNAMIC_MODELS}
+ * and automatically processes it as a part of runtime asset generation.
+ * <p>
+ * <strong style="font-size:17">NOTE:</strong><br>
+ * You must also initialize the models in an {@link RegisterDynamicResourcesEvent} listener as such:
+ * 
+ * <pre>
+ * {@code
+ * 
+ * // in a @EventBusSubscriber-annotated class
+ * @SubscribeEvent
+ * public static void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
+ *     for (var block : YourBlocks.YOUR_PIPE_BLOCKS.values()) {
+ *         if (block == null) continue;
+ *         block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
+ *     }
+ * }
+ * }
+ * </pre>
+ * 
+ * Remember to replace {@code YourBlocks.YOUR_PIPE_BLOCKS.values()} with a reference to your pipe block collection!
+ * </p>
+ *
+ * <h2>For non-material pipes</h2>
+ * Conversely, if the pipe is <strong>not</strong> generated, but has a constant set of variants (such as optical fiber
+ * cables),
+ * you should <strong>NOT</strong> use {@link #dynamicModel()} and instead set the model with
+ * {@link GTBlockBuilder#gtBlockstate(NonNullBiConsumer)} as such:
+ * 
+ * <pre>
+ * {@code
+ *     // on your pipe block builder
+ *     ... = REGISTRATE.block(...)
+ *              .properties(...)
+ *              .gtBlockstate(GTModels::createPipeBlockModel)
+ *              ...more builder things...
+ *              .item(...)
+ *              .model(GTModels::createPipeItemModel)
+ *              ...more builder things...
+ * }
+ * </pre>
+ * 
+ * This makes the pipe model(s) be made for you without having to autogenerate them.
+ *
+ */
 public class PipeModel {
 
     public static final Set<PipeModel> DYNAMIC_MODELS = new HashSet<>();
@@ -67,8 +123,19 @@ public class PipeModel {
     @Setter
     public @Nullable ResourceLocation sideOverlay, endOverlay;
 
-    protected final BlockModelBuilder centerModel;
-    protected final BlockModelBuilder connectionModel;
+    /// Use {@link #getBlockModel()} instead of referencing this field directly.
+    @Getter(lazy = true)
+    private final BlockModelBuilder blockModel = createBlockModel();
+    /// Use {@link #getItemModel()} instead of referencing this field directly.
+    @Getter(lazy = true)
+    private final ItemModelBuilder itemModel = createItemModel();
+
+    /// Use {@link #getCenterElement()} instead of referencing this field directly.
+    @Getter(lazy = true)
+    private final BlockModelBuilder centerElement = createCenterElement();
+    /// Use {@link #getConnectionElement()} instead of referencing this field directly.
+    @Getter(lazy = true)
+    private final BlockModelBuilder connectionElement = createConnectionElement();
 
     public PipeModel(PipeBlock<?, ?, ?> block, ExistingFileHelper existingFileHelper,
                      float thickness, ResourceLocation side, ResourceLocation end) {
@@ -81,36 +148,133 @@ public class PipeModel {
         this.side = side;
         this.end = end;
 
-        thickness *= 16.0f;
-        float min = (16.0f - thickness) / 2.0f;
-        float max = min + thickness;
-        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(this.block);
-        ResourceLocation baseModelId = blockId.withPath(path -> "block/pipe/" + path + "/");
-
-        centerModel = makePartModel(baseModelId.withSuffix("center"), null, min, min, min, max, max, max);
-        connectionModel = makePartModel(baseModelId.withSuffix("connection"), Direction.DOWN, min, 0, min, max, min,
-                max);
+        this.minCoord = (16.0f - this.thickness) / 2.0f;
+        this.maxCoord = this.minCoord + this.thickness;
     }
 
-    protected JsonObject createBlockModelJson(ResourceLocation modelName) {
+    public final void dynamicModel() {
+        DYNAMIC_MODELS.add(this);
+    }
+
+    /**
+     * @return A mutable collection of all block model builders that are required for this block to exist.
+     * @see #createBlockModel()
+     * @see #createCenterElement()
+     * @see #createConnectionElement()
+     */
+    public Collection<BlockModelBuilder> getBlockModels() {
+        Set<BlockModelBuilder> models = new HashSet<>();
+        Collections.addAll(models, this.getCenterElement(), this.getConnectionElement(), this.getBlockModel());
+        return models;
+    }
+
+    /**
+     * Override this to change the actual model {@link #block this.block} will use.
+     * 
+     * @return A model builder for the block's actual model.
+     * @see #createCenterElement()
+     * @see #createConnectionElement()
+     */
+    @ApiStatus.OverrideOnly
+    protected BlockModelBuilder createBlockModel() {
         // spotless:off
-        return new BlockModelBuilder(modelName, RuntimeExistingFileHelper.INSTANCE)
+        return new BlockModelBuilder(this.blockId, this.existingFileHelper)
                 // make the "default" model be based on the center part's model
-                .parent(this.centerModel)
+                .parent(this.centerElement)
                 .customLoader(PipeModelBuilder::begin)
                     .connectionModels()
-                        .modelFile(this.connectionModel)
+                        .modelFile(this.connectionElement)
                     .addModel()
                     .centerModel()
-                        .modelFile(this.centerModel)
+                        .modelFile(this.centerElement)
                     .addModel()
-                .end()
-                .toJson();
+                .end();
         // spotless:on
     }
 
-    protected JsonElement createBlockStateJson(ResourceLocation modelName) {
-        return BlockModelGenerators.createSimpleBlock(this.getBlock(), modelName.withPrefix("block/")).get();
+    /**
+     * Override this to change the center element's model.
+     * 
+     * @return A model builder for the center element's model.
+     * @see #createBlockModel()
+     * @see #createConnectionElement()
+     */
+    @ApiStatus.OverrideOnly
+    protected BlockModelBuilder createCenterElement() {
+        // noinspection DataFlowIssue
+        return makeElementModel(this.blockId.withPath(path -> "pipe/" + path + "/center"),
+                null, minCoord, minCoord, minCoord, maxCoord, maxCoord, maxCoord);
+    }
+
+    /**
+     * Override this to change the 'connection' element's model.<br>
+     * By default, this is rotated & used for all connected sides of the pipe.<br>
+     * Note that that is not a hard requirement, and that you may set a model per side in {@link #createBlockModel()}.
+     * 
+     * @return A model builder for the connection element's model.
+     * @see #createBlockModel()
+     * @see #createCenterElement()
+     */
+    @ApiStatus.OverrideOnly
+    protected BlockModelBuilder createConnectionElement() {
+        // noinspection DataFlowIssue
+        return makeElementModel(this.blockId.withPath(path -> "pipe/" + path + "/connection"),
+                Direction.DOWN, minCoord, 0, minCoord, maxCoord, minCoord, maxCoord);
+    }
+
+    /**
+     * Override this to change the item model.<br>
+     * By default, this creates a version of the pipe block model with the north & south sides 'connected'.
+     * 
+     * @return The item model builder.
+     * @see #createBlockModel()
+     */
+    @ApiStatus.OverrideOnly
+    protected ItemModelBuilder createItemModel() {
+        // noinspection DataFlowIssue
+        return createItemModel(this.blockId, this.minCoord, this.maxCoord);
+    }
+
+    /**
+     * Override this to change the block state set {@link #block this.block} will use.<br>
+     * By default, this creates a simple block state with no properties.<br>
+     * The activable pipes (laser & optical) use this to add a model for the
+     * {@link GTBlockStateProperties#ACTIVE "active"} state of the blocks.
+     * 
+     * @return The block state generator, usually a {@link MultiVariantGenerator}.
+     * @see #createBlockModel()
+     * @see ActivablePipeModel#createBlockState()
+     */
+    @ApiStatus.OverrideOnly
+    public BlockStateGenerator createBlockState() {
+        return BlockModelGenerators.createSimpleBlock(this.getBlock(), this.blockId.withPrefix("block/"));
+    }
+
+    /**
+     * Creates an item model based on the block model that extends to the north/south end of the block space.
+     * 
+     * @param name The resulting model's path.
+     * @param min  The minimum X/Y coordinate.
+     * @param max  The maximum X/Y coordinate.
+     * @return An item model builder.
+     */
+    protected ItemModelBuilder createItemModel(ResourceLocation name, float min, float max) {
+        Reference2FloatMap<Direction> maxDistances = new Reference2FloatOpenHashMap<>();
+        maxDistances.put(Direction.DOWN, min);
+        maxDistances.put(Direction.UP, max);
+        maxDistances.put(Direction.NORTH, 0);
+        maxDistances.put(Direction.SOUTH, 16);
+        maxDistances.put(Direction.WEST, min);
+        maxDistances.put(Direction.EAST, max);
+
+        ItemModelBuilder model = new ItemModelBuilder(name, this.existingFileHelper).parent(this.centerElement);
+        makePartModelElement(model, Direction.NORTH, false, maxDistances, 0.0f, 0, 1,
+                min, min, 0, max, max, 16, this.side, this.end, "side", "end");
+        makePartModelElement(model, Direction.NORTH, true, maxDistances, 0.001f, 0, 1,
+                min, min, 0, max, max, 16, this.sideSecondary, this.endSecondary, "side_secondary", "end_secondary");
+        makePartModelElement(model, Direction.NORTH, true, maxDistances, 0.002f, 2, 2,
+                min, min, 0, max, max, 16, this.sideOverlay, this.endOverlay, "side_overlay", "end_overlay");
+        return model;
     }
 
     /**
@@ -126,9 +290,9 @@ public class PipeModel {
      * @param z2   max Z coordinate in the range [-16,32]
      * @implNote The coordinates must be in the correct order or the resulting model's cubes will be inside out!
      */
-    private BlockModelBuilder makePartModel(ResourceLocation name, @Nullable Direction side,
-                                            final float x1, final float y1, final float z1,
-                                            final float x2, final float y2, final float z2) {
+    protected BlockModelBuilder makeElementModel(ResourceLocation name, @Nullable Direction side,
+                                                 final float x1, final float y1, final float z1,
+                                                 final float x2, final float y2, final float z2) {
         Reference2FloatMap<Direction> maxDistances = new Reference2FloatOpenHashMap<>();
         maxDistances.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
         for (Direction dir : GTUtil.DIRECTIONS) {
