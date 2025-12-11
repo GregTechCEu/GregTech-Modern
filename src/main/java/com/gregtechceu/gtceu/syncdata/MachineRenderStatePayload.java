@@ -18,6 +18,10 @@ public class MachineRenderStatePayload extends ObjectTypedPayload<MachineRenderS
 
     @Override
     public void writePayload(RegistryFriendlyByteBuf buf) {
+        // Ensure we're using the interned state for registry lookup
+        if (payload != null) {
+            payload = payload.intern();
+        }
         buf.writeById(MachineDefinition.RENDER_STATE_REGISTRY::getId, payload);
     }
 

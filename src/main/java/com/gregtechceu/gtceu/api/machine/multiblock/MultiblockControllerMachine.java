@@ -23,7 +23,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -204,16 +203,25 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     /**
-     * mark multiblockState as unload error first.
-     * if it's actually cuz by block breaking.
-     * {@link #onStructureInvalid()} will be called from
-     * {@link MultiblockState#onBlockStateChanged(BlockPos, BlockState)}
+     * Called when a part is unloaded (chunk unload or block broken).
+     * If the structure is currently formed, immediately invalidate it to ensure
+     * all remaining parts have their render state updated.
      */
     @Override
     public void onPartUnload() {
-        parts.removeIf(part -> part.self().isInValid());
+        for (var it = parts.iterator(); it.hasNext();) {
+            var part = it.next();
+            if (part.self().isInValid()) {
+                it.remove();
+            }
+        }
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
         if (getLevel() instanceof ServerLevel serverLevel) {
+            // If structure is formed, invalidate it immediately to update all parts' render states
+            if (isFormed) {
+                onStructureInvalid();
+                MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(getMultiblockState());
+            }
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
         }
         updatePartPositions();

@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -117,8 +118,48 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
 
     @Override
     public void setRenderState(MachineRenderState state) {
+        if (state != null) {
+            // Validate that the state belongs to this block entity's definition
+            if (!state.is(getDefinition())) {
+                state = correctRenderStateDefinition(state);
+            }
+            // Ensure we're using the interned (canonical) state instance
+            state = state.intern();
+        }
         this.renderState = state;
         scheduleRenderUpdate();
+    }
+
+    /**
+     * Corrects a render state that belongs to the wrong definition by creating a new state
+     * from this block entity's definition while preserving any compatible property values.
+     */
+    private MachineRenderState correctRenderStateDefinition(MachineRenderState wrongState) {
+        MachineRenderState correctedState = getDefinition().defaultRenderState();
+        // Copy any property values that exist in both the wrong state and this definition's state
+        for (Property<?> property : wrongState.getProperties()) {
+            if (correctedState.hasProperty(property)) {
+                correctedState = copyProperty(correctedState, wrongState, property);
+            }
+        }
+        return correctedState; // intern() will be called by setRenderState
+    }
+
+    /**
+     * Helper method to copy a single property value from one state to another.
+     * Uses a type parameter to satisfy the generic constraints of setValue().
+     */
+    @SuppressWarnings("unchecked")
+    private static <T extends Comparable<T>> MachineRenderState copyProperty(
+                                                                             MachineRenderState target,
+                                                                             MachineRenderState source,
+                                                                             Property<T> property) {
+        T value = source.getValue(property);
+        // Verify the value is valid for the target state's property
+        if (property.getPossibleValues().contains(value)) {
+            return target.setValue(property, value);
+        }
+        return target;
     }
 
     @Override
@@ -135,6 +176,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public void onLoad() {
         super.onLoad();
+        // Validate render state after NBT load - @Persisted writes directly to field via reflection,
+        // bypassing setRenderState(), so we need to validate here as well
+        if (renderState != null && !renderState.is(getDefinition())) {
+            this.renderState = correctRenderStateDefinition(renderState);
+        }
         metaMachine.onLoad();
     }
 

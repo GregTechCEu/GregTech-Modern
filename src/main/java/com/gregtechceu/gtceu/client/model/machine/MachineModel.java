@@ -293,6 +293,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
         if (modelsByState.containsKey(renderState)) {
             quads.addAll(modelsByState.get(renderState).getQuads(blockState, side, rand, modelData, renderType));
+        } else {
+            // State not found by identity - try to find matching state by values as fallback
+            MachineRenderState fallbackState = null;
+            for (MachineRenderState expected : modelsByState.keySet()) {
+                if (expected.getValues().equals(renderState.getValues())) {
+                    fallbackState = expected;
+                    break;
+                }
+            }
+            if (fallbackState != null) {
+                quads.addAll(modelsByState.get(fallbackState).getQuads(blockState, side, rand, modelData, renderType));
+            } else if (modelsByState.containsKey(definition.defaultRenderState())) {
+                // Fall back to default state as last resort
+                quads.addAll(modelsByState.get(definition.defaultRenderState())
+                        .getQuads(blockState, side, rand, modelData, renderType));
+            }
         }
     }
 

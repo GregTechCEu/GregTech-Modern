@@ -49,7 +49,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import com.google.common.math.IntMath;
 import it.unimi.dsi.fastutil.Pair;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -1101,9 +1100,7 @@ public class GTMachines {
     }
 
     public static void bakeRenderStates(Registry<MachineDefinition> registry) {
-        Iterator<MachineDefinition> iter = registry.iterator();
-        while (iter.hasNext()) {
-            MachineDefinition machine = iter.next();
+        for (MachineDefinition machine : registry) {
             for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
                 MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
             }
