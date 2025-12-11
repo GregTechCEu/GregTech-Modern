@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
+import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
@@ -273,5 +274,7 @@ public class ForgeClientEventListener {
         if (GTCEu.Mods.isKubeJSLoaded()) {
             GregTechKubeJSPlugin.generateMachineBlockModels();
         }
+        RuntimeBlockstateProvider.INSTANCE.run();
+        PipeModelBuilder.clearRestrictorModelCache();
     }
 }
