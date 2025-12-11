@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
@@ -39,8 +40,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     protected ExportOnlyAEItemList aeItemHandler;
 
-    public MEInputBusPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.IN);
+    public MEInputBusPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.IN);
     }
 
     /////////////////////////////////

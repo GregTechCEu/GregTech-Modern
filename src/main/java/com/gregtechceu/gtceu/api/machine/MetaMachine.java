@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
+import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -17,18 +19,21 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
-import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
@@ -43,11 +48,16 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -59,13 +69,20 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -75,6 +92,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -85,16 +103,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
-/**
- * an abstract layer of gregtech machine.
- * Because I have to implement BlockEntities for both fabric and forge platform.
- * All fundamental features will be implemented here.
- * To add additional features, you can see {@link IMachineFeature}
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, IToolGridHighlight,
+public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+
+    ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
+    ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -104,24 +119,37 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     @SyncToClient
     @Nullable
     private UUID ownerUUID;
-    @Getter
-    public final IMachineBlockEntity holder;
+
     @Getter
     @SyncToClient
     @SaveField(nbtKey = "cover")
     protected final MachineCoverContainer coverContainer;
+
     @Getter
     @SaveField
     @SyncToClient
     @RerenderOnChanged
     private int paintingColor = -1;
+
     @Getter
     protected final List<MachineTrait> traits;
+
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
-    public MetaMachine(IMachineBlockEntity holder) {
-        this.holder = holder;
+    @Getter
+    @Setter
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
+    private MachineRenderState renderState;
+    @Getter
+    private final long offset = GTValues.RNG.nextInt(20);
+
+    public MetaMachine(BlockEntityCreationInfo info) {
+        super(info.type(), info.pos(), info.state());
+
+        this.renderState = getDefinition().defaultRenderState();
         this.coverContainer = new MachineCoverContainer(this);
         this.traits = new ArrayList<>();
         this.serverTicks = new ArrayList<>();
@@ -133,22 +161,23 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     //////////////////////////////////////
 
     @Override
-    public void markAsChanged() {
-        if (getHolder() instanceof ManagedSyncBlockEntity syncBlockEntity) {
-            syncBlockEntity.markAsChanged();
-        }
+    public final void setRemoved() {
+        super.setRemoved();
+        onUnload();
     }
 
-    public @Nullable Level getLevel() {
-        return holder.level();
+    @Override
+    public void load(@NotNull CompoundTag tag) {
+        TagFixer.fixFluidTags(tag);
+        super.load(tag);
+    }
+
+    public @UnknownNullability Level getLevel() {
+        return super.getLevel();
     }
 
     public BlockPos getPos() {
-        return holder.pos();
-    }
-
-    public BlockState getBlockState() {
-        return holder.self().getBlockState();
+        return getBlockPos();
     }
 
     public void setOwnerUUID(UUID uuid) {
@@ -160,12 +189,29 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
     }
 
-    public void notifyBlockUpdate() {
-        holder.notifyBlockUpdate();
+    @Override
+    public boolean triggerEvent(int id, int para) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
     }
 
+    @Override
     public void scheduleRenderUpdate() {
-        holder.scheduleRenderUpdate();
+        var pos = getBlockPos();
+        var level = getLevel();
+        if (level != null) {
+            var state = level.getBlockState(pos);
+            if (level.isClientSide) {
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+            } else {
+                level.blockEvent(pos, state.getBlock(), 1, 0);
+            }
+        }
     }
 
     public void scheduleNeighborShapeUpdate() {
@@ -192,14 +238,6 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
 
     public void onPaintingColorChanged(int color) {}
 
-    public long getOffsetTimer() {
-        return holder.getOffsetTimer();
-    }
-
-    public boolean isInValid() {
-        return holder.self().isRemoved();
-    }
-
     @OverridingMethodsMustInvokeSuper
     public void onUnload() {
         traits.forEach(MachineTrait::onMachineUnLoad);
@@ -222,6 +260,13 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
     }
+
+    public void notifyBlockUpdate() {
+        if (getLevel() != null) {
+            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        }
+    }
+
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
@@ -279,7 +324,7 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
             if (tickable.isStillSubscribed()) {
                 tickable.run();
             }
-            if (isInValid()) break;
+            if (isRemoved()) break;
             if (!tickable.isStillSubscribed()) {
                 iter.remove();
             }
@@ -458,10 +503,11 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     // ********** MISC ***********//
     //////////////////////////////////////
 
+
     @Nullable
     public static MetaMachine getMachine(BlockGetter level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
-            return machineBlockEntity.getMetaMachine();
+        if (level.getBlockEntity(pos) instanceof MetaMachine m) {
+            return m;
         }
         return null;
     }
@@ -535,7 +581,11 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     }
 
     public MachineDefinition getDefinition() {
-        return holder.getDefinition();
+        if (getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) {
+            return machineBlock.getDefinition();
+        } else {
+            throw new IllegalStateException("MetaMachine created for an un available block: " + getBlockState().getBlock());
+        }
     }
 
     public RotationState getRotationState() {
@@ -598,6 +648,13 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         if (getLevel() != null && !getLevel().isClientSide) {
             notifyBlockUpdate();
         }
+    }
+
+    @Override
+    public @NotNull ModelData getModelData() {
+        ModelData.Builder data = super.getModelData().derive();
+        updateModelData(data);
+        return data.build();
     }
 
     public static Direction getUpwardFacing(@Nullable MetaMachine machine) {
@@ -668,14 +725,6 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         }
     }
 
-    public MachineRenderState getRenderState() {
-        return this.getHolder().getRenderState();
-    }
-
-    public void setRenderState(MachineRenderState state) {
-        this.getHolder().setRenderState(state);
-    }
-
     @Override
     public int getOutputSignal(@Nullable Direction side) {
         if (side == null) return 0;
@@ -694,6 +743,15 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
         if (cover == null) return false;
 
         return cover.canConnectRedstone();
+    }
+
+    public long getOffsetTimer() {
+        if (getLevel() == null) return getOffset();
+        else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
+
+        var server = getLevel().getServer();
+        if (server != null) return server.getTickCount() + getOffset();
+        return getOffset();
     }
 
     //////////////////////////////////////
@@ -828,5 +886,197 @@ public class MetaMachine implements ISyncManaged, IToolable, ITickSubscription, 
     @Override
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
+    }
+
+    @SuppressWarnings("unchecked")
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
+
+        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
+            if (modelWithBER.getBlockEntityType() == this.getType()) {
+                return ((IBlockEntityRendererBakedModel<MetaMachine>) modelWithBER)
+                        .getRenderBoundingBox(this);
+            }
+        }
+        return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+    }
+
+    //////////////////////////////////////
+    // ******** Capabilities *********//
+    //////////////////////////////////////
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        var result = getCapability(this, cap, side);
+        return result.isPresent() ? result : super.getCapability(cap, side);
+    }
+
+    public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
+                                                    @Nullable Direction side) {
+        if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
+        } else if (cap == GTCapability.CAPABILITY_WORKABLE) {
+            if (machine instanceof IWorkable workable) {
+                return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+            }
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof IWorkable workable) {
+                    return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_CONTROLLABLE) {
+            if (machine instanceof IControllable controllable) {
+                return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+            }
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof IControllable controllable) {
+                    return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_RECIPE_LOGIC) {
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof RecipeLogic recipeLogic) {
+                    return GTCapability.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+            if (machine instanceof IEnergyContainer energyContainer) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyContainer.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER) {
+            if (machine instanceof IEnergyInfoProvider energyInfoProvider) {
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> energyInfoProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyInfoProvider.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
+            if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
+                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap,
+                        LazyOptional.of(() -> cleanroomReceiver));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
+            if (machine instanceof IMaintenanceMachine maintenanceMachine) {
+                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> maintenanceMachine));
+            }
+        } else if (cap == GTCapability.CAPABILITY_TURBINE_MACHINE) {
+            if (machine instanceof ITurbineMachine turbineMachine) {
+                return GTCapability.CAPABILITY_TURBINE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> turbineMachine));
+            }
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            var handler = machine.getItemHandlerCap(side, true);
+            if (handler != null) {
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
+            }
+        } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            var handler = machine.getFluidHandlerCap(side, true);
+            if (handler != null) {
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
+            }
+        } else if (cap == ForgeCapabilities.ENERGY) {
+            if (machine instanceof IEnergyStorage energyStorage) {
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> energyStorage));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyStorage.class);
+            if (!list.isEmpty()) {
+                // TODO wrap list in the future
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_LASER) {
+            if (machine instanceof ILaserContainer energyContainer) {
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ILaserContainer.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
+            if (machine instanceof IOpticalComputationProvider computationProvider) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> computationProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IOpticalComputationProvider.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
+            if (machine instanceof IDataAccessHatch computationProvider) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MONITOR_COMPONENT) {
+            if (machine instanceof IMonitorComponent monitorComponent) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> monitorComponent));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IMonitorComponent.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_CENTRAL_MONITOR) {
+            if (machine instanceof ICentralMonitor centralMonitor) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> centralMonitor));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ICentralMonitor.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
+            LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            if (opt.isPresent()) {
+                // noinspection unchecked
+                return (LazyOptional<T>) opt;
+            }
+        }
+        return LazyOptional.empty();
+    }
+
+    public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, @Nullable Direction accessSide,
+                                                        Class<T> capability) {
+        if (traits.isEmpty()) return Collections.emptyList();
+        List<T> list = new ArrayList<>();
+        for (MachineTrait trait : traits) {
+            if (trait.hasCapability(accessSide) && capability.isInstance(trait)) {
+                list.add(capability.cast(trait));
+            }
+        }
+        return list;
+    }
+
+    public static class AE2CallWrapper {
+
+        public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
+                                                                Direction side) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
+            return LazyOptional.empty();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -23,8 +24,8 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
     public static final int FLUID_AMOUNT = 2_000_000_000;
 
-    public ReservoirHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.EV, IO.IN, FLUID_AMOUNT, 1);
+    public ReservoirHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.EV, IO.IN, FLUID_AMOUNT, 1);
     }
 
     //////////////////////////////////

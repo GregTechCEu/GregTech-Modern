@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
@@ -99,8 +100,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @Nullable
     private Collection<ICleanroomReceiver> cleanroomReceivers;
 
-    public CleanroomMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId, (m) -> new CleanroomLogic((CleanroomMachine) m));
+    public CleanroomMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new CleanroomLogic((CleanroomMachine) m));
     }
 
     //////////////////////////////////////

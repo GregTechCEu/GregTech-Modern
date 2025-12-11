@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -79,9 +80,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder,
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info,
                                      Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
-        super(holder);
+        super(info);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = recipeLogicSupplier.apply(this);
@@ -90,8 +91,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.traitSubscriptions = new ArrayList<>();
     }
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder) {
-        this(holder, RecipeLogic::new);
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info) {
+        this(info, RecipeLogic::new);
     }
 
     public void setMuffled(boolean muffled) {

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -34,8 +35,8 @@ public class ConverterMachine extends TieredEnergyMachine {
 
     public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
 
-    public ConverterMachine(IMachineBlockEntity holder, int tier, int amps) {
-        super(holder, tier, (TieredEnergyMachine machine) -> new ConverterTrait((ConverterMachine) machine, amps));
+    public ConverterMachine(BlockEntityCreationInfo info, int tier, int amps) {
+        super(info, tier, (TieredEnergyMachine machine) -> new ConverterTrait((ConverterMachine) machine, amps));
     }
 
     //////////////////////////////////////

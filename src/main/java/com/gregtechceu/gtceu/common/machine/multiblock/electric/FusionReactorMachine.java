@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -81,8 +82,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Nullable
     protected TickableSubscription preHeatSubs;
 
-    public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.energyContainer = createEnergyContainer();
     }

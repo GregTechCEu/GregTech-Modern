@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -37,8 +38,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.OUT);
+    public MEOutputHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////

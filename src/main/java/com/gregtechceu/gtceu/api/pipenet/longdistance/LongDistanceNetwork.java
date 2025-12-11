@@ -249,7 +249,7 @@ public class LongDistanceNetwork {
     private int find(ILDEndpoint endpoint) {
         for (int i = 0; i < this.endpoints.size(); i++) {
             ILDEndpoint other = this.endpoints.get(i);
-            if (other.isInValid()) {
+            if (other.isRemoved()) {
                 other.invalidateLink();
                 this.endpoints.remove(i--);
                 continue;

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -43,8 +44,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     @SaveField
     public final NotifiableItemStackHandler fuelHandler, ashHandler;
 
-    public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder, isHighPressure);
+    public SteamSolidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
         this.fuelHandler = createFuelHandler().setFilter(itemStack -> {
             if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;

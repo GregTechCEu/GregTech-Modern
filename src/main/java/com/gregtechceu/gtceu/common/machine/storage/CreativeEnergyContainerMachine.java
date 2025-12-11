@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
@@ -49,8 +50,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     private long ampsReceived = 0;
     private boolean doExplosion = false;
 
-    public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX);
+    public CreativeEnergyContainerMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX);
     }
 
     //////////////////////////////////////

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -67,9 +68,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     protected FluidHandlerList inputFluidInventory;
     private final int drillingFluidConsumePerTick;
 
-    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune,
+    public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(holder, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
+        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }

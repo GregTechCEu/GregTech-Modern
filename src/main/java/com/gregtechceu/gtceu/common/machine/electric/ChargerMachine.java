@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -75,8 +76,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @RerenderOnChanged
     private State state;
 
-    public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
-        super(holder, tier,
+    public ChargerMachine(BlockEntityCreationInfo info, int tier, int inventorySize) {
+        super(info, tier,
                 (TieredEnergyMachine machine) -> new EnergyBatteryTrait((ChargerMachine) machine, inventorySize));
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;

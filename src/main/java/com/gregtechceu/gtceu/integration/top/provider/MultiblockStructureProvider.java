@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 
 import net.minecraft.resources.ResourceLocation;

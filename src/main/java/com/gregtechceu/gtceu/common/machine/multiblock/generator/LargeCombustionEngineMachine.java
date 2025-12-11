@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -55,8 +56,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     private boolean isOxygenBoosted = false;
     private int runningTimer = 0;
 
-    public LargeCombustionEngineMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public LargeCombustionEngineMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
     }
 

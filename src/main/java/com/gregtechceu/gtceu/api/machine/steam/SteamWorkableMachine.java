@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -73,9 +74,9 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     protected final List<ISubscription> traitSubscriptions;
 
-    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure,
+    public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
                                 Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
-        super(holder, isHighPressure);
+        super(info, isHighPressure);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = recipeLogicSupplier.apply(this);
@@ -85,8 +86,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
     }
 
-    public SteamWorkableMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        this(holder, isHighPressure, RecipeLogic::new);
+    public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        this(info, isHighPressure, RecipeLogic::new);
     }
 
     //////////////////////////////////////

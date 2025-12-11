@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -28,8 +29,8 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     @SaveField
     public final NotifiableFluidTank steamTank;
 
-    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder);
+    public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info);
         this.isHighPressure = isHighPressure;
         this.steamTank = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN)
                 .setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));

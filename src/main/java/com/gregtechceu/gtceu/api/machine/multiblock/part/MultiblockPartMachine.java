@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -39,8 +40,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     private @Nullable RecipeHandlerList handlerList;
 
-    public MultiblockPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MultiblockPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////

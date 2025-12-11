@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
@@ -80,8 +81,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private static TraceabilityPredicate MULTI_PREDICATE = null;
 
-    public CentralMonitorMachine(IMachineBlockEntity holder) {
-        super(holder, CentralMonitorLogic::new);
+    public CentralMonitorMachine(BlockEntityCreationInfo info) {
+        super(info, CentralMonitorLogic::new);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {

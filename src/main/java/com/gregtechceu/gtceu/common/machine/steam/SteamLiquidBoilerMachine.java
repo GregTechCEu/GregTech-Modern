@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -45,8 +46,8 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     @SaveField
     public final NotifiableFluidTank fuelTank;
 
-    public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder, isHighPressure);
+    public SteamLiquidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
         this.fuelTank = createFuelTank().setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
             if (isRemote()) return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {

@@ -567,7 +567,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             }
             if (sound != null) {
                 workingSound = sound.playAutoReleasedSound(
-                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isInValid() &&
+                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
                                 getMachine().getLevel().isLoaded(getMachine().getPos()) &&
                                 MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(),
                         getMachine().getPos(), true, 0, 1, 1);

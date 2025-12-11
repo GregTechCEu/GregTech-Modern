@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -74,8 +75,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
 
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots) {
-        super(holder, tier, io);
+    public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int initialCapacity, int slots) {
+        super(info, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots);
 

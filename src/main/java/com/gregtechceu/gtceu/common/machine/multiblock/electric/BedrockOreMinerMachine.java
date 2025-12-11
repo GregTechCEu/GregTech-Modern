@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -39,8 +40,8 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     @Getter
     private final int tier;
 
-    public BedrockOreMinerMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine) m));
+    public BedrockOreMinerMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, (m) -> new BedrockOreMinerLogic((BedrockOreMinerMachine) m));
         this.tier = tier;
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -40,8 +41,8 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     @Getter
     private float removedLastSecond;
 
-    public AirScrubberMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, GTMachineUtils.largeTankSizeFunction);
+    public AirScrubberMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, GTMachineUtils.largeTankSizeFunction);
         this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION;
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -89,8 +90,8 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @Nullable
     protected ISubscription invSubs, tankSubs;
 
-    public BufferMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public BufferMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventory = createInventory();
         this.tank = createTank();
     }

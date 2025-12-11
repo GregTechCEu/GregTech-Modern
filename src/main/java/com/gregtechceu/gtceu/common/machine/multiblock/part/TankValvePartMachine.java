@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -28,8 +29,8 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     private final ConditionalSubscriptionHandler autoIOSubscription;
     private ISubscription tankChangeListener;
 
-    public TankValvePartMachine(IMachineBlockEntity holder, boolean isMetal) {
-        super(holder);
+    public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
+        super(info);
 
         tankProxy = new FluidTankProxyTrait(this, IO.BOTH);
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);

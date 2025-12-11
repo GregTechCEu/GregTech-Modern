@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
@@ -31,8 +32,8 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     @RerenderOnChanged
     private boolean damaged;
 
-    public HPCAComponentPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCAComponentPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     public abstract boolean isAdvanced();

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -47,8 +48,8 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     @Nullable
     protected TickableSubscription refreshNetSubs;
 
-    public LongDistanceEndpointMachine(IMachineBlockEntity holder, LongDistancePipeType pipeType) {
-        super(holder);
+    public LongDistanceEndpointMachine(BlockEntityCreationInfo info, LongDistancePipeType pipeType) {
+        super(info);
         this.pipeType = Objects.requireNonNull(pipeType);
     }
 
@@ -187,7 +188,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
             if (network != null && network.isValid()) {
                 this.link = network.getOtherEndpoint(this);
             }
-        } else if (this.link.isInValid()) {
+        } else if (this.link.isRemoved()) {
             this.link.invalidateLink();
             this.link = null;
             LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());

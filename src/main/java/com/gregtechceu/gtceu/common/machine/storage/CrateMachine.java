@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -56,8 +56,8 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     @SaveField
     public final NotifiableItemStackHandler inventory;
 
-    public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize) {
-        super(holder);
+    public CrateMachine(BlockEntityCreationInfo info, Material material, int inventorySize) {
+        super(info);
         this.material = material;
         this.inventorySize = inventorySize;
         this.inventory = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH);

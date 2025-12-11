@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -23,8 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PumpHatchPartMachine extends FluidHatchPartMachine {
 
-    public PumpHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, 0, IO.OUT, FluidType.BUCKET_VOLUME, 1);
+    public PumpHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, 0, IO.OUT, FluidType.BUCKET_VOLUME, 1);
     }
 
     @Override

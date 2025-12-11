@@ -77,7 +77,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
 
     @Override
     public boolean isInValid() {
-        return machine.isInValid();
+        return machine.isRemoved();
     }
 
     @Override

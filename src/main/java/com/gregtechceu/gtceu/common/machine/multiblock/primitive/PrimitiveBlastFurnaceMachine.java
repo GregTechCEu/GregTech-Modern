@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -56,8 +57,8 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public PrimitiveBlastFurnaceMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

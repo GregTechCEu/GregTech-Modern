@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -125,8 +126,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @RerenderOnChanged
     private boolean active = false;
 
-    public ItemCollectorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public ItemCollectorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
         this.output = createOutputItemHandler();

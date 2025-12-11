@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -45,6 +43,8 @@ public interface ILDEndpoint extends ILDNetworkPart {
     @Nullable
     ILDEndpoint getLink();
 
+    boolean isRemoved();
+
     /**
      * removes the linked endpoint if there is any
      */
@@ -76,12 +76,10 @@ public interface ILDEndpoint extends ILDNetworkPart {
 
     Level getLevel();
 
-    boolean isInValid();
-
     @Nullable
     static ILDEndpoint tryGet(LevelAccessor world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof IMachineBlockEntity gte && gte.getMetaMachine() instanceof ILDEndpoint endpoint) {
+        if (te instanceof ILDEndpoint endpoint) {
             return endpoint;
         }
         return null;

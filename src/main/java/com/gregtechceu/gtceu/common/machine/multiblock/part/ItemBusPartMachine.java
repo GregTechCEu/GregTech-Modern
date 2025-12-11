@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -75,8 +76,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SyncToClient
     private boolean isDistinct = false;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io) {
-        super(holder, tier, io);
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
         this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);

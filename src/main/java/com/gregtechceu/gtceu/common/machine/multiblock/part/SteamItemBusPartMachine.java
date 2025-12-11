@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -23,8 +24,8 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
     private final String autoTooltipKey;
 
-    public SteamItemBusPartMachine(IMachineBlockEntity holder, IO io) {
-        super(holder, 1, io);
+    public SteamItemBusPartMachine(BlockEntityCreationInfo info, IO io) {
+        super(info, 1, io);
         autoTooltipKey = io == IO.IN ? "gtceu.gui.item_auto_input.tooltip" : "gtceu.gui.item_auto_output.tooltip";
     }
 

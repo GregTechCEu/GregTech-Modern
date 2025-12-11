@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
@@ -99,9 +100,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         }
     }
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction,
                                  WorkableTieredMachineTraits traits) {
-        super(holder, tier);
+        super(info, tier);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -118,8 +119,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.exportComputation = traits.exportComputation(this);
     }
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction) {
-        this(holder, tier, tankScalingFunction, new WorkableTieredMachineTraits());
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, tankScalingFunction, new WorkableTieredMachineTraits());
     }
 
     //////////////////////////////////////

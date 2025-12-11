@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -52,13 +53,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Getter
     protected boolean batchEnabled;
 
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder,
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info,
                                              Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
-        super(holder, recipeLogicSupplier);
+        super(info, recipeLogicSupplier);
     }
 
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////

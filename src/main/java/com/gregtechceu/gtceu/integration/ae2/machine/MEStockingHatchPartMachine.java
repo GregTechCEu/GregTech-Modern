@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -70,8 +71,8 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MEStockingHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.autoPullTest = $ -> false;
     }
 

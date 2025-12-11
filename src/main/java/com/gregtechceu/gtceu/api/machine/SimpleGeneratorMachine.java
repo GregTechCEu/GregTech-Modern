@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
@@ -42,16 +43,16 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     @Getter
     private final float hazardStrengthPerOperation;
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier,
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
                                   float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
-        super(holder, tier, tankScalingFunction);
+        super(info, tier, tankScalingFunction);
 
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
     }
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction) {
-        this(holder, tier, 0.25f, tankScalingFunction);
+    public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, 0.25f, tankScalingFunction);
     }
 
     //////////////////////////////////////

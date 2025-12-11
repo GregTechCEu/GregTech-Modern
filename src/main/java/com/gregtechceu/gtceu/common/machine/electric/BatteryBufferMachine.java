@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -52,8 +53,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @SaveField
     protected final CustomItemStackHandler batteryInventory;
 
-    public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize) {
-        super(holder, tier,
+    public BatteryBufferMachine(BlockEntityCreationInfo info, int tier, int inventorySize) {
+        super(info, tier,
                 (TieredEnergyMachine machine) -> new EnergyBatteryTrait((BatteryBufferMachine) machine, inventorySize));
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;

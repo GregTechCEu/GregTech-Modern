@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -29,8 +30,8 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     @Getter
     protected int amperage;
 
-    public EnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage) {
-        super(holder, tier, io);
+    public EnergyHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int amperage) {
+        super(info, tier, io);
         this.amperage = amperage;
         this.energyContainer = createEnergyContainer();
     }

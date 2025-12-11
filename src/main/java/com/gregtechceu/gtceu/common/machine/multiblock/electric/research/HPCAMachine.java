@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -89,8 +90,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public HPCAMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCAMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.progressSupplier = new TimedProgressSupplier(200, 47, false);
         this.hpcaHandler = new HPCAGridHandler(this);

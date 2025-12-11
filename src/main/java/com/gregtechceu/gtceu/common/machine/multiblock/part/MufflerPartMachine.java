@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -45,8 +46,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     private TickableSubscription snowSubscription;
 
-    public MufflerPartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public MufflerPartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
     }

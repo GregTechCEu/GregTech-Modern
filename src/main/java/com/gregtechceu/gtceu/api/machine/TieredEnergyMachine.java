@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
@@ -30,14 +31,14 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSub;
 
-    public TieredEnergyMachine(IMachineBlockEntity holder, int tier,
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
                                Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
-        super(holder, tier);
+        super(info, tier);
         energyContainer = energyContainerSupplier.apply(this);
     }
 
-    public TieredEnergyMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
 
         long tierVoltage = GTValues.V[getTier()];
         if (isEnergyEmitter()) {

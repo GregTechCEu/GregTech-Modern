@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -62,8 +63,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @SyncToClient
     protected boolean isFlipped;
 
-    public MultiblockControllerMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MultiblockControllerMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////
@@ -217,7 +218,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
      */
     @Override
     public void onPartUnload() {
-        parts.removeIf(part -> part.self().isInValid());
+        parts.removeIf(part -> part.self().isRemoved());
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
         if (getLevel() instanceof ServerLevel serverLevel) {
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);

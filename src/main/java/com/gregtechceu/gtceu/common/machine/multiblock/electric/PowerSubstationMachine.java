@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -86,8 +87,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     protected ConditionalSubscriptionHandler tickSubscription;
 
-    public PowerSubstationMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public PowerSubstationMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
         this.energyBank = new PowerStationEnergyBank(this, List.of());
     }

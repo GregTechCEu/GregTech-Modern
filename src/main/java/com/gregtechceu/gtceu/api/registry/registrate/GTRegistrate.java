@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -128,24 +127,22 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> machine(String name,
                                                                                      Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                     Function<IMachineBlockEntity, MetaMachine> metaMachine,
-                                                                                     BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
-                                                                                     BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                     TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory, metaMachine,
+                                                                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                                                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                     Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, definitionFactory,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder<MachineDefinition> machine(String name,
-                                                     Function<IMachineBlockEntity, MetaMachine> metaMachine) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new, metaMachine,
-                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
+    public MachineBuilder<MachineDefinition> machine(String name, Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, MachineDefinition::new,
+                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder multiblock(String name,
                                                Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
-                                               BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         return new MultiblockMachineBuilder(this, name, metaMachine,
                 blockFactory, itemFactory, blockEntityFactory);

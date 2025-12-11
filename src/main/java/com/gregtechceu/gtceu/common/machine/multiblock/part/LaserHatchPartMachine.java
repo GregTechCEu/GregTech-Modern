@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -28,8 +29,8 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
     @SaveField
     private NotifiableLaserContainer buffer;
 
-    public LaserHatchPartMachine(IMachineBlockEntity holder, IO io, int tier, int amperage) {
-        super(holder, tier, io);
+    public LaserHatchPartMachine(BlockEntityCreationInfo info, IO io, int tier, int amperage) {
+        super(info, tier, io);
         if (io == IO.OUT) {
             this.buffer = NotifiableLaserContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,
                     GTValues.V[tier], amperage);

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
@@ -39,8 +40,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     @Getter
     private IObjectHolder objectHolder;
 
-    public ResearchStationMachine(IMachineBlockEntity holder) {
-        super(holder, (m) -> new ResearchStationRecipeLogic((ResearchStationMachine) m));
+    public ResearchStationMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new ResearchStationRecipeLogic((ResearchStationMachine) m));
     }
 
     @Override

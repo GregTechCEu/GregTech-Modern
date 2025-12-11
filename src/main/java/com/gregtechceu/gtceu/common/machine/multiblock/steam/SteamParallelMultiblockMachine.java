@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -57,8 +58,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
     public static final double CONVERSION_RATE = 2.0;
 
-    public SteamParallelMultiblockMachine(IMachineBlockEntity holder, int maxParallels) {
-        super(holder);
+    public SteamParallelMultiblockMachine(BlockEntityCreationInfo info, int maxParallels) {
+        super(info);
         this.maxParallels = maxParallels;
     }
 

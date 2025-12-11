@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -28,8 +29,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
 
-    public PrimitivePumpMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public PrimitivePumpMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -48,8 +49,8 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     private @Nullable MEPatternBufferPartMachine buffer = null;
     private boolean bufferResolved = false;
 
-    public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.LuV, IO.IN);
+    public MEPatternBufferProxyPartMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.LuV, IO.IN);
         proxySlotRecipeHandler = new ProxySlotRecipeHandler(this, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
     }
 

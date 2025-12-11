@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -93,8 +94,8 @@ public class MinerMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, energySubs;
 
-    public MinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumRadius, int fortune) {
-        super(holder, tier, GTMachineUtils.defaultTankSizeFunction, new WorkableTieredMachineTraits() {
+    public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
+        super(info, tier, GTMachineUtils.defaultTankSizeFunction, new WorkableTieredMachineTraits() {
 
             @Override
             public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -75,8 +76,8 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @SaveField(nbtKey = "amp_mode")
     private int amps;
 
-    public DiodePartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, IO.BOTH);
+    public DiodePartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, IO.BOTH);
         long tierVoltage = GTValues.V[getTier()];
 
         this.amps = 1;

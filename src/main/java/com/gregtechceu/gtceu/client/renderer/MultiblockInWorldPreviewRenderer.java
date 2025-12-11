@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -129,7 +128,7 @@ public class MultiblockInWorldPreviewRenderer {
                 for (int z = 0; z < column.length; z++) {
                     var blockState = column[z].getBlockState();
                     // if its controller record its position offset.
-                    if (blockState.getBlock() instanceof IMachineBlock machineBlock &&
+                    if (blockState.getBlock() instanceof MetaMachineBlock machineBlock &&
                             machineBlock.getDefinition() instanceof MultiblockMachineDefinition) {
                         controllerPatternPos = new BlockPos(x, y, z);
                     }

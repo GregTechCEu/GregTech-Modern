@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -127,8 +128,8 @@ public class FisherMachine extends TieredEnergyMachine
     @SyncToClient
     protected boolean junkEnabled = true;
 
-    public FisherMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public FisherMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];

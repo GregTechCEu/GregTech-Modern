@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -103,8 +104,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount) {
-        super(holder, tier);
+    public QuantumTankMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
+        super(info, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
         this.cache = createCacheFluidHandler();

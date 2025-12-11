@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -63,8 +64,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Nullable
     protected ISubscription rotorInvSubs;
 
-    public RotorHolderPartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public RotorHolderPartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventory = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.BOTH);
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
     }

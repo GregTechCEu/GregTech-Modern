@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -42,8 +43,8 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     @SyncToClient
     private boolean isLocked;
 
-    public ObjectHolderMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public ObjectHolderMachine(BlockEntityCreationInfo info) {
+        super(info);
         heldItems = new ObjectHolderHandler(this);
     }
 

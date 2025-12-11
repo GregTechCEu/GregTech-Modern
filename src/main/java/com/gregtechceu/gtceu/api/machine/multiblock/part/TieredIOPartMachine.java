@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -29,8 +30,8 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
     @RerenderOnChanged
     protected boolean workingEnabled;
 
-    public TieredIOPartMachine(IMachineBlockEntity holder, int tier, IO io) {
-        super(holder, tier);
+    public TieredIOPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier);
         this.io = io;
         this.workingEnabled = true;
     }

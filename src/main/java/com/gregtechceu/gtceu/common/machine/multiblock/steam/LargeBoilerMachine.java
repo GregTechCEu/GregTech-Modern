@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -58,8 +59,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     protected TickableSubscription temperatureSubs;
     private int steamGenerated;
 
-    public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed) {
-        super(holder, LargeBoilerRecipeLogic::new);
+    public LargeBoilerMachine(BlockEntityCreationInfo info, int maxTemperature, int heatSpeed) {
+        super(info, LargeBoilerRecipeLogic::new);
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;
         this.throttle = 100;

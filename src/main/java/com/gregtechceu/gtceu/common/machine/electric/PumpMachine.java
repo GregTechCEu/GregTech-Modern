@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -75,8 +76,8 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @SaveField
     protected final NotifiableFluidTank cache;
 
-    public PumpMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public PumpMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
                 IO.OUT);
     }

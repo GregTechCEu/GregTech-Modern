@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -177,7 +178,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     private boolean canAccelerate(BlockEntity blockEntity) {
-        if (blockEntity instanceof PipeBlockEntity || blockEntity instanceof IMachineBlockEntity) return false;
+        if (blockEntity instanceof PipeBlockEntity || blockEntity instanceof MetaMachine) return false;
 
         generateWorldAcceleratorBlacklist();
         final Class<? extends BlockEntity> blockEntityClass = blockEntity.getClass();

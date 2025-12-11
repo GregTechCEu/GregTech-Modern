@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -94,8 +95,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @SyncToClient
     private boolean isWorkingEnabled = true;
 
-    public BlockBreakerMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public BlockBreakerMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.cache = createCacheItemHandler();
         this.chargerInventory = createChargerItemHandler();

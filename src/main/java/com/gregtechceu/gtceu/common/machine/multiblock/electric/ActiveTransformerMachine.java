@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -50,8 +51,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     private IEnergyContainer powerInput;
     protected ConditionalSubscriptionHandler converterSubscription;
 
-    public ActiveTransformerMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public ActiveTransformerMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
 

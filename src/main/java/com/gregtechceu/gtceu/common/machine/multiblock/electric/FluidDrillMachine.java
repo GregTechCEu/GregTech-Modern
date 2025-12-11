@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -40,8 +41,8 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     @Getter
     private final int tier;
 
-    public FluidDrillMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, (m) -> new FluidDrillLogic((FluidDrillMachine) m));
+    public FluidDrillMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, (m) -> new FluidDrillLogic((FluidDrillMachine) m));
         this.tier = tier;
     }
 

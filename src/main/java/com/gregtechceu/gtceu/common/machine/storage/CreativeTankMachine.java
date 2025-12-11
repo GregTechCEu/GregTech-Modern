@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -43,8 +44,8 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @SaveField
     private int ticksPerCycle = 1;
 
-    public CreativeTankMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, 1);
+    public CreativeTankMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX, 1);
     }
 
     protected FluidCache createCacheFluidHandler() {

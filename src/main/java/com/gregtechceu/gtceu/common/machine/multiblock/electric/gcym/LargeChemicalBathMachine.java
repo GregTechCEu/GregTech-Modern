@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -28,8 +29,8 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
     @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
-    public LargeChemicalBathMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public LargeChemicalBathMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     public void setFluidBlockOffsets(Set<BlockPos> offsets) {

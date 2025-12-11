@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -111,8 +112,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount) {
-        super(holder, tier);
+    public QuantumChestMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
+        super(info, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler();

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.ITurbineMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -40,8 +41,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     @Getter
     private final int tier;
 
-    public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public LargeTurbineMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
     }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 
@@ -14,8 +15,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class HPCABridgePartMachine extends HPCAComponentPartMachine {
 
-    public HPCABridgePartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCABridgePartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -36,8 +37,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    public CokeOvenMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CokeOvenMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

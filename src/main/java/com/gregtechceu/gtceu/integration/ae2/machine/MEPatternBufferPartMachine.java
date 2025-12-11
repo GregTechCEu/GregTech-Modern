@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -143,9 +144,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected TickableSubscription updateSubs;
 
-    public MEPatternBufferPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.IN);
-        patternInventory.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("patternInventory"));
+    public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.IN);
+        patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();

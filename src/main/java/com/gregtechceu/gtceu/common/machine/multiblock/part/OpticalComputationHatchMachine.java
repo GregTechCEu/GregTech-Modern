@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -23,8 +24,8 @@ public class OpticalComputationHatchMachine extends MultiblockPartMachine {
 
     protected NotifiableComputationContainer computationContainer;
 
-    public OpticalComputationHatchMachine(IMachineBlockEntity holder, boolean transmitter) {
-        super(holder);
+    public OpticalComputationHatchMachine(BlockEntityCreationInfo info, boolean transmitter) {
+        super(info);
         this.transmitter = transmitter;
         this.computationContainer = new NotifiableComputationContainer(this, IO.IN, transmitter);
     }

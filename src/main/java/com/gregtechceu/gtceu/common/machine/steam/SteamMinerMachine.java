@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -65,9 +66,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @Nullable
     protected ISubscription exportItemSubs;
 
-    public SteamMinerMachine(IMachineBlockEntity holder, boolean isHighPressure, int speed, int maximumRadius,
+    public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
                              int fortune, int energyPerTick) {
-        super(holder, isHighPressure, (m) -> new SteamMinerLogic(m, fortune, speed, maximumRadius));
+        super(info, isHighPressure, (m) -> new SteamMinerLogic(m, fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;

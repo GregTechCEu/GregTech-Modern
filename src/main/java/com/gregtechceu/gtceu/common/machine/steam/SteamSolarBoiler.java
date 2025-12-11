@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
@@ -25,8 +26,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SteamSolarBoiler extends SteamBoilerMachine {
 
-    public SteamSolarBoiler(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder, isHighPressure);
+    public SteamSolarBoiler(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
     }
 
     @Override

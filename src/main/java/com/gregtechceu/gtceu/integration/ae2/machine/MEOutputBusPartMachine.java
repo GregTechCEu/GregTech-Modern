@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -38,8 +39,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputBusPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.OUT);
+    public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////

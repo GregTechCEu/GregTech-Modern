@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -68,8 +69,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private boolean hasAir = false;
 
-    public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
-        super(holder, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine) m));
+    public CharcoalPileIgniterMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine) m));
     }
 
     @Override

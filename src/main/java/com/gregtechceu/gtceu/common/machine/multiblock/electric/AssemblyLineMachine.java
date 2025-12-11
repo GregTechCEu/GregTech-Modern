@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
@@ -44,8 +45,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     @SaveField
     protected boolean allowCircuitSlots;
 
-    public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
-        super(holder, machine -> new AsslineRecipeLogic((AssemblyLineMachine) machine));
+    public AssemblyLineMachine(BlockEntityCreationInfo info, boolean allowCircuitSlots) {
+        super(info, machine -> new AsslineRecipeLogic((AssemblyLineMachine) machine));
         this.allowCircuitSlots = allowCircuitSlots;
     }
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -54,8 +55,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @SaveField
     private boolean needsVenting;
 
-    public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure) {
-        super(holder, isHighPressure);
+    public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
 

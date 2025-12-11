@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -51,8 +52,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public DataBankMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public DataBankMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
     }
 

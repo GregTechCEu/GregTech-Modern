@@ -33,7 +33,7 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
 
     @Override
     default boolean isInvalid() {
-        return self().isInValid();
+        return self().isRemoved();
     }
 
     @Override

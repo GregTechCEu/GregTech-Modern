@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -105,9 +106,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction,
                                WorkableTieredMachineTraits traits) {
-        super(holder, tier, tankScalingFunction, traits);
+        super(info, tier, tankScalingFunction, traits);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
 
@@ -125,8 +126,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction) {
-        this(holder, tier, tankScalingFunction, new WorkableTieredMachineTraits());
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, tankScalingFunction, new WorkableTieredMachineTraits());
     }
 
     //////////////////////////////////////

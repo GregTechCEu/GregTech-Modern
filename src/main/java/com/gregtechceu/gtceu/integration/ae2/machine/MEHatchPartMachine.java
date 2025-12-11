@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -35,8 +36,8 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
 
     protected final IActionSource actionSource;
 
-    public MEHatchPartMachine(IMachineBlockEntity holder, IO io) {
-        super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE);
+    public MEHatchPartMachine(BlockEntityCreationInfo info, IO io) {
+        super(info, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, CONFIG_SIZE);
         this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }

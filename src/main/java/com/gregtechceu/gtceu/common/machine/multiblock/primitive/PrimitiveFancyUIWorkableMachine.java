@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 
 public class PrimitiveFancyUIWorkableMachine extends PrimitiveWorkableMachine implements IFancyUIMachine {
 
-    public PrimitiveFancyUIWorkableMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public PrimitiveFancyUIWorkableMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 }

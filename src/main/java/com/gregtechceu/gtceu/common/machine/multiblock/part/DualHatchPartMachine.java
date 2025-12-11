@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -40,8 +41,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     private boolean hasFluidHandler;
     private boolean hasItemHandler;
 
-    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
-        super(holder, tier, io);
+    public DualHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
         this.tank = new NotifiableFluidTank(this, (int) Math.sqrt(getInventorySize()),
                 getTankCapacity(INITIAL_TANK_CAPACITY, getTier()), io);
     }

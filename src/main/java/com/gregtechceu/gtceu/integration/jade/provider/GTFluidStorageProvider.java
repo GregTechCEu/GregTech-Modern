@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -38,7 +37,7 @@ import java.util.List;
  * Currently: Quantum Tanks, Pattern Buffer Proxies
  * Defaults to Jade's normal FluidView provider
  */
-public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachineBlockEntity, CompoundTag>,
+public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachine, CompoundTag>,
         IClientExtensionProvider<CompoundTag, FluidView> {
 
     INSTANCE;
@@ -55,8 +54,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
 
     @Override
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(ServerPlayer serverPlayer, ServerLevel serverLevel,
-                                                            MetaMachineBlockEntity mmbe, boolean b) {
-        MetaMachine machine = mmbe.getMetaMachine();
+                                                            MetaMachine machine, boolean b) {
         if (machine instanceof QuantumTankMachine qtm) {
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
@@ -31,7 +30,7 @@ import java.util.List;
  * Currently: Quantum Chests, Pattern Buffer Proxies
  * Defaults to Jade's normal ItemStack provider
  */
-public enum GTItemStorageProvider implements IServerExtensionProvider<MetaMachineBlockEntity, ItemStack>,
+public enum GTItemStorageProvider implements IServerExtensionProvider<MetaMachine, ItemStack>,
         IClientExtensionProvider<ItemStack, ItemView> {
 
     INSTANCE;
@@ -48,8 +47,7 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<MetaMachin
 
     @Override
     public @Nullable List<ViewGroup<ItemStack>> getGroups(ServerPlayer serverPlayer, ServerLevel serverLevel,
-                                                          MetaMachineBlockEntity mmbe, boolean b) {
-        MetaMachine machine = mmbe.getMetaMachine();
+                                                          MetaMachine machine, boolean b) {
         if (machine instanceof QuantumChestMachine qcm) {
             ItemStack stored = qcm.getStored();
             long amount = qcm.getStoredAmount();

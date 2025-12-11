@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -26,8 +27,8 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final int INITIAL_TANK_CAPACITY = 64 * FluidType.BUCKET_VOLUME;
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
-    public SteamHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1);
+    public SteamHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1);
     }
 
     @Override
