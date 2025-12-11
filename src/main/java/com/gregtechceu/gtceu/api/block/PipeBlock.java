@@ -83,14 +83,14 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         this.pipeType = pipeType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 
-        float min = (1 - pipeType.getThickness()) / 2f;
-        float max = min + pipeType.getThickness();
-        shapes.put(null, Shapes.box(min, min, min, max, max, max));
+        float min = (16 - pipeType.getThickness() * 16) / 2f;
+        float max = min + pipeType.getThickness() * 16;
+        shapes.put(null, Block.box(min, min, min, max, max, max));
         for (Direction dir : GTUtil.DIRECTIONS) {
             var coords = GTMath.getCoordinates(dir, min, max);
             Vector3f minCoord = coords.getLeft();
             Vector3f maxCoord = coords.getRight();
-            shapes.put(dir, Shapes.box(minCoord.x, minCoord.y, minCoord.z, maxCoord.x, maxCoord.y, maxCoord.z));
+            shapes.put(dir, Block.box(minCoord.x, minCoord.y, minCoord.z, maxCoord.x, maxCoord.y, maxCoord.z));
         }
     }
 
