@@ -72,7 +72,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     true);
             return item.child(Flow.row()
                     .height(20)
-                    .child(new TextWidget<>(IKey.str(() -> item.getWidgetValue().getName()))
+                    .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(item.getWidgetValue().getName())))
                             .paddingLeft(5)
                             .widthRelOffset(1, -38))
                     .child(new ButtonWidget<>()
@@ -180,12 +180,12 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 };
                 curRow.add(new ButtonWidget<>()
                         .margin(1)
-                        .background(texture, new BorderDrawable(colorSupplier, 1), IKey.str(() -> {
-                            if (component == null || component.getDataItems() == null) return "";
+                        .background(texture, new BorderDrawable(colorSupplier, 1), IKey.dynamic(() -> {
+                            if (component == null || component.getDataItems() == null) return Component.empty();
                             BlockPos target = group.getTargetRaw();
                             boolean isTarget = target != null && target.asLong() == component.getPos().asLong();
-                            if (isTarget) return String.valueOf(group.getDataSlot() + 1);
-                            else return "";
+                            if (isTarget) return Component.literal(String.valueOf(group.getDataSlot() + 1));
+                            else return Component.empty();
                         }))
                         .hoverBackground(texture, new BorderDrawable(() -> colorSupplier.getAsInt() | 0x222222, 1))
                         .onMousePressed((mouseX, mouseY, button) -> {
