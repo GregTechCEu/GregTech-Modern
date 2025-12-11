@@ -228,6 +228,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 this.isPainted() != renderState.getValue(GTMachineModelProperties.IS_PAINTED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
+
+        // Force model data refresh on client when BlockEntity finishes loading,
+        // in case the chunk was rendered before this BlockEntity was available
+        if (isRemote()) {
+            scheduleRenderUpdate();
+        }
     }
 
     /**

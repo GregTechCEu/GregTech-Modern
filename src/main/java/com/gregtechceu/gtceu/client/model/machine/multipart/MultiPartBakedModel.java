@@ -122,7 +122,9 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         BlockPos pos = modelData.get(MODEL_DATA_POS);
 
         var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
-        if (machine == null) return IDynamicBakedModel.super.getRenderTypes(state, rand, modelData);
+        // When machine is null (BE not loaded yet), use the default model's render types
+        // to ensure we still render something instead of being invisible
+        if (machine == null) return defaultModel.getRenderTypes(state, rand, modelData);
 
         var renderTypeSets = new LinkedList<ChunkRenderTypeSet>();
         var selectors = getSelectors(machine.getRenderState());
