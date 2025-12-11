@@ -85,7 +85,7 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addResource(ResourceLocation location, byte[] data) {
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(location, null, parent, data);
         }
         CONTENTS.addToData(location, data);
@@ -126,7 +126,7 @@ public class GTDynamicResourcePack implements PackResources {
         byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
 
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(loc, null, parent, modelBytes);
         }
         CONTENTS.addToData(loc, modelBytes);
@@ -145,7 +145,7 @@ public class GTDynamicResourcePack implements PackResources {
         byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
 
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(l, null, parent, stateBytes);
         }
         CONTENTS.addToData(l, stateBytes);
@@ -170,7 +170,7 @@ public class GTDynamicResourcePack implements PackResources {
         byte[] sourceBytes = sourceJson.toString().getBytes(StandardCharsets.UTF_8);
 
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(l, null, parent, sourceBytes);
         }
         CONTENTS.addToData(l, sourceBytes);
@@ -179,7 +179,7 @@ public class GTDynamicResourcePack implements PackResources {
     public static void addBlockTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("block", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
         }
         CONTENTS.addToData(l, data);
@@ -188,7 +188,7 @@ public class GTDynamicResourcePack implements PackResources {
     public static void addItemTexture(ResourceLocation loc, byte[] data) {
         ResourceLocation l = getTextureLocation("item", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
-            Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
+            Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
         }
         CONTENTS.addToData(l, data);
