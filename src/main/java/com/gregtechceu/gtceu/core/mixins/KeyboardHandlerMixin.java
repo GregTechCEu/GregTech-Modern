@@ -26,10 +26,11 @@ public class KeyboardHandlerMixin {
         }
     }
 
-    @Inject(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/ForgeHooksClient;onKeyInput(IIII)V"), cancellable = true)
+    @Inject(method = "keyPress", at = @At(value = "HEAD"), cancellable = true)
     private void onKeyPressed(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
-        if (MinecraftForge.EVENT_BUS.post(new EarlyKeyPressEvent(key, scanCode, action, modifiers))) {
-            ci.cancel();
+        if (windowPointer == this.minecraft.getWindow().getWindow()) {
+            EarlyKeyPressEvent event = new EarlyKeyPressEvent(key, scanCode, action, modifiers);
+            if (MinecraftForge.EVENT_BUS.post(event)) ci.cancel();
         }
     }
 }
