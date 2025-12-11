@@ -473,14 +473,9 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_east", "Control Cover (East)");
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
-        provider.add("item.gtceu.ender_item_link_cover.tooltip",
-                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
-        provider.add("item.gtceu.ender_redstone_link_cover.tooltip",
-                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_item_link.title", "Ender Item Link");
         provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
-        provider.add("cover.ender_redstone_link.label", "Redstone power: %d");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
@@ -1645,6 +1640,13 @@ public class LangHandler {
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",
                 "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_item_link_cover.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
+        provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
+        provider.add("gtceu.ender_redstone_link_cover.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");

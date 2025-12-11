@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/pipe/normal_optical_pipe/connection",
+  "textures": {
+    "side_overlay": "gtceu:block/pipe/pipe_optical_side_overlay_active"
+  }
+}
