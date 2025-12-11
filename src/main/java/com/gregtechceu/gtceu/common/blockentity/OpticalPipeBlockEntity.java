@@ -45,12 +45,6 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     private WeakReference<OpticalPipeNet> currentPipeNet = new WeakReference<>(null);
     private OpticalNetHandler defaultHandler;
 
-    @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    private boolean isActive;
-
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
@@ -157,20 +151,11 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
      * @param duration how long the pipe should be active for
      */
     public void setActive(boolean active, int duration) {
-        boolean stateChanged = false;
-        if (this.isActive && !active) {
-            this.isActive = false;
-            stateChanged = true;
-        } else if (!this.isActive && active) {
-            this.isActive = true;
-            stateChanged = true;
-            TaskHandler.enqueueServerTask((ServerLevel) getLevel(), () -> setActive(false, -1), duration);
-        }
+        LaserPipeBlockEntity.setPipeActive(this, this.getBlockState(), active, duration);
+    }
 
-        if (stateChanged) {
-            notifyBlockUpdate();
-            setChanged();
-        }
+    public boolean isActive() {
+        return this.getBlockState().getValue(GTBlockStateProperties.ACTIVE);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -37,6 +38,14 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeType pipeType) {
         super(properties, pipeType);
         this.properties = OpticalPipeProperties.INSTANCE;
+
+        registerDefaultState(defaultBlockState().setValue(GTBlockStateProperties.ACTIVE, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(GTBlockStateProperties.ACTIVE);
     }
 
     @Override

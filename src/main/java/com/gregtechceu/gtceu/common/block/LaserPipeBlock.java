@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IActivableBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -31,13 +31,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> implements IActivableBlock {
+public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> {
 
     private final LaserPipeProperties properties;
 
     public LaserPipeBlock(Properties properties, LaserPipeType type) {
         super(properties, type);
         this.properties = LaserPipeProperties.INSTANCE;
+
+        registerDefaultState(defaultBlockState().setValue(GTBlockStateProperties.ACTIVE, false));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -58,6 +60,12 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
             }
             return -1;
         };
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(GTBlockStateProperties.ACTIVE);
     }
 
     @Override
@@ -108,18 +116,5 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
-    }
-
-    @Override
-    public boolean isActive(BlockState state, @Nullable BlockEntity blockEntity) {
-        if (!(blockEntity instanceof LaserPipeBlockEntity laserPipe)) return false;
-        return laserPipe.isActive();
-    }
-
-    @Override
-    public BlockState setActive(boolean value, BlockState currentState, @Nullable BlockEntity blockEntity) {
-        if (!(blockEntity instanceof LaserPipeBlockEntity laserPipe)) return currentState;
-        laserPipe.setActive(value, 100);
-        return currentState;
     }
 }

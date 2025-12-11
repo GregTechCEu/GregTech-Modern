@@ -45,13 +45,6 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     @Getter
     protected LaserNetHandler defaultHandler;
 
-    private int ticksActive = 0;
-    private int activeDuration = 0;
-    @Getter
-    @Persisted
-    @DescSynced
-    private boolean active = false;
-
     protected LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
@@ -129,19 +122,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
      * @param duration how long the pipe should be active for
      */
     public void setActive(boolean active, int duration) {
-        if (this.active != active) {
-            this.active = active;
-            notifyBlockUpdate();
-            setChanged();
-            if (active && duration != this.activeDuration) {
-                TaskHandler.enqueueServerTask((ServerLevel) getLevel(), this::queueDisconnect, 0);
-            }
-        }
-
-        this.activeDuration = duration;
-        if (duration > 0 && active) {
-            this.ticksActive = 0;
-        }
+        setPipeActive(this, this.getBlockState(), active, duration);
     }
 
     @Override
@@ -201,6 +182,28 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    public static BlockState setPipeActive(PipeBlockEntity<?, ?> blockEntity,
+                                           BlockState state, boolean newActive, int duration) {
+        if (!state.hasProperty(GTBlockStateProperties.ACTIVE) ||
+                state.getValue(GTBlockStateProperties.ACTIVE) == newActive) {
+            return state;
+        }
+        BlockState newState = state.setValue(GTBlockStateProperties.ACTIVE, newActive);
+        if (blockEntity == null || blockEntity.getLevel() == null || blockEntity.isRemoved()) {
+            return newState;
+        }
+        Level level = blockEntity.getLevel();
+
+        level.setBlock(blockEntity.getBlockPos(), newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+        blockEntity.notifyBlockUpdate();
+        blockEntity.setChanged();
+
+        if (newActive && level instanceof ServerLevel serverLevel) {
+            TaskHandler.enqueueServerTask(serverLevel, () -> setPipeActive(blockEntity, newState, false, -1), duration);
+        }
+        return newState;
     }
 
     private static class DefaultLaserContainer implements ILaserContainer {

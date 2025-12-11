@@ -57,6 +57,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +96,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(BlockStateProperties.WATERLOGGED));
+        super.createBlockStateDefinition(builder);
+        builder.add(BlockStateProperties.WATERLOGGED);
     }
 
     @Override
@@ -138,7 +140,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
      */
     public abstract NodeDataType getFallbackType();
 
-    public abstract PipeModel createPipeModel();
+    public abstract PipeModel createPipeModel(ExistingFileHelper existingFileHelper);
 
     public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
                                        IPipeNode<PipeType, NodeDataType> pipeTile) {
