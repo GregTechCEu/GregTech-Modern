@@ -209,12 +209,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
      */
     @Override
     public void onPartUnload() {
-        for (var it = parts.iterator(); it.hasNext();) {
-            var part = it.next();
-            if (part.self().isInValid()) {
-                it.remove();
-            }
-        }
+        parts.removeIf(part -> part.self().isInValid());
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
         if (getLevel() instanceof ServerLevel serverLevel) {
             // If structure is formed, invalidate it immediately to update all parts' render states
