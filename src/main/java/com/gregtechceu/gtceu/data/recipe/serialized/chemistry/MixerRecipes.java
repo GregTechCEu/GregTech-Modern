@@ -268,7 +268,7 @@ public class MixerRecipes {
         MIXER_RECIPES.recipeBuilder("gunpowder_from_carbon").duration(400).EUt(VA[ULV])
                 .inputItems(dust, Saltpeter, 2)
                 .inputItems(dust, Sulfur)
-                .inputItems(dust, Carbon, 3)
+                .inputItems(dust, Carbon, 6)
                 .circuitMeta(1)
                 .outputItems(dust, Gunpowder, 6)
                 .save(provider);
