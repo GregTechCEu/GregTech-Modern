@@ -28,30 +28,38 @@ import java.util.*;
 
 public class PipeModel {
 
-    public static final Set<PipeModel> MODELS = new HashSet<>();
+    public static final Set<PipeModel> DYNAMIC_MODELS = new HashSet<>();
 
-    public static PipeModel create(PipeBlock<?, ?, ?> block, float thickness,
-                                   ResourceLocation sideTexture, ResourceLocation endTexture) {
-        PipeModel model = new PipeModel(block, thickness, sideTexture, endTexture);
-        MODELS.add(model);
-        return model;
-    }
+    public static void initDynamicModels() {
+        for (PipeModel generator : DYNAMIC_MODELS) {
+            for (BlockModelBuilder builder : generator.getBlockModels()) {
+                GTDynamicResourcePack.addModel(builder);
+            }
 
-    public static void initModels() {
-        for (PipeModel generator : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(generator.getBlock());
-            GTDynamicResourcePack.addModel(generator.centerModel.getLocation(), generator.centerModel.toJson());
-            GTDynamicResourcePack.addModel(generator.connectionModel.getLocation(), generator.connectionModel.toJson());
-
-            GTDynamicResourcePack.addBlockModel(blockId, generator.createBlockModelJson(blockId));
-            GTDynamicResourcePack.addBlockState(blockId, generator.createBlockStateJson(blockId));
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(generator.getBlock().asItem()),
-                    new DelegatedModel(ModelLocationUtils.getModelLocation(generator.getBlock())));
+            GTDynamicResourcePack.addBlockState(generator.createBlockState());
+            GTDynamicResourcePack.addModel(generator.getItemModel());
         }
     }
 
     @Getter
     private final PipeBlock<?, ?, ?> block;
+    public final @NotNull ResourceLocation blockId;
+    protected final ExistingFileHelper existingFileHelper;
+
+    /**
+     * The pipe's "thickness" in the (0,16] voxel range, where 1 is 1 voxel and 16 is a full block thick
+     */
+    protected final float thickness;
+    /**
+     * The pipe model's 'minimum' coordinate in the (0,16] voxel range.<br>
+     * This is ex. the height of the center part's bottom edge.
+     */
+    protected final float minCoord;
+    /**
+     * The pipe model's 'maximum' coordinate in the (0,16] voxel range.<br>
+     * This is ex. the height of the center part's top edge.
+     */
+    protected final float maxCoord;
     @Setter
     public ResourceLocation side, end;
     @Setter
@@ -62,9 +70,14 @@ public class PipeModel {
     protected final BlockModelBuilder centerModel;
     protected final BlockModelBuilder connectionModel;
 
-    protected PipeModel(PipeBlock<?, ?, ?> block, float thickness,
-                        ResourceLocation side, ResourceLocation end) {
+    public PipeModel(PipeBlock<?, ?, ?> block, ExistingFileHelper existingFileHelper,
+                     float thickness, ResourceLocation side, ResourceLocation end) {
         this.block = block;
+        this.blockId = BuiltInRegistries.BLOCK.getKey(this.block);
+        this.existingFileHelper = existingFileHelper;
+
+        // assume thickness is in the 0-1 range
+        this.thickness = thickness * 16.0f;
         this.side = side;
         this.end = end;
 
@@ -129,7 +142,7 @@ public class PipeModel {
             });
         }
 
-        BlockModelBuilder model = new BlockModelBuilder(name, RuntimeExistingFileHelper.INSTANCE)
+        BlockModelBuilder model = new BlockModelBuilder(name, this.existingFileHelper)
                 .parent(new ModelFile.UncheckedModelFile("block/block"));
         makePartModelElement(model, side, false, maxDistances, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.side, this.end, "side", "end");
@@ -140,13 +153,15 @@ public class PipeModel {
         return model;
     }
 
-    private void makePartModelElement(BlockModelBuilder model, @Nullable Direction side, boolean useEndWithFullCube,
-                                      Reference2FloatMap<Direction> maxDistances,
-                                      float offset, int sideTintIndex, int endTintIndex,
-                                      final float x1, final float y1, final float z1,
-                                      final float x2, final float y2, final float z2,
-                                      @Nullable ResourceLocation sideTexture, @Nullable ResourceLocation endTexture,
-                                      String sideKey, String endKey) {
+    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction side,
+                                                                    boolean useEndWithFullCube,
+                                                                    Reference2FloatMap<Direction> maxDistances,
+                                                                    float offset, int sideTintIndex, int endTintIndex,
+                                                                    final float x1, final float y1, final float z1,
+                                                                    final float x2, final float y2, final float z2,
+                                                                    @Nullable ResourceLocation sideTexture,
+                                                                    @Nullable ResourceLocation endTexture,
+                                                                    String sideKey, String endKey) {
         if (sideTexture == null && endTexture == null) {
             return;
         }
@@ -162,7 +177,7 @@ public class PipeModel {
                 .to(x2 + offset, y2 + offset, z2 + offset);
 
         for (Direction dir : GTUtil.DIRECTIONS) {
-            BlockModelBuilder.ElementBuilder.FaceBuilder face = null;
+            T.ElementBuilder.FaceBuilder face = null;
             boolean isEnd = (side == dir || side == dir.getOpposite()) && !fullCube;
             if (isEnd && endTexture != null && side != dir.getOpposite()) {
                 face = element.face(dir).texture("#" + endKey).tintindex(endTintIndex);

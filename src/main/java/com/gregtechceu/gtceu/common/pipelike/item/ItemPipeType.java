@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import lombok.Getter;
 
@@ -73,17 +74,17 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material) {
-        PipeModel model;
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material,
+                                     ExistingFileHelper existingFileHelper) {
+        ResourceLocation sideTexture = GTCEu.id("block/pipe/pipe_side");
+        ResourceLocation endTexture = GTCEu.id("block/pipe/pipe_%s_in"
+                .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name));
         if (material.hasProperty(PropertyKey.WOOD)) {
-            model = PipeModel.create(block, thickness, GTCEu.id("block/pipe/pipe_side_wood"),
-                    GTCEu.id("block/pipe/pipe_%s_in_wood"
-                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
-        } else {
-            model = PipeModel.create(block, thickness, GTCEu.id("block/pipe/pipe_side"),
-                    GTCEu.id("block/pipe/pipe_%s_in"
-                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)));
+            sideTexture = sideTexture.withSuffix("_wood");
+            endTexture = endTexture.withSuffix("_wood");
         }
+
+        PipeModel model = new PipeModel(block, existingFileHelper, thickness, sideTexture, endTexture);
         if (isRestrictive()) {
             model.setSideOverlay(GTCEu.id("block/pipe/pipe_restrictive"));
         }

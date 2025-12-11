@@ -8,9 +8,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.WirePropertie
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import lombok.Getter;
 
@@ -82,13 +83,14 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material) {
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material,
+                                     ExistingFileHelper existingFileHelper) {
         ResourceLocation side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         ResourceLocation end = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "end", true);
 
-        PipeModel model = PipeModel.create(block, thickness,
+        PipeModel model = new PipeModel(block, existingFileHelper, thickness,
                 isCable ? GTCEu.id("block/cable/insulation_5") : side, end);
 
         ResourceLocation sideSecondary = MaterialIconType.wire

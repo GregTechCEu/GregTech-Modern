@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -81,8 +82,8 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
-    public PipeModel createPipeModel() {
-        return pipeType.createPipeModel(this, material);
+    public PipeModel createPipeModel(ExistingFileHelper existingFileHelper) {
+        return pipeType.createPipeModel(this, material, existingFileHelper);
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class ActivablePipeModel<T extends PipeBlock<?, ?, ?> & IActivableBlock> extends PipeModel {
+public class ActivablePipeModel extends PipeModel {
 
     public static <T extends PipeBlock<?, ?, ?> & IActivableBlock> ActivablePipeModel<T> createActivable(T block, float thickness,
                                                                                                          ResourceLocation sideTexture,
@@ -67,15 +67,9 @@ public class ActivablePipeModel<T extends PipeBlock<?, ?, ?> & IActivableBlock> 
         }
     }
 
-    protected ActivablePipeModel(T block, float thickness,
-                                 ResourceLocation side, ResourceLocation end) {
-        super(block, thickness, side, end);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public T getBlock() {
-        return (T) super.getBlock();
+    public ActivablePipeModel(PipeBlock<?, ?, ?> block, float thickness, ResourceLocation side, ResourceLocation end,
+                              ExistingFileHelper existingFileHelper) {
+        super(block, existingFileHelper, thickness, side, end);
     }
 
     /**

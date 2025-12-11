@@ -37,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -94,8 +95,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public PipeModel createPipeModel() {
-        return pipeType.createPipeModel(this, material);
+    public PipeModel createPipeModel(ExistingFileHelper existingFileHelper) {
+        return pipeType.createPipeModel(this, material, existingFileHelper);
     }
 
     @Override

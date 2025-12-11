@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
@@ -28,6 +27,7 @@ import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
+import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -236,7 +236,7 @@ public class ForgeClientEventListener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
-        PipeModel.MODELS.clear();
+        PipeModel.DYNAMIC_MODELS.clear();
     }
 
     @SubscribeEvent
@@ -248,15 +248,15 @@ public class ForgeClientEventListener {
         for (var block : GTBlocks.DUCT_PIPES) block.get().createPipeModel();
         for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel();
+            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
         }
         for (var block : GTMaterialBlocks.FLUID_PIPE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel();
+            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
         }
         for (var block : GTMaterialBlocks.ITEM_PIPE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel();
+            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
         }
 
         MaterialBlockRenderer.reinitModels();
@@ -271,7 +271,7 @@ public class ForgeClientEventListener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void postRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         // do this last so addons can easily add new variants to the registered model set
-        PipeModel.initModels();
+        PipeModel.initDynamicModels();
 
         if (GTCEu.Mods.isKubeJSLoaded()) {
             GregTechKubeJSPlugin.generateMachineBlockModels();

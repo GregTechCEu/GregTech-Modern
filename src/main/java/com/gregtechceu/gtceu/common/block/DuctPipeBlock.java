@@ -25,6 +25,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -71,8 +72,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     }
 
     @Override
-    public PipeModel createPipeModel() {
-        return PipeModel.create(this, this.pipeType.getThickness(),
+    public PipeModel createPipeModel(ExistingFileHelper existingFileHelper) {
+        return new PipeModel(this, existingFileHelper, this.pipeType.getThickness(),
                 GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
     }
 

@@ -22,6 +22,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +49,8 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public PipeModel createPipeModel() {
-        return pipeType.createPipeModel(this, material);
+    public PipeModel createPipeModel(ExistingFileHelper existingFileHelper) {
+        return pipeType.createPipeModel(this, material, existingFileHelper);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import lombok.Getter;
 
@@ -73,19 +74,21 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material) {
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material,
+                                     ExistingFileHelper existingFileHelper) {
+        String side = "block/pipe/pipe%s_side";
+        String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {
-            return PipeModel.create(block, thickness, GTCEu.id("block/pipe/pipe_side_wood"),
-                    GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(name)));
+            side += "_wood";
+            end += "_wood";
         }
         if (channels == 9) {
-            return PipeModel.create(block, thickness,
-                    GTCEu.id("block/pipe/pipe_non_side"), GTCEu.id("block/pipe/pipe_%s_in".formatted(name)));
+            side = side.formatted("_non");
         } else if (channels == 4) {
-            return PipeModel.create(block, thickness,
-                    GTCEu.id("block/pipe/pipe_quad_side"), GTCEu.id("block/pipe/pipe_%s_in".formatted(name)));
+            side = side.formatted("_quad");
+        } else {
+            side = side.formatted("");
         }
-        return PipeModel.create(block, thickness,
-                GTCEu.id("block/pipe/pipe_side"), GTCEu.id("block/pipe/pipe_%s_in".formatted(name)));
+        return new PipeModel(block, existingFileHelper, thickness, GTCEu.id(side), GTCEu.id(end));
     }
 }
