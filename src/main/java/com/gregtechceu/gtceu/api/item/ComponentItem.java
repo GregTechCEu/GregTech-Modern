@@ -205,6 +205,9 @@ public class ComponentItem extends Item
                     return result;
                 }
             }
+            if (component instanceof IUIHolder<?>) {
+                PlayerInventoryUIFactory.INSTANCE.openFromHandClient(usedHand);
+            }
         }
         return super.use(level, player, usedHand);
     }
