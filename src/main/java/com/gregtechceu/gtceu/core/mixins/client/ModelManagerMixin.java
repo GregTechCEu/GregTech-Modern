@@ -31,7 +31,7 @@ public abstract class ModelManagerMixin {
 
         long startTime = System.currentTimeMillis();
         // turns out these do have to be init in here after all, as they check for asset existence. whoops.
-        MinecraftForge.EVENT_BUS.post(new RegisterDynamicResourcesEvent());
+        ModLoader.get().postEventWrapContainerInModOrder(new RegisterDynamicResourcesEvent());
 
         if (GTCEu.Mods.isModernFixLoaded()) {
             GTModernFixIntegration.setAsLast();
