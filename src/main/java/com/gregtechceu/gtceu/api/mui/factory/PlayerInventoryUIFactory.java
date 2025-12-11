@@ -80,15 +80,6 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
         return Objects.requireNonNull(castUIHolder(data.getUsedItemStack().getItem()), "Item was not a gui holder!");
     }
 
-//    @Override
-//    protected IUIHolder<PlayerInventoryGuiData<?>> castUIHolder(Object o) {
-//        if (o instanceof IItemUIHolder holder) {
-//            if (holder.shouldOpenUI()) return holder;
-//            else return null;
-//        }
-//        return super.castUIHolder(o);
-//    }
-
     @Override
     public void writeGuiData(PlayerInventoryGuiData<?> guiData, FriendlyByteBuf buffer) {
         guiData.getInventoryType().write(buffer);
