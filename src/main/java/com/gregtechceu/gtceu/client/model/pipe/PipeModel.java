@@ -73,7 +73,7 @@ import java.util.*;
  * }
  * </pre>
  * 
- * This makes the pipe model(s) be made for you without having to autogenerate them.
+ * This makes the pipe model(s) be generated for you without having to process them at runtime.
  *
  */
 public class PipeModel {
