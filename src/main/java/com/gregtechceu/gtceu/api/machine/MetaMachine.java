@@ -31,11 +31,9 @@ import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
@@ -54,7 +52,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -104,9 +101,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine extends ManagedSyncBlockEntity
-                         implements ISyncManaged, IToolable, ITickSubscription, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, ITickSubscription, IToolGridHighlight, IFancyTooltip, IPaintable, IRedstoneSignalMachine {
 
     ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
     ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
@@ -148,7 +143,6 @@ public class MetaMachine extends ManagedSyncBlockEntity
 
     public MetaMachine(BlockEntityCreationInfo info) {
         super(info.type(), info.pos(), info.state());
-
         this.renderState = getDefinition().defaultRenderState();
         this.coverContainer = new MachineCoverContainer(this);
         this.traits = new ArrayList<>();
@@ -164,12 +158,6 @@ public class MetaMachine extends ManagedSyncBlockEntity
     public final void setRemoved() {
         super.setRemoved();
         onUnload();
-    }
-
-    @Override
-    public final void load(@NotNull CompoundTag tag) {
-        TagFixer.fixFluidTags(tag);
-        super.load(tag);
     }
 
     public @UnknownNullability Level getLevel() {
@@ -197,7 +185,7 @@ public class MetaMachine extends ManagedSyncBlockEntity
     }
 
     @Override
-    public void scheduleRenderUpdate() {
+    public final void scheduleRenderUpdate() {
         var pos = getBlockPos();
         var level = getLevel();
         if (level != null) {
@@ -329,6 +317,7 @@ public class MetaMachine extends ManagedSyncBlockEntity
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
+    
     /**
      * Called when a player clicks this meta tile entity with a tool
      *
@@ -761,7 +750,57 @@ public class MetaMachine extends ManagedSyncBlockEntity
     }
 
     //////////////////////////////////////
-    // ****** Capability ********//
+    // ******** GUI *********//
+    //////////////////////////////////////
+    @Override
+    public IGuiTexture getFancyTooltipIcon() {
+        return GuiTextures.INFO_ICON;
+    }
+
+    @Override
+    public final List<Component> getFancyTooltip() {
+        var tooltips = new ArrayList<Component>();
+        onAddFancyInformationTooltip(tooltips);
+        return tooltips;
+    }
+
+    @Override
+    public boolean showFancyTooltip() {
+        return !getFancyTooltip().isEmpty();
+    }
+
+    public void onAddFancyInformationTooltip(List<Component> tooltips) {
+        getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
+        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
+                getDefinition().getId().getPath());
+        if (Language.getInstance().has(mainKey)) {
+            tooltips.add(0, Component.translatable(mainKey));
+        }
+    }
+
+    @Override
+    public int getDefaultPaintingColor() {
+        return getDefinition().getDefaultPaintingColor();
+    }
+
+    @SuppressWarnings("unchecked")
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
+
+        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
+            if (modelWithBER.getBlockEntityType() == this.getType()) {
+                return ((IBlockEntityRendererBakedModel<MetaMachine>) modelWithBER)
+                        .getRenderBoundingBox(this);
+            }
+        }
+        return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+    }
+
+    //////////////////////////////////////
+    // ******** Capabilities *********//
     //////////////////////////////////////
 
     public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
@@ -847,60 +886,6 @@ public class MetaMachine extends ManagedSyncBlockEntity
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         return cover != null ? cover.getFluidHandlerCap(handlerList) : handlerList;
     }
-
-    //////////////////////////////////////
-    // ******** GUI *********//
-    //////////////////////////////////////
-    @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        return GuiTextures.INFO_ICON;
-    }
-
-    @Override
-    public final List<Component> getFancyTooltip() {
-        var tooltips = new ArrayList<Component>();
-        onAddFancyInformationTooltip(tooltips);
-        return tooltips;
-    }
-
-    @Override
-    public boolean showFancyTooltip() {
-        return !getFancyTooltip().isEmpty();
-    }
-
-    public void onAddFancyInformationTooltip(List<Component> tooltips) {
-        getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
-        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
-                getDefinition().getId().getPath());
-        if (Language.getInstance().has(mainKey)) {
-            tooltips.add(0, Component.translatable(mainKey));
-        }
-    }
-
-    @Override
-    public int getDefaultPaintingColor() {
-        return getDefinition().getDefaultPaintingColor();
-    }
-
-    @SuppressWarnings("unchecked")
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public AABB getRenderBoundingBox() {
-        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
-
-        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
-            if (modelWithBER.getBlockEntityType() == this.getType()) {
-                return ((IBlockEntityRendererBakedModel<MetaMachine>) modelWithBER)
-                        .getRenderBoundingBox(this);
-            }
-        }
-        return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
-    }
-
-    //////////////////////////////////////
-    // ******** Capabilities *********//
-    //////////////////////////////////////
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {

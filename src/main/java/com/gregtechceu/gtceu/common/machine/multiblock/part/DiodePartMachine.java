@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
@@ -90,6 +92,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
         amps = amps == getMaxAmperage() ? 1 : amps << 1;
         if (!isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("amps");
+
             reinitializeEnergyContainer();
             notifyBlockUpdate();
         }
@@ -139,17 +142,9 @@ public class DiodePartMachine extends TieredIOPartMachine {
         return InteractionResult.CONSUME;
     }
 
-    @SuppressWarnings("unused")
-    public void onAmpUpdated(int newValue, int oldValue) {
-        this.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        if (!isRemote()) {
-            setRenderState(getRenderState()
-                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
-            super.scheduleRenderUpdate();
-        }
+    @ClientFieldChangeListener(fieldName = "amps")
+    public void onAmpUpdated() {
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+        scheduleRenderUpdate();
     }
 }

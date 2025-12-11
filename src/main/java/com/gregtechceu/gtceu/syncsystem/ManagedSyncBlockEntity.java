@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
@@ -43,12 +44,10 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public final void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag, false);
+        getSyncDataHolder().deserializeNBT(tag, (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
     }
-
-    // Called when a client loads this BlockEntity
 
     @Override
     public CompoundTag getUpdateTag() {
@@ -56,11 +55,6 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         getSyncDataHolder().resyncAllFields();
         tag.merge(getSyncDataHolder().serializeNBT(true, true));
         return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, true);
     }
 
     @Override
@@ -73,8 +67,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         if (isDirty) {
             var level = getLevel();
             if (level == null) return;
-            GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getBlockPos()),
-                    new SPacketUpdateBESyncValue(this));
+            GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getBlockPos()), new SPacketUpdateBESyncValue(this));
             isDirty = false;
         }
     }
