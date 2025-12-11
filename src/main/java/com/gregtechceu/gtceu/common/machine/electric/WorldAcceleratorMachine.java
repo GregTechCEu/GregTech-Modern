@@ -96,7 +96,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         this.randRange = (getTier() << 1) + 1;
     }
 
-
     public void updateSubscription() {
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);

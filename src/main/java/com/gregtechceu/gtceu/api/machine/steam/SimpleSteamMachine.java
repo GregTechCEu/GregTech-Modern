@@ -70,7 +70,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     // ***** Initialization *****//
     //////////////////////////////////////
 
-
     protected NotifiableItemStackHandler createImportItemHandler() {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }

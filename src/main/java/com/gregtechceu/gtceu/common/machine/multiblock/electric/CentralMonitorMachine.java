@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;

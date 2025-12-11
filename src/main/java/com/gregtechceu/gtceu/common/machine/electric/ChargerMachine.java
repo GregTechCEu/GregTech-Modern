@@ -251,6 +251,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 }
 
                 if (changed) {
+                    machine.markAsDirty();
                     machine.changeState(State.RUNNING);
                 }
 
