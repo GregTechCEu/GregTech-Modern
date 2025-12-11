@@ -6,27 +6,30 @@
       "model": "gtceu:block/pipe/normal_optical_pipe/center_active"
     },
     "down": {
-      "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
-      "x": 90
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection_active"
     },
     "east": {
       "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
-      "y": 90
+      "x": 90,
+      "y": 270
     },
     "north": {
-      "model": "gtceu:block/pipe/normal_optical_pipe/connection_active"
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
+      "x": 90,
+      "y": 180
     },
     "south": {
       "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
-      "y": 180
+      "x": 90
     },
     "up": {
       "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
-      "x": 270
+      "x": 180
     },
     "west": {
       "model": "gtceu:block/pipe/normal_optical_pipe/connection_active",
-      "y": 270
+      "x": 90,
+      "y": 90
     }
   },
   "restrictors": {

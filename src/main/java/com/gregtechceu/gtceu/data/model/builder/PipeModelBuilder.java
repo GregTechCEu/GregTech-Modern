@@ -139,8 +139,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
             ConfiguredModel[] rotatedModels = Arrays.stream(connectionModels)
                     .map(model -> ConfiguredModel.builder()
                             .modelFile(model)
-                            .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
-                            .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
+                            .rotationX(dir == Direction.DOWN ? 0 : dir == Direction.UP ? 180 : 90)
+                            .rotationY(dir.getAxis().isVertical() ? 0 : (int) dir.toYRot())
                             .buildLast())
                     .toArray(ConfiguredModel[]::new);
             modelsForDirection(dir, rotatedModels);
