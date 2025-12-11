@@ -20,9 +20,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 public class SolarPanelTest {
 
     private static BatteryBufferMachine getBatteryBuffer(GameTestHelper helper) {
-        // noinspection DataFlowIssue
-        return (BatteryBufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
+        return (BatteryBufferMachine)helper.getBlockEntity(new BlockPos(0, 1, 0));
     }
 
     @GameTest(template = "solar", batch = "coverTests")

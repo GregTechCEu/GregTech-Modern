@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
@@ -61,7 +60,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 this.objectHolder = iObjectHolder;
             }
 
-            part.self().holder.self()
+            part.self()
                     .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
                     .ifPresent(provider -> this.computationProvider = provider);
         }

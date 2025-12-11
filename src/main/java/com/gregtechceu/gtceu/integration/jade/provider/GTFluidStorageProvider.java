@@ -75,10 +75,10 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
         } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
-            return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, buffer.holder, b);
+            return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, proxy, b);
         }
 
-        return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, mmbe, b);
+        return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
     }
 
     // FluidView#readDefault can't handle amount > INT_MAX

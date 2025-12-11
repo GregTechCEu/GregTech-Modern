@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.capabilities.Capabilities;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -48,7 +46,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
-import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -69,7 +66,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -87,8 +83,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.Capabilities;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +104,8 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged, IToolable, ITickSubscription, IToolGridHighlight,
+public class MetaMachine extends ManagedSyncBlockEntity
+                         implements ISyncManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine {
 
     ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
@@ -167,17 +167,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
     }
 
     @Override
-    public void load(@NotNull CompoundTag tag) {
+    public final void load(@NotNull CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
         super.load(tag);
     }
 
     public @UnknownNullability Level getLevel() {
         return super.getLevel();
-    }
-
-    public BlockPos getPos() {
-        return getBlockPos();
     }
 
     public void setOwnerUUID(UUID uuid) {
@@ -216,7 +212,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
 
     public void scheduleNeighborShapeUpdate() {
         Level level = getLevel();
-        BlockPos pos = getPos();
+        BlockPos pos = getBlockPos();
 
         if (level == null) return;
 
@@ -266,7 +262,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
             getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
         }
     }
-
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
@@ -438,7 +433,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
@@ -503,7 +498,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
     // ********** MISC ***********//
     //////////////////////////////////////
 
-
     @Nullable
     public static MetaMachine getMachine(BlockGetter level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof MetaMachine m) {
@@ -524,7 +518,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
-                Block.popResource(Objects.requireNonNull(getLevel()), getPos(), stackInSlot);
+                Block.popResource(getLevel(), getBlockPos(), stackInSlot);
             }
         }
     }
@@ -584,7 +578,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
         if (getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) {
             return machineBlock.getDefinition();
         } else {
-            throw new IllegalStateException("MetaMachine created for an un available block: " + getBlockState().getBlock());
+            throw new IllegalStateException(
+                    "MetaMachine created for an un available block: " + getBlockState().getBlock());
         }
     }
 
@@ -641,8 +636,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
 
         var blockState = getBlockState();
         if (isFacingValid(facing)) {
-            Objects.requireNonNull(getLevel()).setBlockAndUpdate(getPos(),
-                    blockState.setValue(getRotationState().property, facing));
+            getLevel().setBlockAndUpdate(getBlockPos(), blockState.setValue(getRotationState().property, facing));
         }
 
         if (getLevel() != null && !getLevel().isClientSide) {
@@ -678,7 +672,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            Objects.requireNonNull(getLevel()).setBlockAndUpdate(getPos(),
+            getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
@@ -915,7 +909,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements ISyncManaged,
     }
 
     public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
-                                                    @Nullable Direction side) {
+                                                             @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {

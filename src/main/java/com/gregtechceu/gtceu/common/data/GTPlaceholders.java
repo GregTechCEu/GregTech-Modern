@@ -91,10 +91,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
                         return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
-                    }
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
@@ -106,10 +104,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
                         return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().capacity().longValue());
-                    }
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);

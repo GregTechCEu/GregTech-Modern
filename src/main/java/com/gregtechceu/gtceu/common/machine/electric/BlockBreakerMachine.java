@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -180,7 +179,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
 
     public void updateBreakerSubscription() {
-        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() &&
+        if (drainEnergy(true) && !getLevel().getBlockState(getBlockPos().relative(getFrontFacing())).isAir() &&
                 isWorkingEnabled) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
@@ -196,7 +195,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             drainEnergy(false);
 
             if (blockBreakProgress == 0) {
-                var pos = getPos().relative(getFrontFacing());
+                var pos = getBlockPos().relative(getFrontFacing());
                 var blockState = getLevel().getBlockState(pos);
                 float hardness = blockState.getBlock().defaultDestroyTime();
                 if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
@@ -205,9 +204,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         var remainder = tryFillCache(drop);
                         if (!remainder.isEmpty()) {
                             if (getOutputFacingItems() == null) {
-                                Block.popResource(getLevel(), getPos(), remainder);
+                                Block.popResource(getLevel(), getBlockPos(), remainder);
                             } else {
-                                Block.popResource(getLevel(), getPos().relative(getOutputFacingItems()), remainder);
+                                Block.popResource(getLevel(), getBlockPos().relative(getOutputFacingItems()), remainder);
                             }
                         }
                     }
@@ -217,7 +216,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         }
 
         if (blockBreakProgress == 0) {
-            var pos = getPos().relative(getFrontFacing());
+            var pos = getBlockPos().relative(getFrontFacing());
             var blockState = getLevel().getBlockState(pos);
             float hardness = blockState.getBlock().defaultDestroyTime();
             boolean skipBlock = blockState.isAir();
@@ -238,7 +237,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public void clientTick() {
         super.clientTick();
         if (blockBreakProgress > 0) {
-            var pos = getPos().relative(getFrontFacing());
+            var pos = getBlockPos().relative(getFrontFacing());
             var blockState = getLevel().getBlockState(pos);
             getLevel().addDestroyBlockEffect(pos, blockState);
         }
@@ -298,7 +297,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
         if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacing))
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacing))
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -476,7 +475,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

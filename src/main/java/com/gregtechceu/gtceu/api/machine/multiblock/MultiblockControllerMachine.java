@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -96,7 +95,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @NotNull
     public MultiblockState getMultiblockState() {
         if (multiblockState == null) {
-            multiblockState = new MultiblockState(getLevel(), getPos());
+            multiblockState = new MultiblockState(getLevel(), getBlockPos());
         }
         return multiblockState;
     }
@@ -119,7 +118,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
 
     protected void updatePartPositions() {
         this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
-                this.parts.stream().map(part -> part.self().getPos()).toArray(BlockPos[]::new);
+                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
         syncDataHolder.markClientSyncFieldDirty("partPositions");
     }
 
@@ -150,7 +149,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
 
     @Override
     public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 &&
+        if ((getMultiblockState().hasError() || !isFormed) && (getOffset() + periodID) % 4 == 0 &&
                 checkPatternWithTryLock()) { // per second
             if (getLevel() instanceof ServerLevel serverLevel) {
                 serverLevel.getServer().execute(() -> {
@@ -253,7 +252,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getPos(),
+            getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();

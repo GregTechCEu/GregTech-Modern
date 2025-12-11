@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -63,8 +62,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         this.maxParallels = maxParallels;
     }
 
-    public SteamParallelMultiblockMachine(IMachineBlockEntity holder) {
-        this(holder, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount);
+    public SteamParallelMultiblockMachine(BlockEntityCreationInfo info) {
+        this(info, ConfigHolder.INSTANCE.machines.steamMultiParallelAmount);
     }
 
     @Override

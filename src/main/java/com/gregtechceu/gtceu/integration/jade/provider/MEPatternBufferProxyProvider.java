@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
@@ -20,8 +19,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine) {
+        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferProxyPartMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (!serverData.getBoolean("formed")) return;
                 if (!serverData.getBoolean("bound")) {
@@ -34,14 +32,12 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
                         .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
 
                 MEPatternBufferProvider.readBufferTag(iTooltip, serverData);
-            }
         }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferProxyPartMachine proxy) {
+        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferProxyPartMachine proxy) {
                 if (!proxy.isFormed()) {
                     compoundTag.putBoolean("formed", false);
                     return;
@@ -54,11 +50,10 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
                 }
                 compoundTag.putBoolean("bound", true);
 
-                var pos = buffer.getPos();
+                var pos = buffer.getBlockPos();
                 compoundTag.putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
                 MEPatternBufferProvider.writeBufferTag(compoundTag, buffer);
             }
-        }
     }
 
     @Override

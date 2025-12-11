@@ -390,14 +390,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void render(@NotNull BlockEntity blockEntity, float partialTick,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
-        if (machineBE.getDefinition() != getDefinition()) return;
-        ICoverableRenderer.super.renderDynamicCovers(machineBE.getMetaMachine(), partialTick, poseStack, buffer,
+        if (!(blockEntity instanceof MetaMachine machine)) return;
+        if (machine.getDefinition() != getDefinition()) return;
+        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer,
                 packedLight,
                 packedOverlay);
         if (dynamicRenders.isEmpty()) return;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, cameraPos)) {
@@ -422,11 +421,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public AABB getRenderBoundingBox(BlockEntity blockEntity) {
         AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(blockEntity);
 
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return bounds;
-        if (machineBE.getDefinition() != getDefinition()) return bounds;
+        if (!(blockEntity instanceof MetaMachine machine)) return bounds;
+        if (machine.getDefinition() != getDefinition()) return bounds;
         if (dynamicRenders.isEmpty()) return bounds;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
             bounds = bounds.minmax(model.getRenderBoundingBox(machine));
         }
@@ -436,11 +434,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
+        if (!(blockEntity instanceof MetaMachine machine)) return false;
+        if (machine.getDefinition() != getDefinition()) return false;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender render : dynamicRenders) {
             if (render.shouldRenderOffScreen(machine)) return true;
         }
@@ -450,12 +447,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRender(BlockEntity blockEntity, @NotNull Vec3 cameraPos) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
-        if (machineBE.getMetaMachine().getCoverContainer().hasDynamicCovers()) return true;
+        if (!(blockEntity instanceof MetaMachine machine)) return false;
+        if (machine.getDefinition() != getDefinition()) return false;
+        if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
             if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
                 return true;

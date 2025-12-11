@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
@@ -87,8 +87,8 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private boolean active = false;
     private TickableSubscription tickSubs;
 
-    public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, (TieredEnergyMachine machine) -> {
+    public WorldAcceleratorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, (TieredEnergyMachine machine) -> {
             long tierVoltage = GTValues.V[machine.getTier()];
             return new NotifiableEnergyContainer(machine, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
         });
@@ -121,9 +121,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         // handle random tick mode
         if (isRandomTickMode) {
             BlockPos cornerPos = new BlockPos(
-                    getPos().getX() - getTier(),
-                    getPos().getY() - getTier(),
-                    getPos().getZ() - getTier());
+                    getBlockPos().getX() - getTier(),
+                    getBlockPos().getY() - getTier(),
+                    getBlockPos().getZ() - getTier());
             int attempts = successLimit * 3;
 
             for (int i = 0, j = 0; i < successLimit && j < attempts; j++) {
@@ -133,7 +133,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                         GTValues.RNG.nextInt(randRange));
                 if (randomPos.getY() > getLevel().getMaxBuildHeight() ||
                         randomPos.getY() < getLevel().getMinBuildHeight() || !getLevel().isLoaded(randomPos) ||
-                        randomPos.equals(getPos()))
+                        randomPos.equals(getBlockPos()))
                     continue;
                 if (getLevel().getBlockState(randomPos).isRandomlyTicking()) {
                     getLevel().getBlockState(randomPos).randomTick((ServerLevel) this.getLevel(), randomPos,
@@ -144,7 +144,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         } else {
             // else handle block entity mode
             for (Direction dir : GTUtil.DIRECTIONS) {
-                BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getPos().relative(dir));
+                BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getBlockPos().relative(dir));
                 if (blockEntity != null && canAccelerate(blockEntity)) {
                     tickBlockEntity(blockEntity);
                 }
@@ -234,7 +234,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

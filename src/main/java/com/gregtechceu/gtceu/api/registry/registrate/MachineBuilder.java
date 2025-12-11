@@ -550,7 +550,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         var item = itemBuilder.register();
 
         var blockEntityBuilder = registrate
-                .blockEntity((type, pos, state) -> blockEntityFactory.apply(new BlockEntityCreationInfo(type, pos, state)))
+                .blockEntity(
+                        (type, pos, state) -> blockEntityFactory.apply(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {

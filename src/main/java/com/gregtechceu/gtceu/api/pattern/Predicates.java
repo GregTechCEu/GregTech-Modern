@@ -63,7 +63,7 @@ public class Predicates {
 
     public static TraceabilityPredicate blocks(MetaMachineBlock... blocks) {
         return new TraceabilityPredicate(
-                new PredicateBlocks(Arrays.stream(blocks).map(MetaMachineBlock::self).toArray(Block[]::new)));
+                new PredicateBlocks(Arrays.stream(blocks).toArray(Block[]::new)));
     }
 
     public static TraceabilityPredicate machines(MachineDefinition... definitions) {

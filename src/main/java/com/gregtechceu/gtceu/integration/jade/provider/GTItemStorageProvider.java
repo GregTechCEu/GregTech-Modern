@@ -62,9 +62,9 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<MetaMachin
         } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
-            return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, buffer.holder, b);
+            return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
         }
 
-        return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, mmbe, b);
+        return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
     }
 }

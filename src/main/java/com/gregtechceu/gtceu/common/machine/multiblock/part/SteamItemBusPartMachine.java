@@ -61,7 +61,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
     @Override
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.STEAM_EXPORT_BUS;
@@ -74,15 +74,13 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof SteamItemBusPartMachine newMachine) {
+        if (getLevel().getBlockEntity(blockPos) instanceof SteamItemBusPartMachine newMachine) {
                 // We don't set the circuit or distinct busses, since
                 // that doesn't make sense on an output bus.
                 // Furthermore, existing inventory items
                 // and conveyors will drop to the floor on block override.
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
-            }
         }
         return true;
     }

@@ -115,7 +115,7 @@ public class LargeMinerLogic extends MinerLogic {
 
     @Override
     public BlockPos getMiningPos() {
-        return getMachine().getPos().relative(getMachine().getFrontFacing().getOpposite());
+        return getMachine().getBlockPos().relative(getMachine().getFrontFacing().getOpposite());
     }
 
     @Override

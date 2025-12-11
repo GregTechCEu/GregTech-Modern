@@ -52,7 +52,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
 
     @Override
     public BlockPos getPos() {
-        return machine.getPos();
+        return machine.getBlockPos();
     }
 
     @Override

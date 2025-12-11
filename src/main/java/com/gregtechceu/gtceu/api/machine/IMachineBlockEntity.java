@@ -12,11 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
-/**
- * A simple compound Interface for all my TileEntities.
- * <p/>
- * Also delivers most of the Information about TileEntities.
- */
 public interface IMachineBlockEntity extends IToolGridHighlight, IPaintable, IForgeBlockEntity {
 
     ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
@@ -48,9 +43,14 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IPaintable, IFo
     }
 
     MachineRenderState getRenderState();
+
     void setRenderState(MachineRenderState state);
+
     long getOffset();
+
     int getPaintingColor();
+
     void setPaintingColor(int color);
+
     int getDefaultPaintingColor();
 }

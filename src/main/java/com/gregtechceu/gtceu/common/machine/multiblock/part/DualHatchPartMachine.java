@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -84,8 +83,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         boolean canOutput = io == IO.OUT && (!tank.isEmpty() || !getInventory().isEmpty());
         var level = getLevel();
         if (level != null) {
-            this.hasItemHandler = GTTransferUtils.hasAdjacentItemHandler(level, getPos(), getFrontFacing());
-            this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getPos(), getFrontFacing());
+            this.hasItemHandler = GTTransferUtils.hasAdjacentItemHandler(level, getBlockPos(), getFrontFacing());
+            this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getBlockPos(), getFrontFacing());
         } else {
             this.hasItemHandler = false;
             this.hasFluidHandler = false;
@@ -125,7 +124,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     @Override
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
 
         if (io == IO.IN) {
@@ -139,14 +138,12 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof DualHatchPartMachine newMachine) {
+        if (getLevel().getBlockEntity(blockPos) instanceof DualHatchPartMachine newMachine) {
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
                 for (int i = 0; i < this.tank.getTanks(); i++) {
                     newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
                 }
-            }
         }
         return true;
     }

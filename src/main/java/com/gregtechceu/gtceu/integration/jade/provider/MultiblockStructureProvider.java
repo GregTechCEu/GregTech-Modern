@@ -30,10 +30,8 @@ public class MultiblockStructureProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                compoundTag.putBoolean("hasError", !controller.isFormed());
-            }
+        if (blockAccessor.getBlockEntity() instanceof IMultiController controller) {
+            compoundTag.putBoolean("hasError", !controller.isFormed());
         }
     }
 

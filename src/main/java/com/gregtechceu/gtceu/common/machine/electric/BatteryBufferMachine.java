@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -30,6 +29,7 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -202,13 +202,14 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     protected static class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
-        private BatteryBufferMachine machine;
+        private final BatteryBufferMachine machine;
         private final int tier;
 
-        protected EnergyBatteryTrait(BatteryBufferMachine machine, int inventorySize) {
+        protected EnergyBatteryTrait(@NotNull BatteryBufferMachine machine, int inventorySize) {
             super(machine, GTValues.V[machine.getTier()] * inventorySize * 32L, GTValues.V[machine.getTier()],
                     inventorySize * AMPS_PER_BATTERY, GTValues.V[machine.getTier()], inventorySize);
             tier = machine.getTier();
+            this.machine = machine;
             this.setSideInputCondition(side -> side != machine.getFrontFacing() && machine.isWorkingEnabled());
             this.setSideOutputCondition(side -> side == machine.getFrontFacing() && machine.isWorkingEnabled());
         }
@@ -227,7 +228,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         public void serverTick() {
             var outFacing = machine.getFrontFacing();
             var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                    machine.getPos().relative(outFacing),
+                    machine.getBlockPos().relative(outFacing),
                     outFacing.getOpposite());
             if (energyContainer == null) {
                 return;

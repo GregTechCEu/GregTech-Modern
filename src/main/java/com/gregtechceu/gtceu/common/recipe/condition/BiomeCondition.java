@@ -62,7 +62,7 @@ public class BiomeCondition extends RecipeCondition {
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
         if (level == null) return false;
-        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
+        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getBlockPos());
         return biome.is(this.biome);
     }
 

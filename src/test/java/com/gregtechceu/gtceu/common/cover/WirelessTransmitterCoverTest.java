@@ -34,7 +34,7 @@ public class WirelessTransmitterCoverTest {
         WirelessTransmitterCover cover = (WirelessTransmitterCover) batteryBuffer.getCoverContainer()
                 .getCoverAtSide(Direction.UP);
         MonitorGroup group = machine.getMonitorGroups().get(0);
-        group.setTarget(dataHatch.getPos());
+        group.setTarget(dataHatch.getBlockPos());
         Supplier<ItemStack> module = () -> group.getItemStackHandler().getStackInSlot(0);
         ItemStack stack = dataHatch.getDataItems().getStackInSlot(3);
         // noinspection DataFlowIssue

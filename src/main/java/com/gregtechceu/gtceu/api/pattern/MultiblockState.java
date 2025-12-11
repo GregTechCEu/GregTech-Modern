@@ -86,8 +86,7 @@ public class MultiblockState {
 
     public IMultiController getController() {
         if (world.isLoaded(controllerPos)) {
-            if (world.getBlockEntity(controllerPos) instanceof IMachineBlockEntity machineBlockEntity &&
-                    machineBlockEntity.getMetaMachine() instanceof IMultiController controller) {
+            if (world.getBlockEntity(controllerPos) instanceof IMultiController controller) {
                 return lastController = controller;
             }
         } else {

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -50,7 +49,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
 
     @Override
     protected void updateCurrentTemperature() {
-        if (GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getPos())) {
+        if (GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getBlockPos())) {
             recipeLogic.setStatus(RecipeLogic.Status.WORKING);
         } else {
             recipeLogic.setStatus(RecipeLogic.Status.IDLE);
@@ -72,7 +71,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     public ModularUI createUI(Player entityPlayer) {
         return super.createUI(entityPlayer)
                 .widget(new ProgressWidget(
-                        () -> GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getPos()) ? 1.0 : 0.0, 114,
+                        () -> GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getBlockPos()) ? 1.0 : 0.0, 114,
                         44, 20,
                         20)
                         .setProgressTexture(

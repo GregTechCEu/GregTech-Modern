@@ -5,16 +5,13 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -24,9 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -45,7 +40,6 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -134,24 +128,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder<MachineDefinition> machine(String name, Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+    public MachineBuilder<MachineDefinition> machine(String name,
+                                                     Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
         return new MachineBuilder<>(this, name, MachineDefinition::new,
                 MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder multiblock(String name,
-                                               Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
                                                BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                                BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                               TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MultiblockMachineBuilder(this, name, metaMachine,
+                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MultiblockMachineBuilder(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder multiblock(String name,
-                                               Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        return new MultiblockMachineBuilder(this, name, metaMachine,
-                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
+                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MultiblockMachineBuilder(this, name, MetaMachineBlock::new, MetaMachineItem::new,
+                blockEntityFactory);
     }
 
     public SoundEntryBuilder sound(String name) {

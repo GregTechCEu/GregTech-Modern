@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -59,7 +58,7 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
         Direction counterClockWise = RelativeDirection.LEFT.getRelative(getFrontFacing(), getUpwardsFacing(),
                 isFlipped());
 
-        BlockPos pos = getPos();
+        BlockPos pos = getBlockPos();
         BlockPos center = pos.relative(up);
 
         Set<BlockPos> offsets = new HashSet<>();

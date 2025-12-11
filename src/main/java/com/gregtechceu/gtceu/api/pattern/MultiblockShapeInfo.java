@@ -48,8 +48,8 @@ public class MultiblockShapeInfo {
 
         public ShapeInfoBuilder where(char symbol, MetaMachineBlock machine, Direction facing) {
             return where(symbol, machine.getRotationState() == RotationState.NONE ?
-                    machine.self().defaultBlockState() :
-                    machine.self().defaultBlockState().setValue(machine.getRotationState().property, facing));
+                    machine.defaultBlockState() :
+                    machine.defaultBlockState().setValue(machine.getRotationState().property, facing));
         }
 
         private BlockInfo[][][] bake() {

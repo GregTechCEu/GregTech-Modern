@@ -26,22 +26,17 @@ public class TransformerBlockProvider implements IBlockComponentProvider, IServe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            MetaMachine machine = blockEntity.getMetaMachine();
-            if (machine instanceof TransformerMachine transformer) {
+        if (blockAccessor.getBlockEntity() instanceof TransformerMachine transformer) {
                 compoundTag.putInt("side", transformer.getFrontFacing().get3DDataValue());
                 compoundTag.putBoolean("transformUp", transformer.isTransformUp());
                 compoundTag.putInt("baseAmp", transformer.getBaseAmp());
                 compoundTag.putInt("baseVoltage", transformer.getTier());
-            }
         }
     }
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            MetaMachine machine = blockEntity.getMetaMachine();
-            if (machine instanceof TransformerMachine transformer) {
+        if (blockAccessor.getBlockEntity() instanceof TransformerMachine transformer) {
                 boolean transformUp = blockAccessor.getServerData().getBoolean("transformUp");
                 int voltage = blockAccessor.getServerData().getInt("baseVoltage");
                 int amp = blockAccessor.getServerData().getInt("baseAmp");
@@ -71,5 +66,4 @@ public class TransformerBlockProvider implements IBlockComponentProvider, IServe
                 }
             }
         }
-    }
 }

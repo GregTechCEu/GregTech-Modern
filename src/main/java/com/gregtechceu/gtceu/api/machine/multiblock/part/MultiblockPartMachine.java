@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -111,7 +110,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             // Need to copy if > 1 so that we can call removedFromController safely without CME
             Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
             for (IMultiController controller : toIter) {
-                if (serverLevel.isLoaded(controller.self().getPos())) {
+                if (serverLevel.isLoaded(controller.self().getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
                 }
@@ -128,7 +127,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @MustBeInvokedByOverriders
     @Override
     public void removedFromController(IMultiController controller) {
-        controllerPositions.remove(controller.self().getPos());
+        controllerPositions.remove(controller.self().getBlockPos());
         controllers.remove(controller);
 
         if (controllers.isEmpty()) {
@@ -143,7 +142,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @MustBeInvokedByOverriders
     @Override
     public void addedToController(IMultiController controller) {
-        controllerPositions.add(controller.self().getPos());
+        controllerPositions.add(controller.self().getBlockPos());
         controllers.add(controller);
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");

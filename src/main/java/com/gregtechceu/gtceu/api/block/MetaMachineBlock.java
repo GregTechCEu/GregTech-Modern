@@ -97,7 +97,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return getDefinition().getRotationState();
     }
 
-
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return getRotationState() == RotationState.NONE ? definition.getShape(Direction.NORTH) :
@@ -186,7 +185,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
-        if (MetaMachine.getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
+        if (MetaMachine.getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine &&
+                dropSaveMachine.savePickClone()) {
             dropSaveMachine.saveToItem(itemStack.getOrCreateTag());
         }
         return itemStack;
@@ -375,7 +375,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     }
 
     public static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
-                           int index) {
+                                  int index) {
         if (level != null && pos != null) {
             var machine = MetaMachine.getMachine(level, pos);
             if (machine != null) {
@@ -393,8 +393,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                   BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                  BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
@@ -420,5 +420,4 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
         return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
     }
-
 }

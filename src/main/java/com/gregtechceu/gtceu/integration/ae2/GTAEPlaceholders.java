@@ -50,16 +50,10 @@ public class GTAEPlaceholders {
             if (node != null) return node.getGrid();
         } ;
         BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-            if (machineBlockEntity.getMetaMachine() instanceof IGridConnectedBlockEntity gridMachine) {
+        if (blockEntity instanceof IGridConnectedBlockEntity gridMachine) {
                 IGrid nullable = gridMachine.getMainNode().getGrid();
                 if (nullable == null) throw new NoMENetworkException();
                 return nullable;
-            }
-        }
-        if (blockEntity instanceof IGridConnectedBlockEntity gridBlockEntity) {
-            IGridNode node = gridBlockEntity.getGridNode();
-            if (node != null) return gridBlockEntity.getGridNode().getGrid();
         }
         throw new NoMENetworkException();
     }

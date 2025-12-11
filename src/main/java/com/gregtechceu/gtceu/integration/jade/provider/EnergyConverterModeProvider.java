@@ -29,8 +29,7 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity &&
-                blockEntity.getMetaMachine() instanceof ConverterMachine converter) {
+        if (blockAccessor.getBlockEntity() instanceof ConverterMachine converter) {
             compoundTag.putBoolean("converterMode", converter.isFeToEu());
         }
     }

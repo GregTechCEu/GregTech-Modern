@@ -24,13 +24,11 @@ public class MultiblockStructureProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
-        if (level.getBlockEntity(iProbeHitData.getPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                if (!controller.isFormed()) {
-                    iProbeInfo.text(CompoundText.create().error("gtceu.top.invalid_structure"));
-                } else {
-                    iProbeInfo.text(CompoundText.create().ok("gtceu.top.valid_structure"));
-                }
+        if (level.getBlockEntity(iProbeHitData.getPos()) instanceof IMultiController controller) {
+            if (!controller.isFormed()) {
+                iProbeInfo.text(CompoundText.create().error("gtceu.top.invalid_structure"));
+            } else {
+                iProbeInfo.text(CompoundText.create().ok("gtceu.top.valid_structure"));
             }
         }
     }

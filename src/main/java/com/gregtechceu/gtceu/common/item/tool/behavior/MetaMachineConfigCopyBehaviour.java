@@ -101,8 +101,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         // spotless:off
-        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity blockEntity) {
-            var machine = blockEntity.getMetaMachine();
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachine machine) {
             if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
                 return InteractionResult.FAIL;
             }

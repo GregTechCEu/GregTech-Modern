@@ -77,18 +77,16 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id) {
         return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachine::new);
+                WorkableElectricMultiblockMachine::new);
     }
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
                                                           KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
         return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                machine::create,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachine::new);
+                machine::create);
     }
 }

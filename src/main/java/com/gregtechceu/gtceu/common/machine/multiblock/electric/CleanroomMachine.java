@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
@@ -169,7 +168,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean shouldAddPartToController(IMultiPart part) {
         var cache = getMultiblockState().getCache();
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (!cache.contains(part.self().getPos().relative(side))) {
+            if (!cache.contains(part.self().getBlockPos().relative(side))) {
                 return true;
             }
         }
@@ -182,7 +181,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             if (isPartIgnored(part)) continue;
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
@@ -221,11 +220,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         Direction left = front.getCounterClockWise();
         Direction right = left.getOpposite();
 
-        BlockPos.MutableBlockPos lPos = getPos().mutable();
-        BlockPos.MutableBlockPos rPos = getPos().mutable();
-        BlockPos.MutableBlockPos fPos = getPos().mutable();
-        BlockPos.MutableBlockPos bPos = getPos().mutable();
-        BlockPos.MutableBlockPos hPos = getPos().mutable();
+        BlockPos.MutableBlockPos lPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos rPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos fPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos bPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos hPos = getBlockPos().mutable();
 
         // find the distances from the controller to the plascrete blocks on one horizontal axis and the Y axis
         // repeatable aisles take care of the second horizontal axis
@@ -425,8 +424,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
-            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-                var machine = machineBlockEntity.getMetaMachine();
+            if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return false;
                 }

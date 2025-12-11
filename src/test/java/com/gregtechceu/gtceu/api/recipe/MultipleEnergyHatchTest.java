@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -93,9 +94,9 @@ public class MultipleEnergyHatchTest {
                 helper.getBlockEntity(new BlockPos(1, 3, 0)));
         // Some instances don't have a second energy hatch
         var hatch2BE = helper.getBlockEntity(new BlockPos(1, 3, 0));
-        if (hatch2BE instanceof MetaMachineBlockEntity hatch2MMBE) {
+        if (hatch2BE instanceof EnergyHatchPartMachine hatch2MMBE) {
             return new BusHolder(inputBus, outputBus, controller, energyHatch,
-                    Optional.of((EnergyHatchPartMachine) hatch2MMBE.getMetaMachine()));
+                    Optional.of(hatch2MMBE));
         }
 
         return new BusHolder(inputBus, outputBus, controller, energyHatch, Optional.empty());

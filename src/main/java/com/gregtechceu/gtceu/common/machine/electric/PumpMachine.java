@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -249,7 +248,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             return;
         }
 
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         BlockPos downPos = headPos.below(1);
         var downBlock = getLevel().getBlockState(downPos);
@@ -383,7 +382,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
      */
     private boolean canAdvancePumpHead() {
         // position of the pump head, i.e. the position of the lowest mining pipe
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
@@ -407,7 +406,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Override
     public void onMachineRemoved() {
         if (getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getPos().relative(Direction.DOWN);
+            var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
                 pos = pos.relative(Direction.DOWN);

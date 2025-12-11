@@ -95,7 +95,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
                                          @Nullable BlockEntity tile) {
         return tile != null &&
                 (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
-                        tile instanceof MetaMachine metaMachine && (tile instanceof IEnvironmentalHazardCleaner || tile instanceof IEnvironmentalHazardEmitter));
+                        tile instanceof MetaMachine metaMachine && (tile instanceof IEnvironmentalHazardCleaner ||
+                                tile instanceof IEnvironmentalHazardEmitter));
     }
 
     @Override

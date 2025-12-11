@@ -27,9 +27,7 @@ public class DataBankBlockProvider implements IBlockComponentProvider, IServerDa
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            MetaMachine machine = blockEntity.getMetaMachine();
-            if (machine instanceof DataBankMachine) {
+        if (blockAccessor.getBlockEntity() instanceof DataBankMachine) {
                 long energyUsage = blockAccessor.getServerData().getLong("energyUsage");
                 String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
                 // wrap in text component to keep it from being formatted
@@ -41,16 +39,12 @@ public class DataBankBlockProvider implements IBlockComponentProvider, IServerDa
 
                 iTooltip.add(text);
             }
-        }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            MetaMachine machine = blockEntity.getMetaMachine();
-            if (machine instanceof DataBankMachine dataBank) {
+        if (blockAccessor.getBlockEntity() instanceof DataBankMachine dataBank) {
                 compoundTag.putLong("energyUsage", dataBank.getEnergyUsage());
             }
-        }
     }
 }

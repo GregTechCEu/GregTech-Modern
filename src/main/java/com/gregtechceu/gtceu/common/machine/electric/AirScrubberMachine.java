@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -89,7 +88,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             removedLastSecond = 0;
 
             for (Direction dir : GTUtil.DIRECTIONS) {
-                BlockPos offset = getPos().relative(dir);
+                BlockPos offset = getBlockPos().relative(dir);
                 if (GTCapabilityHelper.getHazardContainer(getLevel(), offset, dir.getOpposite()) != null) {
                     if (getLevel().getBlockEntity(offset) instanceof DuctPipeBlockEntity duct &&
                             !duct.isConnected(dir.getOpposite())) {
@@ -102,7 +101,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
             final ServerLevel serverLevel = (ServerLevel) getLevel();
             EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
 
-            final ChunkPos pos = new ChunkPos(getPos());
+            final ChunkPos pos = new ChunkPos(getBlockPos());
             Object2FloatMap<ChunkPos> relativePositions = new Object2FloatOpenHashMap<>();
             int radius = tier / 2;
             if (radius <= 0) {

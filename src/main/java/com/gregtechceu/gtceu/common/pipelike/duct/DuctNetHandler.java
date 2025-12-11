@@ -66,8 +66,7 @@ public class DuctNetHandler implements IHazardParticleContainer {
                     IHazardParticleContainer handler = path.getHandler(net.getLevel());
                     if (handler == null && path.getTargetPipe().isConnected(path.getTargetFacing())) {
                         if (net.getLevel().getBlockEntity(path.getTargetPipePos()
-                                .relative(path.getTargetFacing())) instanceof IMachineBlockEntity machineBE &&
-                                machineBE.getMetaMachine() instanceof IEnvironmentalHazardCleaner cleaner) {
+                                .relative(path.getTargetFacing())) instanceof IEnvironmentalHazardCleaner cleaner) {
                             cleaner.cleanHazard(condition, differenceAmount);
                             break;
                         }

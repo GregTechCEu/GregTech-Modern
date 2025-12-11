@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
@@ -216,7 +215,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -261,7 +260,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
@@ -274,8 +273,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
+        if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
                 // We don't set the circuit or distinct busses, since
                 // that doesn't make sense on an output bus.
                 // Furthermore, existing inventory items
@@ -283,7 +281,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
                 newMachine.setPaintingColor(this.getPaintingColor());
-            }
         }
         return true;
     }

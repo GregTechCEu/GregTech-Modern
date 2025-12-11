@@ -398,56 +398,56 @@ public class ToolHelper {
                                                  List<ItemStack> drops, int fortune, float dropChance,
                                                  RandomSource random) {
         // EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool)
-//        if (is(tool, GTToolType.HARD_HAMMER)) {
-//            List<ItemStack> silktouchDrops = getSilkTouchDrop(world, pos, state);
-//            for (ItemStack silktouchDrop : silktouchDrops) {
-//                if (silktouchDrop.isEmpty()) continue;
-//                // Stack lists can be immutable going into Recipe#matches barring no rewrites
-//                // Search for forge hammer recipes from all drops individually (only LV or under)
-//
-//                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-//                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
-//                        Collections.emptyList());
-//                RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-//                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
-//                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-//                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
-//                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
-//
-//                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-//                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
-//                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
-//
-//                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
-//                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
-//                GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-//                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
-//                        be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
-//                    drops.clear();
-//                    TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
-//                    if (prefix.isEmpty()) {
-//                        for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
-//                            if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-//                                drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
-//                                        .getItems()[0]);
-//                            }
-//                        }
-//                    } else if (TagPrefix.ORES.containsKey(prefix)) {
-//                        for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
-//                            if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-//                                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
-//                                // Only apply fortune on ore -> crushed forge hammer recipes
-//                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
-//                                    output = output.copy();
-//                                    if (fortune > 0) output.grow(random.nextInt(fortune));
-//                                    drops.add(output);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        // if (is(tool, GTToolType.HARD_HAMMER)) {
+        // List<ItemStack> silktouchDrops = getSilkTouchDrop(world, pos, state);
+        // for (ItemStack silktouchDrop : silktouchDrops) {
+        // if (silktouchDrop.isEmpty()) continue;
+        // // Stack lists can be immutable going into Recipe#matches barring no rewrites
+        // // Search for forge hammer recipes from all drops individually (only LV or under)
+        //
+        // DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
+        // GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
+        // Collections.emptyList());
+        // RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
+        // new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
+        // GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
+        // new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
+        // (slots) -> new CustomItemStackHandler(silktouchDrop)));
+        //
+        // RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
+        // new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
+        // be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+        //
+        // Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
+        // r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
+        // GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
+        // if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
+        // be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
+        // drops.clear();
+        // TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
+        // if (prefix.isEmpty()) {
+        // for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+        // if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
+        // drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
+        // .getItems()[0]);
+        // }
+        // }
+        // } else if (TagPrefix.ORES.containsKey(prefix)) {
+        // for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+        // if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
+        // ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+        // // Only apply fortune on ore -> crushed forge hammer recipes
+        // if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
+        // output = output.copy();
+        // if (fortune > 0) output.grow(random.nextInt(fortune));
+        // drops.add(output);
+        // }
+        // }
+        // }
+        // }
+        // }
+        // }
+        // }
     }
 
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
