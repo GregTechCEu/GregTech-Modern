@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.data.model.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
 import com.gregtechceu.gtceu.core.mixins.forge.ConfiguredModelBuilderAccessor;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.function.MemoizedBiFunction;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
@@ -21,6 +24,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.joml.Vector3f;
@@ -28,7 +34,9 @@ import org.joml.Vector3f;
 import java.util.*;
 
 import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelListToJSON;
+import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelToJSON;
 
+@Accessors(fluent = true, chain = true)
 @SuppressWarnings("UnusedReturnValue")
 public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
@@ -37,11 +45,15 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         return new PipeModelBuilder<>(parent, existingFileHelper);
     }
 
+    @Accessors(fluent = false)
     @Getter
     private final Map<Direction, ConfiguredModelList> parts = new IdentityHashMap<>();
     @Setter
     @Range(from = 0, to = 16)
-    private float thickness = 0;
+    private float thickness = Float.MIN_VALUE;
+    @Setter
+    private @NotNull GTBlockstateProvider provider;
+    private BlockModelBuilder[] restrictors = null;
 
     protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper) {
         super(PipeModelLoader.ID, parent, existingFileHelper);
@@ -270,10 +282,18 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     }
 
     @Override
+    public T end() {
+        this.restrictors = getOrCreateRestrictorModels(this.provider.models(), this.thickness);
+        return super.end();
+    }
+
+    @Override
     public JsonObject toJson(JsonObject json) {
         Preconditions.checkState(thickness != Float.MIN_VALUE, "A thickness value must be set!");
         Preconditions.checkState(thickness > 0.0f || thickness <= 16.0f,
                 "Thickness must be between 0 (exclusive) and 16 (inclusive). is %s", thickness);
+        // noinspection ConstantValue
+        Preconditions.checkState(provider != null, "You must pass in a GTBlockStateProvider!");
 
         json = super.toJson(json);
 
@@ -290,34 +310,17 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
             json.add("parts", parts);
         }
 
-        final JsonObject blockers = new JsonObject();
-        float min = (16.0f - thickness) / 2.0f;
-        float max = min + thickness;
-        for (Direction dir : GTUtil.DIRECTIONS) {
-            for (int blocked = 0, offset = 0; blocked != 0b100000; blocked = 1 << offset, offset++) {
-                int mask = computeBorderMask(blocked, blocked, dir);
-                if (mask != 0) {
-                    var coords = GTMath.getCoordinates(dir, min, max);
-                    Vector3f minPos = coords.getLeft();
-                    Vector3f maxPos = coords.getRight();
-                    BlockModelBuilder model = new BlockModelBuilder(new ResourceLocation("dummy:dummy"),
-                            this.existingFileHelper)
-                            .texture("restrictor", RESTRICTOR_MAP.get(mask))
-                            .element()
-                            .from(minPos.x, minPos.y, minPos.z)
-                            .to(maxPos.x, maxPos.y, maxPos.z)
-                            .face(getSideAtBorder(dir, Border.BOTTOM)).end()
-                            .face(getSideAtBorder(dir, Border.TOP)).end()
-                            .face(getSideAtBorder(dir, Border.LEFT)).end()
-                            .face(getSideAtBorder(dir, Border.RIGHT)).end()
-                            .faces((face, builder) -> builder.texture("#restrictor"))
-                            .end();
-                    blockers.add(dir.getName(),
-                            configuredModelListToJSON(new ConfiguredModelList(new ConfiguredModel(model))));
-                }
+        if (this.restrictors != null) {
+            final JsonObject restrictors = new JsonObject();
+            for (int i = 0; i < GTUtil.DIRECTIONS.length; i++) {
+                Direction dir = GTUtil.DIRECTIONS[i];
+                restrictors.add(dir.getName(),
+                        configuredModelToJSON(ConfiguredModel.builder()
+                                .modelFile(new ModelFile.UncheckedModelFile(this.restrictors[i].getLocation()))
+                                .buildLast(), false));
             }
-        }
             json.add("restrictors", restrictors);
+        }
 
         return json;
     }
@@ -360,6 +363,50 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
 
         return map;
     });
+
+    private static BlockModelBuilder[] getOrCreateRestrictorModels(BlockModelProvider provider, float thickness) {
+        return RESTRICTOR_MODEL_CACHE.apply(provider, thickness);
+    }
+
+    private static final MemoizedBiFunction<BlockModelProvider, @NotNull Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
+            .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
+
+    private static BlockModelBuilder[] makeRestrictorModels(BlockModelProvider provider, float thickness) {
+        BlockModelBuilder[] models = new BlockModelBuilder[GTUtil.DIRECTIONS.length];
+
+        float min = (16.0f - thickness) / 2.0f - 0.003f;
+        float max = min + thickness + 0.006f; // offset by 0.003 * 2
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            String modelPath = "block/pipe/restrictor/" + dir.getName() + "/thickness_" + thickness;
+            ResourceLocation modelName = GTCEu.id(modelPath);
+            if (provider.generatedModels.containsKey(modelName)) {
+                models[dir.ordinal()] = provider.generatedModels.get(modelName);
+                continue;
+            }
+
+            var coords = GTMath.getCoordinates(dir, min, max);
+            Vector3f minPos = coords.getLeft();
+            Vector3f maxPos = coords.getRight();
+            BlockModelBuilder model = provider.getBuilder(modelPath);
+            model.texture("restrictor", PIPE_BLOCKED_OVERLAY)
+                    .element()
+                    .from(minPos.x, minPos.y, minPos.z)
+                    .to(maxPos.x, maxPos.y, maxPos.z)
+                    .face(getSideAtBorder(dir, Border.BOTTOM)).end()
+                    .face(getSideAtBorder(dir, Border.TOP)).end()
+                    .face(getSideAtBorder(dir, Border.LEFT)).end()
+                    .face(getSideAtBorder(dir, Border.RIGHT)).end()
+                    .faces((face, builder) -> builder.texture("#restrictor"))
+                    .end();
+            models[dir.ordinal()] = model;
+        }
+        return models;
+    }
+
+    @ApiStatus.Internal
+    public static void clearRestrictorModelCache() {
+        RESTRICTOR_MODEL_CACHE.getCache().clear();
+    }
 
     private static final EnumMap<Direction, EnumMap<Border, Direction>> FACE_BORDER_MAP = Util.make(() -> {
         EnumMap<Direction, EnumMap<Border, Direction>> map = new EnumMap<>(Direction.class);

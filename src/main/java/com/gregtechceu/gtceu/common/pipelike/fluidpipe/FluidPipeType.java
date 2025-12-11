@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProp
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
 
 import lombok.Getter;
 
@@ -74,8 +74,7 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material,
-                                     ExistingFileHelper existingFileHelper) {
+    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
         String side = "block/pipe/pipe%s_side";
         String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {
@@ -89,6 +88,6 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         } else {
             side = side.formatted("");
         }
-        return new PipeModel(block, existingFileHelper, thickness, GTCEu.id(side), GTCEu.id(end));
+        return new PipeModel(block, provider, thickness, GTCEu.id(side), GTCEu.id(end));
     }
 }

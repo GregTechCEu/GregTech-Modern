@@ -2,20 +2,17 @@ package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 
-import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 
 public class ActivablePipeModel extends PipeModel {
@@ -27,56 +24,53 @@ public class ActivablePipeModel extends PipeModel {
     @Setter
     public @Nullable ResourceLocation sideOverlayActive, endOverlayActive;
 
-    /// Use {@link #getActiveBlockModel()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder activeBlockModel = createActiveBlockModel();
-    /// Use {@link #getActiveCenterElement()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder activeCenterElement = createActiveCenterElement();
-    /// Use {@link #getActiveConnectionElement()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder activeConnectionElement = createActiveConnectionElement();
+    /// Use {@link #getOrCreateActiveBlockModel()} instead of referencing this field directly.
+    private BlockModelBuilder activeBlockModel;
+    /// Use {@link #getOrCreateActiveCenterElement()} instead of referencing this field directly.
+    private BlockModelBuilder activeCenterElement;
+    /// Use {@link #getOrCreateActiveConnectionElement()} instead of referencing this field directly.
+    private BlockModelBuilder activeConnectionElement;
 
     public ActivablePipeModel(PipeBlock<?, ?, ?> block, float thickness, ResourceLocation side, ResourceLocation end,
-                              ExistingFileHelper existingFileHelper) {
-        super(block, existingFileHelper, thickness, side, end);
+                              GTBlockstateProvider provider) {
+        super(block, provider, thickness, side, end);
     }
 
     /**
-     * @return A mutable collection of all block model builders that are required for this block to exist.
-     * @see #createActiveBlockModel()
-     * @see #createConnectionElement()
-     * @see #createActiveCenterElement()
-     * @see #createActiveConnectionElement()
+     * @see #getOrCreateActiveBlockModel()
+     * @see #getOrCreateConnectionElement()
+     * @see #getOrCreateActiveCenterElement()
+     * @see #getOrCreateActiveConnectionElement()
      */
     @Override
-    public Collection<BlockModelBuilder> getBlockModels() {
-        Collection<BlockModelBuilder> models = super.getBlockModels();
-        Collections.addAll(models, this.getActiveCenterElement(), this.getActiveConnectionElement(),
-                this.getActiveBlockModel());
-        return models;
+    public void initModels() {
+        getOrCreateActiveCenterElement();
+        getOrCreateActiveConnectionElement();
+        getOrCreateActiveBlockModel();
+
+        super.initModels();
     }
 
     /**
      * Override this to change the actual model {@link #block this.block} will use.
      *
      * @return A model builder for the block's actual model.
-     * @see #createBlockModel()
-     * @see #createActiveCenterElement()
-     * @see #createActiveConnectionElement()
+     * @see #getOrCreateBlockModel()
+     * @see #getOrCreateActiveCenterElement()
+     * @see #getOrCreateActiveConnectionElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createActiveBlockModel() {
+    protected BlockModelBuilder getOrCreateActiveBlockModel() {
+        if (this.activeBlockModel != null) {
+            return this.activeBlockModel;
+        }
         // spotless:off
-        return new BlockModelBuilder(this.blockId, this.existingFileHelper)
-                .parent(this.getActiveCenterElement())
+        return this.activeBlockModel = this.provider.models().getBuilder(this.blockId.withSuffix("_active").toString())
+                .parent(this.getOrCreateActiveCenterElement())
                 .customLoader(PipeModelBuilder::begin)
-                .connectionModels()
-                .modelFile(this.getActiveConnectionElement())
-                .addModel()
-                .centerModel()
-                .modelFile(this.getActiveCenterElement())
-                .addModel()
+                    .thickness(this.thickness).provider(this.provider)
+                    .centerModels(this.getOrCreateActiveCenterElement().getLocation())
+                    .connectionModels(this.getOrCreateActiveConnectionElement().getLocation())
                 .end();
         // spotless:on
     }
@@ -85,31 +79,38 @@ public class ActivablePipeModel extends PipeModel {
      * Override this to change the center element's model for when the pipe is active.
      *
      * @return A model builder for the center element's model.
-     * @see #createCenterElement()
-     * @see #createActiveConnectionElement()
+     * @see #getOrCreateCenterElement()
+     * @see #getOrCreateActiveConnectionElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createActiveCenterElement() {
-        return makeActiveVariant(this.getCenterElement());
+    protected BlockModelBuilder getOrCreateActiveCenterElement() {
+        if (this.activeCenterElement != null) {
+            return this.activeCenterElement;
+        }
+        return this.activeCenterElement = makeActiveVariant(this.getOrCreateCenterElement());
     }
 
     /**
      * Override this to change the 'connection' element's model for when the pipe is active.<br>
      * By default, this is rotated & used for all connected sides of the pipe.<br>
-     * Note that that is not a hard requirement, and that you may set a model per side in {@link #createBlockModel()}.
+     * Note that that is not a hard requirement, and that you may set a model per side in
+     * {@link #getOrCreateBlockModel()}.
      *
      * @return A model builder for the connection element's model.
-     * @see #createConnectionElement()
-     * @see #createActiveCenterElement()
+     * @see #getOrCreateConnectionElement()
+     * @see #getOrCreateActiveCenterElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createActiveConnectionElement() {
-        return makeActiveVariant(this.getConnectionElement());
+    protected BlockModelBuilder getOrCreateActiveConnectionElement() {
+        if (this.activeConnectionElement != null) {
+            return this.activeConnectionElement;
+        }
+        return this.activeConnectionElement = makeActiveVariant(this.getOrCreateConnectionElement());
     }
 
     protected BlockModelBuilder makeActiveVariant(BlockModelBuilder parentModel) {
-        BlockModelBuilder model = new BlockModelBuilder(parentModel.getLocation().withSuffix("_active"),
-                this.existingFileHelper)
+        BlockModelBuilder model = this.provider.models()
+                .getBuilder(parentModel.getLocation().withSuffix("_active").toString())
                 .parent(parentModel);
         // override non-null textures, leave unset ones as is
         if (this.sideActive != null) model.texture("side", this.sideActive);
@@ -123,17 +124,23 @@ public class ActivablePipeModel extends PipeModel {
     }
 
     @Override
-    public BlockStateGenerator createBlockState() {
+    public IGeneratedBlockState createBlockState() {
         if (!this.getBlock().defaultBlockState().hasProperty(GTBlockStateProperties.ACTIVE)) {
             return super.createBlockState();
         }
-
-        ResourceLocation baseModelLoc = this.blockId.withPrefix("block/");
-        return MultiVariantGenerator.multiVariant(this.getBlock(),
-                Variant.variant().with(VariantProperties.MODEL, baseModelLoc))
-                .with(PropertyDispatch.property(GTBlockStateProperties.ACTIVE)
-                        .select(true, Variant.variant()
-                                .with(VariantProperties.MODEL, baseModelLoc.withSuffix("_active"))));
+        // spotless:off
+        return this.provider.getVariantBuilder(this.getBlock())
+                .partialState()
+                    .with(GTBlockStateProperties.ACTIVE, false)
+                    .modelForState()
+                        .modelFile(this.provider.models().getExistingFile(this.blockId))
+                    .addModel()
+                .partialState()
+                    .with(GTBlockStateProperties.ACTIVE, true)
+                    .modelForState()
+                        .modelFile(this.provider.models().getExistingFile(this.blockId.withSuffix("_active")))
+                    .addModel();
+        // spotless:on
     }
 
     @Override

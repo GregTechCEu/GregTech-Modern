@@ -122,7 +122,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> LaserPipeBlock::tintedColor)
                 .item(LaserPipeBlockItem::new)
-                .model(GTModels::createPipeItemModel)
+                .model(NonNullBiConsumer.noop())
                 .color(() -> LaserPipeBlockItem::tintColor)
                 .build()
                 .register();
@@ -152,7 +152,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> OpticalPipeBlock::tintedColor)
                 .item(PipeBlockItem::new)
-                .model(GTModels::createPipeItemModel)
+                .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
         OPTICAL_PIPES[index] = entry;
@@ -179,7 +179,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
                 .item(PipeBlockItem::new)
-                .model(GTModels::createPipeItemModel)
+                .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
         DUCT_PIPES[index] = entry;

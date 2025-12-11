@@ -27,7 +27,7 @@ import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
-import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -245,15 +245,15 @@ public class ForgeClientEventListener {
         // cables may do this, others too if something's removed
         for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
         }
         for (var block : GTMaterialBlocks.FLUID_PIPE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
         }
         for (var block : GTMaterialBlocks.ITEM_PIPE_BLOCKS.values()) {
             if (block == null) continue;
-            block.get().createPipeModel(RuntimeExistingFileHelper.INSTANCE).dynamicModel();
+            block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
         }
 
         MaterialBlockRenderer.reinitModels();

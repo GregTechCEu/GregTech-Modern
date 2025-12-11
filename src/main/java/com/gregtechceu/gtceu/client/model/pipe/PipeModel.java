@@ -3,23 +3,17 @@ package com.gregtechceu.gtceu.client.model.pipe;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.GTBlockBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
-import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.*;
 
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
@@ -88,19 +82,14 @@ public class PipeModel {
 
     public static void initDynamicModels() {
         for (PipeModel generator : DYNAMIC_MODELS) {
-            for (BlockModelBuilder builder : generator.getBlockModels()) {
-                GTDynamicResourcePack.addModel(builder);
-            }
-
-            GTDynamicResourcePack.addBlockState(generator.createBlockState());
-            GTDynamicResourcePack.addModel(generator.getItemModel());
+            generator.initModels();
         }
     }
 
     @Getter
     private final PipeBlock<?, ?, ?> block;
     public final @NotNull ResourceLocation blockId;
-    protected final ExistingFileHelper existingFileHelper;
+    protected final GTBlockstateProvider provider;
 
     /**
      * The pipe's "thickness" in the (0,16] voxel range, where 1 is 1 voxel and 16 is a full block thick
@@ -123,25 +112,21 @@ public class PipeModel {
     @Setter
     public @Nullable ResourceLocation sideOverlay, endOverlay;
 
-    /// Use {@link #getBlockModel()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder blockModel = createBlockModel();
-    /// Use {@link #getItemModel()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final ItemModelBuilder itemModel = createItemModel();
+    /// Use {@link #getOrCreateBlockModel()} instead of referencing this field directly.
+    private BlockModelBuilder blockModel;
+    /// Use {@link #getOrCreateItemModel()} instead of referencing this field directly.
+    private ItemModelBuilder itemModel;
 
-    /// Use {@link #getCenterElement()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder centerElement = createCenterElement();
-    /// Use {@link #getConnectionElement()} instead of referencing this field directly.
-    @Getter(lazy = true)
-    private final BlockModelBuilder connectionElement = createConnectionElement();
+    /// Use {@link #getOrCreateCenterElement()} instead of referencing this field directly.
+    private BlockModelBuilder centerElement;
+    /// Use {@link #getOrCreateConnectionElement()} instead of referencing this field directly.
+    private BlockModelBuilder connectionElement;
 
-    public PipeModel(PipeBlock<?, ?, ?> block, ExistingFileHelper existingFileHelper,
+    public PipeModel(PipeBlock<?, ?, ?> block, GTBlockstateProvider provider,
                      float thickness, ResourceLocation side, ResourceLocation end) {
         this.block = block;
         this.blockId = BuiltInRegistries.BLOCK.getKey(this.block);
-        this.existingFileHelper = existingFileHelper;
+        this.provider = provider;
 
         // assume thickness is in the 0-1 range
         this.thickness = thickness * 16.0f;
@@ -157,37 +142,42 @@ public class PipeModel {
     }
 
     /**
-     * @return A mutable collection of all block model builders that are required for this block to exist.
-     * @see #createBlockModel()
-     * @see #createCenterElement()
-     * @see #createConnectionElement()
+     * Initialize all models that are required for this block model to exist.<br>
+     * <i>Order is important!</i> Dependent models must be initialized <strong>after</strong> their dependencies.
+     *
+     * @see #getOrCreateBlockModel()
+     * @see #getOrCreateCenterElement()
+     * @see #getOrCreateConnectionElement()
      */
-    public Collection<BlockModelBuilder> getBlockModels() {
-        Set<BlockModelBuilder> models = new HashSet<>();
-        Collections.addAll(models, this.getCenterElement(), this.getConnectionElement(), this.getBlockModel());
-        return models;
+    public void initModels() {
+        getOrCreateCenterElement();
+        getOrCreateConnectionElement();
+        getOrCreateBlockModel();
+        createBlockState();
+
+        getOrCreateItemModel();
     }
 
     /**
      * Override this to change the actual model {@link #block this.block} will use.
      * 
      * @return A model builder for the block's actual model.
-     * @see #createCenterElement()
-     * @see #createConnectionElement()
+     * @see #getOrCreateCenterElement()
+     * @see #getOrCreateConnectionElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createBlockModel() {
+    protected BlockModelBuilder getOrCreateBlockModel() {
+        if (this.blockModel != null) {
+            return this.blockModel;
+        }
         // spotless:off
-        return new BlockModelBuilder(this.blockId, this.existingFileHelper)
+        return this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
                 // make the "default" model be based on the center part's model
-                .parent(this.centerElement)
+                .parent(this.getOrCreateCenterElement())
                 .customLoader(PipeModelBuilder::begin)
-                    .connectionModels()
-                        .modelFile(this.connectionElement)
-                    .addModel()
-                    .centerModel()
-                        .modelFile(this.centerElement)
-                    .addModel()
+                    .thickness(this.thickness).provider(this.provider)
+                    .centerModels(this.getOrCreateCenterElement().getLocation())
+                    .connectionModels(this.getOrCreateConnectionElement().getLocation())
                 .end();
         // spotless:on
     }
@@ -196,29 +186,35 @@ public class PipeModel {
      * Override this to change the center element's model.
      * 
      * @return A model builder for the center element's model.
-     * @see #createBlockModel()
-     * @see #createConnectionElement()
+     * @see #getOrCreateBlockModel()
+     * @see #getOrCreateConnectionElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createCenterElement() {
-        // noinspection DataFlowIssue
-        return makeElementModel(this.blockId.withPath(path -> "pipe/" + path + "/center"),
+    protected BlockModelBuilder getOrCreateCenterElement() {
+        if (this.centerElement != null) {
+            return this.centerElement;
+        }
+        return this.centerElement = makeElementModel(this.blockId.withPath(path -> "block/pipe/" + path + "/center"),
                 null, minCoord, minCoord, minCoord, maxCoord, maxCoord, maxCoord);
     }
 
     /**
      * Override this to change the 'connection' element's model.<br>
      * By default, this is rotated & used for all connected sides of the pipe.<br>
-     * Note that that is not a hard requirement, and that you may set a model per side in {@link #createBlockModel()}.
+     * Note that that is not a hard requirement, and that you may set a model per side in
+     * {@link #getOrCreateBlockModel()}.
      * 
      * @return A model builder for the connection element's model.
-     * @see #createBlockModel()
-     * @see #createCenterElement()
+     * @see #getOrCreateBlockModel()
+     * @see #getOrCreateCenterElement()
      */
     @ApiStatus.OverrideOnly
-    protected BlockModelBuilder createConnectionElement() {
-        // noinspection DataFlowIssue
-        return makeElementModel(this.blockId.withPath(path -> "pipe/" + path + "/connection"),
+    protected BlockModelBuilder getOrCreateConnectionElement() {
+        if (this.connectionElement != null) {
+            return this.connectionElement;
+        }
+        return this.connectionElement = makeElementModel(
+                this.blockId.withPath(path -> "block/pipe/" + path + "/connection"),
                 Direction.DOWN, minCoord, 0, minCoord, maxCoord, minCoord, maxCoord);
     }
 
@@ -227,11 +223,10 @@ public class PipeModel {
      * By default, this creates a version of the pipe block model with the north & south sides 'connected'.
      * 
      * @return The item model builder.
-     * @see #createBlockModel()
+     * @see #getOrCreateBlockModel()
      */
     @ApiStatus.OverrideOnly
-    protected ItemModelBuilder createItemModel() {
-        // noinspection DataFlowIssue
+    protected ItemModelBuilder getOrCreateItemModel() {
         return createItemModel(this.blockId, this.minCoord, this.maxCoord);
     }
 
@@ -242,12 +237,18 @@ public class PipeModel {
      * {@link GTBlockStateProperties#ACTIVE "active"} state of the blocks.
      * 
      * @return The block state generator, usually a {@link MultiVariantGenerator}.
-     * @see #createBlockModel()
+     * @see #getOrCreateBlockModel()
      * @see ActivablePipeModel#createBlockState()
      */
     @ApiStatus.OverrideOnly
-    public BlockStateGenerator createBlockState() {
-        return BlockModelGenerators.createSimpleBlock(this.getBlock(), this.blockId.withPrefix("block/"));
+    public IGeneratedBlockState createBlockState() {
+        // spotless:off
+        return this.provider.getVariantBuilder(this.getBlock())
+                .partialState()
+                    .modelForState()
+                        .modelFile(this.provider.models().getExistingFile(this.blockId))
+                    .addModel();
+        // spotless:on
     }
 
     /**
@@ -259,20 +260,21 @@ public class PipeModel {
      * @return An item model builder.
      */
     protected ItemModelBuilder createItemModel(ResourceLocation name, float min, float max) {
-        Reference2FloatMap<Direction> maxDistances = new Reference2FloatOpenHashMap<>();
-        maxDistances.put(Direction.DOWN, min);
-        maxDistances.put(Direction.UP, max);
-        maxDistances.put(Direction.NORTH, 0);
-        maxDistances.put(Direction.SOUTH, 16);
-        maxDistances.put(Direction.WEST, min);
-        maxDistances.put(Direction.EAST, max);
+        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
+        faceEndpoints.put(Direction.DOWN, min);
+        faceEndpoints.put(Direction.UP, max);
+        faceEndpoints.put(Direction.NORTH, 0);
+        faceEndpoints.put(Direction.SOUTH, 16);
+        faceEndpoints.put(Direction.WEST, min);
+        faceEndpoints.put(Direction.EAST, max);
 
-        ItemModelBuilder model = new ItemModelBuilder(name, this.existingFileHelper).parent(this.centerElement);
-        makePartModelElement(model, Direction.NORTH, false, maxDistances, 0.0f, 0, 1,
+        ItemModelBuilder model = this.provider.itemModels().getBuilder(name.toString())
+                .parent(this.getOrCreateCenterElement());
+        makePartModelElement(model, Direction.NORTH, false, faceEndpoints, 0.0f, 0, 1,
                 min, min, 0, max, max, 16, this.side, this.end, "side", "end");
-        makePartModelElement(model, Direction.NORTH, true, maxDistances, 0.001f, 0, 1,
+        makePartModelElement(model, Direction.NORTH, true, faceEndpoints, 0.001f, 0, 1,
                 min, min, 0, max, max, 16, this.sideSecondary, this.endSecondary, "side_secondary", "end_secondary");
-        makePartModelElement(model, Direction.NORTH, true, maxDistances, 0.002f, 2, 2,
+        makePartModelElement(model, Direction.NORTH, true, faceEndpoints, 0.002f, 2, 2,
                 min, min, 0, max, max, 16, this.sideOverlay, this.endOverlay, "side_overlay", "end_overlay");
         return model;
     }
@@ -280,23 +282,23 @@ public class PipeModel {
     /**
      * Fills out a model builder with applicable pipe model elements and returns it for further use
      *
-     * @param name the resulting model's path
-     * @param side the model face that's being created
-     * @param x1   min X coordinate in the range [-16,32]
-     * @param y1   min Y coordinate in the range [-16,32]
-     * @param z1   min Z coordinate in the range [-16,32]
-     * @param x2   max X coordinate in the range [-16,32]
-     * @param y2   max Y coordinate in the range [-16,32]
-     * @param z2   max Z coordinate in the range [-16,32]
+     * @param name    the resulting model's path
+     * @param endFace the model face that's being created
+     * @param x1      min X coordinate in the range [-16,32]
+     * @param y1      min Y coordinate in the range [-16,32]
+     * @param z1      min Z coordinate in the range [-16,32]
+     * @param x2      max X coordinate in the range [-16,32]
+     * @param y2      max Y coordinate in the range [-16,32]
+     * @param z2      max Z coordinate in the range [-16,32]
      * @implNote The coordinates must be in the correct order or the resulting model's cubes will be inside out!
      */
-    protected BlockModelBuilder makeElementModel(ResourceLocation name, @Nullable Direction side,
+    protected BlockModelBuilder makeElementModel(ResourceLocation name, @Nullable Direction endFace,
                                                  final float x1, final float y1, final float z1,
                                                  final float x2, final float y2, final float z2) {
-        Reference2FloatMap<Direction> maxDistances = new Reference2FloatOpenHashMap<>();
-        maxDistances.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
+        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
+        faceEndpoints.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
         for (Direction dir : GTUtil.DIRECTIONS) {
-            maxDistances.put(dir, switch (dir) {
+            faceEndpoints.put(dir, switch (dir) {
                 case DOWN -> Math.min(y1, y2);
                 case UP -> Math.max(y1, y2);
                 case NORTH -> Math.min(z1, z2);
@@ -306,20 +308,20 @@ public class PipeModel {
             });
         }
 
-        BlockModelBuilder model = new BlockModelBuilder(name, this.existingFileHelper)
+        BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"));
-        makePartModelElement(model, side, false, maxDistances, 0.0f, 0, 1,
+        makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.side, this.end, "side", "end");
-        makePartModelElement(model, side, true, maxDistances, 0.001f, 0, 1,
+        makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.sideSecondary, this.endSecondary, "side_secondary", "end_secondary");
-        makePartModelElement(model, side, true, maxDistances, 0.002f, 2, 2,
+        makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
                 x1, y1, z1, x2, y2, z2, this.sideOverlay, this.endOverlay, "side_overlay", "end_overlay");
         return model;
     }
 
-    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction side,
+    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
                                                                     boolean useEndWithFullCube,
-                                                                    Reference2FloatMap<Direction> maxDistances,
+                                                                    Reference2FloatMap<Direction> faceEndpoints,
                                                                     float offset, int sideTintIndex, int endTintIndex,
                                                                     final float x1, final float y1, final float z1,
                                                                     final float x2, final float y2, final float z2,
@@ -336,20 +338,21 @@ public class PipeModel {
                 (x1 == y1 && x1 == z1 && x1 <= 0.0f) &&
                 (x2 == y2 && x2 == z2 && x2 >= 16.0f);
 
-        var element = model.element()
+        ModelBuilder<T>.ElementBuilder element = model.element()
                 .from(x1 - offset, y1 - offset, z1 - offset)
                 .to(x2 + offset, y2 + offset, z2 + offset);
 
         for (Direction dir : GTUtil.DIRECTIONS) {
-            T.ElementBuilder.FaceBuilder face = null;
-            boolean isEnd = (side == dir || side == dir.getOpposite()) && !fullCube;
-            if (isEnd && endTexture != null && side != dir.getOpposite()) {
+            ModelBuilder<T>.ElementBuilder.FaceBuilder face = null;
+            boolean isEnd = (endFace == dir || endFace == dir.getOpposite()) && !fullCube;
+            if (isEnd && endTexture != null) {
                 face = element.face(dir).texture("#" + endKey).tintindex(endTintIndex);
             } else if (!isEnd && sideTexture != null) {
                 face = element.face(dir).texture("#" + sideKey).tintindex(sideTintIndex);
             }
 
-            if (face != null && maxDistances.getFloat(dir) >= 16.0f) {
+            float faceEnd = faceEndpoints.getFloat(dir);
+            if (face != null && (faceEnd >= 16.0f || faceEnd <= 0.0f)) {
                 face.cullface(dir);
             }
         }
