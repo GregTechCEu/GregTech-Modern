@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
 

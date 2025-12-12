@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.BasicUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartSelector;

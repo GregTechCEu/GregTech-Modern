@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.data.datagen.model.builder;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.core.mixins.neoforge.ConfiguredModelBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.neoforge.ConfiguredModelListAccessor;

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.model.machine.multipart;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

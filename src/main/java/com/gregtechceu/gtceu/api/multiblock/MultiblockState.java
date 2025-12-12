@@ -181,8 +181,7 @@ public class MultiblockState {
                             return;
                         }
                     }
-                    boolean patternValid = controller.checkPatternWithLock();
-                    if (patternValid) {
+                    if (controller.checkPatternWithLock()) {
                         // refresh structure
                         controller.self().setFlipped(this.neededFlip);
                         controller.onStructureFormed();

@@ -1,7 +1,5 @@
-package com.gregtechceu.gtceu.client.model.machine;
+package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.level.block.state.StateHolder;

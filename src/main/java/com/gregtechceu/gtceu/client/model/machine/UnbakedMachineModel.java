@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedModel;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;

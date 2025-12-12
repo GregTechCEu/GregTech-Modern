@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineRenderState;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
