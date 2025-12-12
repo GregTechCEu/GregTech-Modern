@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -101,10 +101,11 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, ITickSubscription, IToolGridHighlight, IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
+                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
 
-    ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
-    ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
+    public static final ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
+    public static final ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -169,10 +170,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, IT
         syncDataHolder.markClientSyncFieldDirty("ownerUUID");
     }
 
-    public boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
-    }
-
     @Override
     public boolean triggerEvent(int id, int para) {
         if (id == 1) { // chunk re render
@@ -182,20 +179,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, IT
             return true;
         }
         return false;
-    }
-
-    @Override
-    public final void scheduleRenderUpdate() {
-        var pos = getBlockPos();
-        var level = getLevel();
-        if (level != null) {
-            var state = level.getBlockState(pos);
-            if (level.isClientSide) {
-                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-            } else {
-                level.blockEvent(pos, state.getBlock(), 1, 0);
-            }
-        }
     }
 
     public void scheduleNeighborShapeUpdate() {
@@ -317,7 +300,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, IT
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
-    
+
     /**
      * Called when a player clicks this meta tile entity with a tool
      *
@@ -640,11 +623,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, IT
         return data.build();
     }
 
-    public static Direction getUpwardFacing(@Nullable MetaMachine machine) {
-        return machine == null || !machine.allowExtendedFacing() ? Direction.NORTH :
-                machine.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING);
-    }
-
     public Direction getUpwardsFacing() {
         return this.allowExtendedFacing() ? this.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING) :
                 Direction.NORTH;
@@ -735,6 +713,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IToolable, IT
         var server = getLevel().getServer();
         if (server != null) return server.getTickCount() + getOffset();
         return getOffset();
+    }
+
+    @Override
+    public boolean isRemote() {
+        return IGregtechBlockEntity.super.isRemote();
     }
 
     //////////////////////////////////////

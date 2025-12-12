@@ -30,7 +30,7 @@ public class RobotArmTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void robotArmKeepExactTest(GameTestHelper helper) {
         setupCrates(helper);
-        CrateMachine crate1 = (CrateMachine)helper.getBlockEntity(new BlockPos(0, 1, 0));
+        CrateMachine crate1 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
         CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
@@ -54,7 +54,7 @@ public class RobotArmTest {
     public static void robotArmTransferExactTest(GameTestHelper helper) {
         setupCrates(helper);
         CrateMachine crate1 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
-        CrateMachine crate2 = (CrateMachine)helper.getBlockEntity(new BlockPos(0, 2, 0));
+        CrateMachine crate2 = (CrateMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
         crate1.inventory.setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         // LV Cover
         RobotArmCover cover = (RobotArmCover) TestUtils.placeCover(helper, crate2, GTItems.ROBOT_ARM_LV.asStack(),

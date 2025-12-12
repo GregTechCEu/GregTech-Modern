@@ -226,7 +226,8 @@ public class FisherMachine extends TieredEnergyMachine
     private void updateHasWater() {
         for (int x = 0; x < WATER_CHECK_SIZE; x++)
             for (int z = 0; z < WATER_CHECK_SIZE; z++) {
-                BlockPos waterCheckPos = getBlockPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+                BlockPos waterCheckPos = getBlockPos().below().offset(x - WATER_CHECK_SIZE / 2, 0,
+                        z - WATER_CHECK_SIZE / 2);
                 if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
                     hasWater = false;
                     return;

@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -28,23 +26,23 @@ public class DataBankBlockProvider implements IBlockComponentProvider, IServerDa
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof DataBankMachine) {
-                long energyUsage = blockAccessor.getServerData().getLong("energyUsage");
-                String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
-                // wrap in text component to keep it from being formatted
-                Component voltageName = Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
-                Component text = Component.translatable(
-                        "gtceu.multiblock.energy_consumption",
-                        energyFormatted,
-                        voltageName);
+            long energyUsage = blockAccessor.getServerData().getLong("energyUsage");
+            String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
+            // wrap in text component to keep it from being formatted
+            Component voltageName = Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
+            Component text = Component.translatable(
+                    "gtceu.multiblock.energy_consumption",
+                    energyFormatted,
+                    voltageName);
 
-                iTooltip.add(text);
-            }
+            iTooltip.add(text);
+        }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof DataBankMachine dataBank) {
-                compoundTag.putLong("energyUsage", dataBank.getEnergyUsage());
-            }
+            compoundTag.putLong("energyUsage", dataBank.getEnergyUsage());
+        }
     }
 }

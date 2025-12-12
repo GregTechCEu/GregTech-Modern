@@ -253,11 +253,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
         if (getLevel().getBlockEntity(blockPos) instanceof FluidHatchPartMachine newMachine) {
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-                newMachine.setPaintingColor(this.getPaintingColor());
-                for (int i = 0; i < this.tank.getTanks(); i++) {
-                    newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            newMachine.setPaintingColor(this.getPaintingColor());
+            for (int i = 0; i < this.tank.getTanks(); i++) {
+                newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
             }
         }
         return true;

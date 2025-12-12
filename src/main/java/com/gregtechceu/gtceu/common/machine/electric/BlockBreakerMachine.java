@@ -206,7 +206,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                             if (getOutputFacingItems() == null) {
                                 Block.popResource(getLevel(), getBlockPos(), remainder);
                             } else {
-                                Block.popResource(getLevel(), getBlockPos().relative(getOutputFacingItems()), remainder);
+                                Block.popResource(getLevel(), getBlockPos().relative(getOutputFacingItems()),
+                                        remainder);
                             }
                         }
                     }

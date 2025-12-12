@@ -65,7 +65,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             for (int j = -1; j < 2; j++) {
                 // Skip the controller block itself
                 if (i == 0 && j == 0) continue;
-                var blockPos = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(),
+                var blockPos = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+                        isFlipped(),
                         i, j, 1);
                 var blockState = this.getLevel().getBlockState(blockPos);
                 if (!blockState.isAir())

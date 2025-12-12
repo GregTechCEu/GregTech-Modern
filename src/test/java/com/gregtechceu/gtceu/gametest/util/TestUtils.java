@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -236,7 +235,7 @@ public class TestUtils {
 
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((MetaMachine)Objects.requireNonNull(helper.getBlockEntity(pos)));
+        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
@@ -266,13 +265,13 @@ public class TestUtils {
     }
 
     /**
-     * Shortcut function to retrieve a metamachine from a blockentity's
+     * Shortcut function to cast a BE to a metamachine
      *
-     * @param entity The MetaMachineBlockEntity
+     * @param entity The BlockEntity
      * @return the machine held, if any
      */
     public static MetaMachine getMetaMachine(BlockEntity entity) {
-        return (MetaMachine)entity;
+        return (MetaMachine) entity;
     }
 
     /**

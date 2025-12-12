@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
-import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
@@ -144,7 +143,8 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     @ClientFieldChangeListener(fieldName = "amps")
     public void onAmpUpdated() {
-        setRenderState(getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+        setRenderState(
+                getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
         scheduleRenderUpdate();
     }
 }

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -51,9 +50,9 @@ public class GTAEPlaceholders {
         } ;
         BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
         if (blockEntity instanceof IGridConnectedBlockEntity gridMachine) {
-                IGrid nullable = gridMachine.getMainNode().getGrid();
-                if (nullable == null) throw new NoMENetworkException();
-                return nullable;
+            IGrid nullable = gridMachine.getMainNode().getGrid();
+            if (nullable == null) throw new NoMENetworkException();
+            return nullable;
         }
         throw new NoMENetworkException();
     }

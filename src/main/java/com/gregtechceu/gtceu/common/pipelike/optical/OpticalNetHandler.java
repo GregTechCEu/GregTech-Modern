@@ -75,13 +75,13 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     }
 
     private boolean isNetInvalidForTraversal() {
-        return net == null || pipe == null || pipe.isInValid();
+        return net == null || pipe == null || pipe.isRemoved();
     }
 
     private boolean traverseRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
         if (isNetInvalidForTraversal()) return false;
 
-        OpticalRoutePath inv = net.getNetData(pipe.getPipePos(), facing);
+        OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return false;
 
         IOpticalDataAccessHatch hatch = inv.getDataHatch();
@@ -115,7 +115,7 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     private IOpticalComputationProvider getComputationProvider(@NotNull Collection<IOpticalComputationProvider> seen) {
         if (isNetInvalidForTraversal()) return null;
 
-        OpticalRoutePath inv = net.getNetData(pipe.getPipePos(), facing);
+        OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return null;
 
         IOpticalComputationProvider hatch = inv.getComputationHatch();

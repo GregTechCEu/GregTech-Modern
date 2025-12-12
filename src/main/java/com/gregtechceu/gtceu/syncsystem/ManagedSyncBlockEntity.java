@@ -46,7 +46,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     public final void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag, (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
+        getSyncDataHolder().deserializeNBT(tag,
+                (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
     }
 
     @Override
@@ -67,7 +68,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         if (isDirty) {
             var level = getLevel();
             if (level == null) return;
-            GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getBlockPos()), new SPacketUpdateBESyncValue(this));
+            GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getBlockPos()),
+                    new SPacketUpdateBESyncValue(this));
             isDirty = false;
         }
     }

@@ -1,22 +1,18 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.*;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -40,50 +36,8 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public void markAsChanged() {
-        if (pipeTile instanceof ManagedSyncBlockEntity syncBlockEntity) {
-            syncBlockEntity.markAsChanged();
-        }
-    }
-
-    @Override
-    public Level getLevel() {
-        return pipeTile.getPipeLevel();
-    }
-
-    @Override
-    public BlockPos getPos() {
-        return pipeTile.getPipePos();
-    }
-
-    @Override
-    public BlockState getState() {
-        return pipeTile.getState();
-    }
-
-    @Override
-    public long getOffsetTimer() {
-        return pipeTile.getOffsetTimer();
-    }
-
-    @Override
-    public void notifyBlockUpdate() {
-        pipeTile.notifyBlockUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        pipeTile.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleNeighborShapeUpdate() {
-        pipeTile.scheduleNeighborShapeUpdate();
-    }
-
-    @Override
-    public boolean isInValid() {
-        return pipeTile.isInValid();
+    public IGregtechBlockEntity getHolder() {
+        return pipeTile;
     }
 
     @Override
@@ -111,17 +65,6 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     @Override
     public boolean shouldRenderBackSide() {
         return true;
-    }
-
-    @Nullable
-    @Override
-    public TickableSubscription subscribeServerTick(Runnable runnable) {
-        return pipeTile.subscribeServerTick(runnable);
-    }
-
-    @Override
-    public void unsubscribe(@Nullable TickableSubscription current) {
-        pipeTile.unsubscribe(current);
     }
 
     @Override

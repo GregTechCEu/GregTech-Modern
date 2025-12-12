@@ -61,8 +61,10 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     }
 
     private void updateBounds() {
-        var fl = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, 1, -1);
-        var br = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, -2, -4);
+        var fl = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, 1,
+                -1);
+        var br = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, -2,
+                -4);
         grindBound = AABB.of(BoundingBox.fromCorners(fl, br));
     }
 

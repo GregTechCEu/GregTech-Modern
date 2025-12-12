@@ -72,7 +72,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
             this.setIOSpeed(energyIOPerSec / 20);
             energyIOPerSec = 0;
             if (doExplosion) {
-                getLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5,
+                getLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5,
+                        getBlockPos().getZ() + 0.5,
                         1, Level.ExplosionInteraction.NONE);
                 doExplosion = false;
             }
@@ -82,7 +83,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getBlockPos().relative(facing),
+            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(),
+                    getBlockPos().relative(facing),
                     opposite);
             // Try to get laser capability
             if (container == null)
