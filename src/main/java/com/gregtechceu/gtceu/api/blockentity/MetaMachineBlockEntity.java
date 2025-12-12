@@ -176,10 +176,15 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public void onLoad() {
         super.onLoad();
-        // Validate render state after NBT load - @Persisted writes directly to field via reflection,
-        // bypassing setRenderState(), so we need to validate here as well
-        if (renderState != null && !renderState.is(getDefinition())) {
-            this.renderState = correctRenderStateDefinition(renderState);
+        // Validate and intern render state after NBT load - @Persisted writes directly to field via reflection,
+        // bypassing setRenderState(), so we need to validate and intern here as well
+        if (renderState != null) {
+            if (!renderState.is(getDefinition())) {
+                this.renderState = correctRenderStateDefinition(renderState).intern();
+            } else {
+                // Ensure the state is properly interned even if definition is correct
+                this.renderState = renderState.intern();
+            }
         }
         metaMachine.onLoad();
     }

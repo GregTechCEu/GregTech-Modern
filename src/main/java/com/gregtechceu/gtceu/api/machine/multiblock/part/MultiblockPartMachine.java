@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -38,6 +39,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
 
+    @Persisted
     @DescSynced
     @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
@@ -112,6 +114,26 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             }
         }
         return handlerList;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        // Rebuild controllers from persisted positions on load
+        // @UpdateListener only fires on sync updates, not on NBT load
+        if (!controllerPositions.isEmpty()) {
+            onControllersUpdated(controllerPositions, Collections.emptySet());
+            // If we couldn't resolve controllers (loading order or cross-chunk),
+            // clear the formed state to avoid inconsistent visuals (overlays without texture overrides).
+            // The async multiblock validation will restore formed state properly when ready.
+            if (controllers.isEmpty()) {
+                MachineRenderState renderState = getRenderState();
+                if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED) &&
+                        renderState.getValue(GTMachineModelProperties.IS_FORMED)) {
+                    setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
+                }
+            }
+        }
     }
 
     @Override
