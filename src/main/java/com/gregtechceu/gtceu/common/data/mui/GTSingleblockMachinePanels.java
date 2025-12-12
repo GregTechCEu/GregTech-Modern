@@ -48,7 +48,7 @@ public class GTSingleblockMachinePanels {
 
         boolean ghostCircuit = simpleTieredMachine.isCircuitSlotEnabled();
 
-        panel.size(176, 76 + 21 + 18 + 9 + 18 * slotHeight);
+        panel.size(176, 76 + 21 + 18 + 9 + 18 * Math.max(2, slotHeight));
 
         boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(workableMachine.getRecipeType());
 

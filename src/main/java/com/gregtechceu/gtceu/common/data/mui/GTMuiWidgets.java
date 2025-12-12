@@ -284,6 +284,6 @@ public class GTMuiWidgets {
     }
 
     public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
-        return layout.getMainWidget();
+        return new ParentWidget<>();
     }
 }

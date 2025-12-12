@@ -24,23 +24,28 @@ import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.DoubleSupplier;
 
 public class GTRecipeTypeUILayout {
 
     @Setter
+    @Getter
     private GTRecipeType recipeType;
+    @Getter
     private UITexture progressBar;
+    @Getter
     private int progressSize;
+    @Getter
     private ProgressWidget.Direction progressDirection;
+    @Getter
+    private Set<IO> IOs = new HashSet<>();
+    @Getter
     private Map<IO, Map<RecipeCapability<?>, Int2ObjectOpenHashMap<IDrawable>>> overlays = new EnumMap<>(IO.class);
     private Map<IO, Map<RecipeCapability<?>, Int2IntArrayMap>> gridLength = new EnumMap<>(IO.class);
     private Map<IO, Map<RecipeCapability<?>, Int2IntArrayMap>> gridWidths = new EnumMap<>(IO.class);
@@ -63,7 +68,7 @@ public class GTRecipeTypeUILayout {
 
             int rowWidthPx = 0;
 
-            List<IO> IOs = new ArrayList<>();
+            // List<IO> IOs = new ArrayList<>();
             if (inputItems != null || inputFluids != null) {
                 IOs.add(IO.IN);
             }
@@ -188,7 +193,7 @@ public class GTRecipeTypeUILayout {
         return GTGuis.createPanel("empty");
     }
 
-    private String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier, int maxMachineSlots) {
+    public String[] createGrid(IO io, RecipeCapability<?> cap, char key, int tier, int maxMachineSlots) {
         int maxWidth = 3;
         if (gridWidths.containsKey(io) && gridWidths.get(io).containsKey(cap)) {
             int width = gridWidths.get(io).get(cap).get(tier);
@@ -202,83 +207,6 @@ public class GTRecipeTypeUILayout {
         maxSlots = Math.min(maxMachineSlots, maxSlots);
         maxWidth = Math.min(maxSlots, maxWidth);
         return GTMuiWidgets.createGrid(maxSlots, maxWidth, io.support(IO.OUT), key);
-    }
-
-    public ParentWidget<?> getMainWidget() {
-        if (recipeType != null) {
-            parentWidget = new ParentWidget<>();
-
-            var inputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(ItemRecipeCapability.CAP), 3, false,
-                    'i');
-            var inputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxInputs(FluidRecipeCapability.CAP), 3, false,
-                    'f');
-            var outputItemGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(ItemRecipeCapability.CAP), 3, true,
-                    'i');
-            var outputFluidGrid = GTMuiWidgets.createGrid(recipeType.getMaxOutputs(FluidRecipeCapability.CAP), 3, true,
-                    'f');
-
-            parentWidget.size(170, 64)
-                    .padding(4)
-                    .coverChildren()
-                    .background(GTGuiTextures.BACKGROUND);
-            Row mainRow = new Row();
-            int width = 0;
-
-            var IOs = new IO[] { IO.IN, IO.OUT };
-
-            for (var io : IOs) {
-                // var io = ioMap.getKey();
-                var caps = (io == IO.IN ? recipeType.maxInputs : recipeType.maxOutputs);
-                int slotHeight = 0;
-
-                Column ioColumn = new Column();
-                ioColumn.coverChildrenWidth();
-                int ioWidth = 0;
-
-                for (var recipeCap : caps.keySet()) {
-                    var maxSlots = (io == IO.IN ? recipeType.getMaxInputs(recipeCap) :
-                            recipeType.getMaxOutputs(recipeCap));
-                    if (maxSlots == 0 || recipeCap == EURecipeCapability.CAP) continue;
-                    char key = (recipeCap == ItemRecipeCapability.CAP ? 'i' : 'f');
-                    var grid = GTMuiWidgets.createGrid(maxSlots, 3, io == IO.OUT, key);
-
-                    slotHeight += 18 * grid.length;
-
-                    IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            GTGuiTextures.SLOT : GTGuiTextures.FLUID_SLOT);
-
-                    SlotGroupWidget.Builder slotWidget = SlotGroupWidget.builder()
-                            .matrix(grid);
-
-                    slotWidget.key(key, i -> {
-                        var widget = new IDrawable.DrawableWidget(defaultSlotBackground);
-                        if (overlays.containsKey(io) && overlays.get(io).containsKey(recipeCap)) {
-                            widget.overlay(overlays.get(io).get(recipeCap).get(i));
-                        }
-                        return widget;
-                    });
-
-                    ioColumn.child(slotWidget.build().name(recipeCap.name + "_" + io.name()));
-
-                    // calculate full width of each column
-                    ioWidth = Math.max(ioWidth, Math.min(maxSlots, grid[0].length()) * 18);
-                }
-                width += ioWidth;
-                mainRow.child(ioColumn.align(io == IO.IN ? Alignment.CenterLeft : Alignment.CenterRight));
-            }
-
-            width += (90 - (width / 2));
-
-            mainRow.width(width);
-            parentWidget.child(mainRow)
-                    .child(new ProgressWidget()
-                            .alignX(Alignment.CENTER)
-                            .name("progressBar")
-                            .texture(progressBar, progressSize)
-                            .direction(progressDirection))
-                    .excludeAreaInXei();
-        }
-        return parentWidget;
     }
 
     public static class Builder {
