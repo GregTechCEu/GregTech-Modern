@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
-import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
-import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryUIFactory;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -146,9 +144,6 @@ public class ComponentItem extends Item
                     return result;
                 }
             }
-            if (component instanceof IUIHolder<?>) {
-                PlayerInventoryUIFactory.INSTANCE.openFromHandClient(context.getHand());
-            }
         }
         return super.useOn(context);
     }
@@ -204,9 +199,6 @@ public class ComponentItem extends Item
                 if (result.getResult() != InteractionResult.PASS) {
                     return result;
                 }
-            }
-            if (component instanceof IUIHolder<?>) {
-                PlayerInventoryUIFactory.INSTANCE.openFromHandClient(usedHand);
             }
         }
         return super.use(level, player, usedHand);
