@@ -2,9 +2,17 @@ package com.gregtechceu.gtceu.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.minecraftforge.client.event.InputEvent.Key;
+import net.minecraftforge.client.event.ScreenEvent.KeyPressed;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
+/**
+ * Fired when the corresponding GLFW event is triggered, before Minecraft's handling.
+ * Cancelling this event will also cancel further handling by Minecraft, like detecting
+ * ESC to pause the game, other controls, and firing the {@link Key} and {@link KeyPressed}
+ * events.
+ */
 @AllArgsConstructor
 @Getter
 @Cancelable
