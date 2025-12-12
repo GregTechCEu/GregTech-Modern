@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,6 +32,7 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import org.joml.Vector2d;
@@ -89,13 +89,16 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
 
     @SubscribeEvent
     public void keyPressedEvent(EarlyKeyPressEvent event) {
-        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null) return;
+        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
+            return;
         screen.getContext().updateLatestKey(event.getKey(), event.getScanCode(), event.getModifiers());
-        boolean early = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen, event.getAction() == InputConstants.PRESS,
+        boolean early = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
+                event.getAction() == InputConstants.PRESS,
                 ClientScreenHandler.InputPhase.EARLY, event.getKey(), event.getScanCode(), event.getModifiers());
         if (early) event.setCanceled(true);
         else {
-            boolean late = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen, event.getAction() == InputConstants.PRESS,
+            boolean late = ClientScreenHandler.handleKeyboardInput(screen, vanillaScreen,
+                    event.getAction() == InputConstants.PRESS,
                     ClientScreenHandler.InputPhase.LATE, event.getKey(), event.getScanCode(), event.getModifiers());
             if (late) event.setCanceled(true);
         }
@@ -103,7 +106,8 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
 
     @SubscribeEvent
     public void charTyped(CharTypedEvent event) {
-        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null) return;
+        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || MCHelper.getCurrentScreen() != null)
+            return;
         screen.getContext().updateLatestTypedChar(event.getCodepoint(), event.getModifiers());
         if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
     }

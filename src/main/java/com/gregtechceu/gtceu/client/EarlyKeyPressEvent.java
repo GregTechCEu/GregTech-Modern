@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.client;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.minecraftforge.client.event.InputEvent.Key;
 import net.minecraftforge.client.event.ScreenEvent.KeyPressed;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Fired when the corresponding GLFW event is triggered, before Minecraft's handling.
@@ -17,6 +18,7 @@ import net.minecraftforge.eventbus.api.Event;
 @Getter
 @Cancelable
 public class EarlyKeyPressEvent extends Event {
+
     private final int key;
     private final int scanCode;
     private final int action;

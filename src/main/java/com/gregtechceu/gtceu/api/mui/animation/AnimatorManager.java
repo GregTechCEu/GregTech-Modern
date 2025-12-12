@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimatorManager {
+
     public static final AnimatorManager INSTANCE = new AnimatorManager();
 
     private static final List<IAnimator> animators = new ArrayList<>(16);

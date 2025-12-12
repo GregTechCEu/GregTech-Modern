@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.client;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Fired when the corresponding GLFW event is triggered, before Minecraft's handling.
@@ -14,6 +15,7 @@ import net.minecraftforge.eventbus.api.Event;
 @Getter
 @Cancelable
 public class CharTypedEvent extends Event {
+
     private final char codepoint;
     private final int modifiers;
 }
