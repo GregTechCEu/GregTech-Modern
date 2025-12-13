@@ -181,7 +181,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
         if (isFormed() && getControllers().first() instanceof IWorkableMultiController workable) {
             if (workable.getRecipeLogic().isWorking()) return;
         }
-        if (!hasRotor() || !isFormed()) {
+        if (!hasRotor()) {
             setRotorSpeed(0);
         } else if (getRotorSpeed() > 0) {
             setRotorSpeed(Math.max(0, getRotorSpeed() - SPEED_DECREMENT));
