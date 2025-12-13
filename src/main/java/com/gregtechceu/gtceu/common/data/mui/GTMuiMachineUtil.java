@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -11,53 +12,49 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.function.UnaryOperator;
+
 public class GTMuiMachineUtil {
+
+    public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
+                                                               int maxSlots, char key, PanelSyncManager syncManager,
+                                                               String... matrix) {
+        return createSlotGroupFromInventory(itemHandler, slotGroupName, maxSlots, key, i -> i, syncManager, matrix);
+    }
 
     public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler,
                                                                String slotGroupName, int maxSlots, char key,
+                                                               UnaryOperator<ItemSlot> slotModifier,
+                                                               PanelSyncManager syncManager,
                                                                String... matrix) {
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
-                .matrix(matrix)
-                .key(key, i -> new ItemSlot()
-                        .slot(new ModularSlot(itemHandler, i)
-                                .slotGroup(slotGroup)))
-                .build();
 
-        return slotWidget;
+        return SlotGroupWidget.builder()
+                .matrix(matrix)
+                .key(key, i -> {
+                    ModularSlot slot = new ModularSlot(itemHandler, i);
+                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    syncManager.syncValue(slotGroupName, i, syncHandler);
+                    return slotModifier.apply(new ItemSlot()
+                            .syncHandler(slotGroupName, i));
+                })
+                .build();
+    }
+
+    public static String[] createSquareMatrix(int size, char key) {
+        size = (int) Math.sqrt(size);
+        String[] matrix = new String[size];
+        for (int i = 0; i < size; i++) {
+            matrix[i] = String.valueOf(key).repeat(size);
+        }
+        return matrix;
     }
 
     public static SlotGroupWidget createSquareSlotGroupFromInventory(IItemHandler itemHandler,
-                                                                     String slotGroupName) {
-        SlotGroup slotGroup = new SlotGroup(slotGroupName, itemHandler.getSlots());
-        int size = (int) Math.sqrt(itemHandler.getSlots());
-        String[] matrix = new String[size];
-        for (int i = 0; i < size; i++) {
-            var row = new StringBuilder(size + 1);
-            for (int j = 0; j < size; j++) {
-                row.append("I");
-            }
-            matrix[i] = row.toString();
-        }
-
-        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
-                .matrix(matrix)
-                .key('I', i -> new ItemSlot()
-                        .slot(new ModularSlot(itemHandler, i)
-                                .slotGroup(slotGroup)))
-                .build();
-
-        return slotWidget;
-    }
-
-    public static SlotGroupWidget createSlotGroupFromMatrix(String slotGroupName, int maxSlots, char key,
-                                                            String... matrix) {
-        SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
-                .matrix(matrix)
-                .key(key, i -> new ItemSlot())
-                .build();
-        return slotWidget;
+                                                                     String slotGroupName,
+                                                                     PanelSyncManager syncManager) {
+        return createSlotGroupFromInventory(itemHandler, slotGroupName, itemHandler.getSlots(), 'I', syncManager,
+                createSquareMatrix(itemHandler.getSlots(), 'I'));
     }
 
     public static SlotGroupWidget createSlotGroupFromInventory(PanelSyncManager syncManager,
@@ -68,12 +65,10 @@ public class GTMuiMachineUtil {
             syncManager.syncValue(syncHandlerName, i, SyncHandlers.fluidSlot(fluidTank.getStorages()[i]));
         }
 
-        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
+        return SlotGroupWidget.builder()
                 .matrix(matrix)
                 .key(key, i -> new FluidSlot()
                         .syncHandler(syncHandlerName, i))
                 .build();
-
-        return slotWidget;
     }
 }
