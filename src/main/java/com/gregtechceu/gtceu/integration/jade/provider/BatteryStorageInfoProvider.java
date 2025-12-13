@@ -1,13 +1,20 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -15,6 +22,10 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
+
+import java.math.BigInteger;
+
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class BatteryStorageInfoProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
@@ -25,12 +36,29 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                     blockEntity.getMetaMachine() instanceof BatteryBufferMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (serverData.contains("batteries")) {
-                    CustomItemStackHandler handler = new CustomItemStackHandler();
-                    handler.deserializeNBT(serverData.getCompound("batteries"));
-                    IElementHelper helper = iTooltip.getElementHelper();
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        if (handler.getStackInSlot(i).getCount() != 0) {
-                            iTooltip.add(helper.smallItem(handler.getStackInSlot(i)));
+                    CompoundTag tag = serverData.getCompound("batteries");
+                    long changed = tag.getLong("changed"), stored = tag.getLong("stored"),
+                            capacity = tag.getLong("capacity");
+                    iTooltip.add(Component.literal("EU/sec: " + changed));
+                    if (changed > 0) {
+                        iTooltip.add(Component
+                                .literal("Until fully charged: " + getStringRemainTime((capacity - stored) / changed)));
+                    } else if (changed < 0) {
+                        iTooltip.add(Component.literal("Until empty " + getStringRemainTime(stored / -changed)));
+                    }
+                    if (Minecraft.getInstance().player.isShiftKeyDown()) {
+                        CustomItemStackHandler handler = new CustomItemStackHandler();
+                        handler.deserializeNBT(tag.getCompound("storage"));
+                        IElementHelper helper = iTooltip.getElementHelper();
+                        for (int i = 0; i < handler.getSlots(); i++) {
+                            if (handler.getStackInSlot(i).getCount() != 0) {
+                                ItemStack stack = handler.getStackInSlot(i);
+                                iTooltip.add(helper.smallItem(stack));
+                                IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+                                iTooltip.append(Component.literal(
+                                        GTValues.VNF[item.getTier()] + "§r " + formatEnergy(item.getCharge(), 100000) +
+                                                " / " + formatEnergy(item.getMaxCharge(), 100000) + " EU"));
+                            }
                         }
                     }
                 }
@@ -38,13 +66,51 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
         }
     }
 
+    private String getStringRemainTime(long time) {
+        String s = time % 60 + " sec";
+        time /= 60;
+        if (time > 0) {
+            s = time % 60 + " minutes " + s;
+            time /= 60;
+            if (time > 0) {
+                s = time % 60 + " hours " + s;
+                time /= 60;
+                if (time > 0) {
+                    s = time % 24 + " days " + s;
+                    time /= 24;
+                    if (time > 0) {
+                        s = formatEnergy(time, 10000) + " years " + s;
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    String formatEnergy(long energy, long trueshold) {
+        if (energy > trueshold) return DECIMAL_FORMAT_SIC_2F.format(BigInteger.valueOf(energy));
+        else return "" + energy;
+    }
+
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof ChargerMachine machine) {
-                compoundTag.put("batteries", machine.getChargerInventory().serializeNBT());
+                CompoundTag tag = new CompoundTag();
+                IEnergyContainer container = machine.energyContainer;
+                tag.putLong("changed", container.getInputPerSec() - container.getOutputPerSec());
+                tag.putLong("capacity", container.getEnergyCapacity());
+                tag.putLong("stored", container.getEnergyStored());
+                tag.put("storage", machine.getChargerInventory().serializeNBT());
+                compoundTag.put("batteries", tag);
             } else if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine machine) {
-                compoundTag.put("batteries", machine.getBatteryInventory().serializeNBT());
+                CompoundTag tag = new CompoundTag();
+                IEnergyContainer container = machine.energyContainer;
+                tag.putLong("changed", container.getInputPerSec() - container.getOutputPerSec());
+                tag.putLong("capacity", container.getEnergyCapacity());
+                tag.putLong("stored", container.getEnergyStored());
+                tag.put("storage", machine.getBatteryInventory().serializeNBT());
+                compoundTag.put("batteries", tag);
             }
         }
     }
