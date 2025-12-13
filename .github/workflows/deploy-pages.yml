@@ -1,0 +1,38 @@
+name: Publish docs via GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    branches: ["1.20.1", "1.21"]
+    paths: ['docs/**']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build docs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './docs'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '${{ github.ref_name }}'
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install packages
+        run: pip install -r ./requirements.txt
+      - name: Set git username and password
+        run: git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Deploy pages to gh-pages branch
+        run: mike deploy "${{ github.ref_name }}" --push
+      - name: Ensure 1.20.1 is the default version
+        run: mike set-default 1.20.1 --push
