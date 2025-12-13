@@ -122,6 +122,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .child(Flow.row()
                         .height(90)
                         .padding(5)
+                        .marginBottom(82)
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
@@ -129,6 +130,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 .progress(this::getEnergyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
+                                .verticalCenter()
                                 .addTooltipLine(IKey.dynamic(() -> Component.literal(
                                         "%s/%s EU".formatted(
                                                 GTStringUtils.formatInt(energyContainer.getEnergyStored()),
@@ -138,7 +140,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 inventorySize, 'B',
                                 slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
                                 syncManager,
-                                matrix)))
+                                matrix)
+                                .center()))
                 .child(new Column()
                         .coverChildren()
                         .leftRel(1.0f)
