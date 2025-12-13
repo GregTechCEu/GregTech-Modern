@@ -16,11 +16,6 @@ jobs:
   build:
     name: build docs
     runs-on: ubuntu-latest
-    env:
-      GIT_COMMITTER_NAME: ci-bot
-      GIT_COMMITTER_EMAIL: ci-bot@example.com
-      GIT_AUTHOR_NAME: ci-bot
-      GIT_AUTHOR_EMAIL: ci-bot@example.com
     defaults:
       run:
         working-directory: './docs'
@@ -33,7 +28,10 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: pip install -r ./requirements.txt
+      - name: Install packages
+        run: pip install -r ./requirements.txt
+      - name: Set git username and password
+        run: git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
       - name: Deploy pages to gh-pages branch
         run: mike deploy "${{ github.ref_name }}" --push
       - name: Ensure 1.20.1 is the default version
