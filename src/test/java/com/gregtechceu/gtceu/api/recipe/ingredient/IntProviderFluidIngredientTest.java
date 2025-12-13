@@ -215,7 +215,7 @@ public class IntProviderFluidIngredientTest {
                 "IntProviderFluidIngredient should have fluid equal to what it was made with");
         helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
-        ingredient.reroll();
+        ingredient.reset();
         helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks should have changed after rerolling");
         helper.succeed();
@@ -272,7 +272,7 @@ public class IntProviderFluidIngredientTest {
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
 
-        helper.runAfterDelay(4, () -> {
+        helper.runAfterDelay(2, () -> {
             if (machine.getRecipeLogic().getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0)
                     .getContent() instanceof IntProviderFluidIngredient ingredient) {
                 ingredient.setSampledCount(0);
@@ -295,14 +295,14 @@ public class IntProviderFluidIngredientTest {
         // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             FluidStack results = fluidOut.getFluidInTank(0);
-            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
-                    "Sabotaged Singleblock CR didn't produce correct number of fluids, produced [" +
-                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
-            helper.assertFalse((results.getAmount() == runs * 9),
-                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
             helper.assertFalse((results.getAmount() == runs * 0),
                     "Sabotaged Singleblock CR rolled min value on every roll! " +
                             "This is the failure this sabotage was intended to induce.");
+            helper.assertFalse((results.getAmount() == runs * 9),
+                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
+            helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
+                    "Sabotaged Singleblock CR didn't produce correct number of fluids, produced [" +
+                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
 
             // check if all the rolls were equal, but not min/max
             int[] rolls = new int[runs];

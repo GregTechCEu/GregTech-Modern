@@ -42,6 +42,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -972,5 +973,27 @@ public class GTPlaceholders {
         PlaceholderHandler.addRenderer("module", new ModulePlaceholderRenderer());
         PlaceholderHandler.addRenderer("rect", new RectPlaceholderRenderer());
         PlaceholderHandler.addRenderer("quad", new QuadPlaceholderRenderer());
+        PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
+                BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
+                if (blockEntity == null) return MultiLineComponent.empty();
+                Tag tag = blockEntity.saveWithFullMetadata();
+                if (tag instanceof CompoundTag compoundTag && compoundTag.contains("cover")) {
+                    CompoundTag coverTag = compoundTag.getCompound("cover");
+                    if (coverTag.contains(ctx.side().getName())) {
+                        CompoundTag cover = coverTag.getCompound(ctx.side().getName()).getCompound("payload")
+                                .getCompound("d");
+                        cover.putString("text", "[REMOVED]");
+                    }
+                }
+                for (MultiLineComponent arg : args) {
+                    if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
+                    tag = compoundTag.get(arg.toString());
+                }
+                return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
+            }
+        });
     }
 }
