@@ -47,6 +47,8 @@ extra_css:
   - stylesheets/extra.css
 
 extra:
+  version:
+    provider: mike
   social:
     - icon: fontawesome/brands/discord
       link: https://discord.gg/bWSWuYvURP

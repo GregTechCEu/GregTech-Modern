@@ -35,3 +35,7 @@ To install the required dependencies, please run `pip install -r requirements.tx
 The following plugins for MkDocs are being used:
 - https://squidfunk.github.io/mkdocs-material/
 - https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin
+
+## Serving final site
+The final site that gets displayed is in the "gh-pages" branch. Both the 1.20.1 and 1.21.1 workflows push to this branch, and a dropdown will appear on the site.
+Be very careful running any kind of mike command locally (mike deploy, mike set-default etc) since these will make commits to gh-pages, which might update the live site.
