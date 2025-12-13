@@ -121,8 +121,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
                         .height(90)
-                        .padding(5)
-                        .marginBottom(82)
+                        .margin(6)
+                        .marginTop(2)
+                        .height(80)
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
