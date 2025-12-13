@@ -1905,6 +1905,7 @@
   "config.gtceu.option.yOffset": "yOffset",
   "config.gtceu.option.zombieSpawnWithSabers": "zombieSpawnWithSabers",
   "config.jade.plugin_gtceu.auto_output_info": "[GTCEu] Auto Output Info",
+  "config.jade.plugin_gtceu.battery_info": "[GTCEu] Battery info",
   "config.jade.plugin_gtceu.cable_info": "[GTCEu] Cable Info",
   "config.jade.plugin_gtceu.controllable_provider": "[GTCEu] Controllable",
   "config.jade.plugin_gtceu.data_bank": "[GTCEu] Data Bank Info",

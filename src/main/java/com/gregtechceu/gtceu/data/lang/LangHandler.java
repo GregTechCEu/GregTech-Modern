@@ -1208,6 +1208,7 @@ public class LangHandler {
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
+        provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
