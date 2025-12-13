@@ -113,6 +113,7 @@ public class GTToolType {
                     .durabilityMultiplier(3.0F)
                     .behaviors(AOEConfigUIBehavior.INSTANCE, GrassPathBehavior.INSTANCE,
                             DouseCampfireBehavior.INSTANCE))
+            .constructor(GTShovelItem::new)
             .toolClasses(GTToolType.SHOVEL)
             .defaultActions(ToolActions.SHOVEL_DIG)
             .materialAmount(3 * GTValues.M)
