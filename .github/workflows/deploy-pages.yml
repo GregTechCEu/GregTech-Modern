@@ -1,14 +1,12 @@
-name: Publish 1.20.1 docs via GitHub Pages
+name: Publish docs via GitHub Pages
 on:
   workflow_dispatch:
   push:
-    branches: [1.20.1]
+    branches: ["1.20.1", "1.21"]
     paths: ['docs/**']
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: 'pages'
@@ -18,24 +16,25 @@ jobs:
   build:
     name: build docs
     runs-on: ubuntu-latest
+    env:
+      GIT_COMMITTER_NAME: ci-bot
+      GIT_COMMITTER_EMAIL: ci-bot@example.com
+      GIT_AUTHOR_NAME: ci-bot
+      GIT_AUTHOR_EMAIL: ci-bot@example.com
     defaults:
       run:
         working-directory: './docs'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: '1.20.1'
-          sparse-checkout: './docs'
+          ref: '${{ github.ref_name }}'
+          fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r ./requirements.txt
-      - uses: actions/cache@v4
-        with:
-          key: 'mkdocs-cache'
-          path: './docs/.cache'
-      - name: Deploy 1.20.1 pages to gh-pages branch
-        run: mike deploy 1.20.1 --push
+      - name: Deploy pages to gh-pages branch
+        run: mike deploy "${{ github.ref_name }}" --push
       - name: Ensure 1.20.1 is the default version
         run: mike set-default 1.20.1 --push
