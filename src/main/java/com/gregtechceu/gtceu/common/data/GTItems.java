@@ -2035,6 +2035,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("circuit"),
                     (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
             .onRegister(attach(new IntCircuitBehaviour()))
+            .tag(CustomTags.SKIP_ITEM_DETECTOR)
             .register();
 
     // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",

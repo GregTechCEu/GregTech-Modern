@@ -3,6 +3,6 @@
 	"textures": {
         "layer0": "gtceu:item/material_sets/shiny/plate_double",
         "layer1": "gtceu:item/material_sets/shiny/plate_double_secondary",
-		"layer3": "gtceu:item/material_sets/shiny/plate_double_overlay"
+		"layer2": "gtceu:item/material_sets/shiny/plate_double_overlay"
 	}
 }

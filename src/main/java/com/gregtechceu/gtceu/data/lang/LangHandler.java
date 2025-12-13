@@ -1284,6 +1284,9 @@ public class LangHandler {
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
+
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
         provider.add("gtceu.gui.machinemode.tab_tooltip", "Change active Machine Mode");
@@ -1641,6 +1644,11 @@ public class LangHandler {
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",
                 "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_item_link_cover.tooltip",
                 "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
@@ -1677,7 +1685,7 @@ public class LangHandler {
                 "Slot number: %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
