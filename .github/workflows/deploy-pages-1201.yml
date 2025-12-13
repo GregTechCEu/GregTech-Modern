@@ -1,4 +1,4 @@
-name: Publish docs via GitHub Pages
+name: Publish 1.20.1 docs via GitHub Pages
 on:
   workflow_dispatch:
   push:
@@ -35,14 +35,11 @@ jobs:
         with:
           key: 'mkdocs-cache'
           path: './docs/.cache'
-      - name: Build static files
-        id: mkdocs
-        run: mkdocs build
-      - name: Upload pages as artifact
-        id: artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './docs/site/'
+      - name: Deploy 1.20.1 pages to gh-pages branch
+        run: mike deploy 1.20.1 --push
+      - name: Ensure 1.20.1 is the default version
+        run: mike set-default 1.20.1 --push
+
 
   deploy:
     runs-on: ubuntu-latest
