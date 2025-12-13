@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -129,9 +130,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 .marginRight(50)
                                 .size(18, 60)
                                 .addTooltipLine(IKey.dynamic(() -> Component.literal(
-                                        "%d/%d EU".formatted(
-                                                energyContainer.getEnergyStored(),
-                                                energyContainer.getEnergyCapacity())))))
+                                        "%s/%s EU".formatted(
+                                                GTStringUtils.formatInt(energyContainer.getEnergyStored()),
+                                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(
                                 batteryInventory, "batteries",
                                 inventorySize, 'B',
