@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.level.block.state.StateHolder;
@@ -12,6 +13,8 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.function.Function;
 
 public class MachineRenderState extends StateHolder<MachineDefinition, MachineRenderState> {
+
+    private static boolean hasLoggedInternFallback = false;
 
     /**
      * CODEC that always returns interned (canonical) state instances.
@@ -32,7 +35,13 @@ public class MachineRenderState extends StateHolder<MachineDefinition, MachineRe
                 return interned;
             }
         }
-        return this; // Fallback if not found (shouldn't happen)
+        // Fallback if not found (shouldn't happen)
+        if (!hasLoggedInternFallback) {
+            hasLoggedInternFallback = true;
+            GTCEu.LOGGER.debug("MachineRenderState.intern() fallback triggered for definition: {}, values: {}",
+                    getDefinition().getId(), getValues());
+        }
+        return this;
     }
 
     public MachineRenderState(MachineDefinition owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> values,
