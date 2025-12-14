@@ -311,10 +311,14 @@ public class WoodMachineRecipes {
                             .build());
         }
         if (CUSTOM_ENTRIES == null) {
-            CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
-            var evt = new RegisterWoodsKubeEvent();
-            GTCEuStartupEvents.REGISTER_WOODS.post(evt);
-            CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
+            if (GTCEu.Mods.isKubeJSLoaded()) {
+                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
+                var evt = new RegisterWoodsKubeEvent();
+                GTCEuStartupEvents.REGISTER_WOODS.post(evt);
+                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
+            } else {
+                CUSTOM_ENTRIES = List.of();
+            }
         }
 
         List<WoodTypeEntry> entries = new ArrayList<WoodTypeEntry>();

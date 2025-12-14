@@ -36,17 +36,6 @@ public class RegisterWoodsKubeEvent implements KubeEvent {
             this.woodName = woodName;
         }
 
-        // public Wrapped id(KubeResourceLocation _id) {
-        // String namespace = id.wrapped().getNamespace();
-        // // if (namespace.equals("kubejs")) {
-        // // namespace = this.type.id.getNamespace();
-        // // }
-        // var idWithoutType = ResourceLocation.fromNamespaceAndPath(namespace,
-        // _id.wrapped().getPath());
-        // var id = idWithoutType.withPrefix(this.type.id.getPath() + "/");
-        // return this;
-        // }
-
         private String _recipeId;
         private Item _plank;
         private Item _strippedLog;
@@ -236,7 +225,7 @@ public class RegisterWoodsKubeEvent implements KubeEvent {
                 throw new IllegalArgumentException("Need a pressurePlate");
             }
 
-            var builder = new WoodTypeEntry.Builder(this.modId, this.woodName)
+            return new WoodTypeEntry.Builder(this.modId, this.woodName)
                     .planks(this._plank, this._recipeId + "_planks")
                     .log(Items.OAK_LOG).removeCharcoalRecipe()
                     .strippedLog(this._strippedLog)
@@ -256,14 +245,14 @@ public class RegisterWoodsKubeEvent implements KubeEvent {
                     .pressurePlate(this._pressurePlate, this._recipeId + "_pressure_plate")
                     .registerAllMaterialInfo()
                     .build();
-            return builder;
         }
 
-        boolean wasRegisted = false;
+        boolean wasRegistered = false;
 
         @HideFromJS
         public void register() {
-            if (!this.wasRegisted) {
+            if (!this.wasRegistered) {
+                this.wasRegistered = true;
                 try {
                     woods.add(this.toEntry());
                 } catch (Exception e) {
@@ -273,7 +262,7 @@ public class RegisterWoodsKubeEvent implements KubeEvent {
             } else
                 GTCEu.LOGGER.warn("Tried registering a wood type twice!");
         }
-    };
+    }
 
     public Wrapped register(String modId, String woodName) {
         var wrap = new Wrapped(modId, woodName);
