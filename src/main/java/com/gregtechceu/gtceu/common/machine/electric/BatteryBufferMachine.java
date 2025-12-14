@@ -122,6 +122,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .child(Flow.row()
                         .height(90)
                         .margin(6)
+                        .marginLeft(7)
                         .marginTop(2)
                         .height(80)
                         .child(new ProgressWidget()
