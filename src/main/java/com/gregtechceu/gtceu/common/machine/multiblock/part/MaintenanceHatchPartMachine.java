@@ -35,8 +35,8 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -408,7 +408,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
         InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        //syncManager.syncValue("button_idk", syncHandler);
+        // syncManager.syncValue("button_idk", syncHandler);
         Flow maintenanceStatusWidget = Flow.column()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .coverChildren()
@@ -417,8 +417,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         Runnable updateWidget = () -> {
             while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
             maintenanceStatusWidget.child(new TextWidget<>(IKey.lang(() -> hasMaintenanceProblems() ?
-                            "gtceu.top.maintenance_broken" :
-                            "gtceu.top.maintenance_fixed")))
+                    "gtceu.top.maintenance_broken" :
+                    "gtceu.top.maintenance_fixed")))
                     .child(Flow.row()
                             .coverChildren()
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
@@ -429,8 +429,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                     .toList()));
         };
         syncHandler.setOnMousePressed((button) -> {
-                    fixMaintenanceProblems(guiData.getPlayer());
-                    updateWidget.run();
+            fixMaintenanceProblems(guiData.getPlayer());
+            updateWidget.run();
         });
         updateWidget.run();
         return new ModularPanel(this.getDefinition().getName())
@@ -448,15 +448,19 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                         .coverChildren()
                                         .childPadding(5)
                                         .alignX(0)
-                                        .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_duration.modify")))
+                                        .child(new TextWidget<>(
+                                                IKey.lang("gtceu.maintenance.configurable_duration.modify")))
                                         .child(new TextFieldWidget()
-                                                .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER, () -> MAX_DURATION_MULTIPLIER)
+                                                .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
+                                                        () -> MAX_DURATION_MULTIPLIER)
                                                 .setDefaultNumber(1)
-                                                .value(new FloatSyncValue(this::getDurationMultiplier, this::setDurationMultiplier))
+                                                .value(new FloatSyncValue(this::getDurationMultiplier,
+                                                        this::setDurationMultiplier))
                                                 .addTooltipElement(IKey.lang(() -> getDurationMultiplier() == 1.0 ?
                                                         "gtceu.maintenance.configurable_duration.unchanged_description" :
                                                         "gtceu.maintenance.configurable_duration.changed_description"))))
-                                .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_time", () -> new Object[]{this.getTimeMultiplier()}))
+                                .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_time",
+                                        () -> new Object[] { this.getTimeMultiplier() }))
                                         .alignX(0)))
                         .child(Flow.row()
                                 .alignX(.5f)
@@ -469,7 +473,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                 .child(new ButtonWidget<>()
                                         .background(GTGuiTextures.BUTTON_MAINTENANCE)
                                         .disableHoverBackground()
-                                        .addTooltipElement(IKey.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                                        .addTooltipElement(
+                                                IKey.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
                                         .syncHandler(syncHandler)))
                         .child(maintenanceStatusWidget));
     }
