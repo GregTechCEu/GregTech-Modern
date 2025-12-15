@@ -42,9 +42,11 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                     iTooltip.add(Component.literal("EU/sec: " + changed));
                     if (changed > 0) {
                         iTooltip.add(Component
-                                .literal("Until fully charged: " + getStringRemainTime((capacity - stored) / changed)));
+                                .translatable("gtceu.jade.remaining_charge_time",
+                                        getStringRemainTime((capacity - stored) / changed)));
                     } else if (changed < 0) {
-                        iTooltip.add(Component.literal("Until empty " + getStringRemainTime(stored / -changed)));
+                        iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+                                getStringRemainTime((stored) / -changed)));
                     }
                     if (Minecraft.getInstance().player.isShiftKeyDown()) {
                         CustomItemStackHandler handler = new CustomItemStackHandler();
@@ -55,6 +57,7 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                                 ItemStack stack = handler.getStackInSlot(i);
                                 iTooltip.add(helper.smallItem(stack));
                                 IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+                                if (item == null) continue;
                                 iTooltip.append(Component.literal(
                                         GTValues.VNF[item.getTier()] + "§r " + formatEnergy(item.getCharge(), 100000) +
                                                 " / " + formatEnergy(item.getMaxCharge(), 100000) + " EU"));
@@ -67,19 +70,19 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
     }
 
     private String getStringRemainTime(long time) {
-        String s = time % 60 + " sec";
+        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
         time /= 60;
         if (time > 0) {
-            s = time % 60 + " minutes " + s;
+            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
             time /= 60;
             if (time > 0) {
-                s = time % 60 + " hours " + s;
+                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
                 time /= 60;
                 if (time > 0) {
-                    s = time % 24 + " days " + s;
+                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
                     time /= 24;
                     if (time > 0) {
-                        s = formatEnergy(time, 10000) + " years " + s;
+                        s = Component.translatable("gtceu.jade.years", formatEnergy(time, 10000)).getString() + " " + s;
                     }
                 }
             }
