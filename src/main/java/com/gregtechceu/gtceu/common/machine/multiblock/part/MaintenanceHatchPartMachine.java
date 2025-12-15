@@ -20,11 +20,13 @@ import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.FloatSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -405,61 +407,70 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     @Override
     public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new ModularPanel(this.getDefinition().getName())
-                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
-                .child(Flow.column()
-                        .crossAxisAlignment(Alignment.CrossAxis.START)
-                    .childIf(this.isConfigurable, () -> Flow.column()
-                            .coverChildren()
-                            .padding(5)
-                            .horizontalCenter()
-                            .child(Flow.row()
-                                    .coverChildren()
-                                    .childPadding(5)
-                                    .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_duration.modify")))
-                                    .child(new TextFieldWidget()
-                                            .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER, () -> MAX_DURATION_MULTIPLIER)
-                                            .setDefaultNumber(1)
-                                            .value(new FloatSyncValue(this::getDurationMultiplier, this::setDurationMultiplier))
-                                            .addTooltipElement(IKey.lang(() -> getDurationMultiplier() == 1.0 ?
-                                                    "gtceu.maintenance.configurable_duration.unchanged_description" :
-                                                    "gtceu.maintenance.configurable_duration.changed_description"))))
-                            .child(Flow.row()
-                                    .coverChildren()
-                                    .childPadding(5)
-                                    .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_time", () -> new Object[]{this.getTimeMultiplier()})))))
+        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
+        //syncManager.syncValue("button_idk", syncHandler);
+        Flow maintenanceStatusWidget = Flow.column()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .coverChildren()
+                .padding(5)
+                .childPadding(2);
+        Runnable updateWidget = () -> {
+            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
+            maintenanceStatusWidget.child(new TextWidget<>(IKey.lang(() -> hasMaintenanceProblems() ?
+                            "gtceu.top.maintenance_broken" :
+                            "gtceu.top.maintenance_fixed")))
                     .child(Flow.row()
                             .coverChildren()
-                            .padding(5)
-                            .child(new ItemSlot()
-                                    .slot(itemStackHandler, 0)
-                                    .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
-                            .child(new ButtonWidget<>()
-                                    .background(GTGuiTextures.BUTTON_MAINTENANCE)
-                                    .disableHoverBackground()
-                                    .addTooltipElement(IKey.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
-                                    .onMousePressed((mouseX, mouseY, button) -> {
-                                        fixMaintenanceProblems(guiData.getPlayer());
-                                        return true;
-                                    })))
-                    .child(Flow.column()
-                            .crossAxisAlignment(Alignment.CrossAxis.START)
-                            .coverChildren()
-                            .padding(5)
-                            .childPadding(2)
-                            .child(new TextWidget<>(IKey.lang(() -> hasMaintenanceProblems() ?
-                                    "gtceu.top.maintenance_broken" :
-                                    "gtceu.top.maintenance_fixed")))
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
                                     .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
                                     .map(GTUtil::getMaintenanceText)
-                                    .map(i -> Flow.row()
-                                            .coverChildren()
-                                            .childPadding(2)
-                                            .child(new IDrawable.DrawableWidget(new ItemDrawable(i.getA())))
-                                            .child(new TextWidget<>(IKey.dynamic(i::getB))))
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getA())))
                                     .map(IWidget.class::cast)
-                                    .toList())));
+                                    .toList()));
+        };
+        syncHandler.setOnMousePressed((button) -> {
+                    fixMaintenanceProblems(guiData.getPlayer());
+                    updateWidget.run();
+        });
+        updateWidget.run();
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 200)
+                .bindPlayerInventory()
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(Flow.column()
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .childIf(this.isConfigurable, () -> Flow.column()
+                                .coverChildren()
+                                .padding(5)
+                                .paddingLeft(0)
+                                .marginLeft(5)
+                                .child(Flow.row()
+                                        .coverChildren()
+                                        .childPadding(5)
+                                        .alignX(0)
+                                        .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_duration.modify")))
+                                        .child(new TextFieldWidget()
+                                                .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER, () -> MAX_DURATION_MULTIPLIER)
+                                                .setDefaultNumber(1)
+                                                .value(new FloatSyncValue(this::getDurationMultiplier, this::setDurationMultiplier))
+                                                .addTooltipElement(IKey.lang(() -> getDurationMultiplier() == 1.0 ?
+                                                        "gtceu.maintenance.configurable_duration.unchanged_description" :
+                                                        "gtceu.maintenance.configurable_duration.changed_description"))))
+                                .child(new TextWidget<>(IKey.lang("gtceu.maintenance.configurable_time", () -> new Object[]{this.getTimeMultiplier()}))
+                                        .alignX(0)))
+                        .child(Flow.row()
+                                .coverChildren()
+                                .padding(5)
+                                .child(new ItemSlot()
+                                        .slot(new ModularSlot(itemStackHandler, 0).changeListener(
+                                                (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
+                                .child(new ButtonWidget<>()
+                                        .background(GTGuiTextures.BUTTON_MAINTENANCE)
+                                        .disableHoverBackground()
+                                        .addTooltipElement(IKey.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                                        .syncHandler(syncHandler)))
+                        .child(maintenanceStatusWidget));
     }
 
     private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
