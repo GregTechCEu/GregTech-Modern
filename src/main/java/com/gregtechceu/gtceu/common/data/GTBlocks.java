@@ -1427,6 +1427,8 @@ public class GTBlocks {
         registerCobbleBlock(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
         registerCobbleBlock(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
         registerCobbleBlock(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreRedGranite, GTBlocks.RED_GRANITE::getDefaultState);
+        registerCobbleBlock(TagPrefix.oreMarble, GTBlocks.MARBLE::getDefaultState);
         registerCobbleBlock(TagPrefix.oreSand, Blocks.SAND::defaultBlockState);
         registerCobbleBlock(TagPrefix.oreGravel, Blocks.GRAVEL::defaultBlockState);
         registerCobbleBlock(TagPrefix.oreRedSand, Blocks.RED_SAND::defaultBlockState);
