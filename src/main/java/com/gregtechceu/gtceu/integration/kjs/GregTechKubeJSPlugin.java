@@ -548,7 +548,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // get the recipe ID without the leading type path
         GTRecipeBuilder builder = gtRecipeType.recipeBuilder(gtRecipe.idWithoutType());
         if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-            builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            int duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            if (duration <= 0) {
+                GTCEu.LOGGER.error("Duration must be a positive value, skipping recipe id: {}", gtRecipe.getId());
+                return;
+            }
+            builder.duration = duration;
         }
         if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
             builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
