@@ -39,7 +39,7 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                     CompoundTag tag = serverData.getCompound("batteries");
                     long changed = tag.getLong("changed"), stored = tag.getLong("stored"),
                             capacity = tag.getLong("capacity");
-                    iTooltip.add(Component.literal("EU/sec: " + changed));
+                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", changed));
                     if (changed > 0) {
                         iTooltip.add(Component
                                 .translatable("gtceu.jade.remaining_charge_time",
