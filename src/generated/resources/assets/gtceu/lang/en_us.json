@@ -2427,6 +2427,7 @@
   "gtceu.gui.item_auto_output.allow_input.enabled": "allow items input from the output side",
   "gtceu.gui.item_auto_output.tooltip.disabled": "Item Auto-Output Disabled",
   "gtceu.gui.item_auto_output.tooltip.enabled": "Item Auto-Output Enabled",
+  "gtceu.gui.item_collector.range": "Range: ",
   "gtceu.gui.item_input_from_output": "Item Input from Output: %s",
   "gtceu.gui.item_lock.tooltip.disabled": "Item Locking Disabled",
   "gtceu.gui.item_lock.tooltip.enabled": "Item Locking Enabled",

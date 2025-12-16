@@ -1,47 +1,50 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -62,14 +65,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemCollectorMachine extends TieredEnergyMachine
-                                  implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IWorkable {
+                                  implements IAutoOutputItem, IMuiMachine, IMachineLife, IWorkable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemCollectorMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -403,106 +405,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     //////////////////////////////////////
-    // ********** GUI ***********//
-    //////////////////////////////////////
-
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-                var template = createTemplate(inventorySize).createDefault();
-                var energyBar = createEnergyBar().createDefault();
-                var batterySlot = createBatterySlot().createDefault();
-
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8 + 30, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-
-                template.setSelfPosition(new Position(
-                        (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                                energyGroup.getSize().width + 2,
-                        (size.height - template.getSize().height) / 2 + 15));
-
-                group.addWidget(energyGroup);
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof ItemCollectorMachine itemCollectorMachine) {
-                    createTemplate(inventorySize).setupUI(template, itemCollectorMachine);
-                    createEnergyBar().setupUI(template, itemCollectorMachine);
-                    createBatterySlot().setupUI(template, itemCollectorMachine);
-                    var rangeSelector = new IntInputWidget((template.getSize().width - 80) / 2, 5, 80, 20,
-                            itemCollectorMachine::getRange, itemCollectorMachine::setRange);
-                    rangeSelector.setMin(1);
-                    rangeSelector.setMax(itemCollectorMachine.maxRange);
-                    template.addWidget(rangeSelector);
-                }
-            }));
-
-    protected static EditableUI<SlotWidget, ItemCollectorMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
-    }
-
-    protected static EditableUI<WidgetGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
-            int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 25, rowSize * 18 + 8);
-
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < rowSize; x++) {
-                    int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(24 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
-                }
-            }
-
-            SlotWidget filterSlotWidget = new SlotWidget();
-            filterSlotWidget.initTemplate();
-            filterSlotWidget
-                    .setSelfPosition(new Position(4, (main.getSize().height - filterSlotWidget.getSize().height) / 2));
-            filterSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY);
-            filterSlotWidget.setId("filter_slot");
-            main.addWidget(filterSlotWidget);
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
-            return main;
-        }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < machine.output.getSlots()) {
-                    slot.setHandlerSlot(machine.output, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
-                }
-            });
-            WidgetUtils.widgetByIdForEach(group, "^filter_slot$", SlotWidget.class, slot -> {
-                slot.setHandlerSlot(machine.filterInventory, 0);
-                slot.setCanTakeItems(true);
-                slot.setCanPutItems(true);
-            });
-
-        });
-    }
-
-    //////////////////////////////////////
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
@@ -565,5 +467,49 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel(getDefinition().getName())
+                .height(220)
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 174))
+                .bindPlayerInventory()
+                .child(Flow.column()
+                        .coverChildrenHeight()
+                        .widthRel(1)
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .child(Flow.row()
+                                .coverChildren()
+                                .childPadding(2)
+                                .margin(5)
+                                .horizontalCenter()
+                                .child(new TextWidget<>(IKey.lang("gtceu.gui.item_collector.range")))
+                                .child(new TextFieldWidget()
+                                        .setNumbers(1, maxRange)
+                                        .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
+                        .child(Flow.row()
+                                .coverChildrenHeight()
+                                .widthRel(1)
+                                .child(new ItemSlot()
+                                        .slot(filterInventory, 0)
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY)
+                                        .margin(7))
+                                .child(GTMuiMachineUtil
+                                        .createSquareSlotGroupFromInventory(output, "main_inv", syncManager)
+                                        .horizontalCenter())))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .excludeAreaInXei()
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createBatterySlot(getChargerInventory(), 0, syncManager))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager))
+                        .child(GTMuiWidgets.createAutoOutputItemButton(this, syncManager)));
     }
 }

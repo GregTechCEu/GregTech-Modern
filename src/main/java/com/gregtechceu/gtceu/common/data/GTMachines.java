@@ -521,8 +521,6 @@ public class GTMachines {
                     .recipeType(DUMMY_RECIPES)
                     .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                     .modelProperty(GTMachineModelProperties.IS_WORKING_ENABLED, false)
-                    .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"),
-                            ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
                     .model(createItemCollectorModel(GTCEu.id("block/machines/item_collector")))
                     .tooltips(
                             Component.translatable("gtceu.machine.item_collector.tooltip"),
