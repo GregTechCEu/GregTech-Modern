@@ -189,7 +189,7 @@ public class FluidSlot extends Widget<FluidSlot>
             this.overlayTexture.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
         if (content != null && this.syncHandler.controlsAmount()) {
-            String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), true) +
+            String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), false) +
                     getBaseUnit();
             this.textRenderer.setAlignment(Alignment.CenterRight, getArea().width - this.contentOffsetX - 1f);
             this.textRenderer.setPos((int) (this.contentOffsetX + 0.5f), (int) (getArea().height - 5.5f));

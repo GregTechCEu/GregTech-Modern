@@ -201,7 +201,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                         })
                         .key('F', i -> {
                             FluidSlotSyncHandler syncHandler = new FluidSlotSyncHandler(tank.getStorages()[i])
-                                    .canFillSlot(io.support(IO.IN));
+                                    .canFillSlot(io.support(IO.IN))
+                                    .canDrainSlot(true);
                             syncManager.syncValue(slotGroupName + "_fluid", i, syncHandler);
                             return new FluidSlot().syncHandler(slotGroupName + "_fluid", i);
                         }).build()
