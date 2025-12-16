@@ -1,0 +1,124 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hp_steam_miner",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/high_pressure_steam_miner/overlay_back",
+            "overlay_bottom": "gtceu:block/machines/high_pressure_steam_miner/overlay_bottom",
+            "overlay_front": "gtceu:block/machines/high_pressure_steam_miner/overlay_front",
+            "overlay_side": "gtceu:block/machines/high_pressure_steam_miner/overlay_side"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/high_pressure_steam_miner/overlay_back",
+            "overlay_bottom": "gtceu:block/machines/high_pressure_steam_miner/overlay_bottom",
+            "overlay_front": "gtceu:block/machines/high_pressure_steam_miner/overlay_front",
+            "overlay_side": "gtceu:block/machines/high_pressure_steam_miner/overlay_side"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/high_pressure_steam_miner/overlay_back",
+            "overlay_bottom": "gtceu:block/machines/high_pressure_steam_miner/overlay_bottom",
+            "overlay_front": "gtceu:block/machines/high_pressure_steam_miner/overlay_front",
+            "overlay_side": "gtceu:block/machines/high_pressure_steam_miner/overlay_side"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_back": "gtceu:block/machines/high_pressure_steam_miner/overlay_back",
+            "overlay_bottom": "gtceu:block/machines/high_pressure_steam_miner/overlay_bottom",
+            "overlay_front": "gtceu:block/machines/high_pressure_steam_miner/overlay_front",
+            "overlay_side": "gtceu:block/machines/high_pressure_steam_miner/overlay_side"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 270
+      },
+      "when": {
+        "steam_vent": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 90
+      },
+      "when": {
+        "steam_vent": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 270
+      },
+      "when": {
+        "steam_vent": "left"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 90
+      },
+      "when": {
+        "steam_vent": "right"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent"
+      },
+      "when": {
+        "steam_vent": "front"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 180
+      },
+      "when": {
+        "steam_vent": "back"
+      }
+    }
+  ]
+}

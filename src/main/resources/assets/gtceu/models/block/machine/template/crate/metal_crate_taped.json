@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/cube_2_layer/tinted_bot/all",
+    "textures": {
+        "bot_all": "gtceu:block/storage/crates/metal_crate",
+        "top_all": "gtceu:block/overlay/machine/overlay_crate_taped"
+    }
+}

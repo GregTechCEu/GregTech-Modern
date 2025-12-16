@@ -5,8 +5,7 @@ hide:
 title: Home
 ---
 
-
-# Welcome to GregTech CEu Modern's Documentation!
+# Welcome to GregTech CEu Modern's Documentation for 1.20.1!
 
 GregTech CEu Modern is a port of [GregTech Community Edition Unofficial](https://github.com/GregTechCEu/GregTech)
 to modern Minecraft versions.
@@ -23,6 +22,4 @@ You can download an offline version of this wiki here:
 
 
 ## Want to Contribute?
-
-If you want to contribute to this documentation site, feel free to open a pull request on
-[its GitHub repository](https://github.com/GregTechCEu/gtceu-modern-docs).
+If you want to contribute to this documentation site, feel free to read [the instructions](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/docs/CONTRIBUTING.md) and open a pull request on the [GitHub repository](https://github.com/GregTechCEu/GregTech-Modern).

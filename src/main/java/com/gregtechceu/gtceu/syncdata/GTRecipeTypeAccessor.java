@@ -12,10 +12,6 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import io.netty.buffer.Unpooled;
 
-/**
- * @author Screret
- * @implNote GTRecipeTypeAccessor
- */
 public class GTRecipeTypeAccessor extends CustomObjectAccessor<GTRecipeType> {
 
     public GTRecipeTypeAccessor() {

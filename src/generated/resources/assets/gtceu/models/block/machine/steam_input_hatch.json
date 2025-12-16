@@ -1,0 +1,52 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:steam_input_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false,steel=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/bronze/bottom",
+          "side": "gtceu:block/casings/steam/bronze/side",
+          "top": "gtceu:block/casings/steam/bronze/top"
+        }
+      }
+    },
+    "is_formed=false,steel=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/steel/bottom",
+          "side": "gtceu:block/casings/steam/steel/side",
+          "top": "gtceu:block/casings/steam/steel/top"
+        }
+      }
+    },
+    "is_formed=true,steel=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/bronze/bottom",
+          "side": "gtceu:block/casings/steam/bronze/side",
+          "top": "gtceu:block/casings/steam/bronze/top"
+        }
+      }
+    },
+    "is_formed=true,steel=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/steel/bottom",
+          "side": "gtceu:block/casings/steam/steel/side",
+          "top": "gtceu:block/casings/steam/steel/top"
+        }
+      }
+    }
+  }
+}

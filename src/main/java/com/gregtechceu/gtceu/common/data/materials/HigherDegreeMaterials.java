@@ -86,6 +86,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSG = new Material.Builder(GTCEu.id("hssg"))
+                .langValue("HSS-G")
                 .ingot(3).fluid()
                 .color(0x9cbabe).secondaryColor(0x032550).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE,
@@ -102,7 +103,8 @@ public class HigherDegreeMaterials {
                 .ingot(0)
                 .liquid(new FluidBuilder().temperature(1400))
                 .color(0xc55252).secondaryColor(0xC80000).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
+                .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, GENERATE_SPRING_SMALL,
+                        DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
                 .cableProperties(GTValues.V[0], 1, 0)
                 .buildAndRegister();
@@ -115,6 +117,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSE = new Material.Builder(GTCEu.id("hsse"))
+                .langValue("HSS-E")
                 .ingot(4).fluid()
                 .color(0x9d9cbe).secondaryColor(0x2b0350).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_GEAR)
@@ -128,6 +131,7 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         HSSS = new Material.Builder(GTCEu.id("hsss"))
+                .langValue("HSS-S")
                 .ingot(4).fluid()
                 .color(0xa482bf).secondaryColor(0x66000e).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR,
@@ -173,30 +177,6 @@ public class HigherDegreeMaterials {
                 .iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Mirabilite, 2, Clay, 7)
-                .buildAndRegister();
-
-        HotBrine = new Material.Builder(GTCEu.id("hot_brine"))
-                .liquid(320)
-                .color(0xbe6026)
-                .buildAndRegister();
-
-        HotChlorinatedBrominatedBrine = new Material.Builder(GTCEu.id("hot_chlorinated_brominated_brine"))
-                .liquid(320)
-                .color(0xab765d)
-                .components(HotBrine, 1, Chlorine, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        HotDebrominatedBrine = new Material.Builder(GTCEu.id("hot_debrominated_brine"))
-                .liquid(320)
-                .color(0xab896d)
-                .buildAndRegister();
-
-        HotAlkalineDebrominatedBrine = new Material.Builder(GTCEu.id("hot_alkaline_debrominated_brine"))
-                .liquid(320)
-                .color(0xbe8938)
-                .components(HotDebrominatedBrine, 2, Chlorine, 1)
-                .flags(DISABLE_DECOMPOSITION)
                 .buildAndRegister();
 
         BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))

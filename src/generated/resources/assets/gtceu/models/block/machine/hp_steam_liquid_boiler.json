@@ -1,0 +1,63 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hp_steam_liquid_boiler",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front_active_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front_active_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
+    }
+  ]
+}

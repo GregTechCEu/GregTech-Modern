@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtceu:quantum_chest_item"
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:creative_chest",
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/template/quantum/creative_container"
+    }
+  }
+}

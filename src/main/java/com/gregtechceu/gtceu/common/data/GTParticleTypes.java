@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -24,6 +25,8 @@ public class GTParticleTypes {
                     return HazardParticleOptions.CODEC;
                 }
             });
+    public static final RegistryObject<SimpleParticleType> MUFFLER_PARTICLE = PARTICLE_TYPES
+            .register("muffler", () -> new SimpleParticleType(false));
 
     public static void init(IEventBus modBus) {
         PARTICLE_TYPES.register(modBus);

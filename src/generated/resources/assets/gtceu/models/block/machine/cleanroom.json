@@ -1,0 +1,90 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:cleanroom",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/cleanroom/plascrete"
+  },
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom_active",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top_active"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom_active",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top_active"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom_active",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top_active"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/cleanroom/plascrete",
+          "overlay_bottom": "gtceu:block/multiblock/cleanroom/overlay_bottom_active",
+          "overlay_top": "gtceu:block/multiblock/cleanroom/overlay_top_active"
+        }
+      }
+    }
+  }
+}

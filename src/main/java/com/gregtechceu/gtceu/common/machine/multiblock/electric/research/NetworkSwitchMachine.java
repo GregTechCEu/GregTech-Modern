@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -60,24 +61,24 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         List<IOpticalComputationHatch> receivers = new ArrayList<>();
         List<IOpticalComputationHatch> transmitters = new ArrayList<>();
         for (var part : this.getParts()) {
+            Block block = part.self().getBlockState().getBlock();
+            List<IOpticalComputationHatch> list;
+            if (PartAbility.COMPUTATION_DATA_RECEPTION.isApplicable(block)) {
+                list = receivers;
+            } else if (PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
+                list = transmitters;
+            } else {
+                continue;
+            }
             if (part instanceof IOpticalComputationHatch hatch) {
-                Block block = part.self().getBlockState().getBlock();
-                if (PartAbility.COMPUTATION_DATA_RECEPTION.isApplicable(block)) {
-                    receivers.add(hatch);
-                }
-                if (PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
-                    transmitters.add(hatch);
-                }
-            } else if (part.getRecipeHandlers().stream().anyMatch(IOpticalComputationHatch.class::isInstance)) {
-                var hatch = part.getRecipeHandlers().stream().filter(IOpticalComputationHatch.class::isInstance)
-                        .map(IOpticalComputationHatch.class::cast).findFirst().orElse(null);
-                if (hatch != null) {
-                    Block block = part.self().getBlockState().getBlock();
-                    if (PartAbility.COMPUTATION_DATA_RECEPTION.isApplicable(block)) {
-                        receivers.add(hatch);
-                    }
-                    if (PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
-                        transmitters.add(hatch);
+                list.add(hatch);
+            } else {
+                var handlerLists = part.getRecipeHandlers();
+                for (var handlerList : handlerLists) {
+                    for (var cwu : handlerList.getCapability(CWURecipeCapability.CAP)) {
+                        if (cwu instanceof IOpticalComputationHatch hatch) {
+                            list.add(hatch);
+                        }
                     }
                 }
             }
@@ -140,7 +141,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
      */
 
     /** Handles computation load across multiple receivers and to multiple transmitters. */
-    private static class MultipleComputationHandler extends NotifiableComputationContainer {
+    private class MultipleComputationHandler extends NotifiableComputationContainer {
 
         // providers in the NS provide distributable computation to the NS
         private final Set<IOpticalComputationHatch> providers = new ObjectOpenHashSet<>();
@@ -150,6 +151,9 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         /** The EU/t cost of this Network Switch given the attached providers and transmitters. */
         @Getter(value = AccessLevel.PRIVATE)
         private int EUt;
+
+        private boolean tickSaturated;
+        private long timerCWUt = -1;
 
         public MultipleComputationHandler(MetaMachine machine) {
             super(machine, IO.IN, false);
@@ -174,6 +178,21 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
+
+            if (cwut == 0) return 0;
+
+            // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
+            long timer = NetworkSwitchMachine.this.getOffsetTimer();
+            if (timerCWUt == timer) {
+                if (tickSaturated) {
+                    return 0;
+                }
+            } else {
+                // First call this tick, reset saturation
+                timerCWUt = timer;
+                tickSaturated = false;
+            }
+
             Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
             int allocatedCWUt = 0;
             for (var provider : providers) {
@@ -183,6 +202,12 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 cwut -= allocated;
                 if (cwut == 0) break;
             }
+
+            if (!simulate && allocatedCWUt == 0) {
+                // No computation left to give, remember this for subsequent calls this tick
+                tickSaturated = true;
+            }
+
             return allocatedCWUt;
         }
 

@@ -21,11 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTCreativeModeTabs
- */
 @SuppressWarnings("Convert2MethodRef")
 public class GTCreativeModeTabs {
 
@@ -74,7 +69,7 @@ public class GTCreativeModeTabs {
             .register();
     public static RegistryEntry<CreativeModeTab> ITEM = REGISTRATE.defaultCreativeTab("item",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("item", REGISTRATE))
-                    .icon(() -> GTItems.COIN_GOLD_ANCIENT.asStack())
+                    .icon(() -> GTItems.BASIC_TAPE.asStack())
                     .title(REGISTRATE.addLang("itemGroup", GTCEu.id("item"), GTCEu.NAME + " Items"))
                     .build())
             .register();

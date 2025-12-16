@@ -9,11 +9,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-/**
- * @author KilaBash
- * @date 2023/3/29
- * @implNote WidgetUtils
- */
 public class WidgetUtils {
 
     public static List<Widget> getWidgetsById(WidgetGroup group, String regex) {

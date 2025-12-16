@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ToolAction;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +39,11 @@ public class BlockRotatingBehavior implements IToolBehavior {
     public static final BlockRotatingBehavior INSTANCE = new BlockRotatingBehavior();
 
     protected BlockRotatingBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == GTToolActions.WRENCH_ROTATE;
+    }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
@@ -57,19 +64,22 @@ public class BlockRotatingBehavior implements IToolBehavior {
             return InteractionResult.FAIL;
         }
 
-        if (!player.isShiftKeyDown()) {
+        if (player == null || !player.isShiftKeyDown()) {
             // Special cases for vanilla blocks where the default rotation behavior is less than ideal
             ICustomRotationBehavior behavior = CustomBlockRotations.getCustomRotation(b);
             if (behavior != null) {
                 if (behavior.customRotate(state, level, pos, retraceBlock(level, player, pos))) {
-                    ToolHelper.onActionDone(player, level, context.getHand());
-                    return InteractionResult.SUCCESS;
+                    ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
-            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ?
-                    Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
-                        ToolHelper.onActionDone(player, level, context.getHand());
-                        return InteractionResult.SUCCESS;
-                    }
+            } else {
+                Rotation rot = player == null || player.getDirection().getClockWise() == context.getClickedFace() ?
+                        Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
+                if (state.rotate(level, pos, rot) != state) {
+                    ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                }
+            }
         }
         return InteractionResult.PASS;
     }

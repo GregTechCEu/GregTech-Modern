@@ -1,0 +1,11 @@
+{
+  "parent": "gtceu:block/cube_2_layer/tinted_bot/all_bot",
+  "textures": {
+    "top_down": "#top_all",
+    "top_up": "#top_all",
+    "top_north": "#top_all",
+    "top_south": "#top_all",
+    "top_west": "#top_all",
+    "top_east": "#top_all"
+  }
+}

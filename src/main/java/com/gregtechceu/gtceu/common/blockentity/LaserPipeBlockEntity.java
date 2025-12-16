@@ -65,7 +65,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         if (cap == GTCapability.CAPABILITY_LASER) {
             if (getLevel().isClientSide())
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> clientCapability));
-
+            if (side != null && !isConnected(side)) return LazyOptional.empty();
             if (handlers.isEmpty()) {
                 initHandlers();
             }
@@ -164,7 +164,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
 
     @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
-        if (!getLevel().isClientSide && connected && !fromNeighbor) {
+        if (!getLevel().isClientSide && connected) {
             int connections = getConnections();
             // block connection if any side other than the requested side and its opposite side are already connected.
             connections &= ~(1 << side.ordinal());

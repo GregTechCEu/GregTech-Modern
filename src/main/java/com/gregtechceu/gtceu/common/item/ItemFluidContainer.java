@@ -7,11 +7,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote ItemFluidContainer
- */
 public class ItemFluidContainer implements IRecipeRemainder {
 
     @Override
@@ -20,9 +15,7 @@ public class ItemFluidContainer implements IRecipeRemainder {
             var drained = handler.drain(FluidType.BUCKET_VOLUME, FluidAction.SIMULATE);
             if (drained.getAmount() != FluidType.BUCKET_VOLUME) return ItemStack.EMPTY;
             handler.drain(FluidType.BUCKET_VOLUME, FluidAction.EXECUTE);
-            var copy = handler.getContainer();
-            copy.setTag(null);
-            return copy;
+            return ItemStack.EMPTY;
         }).orElse(itemStack);
     }
 }

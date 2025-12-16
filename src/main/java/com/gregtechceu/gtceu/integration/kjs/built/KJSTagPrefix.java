@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.built;
 
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -24,13 +25,19 @@ public class KJSTagPrefix extends TagPrefix {
 
     public static KJSTagPrefix oreTagPrefix(String name) {
         return new KJSTagPrefix(name)
-                .prefixTagPath("ores/%s/%s")
                 .defaultTagPath("ores/%s")
                 .prefixOnlyTagPath("ores_in_ground/%s")
                 .unformattedTagPath("ores")
                 .materialIconType(MaterialIconType.ore)
                 .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
                 .generationCondition(hasOreProperty);
+    }
+
+    @Override
+    public KJSTagPrefix blockConstructor(BlockConstructor blockConstructor) {
+        super.blockConstructor(blockConstructor);
+        return this;
     }
 
     @Override

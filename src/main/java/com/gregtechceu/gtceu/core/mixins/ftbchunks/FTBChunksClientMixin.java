@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 
-@Mixin(value = FTBChunksClient.class)
+@Mixin(value = FTBChunksClient.class, remap = false)
 public class FTBChunksClientMixin {
 
     @Unique
@@ -43,7 +43,8 @@ public class FTBChunksClientMixin {
     @Inject(method = "renderHud",
             at = @At(value = "INVOKE",
                      target = "Lcom/mojang/blaze3d/vertex/PoseStack;scale(FFF)V",
-                     shift = At.Shift.AFTER),
+                     shift = At.Shift.AFTER,
+                     remap = true),
             slice = @Slice(from = @At(value = "INVOKE",
                                       target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;getPos(F)Lnet/minecraft/world/phys/Vec3;"),
                            to = @At(value = "INVOKE",

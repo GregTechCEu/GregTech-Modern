@@ -26,7 +26,7 @@ public abstract class PipeNet<NodeDataType> implements ITagSerializable<Compound
     private final Map<BlockPos, Node<NodeDataType>> nodeByBlockPos = new HashMap<>();
     private final Map<BlockPos, Node<NodeDataType>> unmodifiableNodeByBlockPos = Collections
             .unmodifiableMap(nodeByBlockPos);
-    private final Map<ChunkPos, Integer> ownedChunks = new HashMap<>();
+    private final Object2IntOpenHashMap<ChunkPos> ownedChunks = new Object2IntOpenHashMap<>();
     private long lastUpdate;
     boolean isValid = false;
 
@@ -121,17 +121,17 @@ public abstract class PipeNet<NodeDataType> implements ITagSerializable<Compound
 
     protected void checkAddedInChunk(BlockPos nodePos) {
         ChunkPos chunkPos = new ChunkPos(nodePos);
-        int newValue = this.ownedChunks.compute(chunkPos, (pos, old) -> (old == null ? 0 : old) + 1);
-        if (newValue == 1 && isValid()) {
+        int oldValue = this.ownedChunks.addTo(chunkPos, 1);
+        if (oldValue == 0 && isValid()) {
             this.worldData.addPipeNetToChunk(chunkPos, this);
         }
     }
 
     protected void ensureRemovedFromChunk(BlockPos nodePos) {
         ChunkPos chunkPos = new ChunkPos(nodePos);
-        int newValue = this.ownedChunks.compute(chunkPos, (pos, old) -> old == null ? 0 : old - 1);
-        if (newValue == 0) {
-            this.ownedChunks.remove(chunkPos);
+        int oldValue = this.ownedChunks.containsKey(chunkPos) ? ownedChunks.addTo(chunkPos, -1) : 0;
+        if (oldValue == 1) {
+            this.ownedChunks.removeInt(chunkPos);
             if (isValid()) {
                 this.worldData.removePipeNetFromChunk(chunkPos, this);
             }

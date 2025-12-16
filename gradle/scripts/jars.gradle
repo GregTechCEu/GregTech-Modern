@@ -1,4 +1,5 @@
 tasks.register('slimJar', Jar) {
+    dependsOn("classes")
     archiveClassifier = "dev-slim"
     from sourceSets.main.output
 }
@@ -9,18 +10,10 @@ obfuscation {
     }
 }
 
-// Add slim and sources jar to components.java
+// Add sources jar to components.java
 java {
     artifacts.archives(reobfSlimJar)
     withSourcesJar()
-}
-
-// Use delombok'd files for sources
-sourcesJar {
-    exclude {
-        sourceSets.main.allSource.contains it.file
-    }
-    from delombok
 }
 
 jar.archiveClassifier = "dev"

@@ -61,7 +61,7 @@ public class SecondDegreeMaterials {
                 .gem().ore(2, 1)
                 .color(0xa7e404).secondaryColor(0x166439).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
-                .components(Magnesium, 2, Iron, 1, SiliconDioxide, 2)
+                .components(Magnesium, 1, Iron, 1, SiliconDioxide, 2)
                 .buildAndRegister();
 
         Opal = new Material.Builder(GTCEu.id("opal"))
@@ -134,6 +134,7 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         TungstenSteel = new Material.Builder(GTCEu.id("tungsten_steel"))
+                .langValue("Tungstensteel")
                 .ingot(4).fluid()
                 .color(0x687ece).secondaryColor(0x03192f).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_DENSE, GENERATE_FRAME,
@@ -228,13 +229,14 @@ public class SecondDegreeMaterials {
                 .dust().ore(3, 1)
                 .color(0xede8a3).secondaryColor(0xcdb44c).iconSet(ROUGH)
                 .flags(DISABLE_DECOMPOSITION)
-                .components(Sodium, 1, Magnesium, 6, Silicon, 12, Hydrogen, 4, Water, 5, Oxygen, 36)
+                .components(Sodium, 1, Magnesium, 6, Silicon, 12, Hydrogen, 6, Water, 5, Oxygen, 36)
                 .buildAndRegister();
 
         FullersEarth = new Material.Builder(GTCEu.id("fullers_earth"))
+                .langValue("Fuller's Earth")
                 .dust().ore(2, 1)
                 .color(0xf3efbb).secondaryColor(0xb8d066).iconSet(FINE)
-                .components(Magnesium, 1, Silicon, 4, Hydrogen, 1, Water, 4, Oxygen, 11)
+                .components(Magnesium, 2, Silicon, 4, Oxygen, 14, Hydrogen, 4, Water, 1)
                 .buildAndRegister();
 
         Pitchblende = new Material.Builder(GTCEu.id("pitchblende"))
@@ -274,8 +276,7 @@ public class SecondDegreeMaterials {
         Zeolite = new Material.Builder(GTCEu.id("zeolite"))
                 .dust().ore(3, 1)
                 .color(0xf2e3e0).secondaryColor(0xeabeb4)
-                .flags(DISABLE_DECOMPOSITION)
-                .components(Sodium, 1, Calcium, 4, Silicon, 27, Aluminium, 9, Water, 28, Oxygen, 72)
+                .components(Sodium, 2, Aluminium, 2, Silicon, 3, Oxygen, 10, Water, 2)
                 .buildAndRegister();
 
         Concrete = new Material.Builder(GTCEu.id("concrete"))
@@ -394,11 +395,11 @@ public class SecondDegreeMaterials {
                 .color(0xc7c7c7).secondaryColor(0x212121).iconSet(FLINT)
                 .flags(NO_SMASHING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 1)
-                .toolStats(ToolProperty.Builder.of(1.5F, 1.0F, 64, 2)
+                .toolStats(ToolProperty.Builder.of(0.0F, 1.0F, 64, 1)
                         .types(GTToolType.MORTAR, GTToolType.KNIFE, GTToolType.AXE, GTToolType.PICKAXE, GTToolType.HOE,
                                 GTToolType.SWORD, GTToolType.SHOVEL)
                         .enchantability(5).ignoreCraftingTools()
-                        .enchantment(Enchantments.FIRE_ASPECT, 2).build())
+                        .enchantment(Enchantments.FIRE_ASPECT, 1).build())
                 .buildAndRegister();
 
         Air = new Material.Builder(GTCEu.id("air"))
@@ -529,29 +530,6 @@ public class SecondDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS)
-                .buildAndRegister();
-
-        RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
-                .liquid()
-                .color(0x9f6b26)
-                .buildAndRegister();
-
-        DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
-                .liquid()
-                .color(0xab8c6d)
-                .buildAndRegister();
-
-        BrominatedChlorineVapor = new Material.Builder(GTCEu.id("brominated_chlorine_vapor"))
-                .gas()
-                .color(0xbb9b72)
-                .components(Chlorine, 1, Bromine, 1, Steam, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        AcidicBromineExhaust = new Material.Builder(GTCEu.id("acidic_bromine_exhaust"))
-                .gas()
-                .color(0x8f681e)
-                .components(Steam, 3, Chlorine, 1)
                 .buildAndRegister();
     }
 }

@@ -1,0 +1,108 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:network_switch",
+  "texture_overrides": {
+    "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+    "side": "gtceu:block/casings/hpca/computer_casing/side",
+    "top": "gtceu:block/casings/hpca/computer_casing/top"
+  },
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+          "overlay_front": "gtceu:block/multiblock/network_switch/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/network_switch/overlay_front_active_emissive",
+          "side": "gtceu:block/casings/hpca/computer_casing/side",
+          "top": "gtceu:block/casings/hpca/computer_casing/top"
+        }
+      }
+    }
+  }
+}

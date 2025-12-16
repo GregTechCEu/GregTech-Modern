@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:maintenance_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
+  "variants": {
+    "is_formed=false,taped=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/maintenance_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "side": "gtceu:block/casings/voltage/lv/side",
+          "top": "gtceu:block/casings/voltage/lv/top"
+        }
+      }
+    },
+    "is_formed=false,taped=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/maintenance_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "overlay_2": "gtceu:block/overlay/machine/overlay_maintenance_taped",
+          "side": "gtceu:block/casings/voltage/lv/side",
+          "top": "gtceu:block/casings/voltage/lv/top"
+        }
+      }
+    },
+    "is_formed=true,taped=false": {
+      "model": {
+        "parent": "gtceu:block/machine/part/maintenance_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "side": "gtceu:block/casings/voltage/lv/side",
+          "top": "gtceu:block/casings/voltage/lv/top"
+        }
+      }
+    },
+    "is_formed=true,taped=true": {
+      "model": {
+        "parent": "gtceu:block/machine/part/maintenance_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "overlay_2": "gtceu:block/overlay/machine/overlay_maintenance_taped",
+          "side": "gtceu:block/casings/voltage/lv/side",
+          "top": "gtceu:block/casings/voltage/lv/top"
+        }
+      }
+    }
+  }
+}

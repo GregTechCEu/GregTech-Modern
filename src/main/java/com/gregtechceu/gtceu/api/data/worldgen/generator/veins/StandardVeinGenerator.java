@@ -35,7 +35,6 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class StandardVeinGenerator extends VeinGenerator {
 
@@ -91,18 +90,24 @@ public class StandardVeinGenerator extends VeinGenerator {
         return this;
     }
 
+    private List<VeinEntry> defaultEntries = null;
+
+    private List<VeinEntry> getDefaultEntries() {
+        if (defaultEntries == null) {
+            defaultEntries = List.of(
+                    VeinEntry.ofBlock(block.get().defaultBlockState(), 1),
+                    VeinEntry.ofBlock(deepBlock.get().defaultBlockState(), 1),
+                    VeinEntry.ofBlock(netherBlock.get().defaultBlockState(), 1));
+        }
+        return defaultEntries;
+    }
+
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+    public List<VeinEntry> getAllEntries() {
         if (this.blocks != null) {
-            return this.blocks.map(blockStates -> blockStates.stream()
-                    .map(state -> Either.<BlockState, Material>left(state.state))
-                    .map(entry -> Map.entry(entry, 1))
-                    .collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1)));
+            return VeinGenerator.mapTarget(blocks, 1).toList();
         } else {
-            return List.of(
-                    Map.entry(Either.left(block.get().defaultBlockState()), 1),
-                    Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1),
-                    Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1));
+            return getDefaultEntries();
         }
     }
 

@@ -20,11 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote IMaterialPartItem
- */
 public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddInformation, ICustomDescriptionId {
 
     int getPartMaxDurability(ItemStack itemStack);
@@ -46,7 +41,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         }
         var materialName = compound.getString("Material");
         var material = GTMaterials.get(materialName);
-        if (material == null || !material.hasProperty(PropertyKey.INGOT)) {
+        if (material.isNull() || !material.hasProperty(PropertyKey.INGOT)) {
             return defaultMaterial;
         }
         return material;

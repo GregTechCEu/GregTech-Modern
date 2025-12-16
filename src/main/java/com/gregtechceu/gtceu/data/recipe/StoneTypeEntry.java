@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.Item;
 
@@ -43,16 +44,16 @@ public class StoneTypeEntry {
     public final boolean addButtonOreDict;
     public final boolean addWallOreDict;
     public final boolean addPressurePlateOreDict;
-    public final boolean addStoneUnificationInfo;
-    public final boolean addPolishedStoneUnificationInfo;
-    public final boolean addSmeltStoneUnificationInfo;
-    public final boolean addChiselStoneUnificationInfo;
-    public final boolean addCrackedStoneUnificationInfo;
-    public final boolean addSlabUnificationInfo;
-    public final boolean addStairUnificationInfo;
-    public final boolean addButtonUnificationInfo;
-    public final boolean addWallUnificationInfo;
-    public final boolean addPressurePlateUnificationInfo;
+    public final boolean addStoneMaterialInfo;
+    public final boolean addPolishedStoneMaterialInfo;
+    public final boolean addSmeltStoneMaterialInfo;
+    public final boolean addChiselStoneMaterialInfo;
+    public final boolean addCrackedStoneMaterialInfo;
+    public final boolean addSlabMaterialInfo;
+    public final boolean addStairMaterialInfo;
+    public final boolean addButtonMaterialInfo;
+    public final boolean addWallMaterialInfo;
+    public final boolean addPressurePlateMaterialInfo;
 
     private StoneTypeEntry(@NotNull String modid, @NotNull String stoneName,
                            @Nullable Item stone, @Nullable Item polishedStone,
@@ -60,16 +61,16 @@ public class StoneTypeEntry {
                            @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
-                           @Nullable Material material, long materialAmount,
+                           @NotNull Material material, long materialAmount,
                            boolean addStoneOreDict, boolean addPolishedStoneOreDict,
                            boolean addSlabOreDict,
                            boolean addStairOreDict, boolean addButtonOreDict,
                            boolean addWallOreDict, boolean addPressurePlateOreDict,
-                           boolean addStoneUnificationInfo, boolean addPolishedStoneUnificationInfo,
-                           boolean addSmeltStoneUnificationInfo, boolean addChiselStoneUnificationInfo,
-                           boolean addCrackedStoneUnificationInfo, boolean addSlabUnificationInfo,
-                           boolean addStairUnificationInfo, boolean addButtonUnificationInfo,
-                           boolean addWallUnificationInfo, boolean addPressurePlateUnificationInfo) {
+                           boolean addStoneMaterialInfo, boolean addPolishedStoneMaterialInfo,
+                           boolean addSmeltStoneMaterialInfo, boolean addChiselStoneMaterialInfo,
+                           boolean addCrackedStoneMaterialInfo, boolean addSlabMaterialInfo,
+                           boolean addStairMaterialInfo, boolean addButtonMaterialInfo,
+                           boolean addWallMaterialInfo, boolean addPressurePlateMaterialInfo) {
         this.modid = modid;
         this.stoneName = stoneName;
         this.stone = stone;
@@ -91,16 +92,16 @@ public class StoneTypeEntry {
         this.addButtonOreDict = addButtonOreDict;
         this.addWallOreDict = addWallOreDict;
         this.addPressurePlateOreDict = addPressurePlateOreDict;
-        this.addStoneUnificationInfo = addStoneUnificationInfo;
-        this.addPolishedStoneUnificationInfo = addPolishedStoneUnificationInfo;
-        this.addChiselStoneUnificationInfo = addChiselStoneUnificationInfo;
-        this.addCrackedStoneUnificationInfo = addCrackedStoneUnificationInfo;
-        this.addSmeltStoneUnificationInfo = addSmeltStoneUnificationInfo;
-        this.addSlabUnificationInfo = addSlabUnificationInfo;
-        this.addStairUnificationInfo = addStairUnificationInfo;
-        this.addButtonUnificationInfo = addButtonUnificationInfo;
-        this.addWallUnificationInfo = addWallUnificationInfo;
-        this.addPressurePlateUnificationInfo = addPressurePlateUnificationInfo;
+        this.addStoneMaterialInfo = addStoneMaterialInfo;
+        this.addPolishedStoneMaterialInfo = addPolishedStoneMaterialInfo;
+        this.addChiselStoneMaterialInfo = addChiselStoneMaterialInfo;
+        this.addCrackedStoneMaterialInfo = addCrackedStoneMaterialInfo;
+        this.addSmeltStoneMaterialInfo = addSmeltStoneMaterialInfo;
+        this.addSlabMaterialInfo = addSlabMaterialInfo;
+        this.addStairMaterialInfo = addStairMaterialInfo;
+        this.addButtonMaterialInfo = addButtonMaterialInfo;
+        this.addWallMaterialInfo = addWallMaterialInfo;
+        this.addPressurePlateMaterialInfo = addPressurePlateMaterialInfo;
     }
 
     public static class Builder {
@@ -117,8 +118,8 @@ public class StoneTypeEntry {
         public Item button = null;
         public Item wall = null;
         public Item pressurePlate = null;
-        @Nullable
-        private Material material = null;
+        @NotNull
+        private Material material = GTMaterials.NULL;
         private long materialAmount = GTValues.M;
         public boolean addStoneOreDict = false;
         public boolean addPolishedStoneOreDict = false;
@@ -127,16 +128,16 @@ public class StoneTypeEntry {
         public boolean addButtonOreDict = false;
         public boolean addWallOreDict = false;
         public boolean addPressurePlateOreDict = false;
-        public boolean addStoneUnificationInfo = false;
-        public boolean addPolishedStoneUnificationInfo = false;
-        public boolean addSmeltStoneUnificationInfo = false;
-        public boolean addChiselStoneUnificationInfo = false;
-        public boolean addCrackedStoneUnificationInfo = false;
-        public boolean addSlabUnificationInfo = false;
-        public boolean addStairUnificationInfo = false;
-        public boolean addButtonUnificationInfo = false;
-        public boolean addWallUnificationInfo = false;
-        public boolean addPressurePlateUnificationInfo = false;
+        public boolean addStoneMaterialInfo = false;
+        public boolean addPolishedStoneMaterialInfo = false;
+        public boolean addSmeltStoneMaterialInfo = false;
+        public boolean addChiselStoneMaterialInfo = false;
+        public boolean addCrackedStoneMaterialInfo = false;
+        public boolean addSlabMaterialInfo = false;
+        public boolean addStairMaterialInfo = false;
+        public boolean addButtonMaterialInfo = false;
+        public boolean addWallMaterialInfo = false;
+        public boolean addPressurePlateMaterialInfo = false;
 
         public Builder(@NotNull String modid, @NotNull String stoneName) {
             this.modid = modid;
@@ -203,22 +204,22 @@ public class StoneTypeEntry {
             return this;
         }
 
-        public Builder registerAllUnificationInfo() {
-            return registerUnificationInfo(true, true, true, true, true, true, true, true, true);
+        public Builder registerAllMaterialInfo() {
+            return registerMaterialInfo(true, true, true, true, true, true, true, true, true);
         }
 
-        public Builder registerUnificationInfo(boolean stone, boolean polishedStone, boolean smeltStone,
-                                               boolean chiselStone, boolean slab, boolean stair, boolean button,
-                                               boolean wall, boolean pressurePlate) {
-            this.addStoneUnificationInfo = stone;
-            this.addPolishedStoneUnificationInfo = polishedStone;
-            this.addSmeltStoneUnificationInfo = smeltStone;
-            this.addChiselStoneUnificationInfo = chiselStone;
-            this.addSlabUnificationInfo = slab;
-            this.addStairUnificationInfo = stair;
-            this.addButtonUnificationInfo = button;
-            this.addWallUnificationInfo = wall;
-            this.addPressurePlateUnificationInfo = pressurePlate;
+        public Builder registerMaterialInfo(boolean stone, boolean polishedStone, boolean smeltStone,
+                                            boolean chiselStone, boolean slab, boolean stair, boolean button,
+                                            boolean wall, boolean pressurePlate) {
+            this.addStoneMaterialInfo = stone;
+            this.addPolishedStoneMaterialInfo = polishedStone;
+            this.addSmeltStoneMaterialInfo = smeltStone;
+            this.addChiselStoneMaterialInfo = chiselStone;
+            this.addSlabMaterialInfo = slab;
+            this.addStairMaterialInfo = stair;
+            this.addButtonMaterialInfo = button;
+            this.addWallMaterialInfo = wall;
+            this.addPressurePlateMaterialInfo = pressurePlate;
             return this;
         }
 
@@ -229,10 +230,10 @@ public class StoneTypeEntry {
                     material, materialAmount,
                     addStoneOreDict, addPolishedStoneOreDict, addSlabOreDict, addStairOreDict,
                     addButtonOreDict, addWallOreDict, addPressurePlateOreDict,
-                    addStoneUnificationInfo, addPolishedStoneUnificationInfo, addSmeltStoneUnificationInfo,
-                    addChiselStoneUnificationInfo, addCrackedStoneUnificationInfo, addSlabUnificationInfo,
-                    addStairUnificationInfo, addButtonUnificationInfo,
-                    addWallUnificationInfo, addPressurePlateUnificationInfo);
+                    addStoneMaterialInfo, addPolishedStoneMaterialInfo, addSmeltStoneMaterialInfo,
+                    addChiselStoneMaterialInfo, addCrackedStoneMaterialInfo, addSlabMaterialInfo,
+                    addStairMaterialInfo, addButtonMaterialInfo,
+                    addWallMaterialInfo, addPressurePlateMaterialInfo);
         }
     }
 }

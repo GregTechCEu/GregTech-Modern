@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -21,10 +22,9 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -71,18 +71,19 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private void voidOverflow(IFluidHandlerModifiable fluidHandler) {
-        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
+        var fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
-        for (FluidStack fluidStack : fluidAmounts.keySet()) {
-            int presentAmount = fluidAmounts.get(fluidStack);
-            int targetAmount = getFilteredFluidAmount(fluidStack);
-            if (targetAmount <= 0L || targetAmount > presentAmount)
-                continue;
+        for (var entry : Object2LongMaps.fastIterable(fluidAmounts)) {
+            var stack = entry.getKey();
+            long presentAmount = entry.getLongValue();
+            int targetAmount = getFilteredFluidAmount(stack);
+            if (targetAmount <= 0L || targetAmount > presentAmount) continue;
 
-            var toDrain = fluidStack.copy();
-            toDrain.setAmount(presentAmount - targetAmount);
-
-            fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            long diff = presentAmount - targetAmount;
+            for (int op : GTMath.split(diff)) {
+                var toDrain = new FluidStack(stack, op);
+                fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
+            }
         }
     }
 

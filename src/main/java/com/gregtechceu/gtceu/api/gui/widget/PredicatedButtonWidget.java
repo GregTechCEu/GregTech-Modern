@@ -11,11 +11,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote DisplayButtonWidget
- */
 public class PredicatedButtonWidget extends ButtonWidget {
 
     private final BooleanSupplier predicate;

@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtceu:quantum_tank_fluid"
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:creative_tank",
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/template/quantum/creative_container"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "gtceu:block/machine/template/part/hpca_part_machine",
+  "textures": {
+    "back": "gtceu:block/casings/hpca/computer_casing/back",
+    "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
+    "front": "gtceu:block/casings/hpca/computer_casing/front",
+    "side": "gtceu:block/casings/hpca/computer_casing/side",
+    "top": "gtceu:block/casings/hpca/computer_casing/top"
+  }
+}

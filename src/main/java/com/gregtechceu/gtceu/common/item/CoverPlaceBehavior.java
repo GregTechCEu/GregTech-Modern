@@ -19,11 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote CoverBehavior
- */
 public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IInteractionItem {
 
     @Override
@@ -61,9 +56,9 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
                     }
                 }
             }
-        } else if (GTToolType.CROWBAR.itemTags.stream().anyMatch(itemStack::is) ||
-                GTToolType.SOFT_MALLET.itemTags.stream().anyMatch(itemStack::is) ||
-                GTToolType.SCREWDRIVER.itemTags.stream().anyMatch(itemStack::is)) {
+        } else if (GTToolType.CROWBAR.matchTags.stream().anyMatch(itemStack::is) ||
+                GTToolType.SOFT_MALLET.matchTags.stream().anyMatch(itemStack::is) ||
+                GTToolType.SCREWDRIVER.matchTags.stream().anyMatch(itemStack::is)) {
                     return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();
                 }
         return false;
