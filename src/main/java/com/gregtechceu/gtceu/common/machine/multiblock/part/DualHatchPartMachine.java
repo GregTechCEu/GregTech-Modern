@@ -194,14 +194,13 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                                 .toArray(String[]::new))
                         .key('I', i -> {
                             ModularSlot slot = new ModularSlot(getInventory(), i)
-                                    .accessibility(io.support(IO.IN), io.support(IO.OUT));
+                                    .accessibility(io.support(IO.IN), true);
                             ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
                             syncManager.syncValue(slotGroupName, i, syncHandler);
                             return new ItemSlot().syncHandler(slotGroupName, i);
                         })
                         .key('F', i -> {
                             FluidSlotSyncHandler syncHandler = new FluidSlotSyncHandler(tank.getStorages()[i])
-                                    .canDrainSlot(io.support(IO.OUT))
                                     .canFillSlot(io.support(IO.IN));
                             syncManager.syncValue(slotGroupName + "_fluid", i, syncHandler);
                             return new FluidSlot().syncHandler(slotGroupName + "_fluid", i);
@@ -237,38 +236,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                                                         "gtceu.multiblock.universal.distinct.yes" :
                                                         "gtceu.multiblock.universal.distinct.no"))))));
     }
-
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * int slots = getInventorySize();
-     * int tanks = (int) Math.sqrt(slots);
-     * var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);
-     * var container = new WidgetGroup(4, 4, 18 * (tanks + 1) + 8, 18 * tanks + 8);
-     * 
-     * int index = 0;
-     * for (int y = 0; y < tanks; y++) {
-     * for (int x = 0; x < tanks; x++) {
-     * container.addWidget(new SlotWidget(
-     * getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-     * .setBackgroundTexture(GuiTextures.SLOT)
-     * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-     * }
-     * }
-     * 
-     * index = 0;
-     * for (int y = 0; y < tanks; y++) {
-     * container.addWidget(new TankWidget(
-     * tank.getStorages()[index++], 4 + tanks * 18, 4 + y * 18, true, io.support(IO.IN))
-     * .setBackground(GuiTextures.FLUID_SLOT));
-     * }
-     * 
-     * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-     * group.addWidget(container);
-     * return group;
-     * }
-     */
-
 
 
     @Override
