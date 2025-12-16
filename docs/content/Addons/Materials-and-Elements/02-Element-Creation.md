@@ -19,7 +19,7 @@ Elements have the following parameters:
 
 
 ??? example
-    ```java
+    ```java title="ModElements.java"
     public static final Element Xz = GTElements.createAndRegister(16, 18, -1, null, "XYZ", "Xz", false); 
     ```
 

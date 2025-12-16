@@ -57,7 +57,7 @@ ItemStack of the `TagPrefix`-`Material` combination with the specified item coun
 
 ## Usage Examples
 
-```java title="chemicalhelper_example_script.java"
+```java title="ChemicalHelperExamples.java"
 var ironMaterial = ChemicalHelper.getMaterial(doublePlate, Iron); // (1)
 var rawOrePrefix = ChemicalHelper.getPrefix(rawOre, Platinum);// (2)
 var cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32); // (3)
