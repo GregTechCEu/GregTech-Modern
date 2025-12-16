@@ -31,4 +31,4 @@ When a material will be created from this element, the above properties will aff
     The mass number of an element is the sum of its protons and neutrons. This affects the duration of some recipes, including wiremills and benders. A higher mass number usually  means the recipe takes longer to run. This affects any materials that are composed of the element as well
 
 ## Registration
-Once your Element(s) are declared, they can be registered using IGTAddon#registerElements. See [here](../Setup.md#registering-your-content)
+Once your Element(s) are declared, they can be registered using `IGTAddon#registerElements`. See [here](../Setup.md#registering-your-content)
