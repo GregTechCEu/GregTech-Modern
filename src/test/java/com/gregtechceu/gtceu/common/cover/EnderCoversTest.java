@@ -63,9 +63,11 @@ public class EnderCoversTest {
                 GTItems.COVER_ENDER_ITEM_LINK.asStack(), Direction.UP);
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
-        chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, new ItemStack(Items.DIAMOND, 64), false);
+        ItemStack stack = new ItemStack(Items.DIAMOND, 64);
+        chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, stack, false);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(TestUtils.isItemStackEqual(chest2.getStored(), new ItemStack(Items.DIAMOND, 64)),
+            helper.assertTrue(
+                    ItemStack.isSameItem(chest2.getStored(), stack) && chest2.getStoredAmount() == stack.getCount(),
                     "ender item link cover didn't transfer items");
             helper.succeed();
         });
