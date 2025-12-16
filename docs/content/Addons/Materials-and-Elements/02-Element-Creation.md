@@ -3,7 +3,7 @@ title: Element Creation
 ---
 # Element Creation
 
-Elements are the base of GT materials. Registering an element WILL NOT add any items.
+Elements are the base of GT materials. Registering an element will NOT add any items. By default, all periodic table elements are registered by GT, but some of them are unused and don't have any properties attached.
 
 Elements can be created using `GTElements#createAndRegister` for ease of use. If you choose to declare them yourself, keep in mind you need to register your elements to `GTRegistries.ELEMENTS`
 
