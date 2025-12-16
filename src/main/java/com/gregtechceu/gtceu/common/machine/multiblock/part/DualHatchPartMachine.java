@@ -39,8 +39,9 @@ import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -176,7 +177,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     // ********** GUI ***********//
     ///////////////////////////////
 
-
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
@@ -230,14 +230,14 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                                 .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
                                 .tooltipAutoUpdate(true)
                                 .tooltipBuilder((
-                                        richTooltip) -> richTooltip
-                                        .add(Component.translatable("gtceu.multiblock.universal.distinct")
-                                                .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
-                                                .append(Component.translatable(isDistinct() ?
-                                                        "gtceu.multiblock.universal.distinct.yes" :
-                                                        "gtceu.multiblock.universal.distinct.no"))))));
+                                                 richTooltip) -> richTooltip
+                                                         .add(Component
+                                                                 .translatable("gtceu.multiblock.universal.distinct")
+                                                                 .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
+                                                                 .append(Component.translatable(isDistinct() ?
+                                                                         "gtceu.multiblock.universal.distinct.yes" :
+                                                                         "gtceu.multiblock.universal.distinct.no"))))));
     }
-
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
