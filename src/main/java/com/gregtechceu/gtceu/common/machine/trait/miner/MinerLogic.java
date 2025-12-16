@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -70,12 +71,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
     @Getter
     @Persisted
+    @DescSynced
     protected int x = Integer.MAX_VALUE;
     @Getter
     @Persisted
+    @DescSynced
     protected int y = Integer.MAX_VALUE;
     @Getter
     @Persisted
+    @DescSynced
     protected int z = Integer.MAX_VALUE;
     @Getter
     @Persisted
@@ -91,12 +95,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     protected int pipeY = Integer.MAX_VALUE;
     @Getter
     @Persisted
+    @DescSynced
     protected int mineX = Integer.MAX_VALUE;
     @Getter
     @Persisted
+    @DescSynced
     protected int mineZ = Integer.MAX_VALUE;
     @Getter
     @Persisted
+    @DescSynced
     protected int mineY = Integer.MAX_VALUE;
     @Getter
     private int minBuildHeight = Integer.MAX_VALUE;
@@ -111,8 +118,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private int currentRadius;
     @Getter
     @Persisted
+    @DescSynced
     private boolean isDone;
     @Getter
+    @DescSynced
     private boolean isInventoryFull;
     @Getter
     private final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
