@@ -32,9 +32,16 @@ Properties can be applied to a material to decide how they behave. An example of
     1. `int temperature` -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
         If temperature is above 1750, a hot ingot will be generated, this requiring a Vacuum Freezer.
-    2. (optional) `string gasTier` -> can be `null` for none, `'low'` for nitrogen, `'mid'` for helium, `'high'` for argon, `'higher'` for neon or `'highest'` for krypton.
-    3. (optional) `long EUPerTick` -> the recipe voltage
-    4. (optional) `int durationInTicks` -> how long the recipe should take
+    2. (optional) `String gasTier` -> The gas tier which determines what gas will be used for EBF recipes. For reference,
+
+        1. `LOW` is 1000mb of Nitrogen
+        2. `MID` is 100mb of Helium
+        3. `HIGH` is 50mb of Argon
+        4. `HIGHER` is 25mb of Neon
+        5. `HIGHEST` is 10mb of Krypton
+
+    3. (optional) `int eutOverride` -> the recipe voltage. By default, this is -1 which makes it 120EU/t
+    4. (optional) `int durationOverride` -> how long the recipe should take. By default, this is -1 which sets it to `material.getAverageMass() * blastTemperature / 50`
 !!! tip "ABS Recipe Generation"
     For an ABS recipe to actually generate from your material, you must set `.components()`. To disable the alloy blast smelter recipes from generating while `.components` and `.blastTemp` are set, check out [DISABLE_ALLOY_BLAST](./Material-Flags.md#dust-flags)
  
@@ -45,43 +52,44 @@ Properties can be applied to a material to decide how they behave. An example of
     - `int EU/t` -> Overrides the EBF's default behaviour for EU/t.
 
 ## `Fluid Pipe Property`
-- `.fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof)` -> this will create an fluid pipe from this material
-      1. `int maxtemp` -> The maximum temperature of fluid that this pipe can handle before breaking the pipe and voiding fluids.
+- `.fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof)` -> Creates a fluid pipe from this material
+      1. `int maxTemp` -> The maximum temperature of fluid that this pipe can handle before breaking the pipe and voiding fluids.
       2. `int throughput` -> The rate at which fluid can flow through this pipe.
       3. `boolean gasProof` -> Whether this pipe can hold gases. If not, some gas will be lost as it travels through the pipe.
-      4. `boolean acidProof` -> Whether this pipe can hold Acids. If not, the pipe will break and void all fluids.
-      5. `boolean cryoProof` -> Whether this pipe can hold cryogenic Fluids (below 120K). If not, the pipe will break and void all fluids.
-      6. `boolean plasmaProof` -> Whether this pipe can hold plasmas. If not, the pipe will break and void all fluids. Plasma capable pipes do not care about temperature.
+      4. (optional) `boolean acidProof` -> Allow this pipe to hold acids. If false, the pipe will break and void all fluids.
+      5. (optional) `boolean cryoProof` -> Allow this pipe to hold cryogenic fluids (below 120K). If false, the pipe will break and void all fluids.
+      6. (optional) `boolean plasmaProof` -> Allow this pipe can hold plasmas. If false, the pipe will break and void all fluids. Plasma-capable pipes do not care about temperature.
 
 ## `Item Pipe Property`
 - `.itemPipeProperties(int priority, int stacksPerSecond)` -> this will create an item pipe from this material
       1. `int priority` -> Priority of this Item Pipe, used for the standard routing mode.
-      2. `int stacksPerSecond` ->  How many stacks of items can be moved per second (20 ticks).
+      2. `float stacksPerSec` ->  How many stacks of items can be moved per second (20 ticks).
 
 ## `Rotor Property`
 - `.rotorStats(int power, int efficiency, float damage, int durability)` -> this will create a turbine rotor from this material
-    1. `int power` -> Power is the EU/t and fuel consumption multiplier the turbine gets when  equipped with this rotor.
+    1. `int power` -> EU/t and fuel consumption multiplier of the turbine when equipped with this rotor.
      This output varies depending on speed of turbine and rotor holder.
-    2. `int efficiency` ->  Efficiency is how well it handles fuel.
-     A smaller number will make it consume more fuel while a bigger number means it uses less fuel.
-     Actual efficiency: rotorEfficiency * holder Efficiency / 100
-    3. `float damage` ->  Damage is the amount of damage that happens to the player when opening the ui of a running turbine's rotor holder.
-    4. `int durability` ->  Durability is how much base durability it has.
-- Here are some examples of base gt rotors:
-    1. Titanium Rotor: .rotorStats(130, 115, 3.0, 1600)
-    2. HSS-S Rotor .rotorStats(250, 180, 7.0, 3000)
+    2. `int efficiency` ->  Rate of consumption of provided fuel. The more efficient the rotor, the less fuel consumed per cycle. Actual efficiency can be calculated using the formula `rotorEfficiency * holderEfficiency / 100`
+    3. `float damage` ->  Damage dealt to the player when when the UI of a working turbine is opened
+    4. `int durability` ->  Durability of the rotor
+
+??? example Base GT rotors
+    Titanium Rotor: `.rotorStats(130, 115, 3.0, 1600)` // (1)
+    HSS-S Rotor: `.rotorStats(250, 180, 7.0, 3000)`
+
+    1. 130 EU/t, 115x fuel consumption, 3 damage, 1600 durability
 
 ## `Cable Property`
 - .cableProperties(long voltage, int amperage, int lossPerBlock, boolean isSuperconductor)
     1. `long voltage` -> The voltage tier of this Cable. Should conform to standard GregTech voltage tiers.
     2. `int amperage` -> The amperage of this Cable. Should be greater than zero.
-    3. `int lossPerBlock` -> The loss-per-block of this Cable. A value of zero here will still have loss as wires.
-    4. `boolean isSuperconductor` -> Whether this Material is a Superconductor. If so, Cables will NOT be generated and the Wires will have zero cable loss, ignoring the loss parameter.
+    3. `int loss` -> The loss-per-block of this Cable. A value of zero here will still have loss as wires.
+    4. (optional) `boolean isSuperconductor` -> Whether this Material is a Superconductor. If so, cables will NOT be generated and wires will have zero cable loss.
 
 ## Fluid Properties
 
 ### `Fluid Block Property`
-- Add .block() into the builder of a liquid material to allow this material to be placeable.
+- Add `.block()` into the builder of a liquid material to allow this material to be placeable.
 
 ## `Ingot Property`
 - `.polarizesInto(string newMaterial)`
