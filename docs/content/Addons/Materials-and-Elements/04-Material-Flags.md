@@ -8,12 +8,11 @@ title: Material Flags
 Using material flags, you can specify specific properties for Materials, which
 can influence how it behaves, as well as items or recipes generated for it.
 
-!!! example "Using Material Flags"
-    ```java title="ModMaterials.java"
-    public static final Material MyMaterial = new Material.Builder(ExampleMod.id("my_material"))
-        // ...
-        .flags(GTMaterialFlags.FLAMMABLE)
-    ```
+```java title="ModMaterials.java"
+public static final Material MyMaterial = new Material.Builder(ExampleMod.id("my_material"))
+    // ...
+    .flags(GTMaterialFlags.FLAMMABLE)
+```
 
 A full list of flags can be found in the [MaterialFlags](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/chemical/material/info/MaterialFlags.java) class
 

@@ -17,28 +17,25 @@ can influence how the material behaves, as well as which items are generated for
     })
     ```
 === "Java"
-    ```java
-    public static Material MY_MATERIAL;
-    public static void register() {
-       MY_MATERIAL = new Material.Builder(
-            your_mod_id.id('my_material'))
-            // ...
-            .flags(GTMaterialFlags.FLAMMABLE)
-            .buildAndRegister();
-        }
+    ```java title="ModMaterials.java"
+    public static final Material MyMaterial = new Material.Builder(ExampleMod.id("my_material"))
+        // ...
+        .flags(GTMaterialFlags.FLAMMABLE)
     ```
+A full list of flags can be found in the [MaterialFlags](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/chemical/material/info/MaterialFlags.java) class
 
+Note that some flags require other flags or properties to be enabled in order to work.
 
 # Generic Flags
 
 - `NO_UNIFICATION`
-  - Description: Add to material to disable automatic recipe generation for it fully. This flag is deprecated, please use DISABLE_MATERIAL_RECIPES instead.
+  - Description: Disables all automatic recipe generation for this material. This flag is deprecated, please use `DISABLE_MATERIAL_RECIPES` instead.
 
 - `DISABLE_MATERIAL_RECIPES`
-  - Description: Add to material to disable automatic recipe generation for it fully. This replaces NO_UNIFICATION.
+  - Description: Disables all automatic recipe generation for this material. This replaces `NO_UNIFICATION`.
 
 - `DECOMPOSITION_BY_ELECTROLYZING`
-    - Description: Enables electrolyzer decomposition recipe generation Requires `.components(...)` to be set.
+    - Description: Enables electrolyzer decomposition recipe generation. Requires `.components(...)` to be set.
 
 - `DECOMPOSITION_BY_CENTRIFUGING`
     - Description: Enables centrifuge decomposition recipe generation. Requires `.components(...)` to be set.
@@ -47,16 +44,16 @@ can influence how the material behaves, as well as which items are generated for
     - Description: Disables decomposition recipe generation for this material.
 
 - `EXPLOSIVE`
-    - Description: Any material with this flag wont have implosion compression recipes, and it will give ash when you arc furnace recycle it instead of that material.
+    - Description: Any material with this flag wont have implosion compression recipes, and will output ash when recycled with an arc furnace recycle instead.
 
 - `FLAMMABLE`
-    - Description: Adding this flag means you cant smelt that material and thus wont generate an ebf recipe/furnace recipe. Also disables implosion compressor recipes like `EXPLOSIVE` does.
+    - Description: Prevents the items for this material from being smelted. An EBF recipe/furnace recipe won't be generated. Also disables implosion compressor recipes, similar to `EXPLOSIVE`.
 
 - `STICKY`
-    - Description: Add to material if it is sticky. This changes the viscosity of the placed fluid. Only the oils and creosote have a placeable state by default.
+    - Description: Changes the viscosity of the placed fluid. Only the oils and creosote have a placeable state by default.
 
 - `PHOSPHORESCENT`
-    - Description: Adding this flag onto a material gives liquids a luminosity of 15, no matter the fluid state(liquid, gas, plasma). Otherwise they default to 10 for specifically liquid state.
+    - Description: Makes liquids have a luminosity of 15, no matter the fluid state (liquid, gas, plasma). Otherwise they default to 10 for specifically liquid state.
 
 # Dust Flags
 
@@ -95,60 +92,60 @@ can influence how the material behaves, as well as which items are generated for
     - Required Properties: `PropertyKey.DUST`.
 
 - `FORCE_GENERATE_BLOCK`
-    - Description: Add this to a material to force generate a block.
+    - Description: Forces a block to be generated for the material. Useful if it doesn't have an ingot or gem item.
     - Required Properties: `PropertyKey.DUST`.
 
 - `EXCLUDE_BLOCK_CRAFTING_RECIPES`
-    - Description: This will prevent material from creating Shapeless recipes for dust to block and vice versa. Also preventing extruding and alloy smelting recipes via `SHAPE_EXTRUDING`/`MOLD_BLOCK`.
+    - Description: Disables shapeless crafting recipes for dust to block and vice versa, as well as extruding and alloy smelting. recipes via `SHAPE_EXTRUDING`/`MOLD_BLOCK`.
     - Required Properties: `PropertyKey.DUST`.
 
 - `EXCLUDE_PLATE_COMPRESSOR_RECIPE`
-    - Description: Add this to material if you want to disable the forge hammer plate recipe.
+    - Description: Disable the dust to plate recipe in a compressor.
     - Required Flags: `GENERATE_PLATE`.
     - Required Properties: `PropertyKey.DUST`.
 
 - `EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES`
-    - Description: This will prevent material from creating Shapeless recipes for dust to block and vice versa.
+    - Description: Disables shapeless crafting recipes for dust to block and vice versa.
     - Required Properties: `PropertyKey.DUST`.
 
 - `MORTAR_GRINDABLE`
-    - Description: Adds a mortar grinding recipe to this material.
+    - Description: Enables grinding the material's ingot/gem into dust using a mortar.
     - Required Properties: `PropertyKey.DUST`.
 
 - `NO_WORKING`
-    - Description: Add to material if it cannot be worked by any other means, than smashing or smelting. This is used for coated materials.
+    - Description: Disable metalworking by any means, except smashing or smelting. This is used for coated materials.
     - Required Properties: `PropertyKey.DUST`.
 
 - `NO_SMASHING`
-    - Description: Add to material if it cannot be used for regular metal working techniques since it is not possible to bend it.
+    - Description: Disable regular metalworking techniques, since the material cannot be bent.
     - Required Properties: `PropertyKey.DUST`.
 
 - `NO_SMELTING`
-    - Description: Add to material if it's impossible to smelt it.
+    - Description: Disables smelting recipes for the material.
     - Required Properties: `PropertyKey.DUST`.
 
 - `NO_ORE_SMELTING`
-    - Description: Add to material if it's impossible to smelt it from an ore.
+    - Description: Disables smelting the material from an ore.
     - Required Properties: `PropertyKey.DUST`.
 
 - `NO_ORE_PROCESSING_TAB`
-    - Description: Add to a material to disable creating an ore processing tab.
+    - Description: Disables the ore processing tab from being created for the material.
     - Required Properties: `PropertyKey.ORE`.
 
 - `BLAST_FURNACE_CALCITE_DOUBLE`
-    - Description: Add this to your material if you want to have its ore calcite heated in a Blast Furnace for double output. Already listed are: Iron, Pyrite, PigIron, WroughtIron.
+    - Description: Enables ore + calcite heating in a blast furnace for doubled output. Eg. Iron, Pyrite, Yellow Limonite.
     - Required Properties: `PropertyKey.DUST`.
 
 - `BLAST_FURNACE_CALCITE_TRIPLE`
-    - Description: Add this to your material if you want to have its ore calcite heated in a Blast Furnace for triple output.
+    - Description: Enables ore + calcite heating in a blast furnace for tripled output. Eg. Goethite, Wrought Iron
     - Required Properties: `PropertyKey.DUST`.
 
 - `DISABLE_ALLOY_BLAST`
-    - Description: Use to disable alloy blast recipes from generating.
+    - Description: Disables alloy blast recipes from being generated.
     - Required Properties: `PropertyKey.BLAST`, `PropertyKey.FLUID`.
 
 - `DISABLE_ALLOY_PROPERTY`
-    - Description: Use to disable everything related to alloy blasting.
+    - Description: Disables all recipes related to alloy blasting
     - Required Flags: `DISABLE_ALLOY_BLAST`.
     - Required Properties: `PropertyKey.BLAST`, `PropertyKey.FLUID`.
 
@@ -208,13 +205,13 @@ can influence how the material behaves, as well as which items are generated for
     - Required Properties: `PropertyKey.INGOT`.
 
 - `IS_MAGNETIC`
-    - Description: Add this to your Material if it is a magnetized form of another Material. When this flag is on a Material, it macerates into the non-magnetic version of said Material, which is then used for certain crafting recipes.
+    - Description: Declares your material as the magnetized form of another material. When this flag is enabled, all metalworking recipes output the non-magnetic version of said material. A polarizer recipe is also generated for all associated TagPrefixes
     - Required Properties: `PropertyKey.INGOT`.
 
 # Gem Flags
 
 - `CRYSTALLIZABLE`
-    - Description: If this material can be crystallized (turned back into gem by autoclave).
+    - Description: Enables dust to gem in autoclave and other cryallization-related recipes.
     - Required Properties: `PropertyKey.GEM`.
 
 - `GENERATE_LENS`
@@ -224,5 +221,5 @@ can influence how the material behaves, as well as which items are generated for
 
 # Ore Flags
 - `HIGH_SIFTER_OUTPUT`
-    - Description: Boosts sifter output of the gem ore for the material.
+    - Description: Increases chances of obtaining higher quality gems from sifting for the material. (eg. Ruby)
     - Required Properties: `PropertyKey.GEM`, `PropertyKey.ORE`.
