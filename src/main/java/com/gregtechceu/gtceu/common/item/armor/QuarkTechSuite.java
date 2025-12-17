@@ -87,7 +87,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
-            
+
             if (!world.isClientSide) {
                 ret = supplyAir(item, player) || supplyFood(item, player);
                 removeNegativeEffects(item, player);
