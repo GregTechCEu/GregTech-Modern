@@ -39,7 +39,7 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                     CompoundTag tag = serverData.getCompound("batteries");
                     long changed = tag.getLong("changed"), stored = tag.getLong("stored"),
                             capacity = tag.getLong("capacity");
-                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", changed));
+                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatEnergy(changed, 100000)));
                     if (changed > 0) {
                         iTooltip.add(Component
                                 .translatable("gtceu.jade.remaining_charge_time",
@@ -91,7 +91,7 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
     }
 
     String formatEnergy(long energy, long trueshold) {
-        if (energy > trueshold) return DECIMAL_FORMAT_SIC_2F.format(BigInteger.valueOf(energy));
+        if (energy >= trueshold) return DECIMAL_FORMAT_SIC_2F.format(BigInteger.valueOf(energy));
         else return "" + energy;
     }
 
