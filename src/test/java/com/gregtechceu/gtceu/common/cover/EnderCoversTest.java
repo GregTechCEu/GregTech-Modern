@@ -30,6 +30,10 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(GTCEu.MOD_ID)
 public class EnderCoversTest {
 
+    public static boolean isTankFluidStackEqual(QuantumTankMachine tank, FluidStack stack) {
+        return tank.getStored().getFluid() == stack.getFluid() && tank.getStoredAmount() == stack.getAmount();
+    }
+
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void fluidLinkCoverTest(GameTestHelper helper) {
         QuantumTankMachine tank1 = (QuantumTankMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
@@ -42,10 +46,10 @@ public class EnderCoversTest {
                 GTItems.COVER_ENDER_FLUID_LINK.asStack(), Direction.UP);
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
-        tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 1000),
+        tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 950),
                 IFluidHandler.FluidAction.EXECUTE);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(TestUtils.isFluidStackEqual(tank2.getStored(), new FluidStack(Fluids.WATER, 1000)),
+            helper.assertTrue(isTankFluidStackEqual(tank2, new FluidStack(Fluids.WATER, 950)),
                     "ender fluid link cover didn't transfer fluid");
             helper.succeed();
         });
