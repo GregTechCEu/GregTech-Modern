@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -448,13 +447,11 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             }
         }
 
-        if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO &&
-                tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
-            MetaMachineBlockEntity mmbe = (syncBlockEntity instanceof MetaMachineBlockEntity m) ? m : null;
-            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?, ?> p) ? p : null;
+        if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO && tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
+            MetaMachine machine = (syncBlockEntity instanceof MetaMachine m) ? m : null;
+            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?,?> p) ? p : null;
 
             list.add(Component.literal(syncBlockEntity.toString()));
-            if (mmbe != null) list.add(Component.literal(mmbe.getMetaMachine().toString()));
             if (pipe != null) {
                 var net = pipe.getPipeNet();
                 list.add(Component.literal(net == null ? "null" : net.toString()));
@@ -462,8 +459,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             list.add(Component.translatable("behavior.portable_scanner.divider"));
 
             list.add(Component.literal("Covers"));
-            ICoverable coverable = mmbe != null ? mmbe.getMetaMachine().getCoverContainer() :
-                    (pipe != null ? pipe.getCoverContainer() : null);
+            ICoverable coverable = machine != null ? machine.getCoverContainer() : (pipe != null ? pipe.getCoverContainer() : null);
             if (coverable != null) {
                 for (var dir : GTUtil.DIRECTIONS) {
                     var cover = coverable.getCoverAtSide(dir);
