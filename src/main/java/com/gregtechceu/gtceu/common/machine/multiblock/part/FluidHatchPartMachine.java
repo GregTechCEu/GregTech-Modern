@@ -356,7 +356,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                                 .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
                                 .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
                                 .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED, GTGuiTextures.BUTTON_LOCK)
-                                .selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED, GTGuiTextures.BUTTON_LOCK))
+                                .selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED,
+                                        GTGuiTextures.BUTTON_LOCK))
                         .child(new FluidSlot()
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
                                         .canFillSlot(io.support(IO.IN)))));
