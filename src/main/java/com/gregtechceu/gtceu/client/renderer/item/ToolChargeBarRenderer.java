@@ -27,7 +27,7 @@ public final class ToolChargeBarRenderer {
     private static final int colorBarRightDurability = FastColor.ARGB32.color(255, 115, 255, 89);
 
     private static final int colorBarLeftDepleted = FastColor.ARGB32.color(255, 122, 0, 0);
-    private static final int colorBarRightDepleted = FastColor.ARGB32.color(255, 255, 27, 27);
+    private static final int colorBarRightDepleted = FastColor.ARGB32.color(255, 0, 255, 0);
 
     public static void render(GuiGraphics graphics, int level, int xPosition, int yPosition, int offset, boolean shadow,
                               int left, int right, boolean doDepletedColor) {
@@ -38,8 +38,8 @@ public final class ToolChargeBarRenderer {
 
         int x = xPosition + 2;
         int y = yPosition + 13 - offset;
-        graphics.fill(RenderType.gui(), x, y, x + 13, y + (shadow ? 2 : 1), 200, colorShadow);
-        DrawUtil.fillHorizontalGradient(graphics, RenderType.gui(), x, y, x + level, y + 1, left, right, 200);
+        graphics.fill(RenderType.gui(), x, y, x + 13, y + (shadow ? 2 : 1), 190, colorShadow);
+        DrawUtil.fillHorizontalGradient(graphics, RenderType.gui(), x, y, x + level, y + 1, left, right, 190);
         // graphics.fill(RenderType.guiOverlay(), x + BAR_W, y, x + BAR_W - level, y - 1, colorBG);
     }
 
