@@ -47,7 +47,7 @@ You can change the properties of the material by adding any combination of the f
 
 - `.components(Material component1, Material component2, ...)` describes the composition. The components are a list of elements of the following form: `Material material, int amount`, where `K` is a positive integer.
 
-- `.iconSet(MaterialIconSet iconSet)` gives the material an icon set. Read more about icon sets [here](06-Material-Icon-Sets-And-Types.md)
+- `.iconSet(MaterialIconSet iconSet)` gives the material an icon set. Read more about icon sets [here](Material-Icon-Sets-And-Types.md)
 
 - `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xNNNNNN`, where `N` are digits.
 
