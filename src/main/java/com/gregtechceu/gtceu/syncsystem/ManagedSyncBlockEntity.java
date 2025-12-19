@@ -46,6 +46,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     public final void load(CompoundTag tag) {
         super.load(tag);
+        if (tag.contains("machine")) tag.merge(tag.getCompound("machine"));
         getSyncDataHolder().deserializeNBT(tag,
                 (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
     }
