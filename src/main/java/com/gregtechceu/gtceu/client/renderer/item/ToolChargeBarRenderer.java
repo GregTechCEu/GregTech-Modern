@@ -27,7 +27,7 @@ public final class ToolChargeBarRenderer {
     private static final int colorBarRightDurability = FastColor.ARGB32.color(255, 115, 255, 89);
 
     private static final int colorBarLeftDepleted = FastColor.ARGB32.color(255, 122, 0, 0);
-    private static final int colorBarRightDepleted = FastColor.ARGB32.color(255, 0, 255, 0);
+    private static final int colorBarRightDepleted = FastColor.ARGB32.color(255, 255, 27, 27);
 
     public static void render(GuiGraphics graphics, int level, int xPosition, int yPosition, int offset, boolean shadow,
                               int left, int right, boolean doDepletedColor) {
