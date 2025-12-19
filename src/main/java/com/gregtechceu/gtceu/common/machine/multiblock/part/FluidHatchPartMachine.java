@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -319,7 +320,18 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                 .bindPlayerInventory()
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
                         .marginBottom(91)
-                        .center());
+                        .center())
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .excludeAreaInXei()
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager)));
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
