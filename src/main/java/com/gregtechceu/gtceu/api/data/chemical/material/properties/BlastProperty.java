@@ -75,6 +75,13 @@ public class BlastProperty implements IMaterialProperty {
         this.gasTier = gasTier;
     }
 
+    public BlastProperty(int blastTemperature, GasTier gasTier, int eutOverride, int durationOverride) {
+        this.blastTemperature = blastTemperature;
+        this.gasTier = gasTier;
+        this.EUtOverride = eutOverride;
+        this.durationOverride = durationOverride;
+    }
+
     public BlastProperty(int blastTemperature, GasTier gasTier, int eutOverride, int durationOverride,
                          int vacuumEUtOverride, int vacuumDurationOverride) {
         this.blastTemperature = blastTemperature;
