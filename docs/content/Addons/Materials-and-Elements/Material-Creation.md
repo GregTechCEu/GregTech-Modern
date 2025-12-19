@@ -10,12 +10,12 @@ Materials are defined using `Material.Builder`. A list of most builder methods c
 An example of a Material definition is: 
 ```java
 public static final Material MyCustomMaterial = new Material.Builder(ExampleMod.id("my_custom_material")) // (1)
-        .color(0xFFFFF)
-        .iconSet(ROUGH)
-        .dust()
-        .components(Diamond, 2, Iron, 2)
-        .flags(DISABLE_DECOMPOSITION)
-        .buildAndRegister();
+    .color(0xFFFFF)
+    .iconSet(ROUGH)
+    .dust()
+    .components(Diamond, 2, Iron, 2)
+    .flags(DISABLE_DECOMPOSITION)
+    .buildAndRegister();
 ```
 
 1. ExampleMod.id() is simply a method that returns a ResourceLocation with your mod's namespace in the format `modid:path`

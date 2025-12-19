@@ -52,10 +52,10 @@ The following calls are available for each TagPrefix:
 A more illustrative example, using some Applied Energistics 2 items:
 
 ```java title="SetIgnoredExamples.java"
-    TagPrefix.gemChipped.setIgnored(ChemicalHelper.getMaterial("fluix_crystal")); // (1)
-    TagPrefix.rock.setIgnored(ChemicalHelper.getMaterial("sky_stone"), AEBlocks.SKY_STONE_BLOCK); // (2)
-    TagPrefix.ingot.removeIgnored(GTMaterials.Iron); // (3)
-    TagPrefix.dust.setIgnored(GTMaterials.Blaze, Items.BLAZE_POWDER); // (4)
+TagPrefix.gemChipped.setIgnored(ChemicalHelper.getMaterial("fluix_crystal")); // (1)
+TagPrefix.rock.setIgnored(ChemicalHelper.getMaterial("sky_stone"), AEBlocks.SKY_STONE_BLOCK); // (2)
+TagPrefix.ingot.removeIgnored(GTMaterials.Iron); // (3)
+TagPrefix.dust.setIgnored(GTMaterials.Blaze, Items.BLAZE_POWDER); // (4)
 ```
 
 1. This call prevents GTCEu Modern from creating a chipped gem variant of the custom `fluix_crystal` Material.
