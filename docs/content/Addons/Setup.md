@@ -49,9 +49,9 @@ This is your mod's main class, and where you'll add listeners for your event bus
 
 ### The GTAddon class
 
-This is where your GT-related content is registered. You can override methods here to register custom recipe elements, machine covers, tag prefixes, recipe capabilities, ore and fluid veins, vein generators, etc., as well as specify if your mod requires higher tier content (UV and above tiers, disabled by default).
+This is where your GT-related content is registered. You can override methods here to register custom tag prefixes, elements, sounds, recipe cabilities, recipes themselves, ore veins, and more here. You can also specify if your mod requires higher tier content (tiers above UV) here, though it is disabled by default.
 
-This class needs to implement IGTAddon, and is required to have the following methods:
+This class needs to implement `IGTAddon`, and is required to have the following methods:
 
 ```java
 @Override
@@ -77,7 +77,7 @@ A full list of available methods can be found [here](https://github.com/GregTech
 
 ### Registering your content
 
-Most content in your addon (including recipes, machines, recipe types, items, etc.) will need to be called in your Main class or your GTAddon class at the appropriate listener or override. This is usually done by calling an empty `init()` method from the required class.
+Most content in your addon (including recipes, machines, recipe types, items, etc.) will need to be called in your Main class or your GTAddon class at the appropriate event listener or override. This is usually done by calling an empty `init()` method from the required class.
 
 ??? example
     ```java title="CustomMaterials.java"

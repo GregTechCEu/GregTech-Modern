@@ -2,9 +2,9 @@
 title: Material Creation
 ---
 
+Materials are in-game items or fluids. They can be dusts, ingots, gems, fluids and all their derivatives. Materials must be defined using a builder, and later registered using `MaterialEvent`
 
-Materials are in-game items or fluids. They can be dusts, ingots, gems, fluids and all their derivatives.
-
+## Material Definition
 Materials are defined using `Material.Builder`. A list of most builder methods can be found below, and a full list in the [Material class](https://github.com/GregTechCEu/GregTech-Modern/blob/main/src/main/java/com/gregtechceu/gtceu/api/data/chemical/material/Material.java#L527)
 
 An example of a Material definition is: 
@@ -23,7 +23,7 @@ public static final Material MyCustomMaterial = new Material.Builder(ExampleMod.
 !!! note
     GregTech adds materials for all elements on the real-life periodic table by default. Some elements do not show up in game, as they don't have any items registered to them. These can be edited with addons
 
-## Builder methods
+### Builder methods
 
 You can change the properties of the material by adding any combination of the following builder options:
 
@@ -130,7 +130,7 @@ You can change the properties of the material by adding any combination of the f
 ??? tip "Color Pickers"
     To chose a color for your material, you can checkout W3Schools' Color Picker [https://www.w3schools.com/colors/colors_picker.asp]
     After you select a color with the above tool, copy the 6 digits that follow the # under the color preview.
-## Creating an Ingot
+### Creating an Ingot
 
 ```java title="ModMaterials.java"
 public static final Material AndesiteAlloy = new Material.Builder(ExampleMod.id("andesite_alloy"))
@@ -142,7 +142,7 @@ public static final Material AndesiteAlloy = new Material.Builder(ExampleMod.id(
         .buildAndRegister();
 ```
 
-## Creating a Gem
+### Creating a Gem
 
 ```java title="ModMaterials.java"
 public static final Material PurpleCoal = new Material.Builder(ExampleMod.id("purple_coal"))
@@ -154,7 +154,7 @@ public static final Material PurpleCoal = new Material.Builder(ExampleMod.id("pu
         .buildAndRegister();
 ```
 
-## Creating a Dust
+### Creating a Dust
 
 ```java title="ModMaterials.java"
 public static final Material MysteriousDust = new Material.Builder(ExampleMod.id("mysterious_dust"))
@@ -165,7 +165,7 @@ public static final Material MysteriousDust = new Material.Builder(ExampleMod.id
 
 1. Voltage, Amperage, EU loss, Is Superconductor.
 
-## Creating a Fluid
+### Creating a Fluid
 
 ```java title="ModMaterials.java"
 public static final Material MysteriousOoze = new Material.Builder(ExampleMod.id("mysterious_ooze"))
@@ -173,4 +173,23 @@ public static final Material MysteriousOoze = new Material.Builder(ExampleMod.id
         .fluid()
         .fluidTemp(69420) 
         .buildAndRegister();
+```
+
+## Material Registration
+In order for GTM to register your materials, a `MaterialRegistry` must be created during `MaterialRegistryEvent` like so:
+
+```java title="CommonProxy.java"
+@SubscribeEvent
+public void registerMaterialRegistry(MaterialRegistryEvent event) {
+    MATERIAL_REGISTRY = GTCEuAPI.materialManager.createRegistry(ExampleMod.MOD_ID);
+}
+```
+
+Once this is done, material registration is done during `MaterialEvent`.
+
+```java title="CommonProxy.java"
+@SubscribeEvent
+public void registerMaterials(MaterialEvent event) {
+    ModMaterials.register();
+}
 ```
