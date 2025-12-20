@@ -78,3 +78,32 @@ public static void modifyMaterials(PostMaterialEvent event) {
         .build()));
 }
 ```
+
+## Creating new tool types
+
+A list of every `GTToolType` and their definitions can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/item/tool/GTToolType.java)
+
+New `GTToolType`s must be added to materials during `PostMaterialEvent`. An example is provided below:
+
+```java title="MaterialModification.java"
+@SubscribeEvent
+public static void modifyMaterials(PostMaterialEvent event) {
+    // Get all materials from the GTM registry
+    for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+        ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
+        
+        // Ignore all materials without a tool property
+        if (toolProperty == null) {
+            continue;
+        }
+
+        // Add our custom tool to all materials with a tool property
+        toolProperty.addTypes(ModToolTypes.CUSTOM_TOOL_2)
+
+        // Add our custom tool only if another tool type (LV screwdriver in this case) exists
+        if (toolProperty.hasType(GTToolType.SCREWDRIVER_LV)) {
+            toolProperty.addTypes(ModToolTypes.CUSTOM_TOOL_1);
+        }
+    }
+}
+```
