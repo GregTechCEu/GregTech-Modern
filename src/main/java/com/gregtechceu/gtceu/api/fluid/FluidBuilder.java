@@ -292,9 +292,6 @@ public class FluidBuilder {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
             builder.block()
-                    .blockstate((ctx, prov) -> prov
-                            .simpleBlock(ctx.getEntry(), prov.models().getBuilder(this.name)
-                                    .texture("particle", this.still)))
                     .color(() -> () -> (state, level, pos, index) -> {
                         return IClientFluidTypeExtensions.of(state.getFluidState())
                                 .getTintColor(state.getFluidState(), level, pos);
