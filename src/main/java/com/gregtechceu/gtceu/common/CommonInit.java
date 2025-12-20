@@ -266,8 +266,8 @@ public class CommonInit {
         GTCEuAPI.materialManager.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onRegisterEarly(RegisterEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onRegisterLate(RegisterEvent event) {
         // Material event *should* happen before any of the others here
         if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
