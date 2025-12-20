@@ -235,11 +235,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
-    @Nullable
-    private RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
+    private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
-    public RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
+    public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;
     }
 
