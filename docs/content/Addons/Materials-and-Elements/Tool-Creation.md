@@ -32,7 +32,7 @@ By default, `ToolProperty` requires the following to be defined:
         
     Tier 6 - Neutronium (added by GregTech)
 
-Additionally, you can call more (optional) methods in the Builder to further modify your tools.
+Once complete, close your builder using `.build()`. Additionally, you can call more (optional) methods in the Builder to further modify your tools.
 
 - `addTypes(GTToolType... types)` -> Generate only the specified tools for this material. Excluding this option generates all tools for this material.
 - `types(GTToolType... types)` -> Works the same as `addTypes()`.
@@ -80,10 +80,60 @@ public static void modifyMaterials(PostMaterialEvent event) {
 ```
 
 ## Creating new tool types
+Custom tools can be created using the `GTToolType` builder. Similar to ToolProperty, use `.build()` to close your builder once complete.
+
+ The following optional methods are available for use:
+
+- `idFormat(String name)` -> Set a custom format for you item id. By default, this is `"%s_" + name`
+- `modelLocation(ResourceLocation location)` -> Specify a custom location for your item model(s). By default, this is `GTCEu.id("item/tools/" + name)`
+- `toolTag(ToolItemTagType, TagKey<Item>... tags)` -> Specify item tags to be added to the tool. 
+- `toolTag(TagKey<Item>... tags)` -> Specify item tags to be added to the tool. Uses `ToolItemTagType.NONE` by default.
+- `harvestTag(TagKey<Block>... tags)` -> Specify blocks this tool can break.
+- `defaultActions(ToolAction... abilities)` | `defaultActions(Collection<ToolAction> abilities)` | `defaultActions(Collection<ToolAction> abilities, ToolAction... extra)` -> Specify all tool actions this tool can perform. A full list of `ToolActions` and their functions can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/item/GTToolActions.java)
+- `toolClasses(GTToolType... classes)` -> Specify a custom class to you use for your tool. Useful if you wish to define custom behavior for your tool items.
+- `toolClassNames(String... classes)` -> Works the same as `toolClasses`, except using a classpath.
+- `toolStats(<ToolDefinitionBuilder> builder)` -> <!--TOOD-->
+- `sound(SoundEntry sound)` | `sound(SoundEntry sound, boolean playSoundOnBlockBreak)` -> Sound to play on using the item. By default, `playSoundOnBlockBreak` is false.
+- `electric(int tier) | tier(int tier)` -> Specify if your tool is an electric tool, and what tier of battery charge it uses.
+- `constructor(ToolConstructor constructor)` -> Constructor to use for your tool. By default, this points to `GTToolType::new`.
+- `materialAmount(int amount)` -> Amount of material to return while recycling.
+- `symbol(char symbol)` -> Symbol used to specify tools of this type in crafting recipes. This only applies to recipes built using `VanillaRecipeHelper#addShapelessRecipe` or `VanillaRecipeHelper#addShapedRecipe`.
+
+
+??? tip "Sets of tool actions"
+    Some tools added by GT have a set of tool actions associated with them. You can add all of their associated actions by passing `GTToolActions.DEFAULT_<GTToolType>_ACTIONS` in your `.defaultActions()` call.
+
+    Alternatively, you can also build your own `Set<ToolActions>` and pass those into `defaultActions()` if you wish to reuse them.
+
+??? info "ToolItemTagTypes and using them"
+    ToolItemTagType contains three entries:
+
+    - `ToolItemTagType.CRAFTING` -> Used to specify tags used for crafting ONLY
+    - `ToolItemTagType.MATCH` -> Used to specify tags NOT used for crafting
+    - `ToolItemTagType.NONE` -> No specification
+
+
+```java title="ModToolTypes.java"
+public static final GTToolType MY_CUSTOM_TOOL = GTToolType.builder("my_custom_tool")
+    .idFormat("%s_custom_tool") // (1)
+    .toolTag(CustomTags.CRAFTING_SCREWDRIVERS)
+    .toolTag(CustomTags.SCREWDRIVERS)
+    .toolStats(b -> b.crafting().sneakBypassUse()
+        .attackDamage(-1.0F).attackSpeed(3.0F).durabilityMultiplier(2.0F)
+        .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
+        .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV))
+    .sound(GTSoundEntries.SCREWDRIVER_TOOL)
+    .electric(GTValues.HV)
+    .toolClasses(GTToolType.SCREWDRIVER)
+    .defaultActions(GTToolActions.DEFAULT_SCREWDRIVER_ACTIONS)
+    .build();
+```
+
+1. `%s` here is used to pass in the material. For example, a copper custom tool would have the ID `gtceu:copper_custom_tool` using the `idFormat` specified here
 
 A list of every `GTToolType` and their definitions can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/item/tool/GTToolType.java)
 
-New `GTToolType`s must be added to materials during `PostMaterialEvent`. An example is provided below:
+New `GTToolTypes` must be added to materials during `PostMaterialEvent`. An example is provided below:
 
 ```java title="MaterialModification.java"
 @SubscribeEvent
