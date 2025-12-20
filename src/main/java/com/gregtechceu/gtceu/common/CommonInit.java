@@ -175,6 +175,7 @@ public class CommonInit {
         GTRegistrateDatagen.initPre();
 
         GTRegistries.init(modBus);
+        REGISTRATE.registerEventListeners(modBus);
         GTCreativeModeTabs.init();
         GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
 
