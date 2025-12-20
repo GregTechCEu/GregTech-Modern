@@ -135,8 +135,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     @Override
     public GTRegistrate registerEventListeners(IEventBus bus) {
         if (!registered.getAndSet(true)) {
-            if (((AbstractRegistrateAccessor) this).getModEventBus() == null) {
-                ((AbstractRegistrateAccessor) this).setModEventBus(bus);
+            if (this.getModEventBus() == null) {
+                this.setModEventBus(bus);
             }
             // recreate the super method so we can register the event listener with LOW priority.
             Consumer<RegisterEvent> onRegister = this::onRegister;
