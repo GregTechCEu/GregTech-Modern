@@ -100,6 +100,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -306,7 +307,7 @@ public class CommonInit {
         }
     }
 
-    private static void postInitMaterials() {
+    private static void postInitMaterials(Registry<Material> registry) {
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
@@ -342,7 +343,7 @@ public class CommonInit {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) registry -> postInitMaterials());
+        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonInit::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
