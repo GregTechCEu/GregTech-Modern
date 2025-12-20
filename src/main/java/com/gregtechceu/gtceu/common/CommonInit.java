@@ -163,10 +163,12 @@ public class CommonInit {
 
     public static void init(final IEventBus modBus) {
         CommonInit.modBus = modBus;
-        modBus.register(CommonInit.class);
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            modBus.addListener(EventPriority.LOWEST, GTKubeJSPlugin::registerKJSMachines);
+            // initialize this before the class's static listeners
+            // so KubeJS materials are registered before the material registry is closed.
+            modBus.addListener(EventPriority.LOW, GTKubeJSPlugin::registerWrappers);
         }
+        modBus.register(CommonInit.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
