@@ -33,6 +33,6 @@ When you're ready, start [here](./Setup.md)!
 
 !!! link "Addons you can use as reference"
 
-    - [Gregtech: Extended Chemistry Extended](https://github.com/jmoiron/Gregtech-Extended-Chemistry)
+    - [GregTech Modern Utilities](https://github.com/jmoiron/Gregtech-Extended-Chemistry)
     - [GTE: Misc](https://github.com/GirixK/GiriTech-Energies-Misc)
     - [GT Community Additions](https://github.com/mordgren/GTCA)
