@@ -135,6 +135,8 @@ public class GTPlaceholders {
                 ParseResult result = GTMath.parseExpression(expression, true);
                 if (result.isFailure())
                     throw new PlaceholderException(result.getError());
+                double res = result.getResult();
+                if ((int) res == res) return MultiLineComponent.literal((int) res);
                 return MultiLineComponent.literal(result.getResult());
             }
 
@@ -204,7 +206,9 @@ public class GTPlaceholders {
                         return new MultiLineComponent(args.get(2)).setIgnoreSpaces(true);
                     } else return MultiLineComponent.empty();
                 } catch (NumberFormatException e) {
-                    return args.get(1);
+                    if (args.size() > 2 && args.get(0).equalsString(""))
+                        return args.get(2).setIgnoreSpaces(true);
+                    return args.get(1).setIgnoreSpaces(true);
                 }
             }
 
@@ -269,11 +273,16 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                PlaceholderUtils.checkArgs(args, 1, true);
                 int count = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("n", 0, 50000, count);
+                MultiLineComponent arg = MultiLineComponent.empty();
+                for (int i = 1; i < args.size(); i++) {
+                    arg.append(args.get(i));
+                    if (i != args.size() - 1) arg.append(" ");
+                }
                 MultiLineComponent out = MultiLineComponent.empty();
-                for (int i = 0; i < count; i++) out.append(args.get(1));
+                for (int i = 0; i < count; i++) out.append(arg);
                 return out.setIgnoreSpaces(true);
             }
 
@@ -496,6 +505,7 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
+                    slot = Math.max(slot, 1);
                     PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                     ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
@@ -961,9 +971,13 @@ public class GTPlaceholders {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
-                return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
+                                            List<MultiLineComponent> args) {
+                MultiLineComponent out = MultiLineComponent.empty();
+                for (int i = 0; i < args.size(); i++) {
+                    out.append(args.get(i));
+                    if (i != args.size() - 1) out.append(" ");
+                }
+                return PlaceholderHandler.processPlaceholders(out.toString(), ctx);
             }
         });
     }

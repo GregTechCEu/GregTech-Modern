@@ -1666,8 +1666,10 @@ public class LangHandler {
                 "You recently changed the module, please re-open this GUI to edit it");
         provider.add("gtceu.gui.central_monitor.module_editor_button", "Edit module");;
         provider.add("gtceu.item.tooltip.image_url", "Image URL: %s");
-        provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket ('}')");
-        provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets ('}') are unclosed");
+        provider.add("gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket (\"}\")");
+        provider.add("gtceu.placeholder_editor.unclosed_brackets", "%d brackets (\"}\") are unclosed");
+        provider.add("gtceu.placeholder_editor.unclosed_escape", "Unclosed escape (\"']\")");
+        provider.add("gtceu.placeholder_editor.unclosed_escapes", "%d escapes (\"']\") are unclosed");
         provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
         provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
         provider.add("gtceu.placeholder_editor.constant_value",

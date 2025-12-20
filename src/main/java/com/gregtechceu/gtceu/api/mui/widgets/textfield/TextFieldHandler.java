@@ -90,6 +90,7 @@ public class TextFieldHandler {
     public void setMainCursor(int linePos, int charPos, boolean animate) {
         Point main = getMainCursor();
         if (linePos >= this.text.size()) linePos = this.text.size() - 1;
+        if (linePos < 0) linePos = 0;
         if (main.x != charPos || main.y != linePos) {
             main.set(charPos, linePos);
             if (!this.text.isEmpty() && this.renderer != null && this.scrollArea != null) {
@@ -325,7 +326,7 @@ public class TextFieldHandler {
             x = insertion.get(insertion.size() - 1).length();
             y += 1;
             if (insertion.size() > 2) {
-                text.addAll(this.cursor.y + 1, text.subList(1, insertion.size() - 1));
+                text.addAll(this.cursor.y + 1, insertion.subList(1, insertion.size() - 1));
                 x = insertion.get(insertion.size() - 1).length();
                 y += insertion.size() - 1;
             }

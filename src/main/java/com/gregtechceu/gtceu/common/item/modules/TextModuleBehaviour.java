@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
-import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
@@ -73,7 +73,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         IStringValue<?> code = SyncHandlers.string(
                 () -> getPlaceholderText(stack),
                 s -> setPlaceholderText(stack, s));
-        IDoubleValue<?> scale = SyncHandlers.doubleNumber(
+        DoubleSyncValue scale = SyncHandlers.doubleNumber(
                 () -> getScale(stack),
                 s -> setScale(stack, s));
         IBoolValue<?> pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
@@ -83,7 +83,7 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
                 .size(400, 250)
                 .resizeableOnDrag(true)
                 .excludeAreaInXei()
-                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, pause, null,
+                .child(PlaceholderHandler.createPlaceholderEditor(syncManager, ctx, code, scale, null, pause,
                         updateText));
     }
 

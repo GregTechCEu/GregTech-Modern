@@ -50,7 +50,7 @@ public class TextFieldRenderer extends TextRenderer {
         if (this.renderCursor) {
             Point main = this.handler.getMainCursor();
             PointF start = getPosOf(measuredLines, main);
-            if (this.handler.getText().get(main.y).isEmpty()) {
+            if (this.handler.getText().isEmpty() || this.handler.getText().get(main.y).isEmpty()) {
                 start.x += 0.7f;
             }
             drawCursor(graphics, start.x, start.y);
@@ -85,7 +85,7 @@ public class TextFieldRenderer extends TextRenderer {
                         start.y += getFontHeight();
                     }
                 }
-                line = measuredLines.get(max);
+                line = measuredLines.get(Math.min(max, measuredLines.size() - 1));
                 startX = getStartX(line.width());
                 drawMarked(graphics, start.y, startX, end.x);
             }
@@ -99,7 +99,7 @@ public class TextFieldRenderer extends TextRenderer {
         List<Line> measuredLines = measureLines(lines);
         y -= getStartY(measuredLines.size());
         int lineIndex = (int) (y / (getFontHeight()));
-        if (lineIndex < 0) return new Point();
+        if (lineIndex < 0 || realLines.isEmpty()) return new Point();
         if (lineIndex >= realLines.size()) {
             return new Point(GTUtil.getLast(realLines).length(),
                     measuredLines.size() - 1);
@@ -134,7 +134,7 @@ public class TextFieldRenderer extends TextRenderer {
         if (measuredLines.isEmpty()) {
             return new PointF(getStartX(0), getStartYOfLines(1));
         }
-        Line line = measuredLines.get(cursorPos.y);
+        Line line = measuredLines.get(Math.min(cursorPos.y, measuredLines.size() - 1));
         float width = getFont().getSplitter().stringWidth(FontRenderHelper.substring(line.text(), 0, cursorPos.x + 1));
         return new PointF(getStartX(line.width()) + width * this.scale,
                 getStartYOfLines(measuredLines.size()) + cursorPos.y * getFontHeight());

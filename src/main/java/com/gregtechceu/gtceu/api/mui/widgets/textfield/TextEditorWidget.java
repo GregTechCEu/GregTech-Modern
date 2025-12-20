@@ -63,9 +63,26 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
         }
     }
 
+    @Override
+    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+        if (codePoint == '\t') {
+            if (this.handler.hasTextMarked()) {
+                int startY = this.handler.getStartCursor().y;
+                int endY = this.handler.getEndCursor().y;
+                for (int y = startY; y < endY; y++) {
+                    this.handler.getText().set(y, "    " + this.handler.getText().get(y));
+                }
+            } else {
+                int y = this.handler.getMainCursor().y;
+                this.handler.getText().set(y, "    " + this.handler.getText().get(y));
+            }
+        }
+        return super.onCharTyped(codePoint, modifiers);
+    }
+
     @NotNull
     public String getText() {
-        return this.handler.getText().stream().reduce("", (s1, s2) -> s1 + '\n' + s2).substring(1);
+        return this.handler.getText().stream().reduce((s1, s2) -> s1 + '\n' + s2).orElse("");
     }
 
     public void setText(@NotNull String text) {

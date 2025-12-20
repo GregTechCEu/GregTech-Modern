@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
-import com.gregtechceu.gtceu.api.mui.base.value.IDoubleValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IIntValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
@@ -57,13 +57,14 @@ public class PlaceholderHandler {
     private static final char PLACEHOLDER_END = '}';
     private static final char ESCAPE = '\\';
     private static final char LITERAL_ESCAPE = '"';
+    private static final char SINGLE_ESCAPE = '\'';
     private static final char NEWLINE = '\n';
     private static final char ESCAPED_NEWLINE = 'n';
 
     private static final Map<String, Placeholder> placeholders = new HashMap<>();
 
     public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
-            List.of("\\\\.", "\\{", "\\}", " ", "\""),
+            List.of("\\\\.", "\\{", "\\}", " ", "\"", "\\['", "'\\]"),
             TokenFormatter::new);
 
     public static void addPlaceholder(Placeholder placeholder) {
@@ -83,7 +84,7 @@ public class PlaceholderHandler {
         if (!placeholderExists(placeholder.get(0)))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context != null && context.level().isClientSide &&
-                !placeholders.get(placeholder.get(0).toString()).isPure())
+                !placeholders.get(placeholder.get(0).toString()).isView())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         return placeholders.get(placeholder.get(0).toString()).apply(context,
                 placeholder.subList(1, placeholder.size()));
@@ -94,17 +95,38 @@ public class PlaceholderHandler {
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
+        boolean lineBeginningWhitespace = true;
+        int singleEscapes = 0;
+        char prev = '\0';
         int line = 1;
         int symbol = 1;
         Stack<List<MultiLineComponent>> stack = new Stack<>();
         stack.push(GTUtil.list(MultiLineComponent.empty()));
         for (char c : s.toCharArray()) {
-            if (escape || (literalEscape && c != LITERAL_ESCAPE)) {
-                if (c == ESCAPED_NEWLINE && !literalEscape) {
+            if (c == '\'' && prev == '[') {
+                singleEscapes++;
+                symbol++;
+                prev = '\0';
+                continue;
+            }
+            if (c == ']' && prev == '\'') {
+                singleEscapes--;
+                if (singleEscapes < 0) throw new UnexpectedBracketException();
+                symbol++;
+                GTUtil.getLast(stack.peek()).append(c);
+                prev = c;
+                continue;
+            } else if (prev == '\'') GTUtil.getLast(stack.peek()).append('\'');
+            if (escape || ((literalEscape || singleEscapes > 0) && c != LITERAL_ESCAPE && c != SINGLE_ESCAPE)) {
+                if (c == ESCAPED_NEWLINE && !literalEscape && singleEscapes == 0) {
                     GTUtil.getLast(stack.peek()).appendNewline();
                     line++;
+                    lineBeginningWhitespace = true;
                     symbol = 0;
-                } else if (c != NEWLINE) GTUtil.getLast(stack.peek()).append(c);
+                } else if (c != NEWLINE) {
+                    lineBeginningWhitespace = false;
+                    GTUtil.getLast(stack.peek()).append(c);
+                } else lineBeginningWhitespace = false;
             } else {
                 switch (c) {
                     case ESCAPE -> escapeNext = true;
@@ -112,14 +134,19 @@ public class PlaceholderHandler {
                     case NEWLINE -> {
                         GTUtil.getLast(stack.peek()).appendNewline();
                         line++;
+                        lineBeginningWhitespace = true;
                         symbol = 0;
                     }
                     case ARG_SEPARATOR -> {
                         if (stack.size() == 1) GTUtil.getLast(stack.peek()).append(c);
-                        else stack.peek().add(MultiLineComponent.empty());
+                        else if (!lineBeginningWhitespace) stack.peek().add(MultiLineComponent.empty());
                     }
-                    case PLACEHOLDER_BEGIN -> stack.push(GTUtil.list(MultiLineComponent.empty()));
+                    case PLACEHOLDER_BEGIN -> {
+                        lineBeginningWhitespace = false;
+                        stack.push(GTUtil.list(MultiLineComponent.empty()));
+                    }
                     case PLACEHOLDER_END -> {
+                        lineBeginningWhitespace = false;
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
@@ -154,21 +181,29 @@ public class PlaceholderHandler {
                             exceptions.add(e);
                         }
                     }
-                    default -> GTUtil.getLast(stack.peek()).append(c);
+                    default -> {
+                        lineBeginningWhitespace = false;
+                        if (c != SINGLE_ESCAPE) GTUtil.getLast(stack.peek()).append(c);
+                    }
                 }
                 if (stack.isEmpty()) break;
             }
             escape = escapeNext;
             escapeNext = false;
             symbol++;
+            prev = c;
         }
         if (stack.size() > 1) {
             PlaceholderException exception = new UnclosedBracketException();
             exception.setLineInfo(line, symbol);
             exceptions.add(exception);
         }
-        if (exceptions.isEmpty())
-            return stack.peek().stream().reduce(MultiLineComponent.empty(), MultiLineComponent::append);
+        if (exceptions.isEmpty()) {
+            MultiLineComponent out = stack.peek().stream().reduce(MultiLineComponent.empty(),
+                    MultiLineComponent::append);
+            if (out.toTag().toString().length() > 16000) return MultiLineComponent.literal("Output too long");
+            return out;
+        }
         MultiLineComponent out = MultiLineComponent.empty();
         exceptions.forEach(exception -> {
             out.append(exception.getMessage());
@@ -214,7 +249,7 @@ public class PlaceholderHandler {
     public static Flow createPlaceholderEditor(PanelSyncManager syncManager,
                                                PlaceholderContext ctx,
                                                IStringValue<?> code,
-                                               @Nullable IDoubleValue<?> scaleDouble,
+                                               @Nullable DoubleSyncValue scaleDouble,
                                                @Nullable IIntValue<?> updateInterval,
                                                @Nullable IBoolValue<?> pause,
                                                @Nullable Runnable updateText) {
@@ -242,9 +277,7 @@ public class PlaceholderHandler {
                                 .childIf(scaleDouble != null, () -> new TextFieldWidget()
                                         .setNumbersDouble(x -> Math.max(x, 0))
                                         .setDefaultNumber(1.0)
-                                        .value(SyncHandlers.string(
-                                                () -> String.valueOf(scaleDouble.getDoubleValue()),
-                                                s -> scaleDouble.setDoubleValue(Double.parseDouble(s))))
+                                        .value(scaleDouble)
                                         .marginLeft(4))
                                 .childIf(updateInterval != null,
                                         new TextWidget<>(IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
@@ -334,6 +367,7 @@ public class PlaceholderHandler {
 
         private boolean prevOpenBracket = false;
         private boolean inString = false;
+        private int unclosedSingleEscapes = 0;
         private int unclosedBrackets = 0;
         private final StringBuilder everything = new StringBuilder();
         private final Stack<Integer> pureStarts = new Stack<>();
@@ -358,6 +392,19 @@ public class PlaceholderHandler {
                                             Component.translatable("gtceu.placeholder_editor.unclosed_brackets",
                                                     unclosedBrackets))));
                 }
+                if (unclosedSingleEscapes > 0) {
+                    onEncounteredError();
+                    return Component.literal(" ").withStyle(Style.EMPTY
+                            .withUnderlined(true)
+                            .withInsertion("")
+                            .withColor(0xFF0000)
+                            .withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    unclosedSingleEscapes == 1 ?
+                                            Component.translatable("gtceu.placeholder_editor.unclosed_escape") :
+                                            Component.translatable("gtceu.placeholder_editor.unclosed_escapes",
+                                                    unclosedBrackets))));
+                }
                 return Component.empty();
             }
             if (s.matches("\\\\.")) {
@@ -375,6 +422,24 @@ public class PlaceholderHandler {
                     inString = !inString;
                     everything.append(s);
                     return Component.literal(s).withStyle(ChatFormatting.DARK_GREEN);
+                }
+                case "['" -> {
+                    everything.append(s);
+                    unclosedSingleEscapes++;
+                    return Component.literal(s).withStyle(ChatFormatting.GOLD);
+                }
+                case "']" -> {
+                    everything.append(s);
+                    unclosedSingleEscapes--;
+                    if (unclosedSingleEscapes < 0) {
+                        onEncounteredError();
+                        return Component.literal(s).withStyle(Style.EMPTY
+                                .withColor(0xFF0000)
+                                .withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
+                    }
+                    return Component.literal(s).withStyle(ChatFormatting.GOLD);
                 }
                 case "{" -> {
                     prevOpenBracket = true;
@@ -481,6 +546,7 @@ public class PlaceholderHandler {
             openPlaceholders.clear();
             endOfLineValue = null;
             ifDepth = 0;
+            unclosedSingleEscapes = 0;
         }
     }
 }
