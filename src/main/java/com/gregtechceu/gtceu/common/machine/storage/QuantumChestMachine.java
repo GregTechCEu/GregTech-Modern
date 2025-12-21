@@ -402,7 +402,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                                 .child(createItemLockButton(syncManager))
                                                 .child(createVoidButton(syncManager)))
                                         .child(Flow.column()
-                                                .margin(68, 0, 23, 0)
+                                                .margin(68, 0, 15, 0)
                                                 .coverChildren()
                                                 // .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(
                                                 // cache, "stored",
@@ -500,11 +500,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         // .slotGroup(group)
                         .changeListener((newItem, amount, client, init) -> {
                             if (amount) {
+                                lockedItem.setOnContentsChanged(() -> { lockedItem.getStackInSlot(0).setCount(1); });
                                 lockedItem.onContentsChanged(0);
+                                lockedItem.getStackInSlot(0).setCount(1);
                             }
-                        }).ignoreMaxStackSize(true)
+                        })
                         .accessibility(true, false));
-
         // slot.getSlot().isPhantom()
         // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
         return slot;
