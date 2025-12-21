@@ -211,11 +211,6 @@ public class TextRenderer {
     }
 
     public boolean wouldFit(List<String> text, boolean shouldCheckWidth) {
-        /*
-         * if (this.maxHeight > 0 && this.maxHeight < text.size() * getFontHeight() - this.scale) {
-         * return false;
-         * }
-         */
         if (this.maxWidth > 0 && shouldCheckWidth) {
             for (String line : text) {
                 if (this.maxWidth < getFont().width(line)) {

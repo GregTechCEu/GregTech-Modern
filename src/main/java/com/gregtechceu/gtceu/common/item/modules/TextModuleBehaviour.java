@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.client.renderer.monitor.MonitorTextRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
@@ -50,7 +51,8 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 getPlaceholderText(stack), getContext(stack, machine, group));
-        stack.getOrCreateTag().put("text", text.toTag());
+        stack.getOrCreateTag().put("text",
+                text.withStyle(style -> style.withFont(GTGuiTextures.MONOCRAFT_FONT)).toTag());
     }
 
     @Override

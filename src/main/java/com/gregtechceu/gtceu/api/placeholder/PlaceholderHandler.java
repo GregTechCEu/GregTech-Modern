@@ -111,7 +111,9 @@ public class PlaceholderHandler {
             }
             if (c == ']' && prev == '\'') {
                 singleEscapes--;
-                if (singleEscapes < 0) throw new UnexpectedBracketException();
+                if (singleEscapes < 0) {
+                    exceptions.add(new UnexpectedBracketException());
+                }
                 symbol++;
                 GTUtil.getLast(stack.peek()).append(c);
                 prev = c;

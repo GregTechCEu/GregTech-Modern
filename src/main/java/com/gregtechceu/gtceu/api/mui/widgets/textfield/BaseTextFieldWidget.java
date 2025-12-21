@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.utils.Point;
 import com.gregtechceu.gtceu.api.mui.widget.AbstractScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.HorizontalScrollData;
 import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollData;
+import com.gregtechceu.gtceu.api.mui.widget.scroll.VerticalScrollData;
 import com.gregtechceu.gtceu.api.mui.widgets.VoidWidget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -77,7 +78,7 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     protected Integer hintTextColor;
 
     public BaseTextFieldWidget() {
-        super(new HorizontalScrollData(false, 4), null);
+        super(new HorizontalScrollData(false, 4), new VerticalScrollData());
         this.handler.setRenderer(this.renderer);
         this.handler.setScrollArea(getScrollArea());
         padding(4, 0);
