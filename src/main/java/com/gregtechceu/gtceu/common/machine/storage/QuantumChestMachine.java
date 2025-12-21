@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
@@ -417,8 +417,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                                  */
                                                 .child(createImportItemSlot(syncManager))
                                                 .child(createOutputItemSlot(syncManager))
-                                        // .child(createPhantomLockeditemSlot(syncManager))
-                                        ))
+                                                .child(createPhantomLockeditemSlot(syncManager))))
 
                 )
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
@@ -477,8 +476,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         })
                         // .ignoreMaxStackSize(true)
                         .accessibility(true, false));
-        // slot.getSlot().isPhantom()
-        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
         return slot;
     }
 
@@ -492,6 +489,22 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                             }
                         }).ignoreMaxStackSize(true)
                         .accessibility(false, true));
+        // slot.getSlot().isPhantom()
+        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
+        return slot;
+    }
+
+    private IWidget createPhantomLockeditemSlot(PanelSyncManager syncManager) {
+        PhantomItemSlot slot = new PhantomItemSlot()
+                .slot(SyncHandlers.itemSlot(lockedItem, 0)
+                        // .slotGroup(group)
+                        .changeListener((newItem, amount, client, init) -> {
+                            if (amount) {
+                                lockedItem.onContentsChanged(0);
+                            }
+                        }).ignoreMaxStackSize(true)
+                        .accessibility(true, false));
+
         // slot.getSlot().isPhantom()
         // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
         return slot;
