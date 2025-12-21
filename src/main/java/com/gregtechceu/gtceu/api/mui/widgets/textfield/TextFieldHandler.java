@@ -277,7 +277,7 @@ public class TextFieldHandler {
         builder.append(this.text.get(min.y).substring(min.x));
         if (max.y > min.y + 2) {
             for (int i = min.y + 1; i < max.y - 1; i++) {
-                builder.append(this.text.get(i));
+                builder.append(this.text.get(i)).append('\n');
             }
         }
         builder.append(this.text.get(max.y), 0, max.x);
