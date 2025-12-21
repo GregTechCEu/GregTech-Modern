@@ -28,7 +28,6 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -379,6 +378,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         LongSyncValue itemSyncer = new LongSyncValue(this::getStoredAmount, (ignored) -> {});
         syncManager.syncValue("item_amount", itemSyncer);
+        // SlotGroup group = new SlotGroup("item_inv", 1, 0, true);
 
         return new ModularPanel(this.getDefinition().getName())
                 .child(
@@ -410,12 +410,23 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                         .child(Flow.column()
                                                 .margin(68, 0, 23, 0)
                                                 .coverChildren()
-                                                .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(
-                                                        cache, "stored",
-                                                        syncManager)))
-                                // .child(createitemSlot(syncManager))
-                                // .child(createPhantomLockeditemSlot(syncManager))
-                                ))
+                                                // .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(
+                                                // cache, "stored",
+                                                // syncManager))
+                                                /*
+                                                 * .child(GTMuiMachineUtil.createSlotGroupFromInventory(
+                                                 * cache, "stored",
+                                                 * 1, 'B',
+                                                 * slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.SLOT),
+                                                 * syncManager,
+                                                 * "B"))
+                                                 */
+                                                .child(createImportItemSlot(syncManager))
+                                                .child(createOutputItemSlot(syncManager))
+                                        // .child(createPhantomLockeditemSlot(syncManager))
+                                        ))
+
+                )
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
@@ -460,11 +471,44 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         "gtceu.gui.item_voiding_partial.tooltip.disabled")));
     }
 
-    private IWidget createItemSlot(PanelSyncManager syncManager) {
-        syncManager.syncValue("item_slot",
-                SyncHandlers.itemSlot(cache, 0).getSyncHandler());
-        return new ItemSlot().syncHandler("item_slot", 0).background(GTGuiTextures.SLOT);
+    private IWidget createImportItemSlot(PanelSyncManager syncManager) {
+        var importItems = createImportItems();
+        ItemSlot slot = new ItemSlot()
+                .slot(SyncHandlers.itemSlot(importItems, 0)
+                        // .slotGroup(group)
+                        .changeListener((newItem, amount, client, init) -> {
+                            if (amount) {
+                                importItems.onContentsChanged(0);
+                            }
+                        })
+                        // .ignoreMaxStackSize(true)
+                        .accessibility(true, false));
+        // slot.getSlot().isPhantom()
+        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
+        return slot;
     }
+
+    private IWidget createOutputItemSlot(PanelSyncManager syncManager) {
+        ItemSlot slot = new ItemSlot()
+                .slot(SyncHandlers.itemSlot(cache, 0)
+                        // .slotGroup(group)
+                        .changeListener((newItem, amount, client, init) -> {
+                            if (amount) {
+                                cache.onChanged();
+                            }
+                        }).ignoreMaxStackSize(true)
+                        .accessibility(false, true));
+        // slot.getSlot().isPhantom()
+        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
+        return slot;
+    }
+    /*
+     * private IWidget createPhantomLockedFluidSlot(PanelSyncManager syncManager) {
+     * syncManager.syncValue("locked_fluid_slot",
+     * new ItemSlot(lockedItem).controlsAmount(false).phantom(true));
+     * return new FluidSlot().syncHandler("locked_fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
+     * }
+     */
 
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 109, 63);
