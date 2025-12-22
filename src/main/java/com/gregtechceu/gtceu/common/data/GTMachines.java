@@ -179,8 +179,8 @@ public class GTMachines {
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
                     .UI(GTSingleblockMachinePanels.ARC_FURNACE)
-                    .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("arc_furnace"),
-                            GTRecipeTypes.ARC_FURNACE_RECIPES))
+                    // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("arc_furnace"),
+                    // GTRecipeTypes.ARC_FURNACE_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ARC_FURNACE_RECIPES)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -281,8 +281,8 @@ public class GTMachines {
             (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .UI(GTSingleblockMachinePanels.MACERATOR)
-                    .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
-                            GTRecipeTypes.MACERATOR_RECIPES))
+                    // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"),
+                    // GTRecipeTypes.MACERATOR_RECIPES))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
@@ -462,7 +462,6 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
-                    .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
                     .workableTieredHullModel(GTCEu.id("block/machines/miner"))
                     .tooltipBuilder((stack, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
@@ -521,8 +520,6 @@ public class GTMachines {
                     .recipeType(DUMMY_RECIPES)
                     .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                     .modelProperty(GTMachineModelProperties.IS_WORKING_ENABLED, false)
-                    .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"),
-                            ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
                     .model(createItemCollectorModel(GTCEu.id("block/machines/item_collector")))
                     .tooltips(
                             Component.translatable("gtceu.machine.item_collector.tooltip"),

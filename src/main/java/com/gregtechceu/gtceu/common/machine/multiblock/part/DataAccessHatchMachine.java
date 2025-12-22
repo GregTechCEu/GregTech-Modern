@@ -113,7 +113,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .align(Alignment.CENTER)
                                 .coverChildren()
-                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory")
+                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory", syncManager)
                                         .marginLeft(30)
                                         .marginRight(30)
                                         .verticalCenter())))
