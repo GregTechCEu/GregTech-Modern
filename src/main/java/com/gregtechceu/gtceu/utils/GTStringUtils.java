@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class GTStringUtils {
@@ -221,5 +222,19 @@ public class GTStringUtils {
         }
         component.append("]");
         return component;
+    }
+
+    public static String formatInt(long n) {
+        Map<Long, String> suffixes = Map.of(
+                1L, "",
+                1000L, "K",
+                1000000L, "M",
+                1000000000L, "B",
+                1000000000000L, "T");
+        long max = 1;
+        for (Long i : suffixes.keySet()) {
+            if (n >= i && max < i) max = i;
+        }
+        return "%.2f%s".formatted(((double) n) / max, suffixes.get(max));
     }
 }

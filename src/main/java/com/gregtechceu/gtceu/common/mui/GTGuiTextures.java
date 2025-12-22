@@ -209,9 +209,12 @@ public class GTGuiTextures {
             "textures/gui/widget/button_distribution_mode.png",
             16, 48, 16, 16, ColorType.DEFAULT);
 
-    public static final UITexture[] VOIDING_MODE_OVERLAY = slice(
-            "textures/gui/overlay/voiding_mode_overlay.png",
-            16, 32, 16, 16, ColorType.DEFAULT);
+    public static final UITexture BUTTON_VOID = fullImage("textures/gui/widget/button_void.png");
+
+    public static final UITexture BUTTON_VOID_PARTIAL = fullImage("textures/gui/widget/button_void_partial.png");
+
+    public static final UITexture[] BUTTON_VOID_MULTIBLOCK = slice("textures/gui/widget/button_void_multiblock.png",
+            16, 48, 16, 16, ColorType.DEFAULT);
 
     public static final UITexture[] FILTER_MODE_OVERLAY = slice(
             "textures/gui/overlay/filter_mode_overlay.png",
@@ -423,6 +426,7 @@ public class GTGuiTextures {
     public static final UITexture BUTTON_THROTTLE_MINUS = fullImage("textures/gui/widget/button_throttle_minus.png");
     public static final UITexture BUTTON_EU = fullImage("textures/gui/overlay/mode_eu.png");
     public static final UITexture BUTTON_PERCENT = fullImage("textures/gui/overlay/mode_percent.png");
+    public static final UITexture BUTTON_MAINTENANCE = fullImage("textures/gui/widget/button_maintenance.png");
 
     public static final UITexture BUTTON_DISTINCT = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/widget/button_distinct_buses.png")
@@ -440,6 +444,9 @@ public class GTGuiTextures {
             "textures/gui/progress_bar/progress_bar_arrow_steel.png");
     public static final UITexture PROGRESS_BAR_ARROW_MULTIPLE = progressBar(
             "textures/gui/progress_bar/progress_bar_arrow_multiple.png", ColorType.DEFAULT);
+    public static final UITexture PROGRESS_BAR_ASSEMBLER = progressBar(
+            "textures/gui/progress_bar/progress_bar_assembler.png",
+            ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_BATH = progressBar("textures/gui/progress_bar/progress_bar_bath.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_BENDING = progressBar(

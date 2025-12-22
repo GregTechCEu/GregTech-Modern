@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -127,32 +126,39 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public WidgetGroup createUIWidget() {
-        var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomFluidWidget(cache, 0, 36, 6, 18, 18, this::getStored, this::updateStored)
-                .setShowAmount(false)
-                .setBackground(GuiTextures.FLUID_SLOT));
-        group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
-        group.addWidget(new ImageWidget(7, 45, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), this::setmBPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 28, "gtceu.creative.tank.mbpc"));
-        group.addWidget(new ImageWidget(7, 82, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 84, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 65, "gtceu.creative.tank.tpc"));
-        group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-                .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.on")))
-                .setPressed(isWorkingEnabled()));
-
-        return group;
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        // TODO
+        return super.buildUI(data, syncManager, settings);
     }
+
+    /*
+     * public WidgetGroup createUIWidget() {
+     * var group = new WidgetGroup(0, 0, 176, 131);
+     * group.addWidget(new PhantomFluidWidget(cache, 0, 36, 6, 18, 18, this::getStored, this::updateStored)
+     * .setShowAmount(false)
+     * .setBackground(GuiTextures.FLUID_SLOT));
+     * group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
+     * group.addWidget(new ImageWidget(7, 45, 154, 14, GuiTextures.DISPLAY));
+     * group.addWidget(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), this::setmBPerCycle)
+     * .setMaxStringLength(11)
+     * .setNumbersOnly(1, Integer.MAX_VALUE));
+     * group.addWidget(new LabelWidget(7, 28, "gtceu.creative.tank.mbpc"));
+     * group.addWidget(new ImageWidget(7, 82, 154, 14, GuiTextures.DISPLAY));
+     * group.addWidget(new TextFieldWidget(9, 84, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
+     * .setMaxStringLength(11)
+     * .setNumbersOnly(1, Integer.MAX_VALUE));
+     * group.addWidget(new LabelWidget(7, 65, "gtceu.creative.tank.tpc"));
+     * group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
+     * .setTexture(
+     * new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+     * new TextTexture("gtceu.creative.activity.off")),
+     * new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+     * new TextTexture("gtceu.creative.activity.on")))
+     * .setPressed(isWorkingEnabled()));
+     * 
+     * return group;
+     * }
+     */
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

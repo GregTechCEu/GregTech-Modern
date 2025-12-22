@@ -703,17 +703,7 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 long n = PlaceholderUtils.toLong(args.get(0));
-                Map<Long, String> suffixes = Map.of(
-                        1L, "",
-                        1000L, "K",
-                        1000000L, "M",
-                        1000000000L, "B",
-                        1000000000000L, "T");
-                long max = 1;
-                for (Long i : suffixes.keySet()) {
-                    if (n >= i && max < i) max = i;
-                }
-                return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+                return MultiLineComponent.literal(GTStringUtils.formatInt(n));
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("click") {
