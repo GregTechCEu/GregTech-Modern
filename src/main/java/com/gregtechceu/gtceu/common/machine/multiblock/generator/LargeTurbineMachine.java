@@ -189,36 +189,36 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ******* GUI ********//
     //////////////////////////////////////
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (isFormed()) {
-            var rotorHolder = getRotorHolder();
-
-            if (rotorHolder != null && rotorHolder.getRotorEfficiency() > 0) {
-                textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
-                        FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
-                        FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
-                textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
-                        rotorHolder.getTotalEfficiency()));
-
-                long maxProduction = getOverclockVoltage();
-                long currentProduction = getCurrentProduction();
-
-                if (isActive()) {
-                    textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                            FormattingUtil.formatNumbers(currentProduction),
-                            FormattingUtil.formatNumbers(maxProduction)));
-                }
-
-                int rotorDurability = rotorHolder.getRotorDurabilityPercent();
-                if (rotorDurability > MIN_DURABILITY_TO_WARN) {
-                    textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
-                } else {
-                    textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability)
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-                }
-            }
-        }
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    super.addDisplayText(textList);
+    //    if (isFormed()) {
+    //        var rotorHolder = getRotorHolder();
+//
+    //        if (rotorHolder != null && rotorHolder.getRotorEfficiency() > 0) {
+    //            textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+    //                    FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
+    //                    FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
+    //            textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
+    //                    rotorHolder.getTotalEfficiency()));
+//
+    //            long maxProduction = getOverclockVoltage();
+    //            long currentProduction = getCurrentProduction();
+//
+    //            if (isActive()) {
+    //                textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
+    //                        FormattingUtil.formatNumbers(currentProduction),
+    //                        FormattingUtil.formatNumbers(maxProduction)));
+    //            }
+//
+    //            int rotorDurability = rotorHolder.getRotorDurabilityPercent();
+    //            if (rotorDurability > MIN_DURABILITY_TO_WARN) {
+    //                textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
+    //            } else {
+    //                textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability)
+    //                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+    //            }
+    //        }
+    //    }
+    //}
 }

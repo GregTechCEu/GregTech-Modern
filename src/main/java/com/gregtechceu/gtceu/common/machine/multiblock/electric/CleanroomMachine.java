@@ -78,7 +78,7 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CleanroomMachine extends WorkableElectricMultiblockMachine
-                              implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
+                              implements ICleanroomProvider, IDataInfoProvider {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -477,53 +477,53 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return machine instanceof PrimitivePumpMachine;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        if (isFormed()) {
-            var maxVoltage = getMaxVoltage();
-            if (maxVoltage > 0) {
-                String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
-                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-            }
-
-            if (cleanroomType != null) {
-                textList.add(Component.translatable(cleanroomType.getTranslationKey()));
-            }
-
-            if (!isWorkingEnabled()) {
-                textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-
-            } else if (isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.running"));
-                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
-                double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
-                textList.add(
-                        Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-                                String.format("%.2f", (float) maxInSec), currentProgress));
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.idling"));
-            }
-
-            if (recipeLogic.isWaiting()) {
-                textList.add(Component.translatable("gtceu.multiblock.waiting")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-            }
-
-            if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
-            else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
-            textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
-                    fDist + bDist + 1));
-        } else {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-                    .withStyle(ChatFormatting.GRAY);
-            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
-        }
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    if (isFormed()) {
+    //        var maxVoltage = getMaxVoltage();
+    //        if (maxVoltage > 0) {
+    //            String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
+    //            textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+    //        }
+//
+    //        if (cleanroomType != null) {
+    //            textList.add(Component.translatable(cleanroomType.getTranslationKey()));
+    //        }
+//
+    //        if (!isWorkingEnabled()) {
+    //            textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+//
+    //        } else if (isActive()) {
+    //            textList.add(Component.translatable("gtceu.multiblock.running"));
+    //            int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
+    //            double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
+    //            double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
+    //            textList.add(
+    //                    Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
+    //                            String.format("%.2f", (float) maxInSec), currentProgress));
+    //        } else {
+    //            textList.add(Component.translatable("gtceu.multiblock.idling"));
+    //        }
+//
+    //        if (recipeLogic.isWaiting()) {
+    //            textList.add(Component.translatable("gtceu.multiblock.waiting")
+    //                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+    //        }
+//
+    //        if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
+    //        else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
+    //        textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
+    //        textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
+    //        textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
+    //                fDist + bDist + 1));
+    //    } else {
+    //        Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+    //                .withStyle(ChatFormatting.GRAY);
+    //        textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+    //                .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+    //                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+    //    }
+    //}
 
     @Override
     public Set<CleanroomType> getTypes() {

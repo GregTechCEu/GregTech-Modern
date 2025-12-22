@@ -184,33 +184,33 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     // ******* GUI ********//
     //////////////////////////////////////
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
-
-        long lastEUt = recipeLogic.getLastRecipe() != null ?
-                recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
-        if (isExtreme()) {
-            builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
-        } else {
-            builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
-        }
-
-        if (isActive() && isWorkingEnabled()) {
-            builder.addCurrentEnergyProductionLine(lastEUt);
-        }
-
-        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
-
-        if (isFormed && isOxygenBoosted) {
-            final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                    "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
-            builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
-        }
-
-        builder.addWorkingStatusLine();
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, isFormed())
+    //            .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
+//
+    //    long lastEUt = recipeLogic.getLastRecipe() != null ?
+    //            recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
+    //    if (isExtreme()) {
+    //        builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
+    //    } else {
+    //        builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
+    //    }
+//
+    //    if (isActive() && isWorkingEnabled()) {
+    //        builder.addCurrentEnergyProductionLine(lastEUt);
+    //    }
+//
+    //    builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
+//
+    //    if (isFormed && isOxygenBoosted) {
+    //        final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+    //                "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
+    //        builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
+    //    }
+//
+    //    builder.addWorkingStatusLine();
+    //}
 
     @Nullable
     public String getRecipeFluidInputInfo() {
@@ -228,16 +228,16 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return ChatFormatting.RED + FormattingUtil.formatNumbers(neededAmount) + "mB";
     }
 
-    @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        super.attachTooltips(tooltipsPanel);
-        tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
-                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
-                this::isIntakesObstructed,
-                () -> null));
-    }
+    //@Override
+    //public void attachTooltips(TooltipsPanel tooltipsPanel) {
+    //    super.attachTooltips(tooltipsPanel);
+    //    tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
+    //            () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
+    //            () -> List.of(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed")
+    //                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
+    //            this::isIntakesObstructed,
+    //            () -> null));
+    //}
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

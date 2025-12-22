@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ResearchStationMachine extends WorkableElectricMultiblockMachine
-                                    implements IOpticalComputationReceiver, IDisplayUIMachine {
+                                    implements IOpticalComputationReceiver {
 
     @Getter
     private IOpticalComputationProvider computationProvider;
@@ -107,18 +107,18 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         return false;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-                .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
-                        "gtceu.multiblock.research_station.researching")
-                .addEnergyUsageLine(energyContainer)
-                .addEnergyTierLine(tier)
-                .addWorkingStatusLine()
-                // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
-                .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    MultiblockDisplayText.builder(textList, isFormed())
+    //            .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
+    //            .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
+    //                    "gtceu.multiblock.research_station.researching")
+    //            .addEnergyUsageLine(energyContainer)
+    //            .addEnergyTierLine(tier)
+    //            .addWorkingStatusLine()
+    //            // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
+    //            .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
+    //}
 
     public static class ResearchStationRecipeLogic extends RecipeLogic {
 

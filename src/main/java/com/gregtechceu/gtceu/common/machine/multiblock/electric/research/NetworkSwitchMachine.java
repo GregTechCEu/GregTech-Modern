@@ -116,18 +116,18 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         return true;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addEnergyUsageExactLine(getEnergyUsage())
-                .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
-                .addWorkingStatusLine();
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    MultiblockDisplayText.builder(textList, isFormed())
+    //            .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+    //            .setWorkingStatusKeys(
+    //                    "gtceu.multiblock.idling",
+    //                    "gtceu.multiblock.idling",
+    //                    "gtceu.multiblock.data_bank.providing")
+    //            .addEnergyUsageExactLine(getEnergyUsage())
+    //            .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
+    //            .addWorkingStatusLine();
+    //}
 
     /*
      * @Override

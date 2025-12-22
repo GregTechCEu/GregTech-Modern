@@ -250,67 +250,67 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
     }
 
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup builder = (WidgetGroup) super.createUIWidget();
-        // Create the hover grid
-        builder.addWidget(new ExtendedProgressWidget(
-                () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
-                74, 57, 47, 47, GuiTextures.HPCA_COMPONENT_OUTLINE)
-                .setServerTooltipSupplier(hpcaHandler::addInfo)
-                .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
-        int startX = 76;
-        int startY = 59;
-
-        // we need to know what components we have on the client
-        if (getLevel().isClientSide) {
-            if (isFormed) {
-                hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
-                        this.getUpwardsFacing(), this.isFlipped);
-            } else {
-                hpcaHandler.clearClientComponents();
-            }
-        }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
-                Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
-                builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
-            }
-        }
-        return builder;
-    }
-
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
-                                                                            // display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addCustom(tl -> {
-                    if (isFormed()) {
-                        // Energy Usage
-                        tl.add(Component.translatable(
-                                "gtceu.multiblock.hpca.energy",
-                                FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
-                                FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
-                                GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
-                                .withStyle(ChatFormatting.GRAY));
-
-                        // Provided Computation
-                        Component cwutInfo = Component.literal(
-                                hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
-                                .withStyle(ChatFormatting.AQUA);
-                        tl.add(Component.translatable(
-                                "gtceu.multiblock.hpca.computation",
-                                cwutInfo).withStyle(ChatFormatting.GRAY));
-                    }
-                })
-                .addWorkingStatusLine();
-    }
+    //@Override
+    //public Widget createUIWidget() {
+    //    WidgetGroup builder = (WidgetGroup) super.createUIWidget();
+    //    // Create the hover grid
+    //    builder.addWidget(new ExtendedProgressWidget(
+    //            () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
+    //            74, 57, 47, 47, GuiTextures.HPCA_COMPONENT_OUTLINE)
+    //            .setServerTooltipSupplier(hpcaHandler::addInfo)
+    //            .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
+    //    int startX = 76;
+    //    int startY = 59;
+//
+    //    // we need to know what components we have on the client
+    //    if (getLevel().isClientSide) {
+    //        if (isFormed) {
+    //            hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
+    //                    this.getUpwardsFacing(), this.isFlipped);
+    //        } else {
+    //            hpcaHandler.clearClientComponents();
+    //        }
+    //    }
+    //    for (int i = 0; i < 3; i++) {
+    //        for (int j = 0; j < 3; j++) {
+    //            final int index = i * 3 + j;
+    //            Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
+    //            builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
+    //        }
+    //    }
+    //    return builder;
+    //}
+//
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    MultiblockDisplayText.builder(textList, isFormed())
+    //            .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
+    //                                                                        // display
+    //            .setWorkingStatusKeys(
+    //                    "gtceu.multiblock.idling",
+    //                    "gtceu.multiblock.idling",
+    //                    "gtceu.multiblock.data_bank.providing")
+    //            .addCustom(tl -> {
+    //                if (isFormed()) {
+    //                    // Energy Usage
+    //                    tl.add(Component.translatable(
+    //                            "gtceu.multiblock.hpca.energy",
+    //                            FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
+    //                            FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
+    //                            GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
+    //                            .withStyle(ChatFormatting.GRAY));
+//
+    //                    // Provided Computation
+    //                    Component cwutInfo = Component.literal(
+    //                            hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
+    //                            .withStyle(ChatFormatting.AQUA);
+    //                    tl.add(Component.translatable(
+    //                            "gtceu.multiblock.hpca.computation",
+    //                            cwutInfo).withStyle(ChatFormatting.GRAY));
+    //                }
+    //            })
+    //            .addWorkingStatusLine();
+    //}
 
     private ChatFormatting getDisplayTemperatureColor() {
         if (temperature < 500) {

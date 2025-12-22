@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -117,6 +118,12 @@ public class GTMuiWidgets {
         ItemSlotSH battery = new ItemSlotSH(new ModularSlot(itemHandler, slot));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
+    }
+
+    public static ToggleButton createVoidingButton(IVoidable machine, PanelSyncManager syncManager) {
+        // TODO pull in voiding mode pr
+        return new ToggleButton();
+        //EnumSyncValue voidMode = new EnumSyncValue(IVoidable.VoidingMode.class, machine.)
     }
 
     public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {

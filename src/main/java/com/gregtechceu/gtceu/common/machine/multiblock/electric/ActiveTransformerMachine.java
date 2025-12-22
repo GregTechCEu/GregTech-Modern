@@ -39,7 +39,7 @@ import java.util.List;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-                                      implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
+                                      implements IControllable, IExplosionMachine {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;
@@ -163,54 +163,54 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        // super.addDisplayText(textList); idek what it does stop doing what you do for a minute pls
-        // Assume That the Structure is ALWAYS formed, and has at least 1 In and 1 Out, there is never a case where this
-        // does not occur.
-        if (isFormed()) {
-            if (!isWorkingEnabled()) {
-                textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-            } else if (isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.running"));
-                textList.add(Component
-                        .translatable("gtceu.multiblock.active_transformer.max_input",
-                                FormattingUtil.formatNumbers(
-                                        Math.abs(powerInput.getInputVoltage() * powerInput.getInputAmperage()))));
-                textList.add(Component
-                        .translatable("gtceu.multiblock.active_transformer.max_output",
-                                FormattingUtil.formatNumbers(
-                                        Math.abs(powerOutput.getOutputVoltage() * powerOutput.getOutputAmperage()))));
-                textList.add(Component
-                        .translatable("gtceu.multiblock.active_transformer.average_in",
-                                FormattingUtil.formatNumbers(Math.abs(powerInput.getInputPerSec() / 20))));
-                textList.add(Component
-                        .translatable("gtceu.multiblock.active_transformer.average_out",
-                                FormattingUtil.formatNumbers(Math.abs(powerOutput.getOutputPerSec() / 20))));
-                if (!ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-                    textList.add(Component
-                            .translatable("gtceu.multiblock.active_transformer.danger_enabled"));
-                }
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.idling"));
-            }
-        }
-    }
+    //@Override
+    //public void addDisplayText(List<Component> textList) {
+    //    // super.addDisplayText(textList); idek what it does stop doing what you do for a minute pls
+    //    // Assume That the Structure is ALWAYS formed, and has at least 1 In and 1 Out, there is never a case where this
+    //    // does not occur.
+    //    if (isFormed()) {
+    //        if (!isWorkingEnabled()) {
+    //            textList.add(Component.translatable("gtceu.multiblock.work_paused"));
+    //        } else if (isActive()) {
+    //            textList.add(Component.translatable("gtceu.multiblock.running"));
+    //            textList.add(Component
+    //                    .translatable("gtceu.multiblock.active_transformer.max_input",
+    //                            FormattingUtil.formatNumbers(
+    //                                    Math.abs(powerInput.getInputVoltage() * powerInput.getInputAmperage()))));
+    //            textList.add(Component
+    //                    .translatable("gtceu.multiblock.active_transformer.max_output",
+    //                            FormattingUtil.formatNumbers(
+    //                                    Math.abs(powerOutput.getOutputVoltage() * powerOutput.getOutputAmperage()))));
+    //            textList.add(Component
+    //                    .translatable("gtceu.multiblock.active_transformer.average_in",
+    //                            FormattingUtil.formatNumbers(Math.abs(powerInput.getInputPerSec() / 20))));
+    //            textList.add(Component
+    //                    .translatable("gtceu.multiblock.active_transformer.average_out",
+    //                            FormattingUtil.formatNumbers(Math.abs(powerOutput.getOutputPerSec() / 20))));
+    //            if (!ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
+    //                textList.add(Component
+    //                        .translatable("gtceu.multiblock.active_transformer.danger_enabled"));
+    //            }
+    //        } else {
+    //            textList.add(Component.translatable("gtceu.multiblock.idling"));
+    //        }
+    //    }
+    //}
+//
+    //@Override
+    //public @NotNull Widget createUIWidget() {
+    //    var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+    //    group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
+    //            .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
+    //            .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+    //                    .setMaxWidthLimit(150)
+    //                    .clickHandler(this::handleDisplayClick)));
+    //    group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+    //    return group;
+    //}
 
-    @Override
-    public @NotNull Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .setMaxWidthLimit(150)
-                        .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
-    @Override
-    public @NotNull ModularUI createUI(@NotNull Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
-    }
+    //@Override
+    //public @NotNull ModularUI createUI(@NotNull Player entityPlayer) {
+    //    return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
+    //}
 }
