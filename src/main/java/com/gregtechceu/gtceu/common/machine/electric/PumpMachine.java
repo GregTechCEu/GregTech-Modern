@@ -603,7 +603,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
                                                         FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
                                                 .asWidget()
                                                 .color(0xffffff)
-                                                .margin(8, 0, 18, 0))
+                                                .margin(8, 0, 20, 0))
                                         .child(Flow.row()
                                                 .margin(4, 0, 41, 0)
                                                 .coverChildren()
