@@ -1,32 +1,29 @@
 ---
-title: ChemicalHelper
+title: The ChemicalHelper Class
 ---
 
-
-# The `ChemicalHelper` Class
-
-The ChemicalHelper class contains a number of useful methods that can get a Material, TagPrefix, ItemStack, and other objects from GTM's registries in contexts where it might be unsafe or not possible
+The [ChemicalHelper class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/chemical/ChemicalHelper.java) contains a number of useful methods that can get a `Material`, `TagPrefix`, `ItemStack`, and other objects from GTM's registries in contexts where it might be unsafe or not possible
 
 ## Available functions
 
 The following functions are available for use by addon devs:
 
-### `.getMaterialStack()`
+### `getMaterialStack()`
 
 Can take almost any form of item reference (`Item`, `ItemStack`, `Ingredient` and so on) and will return the
 `MaterialStack` entry associated with it. If there is no associated `Material`, the method returns `null`.
 
-### `.getMaterial()`
+### `getMaterial()`
 
 Returns a `Material` from its related `Fluid`. If the fluid has no associated Material, the method returns `null`.
 
-### `.getPrefix()`
+### `getPrefix()`
 
 Takes an item reference as input and returns the associated `TagPrefix`. If there is no associated `TagPrefix`,
 the method will return `null`.
 
 
-### `.getIngot()` and `.getDust()`
+### `getIngot()` and `getDust()`
 
 These two methods take two parameters each as input: a `Material`, and a `long` number representing a material amount.
 The method returns an `ItemStack` of the respective `Material`'s dust or ingot, if it has one.
@@ -42,14 +39,14 @@ Depending on the amount passed, the functions will return different items:
   material amount passed.
 
 
-### `.getTag()`, `.getBlockTag()`, `.getTags()`, and `.getBlockTags()`
+### `getTag()`, `getBlockTag()`, `getTags()`, and `getBlockTags()`
 
 Takes a `TagPrefix` and a non-null `Material` as input and returns the first item or block tag
 (or a Java array of all item or block tags if the plural functions are used) possessed by the item represented by
 that `TagPrefix`-`Material` combination.
 
 
-### `.get()`
+### `get()`
 
 Takes a `TagPrefix`, a `Material` and an optional item count that otherwise defaults to 1, and returns an
 ItemStack of the `TagPrefix`-`Material` combination with the specified item count.
