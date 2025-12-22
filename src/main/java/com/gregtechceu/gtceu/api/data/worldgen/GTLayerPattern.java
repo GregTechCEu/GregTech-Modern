@@ -34,19 +34,24 @@ public class GTLayerPattern {
         this.layers = layers;
     }
 
-    public Layer rollNext(@Nullable Layer previous, RandomSource random) {
+    public @Nullable Layer rollNext(@Nullable Layer previous, RandomSource random) {
+        if (layers.isEmpty()) return null;
+        if (layers.size() == 1) return layers.get(0);
+
         int totalWeight = 0;
-        for (Layer layer : layers)
-            if (layer != previous)
-                totalWeight += layer.weight;
+        for (Layer layer : layers) {
+            if (layer != previous) totalWeight += layer.weight;
+        }
+        // totalWeight should be >0 here but better be safe than sorry
+        if (totalWeight <= 0) return null;
+
         int rolled = random.nextInt(totalWeight);
 
         for (Layer layer : layers) {
-            if (layer == previous)
-                continue;
+            if (layer == previous) continue;
+
             rolled -= layer.weight;
-            if (rolled < 0)
-                return layer;
+            if (rolled < 0) return layer;
         }
         return null;
     }
@@ -99,6 +104,21 @@ public class GTLayerPattern {
         public final int weight;
 
         public Layer(List<Either<List<TargetBlockState>, Material>> targets, int minSize, int maxSize, int weight) {
+            if (minSize > maxSize) {
+                StringBuilder materialList = new StringBuilder().append(" with materials: ");
+                for (var target : targets) {
+                    if (target.right().isPresent()) {
+                        materialList.append(target.right().get().getName()).append(",");
+                    }
+                }
+                if (!materialList.isEmpty()) {
+                    materialList.deleteCharAt(materialList.length() - 1);
+                }
+
+                throw new IllegalArgumentException(
+                        "Layer must have minSize (%s) be lower than maxSize (%s)%s".formatted(minSize, maxSize,
+                                materialList.toString()));
+            }
             this.targets = targets;
             this.minSize = minSize;
             this.maxSize = maxSize;

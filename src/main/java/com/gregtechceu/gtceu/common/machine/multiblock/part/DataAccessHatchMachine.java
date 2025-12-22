@@ -125,7 +125,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
      * int rowSize = (int) Math.sqrt(getInventorySize());
      * int xOffset = 18 * rowSize / 2;
      * WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
-     * 
+     *
      * for (int y = 0; y < rowSize; y++) {
      * for (int x = 0; x < rowSize; x++) {
      * int index = y * rowSize + x;

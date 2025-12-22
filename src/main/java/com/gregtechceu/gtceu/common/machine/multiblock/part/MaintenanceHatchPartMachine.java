@@ -390,7 +390,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * }
      * }
      * })));
-     * 
+     *
      * } else {
      * group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
      * }

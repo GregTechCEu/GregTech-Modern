@@ -418,7 +418,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * super.attachConfigurators(configuratorPanel);
      * }
      * }
-     * 
+     *
      * @Override
      * public Widget createUIWidget() {
      * int rowSize = (int) Math.sqrt(getInventorySize());
@@ -438,10 +438,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
      * }
      * }
-     * 
+     *
      * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
      * group.addWidget(container);
-     * 
+     *
      * return group;
      * }
      */

@@ -46,6 +46,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
     public ParallelHatchPartMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         this.maxParallel = (int) Math.pow(4, tier - GTValues.EV);
+        this.currentParallel = maxParallel;
     }
 
     public void setCurrentParallel(int parallelAmount) {

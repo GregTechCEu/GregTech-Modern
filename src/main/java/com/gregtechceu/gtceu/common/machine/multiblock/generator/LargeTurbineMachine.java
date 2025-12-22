@@ -182,7 +182,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return capability != EURecipeCapability.CAP;
+        // void both eu and fluid tick outputs
+        return true;
     }
 
     //////////////////////////////////////

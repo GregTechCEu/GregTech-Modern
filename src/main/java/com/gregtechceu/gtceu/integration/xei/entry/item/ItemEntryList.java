@@ -6,8 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public sealed interface ItemEntryList extends EntryList<ItemStack>
-                                      permits ItemStackList, ItemTagList, ItemHolderSetList {
+public sealed interface ItemEntryList permits ItemStackList, ItemTagList, ItemHolderSetList {
 
     List<ItemStack> getStacks();
 
