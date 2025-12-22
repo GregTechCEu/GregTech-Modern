@@ -25,7 +25,15 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
     void notifyBlockUpdate();
 
-    void scheduleNeighborShapeUpdate();
+    default void scheduleNeighborShapeUpdate() {
+        Level level = getLevel();
+        BlockPos pos = getBlockPos();
+
+        if (level == null || pos == null)
+            return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
 
     void markAsChanged();
 

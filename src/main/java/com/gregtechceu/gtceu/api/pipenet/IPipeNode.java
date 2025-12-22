@@ -119,20 +119,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     default void serverTick() {}
 
-    default void scheduleNeighborShapeUpdate() {
-        Level level = getLevel();
-        BlockPos pos = getBlockPos();
-
-        if (level == null || pos == null)
-            return;
-
-        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
-    }
-
-    default BlockEntity getNeighbor(Direction direction) {
-        return getLevel().getBlockEntity(getBlockPos().relative(direction));
-    }
-
     @Override
     default int getDefaultPaintingColor() {
         return 0xFFFFFF;

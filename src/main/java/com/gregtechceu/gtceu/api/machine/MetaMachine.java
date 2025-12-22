@@ -181,15 +181,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return false;
     }
 
-    public void scheduleNeighborShapeUpdate() {
-        Level level = getLevel();
-        BlockPos pos = getBlockPos();
-
-        if (level == null) return;
-
-        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
-    }
-
     public void setPaintingColor(int color) {
         if (color == this.paintingColor) return;
 
