@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
@@ -31,8 +32,12 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
+import java.util.function.BooleanSupplier;
 
 public class GTMuiWidgets {
 
@@ -75,9 +80,9 @@ public class GTMuiWidgets {
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
-    public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
-        BooleanSyncValue power = new BooleanSyncValue(() -> recipeLogicMachine.getRecipeLogic().isWorkingEnabled(),
-                recipeLogicMachine::setWorkingEnabled);
+    public static ToggleButton createPowerButton(BooleanSupplier getter, BooleanConsumer setter,
+                                                 PanelSyncManager syncManager) {
+        BooleanSyncValue power = new BooleanSyncValue(getter, setter);
         syncManager.syncValue("working_enabled", power);
         return new ToggleButton()
                 .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
@@ -85,8 +90,15 @@ public class GTMuiWidgets {
                 .background(GTGuiTextures.BUTTON_POWER[0])
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
-                        recipeLogicMachine.getRecipeLogic().isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
+                        power.getBoolValue() ? "behaviour.soft_hammer.enabled" :
                                 "behaviour.soft_hammer.disabled"))));
+    }
+
+    public static ToggleButton createPowerButton(IRecipeLogicMachine recipeLogicMachine, PanelSyncManager syncManager) {
+        return createPowerButton(
+                () -> recipeLogicMachine.getRecipeLogic().isWorkingEnabled(),
+                recipeLogicMachine::setWorkingEnabled,
+                syncManager);
     }
 
     public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, UITexture texture, int size) {
@@ -101,7 +113,13 @@ public class GTMuiWidgets {
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
 
-    public static ToggleButton createAutoOutputItemButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
+    public static ItemSlot createBatterySlot(IItemHandler itemHandler, int slot, PanelSyncManager syncManager) {
+        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(itemHandler, slot));
+        syncManager.syncValue("battery", battery);
+        return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
+    }
+
+    public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {
         BooleanSyncValue itemOutputs = new BooleanSyncValue(machine::isAutoOutputItems,
                 machine::setAutoOutputItems);
         syncManager.syncValue("auto_output_items", itemOutputs);

@@ -1669,6 +1669,7 @@ public class LangHandler {
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
+        provider.add("gtceu.gui.item_collector.range", "Range: ");
     }
 
     /**

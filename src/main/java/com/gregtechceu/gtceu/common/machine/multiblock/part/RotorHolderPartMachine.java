@@ -11,9 +11,23 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -229,6 +243,43 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
+    // TODO MUI: Might need EIO widget? Not sure
+    @Override
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        SlotGroup rotorSlotGroup = new SlotGroup("rotor", 1);
+
+        var slot = new ItemSlot()
+                .slot(new ModularSlot(inventory, 0)
+                        .slotGroup(rotorSlotGroup))
+                .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY)
+                .marginLeft(30)
+                .marginRight(30)
+                .verticalCenter();
+
+        var rotorSync = new IntSyncValue(this::getRotorSpeed, (speed) -> {});
+        rotorSync.setChangeListener(() -> {
+            boolean canEdit = rotorSync.getIntValue() == 0;
+            slot.getSlot().accessibility(canEdit, canEdit);
+        });
+
+        syncManager.syncValue("rotor_speed", rotorSync);
+
+        return new ModularPanel(this.getDefinition().getName())
+                .size(176, 100 + (18 * 4))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * 4)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(slot)))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
     /*
      * @Override
      * public Widget createUIWidget() {

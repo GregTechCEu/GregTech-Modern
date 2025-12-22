@@ -441,15 +441,13 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = new ModularPanel(this.getDefinition().getName());
         var slotHeight = (int) Math.sqrt(inventorySize);
-        var outputGrid = GTMuiWidgets.createGrid(inventorySize, slotHeight, true, 'o');
         panel
                 .size(176, 104 + 18 * slotHeight)
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 190))
                 .child(new Column()
                         .coverChildren()
-                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(this.cache,
-                                "output_cache", this.cache.getSize(), 'o',
-                                outputGrid))
+                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
+                                syncManager))
                         .alignX(Alignment.CENTER)
                         .top(10))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7))
@@ -461,25 +459,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .padding(0, 8, 4, 4)
                         .childPadding(2)
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .child(createPowerButton(syncManager))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager))
                         .child(createBatterySlot(syncManager))
                         .child(createAutoOutputItemButton(syncManager))
                         .excludeAreaInXei());
         return panel;
-    }
-
-    public ToggleButton createPowerButton(PanelSyncManager syncManager) {
-        BooleanSyncValue power = new BooleanSyncValue(this::isWorkingEnabled,
-                this::setWorkingEnabled);
-        syncManager.syncValue("working_enabled", power);
-        return new ToggleButton()
-                .value(new BoolValue.Dynamic(power::getBoolValue, power::setBoolValue))
-                .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
-                .background(GTGuiTextures.BUTTON_POWER[0])
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
-                        this.isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
-                                "behaviour.soft_hammer.disabled"))));
     }
 
     public ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {

@@ -327,7 +327,7 @@ public class GTSingleblockMachinePanels {
                                 .childIf(!(inputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(steamMachine.importItems,
                                                 "input_item_inv", steamMachine.importItems.getSize(), 'i',
-                                                inputItemGrid)
+                                                syncManager, inputItemGrid)
                                                 .alignX(Alignment.CenterLeft))
                                 .align(Alignment.CenterLeft))
                         .child(new Column()
@@ -336,7 +336,7 @@ public class GTSingleblockMachinePanels {
                                 .childIf(!(outputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(steamMachine.exportItems,
                                                 "output_item_inv", steamMachine.exportItems.getSize(), 'i',
-                                                outputItemGrid)
+                                                syncManager, outputItemGrid)
                                                 .alignX(Alignment.CenterRight))
                                 .align(Alignment.CenterRight))
                         .top(30 - topMargin))
@@ -426,7 +426,7 @@ public class GTSingleblockMachinePanels {
                                 .childIf(!(inputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(steamMachine.importItems,
                                                 "input_item_inv", steamMachine.importItems.getSize(), 'i',
-                                                inputItemGrid)
+                                                syncManager, inputItemGrid)
                                                 .alignX(Alignment.CenterLeft))
                                 .align(Alignment.CenterLeft))
                         .child(new Column()
@@ -435,7 +435,7 @@ public class GTSingleblockMachinePanels {
                                 .childIf(!(outputItemGrid.length == 0),
                                         GTMuiMachineUtil.createSlotGroupFromInventory(steamMachine.exportItems,
                                                 "output_item_inv", steamMachine.exportItems.getSize(), 'i',
-                                                outputItemGrid)
+                                                syncManager, outputItemGrid)
                                                 .alignX(Alignment.CenterRight))
                                 .align(Alignment.CenterRight))
                         .top(30 - topMargin))

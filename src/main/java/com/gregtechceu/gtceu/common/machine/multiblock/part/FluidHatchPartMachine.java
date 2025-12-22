@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -12,8 +11,25 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -266,85 +282,20 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         return true;
     }
 
-    //////////////////////////////////////
-    // ********** GUI ***********//
-    //////////////////////////////////////
-
-    /*
-     * @Override
-     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-     * super.attachConfigurators(configuratorPanel);
-     * if (isCircuitSlotEnabled() && this.io == IO.IN) {
-     * configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-     * }
-     * }
-     * 
-     * @Override
-     * public Widget createUIWidget() {
-     * if (slots == 1) {
-     * return createSingleSlotGUI();
-     * } else {
-     * return createMultiSlotGUI();
-     * }
-     * }
-     * 
-     * protected Widget createSingleSlotGUI() {
-     * var group = new WidgetGroup(0, 0, 89, 63);
-     * group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY));
-     * TankWidget tankWidget;
-     * 
-     * // Add input/output-specific widgets
-     * if (this.io == IO.OUT) {
-     * // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
-     * group.addWidget(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 0, 67, 40, 18, 18,
-     * () -> this.tank.getLockedFluid().getFluid(), f -> {
-     * if (!this.tank.getFluidInTank(0).isEmpty()) {
-     * return;
-     * }
-     * if (f == null || f.isEmpty()) {
-     * this.tank.setLocked(false);
-     * } else {
-     * FluidStack newFluid = f.copy();
-     * newFluid.setAmount(1);
-     * this.tank.setLocked(true, newFluid);
-     * }
-     * }).setShowAmount(false).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
-     * 
-     * group.addWidget(new ToggleButtonWidget(7, 40, 18, 18,
-     * GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
-     * .setTooltipText("gtceu.gui.fluid_lock.tooltip")
-     * .setShouldUseBaseBackground())
-     * // ...and add the actual tank widget separately.
-     * .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
-     * .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
-     * } else {
-     * group.addWidget(tankWidget = new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
-     * .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
-     * }
-     * 
-     * group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
-     * .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(tankWidget)))
-     * .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()));
-     * 
-     * group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-     * return group;
-     * }
-     */
-
-    private Component getFluidNameText(TankWidget tankWidget) {
+    private Component getFluidNameText() {
         Component translation;
-        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
-            translation = tank.getFluidInTank(tankWidget.getTank()).getDisplayName();
+        if (!this.tank.getFluidInTank(0).isEmpty()) {
+            translation = this.tank.getFluidInTank(0).getDisplayName();
         } else {
             translation = this.tank.getLockedFluid().getFluid().getDisplayName();
         }
         return translation;
     }
 
-    private String getFluidAmountText(TankWidget tankWidget) {
+    private String getFluidAmountText() {
         String fluidAmount = "";
-        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
-            fluidAmount = getFormattedFluidAmount(tank.getFluidInTank(tankWidget.getTank()));
+        if (!tank.getFluidInTank(0).isEmpty()) {
+            fluidAmount = getFormattedFluidAmount(tank.getFluidInTank(0));
         } else {
             // Display Zero to show information about the locked fluid
             if (!this.tank.getLockedFluid().getFluid().isEmpty()) {
@@ -354,35 +305,68 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         return fluidAmount;
     }
 
+    private Component getFluidText() {
+        return getFluidNameText().copy().append("\n").append(getFluidAmountText());
+    }
+
     public String getFormattedFluidAmount(FluidStack fluidStack) {
         return String.format("%,d", fluidStack.isEmpty() ? 0 : fluidStack.getAmount());
     }
 
-    /*
-     * protected Widget createMultiSlotGUI() {
-     * int rowSize = (int) Math.sqrt(slots);
-     * int colSize = rowSize;
-     * if (slots == 8) {
-     * rowSize = 4;
-     * colSize = 2;
-     * }
-     * 
-     * var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-     * var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
-     * 
-     * int index = 0;
-     * for (int y = 0; y < colSize; y++) {
-     * for (int x = 0; x < rowSize; x++) {
-     * container.addWidget(
-     * new TankWidget(tank.getStorages()[index++], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-     * .setBackground(GuiTextures.FLUID_SLOT));
-     * }
-     * }
-     * 
-     * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-     * group.addWidget(container);
-     * 
-     * return group;
-     * }
-     */
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel(getDefinition().getName())
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 174))
+                .bindPlayerInventory()
+                .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
+                        .marginBottom(91)
+                        .center())
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .excludeAreaInXei()
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager)));
+    }
+
+    protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
+        return Flow.row()
+                .coverChildrenHeight()
+                .widthRel(.6f)
+                .background(GTGuiTextures.DISPLAY)
+                .padding(5)
+                .childPadding(5)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .child(new TextWidget<>(IKey.dynamic(this::getFluidText)))
+                .child(Flow.column()
+                        .alignX(1f)
+                        .childPadding(2)
+                        .coverChildren()
+                        .childIf(io.support(IO.OUT), new FluidSlot()
+                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid())
+                                        .phantom(true)
+                                        .controlsAmount(false)))
+                        .childIf(io.support(IO.OUT), new ToggleButton()
+                                .value(new BooleanSyncValue(tank::isLocked, tank::setLocked))
+                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
+                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
+                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED, GTGuiTextures.BUTTON_LOCK)
+                                .selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED,
+                                        GTGuiTextures.BUTTON_LOCK))
+                        .child(new FluidSlot()
+                                .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
+                                        .canFillSlot(io.support(IO.IN)))));
+    }
+
+    protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
+        return GTMuiMachineUtil.createSlotGroupFromInventory(
+                syncManager,
+                tank, "fluid_inv",
+                slots, 'F', GTMuiMachineUtil.createSquareMatrix(slots, 'F'));
+    }
 }
