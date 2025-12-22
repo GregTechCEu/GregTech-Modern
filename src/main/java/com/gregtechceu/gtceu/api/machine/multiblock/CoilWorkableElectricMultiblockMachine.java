@@ -9,8 +9,10 @@ import com.gregtechceu.gtceu.api.mui.drawable.*;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
@@ -23,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
@@ -36,8 +39,6 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
     @Getter
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
-    @DescSynced
-    private int coilTier = coilType.getTier();
 
     public CoilWorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -52,7 +53,6 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         var type = getMultiblockState().getMatchContext().get("CoilType");
         if (type instanceof ICoilType coil) {
             this.coilType = coil;
-            coilTier = coil.getTier();
         }
     }
 
@@ -65,7 +65,10 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
         var panel = GTGuis.createPanel(this, 176 + 32, 164 + 36);
 
-        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[coilTier].getTexture())
+        //IntSyncValue coilTierSV = new IntSyncValue(() -> this.coilTier);
+        //syncManager.syncValue("coil", coilTierSV);
+
+        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[0].getTexture())
                 .imageSize(16, 16).colorType(ColorType.DEFAULT).tiled().build();
 
         //var coilWidget = coilTexture.asWidget().size(4, 16).heightRel(1.0f);
@@ -80,14 +83,26 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                         .margin(4, 0)
                         .left(3).top(3)
                     .child(new Row()
-                        .child(widget1.size(16, 16))
+                        .child(widget1.size(15, 16))
                         .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(.95f).heightRel(1.0f))
                         .child(widget2)
                     )
-                    .child(IKey.dynamic(() ->
-                            GTMultiblockTextUtil.addProgressLine(isFormed, isActive(), getRecipeLogic().getProgress(), getRecipeLogic().getMaxProgress(), getRecipeLogic().getProgressPercent()))
-                            .color(0xffffff)
-                            .asWidget().left(7).top(3))
+                    .child(new Column()
+                            .widthRel(1)
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .childPadding(1)
+                            .child(new Rectangle().setColor(0xFF606060).asWidget()
+                                    .size(40, 1))
+                            .child(IKey.dynamic(() ->
+                                GTMultiblockTextUtil.addProgressLine(isFormed, isActive(), getRecipeLogic().getProgress(), getRecipeLogic().getMaxProgress(), getRecipeLogic().getProgressPercent()))
+                                .color(0xffffff)
+                                .asWidget()
+                            )
+                            .child(GTMultiblockTextUtil.addEnergyTierLine(isFormed, getTier()).color(0xffffff).asWidget())
+                            .child(GTMultiblockTextUtil.addEnergyUsageLine(isFormed, getEnergyContainer()).color(0xffffff).asWidget())
+                            .left(20)
+                    )
+
                 )
                 .child(new Column()
                         .coverChildren()
