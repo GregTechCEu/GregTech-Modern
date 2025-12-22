@@ -318,6 +318,7 @@ public class MinerMachine extends WorkableTieredMachine
         return new ArrayList<>();
     }
 
+    // TODO(Onion): fix the gui stuff for this
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return new ModularPanel(getDefinition().getName())
