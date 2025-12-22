@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
@@ -458,6 +459,7 @@ public class ComponentItem extends Item
                 return uiHolder.buildUI(data, syncManager, settings);
             }
         }
+        GTCEu.LOGGER.error("Tried to get UI of {} item when it does not have one!", data.getUsedItemStack());
         return null;
     }
 
