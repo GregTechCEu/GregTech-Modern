@@ -27,39 +27,39 @@ public static final Material MyCustomMaterial = new Material.Builder(ExampleMod.
 
 You can change the properties of the material by adding any combination of the following builder options:
 
-- `.ingot()` will make the material have both an ingot and dust form.
+- `.ingot()` -> Makes the material have both an ingot and dust form.
 
-- `.dust()` will make the material have only a dust form, and no ingot. Don't use this together with `.ingot()`.
+- `.dust()` -> Makes the material have only a dust form, and no ingot. Don't use this together with `.ingot()`.
 
-- `.gem()` will make the material have both a gem form and a dust form, but no ingot. Don't use those together with `.dust()` or `.ingot()`
+- `.gem()` -> Makes the material have both a gem form and a dust form, but no ingot. Don't use those together with `.dust()` or `.ingot()`
 
-- `.liquid()` will make the material have a liquid (fluid) form with liquid properties.
+- `.liquid()` -> Makes the material have a liquid (fluid) form with liquid properties.
 
-- `.gas()` will make the material have a gas (fluid) form with gas properties.
+- `.gas()` -> Makes the material have a gas (fluid) form with gas properties.
 
-- `.plasma()` will make the material have a plasma (fluid) form with plasma properties.
+- `.plasma()` -> Makes the material have a plasma (fluid) form with plasma properties.
 
-- `.polymer()` will make the material have a dust form with polymer properties. Additionally dusts of polymer materials are called pulps instead in-game
+- `.polymer()` -> Makes the material have a dust form with polymer properties. Additionally dusts of polymer materials are called pulps instead in-game
 
-- `.burnTime(int burnTime)` will turn the material into a furnace fuel.
+- `.burnTime(int burnTime)` ->  Turns the material into a furnace fuel.
 
-- `.fluidBurnTime(int burnTime)` defines how long the fluid of the material will burn in a generator
+- `.fluidBurnTime(int burnTime)` -> Defines how long the fluid of the material will burn in a generator
 
-- `.components(Material component1, Material component2, ...)` describes the composition. The components are a list of elements of the following form: `Material material, int amount`, where `K` is a positive integer.
+- `.components(Material component1, Material component2, ...)` -> Describes the composition. The components are a list of elements of the following form: `Material material, int amount`, where `K` is a positive integer.
 
-- `.iconSet(MaterialIconSet iconSet)` gives the material an icon set. Read more about icon sets [here](Material-Icon-Sets-And-Types.md)
+- `.iconSet(MaterialIconSet iconSet)` -> Sets the MaterialIconSet. Read more about icon sets [here](Material-Icon-Sets-And-Types.md)
 
-- `.color(int colorCode)` gives the material a color. The color must be provided as a hex value in the following form: `0xNNNNNN`, where `N` are digits.
+- `.color(int colorCode)` -> Gives the material a color. The color must be provided as a hex value in the following form: `0xNNNNNN`, where `N` are digits.
 
-- `.secondaryColor(int colorCode)` gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
+- `.secondaryColor(int colorCode)` -> Gives the material a secondary color. If this is not being called, the secondary value will default to white(0xffffff).
 
-- `.flags(MaterialFlag flag1, MaterialFlag flag2, ...)` can be used to select certain properties of the material, like generating gears, or disabling decomposition.
+- `.flags(MaterialFlag flag1, MaterialFlag flag2, ...)` -> Can be used to select certain properties of the material, like generating gears, or disabling decomposition.
 
-- `.element(Element element)` -> similar to `.components()`, but is used when the material represents an element.
+- `.element(Element element)` -> Similar to `.components()`, but is used when the material represents an element.
 
-- `.rotorStats(int speed, int efficiency, float damage, int durability)` -> this will create a turbine rotor from this material.
+- `.rotorStats(int speed, int efficiency, float damage, int durability)` -> Creates a turbine rotor from this material.
 
-- `.blastTemp(int temp)` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
+- `.blastTemp(int temp)` -> Meant to be paired together with `.ingot()`. This will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
     1. `temp` -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
         If the temperature is below 1000, it will also generate a PBF recipe.
         If temperature is above 1750, a hot ingot will be generated, this requiring a Vacuum Freezer.
@@ -91,10 +91,7 @@ You can change the properties of the material by adding any combination of the f
 
 - `.addOreByproducts()`
 
-- `.cableProperties()` generates wires and cables(if material is not a superconductor). The following parameter sets can be given:
-    1. Voltage, amperage, loss per block
-    2. Voltage, amperage, loss per block, is superconductor -> for a super conductor, set loss as 0 and is super conductor as true
-    3. Voltage, amperage, loss per block, is super conductor, critical temperature
+- `.cableProperties()` -> Generates wires and cables (if material is not a superconductor). See [cable property](Material-Properties.md#cable-property)
 
 - `.toolProperties()`
 

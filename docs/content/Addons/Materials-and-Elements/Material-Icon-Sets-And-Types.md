@@ -3,11 +3,13 @@ title: Icon Sets and Icon Types
 ---
 
 
-# Icon Sets
+## Icon Sets
 
-The material system uses icon sets to determine the textures of generated blocks and items. Each icon set contains an icon type which is the texture applied for a specific item. For example, the denes plate for a custom material could have the `METALLIC` icon set, and since its TagPrefix is `plateDense`, it would have the `plateDense` icon set applied to it. The path for the texture applied would be `assets/gtceu/item/material_sets/metallic/plate_dense.png`
+The material system uses icon sets to determine the textures of generated blocks and items. Each icon set contains icon types, which are the textures applied for a specific [TagPrefix item](TagPrefixes-and-the-power-of-.setIgnored().md#). 
 
-## Available Icon Sets
+For example, the dense plate item for a custom material could have the `METALLIC` icon set, and since its TagPrefix is `plateDense`, it would have the `plateDense` icon type from the `METALLIC` icon set applied to it. The path for the texture applied would be `assets/gtceu/item/material_sets/metallic/plate_dense.png`
+
+### Available Icon Sets
 
 The following icon sets are available by default:
 
@@ -37,20 +39,26 @@ The following icon sets are available by default:
 - `MaterialIconSet.FLUID`
 - `MaterialIconSet.RADIOACTIVE`
 
-## Custom Icon Sets
 
-Custom iconsets can be specified as well:
+### Custom Icon Sets
+
+Custom icon sets can be created:
 
 ```java title="ModIconSets.java"
-public static final MaterialIconType MY_ICON_SET = new MaterialIconType("my_icon_set");
+public static final MaterialIconSet MY_ICON_SET = new MaterialIconSet("my_icon_set", METALLIC);
 ```
 
+`MaterialIconSet()` can have the following additional parameters:
 
-# Icon Types
+- `MaterialIconSet parentIconset` -> Specify an icon set to inherit missing textures from. Useful if you want to only add a couple of icon types to an icon set, and use preexisting icon types for the rest of the set. All of GregTech's material icon sets inherit another icon set, excluding `DULL`, `METALLIC`, `FINE`, and `FLUID`. By default, this is `DULL`
+- `boolean isRootIconset` -> specify whether this icon set is a root icon set ie it has no parent icon sets. Any missing textures will not inherit a texture from the parent icon set, and will be a null texture.
 
-Icon types are the textures used for TagPrefix item such as dusts, plates, rods, etc. Each icon type belongs to an icon set.
 
-## Available Icon Types
+## Icon Types
+
+Icon types are the textures used for TagPrefix items such as dusts, plates, rods, etc. Each icon type belongs to an icon set.
+
+### Available Icon Types
 
 The following icon types are available by default:
 
@@ -122,14 +130,10 @@ The following icon types are available by default:
 - `MaterialIconType.wire`
 
 
-## Custom Icon Sets
+### Custom Icon Types
 
-Custom iconsets can be specified as well:
+Custom icon types can be specified as well:
 
-```java title="ModIconSets.java"
-public static final MaterialIconSet MY_ICON_SET = new MaterialIconSet("my_icon_set", METALLIC);
+```java title="ModIconTypes.java"
+public static final MaterialIconType MY_ICON_TYPE = new MaterialIconType("my_icon_type");
 ```
-
-`MaterialIconSet()` can have the following additional parameters:
-- `MaterialIconSet parentIconset` -> specify an icon set to inherit missing textures from. Useful if you want to only add a couple of icon types to an icon set, and use preexisting icon types for the rest of the set. All of GregTech's material icon sets inherit another icon set, excluding `DULL`, `METALLIC`, `FINE`, and `FLUID`
-- `boolean isRootIconset` -> specify whether this icon set is a root icon set ie it has no parent icon sets. Any missing textures will not inherit a texture from the parent icon set, and will be a null texture.
