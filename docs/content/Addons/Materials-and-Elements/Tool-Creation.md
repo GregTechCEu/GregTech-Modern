@@ -2,7 +2,7 @@
 title: Tool Creation
 ---
 
-## Creating tools for a material
+## Generating tools for a material
 Tools can be generated for any material by calling the`.toolStats(ToolProperty property)` method inside the Material builder.
 
 `toolStats` requires a `ToolProperty` to be passed as a parameter. It is recommended to build `ToolProperty` using a builder instead of a constructor. 
@@ -80,19 +80,37 @@ public static void modifyMaterials(PostMaterialEvent event) {
 ```
 
 ## Creating new tool types
-Custom tools can be created using the `GTToolType` builder. Similar to ToolProperty, use `.build()` to close your builder once complete.
+Custom tools can be created using `GTToolType#builder(String name)`. Similar to `ToolProperty`, use `.build()` to close your builder once complete.
+
+```java title="ModToolTypes.java"
+public static final GTToolType MY_CUSTOM_TOOL = GTToolType.builder("my_custom_tool")
+    .idFormat("%s_custom_tool") // (1)
+    .toolTag(CustomTags.CRAFTING_SCREWDRIVERS)
+    .toolTag(CustomTags.SCREWDRIVERS)
+    .toolStats(b -> b.crafting().sneakBypassUse()
+        .attackDamage(-1.0F).attackSpeed(3.0F).durabilityMultiplier(2.0F)
+        .behaviors(DisableShieldBehavior.INSTANCE,, new EntityDamageBehavior(3.0F, Spider.class))
+        .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV))
+    .sound(GTSoundEntries.SCREWDRIVER_TOOL)
+    .electric(GTValues.HV)
+    .toolClasses(GTToolType.SCREWDRIVER)
+    .defaultActions(GTToolActions.DEFAULT_SCREWDRIVER_ACTIONS)
+    .build();
+```
+
+1. `%s` here is used to pass in the material using string formatting. For example, a copper custom tool would have the ID `gtceu:copper_custom_tool` using the `idFormat` specified here
 
  The following optional methods are available for use:
 
-- `idFormat(String name)` -> Set a custom format for you item id. By default, this is `"%s_" + name`
+- `idFormat(String name)` -> Set a custom format for you item id. By default, this is `"%s_" + name` (`%s` being the specifier used to pass in the material name.)
 - `modelLocation(ResourceLocation location)` -> Specify a custom location for your item model(s). By default, this is `GTCEu.id("item/tools/" + name)`
 - `toolTag(ToolItemTagType, TagKey<Item>... tags)` -> Specify item tags to be added to the tool. 
 - `toolTag(TagKey<Item>... tags)` -> Specify item tags to be added to the tool. Uses `ToolItemTagType.NONE` by default.
-- `harvestTag(TagKey<Block>... tags)` -> Specify blocks this tool can break.
+- `harvestTag(TagKey<Block>... tags)` -> Specify blocks that can be mined effectively using this tool
 - `defaultActions(ToolAction... abilities)` | `defaultActions(Collection<ToolAction> abilities)` | `defaultActions(Collection<ToolAction> abilities, ToolAction... extra)` -> Specify all tool actions this tool can perform. A full list of `ToolActions` and their functions can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/item/GTToolActions.java)
 - `toolClasses(GTToolType... classes)` -> Specify a custom class to you use for your tool. Useful if you wish to define custom behavior for your tool items.
 - `toolClassNames(String... classes)` -> Works the same as `toolClasses`, except using a classpath.
-- `toolStats(<ToolDefinitionBuilder> builder)` -> <!--TOOD-->
+- `toolStats(<ToolDefinitionBuilder> builder)` -> Define custom stats for your tool. See more in the [Tool stats builder](#tool-stats-builder) section
 - `sound(SoundEntry sound)` | `sound(SoundEntry sound, boolean playSoundOnBlockBreak)` -> Sound to play on using the item. By default, `playSoundOnBlockBreak` is false.
 - `electric(int tier) | tier(int tier)` -> Specify if your tool is an electric tool, and what tier of battery charge it uses.
 - `constructor(ToolConstructor constructor)` -> Constructor to use for your tool. By default, this points to `GTToolType::new`.
@@ -112,26 +130,35 @@ Custom tools can be created using the `GTToolType` builder. Similar to ToolPrope
     - `ToolItemTagType.MATCH` -> Used to specify tags NOT used for crafting
     - `ToolItemTagType.NONE` -> No specification
 
+### Tool stats builder
+- `behaviors(IToolBehavior... behaviors)` -> Specify behaviors that the tool has. A full list of `ToolBehaviors` can be found [here](https://github.com/GregTechCEu/GregTech-Modern/tree/1.20.1/src/main/java/com/gregtechceu/gtceu/common/item/tool/behavior)
+- `damagePerAction(int damage)` -> Damage deal to the tool per general/in-world action.
+- `damagePerCraftingAction(int damage)` -> Damage dealt to the tool per crafting use.
+- `blockBreaking()` -> Specifies that the tool is used to break blocks.
+- `attacking()` -> Specifies that the tool is a weapon.
+- `crafting()` -> Specifies that the tool can be used in crafting.
+- `baseDurability(int baseDurability)` -> Specify the base durability for the tool. 
+- `durabilityMultiplier(float multiplier)` -> Multiplier applied to durability. Effective durability is calculated using the formula `effectiveDurability = (materialDurability * materialDurabilityMultiplier) + (toolDurability * toolDurabilityMultiplier) - 1`
+- `baseQuality()` -> Used to calculate the total harvest level of a tool. Total effective harvest level is calculated using the formula `effectiveHarvestLevel = materialHarvestLevel + toolBaseQuality`.
+- `baseEfficiency(float baseEfficiency)` -> Used to calculate mining speed of a too. Effective speed is calculated using the formula `effectiveSpeed = efficiencyMultiplier * toolSpeed + baseEfficiency`
+- `efficiencyMultiplier(float multiplier)` -> Multiplier for effective efficiency of a tool. See `baseEfficiency` above for formula.
+- `attackSpeed(float speed)` -> Attack speed of the tool. Effective attack speed is calculated using the formula `effectiveSpeed = materialAttackSpeed + toolAttackSpeed`
+- `attackDamage(float damage)` -> Attack damage of the tool. Effective damage speed is calculated using the formula `effectiveDamage = materialAttackDamage + toolAttackDamage`
+- `cannotAttack()` -> Sets the attack to the lowest possible value. Attacks will always result in 0 damage, no matter the material stats. Minecraft will not see this as a valid weapon.
+- `aoe(int additionalColumns, int additionalRows, int additionalDepth)` -> Specify the area of effect for this tool's mining or other behaviors
+- `noEnchant()` -> Prevents this tool from being enchanted.
+- `canApplyEnchantment(BiPredicate<ItemStack, Enchantment> canApplyEnchantment)` | `canApplyEnchantment(EnchantmentCategory... canApplyEnchantment)` -> Specify enchantments (or enchantment categories) that can be applied to the tool
+- `defaultEnchantment(Enchantment enchantment, int level)` -> Specify innate enchantments that this tool has. Disabled if the config `enchantedTools` is false
+- `sneakBypassUse()` -> Whether sneaking should prevent this tool from being used.
+- `brokenStack(Supplier<ItemStack> stack)` -> Item to drop when tool is broken. Eg. electric tools dropping their power units when broken. Empty by default.
+- `effectiveBlocks(Block... blocks)` -> Specify blocks that can be mined effectively using this tool
+- `effectiveStates(Predicate<BlockState> effectiveStates)` -> Specify blocks with specific block states that can be mined effectively using this tool
 
-```java title="ModToolTypes.java"
-public static final GTToolType MY_CUSTOM_TOOL = GTToolType.builder("my_custom_tool")
-    .idFormat("%s_custom_tool") // (1)
-    .toolTag(CustomTags.CRAFTING_SCREWDRIVERS)
-    .toolTag(CustomTags.SCREWDRIVERS)
-    .toolStats(b -> b.crafting().sneakBypassUse()
-        .attackDamage(-1.0F).attackSpeed(3.0F).durabilityMultiplier(2.0F)
-        .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
-        .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV))
-    .sound(GTSoundEntries.SCREWDRIVER_TOOL)
-    .electric(GTValues.HV)
-    .toolClasses(GTToolType.SCREWDRIVER)
-    .defaultActions(GTToolActions.DEFAULT_SCREWDRIVER_ACTIONS)
-    .build();
-```
-
-1. `%s` here is used to pass in the material. For example, a copper custom tool would have the ID `gtceu:copper_custom_tool` using the `idFormat` specified here
 
 A list of every `GTToolType` and their definitions can be found [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/item/tool/GTToolType.java)
+
+
+### Registering your tool types
 
 New `GTToolTypes` must be added to materials during `PostMaterialEvent`. An example is provided below:
 
@@ -157,3 +184,5 @@ public static void modifyMaterials(PostMaterialEvent event) {
     }
 }
 ```
+
+Alternatively, you can specify it in the `toolStats#addTypes()` method while declaring your material.
