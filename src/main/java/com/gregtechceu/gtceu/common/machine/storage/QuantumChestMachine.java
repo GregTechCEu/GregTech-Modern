@@ -404,19 +404,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                         .child(Flow.column()
                                                 .margin(68, 0, 15, 0)
                                                 .coverChildren()
-                                                // .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(
-                                                // cache, "stored",
-                                                // syncManager))
-                                                /*
-                                                 * .child(GTMuiMachineUtil.createSlotGroupFromInventory(
-                                                 * cache, "stored",
-                                                 * 1, 'B',
-                                                 * slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.SLOT),
-                                                 * syncManager,
-                                                 * "B"))
-                                                 */
-                                                .child(createImportItemSlot(syncManager))
-                                                .child(createOutputItemSlot(syncManager))
+                                                .child(createItemSlot(syncManager))
                                                 .child(createPhantomLockeditemSlot(syncManager))))
 
                 )
@@ -464,118 +452,22 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         "gtceu.gui.item_voiding_partial.tooltip.disabled")));
     }
 
-    private IWidget createImportItemSlot(PanelSyncManager syncManager) {
-        var importItems = createImportItems();
-        ItemSlot slot = new ItemSlot()
-                .slot(SyncHandlers.itemSlot(importItems, 0)
-                        // .slotGroup(group)
-                        .changeListener((newItem, amount, client, init) -> {
-                            if (amount) {
-                                importItems.onContentsChanged(0);
-                            }
-                        })
-                        // .ignoreMaxStackSize(true)
-                        .accessibility(true, false));
-        return slot;
-    }
+    private IWidget createItemSlot(PanelSyncManager syncManager) {
+        ItemSlotSH slot = new ItemSlotSH(new ModularSlot(cache, 0)
+                .ignoreMaxStackSize(true)
+                .slotGroup(new SlotGroup("stored", 1, true)));
+        syncManager.syncValue("stored", 1, slot);
 
-    private IWidget createOutputItemSlot(PanelSyncManager syncManager) {
-        ItemSlot slot = new ItemSlot()
-                .slot(SyncHandlers.itemSlot(cache, 0)
-                        // .slotGroup(group)
-                        .changeListener((newItem, amount, client, init) -> {
-                            if (amount) {
-                                cache.onChanged();
-                            }
-                        }).ignoreMaxStackSize(true)
-                        .accessibility(false, true));
-        // slot.getSlot().isPhantom()
-        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
-        return slot;
+        return new ItemSlot().syncHandler("stored", 1);
     }
 
     private IWidget createPhantomLockeditemSlot(PanelSyncManager syncManager) {
-        PhantomItemSlot slot = new PhantomItemSlot()
-                .slot(SyncHandlers.itemSlot(lockedItem, 0)
-                        // .slotGroup(group)
-                        .changeListener((newItem, amount, client, init) -> {
-                            if (amount) {
-                                lockedItem.setOnContentsChanged(() -> { lockedItem.getStackInSlot(0).setCount(1); });
-                                lockedItem.onContentsChanged(0);
-                                lockedItem.getStackInSlot(0).setCount(1);
-                            }
-                        })
-                        .accessibility(true, false));
-        // slot.getSlot().isPhantom()
-        // syncManager.syncValue("item_slot",SyncHandlers.itemSlot(slot));
-        return slot;
-    }
-    /*
-     * private IWidget createPhantomLockedFluidSlot(PanelSyncManager syncManager) {
-     * syncManager.syncValue("locked_fluid_slot",
-     * new ItemSlot(lockedItem).controlsAmount(false).phantom(true));
-     * return new FluidSlot().syncHandler("locked_fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
-     * }
-     */
+        lockedItem.setOnContentsChanged(() -> lockedItem.getStackInSlot(0).setCount(1));
+        PhantomItemSlotSH lockSlot = new PhantomItemSlotSH(new ModularSlot(lockedItem, 0).filter(
+                stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored)));
 
-    /*
-     * public Widget createUIWidget() {
-     * var group = new WidgetGroup(0, 0, 109, 63);
-     * var importItems = createImportItems();
-     * group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
-     * .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
-     * .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
-     * .setTextColor(-1)
-     * .setDropShadow(true))
-     * .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
-     * .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
-     * .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
-     * .setItemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
-     * .setBackgroundTexture(GuiTextures.SLOT))
-     * .addWidget(new ButtonWidget(87, 42, 18, 18,
-     * new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
-     * if (!cd.isRemote) {
-     * if (!stored.isEmpty()) {
-     * var extracted = cache.extractItem(0,
-     * (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
-     * if (!group.getGui().entityPlayer.addItem(extracted)) {
-     * Block.popResource(group.getGui().entityPlayer.level(),
-     * group.getGui().entityPlayer.getOnPos(), extracted);
-     * }
-     * }
-     * }
-     * }))
-     * .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
-     * stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored))
-     * .setMaxStackSize(1))
-     * .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
-     * GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
-     * .setShouldUseBaseBackground()
-     * .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
-     * .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
-     * GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
-     * .setShouldUseBaseBackground()
-     * .setTooltipText("gtceu.gui.item_lock.tooltip"))
-     * .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
-     * GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
-     * .setShouldUseBaseBackground()
-     * .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
-     * group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-     * return group;
-     * }
-     */
-    private @NotNull CustomItemStackHandler createImportItems() {
-        var importItems = new CustomItemStackHandler();
-        importItems.setFilter(cache::canInsert);
-        importItems.setOnContentsChanged(() -> {
-            var item = importItems.getStackInSlot(0).copy();
-            if (!item.isEmpty()) {
-                importItems.setStackInSlot(0, ItemStack.EMPTY);
-                importItems.onContentsChanged(0);
-                cache.insertItem(0, item.copy(), false);
-            }
-        });
-        return importItems;
+        syncManager.syncValue("lock", lockSlot);
+        return new PhantomItemSlot().syncHandler("lock");
     }
 
     //////////////////////////////////////
