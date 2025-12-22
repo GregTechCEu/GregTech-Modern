@@ -261,21 +261,6 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         return super.onSoftMalletClick(playerIn, hand, gridSide, hitResult);
     }
 
-    @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        if (!isRemote()) {
-            if (!playerIn.isShiftKeyDown()) {
-                setAutoOutputFluids(!isAutoOutputFluids());
-                playerIn.sendSystemMessage(
-                        Component.translatable(
-                                "gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return super.onSoftMalletClick(playerIn, hand, gridSide, hitResult);
-    }
-
     //////////////////////////////////////
     // ******* Rendering ********//
     //////////////////////////////////////

@@ -751,12 +751,6 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",
                 "Disable if experiencing performance issues.", "Default: true" })
-        public boolean machinesHaveBERsByDefault = true;
-        @Configurable
-        @Configurable.Comment({
-                "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",
-                "Disable if experiencing performance issues.", "Default: true" })
-        public boolean machinesHaveBERsByDefault = true;
         @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })

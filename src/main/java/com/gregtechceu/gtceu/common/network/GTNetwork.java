@@ -80,10 +80,6 @@ public class GTNetwork {
         INSTANCE.reply(packet, context);
     }
 
-    public static void reply(NetworkEvent.Context context, INetPacket packet) {
-        INSTANCE.reply(packet, context);
-    }
-
     public interface INetPacket {
 
         void encode(FriendlyByteBuf buffer);
