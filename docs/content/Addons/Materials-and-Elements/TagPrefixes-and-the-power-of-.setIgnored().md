@@ -1,40 +1,36 @@
 ---
-title: TagPrefixes and .setIgnored()
+title: TagPrefixes and The Power of .setIgnored()
 ---
-
-
-# TagPrefixes And The Power Of `.setIgnored()`
 
 ## What is a TagPrefix?
 
 TagPrefixes are GTCEu Modern's way of streamlining applying item and block tags to Materials, along with some other
 functions. The `TagPrefix` class, available for use in startup and server scripts, contains a number of predefined
-TagPrefixes that associate potentially everything from drill heads to flawless gemstones with a material.
+prefixes that associate potentially everything from drill heads to flawless gemstones with a material.
 
 A common and easy-to-understand example is `TagPrefix.ingot`, which associates with all Materials that have an
-IngotProperty and thus an associated ingot item, including custom ones defined via KubeJS.  
-TagPrefixes provide localization, item and block tagging, and influence many crafting recipes, and are integral to the
-functioning of GTCEu's material definition system.
+IngotProperty and thus an associated ingot item, including custom ones defined by addons or KubeJS. 
 
-!!! tip "What TagPrefixes are there?"
-A list of all available TagPrefixes can be found in GTCEu Modern's GitHub, in the class `TagPrefix`. You can also quickly navigate to GTM's classes by in your External Libraries
+TagPrefixes provide localization, item and block tagging, influence many crafting recipes, and are integral to the
+functioning of GregTech's material definition system.
+
+!!! tip "What TagPrefixes exist by default?"
+    A list of all available TagPrefixes can be found in GTCEu Modern's GitHub, in the class [TagPrefix](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/tag/TagPrefix.java). You can also quickly navigate to GTM's classes in your External Libraries
 
 
 ## What is `.setIgnored()`?
 
-While trawling through GTCEu Modern's codebase, or simply by playing Minecraft, you may have noticed that GTCEu Modern
-treats some vanilla materials differently. For example, iron ingots are a vanilla item, yet GTCEu Modern does not create
-a duplicate iron ingot, as its Material definition would suggest it is meant to do.
+While trawling through GTM's codebase, or simply by playing Minecraft, you may have noticed that some vanilla materials are treated differently. For example, iron ingots are added by vanilla, and GTM does not create a duplicate iron ingot, as its Material definition would suggest.
 
-Instead, the GTCEu Modern Material entry for iron treats the vanilla iron ingot as the material's ingot, and thus
-produces no duplicates.  
+Instead, the Material entry for iron treats the vanilla iron ingot as the material's ingot, and thus produces no duplicates.
+
 This functionality is governed by TagPrefixes, and can also be harnessed by addon developers for their own custom items, or
-when writing compatibility between GTCEu Modern and another mod.
+when writing compatibility between GregTech and other mods.
 
 
-## Okay, but how do I use this?
+### Okay, but how do I use this?
 
-The material modification event occurs in Minecraft's boot sequence after Material registration is finalized, but before
+`MaterialModificationEvent` occurs in Minecraft's boot sequence after Material registration is finalized, but before
 the Material registry is closed; you won't be able to define any new Materials using it.
 
 The following calls are available for each TagPrefix:
@@ -58,11 +54,25 @@ TagPrefix.ingot.removeIgnored(GTMaterials.Iron); // (3)
 TagPrefix.dust.setIgnored(GTMaterials.Blaze, Items.BLAZE_POWDER); // (4)
 ```
 
-1. This call prevents GTCEu Modern from creating a chipped gem variant of the custom `fluix_crystal` Material.
-2. This call makes GTCEu Modern associate AE2's Sky Stone block as a rock type (like vanilla stone is associated with
-   the GTCEu Modern stone `Material`) with the custom `sky_stone` Material. It may be necessary to manually load
-   whatever data definition class contains the `ItemLike` you wish to associate with your `Material`, depending on how
-   the mod's author has provided KubeJS access to the mod's classes.
-3. This call makes GTCEu Modern de-associate vanilla iron ingots from GTCEu Modern's iron Material entry, causing it to
-   generate a duplicate iron ingot.
-4. This call makes GTCEu Modern remove the dust TagPrefix for the material Blaze and replace it with Blaze Powder from Vanilla Minecraft
+1. Prevents a chipped gem variant for `fluix_crystal` from being generated.
+2. Sets AE2's Sky Stone block as the rock for the `sky_stone` material (similar to how vanilla stone block is associated with the `stone` material).
+3. Removes vanilla iron ingots from the `iron` material causing it to generate a duplicate iron ingot.
+4. Sets blaze powder as the dust for the `blaze` material
+
+## Creating custom TagPrefixes
+
+<!--TODO-->
+
+Custom TagPrefixes can also be created by addon devs. Once created, custom TagPrefixes must be registered via `IGTAddon#registerTagPrefixes`. 
+
+```java title="ModTagPrefixes.java"
+public static VeryLongRod = new TagPrefix("very_long_rod")
+    .idPattern("very_long_%s_rod")
+    .defaultTagPath("very_long_rod")
+    .materialIconType(ModMaterialIconTypes.very_long_rod)
+    .unificationEnabled(true)
+    .generateItem(true)
+    .generationCondition(material -> material.hasProperty(PropertyKey.LONG_ROD));
+```
+
+All TagPrefixes added by GTM and their definitions can be viewed in the [TagPrefix class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/tag/TagPrefix.java)
