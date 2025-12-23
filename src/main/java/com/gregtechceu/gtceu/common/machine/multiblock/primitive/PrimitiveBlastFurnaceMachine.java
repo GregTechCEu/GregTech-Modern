@@ -167,7 +167,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .child(createImportItemSlot(syncManager).margin(52, 16))
 
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(77, 39, 34, 15))
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(78, 38, 34, 15))
 
                 .child(createExportItemSlot(syncManager).margin(104, 0, 34, 0))
 
