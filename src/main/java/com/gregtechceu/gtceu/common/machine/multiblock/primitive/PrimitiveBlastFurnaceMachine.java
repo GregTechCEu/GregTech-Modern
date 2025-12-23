@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
@@ -159,52 +158,50 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-
         return new ModularPanel(this.getDefinition().getName())
-                .size(176,166)
+                .size(176, 166)
                 .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
-                        // Top half of the screen
-                                // Box that has the display texture BG +
-                                // the buttons / text / etc
+                // Top half of the screen
+                // Box that has the display texture BG +
+                // the buttons / text / etc
 
-                                .child(createImportItemSlot(syncManager).margin(52,16))
+                .child(createImportItemSlot(syncManager).margin(52, 16))
 
-                                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent) // 77, 39, 20, 15,
-                                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR,0).margin(77,39,34,15))
+                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent) // 77, 39, 20, 15,
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(77, 39, 34, 15))
 
-                                .child(createExportItemSlot(syncManager).margin(104,34))
-
+                .child(createExportItemSlot(syncManager).margin(104, 34))
 
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-/*
-        var a = new ModularUI(176, 166, this)
-                .background(GuiTextures.PRIMITIVE_BACKGROUND)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-
-                .widget(new SlotWidget(importItems.storage, 0, 52, 20, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
-                .widget(new SlotWidget(importItems.storage, 1, 52, 38, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(new SlotWidget(importItems.storage, 2, 52, 56, true, true)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-                .widget(new ProgressWidget(recipeLogic::getProgressPercent, 77, 39, 20, 15,
-                        GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
-                .widget(new SlotWidget(exportItems.storage, 0, 104, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
-                .widget(new SlotWidget(exportItems.storage, 1, 122, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(new SlotWidget(exportItems.storage, 2, 140, 38, true, false)
-                        .setBackgroundTexture(
-                                new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory()
-                        GuiTextures.PRIMITIVE_SLOT, 7, 84, true));*/
+        /*
+         * var a = new ModularUI(176, 166, this)
+         * .background(GuiTextures.PRIMITIVE_BACKGROUND)
+         * .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
+         * 
+         * .widget(new SlotWidget(importItems.storage, 0, 52, 20, true, true)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
+         * .widget(new SlotWidget(importItems.storage, 1, 52, 38, true, true)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
+         * .widget(new SlotWidget(importItems.storage, 2, 52, 56, true, true)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
+         * .widget(new ProgressWidget(recipeLogic::getProgressPercent, 77, 39, 20, 15,
+         * GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
+         * .widget(new SlotWidget(exportItems.storage, 0, 104, 38, true, false)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_INGOT_OVERLAY)))
+         * .widget(new SlotWidget(exportItems.storage, 1, 122, 38, true, false)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
+         * .widget(new SlotWidget(exportItems.storage, 2, 140, 38, true, false)
+         * .setBackgroundTexture(
+         * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_DUST_OVERLAY)))
+         * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory()
+         * GuiTextures.PRIMITIVE_SLOT, 7, 84, true));
+         */
     }
 
     private SlotGroupWidget createImportItemSlot(PanelSyncManager syncManager) {
@@ -220,7 +217,9 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
-                            .syncHandler("import", i).background((i == 0)? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1)? GTGuiTextures.PRIMITIVE_DUST_OVERLAY : GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+                            .syncHandler("import", i)
+                            .background((i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
+                                    GTGuiTextures.PRIMITIVE_DUST_OVERLAY : GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
                 })
                 .build().background(GTGuiTextures.SLOT_PRIMITIVE);
     }
@@ -235,15 +234,15 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .matrix(matrix)
                 .key(key, i -> {
                     ModularSlot slot = new ModularSlot(exportItems.storage, i);
-                    slot.accessibility(false,true);
+                    slot.accessibility(false, true);
                     ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
-                            .syncHandler("export", i).background((i == 0)? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
+                            .syncHandler("export", i).background((i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
+                                    GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })
                 .build().background(GTGuiTextures.SLOT_PRIMITIVE);
     }
-
 
     @Override
     public void animateTick(RandomSource random) {

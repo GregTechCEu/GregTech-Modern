@@ -296,7 +296,8 @@ public class GTGuiTextures {
     public static final UITexture DUST_OVERLAY = fullImage("textures/gui/overlay/dust_overlay.png", ColorType.DEFAULT);
     public static final UITexture DUST_OVERLAY_BRONZE = fullImage("textures/gui/overlay/dust_overlay_bronze.png");
     public static final UITexture DUST_OVERLAY_STEEL = fullImage("textures/gui/overlay/dust_overlay_steel.png");
-    public static final UITexture PRIMITIVE_DUST_OVERLAY = fullImage("textures/gui/primitive/overlay_primitive_dust.png",ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_DUST_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_dust.png", ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY = fullImage("textures/gui/overlay/extractor_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture EXTRACTOR_OVERLAY_BRONZE = fullImage(
@@ -314,7 +315,8 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture FURNACE_OVERLAY_BRONZE = fullImage("textures/gui/overlay/furnace_overlay_bronze.png");
     public static final UITexture FURNACE_OVERLAY_STEEL = fullImage("textures/gui/overlay/furnace_overlay_steel.png");
-    public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage("textures/gui/primitive/overlay_primitive_furnace.png",
+    public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_furnace.png",
             ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY = fullImage("textures/gui/overlay/hammer_overlay.png",
             ColorType.DEFAULT);
@@ -334,7 +336,8 @@ public class GTGuiTextures {
     public static final UITexture IN_SLOT_OVERLAY_STEEL = fullImage("textures/gui/overlay/in_slot_overlay_steel.png");
     public static final UITexture INGOT_OVERLAY = fullImage("textures/gui/overlay/ingot_overlay.png",
             ColorType.DEFAULT);
-    public static final UITexture PRIMITIVE_INGOT_OVERLAY = fullImage("textures/gui/primitive/overlay_primitive_ingot.png",
+    public static final UITexture PRIMITIVE_INGOT_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_ingot.png",
             ColorType.DEFAULT);
     public static final UITexture INT_CIRCUIT_OVERLAY = fullImage("textures/gui/overlay/int_circuit_overlay.png",
             ColorType.DEFAULT);
