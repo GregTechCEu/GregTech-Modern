@@ -313,6 +313,9 @@ public class GTGuiTextures {
             ColorType.DEFAULT);
     public static final UITexture FURNACE_OVERLAY_BRONZE = fullImage("textures/gui/overlay/furnace_overlay_bronze.png");
     public static final UITexture FURNACE_OVERLAY_STEEL = fullImage("textures/gui/overlay/furnace_overlay_steel.png");
+    public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage(
+            "textures/gui/primitive/overlay_primitive_furnace.png",
+            ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY = fullImage("textures/gui/overlay/hammer_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY_BRONZE = fullImage("textures/gui/overlay/hammer_overlay_bronze.png");
@@ -436,6 +439,8 @@ public class GTGuiTextures {
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR = progressBar(
+            "textures/gui/primitive/progress_bar_primitive_blast_furnace.png", ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW = progressBar("textures/gui/progress_bar/progress_bar_arrow.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW_BRONZE = progressBar(
