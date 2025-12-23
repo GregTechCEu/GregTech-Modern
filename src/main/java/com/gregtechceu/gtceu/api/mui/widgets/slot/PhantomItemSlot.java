@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSH;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
 
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -25,9 +25,14 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
     }
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        this.syncHandler = castIfTypeElseNull(syncHandler, PhantomItemSlotSH.class);
-        return this.syncHandler != null && super.isValidSyncHandler(syncHandler);
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue instanceof PhantomItemSlotSH;
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        this.syncHandler = syncOrValue.castOrThrow(PhantomItemSlotSH.class);
     }
 
     @Override
@@ -90,10 +95,12 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
 
     @Override
     public PhantomItemSlot slot(ModularSlot slot) {
-        ((Slot) slot).index = -1;
-        this.syncHandler = new PhantomItemSlotSH(slot);
-        super.isValidSyncHandler(this.syncHandler);
-        setSyncHandler(this.syncHandler);
+        return syncHandler(new PhantomItemSlotSH(slot));
+    }
+
+    @Override
+    public PhantomItemSlot syncHandler(ItemSlotSH syncHandler) {
+        setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return this;
     }
 

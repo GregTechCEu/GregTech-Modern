@@ -73,6 +73,19 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
         parent(Area.ZERO);
     }
 
+    public void reset() {
+        clearText();
+        this.pos = null;
+        this.tooltipBuilder = null;
+        this.showUpTimer = 0;
+        this.autoUpdate = false;
+        this.titleMargin = 0;
+        this.appliedMargin = true;
+        this.x = 0;
+        this.y = 0;
+        this.maxWidth = Integer.MAX_VALUE;
+    }
+
     @Tolerate
     public RichTooltip parent(Area parent) {
         return parent(area -> area.set(parent));

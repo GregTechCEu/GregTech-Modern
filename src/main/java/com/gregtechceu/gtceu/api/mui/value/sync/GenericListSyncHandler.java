@@ -61,6 +61,11 @@ public class GenericListSyncHandler<T> extends GenericCollectionSyncHandler<T, L
         onSetCache(getValue(), true, false);
     }
 
+    @Override
+    public Class<List<T>> getValueType() {
+        return (Class<List<T>>) (Object) List.class;
+    }
+
     public static <T> Builder<T> builder() {
         return new Builder<>();
     }

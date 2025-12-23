@@ -64,6 +64,11 @@ public class IntValue implements IIntValue<Integer>, IDoubleValue<Integer>, IStr
         setIntValue(Integer.parseInt(val));
     }
 
+    @Override
+    public Class<Integer> getValueType() {
+        return Integer.class;
+    }
+
     public static class Dynamic implements IIntValue<Integer>, IStringValue<Integer> {
 
         private final IntSupplier getter;
@@ -102,6 +107,11 @@ public class IntValue implements IIntValue<Integer>, IDoubleValue<Integer>, IStr
         @Override
         public void setValue(Integer value) {
             setIntValue(value);
+        }
+
+        @Override
+        public Class<Integer> getValueType() {
+            return Integer.class;
         }
     }
 }

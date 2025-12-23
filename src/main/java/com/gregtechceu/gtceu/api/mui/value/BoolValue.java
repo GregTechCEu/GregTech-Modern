@@ -55,6 +55,11 @@ public class BoolValue implements IBoolValue<Boolean>, IStringValue<Boolean> {
         setBoolValue(Boolean.parseBoolean(val));
     }
 
+    @Override
+    public Class<Boolean> getValueType() {
+        return Boolean.class;
+    }
+
     public static class Dynamic implements IBoolValue<Boolean>, IIntValue<Boolean>, IStringValue<Boolean> {
 
         private final BooleanSupplier getter;
@@ -103,6 +108,11 @@ public class BoolValue implements IBoolValue<Boolean>, IStringValue<Boolean> {
         @Override
         public void setIntValue(int val) {
             setBoolValue(val == 1);
+        }
+
+        @Override
+        public Class<Boolean> getValueType() {
+            return Boolean.class;
         }
     }
 }

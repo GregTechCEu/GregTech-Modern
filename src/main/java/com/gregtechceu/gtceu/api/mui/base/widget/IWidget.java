@@ -107,7 +107,7 @@ public interface IWidget extends IGuiElement {
     void drawForeground(ModularGuiContext context);
 
     default void transform(IViewportStack stack) {
-        stack.translate(getArea().rx, getArea().ry, getArea().getPanelLayer() * 20);
+        stack.translate(getArea().rx, getArea().ry, 0);
     }
 
     default Object getAdditionalHoverInfo(IViewportStack viewportStack, int mouseX, int mouseY) {
