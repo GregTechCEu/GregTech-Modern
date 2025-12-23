@@ -38,7 +38,7 @@ public class GTRenderTypes extends RenderType {
             VertexFormat.Mode.QUADS,
             RenderType.TRANSIENT_BUFFER_SIZE, false, true,
             RenderType.CompositeState.builder()
-                    .setShaderState(RENDERTYPE_TEXT_SHADER)
+                    .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
                     .setTextureState(RenderStateShard.NO_TEXTURE)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setLightmapState(LIGHTMAP)

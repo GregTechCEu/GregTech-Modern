@@ -58,7 +58,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     private int mouseX = -1, mouseY = -1;
     private final Level targetLevel;
     private final BlockPos targetPos;
-    private final RenderTarget renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
+    private RenderTarget renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
 
     public MonitorGuiRenderer(Pair<Level, BlockPos> target) {
         MinecraftForge.EVENT_BUS.register(this);
@@ -140,10 +140,12 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
             renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
         renderTarget.enableStencil();
+        renderTarget.setClearColor(0, 0, 1, 1);
         renderTarget.clear(Minecraft.ON_OSX);
 
         renderTarget.bindWrite(true);
 
+        RenderSystem.clear(256, Minecraft.ON_OSX);
         Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, RESOLUTION_COEF * width, RESOLUTION_COEF * height, 0.0F,
                 1000.0F,
                 ForgeHooksClient.getGuiFarPlane());
