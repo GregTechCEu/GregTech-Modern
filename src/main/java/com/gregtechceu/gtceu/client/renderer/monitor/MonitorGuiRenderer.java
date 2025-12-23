@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,6 +42,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.datafixers.util.Pair;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
@@ -126,17 +128,34 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         renderGuiToBuffer(event.getGraphics(), event.getPartialTick());
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public void renderGuiToBuffer(GuiGraphics guiGraphics, float partialTick) {
         if (screen == null || MCHelper.getPlayer() == null) return;
         screen.getContext().setGraphics(guiGraphics);
         screen.onFrameUpdate();
         AnimatorManager.INSTANCE.onDraw(null);
         if (width * height == 0) return;
-        renderTarget.resize(width, height, Minecraft.ON_OSX);
+        if (renderTarget.width != width || renderTarget.height != height)
+            renderTarget.resize(width, height, Minecraft.ON_OSX);
         renderTarget.enableStencil();
+
         renderTarget.bindWrite(true);
+
+        Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, width, height, 0.0F, 1000.0F,
+                ForgeHooksClient.getGuiFarPlane());
+        RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
+        PoseStack posestack = RenderSystem.getModelViewStack();
+        posestack.pushPose();
+        posestack.setIdentity();
+        posestack.translate(0.0D, 0.0D, 1000F - ForgeHooksClient.getGuiFarPlane());
+        RenderSystem.applyModelViewMatrix();
+
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
         ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
+
+        posestack.popPose();
+        RenderSystem.applyModelViewMatrix();
+
         renderTarget.unbindWrite();
         Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
     }
