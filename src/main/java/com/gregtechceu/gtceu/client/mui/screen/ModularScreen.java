@@ -45,6 +45,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -331,6 +332,9 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
             }
             WidgetTree.drawTree(panel, this.context);
+            // clear depth, so that anything drawn next will be guaranteed to be on top
+            RenderSystem.clearDepth(1);
+            RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         }
         this.context.updateZ(0);
         this.context.popViewport(null);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.monitor;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.InWorldMUIOpenEvent;
+import com.gregtechceu.gtceu.api.mui.InWorldMUIRenderEvent;
 import com.gregtechceu.gtceu.api.mui.animation.AnimatorManager;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -18,7 +19,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
@@ -121,12 +121,29 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (screen.charTyped(event.getCodepoint(), event.getModifiers())) event.setCanceled(true);
     }
 
+    @SubscribeEvent
+    public void onInWorldGuiRender(InWorldMUIRenderEvent event) {
+        renderGuiToBuffer(event.getGraphics(), event.getPartialTick());
+    }
+
+    public void renderGuiToBuffer(GuiGraphics guiGraphics, float partialTick) {
+        if (screen == null || MCHelper.getPlayer() == null) return;
+        screen.getContext().setGraphics(guiGraphics);
+        screen.onFrameUpdate();
+        AnimatorManager.INSTANCE.onDraw(null);
+        if (width * height == 0) return;
+        renderTarget.resize(width, height, Minecraft.ON_OSX);
+        renderTarget.enableStencil();
+        renderTarget.bindWrite(true);
+        ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
+        ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
+        renderTarget.unbindWrite();
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
+    }
+
     public void renderGui(int maxWidth, int maxHeight, PoseStack poseStack, MultiBufferSource buffer,
                           float partialTick, int mouseX, int mouseY) {
-        GuiGraphics guiGraphics = new GuiGraphics(MCHelper.getMc(), (MultiBufferSource.BufferSource) buffer);
         poseStack.scale(1 / 256f, 1 / 256f, 1 / 256e3f);
-        ((GuiGraphicsAccessor) guiGraphics).setPose(poseStack);
-        screen.getContext().setGraphics(guiGraphics);
         boolean resized = false;
         if (maxWidth * 256 != width) {
             width = maxWidth * 256;
@@ -141,21 +158,13 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         screen.onFrameUpdate();
         AnimatorManager.INSTANCE.onDraw(null);
         if (width * height == 0) return;
-        renderTarget.resize(width, height, Minecraft.ON_OSX);
-        renderTarget.enableStencil();
-        renderTarget.setClearColor(0, 0, 1, 1);
-        renderTarget.bindWrite(true);
-        ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
-        ClientScreenHandler.drawDebugScreen(guiGraphics, screen, screen);
-        renderTarget.unbindWrite();
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
         VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.inWorldGui());
         RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
         Matrix4f pose = poseStack.last().pose();
-        consumer.vertex(pose, 0, height, 0).color(0xFFFFFFFF).uv(0, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, width, height, 0).color(0xFFFFFFFF).uv(1, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, width, 0, 0).color(0xFFFFFFFF).uv(1, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, 0, 0, 0).color(0xFFFFFFFF).uv(0, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, 0, height, 0).color(0xFFFFFFFF).uv(0, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, width, height, 0).color(0xFFFFFFFF).uv(1, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, width, 0, 0).color(0xFFFFFFFF).uv(1, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, 0, 0, 0).color(0xFFFFFFFF).uv(0, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
     }
 
     @Override
