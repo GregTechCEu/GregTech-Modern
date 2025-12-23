@@ -367,7 +367,7 @@ public class UnknownCompositionMaterials {
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
-                .components(Saltpeter, 2, Sulfur, 1, Coal, 3)
+                .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
                 .buildAndRegister();
 
         Oilsands = new Material.Builder(GTCEu.id("oilsands"))
