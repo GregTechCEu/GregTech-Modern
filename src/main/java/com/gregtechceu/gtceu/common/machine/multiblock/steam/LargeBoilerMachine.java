@@ -17,13 +17,12 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -48,13 +47,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
     @Getter
     public final int maxTemperature, heatSpeed;
-    @Persisted
+    @SaveField
     @Getter
     private int currentTemperature, throttle;
     @Nullable
@@ -68,10 +65,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         this.throttle = 100;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
+    //////////////////////////////////////
+    // ****** Recipe Logic ******//
+    //////////////////////////////////////
 
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
@@ -249,8 +245,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
 
-        @Persisted
-        @DescSynced
+        @SaveField
+        @SyncToClient
         @Getter
         int currentThrottle;
 
@@ -259,11 +255,16 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             currentThrottle = 100;
         }
 
+        public void setCurrentThrottle(int currentThrottle) {
+            this.currentThrottle = currentThrottle;
+            syncDataHolder.markClientSyncFieldDirty("currentThrottle");
+        }
+
         @Override
         public void setupRecipe(GTRecipe recipe) {
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
-                currentThrottle = ((LargeBoilerMachine) machine).getThrottle();
+                setCurrentThrottle(((LargeBoilerMachine) machine).getThrottle());
                 duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }
@@ -274,7 +275,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 duration = (int) Math.round(lastRecipe.duration / (newThrottle / 100.0));
                 progress = (int) Math.round(newThrottleMultiplier * progress);
             }
-            currentThrottle = newThrottle;
+            setCurrentThrottle(newThrottle);
         }
     }
 }

@@ -14,13 +14,12 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,8 +58,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public static final BooleanProperty RANDOM_TICK_PROPERTY = GTMachineModelProperties.IS_RANDOM_TICK_MODE;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     private static final long blockEntityAmperage = 6;
     private static final long randomTickAmperage = 3;
     // Variables for Random Tick mode optimization
@@ -71,17 +68,17 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private final int successLimit;
     private final int randRange;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isRandomTickMode = true;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean active = false;
     private TickableSubscription tickSubs;
 
@@ -98,21 +95,22 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         return new NotifiableEnergyContainer(this, tierVoltage * 256L, tierVoltage, 8, 0L, 0L);
     }
 
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     public void updateSubscription() {
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
-            active = true;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, true));
+            if (!active) {
+                active = true;
+                syncDataHolder.markClientSyncFieldDirty("active");
+            }
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
-            active = false;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, false));
+            if (active) {
+                active = false;
+                syncDataHolder.markClientSyncFieldDirty("active");
+            }
         }
     }
 
@@ -219,6 +217,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, isWorkingEnabled));
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
         updateSubscription();
     }
 
@@ -251,6 +250,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_RANDOM_TICK_MODE, isRandomTickMode));
+            syncDataHolder.markClientSyncFieldDirty("isRandomTickMode");
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();

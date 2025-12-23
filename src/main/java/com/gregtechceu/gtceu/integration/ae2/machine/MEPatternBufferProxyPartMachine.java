@@ -9,11 +9,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -38,15 +37,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
                                              implements IMachineLife, IDataStickInteractable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
     private final ProxySlotRecipeHandler proxySlotRecipeHandler;
 
-    @Persisted
+    @SaveField
     @Getter
-    @DescSynced
+    @SyncToClient
     private @Nullable BlockPos bufferPos;
 
     private @Nullable MEPatternBufferPartMachine buffer = null;
@@ -83,6 +79,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         } else {
             buffer = null;
         }
+        syncDataHolder.markClientSyncFieldDirty("bufferPos");
     }
 
     @Nullable
@@ -100,11 +97,6 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     public ModularUI createUI(Player entityPlayer) {
         assert getBuffer() != null; // UI should never be able to be opened when buffer is null
         return getBuffer().createUI(entityPlayer);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

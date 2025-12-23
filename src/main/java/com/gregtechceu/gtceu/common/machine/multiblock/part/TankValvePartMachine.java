@@ -8,8 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

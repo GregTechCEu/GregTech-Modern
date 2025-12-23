@@ -21,16 +21,15 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -74,30 +73,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FisherMachine extends TieredEnergyMachine
                            implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler cache;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler baitHandler;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, fishingSubs;
@@ -111,26 +107,24 @@ public class FisherMachine extends TieredEnergyMachine
     public final int maxProgress;
 
     @Getter
-    @Persisted
+    @SaveField
     private int progress = 0;
 
     @Getter
-    @Persisted
-    @Setter
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
 
     @Getter
-    @Persisted
+    @SaveField
     private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
 
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean junkEnabled = true;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -156,11 +150,6 @@ public class FisherMachine extends TieredEnergyMachine
         return handler;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     protected NotifiableItemStackHandler createCacheItemHandler() {
         return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
     }
@@ -169,6 +158,16 @@ public class FisherMachine extends TieredEnergyMachine
         var handler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
         handler.setFilter(item -> item.is(Items.STRING));
         return handler;
+    }
+
+    public void setWorkingEnabled(boolean enabled) {
+        isWorkingEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
+    }
+
+    public void setJunkEnabled(boolean enabled) {
+        junkEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("junkEnabled");
     }
 
     @Override
@@ -320,12 +319,14 @@ public class FisherMachine extends TieredEnergyMachine
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 

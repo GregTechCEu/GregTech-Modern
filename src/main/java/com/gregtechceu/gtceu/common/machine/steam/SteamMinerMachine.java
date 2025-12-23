@@ -16,15 +16,15 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -39,7 +39,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,13 +54,12 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
                                IUIMachine, IMachineLife, IDataInfoProvider {
 
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean needsVenting;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler importItems;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler exportItems;
     private final int inventorySize;
     private final int energyPerTick;
@@ -161,6 +159,11 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
             exportItems.exportToNearby(getFrontFacing());
         }
         updateAutoOutputSubscription();
+    }
+
+    public void setNeedsVenting(boolean venting) {
+        this.needsVenting = venting;
+        syncDataHolder.markClientSyncFieldDirty("needsVenting");
     }
 
     //////////////////////////////////////

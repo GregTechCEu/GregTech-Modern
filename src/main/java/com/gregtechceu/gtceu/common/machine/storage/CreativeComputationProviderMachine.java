@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -14,8 +15,6 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
@@ -33,14 +32,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CreativeComputationProviderMachine extends MetaMachine
                                                 implements IUIMachine, IOpticalComputationProvider {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CreativeComputationProviderMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private int maxCWUt;
     private int lastRequestedCWUt;
     private int requestedCWUPerSec;
-    @Persisted
+    @SaveField
     @Getter
     private boolean active;
     @Nullable
@@ -117,10 +113,5 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 new TextTexture("gtceu.creative.activity.off")),
                                 new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
                                         new TextTexture("gtceu.creative.activity.on"))));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -16,13 +16,12 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -35,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,20 +46,16 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 public class RotorHolderPartMachine extends TieredPartMachine
                                     implements IMachineLife, IRotorHolderMachine, IInteractedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public int rotorSpeed;
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
@@ -78,10 +72,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onMachineRemoved() {
@@ -134,6 +124,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
         return rotorMaterial;
     }
 
+    public void setRotorMaterial(Material mat) {
+        this.rotorMaterial = mat;
+        syncDataHolder.markClientSyncFieldDirty("rotorMaterial");
+    }
+
     private void onRotorInventoryChanged() {
         var stack = getRotorStack();
         var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
@@ -151,6 +146,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
                     .setValue(HAS_ROTOR, false)
                     .setValue(IS_EMISSIVE_ROTOR, false));
         }
+        syncDataHolder.markClientSyncFieldDirty("rotorMaterial");
     }
 
     @Override
@@ -184,6 +180,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
             setRenderState(getRenderState().setValue(IS_ROTOR_SPINNING, rotorSpeed > 0));
         }
         this.rotorSpeed = rotorSpeed;
+        syncDataHolder.markClientSyncFieldDirty("rotorSpeed");
     }
 
     @Override

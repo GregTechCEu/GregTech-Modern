@@ -18,11 +18,9 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
@@ -51,8 +49,6 @@ import java.util.*;
 
 public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerLogic.class,
-            RecipeLogic.MANAGED_FIELD_HOLDER);
     private static final short MAX_SPEED = Short.MAX_VALUE;
     private static final byte POWER = 5;
     private static final byte TICK_TOLERANCE = 20;
@@ -71,48 +67,48 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
     private int blocksToMineOriginalCount = 0;
     @Getter
-    @Persisted
+    @SaveField
     protected int x = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int y = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int z = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int startX = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int startZ = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int startY = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int pipeY = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int mineX = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int mineZ = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     protected int mineY = Integer.MAX_VALUE;
     @Getter
     private int minBuildHeight = Integer.MAX_VALUE;
     @Getter
     private int maxBuildHeight = Integer.MAX_VALUE;
     @Getter
-    @Persisted
+    @SaveField
     private int pipeLength = 0;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     private int currentRadius;
     @Getter
-    @Persisted
+    @SaveField
     private boolean isDone;
     @Getter
     private boolean isInventoryFull;
@@ -164,11 +160,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         resetArea(false);
         this.cachedItemHandler = null;
         this.pipeLength = 0;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

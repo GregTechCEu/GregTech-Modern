@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -32,9 +33,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -71,6 +69,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     public byte lastReceivedFrom = 0, oldLastReceivedFrom = 0;
     private PipeTankList pipeTankList;
     private final EnumMap<Direction, PipeTankList> tankLists = new EnumMap<>(Direction.class);
+    @SaveField(nbtKey = "Fluids")
     private CustomFluidTank[] fluidTanks;
     private long timer = 0L;
     private final int offset = GTValues.RNG.nextInt(20);
@@ -79,6 +78,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+        createTanksList();
     }
 
     public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> fluidPipeBlockEntityBlockEntityType) {}
@@ -430,11 +430,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         }
     }
 
-    public FluidStack getContainedFluid(int channel) {
-        if (channel < 0 || channel >= getFluidTanks().length) return null;
-        return getFluidTanks()[channel].getFluid();
-    }
-
     private void createTanksList() {
         fluidTanks = new CustomFluidTank[getNodeData().getChannels()];
         for (int i = 0; i < getNodeData().getChannels(); i++) {
@@ -473,35 +468,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             fluids[i] = fluidTanks[i].getFluid();
         }
         return fluids;
-    }
-
-    @Override
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        ListTag list = new ListTag();
-        for (int i = 0; i < getFluidTanks().length; i++) {
-            FluidStack stack1 = getContainedFluid(i);
-            CompoundTag fluidTag = new CompoundTag();
-            if (stack1 == null || stack1.getAmount() <= 0)
-                fluidTag.putBoolean("isNull", true);
-            else
-                stack1.writeToNBT(fluidTag);
-            list.add(fluidTag);
-        }
-        tag.put("Fluids", list);
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag nbt) {
-        super.loadCustomPersistedData(nbt);
-        ListTag list = nbt.getList("Fluids", Tag.TAG_COMPOUND);
-        createTanksList();
-        for (int i = 0; i < list.size(); i++) {
-            CompoundTag tag = list.getCompound(i);
-            if (!tag.getBoolean("isNull")) {
-                fluidTanks[i].setFluid(FluidStack.loadFluidStackFromNBT(tag));
-            }
-        }
     }
 
     public static void spawnParticles(Level worldIn, BlockPos pos, Direction direction, ParticleOptions particleType,

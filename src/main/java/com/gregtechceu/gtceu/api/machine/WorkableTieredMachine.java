@@ -5,12 +5,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -30,18 +28,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
                                             IMachineLife, IMufflableMachine, IOverclockMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     public int activeRecipeType;
     @Getter
     public final Int2IntFunction tankScalingFunction;
@@ -49,30 +44,29 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Getter
     @Setter
     private ICleanroomProvider cleanroom;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler importItems;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler exportItems;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank importFluids;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank exportFluids;
-    @Persisted
+    @SaveField
     public final NotifiableComputationContainer importComputation;
-    @Persisted
+    @SaveField
     public final NotifiableComputationContainer exportComputation;
     @Getter
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
-    @Persisted
+    @SaveField
     @Getter
     protected int overclockTier;
     protected final List<ISubscription> traitSubscriptions;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
-    @Setter
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
@@ -98,10 +92,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
@@ -186,6 +176,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public void onMachineRemoved() {
         clearInventory(importItems.storage);
         clearInventory(exportItems.storage);
+    }
+
+    public void setMuffled(boolean muffled) {
+        isMuffled = muffled;
+        syncDataHolder.markClientSyncFieldDirty("isMuffled");
     }
 
     //////////////////////////////////////

@@ -7,28 +7,23 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine, IParallelHatch {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            ParallelHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     private static final int MIN_PARALLEL = 1;
 
     private final int maxParallel;
 
-    @Persisted
+    @SaveField
     @Getter
     private int currentParallel = 1;
 
@@ -55,12 +50,6 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
                 .setMax(maxParallel));
 
         return parallelAmountGroup;
-    }
-
-    @Override
-    @NotNull
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

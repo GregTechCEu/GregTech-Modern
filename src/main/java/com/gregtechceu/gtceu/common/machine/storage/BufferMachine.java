@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
@@ -14,16 +13,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -46,45 +44,42 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class BufferMachine extends TieredMachine implements IMachineLife, IAutoOutputBoth, IFancyUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BufferMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static final int TANK_SIZE = 64000;
 
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingFluids;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputFluids;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideFluids;
 
-    @Persisted
+    @SaveField
     @Getter
     protected final NotifiableItemStackHandler inventory;
 
-    @Persisted
+    @SaveField
     @Getter
     protected final NotifiableFluidTank tank;
 
@@ -103,11 +98,6 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     ////////////////////////////////
     // ***** Initialization ******//
     ////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     public static int getInventorySize(int tier) {
         return (int) Math.pow(tier + 2, 2);
@@ -156,24 +146,28 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @Override
     public void setAutoOutputFluids(boolean allow) {
         this.autoOutputFluids = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         this.outputFacingFluids = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 

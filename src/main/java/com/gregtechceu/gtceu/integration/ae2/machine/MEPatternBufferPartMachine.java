@@ -24,6 +24,8 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -32,11 +34,6 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -50,6 +47,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -87,8 +85,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEPatternBufferPartMachine extends MEBusPartMachine
                                         implements ICraftingProvider, PatternContainer, IDataStickInteractable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
     protected static final int MAX_PATTERN_COUNT = 27;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
@@ -111,33 +107,33 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     };
 
     @Getter
-    @Persisted
-    @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
-                // version.
+    @SaveField
+    @SyncToClient
+    // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
+    // version.
     private final CustomItemStackHandler patternInventory = new CustomItemStackHandler(MAX_PATTERN_COUNT);
 
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler shareInventory;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableFluidTank shareTank;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
     private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
 
-    @DescSynced
-    @Persisted
-    @Setter
+    @SyncToClient
+    @SaveField
     private String customName = "";
 
     private boolean needPatternSync;
 
-    @Persisted
+    @SaveField
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
@@ -149,6 +145,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
+        patternInventory.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
@@ -184,6 +181,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public boolean isWorkingEnabled() {
         return true;
+    }
+
+    public void setCustomName(String newName) {
+        customName = newName;
+        syncDataHolder.markClientSyncFieldDirty("customName");
+        markAsDirty();
     }
 
     @Override
@@ -365,11 +368,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public @Nullable IGrid getGrid() {
         return getMainNode().getGrid();
     }
@@ -444,7 +442,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         return new BufferData(items, fluids);
     }
 
-    public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
+    public class InternalSlot implements INBTSerializable<CompoundTag> {
 
         @Getter
         @Setter

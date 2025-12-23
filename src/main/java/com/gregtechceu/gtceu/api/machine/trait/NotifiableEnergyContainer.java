@@ -15,11 +15,9 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -36,13 +34,11 @@ import java.util.function.Predicate;
 
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     protected IO handlerIO;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
@@ -98,11 +94,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public void onMachineLoad() {
         super.onMachineLoad();
         checkOutputSubscription();
@@ -147,6 +138,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             energyOutputPerSec += this.energyStored - energyStored;
         }
         this.energyStored = energyStored;
+        syncDataHolder.markClientSyncFieldDirty("energyStored");
         checkOutputSubscription();
         notifyListeners();
     }

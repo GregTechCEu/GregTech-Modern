@@ -13,15 +13,14 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -45,9 +44,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     public static final long AMPS_PER_ITEM = 4L;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     public enum State implements StringRepresentable {
 
         IDLE("idle"),
@@ -64,19 +60,19 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = GTMachineModelProperties.CHARGER_STATE;
 
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
 
     @Getter
-    @DescSynced
-    @RequireRerender
+    @SyncToClient
+    @RerenderOnChanged
     private State state;
 
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
@@ -90,10 +86,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
@@ -195,6 +187,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
+            syncDataHolder.markClientSyncFieldDirty("state");
             setRenderState(getRenderState().setValue(GTMachineModelProperties.CHARGER_STATE, newState));
         }
     }
@@ -260,7 +253,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 }
 
                 if (changed) {
-                    ChargerMachine.this.markDirty();
                     changeState(State.RUNNING);
                 }
 

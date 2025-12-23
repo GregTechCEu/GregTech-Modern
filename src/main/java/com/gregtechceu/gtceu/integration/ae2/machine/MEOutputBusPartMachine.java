@@ -9,12 +9,11 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -36,10 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachineLife, IInteractedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -65,11 +61,6 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
                         Actionable.MODULATE, actionSource);
             }
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////

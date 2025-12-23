@@ -22,11 +22,10 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -48,16 +47,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaustVentMachine, IUIMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleSteamMachine.class,
-            SteamWorkableMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler importItems;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler exportItems;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     private boolean needsVenting;
 
     public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
@@ -75,11 +71,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
