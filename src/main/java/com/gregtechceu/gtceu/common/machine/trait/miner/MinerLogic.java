@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -279,6 +280,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 x = mineX;
                 y = mineY;
                 z = mineZ;
+                syncDataHolder.markClientSyncFieldDirty("x");
+                syncDataHolder.markClientSyncFieldDirty("y");
+                syncDataHolder.markClientSyncFieldDirty("z");
 
                 // attempt to get more blocks to mine, if there are none, the miner is done mining
                 blocksToMine.addAll(getBlocksToMine());
@@ -442,6 +446,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 mineX = pos.getX();
                 mineZ = pos.getZ();
                 mineY = pos.getY();
+                syncDataHolder.markClientSyncFieldDirty("mineX");
+                syncDataHolder.markClientSyncFieldDirty("mineY");
+                syncDataHolder.markClientSyncFieldDirty("mineZ");
                 blocksToMine.removeFirst();
                 onMineOperation();
 
@@ -463,11 +470,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void initPos(@NotNull BlockPos pos, int currentRadius) {
         x = pos.getX() - currentRadius;
         z = pos.getZ() - currentRadius;
+        syncDataHolder.markClientSyncFieldDirty("x");
+        syncDataHolder.markClientSyncFieldDirty("z");
+
         if (dir == Direction.UP) {
             y = pos.getY() + 1;
         } else {
             y = pos.getY() - 1;
         }
+        syncDataHolder.markClientSyncFieldDirty("y");
         startX = pos.getX() - currentRadius;
         startZ = pos.getZ() - currentRadius;
         startY = pos.getY();
@@ -478,11 +489,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         }
         mineX = pos.getX() - currentRadius;
         mineZ = pos.getZ() - currentRadius;
+        syncDataHolder.markClientSyncFieldDirty("mineX");
+        syncDataHolder.markClientSyncFieldDirty("mineZ");
         if (dir == Direction.UP) {
             mineY = pos.getY() + 1;
         } else {
             mineY = pos.getY() - 1;
         }
+        syncDataHolder.markClientSyncFieldDirty("mineY");
         onRemove();
     }
 
@@ -570,6 +584,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                         --y;
                     }
                 }
+                syncDataHolder.markClientSyncFieldDirty("x");
+                syncDataHolder.markClientSyncFieldDirty("y");
+                syncDataHolder.markClientSyncFieldDirty("z");
             } else
                 return blocks;
 

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

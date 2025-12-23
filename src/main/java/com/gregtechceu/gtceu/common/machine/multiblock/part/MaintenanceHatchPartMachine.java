@@ -95,7 +95,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SaveField
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
-    @Getter
     @SaveField
     private float durationMultiplier = 1f;
     @Nullable
@@ -123,6 +122,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public byte startProblems() {
         return ALL_PROBLEMS;
+    }
+
+    public void setDurationMultiplier(float durationMultiplier) {
+        this.durationMultiplier = durationMultiplier;
+        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
     }
 
     //////////////////////////////////////

@@ -21,11 +21,9 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,6 +100,11 @@ public class CreativeComputationProviderMachine extends MetaMachine
     public void setActive(boolean active) {
         this.active = active;
         updateComputationSubscription();
+    }
+
+    public void setMaxCWUt(int maxCWUt) {
+        this.maxCWUt = maxCWUt;
+        syncDataHolder.markClientSyncFieldDirty("maxCWUt");
     }
 
     @Override

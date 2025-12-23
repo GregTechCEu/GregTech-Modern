@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandle
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
