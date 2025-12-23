@@ -180,10 +180,12 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
-                            .background((i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
-                                    GTGuiTextures.PRIMITIVE_DUST_OVERLAY : GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+                            .background(GTGuiTextures.SLOT_PRIMITIVE,
+                                    (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
+                                            GTGuiTextures.PRIMITIVE_DUST_OVERLAY :
+                                            GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
                 })
-                .build().background(GTGuiTextures.SLOT_PRIMITIVE);
+                .build();
     }
 
     private SlotGroupWidget createExportItemSlot(PanelSyncManager syncManager) {
@@ -200,10 +202,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
-                            .syncHandler("export", i).background((i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
+                            .syncHandler("export", i)
+                            .background(GTGuiTextures.SLOT_PRIMITIVE, (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
                                     GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })
-                .build().background(GTGuiTextures.SLOT_PRIMITIVE);
+                .build();
     }
 
     @Override
