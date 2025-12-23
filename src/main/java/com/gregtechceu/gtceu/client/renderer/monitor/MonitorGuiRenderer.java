@@ -50,6 +50,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class MonitorGuiRenderer implements IMonitorRenderer {
 
+    private static final int RESOLUTION_COEF = 2;
+
     private ModularScreen screen;
     private Screen vanillaScreen;
     private int width = 200, height = 200;
@@ -135,19 +137,21 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         screen.onFrameUpdate();
         AnimatorManager.INSTANCE.onDraw(null);
         if (width * height == 0) return;
-        if (renderTarget.width != width || renderTarget.height != height)
-            renderTarget.resize(width, height, Minecraft.ON_OSX);
+        if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
+            renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
         renderTarget.enableStencil();
 
         renderTarget.bindWrite(true);
 
-        Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, width, height, 0.0F, 1000.0F,
+        Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, RESOLUTION_COEF * width, RESOLUTION_COEF * height, 0.0F,
+                1000.0F,
                 ForgeHooksClient.getGuiFarPlane());
         RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
         PoseStack posestack = RenderSystem.getModelViewStack();
         posestack.pushPose();
         posestack.setIdentity();
         posestack.translate(0.0D, 0.0D, 1000F - ForgeHooksClient.getGuiFarPlane());
+        posestack.scale(RESOLUTION_COEF, RESOLUTION_COEF, RESOLUTION_COEF);
         RenderSystem.applyModelViewMatrix();
 
         ClientScreenHandler.drawScreen(guiGraphics, screen, vanillaScreen, mouseX, mouseY, partialTick);
