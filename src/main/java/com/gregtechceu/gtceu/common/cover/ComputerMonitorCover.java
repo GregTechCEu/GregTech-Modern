@@ -22,11 +22,11 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -51,54 +51,53 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ComputerMonitorCover extends CoverBehavior
                                   implements IDataStickInteractable, IPlaceholderInfoProviderCover, IMuiCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     private TickableSubscription subscription;
 
     private final CoverTextRenderer renderer;
 
-    @Persisted
+    @SaveField
     @Getter
     private final List<String> formatStringArgs = new ArrayList<>(8);
 
-    @Persisted
+    @SaveField
     @Getter
     private final List<String> formatStringLines = new ArrayList<>(8);
 
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private String placeholderText = "";
 
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private boolean paused = false;
 
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private double scale = 1;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private List<MutableComponent> text = new ArrayList<>();
 
-    @Persisted
+    @SaveField
     public final CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
 
     @Setter
     @Getter
-    @Persisted
+    @SaveField
     private int updateInterval = 100;
 
-    @Persisted
+    @SaveField
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
-
-    @Persisted
+    @SaveField
+    @Getter
+    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    @SaveField
     @Getter
     private final UUID placeholderUUID;
 
@@ -106,7 +105,10 @@ public class ComputerMonitorCover extends CoverBehavior
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText, this::getScale);
         placeholderUUID = UUID.randomUUID();
-        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        for (int i = 0; i < 100; i++) {
+            createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+            computerCraftTextBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        }
     }
 
     public List<MutableComponent> getRenderedText() {
@@ -120,6 +122,11 @@ public class ComputerMonitorCover extends CoverBehavior
     }
 
     @Override
+    public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
+        computerCraftTextBuffer.set(line, component);
+    }
+
+    @Override
     public boolean canPipePassThrough() {
         return false;
     }
@@ -127,11 +134,6 @@ public class ComputerMonitorCover extends CoverBehavior
     @Override
     public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
         return () -> renderer;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

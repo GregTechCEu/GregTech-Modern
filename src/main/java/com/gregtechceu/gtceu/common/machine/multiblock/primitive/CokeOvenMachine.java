@@ -22,7 +22,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -83,5 +89,20 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
             getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
+    }
+
+    @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        if (!isRemote()) {
+            if (super.onUse(state, world, pos, player, hand, hit) == InteractionResult.SUCCESS) {
+                return InteractionResult.SUCCESS;
+            }
+            if (FluidUtil.interactWithFluidHandler(player, hand, exportFluids)) {
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 }

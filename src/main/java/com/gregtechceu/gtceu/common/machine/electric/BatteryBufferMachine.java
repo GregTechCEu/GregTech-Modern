@@ -25,11 +25,9 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -51,16 +49,13 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     public static final long AMPS_PER_BATTERY = 2L;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BatteryBufferMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     @Getter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler batteryInventory;
 
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
@@ -74,10 +69,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
@@ -120,7 +111,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
                 .child(Flow.row()
                         .height(90)
-                        .padding(5)
+                        .margin(6)
+                        .marginLeft(7)
+                        .marginTop(2)
+                        .height(80)
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
                                         GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
@@ -128,6 +122,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 .progress(this::getEnergyPercentage)
                                 .marginRight(50)
                                 .size(18, 60)
+                                .verticalCenter()
                                 .addTooltipLine(IKey.dynamic(() -> Component.literal(
                                         "%s/%s EU".formatted(
                                                 GTStringUtils.formatInt(energyContainer.getEnergyStored()),
@@ -137,7 +132,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                                 inventorySize, 'B',
                                 slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
                                 syncManager,
-                                matrix)))
+                                matrix)
+                                .center()))
                 .child(new Column()
                         .coverChildren()
                         .leftRel(1.0f)
@@ -284,7 +280,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    BatteryBufferMachine.this.markDirty();
                     checkOutputSubscription();
                 }
 
@@ -343,7 +338,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    BatteryBufferMachine.this.markDirty();
                     checkOutputSubscription();
                 }
 

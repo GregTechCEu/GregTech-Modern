@@ -85,11 +85,6 @@ public class ClientScreenHandler {
     }
 
     @SubscribeEvent
-    public static void onCloseScreen(ScreenEvent.Closing event) {
-        onGuiChanged(event.getScreen(), null);
-    }
-
-    @SubscribeEvent
     public static void onInitScreenPost(ScreenEvent.Init.Post event) {
         defaultContext.updateScreenArea(event.getScreen().width, event.getScreen().height);
         if (validateGui(event.getScreen())) {
@@ -295,7 +290,7 @@ public class ClientScreenHandler {
     private static void invalidateCurrentScreen() {
         // reset mouse inputs, relevant when screen gets reopened
         if (lastMui != null) {
-            lastMui.getScreen().getPanelManager().closeAll();
+            lastMui.getScreen().getPanelManager().closeScreen();
             lastMui = null;
         }
         currentScreen = null;
@@ -354,7 +349,7 @@ public class ClientScreenHandler {
 
     private static void onClose() {
         if (currentScreen.getContext().hasDraggable()) {
-            currentScreen.getContext().dropDraggable();
+            currentScreen.getContext().dropDraggable(true);
         } else {
             currentScreen.getPanelManager().closeTopPanel();
         }

@@ -17,13 +17,12 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -36,13 +35,10 @@ import java.util.List;
 
 public class StorageCover extends CoverBehavior implements IMuiCover {
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public final CustomItemStackHandler inventory;
     private final int SIZE = 18;
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(StorageCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
 
     public StorageCover(@NotNull CoverDefinition definition, @NotNull ICoverable coverableView,
                         @NotNull Direction attachedSide) {
@@ -54,12 +50,8 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
                 return 1;
             }
         };
-    }
 
-    @Override
-    @NotNull
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        inventory.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("inventory"));
     }
 
     @Override

@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,8 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEInputBusPartMachine extends MEBusPartMachine
                                    implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
-            MEBusPartMachine.MANAGED_FIELD_HOLDER);
     protected final static int CONFIG_SIZE = 16;
 
     protected ExportOnlyAEItemList aeItemHandler;
@@ -54,11 +50,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -129,10 +120,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine
      * group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
      * "gtceu.gui.me_network.online" :
      * "gtceu.gui.me_network.offline"));
-     * 
+     *
      * // Config slots
      * group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
-     * 
+     *
      * return group;
      * }
      */

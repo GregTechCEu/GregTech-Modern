@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -25,19 +22,16 @@ import org.joml.Vector2d;
 @MethodsReturnNonnullByDefault
 public class AdvancedMonitorPartMachine extends MonitorPartMachine implements IInteractedMachine {
 
-    private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedMonitorPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
+    @SaveField
     private double clickPosX;
     @Getter
-    @Persisted
+    @SaveField
     private double clickPosY;
     @Getter
-    @Persisted
+    @SaveField
     private boolean clicked;
-    @Persisted
+    @SaveField
     private boolean resetClickedNextTick = false;
 
     @Getter
@@ -73,11 +67,6 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine implements II
             clicked = false;
         }
         resetClickedNextTick = false;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

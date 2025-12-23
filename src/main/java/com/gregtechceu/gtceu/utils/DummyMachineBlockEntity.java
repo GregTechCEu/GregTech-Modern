@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,11 +48,6 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     @Override
     public long getOffset() {
         return 0;
-    }
-
-    @Override
-    public MultiManagedStorage getRootStorage() {
-        return null;
     }
 
     @Override

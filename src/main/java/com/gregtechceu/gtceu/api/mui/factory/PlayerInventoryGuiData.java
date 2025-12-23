@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * GuiData that finds an item in a player bound inventory. This can be the hotbar, main inventory, armor slots, offhand
@@ -17,7 +18,8 @@ import lombok.Getter;
 @Getter
 public class PlayerInventoryGuiData<T> extends GuiData {
 
-    public static <T> PlayerInventoryGuiData<T> of(Player player, InventoryType<T> inventoryType, T context,
+    public static <T> PlayerInventoryGuiData<T> of(@NotNull Player player, @NotNull InventoryType<T> inventoryType,
+                                                   T context,
                                                    int slotIndex) {
         return new PlayerInventoryGuiData<>(player, inventoryType, context, slotIndex);
     }
@@ -25,6 +27,7 @@ public class PlayerInventoryGuiData<T> extends GuiData {
     /**
      * Inventory type where the item can be found (player or curios for example).
      */
+    @NotNull
     private final InventoryType<T> inventoryType;
     /**
      * Additional context to find the item. Usually this is null, but for curios it is a string (slot identifier).
@@ -35,7 +38,8 @@ public class PlayerInventoryGuiData<T> extends GuiData {
      */
     private final int slotIndex;
 
-    private PlayerInventoryGuiData(Player player, InventoryType<T> inventoryType, T context, int slotIndex) {
+    private PlayerInventoryGuiData(@NotNull Player player, @NotNull InventoryType<T> inventoryType, T context,
+                                   int slotIndex) {
         super(player);
         this.inventoryType = inventoryType;
         this.context = context;

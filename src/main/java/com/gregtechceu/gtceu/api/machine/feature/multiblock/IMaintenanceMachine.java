@@ -159,25 +159,25 @@ public interface IMaintenanceMachine extends IMultiPart {
      * var tooltips = new ArrayList<Component>();
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.has_problems_header")
      * .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-     * 
+     *
      * if ((getMaintenanceProblems() & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench"));
-     * 
+     *
      * if (((getMaintenanceProblems() >> 1) & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver"));
-     * 
+     *
      * if (((getMaintenanceProblems() >> 2) & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet"));
-     * 
+     *
      * if (((getMaintenanceProblems() >> 3) & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer"));
-     * 
+     *
      * if (((getMaintenanceProblems() >> 4) & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter"));
-     * 
+     *
      * if (((getMaintenanceProblems() >> 5) & 1) == 0)
      * tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar"));
-     * 
+     *
      * return tooltips;
      * }, this::hasMaintenanceProblems, () -> null));
      * }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.base.IPacketWriter;
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
 
@@ -22,7 +23,7 @@ import java.util.Objects;
  * A sync handler must exist on client and server.
  * It must be configured exactly the same to avoid issues.
  */
-public abstract class SyncHandler {
+public abstract class SyncHandler implements ISyncOrValue {
 
     private PanelSyncManager syncManager;
     /**
@@ -158,6 +159,11 @@ public abstract class SyncHandler {
             throw new IllegalStateException("Sync handler is not yet initialised!");
         }
         return this.syncManager;
+    }
+
+    @Override
+    public boolean isSyncHandler() {
+        return true;
     }
 
     public static void sendToClient(String panel, FriendlyByteBuf buffer, SyncHandler syncHandler) {

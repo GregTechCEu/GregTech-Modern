@@ -4,7 +4,10 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -70,5 +73,14 @@ public class GTMuiMachineUtil {
                 .key(key, i -> new FluidSlot()
                         .syncHandler(syncHandlerName, i))
                 .build();
+    }
+
+    public static Flow createColumn(boolean reverse, Widget<?>... children) {
+        var column = new Column();
+        column.reverseLayout(reverse);
+        for (Widget<?> child : children) {
+            column.child(child);
+        }
+        return column;
     }
 }

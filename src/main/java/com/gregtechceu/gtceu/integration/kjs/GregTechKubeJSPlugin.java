@@ -53,6 +53,7 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -97,7 +98,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -345,6 +345,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTCraftingComponents", GTCraftingComponents.class);
         event.add("EnergyStack", EnergyStack.class);
         event.add("IOEnergyStack", EnergyStack.WithIO.class);
+        event.add("NBTPredicates", NBTPredicates.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
@@ -546,7 +547,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // get the recipe ID without the leading type path
         GTRecipeBuilder builder = gtRecipeType.recipeBuilder(gtRecipe.idWithoutType());
         if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-            builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            int duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            if (duration <= 0) {
+                GTCEu.LOGGER.error("Duration must be a positive value, skipping recipe id: {}", gtRecipe.getId());
+                return;
+            }
+            builder.duration = duration;
         }
         if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
             builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
@@ -612,8 +618,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
         builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
+        builder.setTempItemStacks(gtRecipe.tempItemStacks);
         gtRecipe.itemMaterialStacks = null;
         gtRecipe.fluidMaterialStacks = null;
+        gtRecipe.tempItemStacks = null;
 
         builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
         if (gtRecipe.removeMaterialInfo) {
@@ -659,7 +667,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
             var ingredient = entry.value().kjs$asIngredient();
             var values = ((IngredientAccessor) ingredient).getValues();
-            if (values.length == 0 || values[0] instanceof Ingredient.TagValue) continue;
+            if (values.length == 0) continue;
 
             ItemStack[] stacks = ingredient.getItems();
             ItemStack stack;

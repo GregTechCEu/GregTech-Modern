@@ -14,9 +14,8 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -51,24 +50,20 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
 public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CharcoalPileIgniterMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
-
+    private static final int MAX_HEIGHT = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
-    @DescSynced
+    @SyncToClient
     private int lDist = 0;
-    @DescSynced
+    @SyncToClient
     private int rDist = 0;
-    @DescSynced
+    @SyncToClient
     private int bDist = 0;
-    @DescSynced
+    @SyncToClient
     private int fDist = 0;
-    @DescSynced
+    @SyncToClient
     private int hDist = 0;
 
     private boolean hasAir = false;
@@ -102,11 +97,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public @NotNull CharcoalRecipeLogic getRecipeLogic() {
         return (CharcoalRecipeLogic) super.getRecipeLogic();
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -247,7 +237,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         int fDist = 0;
         int hDist = 0;
 
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i <= MAX_HEIGHT; i++) {
             if (lDist != 0 && rDist != 0 && hDist != 0) break;
             if (lDist == 0 && isBlockWall(level, lPos, left)) lDist = i;
             if (rDist == 0 && isBlockWall(level, rPos, right)) rDist = i;
@@ -271,6 +261,14 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         this.fDist = fDist;
         this.bDist = bDist;
         this.hDist = hDist;
+
+        if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("lDist");
+            syncDataHolder.markClientSyncFieldDirty("rDist");
+            syncDataHolder.markClientSyncFieldDirty("fDist");
+            syncDataHolder.markClientSyncFieldDirty("bDist");
+            syncDataHolder.markClientSyncFieldDirty("hDist");
+        }
     }
 
     private static boolean isBlockWall(Level level, BlockPos.MutableBlockPos pos, Direction direction) {

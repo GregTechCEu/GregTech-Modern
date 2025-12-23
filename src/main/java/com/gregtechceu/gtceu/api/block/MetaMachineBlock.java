@@ -118,7 +118,6 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
             if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {
                     machine.setOwnerUUID(sPlayer.getUUID());
-                    machine.markDirty();
                 }
             }
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
@@ -285,7 +284,6 @@ public class MetaMachineBlock extends Block implements IMachineBlock {
 
         if (machine != null && machine.getOwnerUUID() == null && player instanceof ServerPlayer sPlayer) {
             machine.setOwnerUUID(sPlayer.getUUID());
-            machine.markDirty();
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);

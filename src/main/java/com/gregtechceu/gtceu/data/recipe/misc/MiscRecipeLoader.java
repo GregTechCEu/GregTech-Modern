@@ -623,5 +623,11 @@ public class MiscRecipeLoader {
                 .inputItems(Blocks.CHISELED_BOOKSHELF.asItem())
                 .outputItems(dust, Wood, 6)
                 .duration(100).EUt(2).save(provider);
+
+        // Lazurite and Sodalite to dye
+        VanillaRecipeHelper.addShapelessRecipe(provider, "lazurite_to_dye", new ItemStack(Items.BLUE_DYE),
+                new MaterialEntry(gem, Lazurite));
+        VanillaRecipeHelper.addShapelessRecipe(provider, "sodalite_to_dye", new ItemStack(Items.BLUE_DYE),
+                new MaterialEntry(gem, Sodalite));
     }
 }
