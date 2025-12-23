@@ -62,7 +62,7 @@ public class PanelManager {
                 if (this.panels.isEmpty()) {
                     throw new IllegalStateException("Can't init in closed state!");
                 }
-                this.panels.forEach(p -> p.reopen(true));
+                this.panels.forEach(ModularPanel::reopen);
                 this.disposal.removeIf(this.panels::contains);
                 setState(State.REOPENED);
                 yield true;
@@ -132,7 +132,6 @@ public class PanelManager {
         panel.setPanelGuiContext(this.screen.getContext());
         this.panels.add(0, panel);
         this.dirty = true;
-        panel.getArea().setPanelLayer((byte) this.panels.size());
         panel.onOpen(this.screen);
         if (resize) {
             WidgetTree.resizeInternal(panel, true);
@@ -233,8 +232,17 @@ public class PanelManager {
         return false;
     }
 
+    void closeScreen() {
+        // only close the screen without closing the panels
+        // this is useful when we expect the screen to reopen at some point and the sync managers are still available
+        if (this.state.isOpen) {
+            setState(State.CLOSED);
+            this.screen.onClose();
+        }
+    }
+
     private void finalizePanel(ModularPanel panel) {
-        panel.onClose();
+        if (panel.isOpen()) panel.onClose();
         if (!this.disposal.contains(panel)) {
             if (this.disposal.size() == DISPOSAL_CAPACITY) {
                 this.disposal.remove(0).dispose();
@@ -265,6 +273,8 @@ public class PanelManager {
             setState(State.WAIT_DISPOSAL);
             return;
         }
+        // make sure every panel gets closed before disposing
+        this.panels.forEach(this::finalizePanel);
         setState(State.CLOSED);
         this.disposal.forEach(ModularPanel::dispose);
         this.disposal.clear();
@@ -472,7 +482,7 @@ public class PanelManager {
          */
         REOPENED(true),
         /**
-         * Screen is closed after it was open.
+         * Screen is closed after it was open. Panels may still be considered open in some cases.
          */
         CLOSED(false),
         /**

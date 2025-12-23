@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IValue;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.ObjectValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 
 import net.minecraft.world.item.ItemStack;
+
+import org.jetbrains.annotations.NotNull;
 
 public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
 
@@ -21,9 +23,14 @@ public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
     }
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        this.value = castIfTypeGenericElseNull(syncHandler, ItemStack.class);
-        return this.value != null;
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isValueOfType(ItemStack.class);
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        this.value = syncOrValue.castValueNullable(ItemStack.class);
     }
 
     @Override
@@ -43,14 +50,12 @@ public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
     }
 
     public ItemDisplayWidget item(IValue<ItemStack> itemSupplier) {
-        this.value = itemSupplier;
-        setValue(itemSupplier);
+        setSyncOrValue(ISyncOrValue.orEmpty(itemSupplier));
         return this;
     }
 
     public ItemDisplayWidget item(ItemStack itemStack) {
-        ;
-        return item(new ObjectValue<>(itemStack));
+        return item(new ObjectValue<>(ItemStack.class, itemStack));
     }
 
     public ItemDisplayWidget displayAmount(boolean displayAmount) {

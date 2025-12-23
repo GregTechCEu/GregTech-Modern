@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerMenuAccessor;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -111,11 +112,25 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     }
 
     @MustBeInvokedByOverriders
-    @Override
-    public void removed(@NotNull Player player) {
+    public void opened() {
+        if (this.syncManager != null) {
+            this.syncManager.onOpen();
+        }
+    }
+
+    /**
+     * Called when this container closes. This is different to {@link AbstractContainerMenu#removed(Player)}, since that
+     * one is also
+     * called from {@link AbstractContainerScreen#removed()}, which means it is called even when the container may still
+     * exist.
+     * This happens when a temporary client screen takes over (like JEI,NEI,etc.). This is only called when the
+     * container actually closes.
+     */
+    @MustBeInvokedByOverriders
+    public void removed() {
         super.removed(player);
         if (this.syncManager != null) {
-            this.syncManager.onClose();
+            this.syncManager.dispose();
         }
     }
 
@@ -129,7 +144,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         this.init = false;
     }
 
-    @ApiStatus.Internal
+    @MustBeInvokedByOverriders
     public void onUpdate() {
         // detectAndSendChanges is potentially called multiple times per tick, while this method is called exactly once
         // per tick

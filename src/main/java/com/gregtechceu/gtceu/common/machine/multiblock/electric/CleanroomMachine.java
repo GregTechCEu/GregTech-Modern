@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -39,10 +38,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMa
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.ChatFormatting;
@@ -80,20 +78,17 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 public class CleanroomMachine extends WorkableElectricMultiblockMachine
                               implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     public static final int CLEAN_AMOUNT_THRESHOLD = 95;
     public static final int MIN_CLEAN_AMOUNT = 0;
 
     public static final int MIN_RADIUS = 2;
     public static final int MIN_DEPTH = 4;
 
-    @Persisted
+    @SaveField
     private int lDist = 0, rDist = 0, bDist = 0, fDist = 0, hDist = 0;
     @Nullable
     private CleanroomType cleanroomType = null;
-    @Persisted
+    @SaveField
     private int cleanAmount;
     // runtime
     @Getter
@@ -110,11 +105,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
     // ****** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected RecipeLogic createRecipeLogic(Object... args) {
         return new CleanroomLogic(this);

@@ -5,30 +5,30 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
+import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
 
 import java.util.UUID;
 
 public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedstone> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderRedstoneLinkCover.class,
-            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
+    @Getter
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private VirtualRedstone storage;
-    @Persisted
-    @DescSynced
-    private final UUID uuid;
+    @SaveField
+    @SyncToClient
+    private UUID uuid;
 
     public EnderRedstoneLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -58,6 +58,7 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
         if (storage != null) storage.removeMember(uuid);
         storage = (VirtualRedstone) entry;
         storage.addMember(uuid);
+        syncDataHolder.markClientSyncFieldDirty("storage");
     }
 
     @Override
@@ -97,10 +98,5 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     protected int getSignalInput() {
         return coverHolder.getLevel().getSignal(coverHolder.getPos().relative(attachedSide),
                 attachedSide.getOpposite());
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ItemSlotSH extends SyncHandler {
 
-    public static final int SYNC_ITEM = 1;
-    public static final int SYNC_ENABLED = 2;
+    public static final int SYNC_ITEM = 0;
+    public static final int SYNC_ENABLED = 1;
 
     @Getter
     private final ModularSlot slot;

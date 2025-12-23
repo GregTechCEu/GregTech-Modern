@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -21,14 +19,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class SteamMachine extends MetaMachine implements ITieredMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static final BooleanProperty STEEL_PROPERTY = GTMachineModelProperties.IS_STEEL_MACHINE;
 
     @Getter
     public final boolean isHighPressure;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank steamTank;
 
     public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
@@ -41,10 +36,6 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public int getTier() {

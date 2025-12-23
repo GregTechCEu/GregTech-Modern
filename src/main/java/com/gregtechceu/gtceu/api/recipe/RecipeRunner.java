@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BUS_DISTINCT;
 import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BYPASS_DISTINCT;
@@ -33,6 +35,7 @@ public class RecipeRunner {
     private final boolean simulated;
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
     private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
+    private final Predicate<RecipeCapability<?>> outputVoid;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -45,6 +48,7 @@ public class RecipeRunner {
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
+        this.outputVoid = cap -> holder instanceof IVoidable voidable && voidable.canVoidRecipeOutputs(cap);
     }
 
     @NotNull
@@ -68,6 +72,7 @@ public class RecipeRunner {
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) continue;
+            if (simulated && io == IO.OUT && outputVoid.test(cap)) continue;
 
             ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
             List<Content> chancedContents = new ArrayList<>();
@@ -94,7 +99,7 @@ public class RecipeRunner {
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
+                chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache,
                         recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
@@ -133,21 +138,24 @@ public class RecipeRunner {
                     if (res.isEmpty()) break;
                 }
             }
-            if (res.isEmpty()) {
-                if (!simulated) {
-                    // Actually consume the contents of this handler and also all the bypassed handlers
-                    recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                    if (!recipeContents.isEmpty()) {
-                        for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                                Collections.emptyList())) {
-                            recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                            if (recipeContents.isEmpty()) break;
-                        }
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(res)) continue;
+            } else if (io == IO.IN) {
+                if (!res.isEmpty()) continue;
+            }
+            if (!simulated) {
+                // Actually consume the contents of this handler and also all the bypassed handlers
+                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+                if (!recipeContents.isEmpty()) {
+                    for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                            Collections.emptyList())) {
+                        recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                        if (recipeContents.isEmpty()) break;
                     }
                 }
-                recipeContents.clear();
-                return ActionResult.SUCCESS;
             }
+            recipeContents.clear();
+            return ActionResult.SUCCESS;
         }
 
         // Check the other groups. For every group, try consuming the ingredients,
@@ -157,12 +165,10 @@ public class RecipeRunner {
 
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
-            boolean found = false;
 
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
                 if (copiedRecipeContents.isEmpty()) {
-                    found = true;
                     break;
                 }
             }
@@ -172,13 +178,16 @@ public class RecipeRunner {
                         Collections.emptyList())) {
                     copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
                     if (copiedRecipeContents.isEmpty()) {
-                        found = true;
                         break;
                     }
                 }
             }
 
-            if (!found) continue;
+            if (io == IO.OUT) {
+                if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+            } else if (io == IO.IN) {
+                if (!copiedRecipeContents.isEmpty()) continue;
+            }
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
             // Keep track of the remaining items for this RecipeHandlerGroup
@@ -203,11 +212,37 @@ public class RecipeRunner {
         }
 
         for (var entry : recipeContents.entrySet()) {
+            // void excess real output contents if it can be voided
+            if (!simulated && io == IO.OUT && this.outputVoid.test(entry.getKey())) {
+                entry.getValue().clear();
+            }
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 return ActionResult.fail(null, entry.getKey(), io);
             }
         }
 
+        // if, post voiding, we don't have stuff, pass instead of fail
+        boolean containsStuff = false;
+        for (var entry : recipeContents.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                containsStuff = true;
+                break;
+            }
+        }
+        if (!containsStuff) {
+            return ActionResult.PASS_NO_CONTENTS;
+        }
+
         return ActionResult.FAIL_NO_REASON;
+    }
+
+    private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {
+        for (var entry : contents.entrySet()) {
+            if (outputVoid.test(entry.getKey())) continue;
+            if (!(entry.getValue() == null || entry.getValue().isEmpty())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

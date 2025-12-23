@@ -71,7 +71,7 @@ public class TitaniumRecipes {
 
         // NaCl(H2O) + CO2 + NH3 -> NH4Cl + NaHCO3
         CHEMICAL_RECIPES.recipeBuilder("sodium_bicarbonate_from_salt")
-                .inputItems(dust, Salt, 4)
+                .inputItems(dust, Salt, 2)
                 .inputFluids(CarbonDioxide.getFluid(1000))
                 .inputFluids(Ammonia.getFluid(1000))
                 .inputFluids(Water.getFluid(1000))

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
@@ -19,10 +18,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -45,12 +42,10 @@ import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquar
 @MethodsReturnNonnullByDefault
 public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IMuiMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MufflerPartMachine.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
     private final int recoveryChance;
     @Getter
-    @Persisted
+    @SaveField
     private final CustomItemStackHandler inventory;
 
     private TickableSubscription snowSubscription;
@@ -59,14 +54,6 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
         super(holder, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -173,7 +160,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
      * .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
      * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset,
      * 18 + 18 * rowSize + 12, true));
-     * 
+     *
      * for (int y = 0; y < rowSize; y++) {
      * for (int x = 0; x < rowSize; x++) {
      * int index = y * rowSize + x;

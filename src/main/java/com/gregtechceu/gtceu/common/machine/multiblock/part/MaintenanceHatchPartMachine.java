@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -34,13 +33,12 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -77,32 +75,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MaintenanceHatchPartMachine extends TieredPartMachine
                                          implements IMachineLife, IMaintenanceMachine, IInteractedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
 
     @Getter
     private final boolean isConfigurable;
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler itemStackHandler;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isTaped;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected int timeActive;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected byte maintenanceProblems = startProblems();
-    @Getter
-    @Setter
-    @Persisted
+    @SaveField
     private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
@@ -122,11 +115,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public void onMachineRemoved() {
         clearInventory(itemStackHandler);
     }
@@ -136,6 +124,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return ALL_PROBLEMS;
     }
 
+    public void setDurationMultiplier(float durationMultiplier) {
+        this.durationMultiplier = durationMultiplier;
+        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
+    }
+
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
@@ -143,6 +136,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public void setMaintenanceProblems(byte problems) {
         this.maintenanceProblems = problems;
         updateMaintenanceSubscription();
+        syncDataHolder.markClientSyncFieldDirty("maintenanceProblems");
     }
 
     @Override
@@ -390,7 +384,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * }
      * }
      * })));
-     * 
+     *
      * } else {
      * group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
      * }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
@@ -166,9 +166,14 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     @Override
-    public boolean isValidSyncHandler(SyncHandler syncHandler) {
-        this.syncHandler = castIfTypeElseNull(syncHandler, FluidSlotSyncHandler.class);
-        return this.syncHandler != null;
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(FluidSlotSyncHandler.class);
+    }
+
+    @Override
+    protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        super.setSyncOrValue(syncOrValue);
+        this.syncHandler = syncOrValue.castNullable(FluidSlotSyncHandler.class);
     }
 
     @Override
@@ -306,8 +311,7 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     public FluidSlot syncHandler(FluidSlotSyncHandler syncHandler) {
-        setSyncHandler(syncHandler);
-        this.syncHandler = syncHandler;
+        setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return this;
     }
 

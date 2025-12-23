@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.common.data.item.GTToolActions;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -92,7 +93,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
                 var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
                 boolean removedSeed = false;
                 for (ItemStack drop : drops) {
-                    if (!removedSeed && ItemStack.isSameItemSameTags(drop, seed)) {
+                    if (!removedSeed && GTUtil.isSameItemSameTags(drop, seed)) {
                         drop.shrink(1);
                         removedSeed = true;
                         if (drop.isEmpty()) continue;

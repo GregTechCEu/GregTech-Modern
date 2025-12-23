@@ -21,10 +21,8 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.textfield.TextFieldWidget;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -42,22 +40,14 @@ import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeLatchedRedstoneBet
 @MethodsReturnNonnullByDefault
 public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IMuiCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedEnergyDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     private static final int DEFAULT_MIN_PERCENT = 33;
     private static final int DEFAULT_MAX_PERCENT = 66;
 
-    @Persisted
+    @SaveField
     @Getter
     public long minValue, maxValue;
 
-    @Persisted
+    @SaveField
     @Getter
     private boolean usePercent;
 

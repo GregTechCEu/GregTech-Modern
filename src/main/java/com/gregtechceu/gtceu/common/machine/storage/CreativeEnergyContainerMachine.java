@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -17,8 +17,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -35,20 +33,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IUIMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private long voltage = 0;
-    @Persisted
+    @SaveField
     private int amps = 1;
-    @Persisted
+    @SaveField
     private int setTier = 0;
-    @Persisted
+    @SaveField
     private boolean active = false;
-    @Persisted
+    @SaveField
     private boolean source = true;
-    @Persisted
+    @SaveField
     private long energyIOPerSec = 0;
     private long lastAverageEnergyIOPerTick = 0;
     private long ampsReceived = 0;
@@ -61,10 +56,6 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onLoad() {

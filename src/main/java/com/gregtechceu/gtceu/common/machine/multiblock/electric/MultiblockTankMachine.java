@@ -26,6 +26,12 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -48,7 +54,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MultiblockTankMachine extends MultiblockControllerMachine implements IMuiMachine {
 
-    @Persisted
+    @SaveField
     @Getter
     @NotNull
     private final NotifiableFluidTank tank;
@@ -131,17 +137,5 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
         syncManager.syncValue("fluid_slot",
                 SyncHandlers.fluidSlot(tank.getStorages()[0]).controlsAmount(false));
         return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
-    }
-
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockTankMachine.class,
-            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

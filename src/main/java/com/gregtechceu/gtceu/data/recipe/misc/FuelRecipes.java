@@ -6,12 +6,15 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -21,73 +24,91 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class FuelRecipes {
 
+    public static void addBoilerFuel(Consumer<FinishedRecipe> provider, Set<Item> added,
+                                     Item item, int burnTime) {
+        if (added.contains(item) || burnTime <= 0) {
+            return;
+        }
+        added.add(item);
+
+        Optional<FluidStack> containedFluid = FluidUtil.getFluidContained(item.getDefaultInstance());
+        if (containedFluid.isEmpty()) {
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(id.getNamespace() + "_" + id.getPath()))
+                    .inputItems(item)
+                    .duration(burnTime)
+                    .save(provider);
+        } else {
+            FluidStack fluid = new FluidStack(containedFluid.get(), 250);
+            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
+
+            // the lava recipe's duration is 4/9 of the bucket's burn time
+            // the creosote recipe's duration is 7/32 of the bucket's burn time
+            // as such, the mean ratio is 191/576, or approximately 1/3.
+            STEAM_BOILER_RECIPES.recipeBuilder(id.getNamespace() + "_" + id.getPath())
+                    .inputFluids(fluid)
+                    .duration(burnTime / 3)
+                    .save(provider);
+        }
+    }
+
     public static void init(Consumer<FinishedRecipe> provider) {
         // TODO this all needs to be cleaned up, but this will make it somewhat work for now
         // do these first because for some reason vanilla fuels are not set up yet at this phase?
         Set<Item> addedItems = new HashSet<>();
         for (var fuelEntry : FurnaceBlockEntity.getFuel().entrySet()) {
-            addedItems.add(fuelEntry.getKey());
-            var resLoc = BuiltInRegistries.ITEM.getKey(fuelEntry.getKey());
-            STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
-                    .inputItems(fuelEntry.getKey())
-                    .duration(fuelEntry.getValue() * 12) // remove the * 12 if SteamBoilerMachine:240 is uncommented
-                    .save(provider);
+            addBoilerFuel(provider, addedItems, fuelEntry.getKey(), fuelEntry.getValue());
         }
         for (Item item : BuiltInRegistries.ITEM) {
-            var burnTime = GTUtil.getItemBurnTime(item);
-            if (burnTime > 0 && !addedItems.contains(item)) {
-                var resLoc = BuiltInRegistries.ITEM.getKey(item);
-                STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(resLoc.getNamespace() + "_" + resLoc.getPath()))
-                        .inputItems(item)
-                        .duration(burnTime * 12)
-                        .save(provider);
-            }
+            int burnTime = GTUtil.getItemBurnTime(item);
+            addBoilerFuel(provider, addedItems, item, burnTime);
         }
 
-        STEAM_BOILER_RECIPES.recipeBuilder("lava")
+        // override the default fluid recipes for lava and creosote
+        STEAM_BOILER_RECIPES.recipeBuilder("minecraft_lava")
                 .inputFluids(new FluidStack(Fluids.LAVA, 100))
-                .duration(100 * 12)
+                .duration(900) // 60s -> 45s Might still be too good with drip stone farming.
                 .save(provider);
 
-        STEAM_BOILER_RECIPES.recipeBuilder("creosote")
+        STEAM_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
                 .inputFluids(Creosote.getFluid(250))
-                .duration(250 * 12)
+                .duration(350) // 150s -> 17.5s
                 .save(provider);
 
-        // semi-fluid fuels, like creosote
-        LARGE_BOILER_RECIPES.recipeBuilder("creosote")
-                .inputFluids(Creosote.getFluid(160))
-                .duration(10)
+        // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
+                .inputFluids(Creosote.getFluid(250))
+                .duration(35)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("biomass")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_biomass")
                 .inputFluids(Biomass.getFluid(40))
-                .duration(10)
+                .duration(85)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil")
                 .inputFluids(Oil.getFluid(200))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil_heavy")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_oil_heavy")
                 .inputFluids(OilHeavy.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("sulfuric_heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_sulfuric_heavy_fuel")
                 .inputFluids(SulfuricHeavyFuel.getFluid(32))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("heavy_fuel")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_heavy_fuel")
                 .inputFluids(HeavyFuel.getFluid(16))
-                .duration(30)
+                .duration(90)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("fish_oil")
+        LARGE_BOILER_RECIPES.recipeBuilder("gtceu_fish_oil")
                 .inputFluids(FishOil.getFluid(160))
-                .duration(10)
+                .duration(50)
                 .save(provider);
 
         // diesel generator fuels

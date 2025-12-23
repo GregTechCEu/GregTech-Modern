@@ -184,7 +184,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
         sideTabsWidget.selectTab(fancyUI);
         titleBar.updateState(
-                currentHomePage,
+                fancyUI,
                 !this.previousPages.isEmpty(),
                 this.allPages.size() > 1 && this.currentPage != this.pageSwitcher);
 

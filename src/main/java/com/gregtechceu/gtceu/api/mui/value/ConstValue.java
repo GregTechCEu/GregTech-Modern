@@ -18,4 +18,9 @@ public class ConstValue<T> implements IValue<T> {
     public ConstValue(T value) {
         this.value = value;
     }
+
+    @Override
+    public Class<T> getValueType() {
+        return (Class<T>) value.getClass();
+    }
 }

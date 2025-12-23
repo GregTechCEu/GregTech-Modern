@@ -74,9 +74,8 @@ public class BooleanSyncValue extends ValueSyncHandler<Boolean>
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -111,5 +110,10 @@ public class BooleanSyncValue extends ValueSyncHandler<Boolean>
     @Override
     public String getStringValue() {
         return String.valueOf(this.cache);
+    }
+
+    @Override
+    public Class<Boolean> getValueType() {
+        return Boolean.class;
     }
 }

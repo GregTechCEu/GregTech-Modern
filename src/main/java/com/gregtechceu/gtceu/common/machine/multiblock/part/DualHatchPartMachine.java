@@ -23,11 +23,9 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -48,10 +46,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DualHatchPartMachine extends ItemBusPartMachine {
 
     public static final int INITIAL_TANK_CAPACITY = 16 * FluidType.BUCKET_VOLUME;
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DualHatchPartMachine.class,
-            ItemBusPartMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank tank;
 
     @Nullable
@@ -237,10 +233,5 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                                                                  .append(Component.translatable(isDistinct() ?
                                                                          "gtceu.multiblock.universal.distinct.yes" :
                                                                          "gtceu.multiblock.universal.distinct.no"))))));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

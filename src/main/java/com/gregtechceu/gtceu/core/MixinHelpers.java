@@ -176,6 +176,11 @@ public class MixinHelpers {
                         }
                     }
                 }
+
+                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                            .addAll(entries);
+                }
             });
 
             GTRegistries.MACHINES.forEach(machine -> {
@@ -269,11 +274,6 @@ public class MixinHelpers {
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
-                        block = ChemicalHelper.getBlock(orePrefix, material);
-                    }
-
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
@@ -284,8 +284,8 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
-                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for
-                    // balance reasons. (for now, until we can think of a better solution.)
+                    // disable fortune for balance reasons. (for now, until we can think of a better solution.)
+                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
@@ -295,7 +295,6 @@ public class MixinHelpers {
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
                                     .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
                             isEmpty = false;

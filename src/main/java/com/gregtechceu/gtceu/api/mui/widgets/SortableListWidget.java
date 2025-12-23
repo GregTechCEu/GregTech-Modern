@@ -169,7 +169,7 @@ public class SortableListWidget<T> extends ListValueWidget<T, SortableListWidget
         private SortableListWidget<T> listWidget;
         @Getter
         private int index = -1;
-        private int movingFrom = -1; // no usages? why added?
+        private final int movingFrom = -1; // no usages? why added?
 
         public Item(T value) {
             this.value = value;

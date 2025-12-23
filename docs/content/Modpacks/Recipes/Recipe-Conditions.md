@@ -2,151 +2,48 @@
 title: Recipe Conditions
 ---
 
-!!! Warning 
-    Custom recipe conditions are only supported in Java. Therefore, this page will only contain Java examples.
+Recipe Conditions are recipe properties that can prevent a recipe from starting based on certain criteria, like for example Biome, Weather, Quest Completions, or self-made custom Conditions.
 
-Recipe conditions are custom conditions for your recipe, like biome, machine tier, or anything else you can think of.
+These conditions can be used in both java and kubejs recipes. However, custom conditons can only be done in java. If you want to see how to make these, check out the [Custom Recipe Condition](../Examples/Custom-Recipe-Condition.md) example page.              
 
 !!! Note
     The condition is run after recipe matching and before recipe execution. If the recipe condition doesn't match, the machine will be suspended and won't be updated again until something in the inputs/outputs changes.
 
-They are registered using
-```java
-@Mod(ExampleMod.MOD_ID)
-public class ExampleMod {
-    
-    public ExampleMod(FMLJavaModLoadingContext context) {
-        var bus = context.getModEventBus();
-        bus.addGenericListener(RecipeConditionType.class, this::registerConditions);
-    }
+### Base Conditons 
 
-    public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
-    
-    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition",
-                new RecipeConditionType<>(
-                        ExampleCondition::new, 
-                        ExampleCondition.CODEC
-                )
-        );
-    }
-}
-```
+- Biome: `.biome("namespace:biome_id")`
+    - Locks a recipe behind being inside a certain biome, works with any biome a pack has loaded. For example, you could use `minecraft:plains`.
+- Dimension: `.dimension("namespace:dimension_id")`
+    - Locks a recipe being behind a certain dimension, the gas collector is a good example of this. For example, you could use `minecraft:the_end`
+- Position_Y: `.posY(int min, int max)`
+    -  Locks a recipe behind a certain y level in-world. For example, you could use `.posY(120, 130)` to have a recipe require a machine to be in between y 120 and y 130.
+- Rain: `.rain(float level)`
+    - Locks a recipe behind a certain level of rain. For example, you could use `.rain(1.0)` to make a recipe need full rain. 
+- Adjacent_Fluids: `adjacentFluids("minecraft:water","minecraft:lava")`
+    - You can pass through any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine. We also have `adjacentFluidTag("forge:water", "forge:lava")`.
+- Adjacent_Blocks: `adjacentBlocks("minecraft:stone", "minecraft:iron_block")`
+    - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks. We also have `adjacentBlockTag("forge:stone", "forge:storage_blocks/iron")`.
+- Thunder: `.thunder(float level)`
+    - Locks a recipe behind a certain level of rain. For example, you could use `.thunder(1.0)` to make a recipe need a strong thunderstorm.
+- Vent: This condition is auto added to any steam single block, it blocks recipes from running if the vent is obstructed.
+- Cleanroom: `.cleanroom(CleanroomType.CLEANROOM)`
+    - Locks a recipe to being inside a cleanroom. You can also use STERILE_CLEANROOM as well as your own custom cleanroom type.
+- Fusion_Start_EU: `.fusionStartEU(long eu)`
+    - Locks a recipe behind the amount of stored power in a fusion machine. To use this, the machine must use the FusionReactorMachine class. For example, you could use `.fusionStartEU(600000)`
+- Station_Research: `.stationResearch(b => b.researchStack("namespace:item_id").EUt(long eu).CWUt(int minCWUPerTick, int TotalCWU))`
+    - Locks a recipe behind having a certain research stack. For this condition to be properly seen, you will either need a base machine recipe type with the research ui component, or make your own. For example, you could do `.stationResearch(b => b.researchStack("gtceu:lv_motor").EUt(131000).CWUt(24, 12000))` which would lock a recipe behind needing a data orb with the lv motor research. It will also generate you a research station recipe.
+- Scanner_Research: `.scannerResearch(b => b.researchStack("namespace:item_id").EUt(long eu))`
+    - Much like station research, this condition locks a recipe behind needing a research stack. However, in this case it will default to a data stick. For example, you could do `.scannerResearch(b => b.researchStack("gtceu:lv_motor").EUt(8192))`, which would make the recipe need a data stick with the lv motor research, and generates a scanner recipe.
+- Enviromental_Hazard: `.environmentalHazard(GTMedicalConditions.CARBON_MONOXIDE_POISONING)`
+    - Locks a recipe into needing a certain environmental hazard to run. For now, carbon monoxide is the only one. An example of a machine using this condition is the air scrubber.
+- Daytime: `.daytime(boolean notNight)`
+    - Locks recipe behind whether it is day or night. For example, you could do `.daytime(true)`, to make the recipe need it to be daytime.
 
-We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
-```java
-public class ExampleCondition extends RecipeCondition {
+### Mod Dependent Conditions
+- Ftb_Quests: `.ftbQuest(quest_id)`
+    - Locks a recipe behind the owner of a machine completing a ftb quest. An example can't be easily given since every quest book is different.
+- Gamestage: `.gameStage(gameStage_id)`
+    - Locks a recipe behind a certain game stage.  
+- Heracles_Quests: `.heraclesQuest(quest_id)`
+    - Locks a recipe behind the owner of a machine completing a heracles quest. An example can't be easily given since every quest book is different.
 
-    public int height;
-
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.INT.fieldOf("height").forGetter(val -> val.height))
-                    .apply(instance, ExampleCondition::new));
-
-
-    public ExampleCondition(boolean isReverse, int height) {
-        this.isReverse = isReverse;
-        this.height = height;
-    }
-
-    public ExampleCondition(int height) {
-        this(false, height);
-    }    
-    
-    public ExampleCondition() {
-        this(false, 0);
-    }
-
-    @Override
-    public RecipeConditionType<?> getType() {
-        return ExampleMod.EXAMPLE_CONDITION;
-    }
-
-    @Override
-    public Component getTooltips() {
-        return Component.literal(String.format("Should be ran at least at height %d", height));
-    }
-
-    @Override
-    protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
-    }
-
-    @Override
-    public RecipeCondition createTemplate() {
-        return new ExampleCondition(0);
-    }
-}
-```
-
-Lets step through this example. This will not be in order as it is in the file, but rather in the order that makes most sense.
-
-Starting with:
-```java
-    @Override
-    public RecipeConditionType<?> getType() {
-        return ExampleMod.EXAMPLE_CONDITION;
-    }
-
-    @Override
-    public Component getTooltips() {
-        return Component.literal(String.format("Should be ran at least at height %d", height));
-    }
-```
-This part is quite simple, and just returns the type and tooltip for the condition. The tooltip is what gets added in the recipe viewer's screen if this condition is present.
-
-```java
-    public ExampleCondition(boolean isReverse, int height) {
-        this.isReverse = isReverse;
-        this.height = height;
-    }
-    
-    public ExampleCondition(int height) {
-        this(false, height);
-    }
-
-    public ExampleCondition() {
-        this(false, 0);
-    }
-```
-These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run. Furthermore, a no-arg constructor is required for (de)serialization.
-
-```java
-    @Override
-    public RecipeCondition createTemplate() {
-        return new ExampleCondition(0);
-    }
-```
-
-This creates the basic "template" that might be used for serialization. This should return a default version of your condition.
-
-```java
-    @Override
-    protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
-    }
-```
-
-This is the actual condition.
-
-```java
-    public int height;
-
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.INT.fieldOf("height").forGetter(val -> val.height))
-                    .apply(instance, ExampleCondition::new));
-```
-
-The CODEC is how java knows how to serialize/deserialize your condition. This is needed for syncing between client/server, and storing it to json to load when the world loads.
-It consists of a few parts:
-
-- `RecordCodecBuilder.create(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.
-- `RecipeCondition.isReverse(instance)` is a helper codec that serializes the isReverse boolean of your codec.
-- `.and(` means this is the next field in the record.
-- `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an INT, we want to call it "height" in the json, and to get the value you call `.height`.
-- `.apply(instance, ExampleCondition::new)` means when deserializing back to an object, you apply these steps to get the values (in this case `bool isReverse, int height`) and call the constructor with those arguments.  
-    In this case, this would call our `new ExampleCondition(isReverse, height)` constructor we have defined earlier.
-
-With this, you should have everything you need to make a custom RecipeCondition.

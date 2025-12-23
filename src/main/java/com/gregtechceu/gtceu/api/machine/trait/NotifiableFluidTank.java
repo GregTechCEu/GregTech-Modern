@@ -9,11 +9,9 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,13 +26,11 @@ import java.util.function.Predicate;
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class,
-            NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted
+    @SaveField
     @Getter
     protected final CustomFluidTank[] storages;
     @Getter
@@ -42,8 +38,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                                        // while creating tanks.
     private Boolean isEmpty;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected final CustomFluidTank lockedFluid = new CustomFluidTank(FluidType.BUCKET_VOLUME);
     @Getter
@@ -83,12 +79,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public void onContentsChanged() {
         isEmpty = null;
+        syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -250,6 +242,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             this.lockedFluid.setFluid(FluidStack.EMPTY);
             setFilter(stack -> true);
         }
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
         onContentsChanged();
     }
 
