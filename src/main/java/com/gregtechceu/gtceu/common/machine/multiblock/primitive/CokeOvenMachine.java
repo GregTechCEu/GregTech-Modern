@@ -4,13 +4,14 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -47,10 +48,23 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .size(176, 166)
                 .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
                 // Top half of the screen
-                .child(createImportSlot(syncManager).margin(52, 0, 30, 0))
+                .child(new ItemSlot().syncHandler(new ItemSlotSH(
+                        new ModularSlot(importItems.storage, 0)
+                                .slotGroup("import_items")
+                                .accessibility(true, true)))
+                        .margin(52, 30))
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
-                .child(createExportSlot(syncManager).margin(103, 0, 30, 0))
+
+                .child(new ItemSlot().syncHandler(new ItemSlotSH(
+                        new ModularSlot(exportItems.storage, 0)
+                                .slotGroup("export_items")
+                                .accessibility(false, true)))
+                        .margin(103, 30))
+                .child(new FluidSlot()
+                        .syncHandler(new FluidSlotSyncHandler(
+                                exportFluids.getStorages()[0]))
+                        .margin(121, 30))
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
@@ -78,25 +92,27 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
      * true));
      * }
      */
-    private ItemSlot createImportSlot(PanelSyncManager syncManager) {
-        syncManager.syncValue("import", new ItemSlotSH(
-                new ModularSlot(importItems.storage, 0)
-                        .slotGroup(new SlotGroup("import", 1))
-                        .accessibility(true, true)));
-        return new ItemSlot()
-                .syncHandler("import", 0)
-                .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
-    }
-
-    private ItemSlot createExportSlot(PanelSyncManager syncManager) {
-        syncManager.syncValue("export", new ItemSlotSH(
-                new ModularSlot(exportItems.storage, 0)
-                        .slotGroup(new SlotGroup("export", 1))
-                        .accessibility(false, true)));
-        return new ItemSlot()
-                .syncHandler("export", 0)
-                .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
-    }
+    /*
+     * private ItemSlot createImportItemSlot(PanelSyncManager syncManager) {
+     * syncManager.syncValue("import", new ItemSlotSH(
+     * new ModularSlot(importItems.storage, 0)
+     * .slotGroup(new SlotGroup("import", 1))
+     * .accessibility(true, true)));
+     * return new ItemSlot()
+     * .syncHandler("import", 0)
+     * .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+     * }
+     * 
+     * private ItemSlot createExportItemSlot(PanelSyncManager syncManager) {
+     * syncManager.syncValue("export", new ItemSlotSH(
+     * new ModularSlot(exportItems.storage, 0)
+     * .slotGroup(new SlotGroup("export", 1))
+     * .accessibility(false, true)));
+     * return new ItemSlot()
+     * .syncHandler("export", 0)
+     * .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+     * }
+     */
 
     @Override
     public void animateTick(RandomSource random) {
