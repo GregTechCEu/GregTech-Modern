@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.InteractionSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
@@ -257,6 +258,9 @@ public class PlaceholderHandler {
                                                @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.panel("placeholder_language_help",
                 (syncManager1, panelHandler1) -> createHelpPanel(syncManager1), true);
+        InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
+        if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
+        syncManager.syncValue("run_code_sync_handler", runCodeOnce);
         // because the args are nullable, intellij complains about everything, even though childIf is used
         // noinspection DataFlowIssue
         return Flow.row()
@@ -301,10 +305,7 @@ public class PlaceholderHandler {
                                         .background(GTGuiTextures.RIGHTLOAD)
                                         .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
                                         .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
-                                        .onMousePressed((mouseX, mouseY, button) -> {
-                                            if (updateText != null) updateText.run();
-                                            return true;
-                                        }))
+                                        .syncHandler(runCodeOnce))
                                 .child(new ButtonWidget<>()
                                         .background(GTGuiTextures.HELP)
                                         .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())

@@ -11,11 +11,13 @@ import com.gregtechceu.gtceu.api.mui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -201,14 +203,23 @@ public class ComputerMonitorCover extends CoverBehavior
 
     @Override
     public ParentWidget<?> createCoverUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return PlaceholderHandler.createPlaceholderEditor(
-                syncManager,
-                getPlaceholderContext(),
-                SyncHandlers.string(this::getPlaceholderText, this::setPlaceholderText),
-                SyncHandlers.doubleNumber(this::getScale, this::setScale),
-                SyncHandlers.intNumber(this::getUpdateInterval, this::setUpdateInterval),
-                SyncHandlers.bool(this::isPaused, this::setPaused),
-                this::update);
+        return Flow.row(); // this does not get called as buildUI is overridden
+    }
+
+    @Override
+    public ModularPanel buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel("placeholder_editor")
+                .size(400, 250)
+                .resizeableOnDrag(true)
+                .excludeAreaInXei()
+                .child(PlaceholderHandler.createPlaceholderEditor(
+                        syncManager,
+                        getPlaceholderContext(),
+                        SyncHandlers.string(this::getPlaceholderText, this::setPlaceholderText),
+                        SyncHandlers.doubleNumber(this::getScale, this::setScale),
+                        SyncHandlers.intNumber(this::getUpdateInterval, this::setUpdateInterval),
+                        SyncHandlers.bool(this::isPaused, this::setPaused),
+                        this::update));
     }
 
     private PlaceholderContext getPlaceholderContext() {
