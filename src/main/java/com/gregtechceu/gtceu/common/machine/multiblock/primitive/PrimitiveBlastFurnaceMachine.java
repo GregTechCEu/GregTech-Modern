@@ -155,15 +155,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .size(176, 166)
                 .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
                 // Top half of the screen
-                // Box that has the display texture BG +
-                // the buttons / text / etc
                 .child(createImportItemSlot(syncManager).margin(52, 16))
 
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(78, 38, 34, 15))
-
                 .child(createExportItemSlot(syncManager).margin(104, 0, 34, 0))
-
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget
                         .playerInventory(false, GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.SLOT_PRIMITIVE).left(7)
