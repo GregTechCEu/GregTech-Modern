@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 
 public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
+
     public TestMuiMachine2(IMachineBlockEntity holder) {
         super(holder);
     }
