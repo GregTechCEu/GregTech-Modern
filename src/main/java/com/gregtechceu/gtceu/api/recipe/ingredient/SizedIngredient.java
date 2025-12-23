@@ -98,7 +98,7 @@ public class SizedIngredient extends Ingredient {
             }
             return copied;
         }
-        return SizedIngredient.create(ingredient);
+        return SizedIngredient.create(ingredient, ingredient.getItems()[0].getCount());
     }
 
     @Override

@@ -20,6 +20,11 @@ import java.util.Objects;
  */
 public final class PanelSyncHandler extends SyncHandler implements IPanelHandler {
 
+    public static final int SYNC_NOTIFY_OPEN = 0;
+    public static final int SYNC_OPEN = 1;
+    public static final int SYNC_CLOSE = 2;
+    public static final int SYNC_DISPOSE = 3;
+
     private final IPanelBuilder panelBuilder;
     private final boolean subPanel;
     private String panelName;
@@ -50,7 +55,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
         if (isPanelOpen()) return;
         boolean client = getSyncManager().isClient();
         if (syncToServer && client) {
-            syncToServer(0);
+            syncToServer(SYNC_NOTIFY_OPEN);
             return;
         }
         if (this.syncManager != null &&
@@ -60,7 +65,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
             this.syncManager = new PanelSyncManager(client);
             this.openedPanel = Objects.requireNonNull(createUI(this.syncManager));
             this.panelName = this.openedPanel.getName();
-            this.openedPanel.setSyncHandler(this);
+            this.openedPanel.setPanelSyncHandler(this);
             WidgetTree.collectSyncValues(this.syncManager, this.openedPanel, false);
             if (!client) {
                 this.openedPanel = null;
@@ -94,7 +99,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
                 this.openedPanel.closeIfOpen();
             }
         } else {
-            syncToClient(2);
+            syncToClient(SYNC_CLOSE);
         }
     }
 
@@ -109,7 +114,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
         getSyncManager().getModularSyncManager().close(this.panelName);
         this.open = false;
         if (getSyncManager().isClient()) {
-            syncToServer(2);
+            syncToServer(SYNC_CLOSE);
         }
     }
 
@@ -117,7 +122,6 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
     public void deleteCachedPanel() {
         if (openedPanel == null || isPanelOpen()) return;
         boolean canDispose = WidgetTree.foreachChild(openedPanel, iWidget -> {
-            if (!iWidget.isValid()) return false;
             if (iWidget instanceof ISynced<?> synced && synced.isSynced()) {
                 return !(synced.getSyncHandler() instanceof ItemSlotSH);
             }
@@ -126,13 +130,13 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
 
         // This is because we can't guarantee that the sync handlers of the new panel are the same.
         // Dynamic sync handler changing is very error-prone.
-        if (!canDispose)
+        if (!canDispose) {
             throw new UnsupportedOperationException(
                     "Can't delete cached panel if it's still open or has ItemSlot Sync Handlers!");
-
+        }
         disposePanel();
 
-        sync(3);
+        sync(SYNC_DISPOSE);
     }
 
     private void disposePanel() {
@@ -153,23 +157,23 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
 
     @Override
     public void readOnClient(int i, FriendlyByteBuf packetBuffer) {
-        if (i == 1) {
+        if (i == SYNC_OPEN) {
             openPanel(false);
-        } else if (i == 2) {
+        } else if (i == SYNC_CLOSE) {
             closePanel();
-        } else if (i == 3) {
+        } else if (i == SYNC_DISPOSE) {
             disposePanel();
         }
     }
 
     @Override
     public void readOnServer(int i, FriendlyByteBuf packetBuffer) {
-        if (i == 0) {
+        if (i == SYNC_NOTIFY_OPEN) {
             openPanel(false);
-            syncToClient(1);
-        } else if (i == 2) {
+            syncToClient(SYNC_OPEN);
+        } else if (i == SYNC_CLOSE) {
             closePanelInternal();
-        } else if (i == 3) {
+        } else if (i == SYNC_DISPOSE) {
             disposePanel();
         }
     }

@@ -3,29 +3,34 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -41,12 +46,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine, IMachineLife {
+public class ChargerMachine extends TieredEnergyMachine implements IControllable, IMuiMachine, IMachineLife {
 
     public static final long AMPS_PER_ITEM = 4L;
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     public enum State implements StringRepresentable {
 
@@ -64,19 +66,19 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = GTMachineModelProperties.CHARGER_STATE;
 
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
 
     @Getter
-    @DescSynced
-    @RequireRerender
+    @SyncToClient
+    @RerenderOnChanged
     private State state;
 
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
@@ -90,10 +92,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
@@ -132,39 +130,51 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(inventorySize);
-        int colSize = rowSize;
-        if (inventorySize == 8) {
-            rowSize = 4;
-            colSize = 2;
-        }
-        var template = new WidgetGroup(0, 0, 18 * rowSize + 8, 18 * colSize + 8);
-        template.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        int index = 0;
-        for (int y = 0; y < colSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                template.addWidget(new SlotWidget(chargerInventory, index++, 4 + x * 18, 4 + y * 18, true, true)
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY)));
-            }
-        }
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        String[] matrix = GTMuiMachineUtil.createSquareMatrix(inventorySize, 'B');
+        return new ModularPanel(getDefinition().getName())
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 172))
+                .child(Flow.row()
+                        .height(90)
+                        .margin(6)
+                        .marginLeft(7)
+                        .marginTop(2)
+                        .height(80)
+                        .child(new ProgressWidget()
+                                .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
+                                        GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
+                                .direction(ProgressWidget.Direction.UP)
+                                .progress(this::getEnergyPercentage)
+                                .marginRight(50)
+                                .size(18, 60)
+                                .verticalCenter()
+                                .addTooltipLine(IKey.dynamic(() -> Component.literal(
+                                        "%s/%s EU".formatted(
+                                                GTStringUtils.formatInt(energyContainer.getEnergyStored()),
+                                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(
+                                chargerInventory, "charger_inv",
+                                inventorySize, 'B',
+                                slot -> slot.background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY),
+                                syncManager,
+                                matrix)
+                                .center()))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .excludeAreaInXei()
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager)))
+                .bindPlayerInventory();
+    }
 
-        var editableUI = createEnergyBar();
-        var energyBar = editableUI.createDefault();
-
-        var group = new WidgetGroup(0, 0,
-                Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyBar.getSize().height + 8));
-        var size = group.getSize();
-        energyBar.setSelfPosition(new Position(3, (size.height - energyBar.getSize().height) / 2));
-        template.setSelfPosition(new Position(
-                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                        energyBar.getSize().width + 2,
-                (size.height - template.getSize().height) / 2));
-        group.addWidget(energyBar);
-        group.addWidget(template);
-        editableUI.setupUI(group, this);
-        return group;
+    private double getEnergyPercentage() {
+        return (double) this.energyContainer.getEnergyStored() / this.energyContainer.getEnergyCapacity();
     }
 
     //////////////////////////////////////
@@ -195,6 +205,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
+            syncDataHolder.markClientSyncFieldDirty("state");
             setRenderState(getRenderState().setValue(GTMachineModelProperties.CHARGER_STATE, newState));
         }
     }
@@ -260,7 +271,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 }
 
                 if (changed) {
-                    ChargerMachine.this.markDirty();
                     changeState(State.RUNNING);
                 }
 

@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
@@ -31,11 +33,14 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GTMuiWidgets {
 
@@ -111,7 +116,13 @@ public class GTMuiWidgets {
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
 
-    public static ToggleButton createAutoOutputItemButton(SimpleTieredMachine machine, PanelSyncManager syncManager) {
+    public static ItemSlot createBatterySlot(IItemHandler itemHandler, int slot, PanelSyncManager syncManager) {
+        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(itemHandler, slot));
+        syncManager.syncValue("battery", battery);
+        return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
+    }
+
+    public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {
         BooleanSyncValue itemOutputs = new BooleanSyncValue(machine::isAutoOutputItems,
                 machine::setAutoOutputItems);
         syncManager.syncValue("auto_output_items", itemOutputs);
@@ -162,16 +173,17 @@ public class GTMuiWidgets {
                                 "cover.voiding.label.disabled")))));
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(SimpleTieredMachine machine, ModularPanel parentPanel,
-                                                         PanelSyncManager syncManager) {
-        IntSyncValue circuitSyncValue = new IntSyncValue(() -> {
-            if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) return -1;
-            return IntCircuitBehaviour.getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0));
+    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
+                                                           Supplier<ItemStack> circuitGetter) {
+        return new IntSyncValue(() -> {
+            if (circuitGetter.get().isEmpty()) return -1;
+            return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
-                (v) -> machine.getCircuitInventory().setStackInSlot(0,
-                        (v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v))));
-        syncManager.syncValue("circuit_slot", circuitSyncValue);
+                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v)));
+    }
 
+    public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {
+        syncManager.syncValue("circuit_slot", circuitSyncValue);
         Grid buttonGrid = new Grid()
                 .coverChildren()
                 .mapTo(8, 32, i -> new ToggleButton()
@@ -183,12 +195,10 @@ public class GTMuiWidgets {
                                     if (v) circuitSyncValue.setValue(i + 1);
                                 })));
 
-        ModularPanel circuitPanel = new Dialog<>("circuit_panel")
+        return new Dialog<>("circuit_panel")
                 .setDisablePanelsBelow(false)
                 .setDraggable(true)
                 .setCloseOnOutOfBoundsClick(true)
-                .relative(parentPanel)
-                .leftRelOffset(0.0f, -180)
                 .height(105)
                 .child(new Column()
                         .padding(2)
@@ -199,7 +209,24 @@ public class GTMuiWidgets {
                         .alignX(Alignment.Center)
                         .child(IKey.lang("item.gtceu.circuit.integrated.gui").asWidget())
                         .child(buttonGrid));
+    }
 
+    public static ModularPanel createCircuitSlotPanel(Consumer<ItemStack> circuitSetter,
+                                                      Supplier<ItemStack> circuitGetter, PanelSyncManager syncManager) {
+        IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(circuitSetter, circuitGetter);
+        return createCircuitSlotPanel(circuitSyncValue, syncManager);
+    }
+
+    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel parentPanel,
+                                                         PanelSyncManager syncManager) {
+        IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
+                i -> machine.getCircuitInventory().setStackInSlot(0, i),
+                () -> machine.getCircuitInventory().getStackInSlot(0));
+        ModularPanel circuitPanel = createCircuitSlotPanel(
+                circuitSyncValue,
+                syncManager)
+                .relative(parentPanel)
+                .leftRelOffset(0.0f, -180);
         IPanelHandler circuitPanelHandler = syncManager.panel("circuit_panel",
                 (sm, sh) -> circuitPanel, true);
 
@@ -294,6 +321,6 @@ public class GTMuiWidgets {
     }
 
     public static ParentWidget<?> createXEIWidget(GTRecipeTypeUILayout layout) {
-        return layout.getMainWidget();
+        return new ParentWidget<>();
     }
 }

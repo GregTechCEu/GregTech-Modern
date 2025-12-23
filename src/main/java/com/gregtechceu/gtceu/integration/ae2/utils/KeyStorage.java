@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -24,7 +22,7 @@ import java.util.Iterator;
  * Provides methods for serialization and deserialization.
  */
 @MethodsReturnNonnullByDefault
-public class KeyStorage implements ITagSerializable<ListTag>, IContentChangeAware,
+public class KeyStorage implements INBTSerializable<ListTag>,
                         Iterable<Object2LongMap.Entry<AEKey>> {
 
     public final Object2LongMap<AEKey> storage = new Object2LongOpenHashMap<>(); // TODO trim periodically or not

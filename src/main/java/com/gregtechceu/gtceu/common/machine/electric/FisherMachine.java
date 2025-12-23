@@ -34,14 +34,13 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -81,30 +80,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FisherMachine extends TieredEnergyMachine
                            implements IAutoOutputItem, IMuiMachine, IMachineLife, IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler cache;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler baitHandler;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, fishingSubs;
@@ -118,26 +114,24 @@ public class FisherMachine extends TieredEnergyMachine
     public final int maxProgress;
 
     @Getter
-    @Persisted
+    @SaveField
     private int progress = 0;
 
     @Getter
-    @Persisted
-    @Setter
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
 
     @Getter
-    @Persisted
+    @SaveField
     private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
 
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean junkEnabled = true;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -163,11 +157,6 @@ public class FisherMachine extends TieredEnergyMachine
         return handler;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     protected NotifiableItemStackHandler createCacheItemHandler() {
         return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
     }
@@ -176,6 +165,16 @@ public class FisherMachine extends TieredEnergyMachine
         var handler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
         handler.setFilter(item -> item.is(Items.STRING));
         return handler;
+    }
+
+    public void setWorkingEnabled(boolean enabled) {
+        isWorkingEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
+    }
+
+    public void setJunkEnabled(boolean enabled) {
+        junkEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("junkEnabled");
     }
 
     @Override
@@ -327,12 +326,14 @@ public class FisherMachine extends TieredEnergyMachine
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 
@@ -541,12 +542,12 @@ public class FisherMachine extends TieredEnergyMachine
      * Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
      * var size = group.getSize();
      * energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-     * 
+     *
      * template.setSelfPosition(new Position(
      * (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
      * energyGroup.getSize().width + 2,
      * (size.height - template.getSize().height) / 2));
-     * 
+     *
      * group.addWidget(energyGroup);
      * group.addWidget(template);
      * return group;
@@ -558,7 +559,7 @@ public class FisherMachine extends TieredEnergyMachine
      * createJunkButton().setupUI(template, fisherMachine);
      * }
      * }));
-     * 
+     *
      * protected static EditableUI<SlotWidget, FisherMachine> createBatterySlot() {
      * return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
      * var slotWidget = new SlotWidget();
@@ -572,7 +573,7 @@ public class FisherMachine extends TieredEnergyMachine
      * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
      * });
      * }
-     * 
+     *
      * protected static EditableUI<ToggleButtonWidget, FisherMachine> createJunkButton() {
      * return new EditableUI<>("junk_button", ToggleButtonWidget.class, () -> {
      * var toggleButtonWidget = new ToggleButtonWidget(10, 20, 18, 18,
@@ -586,12 +587,12 @@ public class FisherMachine extends TieredEnergyMachine
      * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
      * });
      * }
-     * 
+     *
      * protected static EditableUI<WidgetGroup, FisherMachine> createTemplate(int inventorySize) {
      * return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
      * int rowSize = (int) Math.sqrt(inventorySize);
      * WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 20, rowSize * 18 + 8);
-     * 
+     *
      * for (int y = 0; y < rowSize; y++) {
      * for (int x = 0; x < rowSize; x++) {
      * int index = y * rowSize + x;
@@ -603,7 +604,7 @@ public class FisherMachine extends TieredEnergyMachine
      * main.addWidget(slotWidget);
      * }
      * }
-     * 
+     *
      * SlotWidget baitSlotWidget = new SlotWidget();
      * baitSlotWidget.initTemplate();
      * baitSlotWidget

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class ByteBufAdapters {
 
@@ -109,8 +110,7 @@ public class ByteBufAdapters {
 
     public static <T> IByteBufAdapter<T> makeAdapter(@NotNull IByteBufDeserializer<T> deserializer,
                                                      @NotNull IByteBufSerializer<T> serializer,
-                                                     @Nullable EqualityTest<T> comparator) {
-        final EqualityTest<T> tester = comparator != null ? comparator : EqualityTest.defaultTester();
+                                                     @Nullable EqualityTest<T> tester) {
         return new IByteBufAdapter<>() {
 
             @Override
@@ -125,7 +125,7 @@ public class ByteBufAdapters {
 
             @Override
             public boolean areEqual(@NotNull T t1, @NotNull T t2) {
-                return tester.areEqual(t1, t2);
+                return tester != null ? tester.areEqual(t1, t2) : Objects.equals(t1, t2);
             }
         };
     }

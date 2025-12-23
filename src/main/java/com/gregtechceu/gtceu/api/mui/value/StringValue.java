@@ -14,7 +14,7 @@ public class StringValue extends ObjectValue<String> implements IStringValue<Str
     }
 
     public StringValue(String value) {
-        super(value);
+        super(String.class, value);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class StringValue extends ObjectValue<String> implements IStringValue<Str
     public static class Dynamic extends ObjectValue.Dynamic<String> implements IStringValue<String> {
 
         public Dynamic(Supplier<String> getter, @Nullable Consumer<String> setter) {
-            super(getter, setter);
+            super(String.class, getter, setter);
         }
 
         @Override

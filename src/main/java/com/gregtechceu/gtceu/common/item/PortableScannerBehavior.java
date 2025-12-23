@@ -2,11 +2,9 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -25,11 +23,13 @@ import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
+import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,7 +71,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         SHOW_MACHINE_INFO("behavior.portable_scanner.mode.show_machine_info"),
         SHOW_ELECTRICAL_INFO("behavior.portable_scanner.mode.show_electrical_info"),
         SHOW_RECIPE_INFO("behavior.portable_scanner.mode.show_recipe_info"),
-        SHOW_ENVIRONMENTAL_INFO("behavior.portable_scanner.mode.show_environmental_info");
+        SHOW_ENVIRONMENTAL_INFO("behavior.portable_scanner.mode.show_environmental_info"),
+        SHOW_INTERNAL_JAVA_INFO("behavior.portable_scanner.mode.show_internal_info");
 
         private final String langKey;
 
@@ -449,7 +450,43 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             }
         }
 
+        if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO &&
+                tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
+            MetaMachineBlockEntity mmbe = (syncBlockEntity instanceof MetaMachineBlockEntity m) ? m : null;
+            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?, ?> p) ? p : null;
+
+            list.add(Component.literal(syncBlockEntity.toString()));
+            if (mmbe != null) list.add(Component.literal(mmbe.getMetaMachine().toString()));
+            if (pipe != null) {
+                var net = pipe.getPipeNet();
+                list.add(Component.literal(net == null ? "null" : net.toString()));
+            }
+            list.add(Component.translatable("behavior.portable_scanner.divider"));
+
+            list.add(Component.literal("Covers"));
+            ICoverable coverable = mmbe != null ? mmbe.getMetaMachine().getCoverContainer() :
+                    (pipe != null ? pipe.getCoverContainer() : null);
+            if (coverable != null) {
+                for (var dir : GTUtil.DIRECTIONS) {
+                    var cover = coverable.getCoverAtSide(dir);
+                    list.add(Component.literal(dir.getName() + ": " + (cover != null ? cover.toString() : "null")));
+                }
+            }
+
+            list.add(Component.translatable("behavior.portable_scanner.divider"));
+            list.add(Component.literal("Save data"));
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(false));
+
+            list.add(Component.translatable("behavior.portable_scanner.divider"));
+            list.add(Component.literal("Update packet"));
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(true, true));
+        }
+
         return energyCost;
+    }
+
+    private void nbtFormat(List<Component> comp, CompoundTag tag) {
+        comp.add(Component.literal(tag.toString()));
     }
 
     @Override

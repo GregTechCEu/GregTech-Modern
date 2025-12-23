@@ -18,11 +18,9 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -47,15 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLife,
                           IDropSaveMachine, IInteractedMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Getter
     private final Material material;
@@ -64,12 +54,12 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
     @Getter
     private final int rowLength;
     @Getter
-    @RequireRerender
-    @Persisted
-    @DescSynced
+    @RerenderOnChanged
+    @SaveField
+    @SyncToClient
     private boolean isTaped;
 
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler inventory;
 
     public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize, int rowLength) {
@@ -141,6 +131,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
                 }
                 isTaped = true;
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
+                syncDataHolder.markClientSyncFieldDirty("isTaped");
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
@@ -156,16 +147,18 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
                 this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
             }
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
+            syncDataHolder.markClientSyncFieldDirty("isTaped");
         }
     }
 
     @Override
     public void saveToItem(CompoundTag tag) {
-        if (isTaped) {
-            IDropSaveMachine.super.saveToItem(tag);
-            tag.putBoolean("taped", isTaped);
-            tag.put("inventory", inventory.storage.serializeNBT());
-        }
+        if (isTaped) tag.put("inventory", inventory.storage.serializeNBT());
+    }
+
+    @Override
+    public void loadFromItem(CompoundTag tag) {
+        inventory.storage.deserializeNBT(tag.getCompound("inventory"));
     }
 
     @Override

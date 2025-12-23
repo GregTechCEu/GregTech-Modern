@@ -65,6 +65,11 @@ public class DoubleValue implements IDoubleValue<Double>, IFloatValue<Double>, I
         setDoubleValue(val);
     }
 
+    @Override
+    public Class<Double> getValueType() {
+        return Double.class;
+    }
+
     public static class Dynamic implements IDoubleValue<Double>, IStringValue<Double> {
 
         private final DoubleSupplier getter;
@@ -103,6 +108,11 @@ public class DoubleValue implements IDoubleValue<Double>, IFloatValue<Double>, I
         @Override
         public void setValue(Double value) {
             setDoubleValue(value);
+        }
+
+        @Override
+        public Class<Double> getValueType() {
+            return Double.class;
         }
     }
 }

@@ -207,7 +207,7 @@ public class WidgetTree {
     }
 
     /**
-     * Creates a stream of the whole sub widget tree.
+     * Creates a flat stream of the whole sub widget tree.
      * <p>
      * {@link Stream#forEach(Consumer)} on this has slightly worse performance than
      * {@link #foreachChildBFS(IWidget, Predicate, boolean)} on
@@ -219,7 +219,7 @@ public class WidgetTree {
      * @return stream of the sub widget tree
      */
     @SuppressWarnings("UnstableApiUsage")
-    public static Stream<IWidget> stream(IWidget parent) {
+    public static Stream<IWidget> flatStream(IWidget parent) {
         if (!parent.hasChildren()) return Stream.of(parent);
         return Streams.stream(iteratorBFS(parent));
     }

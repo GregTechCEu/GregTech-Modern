@@ -33,4 +33,9 @@ public class DynamicValue<T> implements IValue<T> {
             this.setter.accept(value);
         }
     }
+
+    @Override
+    public Class<T> getValueType() {
+        return (Class<T>) this.getter.get().getClass();
+    }
 }

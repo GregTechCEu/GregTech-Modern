@@ -27,6 +27,9 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -34,6 +37,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -57,7 +62,6 @@ import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -73,24 +77,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid, IMuiMachine, IMachineLife {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public static final int BASE_PUMP_RADIUS = 16;
     public static final int EXTRA_PUMP_RADIUS = 4;
     public static final int PUMP_SPEED_BASE = 80;
     private final Set<BlockPos> forbiddenBlocks = new ObjectOpenHashSet<>();
     private PumpQueue pumpQueue = null;
     @Getter
-    @Persisted
+    @SaveField
     private int pumpHeadY;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputFluids;
-    @Persisted
-    @DropSaved
+    @SaveField
     protected final NotifiableFluidTank cache;
 
     public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
@@ -101,10 +101,6 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
@@ -121,6 +117,11 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Override
     public Direction getOutputFacingFluids() {
         return getFrontFacing();
+    }
+
+    public void setAutoOutputFluids(boolean autoOutputFluids) {
+        this.autoOutputFluids = autoOutputFluids;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
     }
 
     @Override
