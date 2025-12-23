@@ -121,6 +121,7 @@ public class GTMachines {
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
+                    // .theme((tier) -> {tier > 1 : GTGuiTheme.STEEL : GTGuiTheme.BRONZE})
                     .UI(GTSingleblockMachinePanels.STEAM_MACERATOR)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
