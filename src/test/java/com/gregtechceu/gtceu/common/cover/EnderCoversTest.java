@@ -45,7 +45,9 @@ public class EnderCoversTest {
         tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 1000),
                 IFluidHandler.FluidAction.EXECUTE);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(TestUtils.isFluidStackEqual(tank2.getStored(), new FluidStack(Fluids.WATER, 1000)),
+            helper.assertTrue(TestUtils.isFluidStackEqual(
+                    tank2.getFluidHandlerCap(null, false).getFluidInTank(0),
+                    new FluidStack(Fluids.WATER, 1000)),
                     "ender fluid link cover didn't transfer fluid");
             helper.succeed();
         });
