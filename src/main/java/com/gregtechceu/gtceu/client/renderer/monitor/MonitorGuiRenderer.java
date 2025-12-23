@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.client.CharTypedEvent;
 import com.gregtechceu.gtceu.client.EarlyKeyPressEvent;
 import com.gregtechceu.gtceu.client.mui.screen.*;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
@@ -24,8 +23,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -40,9 +39,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexSorting;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
@@ -58,7 +55,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     private int mouseX = -1, mouseY = -1;
     private final Level targetLevel;
     private final BlockPos targetPos;
-    private RenderTarget renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
+    private final RenderTarget renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
 
     public MonitorGuiRenderer(Pair<Level, BlockPos> target) {
         MinecraftForge.EVENT_BUS.register(this);
@@ -184,13 +181,23 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         screen.onFrameUpdate();
         AnimatorManager.INSTANCE.onDraw(null);
         if (width * height == 0) return;
-        VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.inWorldGui());
         RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
+        ShaderInstance shaderInstance = MCHelper.getMc().gameRenderer.blitShader;
+        shaderInstance.setSampler("DiffuseSampler", renderTarget.getColorTextureId());
         Matrix4f pose = poseStack.last().pose();
-        consumer.vertex(pose, 0, height, 0).color(0xFFFFFFFF).uv(0, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, width, height, 0).color(0xFFFFFFFF).uv(1, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, width, 0, 0).color(0xFFFFFFFF).uv(1, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
-        consumer.vertex(pose, 0, 0, 0).color(0xFFFFFFFF).uv(0, 1).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        if (shaderInstance.PROJECTION_MATRIX != null)
+            shaderInstance.PROJECTION_MATRIX.set(MCHelper.getMc().gameRenderer.getProjectionMatrix(70));
+        if (shaderInstance.MODEL_VIEW_MATRIX != null) shaderInstance.MODEL_VIEW_MATRIX.set(pose);
+        shaderInstance.apply();
+        Tesselator tesselator = RenderSystem.renderThreadTesselator();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.vertex(0.0D, height, 0.0D).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
+        bufferbuilder.vertex(width, height, 0.0D).uv(1, 0.0F).color(255, 255, 255, 255).endVertex();
+        bufferbuilder.vertex(width, 0.0D, 0.0D).uv(1, 1).color(255, 255, 255, 255).endVertex();
+        bufferbuilder.vertex(0.0D, 0.0D, 0.0D).uv(0.0F, 1).color(255, 255, 255, 255).endVertex();
+        BufferUploader.draw(bufferbuilder.end());
+        shaderInstance.clear();
     }
 
     @Override
