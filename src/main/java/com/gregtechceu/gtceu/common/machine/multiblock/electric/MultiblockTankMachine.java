@@ -102,8 +102,6 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
                         new ParentWidget<>()
                                 .widthRel(1)
                                 .height(20 + 60)
-                                // Box that has the display texture BG +
-                                // the buttons / text / etc
                                 .child(new ParentWidget<>()
                                         .background(GTGuiTextures.DISPLAY)
                                         .size(90, 63)
