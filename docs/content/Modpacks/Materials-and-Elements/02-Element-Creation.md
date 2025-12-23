@@ -22,8 +22,8 @@ GTCEuStartupEvents.registry('gtceu:element', event => {
 ```
 
 1.  `.create(String name)` ->  The element name.
-2.  `.protons(int protons)` -> Proton Count. Use `-1` if it is not an element that will get a material.
-3.  `.neutrons(int neutrons)` -> Neutron Count. Use `-1` if it is not an element that will get a material.
+2.  `.protons(int protons)` -> Proton Count. Use `-1` if it is an element that will not get a material.
+3.  `.neutrons(int neutrons)` -> Neutron Count. Use `-1` if it is an element that will not get a material
 4.  `.halfLifeSeconds(int seconds)` -> Half Life Decay in Seconds. After N seconds, half of the material will have decayed. Use `-1` if your element doesn't decay.
 5.  `.decayTo(Material material)` -> Material to decay to. Use `null` if your element doesn't decay.
 6.  `.symbol(String symbol)` -> Atomic Symbol, which will be displayed as in chemical formulas.
