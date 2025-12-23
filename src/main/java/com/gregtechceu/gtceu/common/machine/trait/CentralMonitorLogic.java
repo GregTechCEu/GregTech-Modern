@@ -61,6 +61,8 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
             isActive = false;
             progress = Math.max(progress - 2, 1);
         }
+        getSyncDataHolder().markClientSyncFieldDirty("isActive");
+        getSyncDataHolder().markClientSyncFieldDirty("progress");
     }
 
     @Override

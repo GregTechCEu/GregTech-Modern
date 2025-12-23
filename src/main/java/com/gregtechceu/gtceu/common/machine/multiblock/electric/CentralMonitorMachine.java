@@ -30,9 +30,6 @@ import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,7 +61,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @SyncToClient
     @RerenderOnChanged
     @Getter
-    private final List<MonitorGroup> monitorGroups = new ArrayList<>();
+    private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
     private MultiblockState patternFindingState;
 
@@ -131,6 +128,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
+        getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
+        getSyncDataHolder().markClientSyncFieldDirty("recipeLogic");
     }
 
     @Override
@@ -202,6 +201,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             posDown.move(down);
             downDist++;
         }
+        getSyncDataHolder().markClientSyncFieldDirty("leftDist");
+        getSyncDataHolder().markClientSyncFieldDirty("rightDist");
+        getSyncDataHolder().markClientSyncFieldDirty("upDist");
+        getSyncDataHolder().markClientSyncFieldDirty("downDist");
     }
 
     private boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist, Direction left,
@@ -288,8 +291,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public void setMonitorGroups(List<MonitorGroup> groups) {
+        if (!(monitorGroups instanceof ArrayList<MonitorGroup>)) monitorGroups = new ArrayList<>(monitorGroups);
         monitorGroups.clear();
         monitorGroups.addAll(groups);
+        getSyncDataHolder().markClientSyncFieldDirty("monitorGroups");
     }
 
     @Override

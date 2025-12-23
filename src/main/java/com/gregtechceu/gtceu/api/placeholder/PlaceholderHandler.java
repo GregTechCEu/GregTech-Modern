@@ -256,8 +256,9 @@ public class PlaceholderHandler {
                                                @Nullable IIntValue<?> updateInterval,
                                                @Nullable IBoolValue<?> pause,
                                                @Nullable Runnable updateText) {
-        IPanelHandler helpPanel = syncManager.panel("placeholder_language_help",
-                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1), true);
+        IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
+                true,
+                (syncManager1, panelHandler1) -> createHelpPanel(syncManager1));
         InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
         if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
         syncManager.syncValue("run_code_sync_handler", runCodeOnce);
@@ -305,7 +306,7 @@ public class PlaceholderHandler {
                                         .background(GTGuiTextures.RIGHTLOAD)
                                         .hoverBackground(GTGuiTextures.RIGHTLOAD, new BorderDrawable())
                                         .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
-                                        .syncHandler(runCodeOnce))
+                                        .syncHandler("run_code_sync_handler"))
                                 .child(new ButtonWidget<>()
                                         .background(GTGuiTextures.HELP)
                                         .hoverBackground(GTGuiTextures.HELP, new BorderDrawable())

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -58,18 +59,16 @@ public class CentralMonitorUIFactory implements PanelFactory {
         syncManager.syncValue("monitor_groups_sync", groupSync);
         List<MonitorGroup> groups = new ArrayList<>(groupSync.getValue());
         SortableListWidget<MonitorGroup> listWidget = new SortableListWidget<>();
-        IPanelHandler helpPanel = syncManager.panel(
-                "help_panel",
-                (syncManager1, panelHandler1) -> createHelpPanel(),
-                true);
+        IPanelHandler helpPanel = syncManager.syncedPanel(
+                "help_panel", true,
+                (syncManager1, panelHandler1) -> createHelpPanel());
         Function<SortableListWidget.Item<MonitorGroup>, SortableListWidget.Item<MonitorGroup>> processGroupItem = item -> {
-            IPanelHandler panelHandler = syncManager.panel(
-                    "editor_" + groups.indexOf(item.getWidgetValue()),
+            IPanelHandler panelHandler = syncManager.syncedPanel(
+                    "editor_" + groups.indexOf(item.getWidgetValue()), true,
                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
                             syncManager1, groupSync,
                             machine, item.getWidgetValue(),
-                            groups, helpPanel),
-                    true);
+                            groups, helpPanel));
             return item.child(Flow.row()
                     .height(20)
                     .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(item.getWidgetValue().getName())))
@@ -92,18 +91,18 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 return true;
                             })));
         };
-        IPanelHandler newGroupPanelHandler = syncManager.panel(
-                "editor_" + groups.size(),
+        IPanelHandler newGroupPanelHandler = syncManager.syncedPanel(
+                "editor_" + groups.size(), true,
                 (syncManager1, panelHandler1) -> {
                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
                     groups.add(group);
                     listWidget.child(processGroupItem.apply(new SortableListWidget.Item<>(group)));
+                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups, syncManager1.isClient());
                     groupSync.setValue(groups, true, false);
                     return this.createGroupEditorPanel(
                             syncManager1, groupSync,
                             machine, group, groups, helpPanel);
-                },
-                true);
+                });
         return new Dialog<>("main")
                 .setDraggable(true)
                 .padding(5)
@@ -152,7 +151,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 int finalRow = row;
                 IPanelHandler slotDialogHandler = component == null || component.getDataItems() == null ?
                         null :
-                        syncManager.panel("slot_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
+                        syncManager.syncedPanel(
+                                "slot_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
+                                true,
                                 (syncManager1, panelHandler1) -> new SimpleDialog<>(
                                         "slot_number_dialog_" + finalCol + "_" + finalRow + "_" + groups.indexOf(group),
                                         slot -> {
@@ -166,8 +167,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             return Integer.parseInt(w.getText());
                                         },
                                         IKey.lang("gtceu.central_monitor.gui.data_slot")).setDraggable(true)
-                                        .size(160, 80),
-                                true);
+                                        .size(160, 80));
                 IntSupplier colorSupplier = () -> {
                     if (component == null) return 0;
                     boolean inGroup = group.contains(component.getPos());
@@ -363,11 +363,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
             }
         }
         IMonitorModuleItem finalModuleItem = moduleItem;
-        return moduleItem == null ? null : syncManager.panel(
-                "module_editor_" + index,
+        return moduleItem == null ? null : syncManager.syncedPanel(
+                "module_editor_" + index, true,
                 (syncManager1, panelHandler1) -> finalModuleItem.createModularPanel(stack, machine, group, syncManager1,
-                        panelHandler1),
-                true);
+                        panelHandler1));
     }
 
     private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {

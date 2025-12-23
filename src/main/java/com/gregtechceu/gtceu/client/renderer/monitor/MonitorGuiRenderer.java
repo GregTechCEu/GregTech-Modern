@@ -140,6 +140,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
             renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
         renderTarget.enableStencil();
+        renderTarget.clear(Minecraft.ON_OSX);
 
         renderTarget.bindWrite(true);
 
@@ -204,8 +205,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (hit instanceof BlockHitResult blockHit) {
             BlockPos pos = blockHit.getBlockPos();
             BlockPos relPos = machine.toRelative(pos);
-            if (MetaMachine.getMachine(player.level(), pos) instanceof MonitorPartMachine monitor &&
-                    monitor.getControllers().contains(machine)) {
+            if (MetaMachine.getMachine(player.level(), pos) instanceof MonitorPartMachine monitor) {
                 Vector2d monitorMousePos = monitor.getMousePos(hit);
                 mouseX = relPos.getX() - rel.getX() + monitorMousePos.x();
                 mouseY = relPos.getY() - rel.getY() + 1 - monitorMousePos.y();
@@ -219,8 +219,10 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 }
             }
         }
-        this.mouseX = (int) (mouseX * 256);
-        this.mouseY = (int) (mouseY * 256);
+        if (mouseX >= 0 && mouseY >= 0 && mouseX * 256 <= width && mouseY * 256 <= height) {
+            this.mouseX = (int) (mouseX * 256);
+            this.mouseY = (int) (mouseY * 256);
+        }
         renderGui(size.getX(), size.getY(), poseStack, buffer, partialTick, (int) (mouseX * 256), (int) (mouseY * 256));
     }
 }
