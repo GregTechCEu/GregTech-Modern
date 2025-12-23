@@ -23,18 +23,17 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.Util;
@@ -69,40 +68,37 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SimpleTieredMachine extends WorkableTieredMachine
                                  implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class,
-            WorkableTieredMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingFluids;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputFluids;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideFluids;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
@@ -121,10 +117,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
         var handler = new CustomItemStackHandler() {
@@ -215,6 +207,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setAutoOutputItems(boolean allow) {
         if (hasAutoOutputItem()) {
             this.autoOutputItems = allow;
+            syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
             updateAutoOutputSubscription();
         }
     }
@@ -223,6 +216,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setAutoOutputFluids(boolean allow) {
         if (hasAutoOutputFluid()) {
             this.autoOutputFluids = allow;
+            syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
             updateAutoOutputSubscription();
         }
     }
@@ -231,6 +225,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         if (hasAutoOutputFluid()) {
             this.outputFacingFluids = outputFacing;
+            syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
             updateAutoOutputSubscription();
         }
     }
@@ -239,6 +234,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         if (hasAutoOutputItem()) {
             this.outputFacingItems = outputFacing;
+            syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
             updateAutoOutputSubscription();
         }
     }

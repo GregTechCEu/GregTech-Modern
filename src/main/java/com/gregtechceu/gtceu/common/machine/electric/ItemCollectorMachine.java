@@ -32,14 +32,13 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -73,9 +72,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemCollectorMachine extends TieredEnergyMachine
                                   implements IAutoOutputItem, IMuiMachine, IMachineLife, IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemCollectorMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
     private static final int[] INVENTORY_SIZES = { 4, 9, 16, 25, 25 };
     private static final double MOTION_MULTIPLIER = 0.04;
@@ -83,22 +79,22 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     @Nullable
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler output;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler filterInventory;
 
     @Nullable
@@ -111,9 +107,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     private AABB aabb;
 
-    @Persisted
+    @SaveField
     @Getter
-    @DescSynced
+    @SyncToClient
     private int range;
 
     private boolean rangeDirty = false;
@@ -121,14 +117,14 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     private final int maxRange;
 
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
 
-    @DescSynced
-    @Persisted
+    @SyncToClient
+    @SaveField
     @Getter
-    @RequireRerender
+    @RerenderOnChanged
     private boolean active = false;
 
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -161,11 +157,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         handler.setFilter(
                 item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.TAG_FILTER.asItem()));
         return handler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     protected NotifiableItemStackHandler createOutputItemHandler() {
@@ -318,6 +309,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
@@ -332,6 +324,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 
@@ -395,12 +388,14 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     public void setRange(int range) {
         this.range = range;
+        syncDataHolder.markClientSyncFieldDirty("range");
         rangeDirty = true;
     }
 
     @Override
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
         updateCollectionSubscription();
     }
 

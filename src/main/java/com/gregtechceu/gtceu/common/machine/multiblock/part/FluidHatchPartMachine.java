@@ -31,12 +31,10 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -55,7 +53,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -64,14 +61,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
     public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_9X = FluidType.BUCKET_VOLUME;
 
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank tank;
     private final int slots;
     @Nullable
@@ -79,12 +73,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Nullable
     protected ISubscription tankSubs;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean circuitSlotEnabled;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
@@ -101,10 +94,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
@@ -182,6 +171,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
+    }
+
+    public void setCircuitSlotEnabled(boolean enabled) {
+        circuitSlotEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("circuitSlotEnabled");
     }
 
     //////////////////////////////////////

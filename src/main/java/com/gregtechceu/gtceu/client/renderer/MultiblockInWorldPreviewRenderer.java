@@ -198,7 +198,7 @@ public class MultiblockInWorldPreviewRenderer {
 
                     if (column[z].getBlockEntity(realPos) instanceof IMachineBlockEntity holder &&
                             holder.getMetaMachine() instanceof IMultiController cont) {
-                        holder.getSelf().setLevel(LEVEL);
+                        holder.self().setLevel(LEVEL);
                         controllerBase = cont;
                     } else {
                         blockMap.put(realPos, BlockInfo.fromBlockState(blockState));
@@ -209,7 +209,7 @@ public class MultiblockInWorldPreviewRenderer {
 
         LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
-            LEVEL.setInnerBlockEntity(controllerBase.self().holder.getSelf());
+            LEVEL.setInnerBlockEntity(controllerBase.self().holder.self());
         }
 
         prepareBuffers(LEVEL, blockMap.keySet(), duration);

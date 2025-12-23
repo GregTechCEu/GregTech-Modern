@@ -6,10 +6,8 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -17,7 +15,6 @@ import net.minecraft.core.Direction;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.EnumSet;
 
@@ -28,15 +25,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGridConnectedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEBusPartMachine.class,
-            ItemBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     protected final GridNodeHolder nodeHolder;
 
-    @DescSynced
+    @SyncToClient
     @Getter
-    @Setter
     protected boolean isOnline;
 
     protected final IActionSource actionSource;
@@ -45,6 +38,11 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
         super(holder, GTValues.LuV, io, args);
         this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+        syncDataHolder.markClientSyncFieldDirty("isOnline");
     }
 
     protected GridNodeHolder createNodeHolder() {
@@ -80,11 +78,6 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
         getMainNode().setExposedOnSides(EnumSet.of(newFacing));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     // By returning false here, we don't allow shift-clicking

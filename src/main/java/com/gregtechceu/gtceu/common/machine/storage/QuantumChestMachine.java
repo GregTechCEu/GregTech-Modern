@@ -18,6 +18,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -28,10 +31,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,9 +68,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IInteractedMachine, IControllable,
                                  IDropSaveMachine, IFancyUIMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumChestMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     /**
      * Sourced from FunctionalStorage's
      * <a
@@ -81,32 +77,35 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     public static final Object2LongOpenHashMap<UUID> INTERACTION_LOGGER = new Object2LongOpenHashMap<>();
 
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
-    @Persisted
+    @SaveField
     private boolean isVoiding;
 
     private final long maxAmount;
     protected final ItemCache cache;
-    @DescSynced
+    @SyncToClient
+    @SaveField
     private final CustomItemStackHandler lockedItem;
 
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected ItemStack stored = ItemStack.EMPTY;
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected long storedAmount = 0;
 
     @Nullable
@@ -118,16 +117,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler(args);
         this.lockedItem = new CustomItemStackHandler();
+        lockedItem.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("lockedItem"));
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected ItemCache createCacheItemHandler(Object... args) {
         return new ItemCache(this);
@@ -143,6 +138,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected void onItemChanged() {
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("storedAmount");
+            syncDataHolder.markClientSyncFieldDirty("stored");
             updateAutoOutputSubscription();
         }
     }
@@ -158,17 +155,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedItem", lockedItem.serializeNBT());
-        tag.put("stored", stored.serializeNBT());
+    public void saveToItem(CompoundTag tag) {
+        tag.put("stored", stored.save(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
     }
 
     @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        lockedItem.deserializeNBT(tag.getCompound("lockedItem"));
+    public void loadFromItem(CompoundTag tag) {
         stored = ItemStack.of(tag.getCompound("stored"));
         storedAmount = tag.getLong("storedAmount");
     }
@@ -200,12 +193,14 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 
@@ -521,11 +516,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
         public boolean canInsert(ItemStack stack) {
             return filter.test(stack) && (insertItem(0, stack, true).getCount() != stack.getCount());
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 }

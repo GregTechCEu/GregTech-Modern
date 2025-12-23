@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -32,17 +31,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected int globalTransferSizeMillibuckets = 1;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
@@ -97,7 +96,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
-
+        syncDataHolder.markClientSyncFieldDirty("voidingMode");
         configureStackSizeInput();
 
         if (!this.isRemote()) {
@@ -106,10 +105,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
-        var oldMultiplier = this.transferBucketMode.multiplier;
-        var newMultiplier = transferBucketMode.multiplier;
-
         this.transferBucketMode = transferBucketMode;
+        syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
 
         if (stackSizeInput == null) return;
         stackSizeInput.setValue(getCurrentBucketModeTransferSize());
@@ -146,6 +143,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     private void setCurrentBucketModeTransferSize(int transferSize) {
         this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
+        syncDataHolder.markClientSyncFieldDirty("globalTransferSizeMillibuckets");
     }
 
     @Override
@@ -173,17 +171,5 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
             return true;
 
         return this.filterHandler.getFilter().isBlackList();
-    }
-
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedFluidVoidingCover.class, FluidVoidingCover.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

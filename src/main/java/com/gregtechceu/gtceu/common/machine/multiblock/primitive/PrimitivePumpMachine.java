@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.fluids.FluidType;
@@ -25,9 +23,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class,
-            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
-
     private int biomeModifier = 0;
     private int hatchModifier = 0;
     private NotifiableFluidTank fluidTank;
@@ -35,11 +30,6 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
     public PrimitivePumpMachine(IMachineBlockEntity holder) {
         super(holder);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectB
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
 import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
+import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -102,6 +103,8 @@ public class GTNetwork {
 
         register(CPacketKeysPressed.class, CPacketKeysPressed::new, NetworkDirection.PLAY_TO_SERVER);
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);
+
+        register(SPacketUpdateBESyncValue.class, SPacketUpdateBESyncValue::new, NetworkDirection.PLAY_TO_CLIENT);
 
         register(SPacketSyncOreVeins.class, SPacketSyncOreVeins::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SPacketSyncFluidVeins.class, SPacketSyncFluidVeins::new, NetworkDirection.PLAY_TO_CLIENT);

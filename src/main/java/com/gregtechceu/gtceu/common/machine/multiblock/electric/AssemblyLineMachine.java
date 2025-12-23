@@ -20,8 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -38,7 +37,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Accessors(fluent = true)
     @Getter
-    @Persisted
+    @SaveField
     protected boolean allowCircuitSlots;
 
     public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {

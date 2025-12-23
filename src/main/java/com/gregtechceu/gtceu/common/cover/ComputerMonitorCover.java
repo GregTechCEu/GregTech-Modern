@@ -17,14 +17,13 @@ import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -41,7 +40,6 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -53,41 +51,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ComputerMonitorCover extends CoverBehavior
                                   implements IUICover, IDataStickInteractable, IPlaceholderInfoProviderCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<String> formatStringArgs = new ArrayList<>(8);
-    @Persisted
+    private List<String> formatStringArgs = new ArrayList<>(8);
+    @SaveField
     @Getter
-    private final List<String> formatStringLines = new ArrayList<>(8);
-    @Persisted
-    @DescSynced
+    private List<String> formatStringLines = new ArrayList<>(8);
+    @SaveField
+    @SyncToClient
     @Getter
     private List<MutableComponent> text = new ArrayList<>();
-    @Persisted
-    public final CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
+    @SaveField
+    public CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
     @Setter
     private String placeholderSearch = "";
     @Setter
     @Getter
-    @Persisted
+    @SaveField
     private int updateInterval = 100;
     @Getter
-    @Persisted
+    @SaveField
     private long ticksSincePlaced = 0;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final UUID placeholderUUID;
+    private UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -126,11 +121,6 @@ public class ComputerMonitorCover extends CoverBehavior
     @Override
     public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
         return () -> renderer;
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

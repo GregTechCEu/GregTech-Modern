@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,9 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MEInputHatchPartMachine extends MEHatchPartMachine
                                      implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     protected ExportOnlyAEFluidList aeFluidHandler;
 
@@ -54,11 +49,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEFluidList(this, slots);
         return aeFluidHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -130,10 +120,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
      * group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
      * "gtceu.gui.me_network.online" :
      * "gtceu.gui.me_network.offline"));
-     * 
+     *
      * // Config slots
      * group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
-     * 
+     *
      * return group;
      * }
      */
