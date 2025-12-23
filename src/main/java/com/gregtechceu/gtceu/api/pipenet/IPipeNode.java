@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +85,10 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     int getBlockedConnections();
 
+    default BlockState getState() {
+        return self().getBlockState();
+    }
+
     default BlockEntity self() {
         return (BlockEntity) this;
     }
@@ -94,10 +99,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     default BlockPos getPipePos() {
         return self().getBlockPos();
-    }
-
-    default void markAsDirty() {
-        self().setChanged();
     }
 
     default boolean isInValid() {

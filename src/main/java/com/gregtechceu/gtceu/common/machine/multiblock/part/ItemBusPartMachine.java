@@ -33,18 +33,18 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.FieldDataModifier;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
@@ -59,8 +59,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,10 +68,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemBusPartMachine extends TieredIOPartMachine
                                 implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
@@ -82,16 +78,15 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter(AccessLevel.PROTECTED)
     private boolean hasCircuitSlot = true;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean circuitSlotEnabled;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
@@ -104,10 +99,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected int getInventorySize() {
         int sizeRoot = 1 + Math.min(9, getTier());
@@ -166,6 +157,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
+        syncDataHolder.markClientSyncFieldDirty("isDistinct");
         getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
@@ -200,17 +192,19 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return -1;
     }
 
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        // todo: delete for 1.8
-        // fix to preserve distinctness from pre 1.7 versions
-        if (tag.contains("inventory")) {
-            var invTag = tag.getCompound("inventory");
-            if (invTag.contains("isDistinct")) {
-                this.isDistinct = invTag.getBoolean("isDistinct");
-            }
+    @FieldDataModifier(fieldName = "inventory", target = FieldDataModifier.ModifyTarget.LOAD_NBT)
+    private void checkInventoryNBTCompat(Tag tag, boolean loadClientFields) {
+        if (tag instanceof CompoundTag compound) {
+            // todo: delete for 1.8
+            // fix to preserve distinctness from pre 1.7 versions
+            isDistinct = compound.getBoolean("isDistinct");
+
         }
+    }
+
+    public void setCircuitSlotEnabled(boolean enabled) {
+        circuitSlotEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("circuitSlotEnabled");
     }
 
     //////////////////////////////////////
@@ -418,7 +412,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * super.attachConfigurators(configuratorPanel);
      * }
      * }
-     * 
+     *
      * @Override
      * public Widget createUIWidget() {
      * int rowSize = (int) Math.sqrt(getInventorySize());
@@ -438,10 +432,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
      * }
      * }
-     * 
+     *
      * container.setBackground(GuiTextures.BACKGROUND_INVERSE);
      * group.addWidget(container);
-     * 
+     *
      * return group;
      * }
      */

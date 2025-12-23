@@ -87,9 +87,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
-            ret = supplyAir(item, player) || supplyFood(item, player);
 
-            removeNegativeEffects(item, player);
+            if (!world.isClientSide) {
+                ret = supplyAir(item, player) || supplyFood(item, player);
+                removeNegativeEffects(item, player);
+            }
 
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {

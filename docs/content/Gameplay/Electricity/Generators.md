@@ -95,16 +95,20 @@ output of the Turbine (doubling the power output and fuel consumption per Rotor 
 fuel efficiency of the turbine (reducing fuel consumption by 10% per tier above the Turbine's minimum requirement).
 Unlike with smaller generators, this reduced fuel consumption is applied as *increased fuel burn duration*.
 
-Additionally, Large Turbines require several minutes to spin up to their full output, and then spin down when inactive 
-or their Dynamo Hatch is full of energy. Energy production scales exponentially with turbine RPM, meaning that for much 
-of the spinup time the turbine's output will be quite low. When active, RPM increases by 1 per tick, and when inactive 
-RPM decreases by 3 per tick. To compensate for this behavior, Large Turbines are best run either continuously, or in 
-limited bursts to fill an energy storage, activated via Machine Controller Cover when the storage is low and deactivated
-when the storage is nearly full.
+Additionally, Large Turbines require several minutes to spin up to their full output, and then spin down when inactive.
+Energy production scales exponentially with turbine RPM, meaning that for much of the spinup time the turbine's output 
+will be quite low. When active, RPM increases by 1 per tick, and when inactive RPM decreases by 3 per tick. To manage 
+this behavior, Large Turbines are best run either continuously, or in limited bursts to fill an energy storage, 
+activated via Machine Controller Cover when the storage is low and deactivated when the storage is nearly full.
+
+Large Turbine behavior was changed slightly in 7.3.0. Prior to this version, if a Large Turbine's Dynamo Hatch filled with
+EU, the Turbine would stop consuming fuel and spin down. As of 7.3.0, Large Turbines ignore the contents of their Dynamo
+and Output Hatches, and continue running at full speed, even if the produced EU or Fluids have nowhere to go. While this
+does result in the excess outputs being voided, it means the Turbines retain their full speed and output.
 
 The total EU/t output and fuel consumption of a Large Turbine is determined by:
 
 * EU/t Output = [Turbine base EU/t] x [2 ^ Rotor Holder Tier - minimum tier] x [Turbine Power Mutiplier] x [Current RPM / Max RPM]^2
-* Fuel Consumption = [EU/t output] / [Fuel base generation rate]
+* Fuel Consumption = [EU/t output] / [Fuel base generation rate] (rounded up)
 * Fuel Duration = [1 + 0.1 x [Rotor Holder Tier - minimum tier]] x [Rotor Efficiency Multiplier]
 

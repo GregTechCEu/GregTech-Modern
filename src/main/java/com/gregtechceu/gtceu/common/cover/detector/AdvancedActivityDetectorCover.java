@@ -24,8 +24,10 @@ public class AdvancedActivityDetectorCover extends ActivityDetectorCover {
             return;
 
         var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
-        if (workable == null || workable.getMaxProgress() == 0)
+        if (workable == null || workable.getMaxProgress() == 0) {
+            setRedstoneSignalOutput(0);
             return;
+        }
 
         int outputAmount = RedstoneUtil.computeRedstoneValue(workable.getProgress(), workable.getMaxProgress(),
                 isInverted());

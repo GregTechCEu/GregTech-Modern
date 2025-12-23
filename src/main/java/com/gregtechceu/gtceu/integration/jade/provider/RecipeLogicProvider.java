@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -65,6 +66,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         long voltage = -1;
         if (capability.machine instanceof SimpleTieredMachine machine) {
             voltage = GTValues.V[machine.getTier()];
+        } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
+            voltage = GTValues.V[machine.getTier()];
         } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
             voltage = machine.getParts().stream()
                     .filter(EnergyHatchPartMachine.class::isInstance)
@@ -88,18 +91,18 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
 
-                if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                    var machine = mbe.getMetaMachine();
-                    if (machine instanceof SimpleSteamMachine ssm) {
-                        EUt = (long) (EUt * ssm.getConversionRate());
-                        isSteam = true;
-                    } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                        EUt = (long) (EUt * smb.getConversionRate());
-                        isSteam = true;
-                    }
-                }
-
                 if (EUt > 0) {
+                    if (blockEntity instanceof MetaMachineBlockEntity mbe) {
+                        var machine = mbe.getMetaMachine();
+                        if (machine instanceof SimpleSteamMachine ssm) {
+                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
+                            isSteam = true;
+                        } else if (machine instanceof SteamParallelMultiblockMachine smb) {
+                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
+                            isSteam = true;
+                        }
+                    }
+
                     MutableComponent text;
 
                     if (isSteam) {

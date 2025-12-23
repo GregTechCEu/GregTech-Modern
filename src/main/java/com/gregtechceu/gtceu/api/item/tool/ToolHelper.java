@@ -548,21 +548,26 @@ public class ToolHelper {
         return successful;
     }
 
+    /**
+     * Calculates the harvestable blocks, used for tool AoE harvesting
+     *
+     * @param player the player clicking the item
+     * @param stack  the item that was used
+     *
+     * @return listOfBlockPositions or empty list if none
+     */
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsTag(stack)) return List.of();
+        final List<BlockPos> NO_BLOCKS = List.of();
+
+        if (!hasBehaviorsTag(stack)) return NO_BLOCKS;
 
         var aoeDefinition = getAoEDefinition(stack);
         if (aoeDefinition.isZero()) {
-            return List.of();
+            return NO_BLOCKS;
         }
 
+        InteractionHand hand = InteractionHand.MAIN_HAND;
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        var toolType = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GTToolItem toolItem ?
-                toolItem.toolType : null;
-        if (toolType == null) return Collections.emptyList();
-        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), toolType) ?
-                InteractionHand.MAIN_HAND : null;
-        if (hand == null) return Collections.emptyList();
         UseOnContext context = new UseOnContext(player, hand, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
@@ -607,7 +612,19 @@ public class ToolHelper {
             return gtTool.getToolClasses(tool);
         }
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) types.add(toolType);
+            if (toolType.matchTags.stream().anyMatch(tool::is)) types.add(toolType);
+        }
+        return types;
+    }
+
+    @NotNull
+    public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
+        Set<GTToolType> types = new HashSet<>();
+        if (tool.getItem() instanceof IGTTool gtTool) {
+            return gtTool.getToolClasses(tool);
+        }
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            if (toolType.craftingTags.stream().anyMatch(tool::is)) types.add(toolType);
         }
         return types;
     }
@@ -617,7 +634,7 @@ public class ToolHelper {
      */
     public static boolean isTool(ItemStack tool, GTToolType... toolClasses) {
         for (GTToolType toolType : toolClasses) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) return true;
+            if (toolType.matchTags.stream().anyMatch(tool::is)) return true;
         }
 
         if (tool.getItem() instanceof IGTTool igtTool) {

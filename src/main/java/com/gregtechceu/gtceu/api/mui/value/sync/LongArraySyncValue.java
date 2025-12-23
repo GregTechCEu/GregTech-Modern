@@ -11,6 +11,6 @@ import java.util.function.Supplier;
 public class LongArraySyncValue extends GenericSyncValue<long[]> {
 
     public LongArraySyncValue(@NotNull Supplier<long[]> getter, @Nullable Consumer<long[]> setter) {
-        super(getter, setter, ByteBufAdapters.LONG_ARR, long[]::clone);
+        super(long[].class, getter, setter, ByteBufAdapters.LONG_ARR, long[]::clone);
     }
 }

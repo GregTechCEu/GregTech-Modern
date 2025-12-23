@@ -8,11 +8,9 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -20,17 +18,14 @@ import lombok.Getter;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class,
-            NotifiableEnergyContainer.MANAGED_FIELD_HOLDER);
-
     /**
      * If TRUE, the front facing of the machine will OUTPUT EU, other sides INPUT FE.
      * If FALSE, the front facing of the machine will OUTPUT FE, other sides INPUT EU.
      */
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean feToEu;
     @Getter
     private final int amps;
@@ -52,14 +47,11 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     ////////////////////////////////
     // ***** Initialization ******//
     ////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
+        syncDataHolder.markClientSyncFieldDirty("feToEu");
         machine.notifyBlockUpdate();
     }
 
@@ -94,8 +86,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     private class FEContainer extends MachineTrait implements IEnergyStorage {
 
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FEContainer.class);
-
         public FEContainer(MetaMachine machine) {
             super(machine);
         }
@@ -103,12 +93,20 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             if (!feToEu || maxReceive <= 0) return 0;
-            int received = Math.min(this.getMaxEnergyStored() - this.getEnergyStored(), maxReceive);
+            int received = (int) (Math.min(this.getMaxLongEnergyStored() - this.getLongEnergyStored(), maxReceive));
             received -= received % FeCompat.ratio(true); // avoid rounding issues
             if (!simulate) {
                 addEnergy(FeCompat.toEu(received, FeCompat.ratio(true)));
             }
             return received;
+        }
+
+        public long getMaxLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyCapacity(), FeCompat.ratio(feToEu));
+        }
+
+        public long getLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyStored(), FeCompat.ratio(feToEu));
         }
 
         @Override
@@ -136,11 +134,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         @Override
         public boolean canReceive() {
             return feToEu;
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 }

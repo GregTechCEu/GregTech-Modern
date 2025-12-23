@@ -19,7 +19,11 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -27,10 +31,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -61,39 +61,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConveyorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     // 8 32 128 512 1024
     public static final Int2IntFunction CONVEYOR_SCALING = tier -> 2 * (int) Math.pow(4, Math.min(tier, GTValues.LuV));
 
     public final int tier;
     public final int maxItemTransferRate;
-    @Persisted
+    @SaveField
     @Getter
     protected int transferRate;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
-    @RequireRerender
+    @RerenderOnChanged
     protected IO io;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected DistributionMode distributionMode;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
     private Widget ioModeSwitch;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
@@ -132,13 +129,14 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
                 .resolve().orElse(null);
     }
 
+    public void setDistributionMode(DistributionMode mode) {
+        distributionMode = mode;
+        syncDataHolder.markClientSyncFieldDirty("distributionMode");
+    }
+
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public boolean canAttach() {
@@ -156,17 +154,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             this.io = io;
         }
         subscriptionHandler.updateSubscription();
-        coverHolder.markDirty();
-    }
-
-    public void setDistributionMode(DistributionMode distributionMode) {
-        this.distributionMode = distributionMode;
-        coverHolder.markDirty();
     }
 
     protected void setManualIOMode(ManualIOMode manualIOMode) {
         this.manualIOMode = manualIOMode;
-        coverHolder.markDirty();
     }
 
     @Override
@@ -280,7 +271,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -312,7 +303,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {
@@ -511,10 +502,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return stack;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+            if (!filterHandler.test(stack)) {
                 return stack;
             }
             return super.insertItem(slot, stack, simulate);
@@ -523,17 +519,19 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return ItemStack.EMPTY;
-            }
-            if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true);
-                if (result.isEmpty() || !filterHandler.test(result)) {
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false);
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
             }
-            return super.extractItem(slot, amount, simulate);
+            ItemStack result = super.extractItem(slot, amount, true);
+            if (result.isEmpty() || !filterHandler.test(result)) {
+                return ItemStack.EMPTY;
+            }
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
     }
 }

@@ -147,7 +147,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
         Rectangle colorPickerBackground = new Rectangle().setColor(Color.RED.main);
         ModularPanel panel = new ModularPanel("test_tile");
-        IPanelHandler panelSyncHandler = syncManager.panel("other_panel", this::openSecondWindow, true);
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
                 (mainPanel,
                  player) -> new ColorPickerDialog(colorPickerBackground::setColor, colorPickerBackground.getColor(),
@@ -584,8 +584,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         syncManager.registerSlotGroup(slotGroup);
         AtomicInteger number = new AtomicInteger(0);
         syncManager.syncValue("int_value", new IntSyncValue(number::get, number::set));
-        IPanelHandler panelSyncHandler = syncManager.panel("other_panel_2",
-                (syncManager1, syncHandler1) -> openThirdWindow(syncManager1, syncHandler1, number), true);
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel_2", true,
+                (syncManager1, syncHandler1) -> openThirdWindow(syncManager1, syncHandler1, number));
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)

@@ -8,13 +8,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.pipelike.optical.*;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,9 +33,6 @@ import java.util.EnumMap;
 
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(OpticalPipeBlockEntity.class,
-            PipeBlockEntity.MANAGED_FIELD_HOLDER);
-
     private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
     // the OpticalNetHandler can only be created on the server, so we have an empty placeholder for the client
     private final IDataAccessHatch clientDataHandler = new DefaultDataHandler();
@@ -46,9 +41,9 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     private OpticalNetHandler defaultHandler;
 
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean isActive;
 
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -76,7 +71,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
                         LazyOptional.of(() -> clientDataHandler));
             }
-
+            if (facing != null && !isConnected(facing)) return LazyOptional.empty();
             if (handlers.isEmpty()) initHandlers();
 
             checkNetwork();
@@ -89,7 +84,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,
                         LazyOptional.of(() -> clientComputationHandler));
             }
-
+            if (facing != null && !isConnected(facing)) return LazyOptional.empty();
             if (handlers.isEmpty()) initHandlers();
 
             checkNetwork();
@@ -160,9 +155,11 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
         boolean stateChanged = false;
         if (this.isActive && !active) {
             this.isActive = false;
+            syncDataHolder.markClientSyncFieldDirty("isActive");
             stateChanged = true;
         } else if (!this.isActive && active) {
             this.isActive = true;
+            syncDataHolder.markClientSyncFieldDirty("isActive");
             stateChanged = true;
             TaskHandler.enqueueServerTask((ServerLevel) getLevel(), () -> setActive(false, -1), duration);
         }
@@ -182,11 +179,6 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     private static class DefaultDataHandler implements IDataAccessHatch {

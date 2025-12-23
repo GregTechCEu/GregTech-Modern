@@ -51,9 +51,8 @@ public abstract class GenericCollectionSyncHandler<T, C extends Collection<T>> e
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override

@@ -9,9 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidType;
@@ -23,16 +21,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
                                       implements IMachineLife, IEnvironmentalHazardEmitter {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            PrimitiveWorkableMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler importItems;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler exportItems;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank importFluids;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank exportFluids;
 
     public PrimitiveWorkableMachine(IMachineBlockEntity holder, Object... args) {
@@ -46,10 +41,6 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
