@@ -441,6 +441,8 @@ public class GTGuiTextures {
     // PROGRESS BARS
     public static final UITexture PROGRESS_BAR_ARC_FURNACE = progressBar(
             "textures/gui/progress_bar/progress_bar_arc_furnace.png", ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR = progressBar(
+            "textures/gui/primitive/progress_bar_primitive_blast_furnace.png", ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW = progressBar("textures/gui/progress_bar/progress_bar_arrow.png",
             ColorType.DEFAULT);
     public static final UITexture PROGRESS_BAR_ARROW_BRONZE = progressBar(

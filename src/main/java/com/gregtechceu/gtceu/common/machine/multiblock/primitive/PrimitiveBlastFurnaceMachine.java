@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -161,23 +162,21 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
 
         return new ModularPanel(this.getDefinition().getName())
-                .child(
+                .size(176,166)
+                .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
                         // Top half of the screen
-                        new ParentWidget<>()
-
-                                .widthRel(1)
-                                .height(20 + 60)
                                 // Box that has the display texture BG +
                                 // the buttons / text / etc
-                                .child(new ParentWidget<>()
-                                        .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
-                                        .size(1, 63)
 
-                                        .child(createItemSlot(syncManager))
-                                )
+                                .child(createImportItemSlot(syncManager).margin(52,16))
 
-                )
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
+                                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent) // 77, 39, 20, 15,
+                                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR,0).margin(77,39,34,15))
+
+                                .child(createExportItemSlot(syncManager).margin(104,34))
+
+
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
 /*
         var a = new ModularUI(176, 166, this)
@@ -208,8 +207,8 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                         GuiTextures.PRIMITIVE_SLOT, 7, 84, true));*/
     }
 
-    private SlotGroupWidget createItemSlot(PanelSyncManager syncManager) {
-        int size = importItems.getSize();
+    private SlotGroupWidget createImportItemSlot(PanelSyncManager syncManager) {
+        int size = importItems.storage.getSlots();
         SlotGroup slotGroup = new SlotGroup("import", size);
         String[] matrix = new String[size];
         char key = 'I';
@@ -217,11 +216,30 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         return SlotGroupWidget.builder()
                 .matrix(matrix)
                 .key(key, i -> {
-                    ModularSlot slot = new ModularSlot(importItems, i);
+                    ModularSlot slot = new ModularSlot(importItems.storage, i);
                     ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
-                            .syncHandler("import", i).background(GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+                            .syncHandler("import", i).background((i == 0)? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1)? GTGuiTextures.PRIMITIVE_DUST_OVERLAY : GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
+                })
+                .build().background(GTGuiTextures.SLOT_PRIMITIVE);
+    }
+
+    private SlotGroupWidget createExportItemSlot(PanelSyncManager syncManager) {
+        int size = exportItems.storage.getSlots();
+        SlotGroup slotGroup = new SlotGroup("export", size);
+        String[] matrix = new String[1];
+        char key = 'I';
+        matrix[0] = String.valueOf(key).repeat(size);
+        return SlotGroupWidget.builder()
+                .matrix(matrix)
+                .key(key, i -> {
+                    ModularSlot slot = new ModularSlot(exportItems.storage, i);
+                    slot.accessibility(false,true);
+                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    syncManager.syncValue("export", i, syncHandler);
+                    return new ItemSlot()
+                            .syncHandler("export", i).background((i == 0)? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })
                 .build().background(GTGuiTextures.SLOT_PRIMITIVE);
     }
