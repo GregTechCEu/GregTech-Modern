@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -57,11 +55,11 @@ public class ComputerMonitorCover extends CoverBehavior
 
     @SaveField
     @Getter
-    private final List<String> formatStringArgs = new ArrayList<>(8);
+    private List<String> formatStringArgs = new ArrayList<>(8);
 
     @SaveField
     @Getter
-    private final List<String> formatStringLines = new ArrayList<>(8);
+    private List<String> formatStringLines = new ArrayList<>(8);
 
     @SaveField
     @Getter
@@ -84,7 +82,7 @@ public class ComputerMonitorCover extends CoverBehavior
     private List<MutableComponent> text = new ArrayList<>();
 
     @SaveField
-    public final CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
+    public CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
 
     @Setter
     @Getter
@@ -93,13 +91,13 @@ public class ComputerMonitorCover extends CoverBehavior
 
     @SaveField
     @Getter
-    private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    private List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
     @SaveField
     @Getter
-    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    private List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
     @SaveField
     @Getter
-    private final UUID placeholderUUID;
+    private UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
