@@ -592,7 +592,8 @@ public class VanillaRecipeHelper {
                                                   @NotNull Item result, @NotNull ItemLike baseInput,
                                                   @NotNull ItemLike template, @NotNull ItemLike addition,
                                                   @NotNull RecipeCategory category) {
-        SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
+        SmithingTransformRecipeBuilder
+                .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
                 .unlocks(String.format("has_%s", baseInput), has(baseInput))
                 .save(provider, regName);
     }
