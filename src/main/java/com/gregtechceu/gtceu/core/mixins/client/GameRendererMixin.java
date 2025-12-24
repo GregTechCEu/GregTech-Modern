@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.mui.InWorldMUIRenderEvent;
-
 import com.gregtechceu.gtceu.core.IGameRenderer;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
