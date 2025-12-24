@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -591,8 +592,7 @@ public class VanillaRecipeHelper {
                                                   @NotNull Item result, @NotNull ItemLike baseInput,
                                                   @NotNull ItemLike template, @NotNull ItemLike addition,
                                                   @NotNull RecipeCategory category) {
-        net.minecraft.data.recipes.SmithingTransformRecipeBuilder
-                .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
+        SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
                 .unlocks(String.format("has_%s", baseInput), has(baseInput))
                 .save(provider, regName);
     }
