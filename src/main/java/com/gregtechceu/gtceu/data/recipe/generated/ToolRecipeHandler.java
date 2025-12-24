@@ -350,11 +350,6 @@ public final class ToolRecipeHandler {
     }
 
     public static void addNetheriteToolRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull GTToolType tool) {
-        ItemStack netheriteTool = ToolHelper.get(tool, GTMaterials.Netherite);
-        ItemStack diamondTool = ToolHelper.get(tool, GTMaterials.Diamond);
-
-        if (netheriteTool.isEmpty() || diamondTool.isEmpty()) return;
-
         VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite, GTMaterials.Diamond,
                 Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ChemicalHelper.get(ingot, GTMaterials.Netherite).getItem());
     }

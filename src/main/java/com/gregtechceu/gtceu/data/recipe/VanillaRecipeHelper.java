@@ -610,6 +610,8 @@ public class VanillaRecipeHelper {
         ItemStack upgradeToolStack = ToolHelper.get(tool, upgradeMaterial);
         ItemStack baseToolStack = ToolHelper.get(tool, baseMaterial);
 
+        if (upgradeToolStack.isEmpty() || baseToolStack.isEmpty()) return;
+
         VanillaRecipeHelper.addSmithingTransformRecipe(provider,
                 String.format("%s_%s_smithing_transform_from_%s", upgradeMaterial.getName(), tool.name,
                         baseMaterial.getName()),
