@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.mui.InWorldMUIRenderEvent;
 
+import com.gregtechceu.gtceu.core.IGameRenderer;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -19,11 +21,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
-public class GameRendererMixin {
+public abstract class GameRendererMixin implements IGameRenderer {
 
     @Shadow
     @Final
     Minecraft minecraft;
+
+    @Shadow
+    protected abstract double getFov(Camera activeRenderInfo, float partialTicks, boolean useFOVSetting);
+
+    @Shadow
+    @Final
+    private Camera mainCamera;
+
+    @Shadow
+    protected abstract void bobHurt(PoseStack poseStack, float partialTicks);
+
+    @Shadow
+    protected abstract void bobView(PoseStack poseStack, float partialTicks);
 
     @Inject(method = "render",
             at = @At(value = "INVOKE_STRING",
@@ -33,5 +48,18 @@ public class GameRendererMixin {
     private void onScreenRender(float partialTicks, long nanoTime, boolean renderLevel, CallbackInfo ci, int i, int j,
                                 Window window, Matrix4f matrix4f, PoseStack posestack, GuiGraphics guigraphics) {
         MinecraftForge.EVENT_BUS.post(new InWorldMUIRenderEvent(guigraphics, this.minecraft.getDeltaFrameTime()));
+    }
+
+    @Override
+    public double gtceu$getFov(float partialTicks) {
+        return getFov(mainCamera, partialTicks, true);
+    }
+
+    @Override
+    public void gtceu$bob(PoseStack poseStack, float partialTicks) {
+        bobHurt(poseStack, partialTicks);
+        if (minecraft.options.bobView().get()) {
+            bobView(poseStack, partialTicks);
+        }
     }
 }

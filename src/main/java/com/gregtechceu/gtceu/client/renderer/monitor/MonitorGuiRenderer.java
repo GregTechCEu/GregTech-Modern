@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.core.IGameRenderer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
@@ -137,7 +138,6 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         if (renderTarget.width != RESOLUTION_COEF * width || renderTarget.height != RESOLUTION_COEF * height)
             renderTarget.resize(RESOLUTION_COEF * width, RESOLUTION_COEF * height, Minecraft.ON_OSX);
         renderTarget.enableStencil();
-        renderTarget.setClearColor(0, 0, 1, 1);
         renderTarget.clear(Minecraft.ON_OSX);
 
         renderTarget.bindWrite(true);
@@ -184,9 +184,12 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
         RenderSystem.setShaderTexture(0, renderTarget.getColorTextureId());
         ShaderInstance shaderInstance = MCHelper.getMc().gameRenderer.blitShader;
         shaderInstance.setSampler("DiffuseSampler", renderTarget.getColorTextureId());
+        ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$bob(poseStack, partialTick);
         Matrix4f pose = poseStack.last().pose();
+        double fov = ((IGameRenderer) MCHelper.getMc().gameRenderer).gtceu$getFov(partialTick);
         if (shaderInstance.PROJECTION_MATRIX != null)
-            shaderInstance.PROJECTION_MATRIX.set(MCHelper.getMc().gameRenderer.getProjectionMatrix(70));
+            shaderInstance.PROJECTION_MATRIX.set(MCHelper.getMc().gameRenderer.getProjectionMatrix(fov));
+
         if (shaderInstance.MODEL_VIEW_MATRIX != null) shaderInstance.MODEL_VIEW_MATRIX.set(pose);
         shaderInstance.apply();
         Tesselator tesselator = RenderSystem.renderThreadTesselator();
