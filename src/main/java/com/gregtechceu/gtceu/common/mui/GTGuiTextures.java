@@ -64,13 +64,6 @@ public class GTGuiTextures {
             .canApplyTheme()
             .build();
 
-    public static final UITexture BACKGROUND_TITLE = UITexture.builder()
-            .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
-            .imageSize(16, 16)
-            .adaptable(4)
-            .subAreaUV(0, 0, 1f, .75f)
-            .build();
-
     public static final UITexture BACKGROUND_INVERSE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_inverse.png")
             .imageSize(16, 16)
@@ -81,15 +74,15 @@ public class GTGuiTextures {
 
     public static final UITexture BACKGROUND_BRONZE = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_bronze.png")
-            .imageSize(176, 166)
-            .adaptable(3)
+            .imageSize(16, 16)
+            .adaptable(4)
             .name(IDs.BRONZE_BACKGROUND)
             .build();
 
     public static final UITexture BACKGROUND_STEEL = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background_steel.png")
-            .imageSize(176, 166)
-            .adaptable(3)
+            .imageSize(16, 16)
+            .adaptable(4)
             .name(IDs.STEEL_BACKGROUND)
             .build();
 

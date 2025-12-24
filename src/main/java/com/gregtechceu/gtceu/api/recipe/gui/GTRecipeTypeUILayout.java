@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -19,7 +20,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import it.unimi.dsi.fastutil.ints.*;
@@ -55,6 +55,7 @@ public class GTRecipeTypeUILayout {
     public GTRecipeTypeUILayout() {}
 
     public ParentWidget<?> getBackedSlotsRow(@NotNull PanelSyncManager syncManager,
+                                             @NotNull String themeId,
                                              @Nullable NotifiableItemStackHandler inputItems,
                                              @Nullable NotifiableItemStackHandler outputItems,
                                              @Nullable NotifiableFluidTank inputFluids,
@@ -106,7 +107,8 @@ public class GTRecipeTypeUILayout {
                     slotGroupHeightPx += 18 * grid.length;
 
                     IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            GTGuiTextures.SLOT : GTGuiTextures.FLUID_SLOT);
+                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().getTheme().getBackground() :
+                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().getTheme().getBackground());
 
                     SlotGroupWidget.Builder slotWidgetBuilder = SlotGroupWidget.builder()
                             .matrix(grid);

@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.api.mui.widgets;
 
 import com.gregtechceu.gtceu.api.mui.base.widget.ISynced;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
-import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
@@ -19,40 +17,16 @@ import java.util.function.IntFunction;
 
 public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
 
-    public static SlotGroupWidget playerInventory(boolean positioned, UITexture topSlotTexture, UITexture slotTexture) {
-        return positioned ? playerInventory(7, true, topSlotTexture, slotTexture) :
-                playerInventory((index, slot) -> slot, topSlotTexture, slotTexture);
-    }
-
     public static SlotGroupWidget playerInventory(boolean positioned) {
         return positioned ? playerInventory(7, true) : playerInventory((index, slot) -> slot);
-    }
-
-    public static SlotGroupWidget playerInventory(boolean positioned, SlotConsumer slotConsumer,
-                                                  UITexture topSlotTexture, UITexture slotTexture) {
-        return positioned ? playerInventory(7, true, slotConsumer, topSlotTexture, slotTexture) :
-                playerInventory(slotConsumer, topSlotTexture, slotTexture);
     }
 
     public static SlotGroupWidget playerInventory(boolean positioned, SlotConsumer slotConsumer) {
         return positioned ? playerInventory(7, true, slotConsumer) : playerInventory(slotConsumer);
     }
 
-    public static SlotGroupWidget playerInventory(int bottom, boolean horizontalCentered, UITexture topSlotTexture,
-                                                  UITexture slotTexture) {
-        return playerInventory(bottom, horizontalCentered, (index, slot) -> slot, topSlotTexture, slotTexture);
-    }
-
     public static SlotGroupWidget playerInventory(int bottom, boolean horizontalCentered) {
         return playerInventory(bottom, horizontalCentered, (index, slot) -> slot);
-    }
-
-    public static SlotGroupWidget playerInventory(int bottom, boolean horizontalCentered, SlotConsumer slotConsumer,
-                                                  UITexture topSlotTexture, UITexture slotTexture) {
-        SlotGroupWidget widget = playerInventory(slotConsumer, topSlotTexture, slotTexture);
-        if (bottom != 0) widget.bottom(bottom);
-        if (horizontalCentered) widget.leftRel(0.5f);
-        return widget;
     }
 
     public static SlotGroupWidget playerInventory(int bottom, boolean horizontalCentered, SlotConsumer slotConsumer) {
@@ -67,31 +41,24 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
      *
      * @return player inventory group
      */
-    public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer, UITexture topSlotTexture,
-                                                  UITexture slotTexture) {
+    public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer) {
         SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
         slotGroupWidget.coverChildren();
         slotGroupWidget.name("player_inventory");
         String key = "player";
         for (int i = 0; i < 9; i++) {
             slotGroupWidget.child(slotConsumer.apply(i, new ItemSlot())
-                    .background(topSlotTexture)
                     .syncHandler(key, i)
                     .pos(i * 18, 3 * 18 + 4)
                     .name("slot_" + i));
         }
         for (int i = 0; i < 27; i++) {
             slotGroupWidget.child(slotConsumer.apply(i + 9, new ItemSlot())
-                    .background(slotTexture)
                     .syncHandler(key, i + 9)
                     .pos(i % 9 * 18, i / 9 * 18)
                     .name("slot_" + (i + 9)));
         }
         return slotGroupWidget;
-    }
-
-    public static SlotGroupWidget playerInventory(SlotConsumer slotConsumer) {
-        return playerInventory(slotConsumer, GTGuiTextures.SLOT, GTGuiTextures.SLOT);
     }
 
     public interface SlotConsumer {
