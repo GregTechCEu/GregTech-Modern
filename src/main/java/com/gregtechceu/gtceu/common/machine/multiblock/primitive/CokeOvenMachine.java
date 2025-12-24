@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -50,21 +51,22 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 // Top half of the screen
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(importItems.storage, 0)
-                                .slotGroup("import_items")
+                                .slotGroup(new SlotGroup("import_items", 1))
                                 .accessibility(true, true)))
-                        .margin(52, 30))
-                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
+                        .margin(52, 0, 30, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(exportItems.storage, 0)
-                                .slotGroup("export_items")
+                                .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
-                        .margin(103, 30))
+                        .margin(103, 0, 30, 0))
+                .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
+
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(
                                 exportFluids.getStorages()[0]))
-                        .margin(121, 30))
+                        .margin(121, 0, 30, 0))
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
@@ -90,27 +92,6 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
      * .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY))
      * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84,
      * true));
-     * }
-     */
-    /*
-     * private ItemSlot createImportItemSlot(PanelSyncManager syncManager) {
-     * syncManager.syncValue("import", new ItemSlotSH(
-     * new ModularSlot(importItems.storage, 0)
-     * .slotGroup(new SlotGroup("import", 1))
-     * .accessibility(true, true)));
-     * return new ItemSlot()
-     * .syncHandler("import", 0)
-     * .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
-     * }
-     * 
-     * private ItemSlot createExportItemSlot(PanelSyncManager syncManager) {
-     * syncManager.syncValue("export", new ItemSlotSH(
-     * new ModularSlot(exportItems.storage, 0)
-     * .slotGroup(new SlotGroup("export", 1))
-     * .accessibility(false, true)));
-     * return new ItemSlot()
-     * .syncHandler("export", 0)
-     * .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
      * }
      */
 
