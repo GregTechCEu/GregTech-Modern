@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
@@ -25,7 +24,6 @@ public class GTGuiScreen extends ModularScreen {
 
     public GTGuiScreen(String owner, ModularPanel mainPanel, String themeId) {
         super(owner, mainPanel);
-        //ThemeAPI.INSTANCE.registerThemeForScreen(owner + ":" + getName(), themeId);
         useTheme(themeId);
     }
 }
