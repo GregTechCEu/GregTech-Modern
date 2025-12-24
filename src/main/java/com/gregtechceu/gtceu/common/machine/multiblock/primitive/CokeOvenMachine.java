@@ -54,8 +54,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 // Top half of the screen
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(importItems.storage, 0)
-                                .slotGroup(new SlotGroup("import_items", 1))
-                                .accessibility(true, true)))
+                                .slotGroup(new SlotGroup("import_items", 1))))
                         .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(52, 0, 30, 0))
