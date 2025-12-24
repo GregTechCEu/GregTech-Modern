@@ -531,5 +531,12 @@ public class SecondDegreeMaterials {
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister();
+
+        Tuff = new Material.Builder(GTCEu.id("tuff"))
+                .dust()
+                .color(0x4d5046).secondaryColor(0x5d5d52).iconSet(ROUGH)
+                .flags(NO_SMASHING)
+                .components(Ash, 2, PotassiumFeldspar, 1)
+                .buildAndRegister();
     }
 }
