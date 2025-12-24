@@ -373,10 +373,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = 0;
             isActive = false;
-            syncDataHolder.markClientSyncFieldDirty("progress");
-            syncDataHolder.markClientSyncFieldDirty("duration");
-            syncDataHolder.markClientSyncFieldDirty("isActive");
-            syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
+            syncDataHolder.resyncAllFields();
             return;
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);
@@ -390,10 +387,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = recipe.duration;
             isActive = true;
-            syncDataHolder.markClientSyncFieldDirty("lastRecipe");
-            syncDataHolder.markClientSyncFieldDirty("progress");
-            syncDataHolder.markClientSyncFieldDirty("duration");
-            syncDataHolder.markClientSyncFieldDirty("isActive");
+            syncDataHolder.resyncAllFields();
         }
     }
 
@@ -510,11 +504,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 isActive = false;
                 // Force a recipe recheck.
                 lastRecipe = null;
-                syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
-                syncDataHolder.markClientSyncFieldDirty("progress");
-                syncDataHolder.markClientSyncFieldDirty("duration");
-                syncDataHolder.markClientSyncFieldDirty("isActive");
-                syncDataHolder.markClientSyncFieldDirty("lastRecipe");
+                syncDataHolder.resyncAllFields();
                 return;
             }
             if (machine.alwaysTryModifyRecipe()) {
@@ -538,16 +528,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 setStatus(Status.IDLE);
                 if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
                     waitingReason = recipeCheck.reason();
-                    syncDataHolder.markClientSyncFieldDirty("waitingReason");
                 }
                 consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
                 isActive = false;
-                syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
-                syncDataHolder.markClientSyncFieldDirty("progress");
-                syncDataHolder.markClientSyncFieldDirty("duration");
-                syncDataHolder.markClientSyncFieldDirty("isActive");
+                syncDataHolder.resyncAllFields();
             }
         }
     }
