@@ -7,11 +7,9 @@ import com.gregtechceu.gtceu.api.mui.base.IUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.AbstractUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.data.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -84,12 +82,10 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     @Override
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
-        //return new GTGuiScreen(MOD_ID, mainPanel, ThemeAPI.DEFAULT_THEME.getId());
-        return new GTGuiScreen(MOD_ID, mainPanel, GTGuiTheme.BRONZE.getId());
+        return new GTGuiScreen(MOD_ID, mainPanel, getThemeId(data));
     }
 
-    public GTGuiTheme getTheme(PosGuiData data) {
-        return GTGuiTheme.BRONZE;
-        // return getMachine(data).getDefinition().getTheme();
+    public String getThemeId(PosGuiData data) {
+        return getMachine(data).getDefinition().getThemeId();
     }
 }

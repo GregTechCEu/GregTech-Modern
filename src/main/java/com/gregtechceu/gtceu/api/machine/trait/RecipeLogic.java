@@ -270,6 +270,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 }
                 progress++;
                 totalContinuousRunningTime++;
+                syncDataHolder.markClientSyncFieldDirty("progress");
             } else {
                 setWaiting(handleTick.reason());
 
@@ -310,6 +311,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     protected void regressRecipe() {
         if (progress > 0 && machine.regressWhenWaiting()) {
             this.progress = 1;
+            syncDataHolder.markClientSyncFieldDirty("progress");
         }
     }
 
@@ -330,6 +332,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             lastOriginRecipe = null;
             handleSearchingRecipes(searchRecipe());
         }
+        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
         recipeDirty = false;
     }
 
@@ -370,6 +373,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = 0;
             isActive = false;
+            syncDataHolder.markClientSyncFieldDirty("progress");
+            syncDataHolder.markClientSyncFieldDirty("duration");
+            syncDataHolder.markClientSyncFieldDirty("isActive");
+            syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
             return;
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);
@@ -383,6 +390,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             progress = 0;
             duration = recipe.duration;
             isActive = true;
+            syncDataHolder.markClientSyncFieldDirty("lastRecipe");
+            syncDataHolder.markClientSyncFieldDirty("progress");
+            syncDataHolder.markClientSyncFieldDirty("duration");
+            syncDataHolder.markClientSyncFieldDirty("isActive");
         }
     }
 
@@ -402,6 +413,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
+                syncDataHolder.markClientSyncFieldDirty("waitingReason");
             }
         }
     }
@@ -409,6 +421,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     public void setWaiting(@Nullable Component reason) {
         setStatus(Status.WAITING);
         waitingReason = reason;
+        syncDataHolder.markClientSyncFieldDirty("waitingReason");
         machine.onWaiting();
     }
 
@@ -497,6 +510,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 isActive = false;
                 // Force a recipe recheck.
                 lastRecipe = null;
+                syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
+                syncDataHolder.markClientSyncFieldDirty("progress");
+                syncDataHolder.markClientSyncFieldDirty("duration");
+                syncDataHolder.markClientSyncFieldDirty("isActive");
+                syncDataHolder.markClientSyncFieldDirty("lastRecipe");
                 return;
             }
             if (machine.alwaysTryModifyRecipe()) {
@@ -506,6 +524,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                         markLastRecipeDirty();
                     } else {
                         lastRecipe = modified;
+                        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
                     }
                 } else {
                     markLastRecipeDirty();
@@ -519,11 +538,16 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 setStatus(Status.IDLE);
                 if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
                     waitingReason = recipeCheck.reason();
+                    syncDataHolder.markClientSyncFieldDirty("waitingReason");
                 }
                 consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
                 isActive = false;
+                syncDataHolder.markClientSyncFieldDirty("consecutiveRecipes");
+                syncDataHolder.markClientSyncFieldDirty("progress");
+                syncDataHolder.markClientSyncFieldDirty("duration");
+                syncDataHolder.markClientSyncFieldDirty("isActive");
             }
         }
     }
@@ -545,6 +569,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
+            syncDataHolder.markClientSyncFieldDirty("progress");
+            syncDataHolder.markClientSyncFieldDirty("duration");
         }
     }
 

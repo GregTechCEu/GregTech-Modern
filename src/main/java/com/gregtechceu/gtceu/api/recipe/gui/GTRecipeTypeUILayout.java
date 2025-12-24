@@ -19,9 +19,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
 
 import it.unimi.dsi.fastutil.ints.*;
@@ -57,7 +55,7 @@ public class GTRecipeTypeUILayout {
     public GTRecipeTypeUILayout() {}
 
     public ParentWidget<?> getBackedSlotsRow(@NotNull PanelSyncManager syncManager,
-                                             @NotNull UISettings settings,
+                                             @NotNull String themeId,
                                              @Nullable NotifiableItemStackHandler inputItems,
                                              @Nullable NotifiableItemStackHandler outputItems,
                                              @Nullable NotifiableFluidTank inputFluids,
@@ -108,11 +106,9 @@ public class GTRecipeTypeUILayout {
 
                     slotGroupHeightPx += 18 * grid.length;
 
-
-
                     IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getItemSlotTheme().getTheme().getBackground()
-                            : ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getFluidSlotTheme().getTheme().getBackground());
+                            ThemeAPI.INSTANCE.getTheme(themeId).getItemSlotTheme().getTheme().getBackground() :
+                            ThemeAPI.INSTANCE.getTheme(themeId).getFluidSlotTheme().getTheme().getBackground());
 
                     SlotGroupWidget.Builder slotWidgetBuilder = SlotGroupWidget.builder()
                             .matrix(grid);
