@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -151,22 +154,23 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 166)
-                .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
                 // Top half of the screen
-                .child(createImportItemSlot(syncManager).margin(52, 16))
-
+                .child(createImportItemSlot(syncManager, theme).margin(52, 16))
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 0).margin(77, 35))
-                .child(createExportItemSlot(syncManager).margin(104, 0, 34, 0))
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
+                .child(createExportItemSlot(syncManager, theme).margin(104, 0, 34, 0))
+
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) theme.getPanelTheme().getTheme()
+                        .getBackground()))
                 .child(SlotGroupWidget
                         .playerInventory(false).left(7)
                         .bottom(7));
     }
 
-    private SlotGroupWidget createImportItemSlot(PanelSyncManager syncManager) {
+    private SlotGroupWidget createImportItemSlot(PanelSyncManager syncManager, ITheme theme) {
         int size = importItems.storage.getSlots();
         SlotGroup slotGroup = new SlotGroup("import", size);
         String[] matrix = new String[size];
@@ -180,7 +184,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
-                            .background(GTGuiTextures.SLOT_PRIMITIVE,
+                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
@@ -188,7 +192,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .build();
     }
 
-    private SlotGroupWidget createExportItemSlot(PanelSyncManager syncManager) {
+    private SlotGroupWidget createExportItemSlot(PanelSyncManager syncManager, ITheme theme) {
         int size = exportItems.storage.getSlots();
         SlotGroup slotGroup = new SlotGroup("export", size);
         String[] matrix = new String[1];
@@ -203,8 +207,9 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("export", i)
-                            .background(GTGuiTextures.SLOT_PRIMITIVE, (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
-                                    GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
+                            .background(theme.getItemSlotTheme().getTheme().getBackground(),
+                                    (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
+                                            GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })
                 .build();
     }
