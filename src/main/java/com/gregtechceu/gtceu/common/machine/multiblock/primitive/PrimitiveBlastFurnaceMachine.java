@@ -162,7 +162,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .child(createExportItemSlot(syncManager).margin(104, 0, 34, 0))
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
                 .child(SlotGroupWidget
-                        .playerInventory(false, GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.SLOT_PRIMITIVE).left(7)
+                        .playerInventory(false).left(7)
                         .bottom(7));
     }
 
