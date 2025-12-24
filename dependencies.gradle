@@ -71,6 +71,11 @@ dependencies {
     modCompileOnly(forge.cc.tweaked.core.api)
     modCompileOnly(forge.cc.tweaked.forge.api)
 
+    // Compat mods
+    modCompileOnly(forge.alexscaves)
+    modCompileOnly(forge.biomesoplenty)
+    modCompileOnly(forge.undergarden)
+
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.ae2)
