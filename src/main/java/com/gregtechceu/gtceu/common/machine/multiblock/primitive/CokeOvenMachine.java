@@ -53,12 +53,14 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         new ModularSlot(importItems.storage, 0)
                                 .slotGroup(new SlotGroup("import_items", 1))
                                 .accessibility(true, true)))
+                        .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(52, 0, 30, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
+                        .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(103, 0, 30, 0))
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
