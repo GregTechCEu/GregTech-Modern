@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
@@ -53,7 +54,8 @@ public class GTToolItem extends DiggerItem implements IGTTool {
 
     public GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition,
                       Properties properties) {
-        super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
+        super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0),
+                material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() : properties);
         this.toolType = toolType;
         this.material = material;
         this.electricTier = toolType.electricTier;
