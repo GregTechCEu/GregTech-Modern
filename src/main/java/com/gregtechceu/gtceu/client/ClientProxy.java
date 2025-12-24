@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.mui.animation.AnimatorManager;
+import com.gregtechceu.gtceu.api.mui.drawable.DrawableSerialization;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.mui.CursorHandler;
@@ -88,6 +89,8 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             ForgeCommonEventListener.registerCapes(new RegisterGTCapesEvent());
+
+            DrawableSerialization.init();
         }
         initializeDynamicRenders();
     }
