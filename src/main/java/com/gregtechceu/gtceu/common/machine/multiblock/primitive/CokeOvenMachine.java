@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.mui.base.ITheme;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -45,22 +48,24 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
     }
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 166)
-                .background(GTGuiTextures.BACKGROUND_PRIMITIVE)
                 // Top half of the screen
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(importItems.storage, 0)
                                 .slotGroup(new SlotGroup("import_items", 1))
                                 .accessibility(true, true)))
-                        .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
+                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(52, 0, 30, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSH(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
-                        .background(GTGuiTextures.SLOT_PRIMITIVE, GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
+                        .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
+                                GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(103, 0, 30, 0))
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
@@ -69,7 +74,8 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                         .syncHandler(new FluidSlotSyncHandler(
                                 exportFluids.getStorages()[0]))
                         .margin(121, 0, 30, 0))
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND_PRIMITIVE))
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) uiTheme.getPanelTheme().getTheme()
+                        .getBackground()))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
