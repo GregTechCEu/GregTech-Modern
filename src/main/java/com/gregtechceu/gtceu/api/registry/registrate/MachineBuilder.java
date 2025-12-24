@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -175,6 +176,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     @Getter
     private PanelFactory UI = null;
+    @Getter
+    private String themeId = ThemeAPI.DEFAULT_ID;
 
     @Setter
     private boolean allowCoverOnFront = false;
@@ -405,6 +408,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> themeId(String themeId) {
+        this.themeId = themeId;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> themeId(Function<Integer, String> themeId) {
+        this.themeId = themeId.apply(tier);
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> modelProperty(Property<?> property) {
         return modelProperty(property, null);
     }
@@ -569,6 +582,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         var blockEntity = blockEntityBuilder.register();
         if (this.UI != null) {
             definition.setUI(UI);
+        }
+        if (this.themeId != null) {
+            definition.setThemeId(themeId);
         }
         definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);
