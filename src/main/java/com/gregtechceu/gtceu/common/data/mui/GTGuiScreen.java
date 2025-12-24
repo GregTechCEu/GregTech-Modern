@@ -25,7 +25,7 @@ public class GTGuiScreen extends ModularScreen {
 
     public GTGuiScreen(String owner, ModularPanel mainPanel, String themeId) {
         super(owner, mainPanel);
-        ThemeAPI.INSTANCE.registerThemeForScreen(owner + ":" + getName(), themeId);
+        //ThemeAPI.INSTANCE.registerThemeForScreen(owner + ":" + getName(), themeId);
         useTheme(themeId);
     }
 }

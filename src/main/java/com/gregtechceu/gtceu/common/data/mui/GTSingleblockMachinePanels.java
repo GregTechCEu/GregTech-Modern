@@ -55,7 +55,7 @@ public class GTSingleblockMachinePanels {
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                .getBackedSlotsRow(syncManager, settings, simpleTieredMachine.importItems,
                                         simpleTieredMachine.exportItems,
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         () -> (double) simpleTieredMachine.getProgress() /
@@ -138,7 +138,7 @@ public class GTSingleblockMachinePanels {
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                .getBackedSlotsRow(syncManager, settings, simpleTieredMachine.importItems,
                                         simpleTieredMachine.exportItems,
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         () -> (double) simpleTieredMachine.getProgress() /
@@ -216,12 +216,14 @@ public class GTSingleblockMachinePanels {
 
         panel.size(176, 76 + 21 + 18 + 9 + 18 * slotHeight);
 
+        var theme = machine.getDefinition().getTheme();
+
         boolean hasXEI = GTRecipeTypeUIs.recipeTypeUIs.containsKey(workableMachine.getRecipeType());
 
         panel.child(GTMuiWidgets.createTitleBar(machine.getDefinition(), 176, GTGuiTextures.BACKGROUND))
                 .child(new Row()
                         .childIf(hasXEI, GTRecipeTypeUIs.recipeTypeUIs.get(workableMachine.getRecipeType())
-                                .getBackedSlotsRow(syncManager, simpleTieredMachine.importItems,
+                                .getBackedSlotsRow(syncManager, theme, simpleTieredMachine.importItems,
                                         simpleTieredMachine.exportItems,
                                         simpleTieredMachine.importFluids, simpleTieredMachine.exportFluids,
                                         () -> (double) simpleTieredMachine.getProgress() /

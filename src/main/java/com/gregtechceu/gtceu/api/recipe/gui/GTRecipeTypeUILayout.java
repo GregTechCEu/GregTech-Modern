@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
@@ -55,6 +57,7 @@ public class GTRecipeTypeUILayout {
     public GTRecipeTypeUILayout() {}
 
     public ParentWidget<?> getBackedSlotsRow(@NotNull PanelSyncManager syncManager,
+                                             @NotNull UISettings settings,
                                              @Nullable NotifiableItemStackHandler inputItems,
                                              @Nullable NotifiableItemStackHandler outputItems,
                                              @Nullable NotifiableFluidTank inputFluids,
@@ -105,8 +108,11 @@ public class GTRecipeTypeUILayout {
 
                     slotGroupHeightPx += 18 * grid.length;
 
+
+
                     IDrawable defaultSlotBackground = (recipeCap == ItemRecipeCapability.CAP ?
-                            GTGuiTextures.SLOT : GTGuiTextures.FLUID_SLOT);
+                            ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getItemSlotTheme().getTheme().getBackground()
+                            : ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getFluidSlotTheme().getTheme().getBackground());
 
                     SlotGroupWidget.Builder slotWidgetBuilder = SlotGroupWidget.builder()
                             .matrix(grid);
