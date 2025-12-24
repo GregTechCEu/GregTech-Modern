@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -32,19 +33,23 @@ public class SmithingTransformRecipeMixin {
     private void gtceu$gtToolSmithingTransform1(Container container, RegistryAccess registryAccess,
                                                 CallbackInfoReturnable<ItemStack> cir,
                                                 @Share("newTag") LocalRef<CompoundTag> sharedTag) {
-        var newTag = container.getItem(1).getTag().copy();
-        var output = this.result.copy();
-        if (output.getItem() instanceof IGTTool igtTool) {
-            // Remove old tool stats
-            newTag.remove("GT.Tool");
+        ItemStack output = this.result.copy();
 
-            // Copy stats from the upgraded tool
-            var newStack = ToolHelper.get(igtTool.getToolType(), igtTool.getMaterial());
-            var newStats = newStack.getTag() != null ? newStack.getTag().get("GT.Tool") : null;
-            if (newStats != null) {
-                newTag.put("GT.Tool", newStats);
-                sharedTag.set(newTag);
-            }
+        if (!(output.getItem() instanceof IGTTool igtTool)) return;
+
+        CompoundTag originalTag = container.getItem(1).getTag();
+        CompoundTag newTag = originalTag != null ? originalTag.copy() : null;
+        if (newTag == null) return;
+
+        // Remove old tool stats
+        newTag.remove("GT.Tool");
+
+        // Copy stats from the upgraded tool
+        ItemStack newStack = ToolHelper.get(igtTool.getToolType(), igtTool.getMaterial());
+        Tag newStats = newStack.getTag() != null ? newStack.getTag().get("GT.Tool") : null;
+        if (newStats != null) {
+            newTag.put("GT.Tool", newStats);
+            sharedTag.set(newTag);
         }
     }
 
