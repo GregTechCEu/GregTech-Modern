@@ -534,7 +534,7 @@ public class SecondDegreeMaterials {
 
         Tuff = new Material.Builder(GTCEu.id("tuff"))
                 .dust()
-                .color(0x4d5046).secondaryColor(0x5d5d52).iconSet(ROUGH)
+                .color(0x75756a).secondaryColor(0x8a8a80).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .components(Ash, 2, PotassiumFeldspar, 1)
                 .buildAndRegister();
