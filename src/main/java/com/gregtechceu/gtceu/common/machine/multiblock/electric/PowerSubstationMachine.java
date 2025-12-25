@@ -395,7 +395,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // GTCEu.LOGGER.info(" " + netInLastSec + " " + netOutLastSec + " " + inputPerSec + " " + outputPerSec);
         return new ModularPanel(getDefinition().getName())
-                .width(200)
+                .size(200, 172)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
                 .bindPlayerInventory()
                 .child(Flow.row()
@@ -406,7 +406,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .padding(5)
                                 .background(GTGuiTextures.DISPLAY)
-                                .height(75)
+                                .height(80)
                                 .child(new TextWidget<>(IKey.dynamic(() -> {
                                     List<Component> text = new ArrayList<>();
                                     addDisplayText(text);
