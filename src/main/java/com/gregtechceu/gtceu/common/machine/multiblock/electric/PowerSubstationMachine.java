@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -18,17 +16,20 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -79,6 +80,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private EnergyContainerList inputHatches;
     private EnergyContainerList outputHatches;
+    @SyncToClient
     private long passiveDrain;
 
     // Stats tracked for UI display
@@ -206,7 +208,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (isFormed()) {
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
@@ -232,11 +233,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 var STYLE_DARK_RED = Style.EMPTY.withColor(ChatFormatting.DARK_RED);
                 var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
                 var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
-
                 var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.stored",
                         storedComponent.setStyle(STYLE_GOLD)));
-
                 var capacityComponent = Component.literal(FormattingUtil.formatNumbers(energyCapacity));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.capacity",
                         capacityComponent.setStyle(STYLE_GOLD)));
@@ -244,7 +243,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(getPassiveDrain()));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.passive_drain",
                         passiveDrainComponent.setStyle(STYLE_DARK_RED)));
-
                 var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec / 20));
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_in",
@@ -258,7 +256,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                                 avgOutComponent.setStyle(STYLE_RED))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
-
                 if (inputPerSec > outputPerSec) {
                     BigInteger timeToFillSeconds = energyCapacity.subtract(energyStored)
                             .divide(BigInteger.valueOf(inputPerSec - outputPerSec));
@@ -307,6 +304,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     public long getPassiveDrain() {
+        if (1 == 1) return passiveDrain;
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (maintenance == null) {
                 for (IMultiPart part : getParts()) {
@@ -316,7 +314,13 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     }
                 }
             }
+
+            if (maintenance == null) {
+                GTCEu.LOGGER.info("NULL MAINTENANCE");
+                return 0;
+            }
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
+
             double modifier = maintenance.getDurationMultiplier();
             return (long) (passiveDrain * multiplier * modifier);
         }
@@ -355,7 +359,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         // .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
         // .setMaxWidthLimit(150)
         // .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        // group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
 
@@ -365,31 +369,57 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     // }
 
     // @Override
-    public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
-                .toList();
-    }
+    /*
+     * public List<IFancyUIProvider> getSubTabs() {
+     * return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
+     * .toList();
+     * }
+     */
 
     // @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        for (IMultiPart part : getParts()) {
-            part.attachFancyTooltipsToController(this, tooltipsPanel);
-        }
-    }
+    /*
+     * public void attachTooltips(TooltipsPanel tooltipsPanel) {
+     * for (IMultiPart part : getParts()) {
+     * part.attachFancyTooltipsToController(this, tooltipsPanel);
+     * }
+     * }
+     */
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new ModularPanel(this.getDefinition().getName())
-                .child(
-                        // Top half of the screen
-                        new ParentWidget<>()
-                                .widthRel(1)
-                                .height(20 + 60)
-                                .child(new ParentWidget<>()
-                                        .background(GTGuiTextures.DISPLAY)
-                                        .size(90, 63)
-                                        .align(Alignment.CENTER)))
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+        return new ModularPanel(getDefinition().getName())
+                .width(200)
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
+                .bindPlayerInventory()
+                .child(Flow.row()
+                        .coverChildrenHeight()
+                        .margin(5)
+                        .childPadding(5)
+                        .widthRel(1f)
+                        .child(Flow.column()
+                                .crossAxisAlignment(Alignment.CrossAxis.START)
+                                .padding(5)
+                                .background(GTGuiTextures.DISPLAY)
+                                .height(75)
+                                // .widthRel(.6f)
+                                .child(new TextWidget<>(IKey.dynamic(() -> {
+                                    List<Component> text = new ArrayList<>();
+                                    addDisplayText(text);
+                                    return text.stream()
+                                            .map(Component::copy)
+                                            .reduce((a, b) -> a.append("\n").append(b))
+                                            .orElse(Component.empty());
+                                })))))
+                .child(new Column()
+                        .coverChildren()
+                        .leftRel(1.0f)
+                        .reverseLayout(true)
+                        .bottom(16)
+                        .padding(0, 8, 4, 4)
+                        .childPadding(2)
+                        .excludeAreaInXei()
+                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
+                                syncManager)));
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
