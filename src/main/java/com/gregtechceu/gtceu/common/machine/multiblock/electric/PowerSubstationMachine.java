@@ -75,6 +75,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     private IMaintenanceMachine maintenance;
 
     @SaveField
+    @SyncToClient
     private PowerStationEnergyBank energyBank;
 
     private EnergyContainerList inputHatches;
@@ -100,6 +101,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         super(holder);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::transferEnergyTick, this::isFormed);
         this.energyBank = new PowerStationEnergyBank(this, List.of());
+        syncDataHolder.markClientSyncFieldDirty("energyBank");
     }
 
     @Override
@@ -156,7 +158,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         } else {
             this.energyBank = energyBank.rebuild(batteries);
         }
+        syncDataHolder.markClientSyncFieldDirty("energyBank");
         this.passiveDrain = this.energyBank.getPassiveDrainPerTick();
+        syncDataHolder.markClientSyncFieldDirty("passiveDrain");
     }
 
     @Override
@@ -167,10 +171,13 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         inputHatches = null;
         outputHatches = null;
         passiveDrain = 0;
+        syncDataHolder.markClientSyncFieldDirty("passiveDrain");
         netInLastSec = 0;
         inputPerSec = 0;
+        syncDataHolder.markClientSyncFieldDirty("inputPerSec");
         netOutLastSec = 0;
         outputPerSec = 0;
+        syncDataHolder.markClientSyncFieldDirty("outputPerSec");
         super.onStructureInvalid();
     }
 
@@ -181,7 +188,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 getRecipeLogic()
                         .setStatus(energyBank.hasEnergy() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.IDLE);
                 inputPerSec = netInLastSec;
+                syncDataHolder.markClientSyncFieldDirty("inputPerSec");
                 outputPerSec = netOutLastSec;
+                syncDataHolder.markClientSyncFieldDirty("outputPerSec");
                 netInLastSec = 0;
                 netOutLastSec = 0;
             }
@@ -230,6 +239,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
             if (energyBank != null) {
                 BigInteger energyStored = energyBank.getStored();
+                syncDataHolder.markClientSyncFieldDirty("energyStored");
                 BigInteger energyCapacity = energyBank.getCapacity();
 
                 var STYLE_GOLD = Style.EMPTY.withColor(ChatFormatting.GOLD);
@@ -423,7 +433,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         private static final String NBT_SIZE = "Size";
         private static final String NBT_STORED = "Stored";
         private static final String NBT_MAX = "Max";
-
+        @SyncToClient
         private long[] storage;
         private long[] maximums;
         @Getter
@@ -433,6 +443,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         public PowerStationEnergyBank(MetaMachine machine, List<IBatteryData> batteries) {
             super(machine);
             storage = new long[batteries.size()];
+
             maximums = new long[batteries.size()];
             for (int i = 0; i < batteries.size(); i++) {
                 maximums[i] = batteries.get(i).getCapacity();
