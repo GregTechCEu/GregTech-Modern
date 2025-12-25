@@ -31,8 +31,6 @@ import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -383,8 +381,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
      * }
      */
 
-    // @Override
     /*
+     * @Override
      * public void attachTooltips(TooltipsPanel tooltipsPanel) {
      * for (IMultiPart part : getParts()) {
      * part.attachFancyTooltipsToController(this, tooltipsPanel);
@@ -393,7 +391,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
      */
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        // GTCEu.LOGGER.info(" " + netInLastSec + " " + netOutLastSec + " " + inputPerSec + " " + outputPerSec);
         return new ModularPanel(getDefinition().getName())
                 .size(200, 172)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
