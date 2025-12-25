@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
@@ -30,8 +31,13 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
     public List<T> deserializeNBT(Tag tag, ISyncManaged holder, List<T> current) {
         if (!(tag instanceof ListTag listTag) || elementTransformer == null) return List.of();
 
-        return listTag.stream()
-                .map((t) -> elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null))
-                .toList();
+        try {
+            current.clear();
+            listTag.forEach((t) -> current.add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
+        } catch (UnsupportedOperationException e) {
+            GTCEu.LOGGER.error("Sync: Cannot sync an immutable list: {} {}", holder, e);
+        }
+
+        return current;
     }
 }
