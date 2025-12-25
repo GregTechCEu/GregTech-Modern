@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -84,11 +83,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     private long passiveDrain;
 
     // Stats tracked for UI display
+    @SyncToClient
     private long netInLastSec;
     @Getter
+    @SyncToClient
     private long inputPerSec;
+    @SyncToClient
     private long netOutLastSec;
     @Getter
+    @SyncToClient
     private long outputPerSec;
 
     protected ConditionalSubscriptionHandler tickSubscription;
@@ -314,11 +317,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     }
                 }
             }
-
-            if (maintenance == null) {
-                GTCEu.LOGGER.info("NULL MAINTENANCE");
-                return 0;
-            }
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
 
             double modifier = maintenance.getDurationMultiplier();
@@ -350,19 +348,18 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public boolean supportsBigIntEnergyValues() {
         return true;
     }
-
-    // @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        // group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-        // .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-        // .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-        // .setMaxWidthLimit(150)
-        // .clickHandler(this::handleDisplayClick)));
-        // group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
+    /*
+     * // @Override
+     * public Widget createUIWidget() {
+     * var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+     * // group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
+     * // .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
+     * // .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+     * // .setMaxWidthLimit(150)
+     * // .clickHandler(this::handleDisplayClick)));
+     * // group.setBackground(GuiTextures.BACKGROUND_INVERSE);return group;
+     * }
+     */
     // @Override
     // public ModularUI createUI(Player entityPlayer) {
     // return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
@@ -386,6 +383,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
      */
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        // GTCEu.LOGGER.info(" " + netInLastSec + " " + netOutLastSec + " " + inputPerSec + " " + outputPerSec);
         return new ModularPanel(getDefinition().getName())
                 .width(200)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
@@ -394,13 +392,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         .coverChildrenHeight()
                         .margin(5)
                         .childPadding(5)
-                        .widthRel(1f)
                         .child(Flow.column()
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .padding(5)
                                 .background(GTGuiTextures.DISPLAY)
                                 .height(75)
-                                // .widthRel(.6f)
                                 .child(new TextWidget<>(IKey.dynamic(() -> {
                                     List<Component> text = new ArrayList<>();
                                     addDisplayText(text);
