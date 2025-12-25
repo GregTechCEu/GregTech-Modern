@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
@@ -302,6 +303,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("MaterialEntry", MaterialEntry.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
+        event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
         event.add("GTFluidState", FluidState.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
