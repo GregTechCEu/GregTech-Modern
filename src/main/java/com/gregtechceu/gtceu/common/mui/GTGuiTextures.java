@@ -311,6 +311,12 @@ public class GTGuiTextures {
     public static final UITexture PRIMITIVE_FURNACE_OVERLAY = fullImage(
             "textures/gui/primitive/overlay_primitive_furnace.png",
             ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank.png",
+            ColorType.DEFAULT);
+    public static final UITexture PRIMITIVE_LARGE_FLUID_TANK_OVERLAY = fullImage(
+            "textures/gui/primitive/primitive_large_fluid_tank_overlay.png",
+            ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY = fullImage("textures/gui/overlay/hammer_overlay.png",
             ColorType.DEFAULT);
     public static final UITexture HAMMER_OVERLAY_BRONZE = fullImage("textures/gui/overlay/hammer_overlay_bronze.png");

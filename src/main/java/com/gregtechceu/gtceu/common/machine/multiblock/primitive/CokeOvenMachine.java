@@ -12,10 +12,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
-import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.*;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
@@ -38,6 +35,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets.createTankWidget;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -69,10 +68,13 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .child(new ProgressWidget().progress(recipeLogic::getProgressPercent).size(20, 15)
                         .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18).margin(76, 32))
 
-                .child(new FluidSlot()
+                .child(createTankWidget()
+                        .overlayTexture(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
+                        .background(GTGuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
                         .syncHandler(new FluidSlotSyncHandler(
-                                exportFluids.getStorages()[0]))
-                        .margin(121, 0, 30, 0))
+                                exportFluids.getStorages()[0])
+                                .canFillSlot(false))
+                        .margin(134, 0, 13, 0))
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, (UITexture) uiTheme.getPanelTheme().getTheme()
                         .getBackground()))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));

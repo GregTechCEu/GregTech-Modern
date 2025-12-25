@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
@@ -109,6 +110,10 @@ public class GTMuiWidgets {
         return new ProgressWidget()
                 .texture(texture, size)
                 .progress(() -> workableMachine.getProgress() / (double) workableMachine.getMaxProgress());
+    }
+
+    public static FluidSlot createTankWidget() {
+        return new FluidSlot().size(20, 58).alwaysShowFull(false);
     }
 
     public static ItemSlot createBatterySlot(SimpleTieredMachine tieredMachine, PanelSyncManager syncManager) {
