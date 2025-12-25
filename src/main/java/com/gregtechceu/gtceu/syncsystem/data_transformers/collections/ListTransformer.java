@@ -33,7 +33,7 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
 
         try {
             current.clear();
-            listTag.forEach((t) -> current.add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
+            listTag.forEach(t -> current.add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
         } catch (UnsupportedOperationException e) {
             GTCEu.LOGGER.error("Sync: Cannot sync an immutable list: {} {}", holder, e);
         }
