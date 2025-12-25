@@ -468,6 +468,7 @@ public class GuiDraw {
         int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(content);
         graphics.setColor(Color.getRedF(fluidColor), Color.getGreenF(fluidColor), Color.getBlueF(fluidColor),
                 Color.getAlphaF(fluidColor));
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         drawTiledTexture(graphics.pose().last().pose(), InventoryMenu.BLOCK_ATLAS, x0, y0, width, height,
                 sprite.getU0(), sprite.getV0(),
                 sprite.getU1(), sprite.getV1(), sprite.contents().width(), sprite.contents().height(), z);

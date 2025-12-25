@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -50,13 +51,13 @@ public class GTMuiWidgets {
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
+        String machineName = displayItem.getHoverName().getString();
+        machineName = machineName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(hatchName);
+        int textTitleWidth = TextRenderer.getFont().width(machineName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
@@ -76,10 +77,9 @@ public class GTMuiWidgets {
                         .asWidget()
                         .marginLeft(borderRadius))
                 .mainAxisAlignment(Alignment.MainAxis.START)
-                .child(IKey.str(hatchName)
-                        .alignment(Alignment.CENTER)
+                .child(IKey.str(machineName)
                         .asWidget()
-                        .paddingTop(1)
+                        .paddingTop(3)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
@@ -290,6 +290,9 @@ public class GTMuiWidgets {
     }
 
     public static IDrawable.DrawableWidget createGTLogo() {
+        if (GTValues.XMAS.getAsBoolean()) {
+            return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO_XMAS);
+        }
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
     }
 
