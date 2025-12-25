@@ -447,9 +447,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             }
         }
 
-        if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO && tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
+        if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO &&
+                tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
             MetaMachine machine = (syncBlockEntity instanceof MetaMachine m) ? m : null;
-            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?,?> p) ? p : null;
+            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?, ?> p) ? p : null;
 
             list.add(Component.literal(syncBlockEntity.toString()));
             if (pipe != null) {
@@ -459,7 +460,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             list.add(Component.translatable("behavior.portable_scanner.divider"));
 
             list.add(Component.literal("Covers"));
-            ICoverable coverable = machine != null ? machine.getCoverContainer() : (pipe != null ? pipe.getCoverContainer() : null);
+            ICoverable coverable = machine != null ? machine.getCoverContainer() :
+                    (pipe != null ? pipe.getCoverContainer() : null);
             if (coverable != null) {
                 for (var dir : GTUtil.DIRECTIONS) {
                     var cover = coverable.getCoverAtSide(dir);
