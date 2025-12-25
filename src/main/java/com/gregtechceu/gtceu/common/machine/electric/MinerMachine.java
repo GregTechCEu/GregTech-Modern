@@ -94,24 +94,9 @@ public class MinerMachine extends WorkableTieredMachine
     protected ISubscription exportItemSubs, energySubs;
 
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
-        super(info, tier, GTMachineUtils.defaultTankSizeFunction, new WorkableTieredMachineTraits() {
-
-            @Override
-            public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {
-                return new NotifiableItemStackHandler(machine, 0, IO.IN);
-            }
-
-            @Override
-            public NotifiableItemStackHandler exportItemHandler(WorkableTieredMachine machine) {
-                return new NotifiableItemStackHandler(machine, (tier + 1) * (tier + 1), IO.OUT);
-            }
-
-            @Override
-            public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
-                return new MinerLogic(machine, fortune, speed, maximumRadius);
-            }
-        });
-
+        super(info, tier,
+                (m) -> new MinerLogic(m, fortune, speed, maximumRadius),
+                0, (tier + 1) * (tier + 1), 0, 0, 0, 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }

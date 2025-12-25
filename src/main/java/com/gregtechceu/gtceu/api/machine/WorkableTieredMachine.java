@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,8 +40,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Setter
     @SaveField
     public int activeRecipeType;
-    @Getter
-    public final Int2IntFunction tankScalingFunction;
     @Nullable
     @Getter
     @Setter
@@ -65,62 +64,39 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public static class WorkableTieredMachineTraits {
-
-        public RecipeLogic recipeLogic(WorkableTieredMachine machine) {
-            return new RecipeLogic(machine);
-        }
-
-        public NotifiableItemStackHandler importItemHandler(WorkableTieredMachine machine) {
-            return new NotifiableItemStackHandler(machine,
-                    machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
-        }
-
-        public NotifiableItemStackHandler exportItemHandler(WorkableTieredMachine machine) {
-            return new NotifiableItemStackHandler(machine,
-                    machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
-        }
-
-        public NotifiableFluidTank importFluidTank(WorkableTieredMachine machine) {
-            return new NotifiableFluidTank(machine, machine.getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                    machine.tankScalingFunction.applyAsInt(machine.getTier()), IO.IN);
-        }
-
-        public NotifiableFluidTank exportFluidTank(WorkableTieredMachine machine) {
-            return new NotifiableFluidTank(machine, machine.getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                    machine.tankScalingFunction.applyAsInt(machine.getTier()), IO.OUT);
-        }
-
-        public NotifiableComputationContainer importComputation(WorkableTieredMachine machine) {
-            return new NotifiableComputationContainer(machine, IO.IN, true);
-        }
-
-        public NotifiableComputationContainer exportComputation(WorkableTieredMachine machine) {
-            return new NotifiableComputationContainer(machine, IO.OUT, false);
-        }
-    }
-
-    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction,
-                                 WorkableTieredMachineTraits traits) {
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Function<WorkableTieredMachine, RecipeLogic> recipeLogicSupplier, int importSlots, int exportSlots,
+                                 int fluidImportSlots, int fluidImportTankSize, int fluidExportSlots, int fluidExportTankSize) {
         super(info, tier);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.tankScalingFunction = tankScalingFunction;
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
-        this.recipeLogic = traits.recipeLogic(this);
-        this.importItems = traits.importItemHandler(this);
-        this.exportItems = traits.exportItemHandler(this);
-        this.importFluids = traits.importFluidTank(this);
-        this.exportFluids = traits.exportFluidTank(this);
-        this.importComputation = traits.importComputation(this);
-        this.exportComputation = traits.exportComputation(this);
+        this.recipeLogic = recipeLogicSupplier.apply(this);
+        this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN);
+        this.exportItems = new NotifiableItemStackHandler(this, exportSlots, IO.OUT);
+        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, fluidImportTankSize, IO.IN);
+        this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, fluidExportTankSize, IO.OUT);
+        this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
+        this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
     }
 
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
-        this(info, tier, tankScalingFunction, new WorkableTieredMachineTraits());
+        super(info, tier);
+        this.overclockTier = getMaxOverclockTier();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.traitSubscriptions = new ArrayList<>();
+        this.recipeLogic = new RecipeLogic(this);
+        this.importItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        this.exportItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        this.importFluids = new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP), tankScalingFunction.applyAsInt(getTier()), IO.IN);
+        this.exportFluids = new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP), tankScalingFunction.applyAsInt(getTier()), IO.OUT);
+        this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
+        this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
     }
 
     //////////////////////////////////////
