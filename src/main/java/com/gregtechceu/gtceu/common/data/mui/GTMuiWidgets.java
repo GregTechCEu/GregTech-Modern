@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
@@ -46,7 +47,16 @@ import java.util.function.Supplier;
 public class GTMuiWidgets {
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
-        return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
+        UITexture background = GTGuiTextures.BACKGROUND;
+        if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().getTheme()
+                    .getBackground();
+        }
+        if (background == null) {
+            background = GTGuiTextures.BACKGROUND;
+        }
+
+        return createTitleBar(definition, panelWidth, background);
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {

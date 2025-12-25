@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
@@ -325,10 +324,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel panel = GTGuis.createPanel(this, 176, 166);
-        String theme = this.getDefinition().getThemeId();
-        UITexture backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
-                .getBackground();
-        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176, (UITexture) backgroundTexture));
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176));
 
         UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL :
                 GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_BRONZE;
