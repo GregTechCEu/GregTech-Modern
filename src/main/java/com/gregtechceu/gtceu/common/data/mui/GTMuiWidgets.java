@@ -48,8 +48,7 @@ public class GTMuiWidgets {
         return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
     }
 
-    public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        var displayItem = definition.asStack();
+    public static Flow createTitleBar(ItemStack displayItem, int panelWidth, UITexture background) {
         String hatchName = displayItem.getHoverName().getString();
         hatchName = hatchName.replaceAll("§.", "").trim();
 
@@ -82,6 +81,10 @@ public class GTMuiWidgets {
                         .paddingTop(1)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
+    }
+
+    public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
+        return createTitleBar(definition.asStack(), panelWidth, background);
     }
 
     public static ToggleButton createPowerButton(BooleanSupplier getter, BooleanConsumer setter,
