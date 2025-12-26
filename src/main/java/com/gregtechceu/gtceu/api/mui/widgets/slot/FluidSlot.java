@@ -61,6 +61,7 @@ public class FluidSlot extends Widget<FluidSlot>
     private FluidSlotSyncHandler syncHandler;
     private int contentOffsetX = 1, contentOffsetY = 1;
     private boolean alwaysShowFull = true;
+    private boolean displayAmount = true;
     @Nullable
     private IDrawable overlayTexture = null;
 
@@ -194,7 +195,7 @@ public class FluidSlot extends Widget<FluidSlot>
         if (this.overlayTexture != null) {
             this.overlayTexture.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
         }
-        if (content != null && !content.isEmpty() && this.syncHandler.controlsAmount()) {
+        if (content != null && !content.isEmpty() && this.syncHandler.controlsAmount() && this.displayAmount) {
 
             String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), false) +
                     getBaseUnit();
@@ -287,6 +288,11 @@ public class FluidSlot extends Widget<FluidSlot>
     public FluidSlot contentOffset(int x, int y) {
         this.contentOffsetX = x;
         this.contentOffsetY = y;
+        return this;
+    }
+
+    public FluidSlot displayAmount(boolean displayAmount) {
+        this.displayAmount = displayAmount;
         return this;
     }
 
