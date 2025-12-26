@@ -106,9 +106,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction,
-                               WorkableTieredMachineTraits traits) {
-        super(info, tier, tankScalingFunction, traits);
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        super(info, tier, tankScalingFunction);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
 
@@ -124,10 +123,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
         this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-    }
-
-    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
-        this(info, tier, tankScalingFunction, new WorkableTieredMachineTraits());
     }
 
     //////////////////////////////////////
