@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.modules.GuiModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
@@ -2551,6 +2552,10 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> IMAGE_MODULE = REGISTRATE.item("image_module", ComponentItem::create)
             .onRegister(attach(new ImageModuleBehaviour()))
+            .register();
+
+    public static ItemEntry<ComponentItem> GUI_MODULE = REGISTRATE.item("gui_module", ComponentItem::create)
+            .onRegister(attach(new GuiModuleBehaviour()))
             .register();
 
     public static void init() {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazar
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockOre;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
+import com.gregtechceu.gtceu.common.network.packets.ui.*;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
 import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
 import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
@@ -124,5 +125,8 @@ public class GTNetwork {
 
         register(OpenGuiPacket.class, OpenGuiPacket::new, null);
         register(SyncHandlerPacket.class, SyncHandlerPacket::new, null);
+        register(SContainerSetContent.class, SContainerSetContent::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(SContainerSetData.class, SContainerSetData::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(SContainerSetSlot.class, SContainerSetSlot::new, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

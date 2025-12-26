@@ -190,7 +190,9 @@ public class PanelSyncManager {
             if (!currentKey.equals(key)) {
                 boolean auto = name.startsWith(ModularSyncManager.AUTO_SYNC_PREFIX);
                 if (auto != currentKey.startsWith(ModularSyncManager.AUTO_SYNC_PREFIX)) {
-                    throw new IllegalStateException("Old and new sync handler must both be either not auto or auto!");
+                    throw new IllegalStateException(
+                            "Old and new sync handler must both be either not auto or auto! (old key = \"%s\", new key = \"%s\""
+                                    .formatted(currentKey, key));
                 }
                 if (auto && !currentKey.startsWith(name)) {
                     throw new IllegalStateException("Sync Handler was previously added with a different panel!");
@@ -410,7 +412,8 @@ public class PanelSyncManager {
 
     public void callSyncedAction(String mapKey, FriendlyByteBuf packet) {
         if (invokeSyncedAction(mapKey, packet)) {
-            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.panelName, mapKey, true, packet);
+            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.getContainer().inWorldID, this.panelName,
+                    mapKey, true, packet);
             if (isClient()) {
                 GTNetwork.sendToServer(packetSyncHandler);
             } else {
