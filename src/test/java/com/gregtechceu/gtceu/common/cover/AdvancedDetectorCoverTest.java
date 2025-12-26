@@ -28,7 +28,7 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 public class AdvancedDetectorCoverTest {
 
     @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
-    public static void BLOCKED_BY_LDLIB_WEIRDNESS_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
+    public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
@@ -40,7 +40,7 @@ public class AdvancedDetectorCoverTest {
     }
 
     @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
-    public static void BLOCKED_BY_LDLIB_WEIRDNESS_TOO_PROBABLY_testAdvancedActivityDetectorCover(GameTestHelper helper) {
+    public static void testAdvancedActivityDetectorCoverWithoutActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);

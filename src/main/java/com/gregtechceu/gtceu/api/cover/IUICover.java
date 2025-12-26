@@ -27,11 +27,6 @@ public interface IUICover extends IUIHolder {
     }
 
     @Override
-    default void markAsDirty() {
-        self().coverHolder.markDirty();
-    }
-
-    @Override
     default ModularUI createUI(Player entityPlayer) {
         var widget = createUIWidget();
         var size = widget.getSize();
@@ -48,4 +43,7 @@ public interface IUICover extends IUIHolder {
     default void onUIClosed() {}
 
     Widget createUIWidget();
+
+    @Override
+    default void markAsDirty() {}
 }

@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true)
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemHandlerProxyTrait.class);
     @Getter
     public final IO capabilityIO;
     @Setter
@@ -30,11 +27,6 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
     public ItemHandlerProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
         this.capabilityIO = capabilityIO;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////

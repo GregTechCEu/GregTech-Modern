@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Objects;
 
@@ -35,12 +34,6 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
      * relative position (in most cases the direct parent)
      */
     public int rx, ry;
-    /**
-     * each panel has its own layer
-     */
-    @Getter
-    @Setter
-    private byte panelLayer = 0;
     /**
      * the widget layer within this panel
      */
@@ -66,7 +59,6 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         super(area);
         this.rx = area.rx;
         this.ry = area.ry;
-        this.panelLayer = area.panelLayer;
         this.z = area.z;
         getMargin().set(area.getMargin());
         getPadding().set(area.getPadding());
@@ -576,13 +568,13 @@ public class Area extends Rectangle implements IUnResizeable, IAnimatable<Area> 
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Area area = (Area) o;
-        return rx == area.rx && ry == area.ry && panelLayer == area.panelLayer && z == area.z &&
+        return rx == area.rx && ry == area.ry && z == area.z &&
                 Objects.equals(getMargin(), area.getMargin()) &&
                 Objects.equals(getPadding(), area.getPadding());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), rx, ry, panelLayer, z, margin, padding);
+        return Objects.hash(super.hashCode(), rx, ry, z, margin, padding);
     }
 }

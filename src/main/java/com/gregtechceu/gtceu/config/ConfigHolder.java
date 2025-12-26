@@ -363,11 +363,6 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({ "Should all Stone Types drop unique Ore Item Blocks?",
-                "Default: false (meaning only Stone, Netherrack, and Endstone)" })
-        public boolean allUniqueStoneTypes = false;
-
-        @Configurable
         @Configurable.Comment({ "Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.",
                 "Default: false (no falling ores)" })
         public boolean sandOresFall = false;
@@ -480,6 +475,11 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether multiblocks should ignore all cleanroom requirements.",
                 "This does nothing if enableCleanroom is false.", "Default: false" })
         public boolean cleanMultiblocks = false;
+        @Configurable
+        @Configurable.Comment({
+                "Whether the miner should attempt to replace the block mined with a cobbled version of the ore",
+                "Default: true" })
+        public boolean replaceWithCobbleVersion = true;
         @Configurable
         @Configurable.Comment({ "Block to replace mined ores with in the miner and multiblock miner.",
                 "Default: minecraft:cobblestone" })
@@ -690,7 +690,7 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
         @Configurable
-        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
+        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
         @Configurable

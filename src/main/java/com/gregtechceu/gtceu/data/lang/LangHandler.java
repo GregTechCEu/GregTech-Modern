@@ -192,7 +192,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
-        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§Firefighter: §fDowses Campfires");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§1Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
         provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
         provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
@@ -804,12 +804,13 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.workable_progress", "Progress: %s s / %s s");
         provider.add("behavior.portable_scanner.workable_stored_energy", "Stored Energy: %s EU / %s EU");
         provider.add("behavior.portable_scanner.mode.caption", "Display mode: %s");
-        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info");
+        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info (excluding internal info)");
         provider.add("behavior.portable_scanner.mode.show_block_info", "Show block info");
         provider.add("behavior.portable_scanner.mode.show_machine_info", "Show machine info");
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.portable_scanner.mode.show_internal_info", "Show internal debugging info");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
         provider.add("behavior.data_item.title", "§n%s Construction Data:");
@@ -1022,11 +1023,12 @@ public class LangHandler {
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
         multilineLang(provider, "gtceu.gui.chunkmode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        provider.add("gtceu.gui.multiblock.voiding_mode", "Voiding Mode:");
+        provider.add("gtceu.gui.item_voiding", "§7Voiding §6Items");
+        provider.add("gtceu.gui.fluid_voiding", "§7Voiding §9Fluids");
+        provider.add("gtceu.gui.all_voiding",
+                "§7Voiding §cAll");
+        provider.add("gtceu.gui.no_voiding", "§7Voiding Nothing");
         multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
@@ -1249,13 +1251,42 @@ public class LangHandler {
                 "allow items input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
                 "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
                 "allow fluids input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
                 "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
@@ -1615,9 +1646,22 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.bufferText",
+                "Returns the text from a buffer accessible by ComputerCraft",
+                "Usage:",
+                "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_item_link_cover.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
+        provider.add("gtceu.ender_redstone_link_cover.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
@@ -1647,7 +1691,7 @@ public class LangHandler {
                 "Slot number: %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");

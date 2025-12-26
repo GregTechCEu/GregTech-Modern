@@ -32,14 +32,13 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -70,38 +69,35 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlockBreakerMachine extends TieredEnergyMachine
                                  implements IAutoOutputItem, IMuiMachine, IMachineLife, IControllable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler cache;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, breakerSubs;
     @Nullable
     protected ISubscription exportItemSubs, energySubs;
     private final int inventorySize;
-    @DescSynced
+    @SyncToClient
     private int blockBreakProgress = 0;
     private float currentHardness;
     private final long energyPerTick;
     public final float efficiencyMultiplier;
 
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
 
     public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -128,11 +124,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected CustomItemStackHandler createChargerItemHandler() {
         var handler = new CustomItemStackHandler();
@@ -243,6 +234,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             }
         }
 
+        syncDataHolder.markClientSyncFieldDirty("blockBreakProgress");
         updateBreakerSubscription();
     }
 
@@ -289,6 +281,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
@@ -303,6 +296,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 
@@ -354,6 +348,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
         updateBreakerSubscription();
     }
 
@@ -376,11 +371,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine
      * Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
      * var size = group.getSize();
      * energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-     * 
+     *
      * template.setSelfPosition(new Position(
      * (size.width - 4 - template.getSize().width) / 2 + 4,
      * (size.height - template.getSize().height) / 2));
-     * 
+     *
      * group.addWidget(energyGroup);
      * group.addWidget(template);
      * return group;
@@ -391,7 +386,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
      * createBatterySlot().setupUI(template, blockBreakerMachine);
      * }
      * }));
-     * 
+     *
      * protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
      * return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
      * var slotWidget = new SlotWidget();
@@ -405,7 +400,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
      * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
      * });
      * }
-     * 
+     *
      * protected static EditableUI<WidgetGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
      * return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
      * int rowSize = (int) Math.sqrt(inventorySize);

@@ -71,7 +71,7 @@ public class GTStringUtils {
      * </ul>
      * Currently the operations are: {@code {"+", "-", "*", "/", "%", ">>", "<<", "~", "round", "ceil", "floor",
      * "sqrt"}}
-     * 
+     *
      * @param args the arguments, including operands and operation to calculate
      * @return the result of the calculation, {@code "Invalid number!"} or {@code "Invalid expression!"}
      */

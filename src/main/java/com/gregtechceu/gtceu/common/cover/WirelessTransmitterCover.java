@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ComponentContents;
@@ -28,15 +26,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class WirelessTransmitterCover extends CoverBehavior
                                       implements IDataStickInteractable, IPlaceholderInfoProviderCover {
 
-    private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WirelessTransmitterCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
-
     @Getter
     private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @Getter
+    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
 
     public WirelessTransmitterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        for (int i = 0; i < 100; i++) createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        for (int i = 0; i < 100; i++) {
+            createDisplayTargetBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+            computerCraftTextBuffer.add(MutableComponent.create(ComponentContents.EMPTY));
+        }
     }
 
     @Override
@@ -60,7 +60,7 @@ public class WirelessTransmitterCover extends CoverBehavior
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void setComputerCraftTextBufferLine(int line, MutableComponent component) {
+        computerCraftTextBuffer.set(line, component);
     }
 }

@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,16 +31,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreativeTankMachine extends QuantumTankMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
-            QuantumTankMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int mBPerCycle = 1000;
     @Getter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 1;
 
     public CreativeTankMachine(IMachineBlockEntity holder) {
@@ -81,6 +76,18 @@ public class CreativeTankMachine extends QuantumTankMachine {
         if (value.isEmpty()) return;
         mBPerCycle = Integer.parseInt(value);
         onFluidChanged();
+    }
+
+    @Override
+    public void saveToItem(@NotNull CompoundTag tag) {
+        tag.putInt("mBPerCycle", mBPerCycle);
+        tag.putInt("ticksPerCycle", ticksPerCycle);
+    }
+
+    @Override
+    public void loadFromItem(@NotNull CompoundTag tag) {
+        mBPerCycle = tag.getInt("mBPerCycle");
+        ticksPerCycle = tag.getInt("ticksPerCycle");
     }
 
     @Override
@@ -128,7 +135,8 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // TODO
-        return super.buildUI(data, syncManager, settings);
+        return super.buildUI(data, syncManager, settings)
+                .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled, syncManager));
     }
 
     /*
@@ -155,15 +163,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
      * new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
      * new TextTexture("gtceu.creative.activity.on")))
      * .setPressed(isWorkingEnabled()));
-     * 
+     *
      * return group;
      * }
      */
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     private class InfiniteCache extends FluidCache {
 

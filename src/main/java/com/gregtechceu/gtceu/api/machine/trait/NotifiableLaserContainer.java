@@ -5,15 +5,10 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
 
     public NotifiableLaserContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {

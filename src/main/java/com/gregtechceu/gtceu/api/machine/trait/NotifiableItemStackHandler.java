@@ -10,11 +10,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -36,14 +35,12 @@ import java.util.function.Predicate;
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     public final CustomItemStackHandler storage;
     @Accessors(fluent = true)
     @Getter
@@ -75,12 +72,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void onContentsChanged() {
         isEmpty = null;
+        syncDataHolder.markClientSyncFieldDirty("storage");
         notifyListeners();
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -134,7 +127,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     int outputStorageLimit = 0;
                     for (int slot = 0; slot < storage.getSlots(); ++slot) {
                         ItemStack stack = storage.getStackInSlot(slot);
-                        if (stack.isEmpty() || ItemStack.isSameItemSameTags(stack, output)) {
+                        if (stack.isEmpty() || GTUtil.isSameItemSameTags(stack, output)) {
                             outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
                         }
                     }
@@ -175,7 +168,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || ItemStack.isSameItemSameTags(visited[slot], output)) {
+                    if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);

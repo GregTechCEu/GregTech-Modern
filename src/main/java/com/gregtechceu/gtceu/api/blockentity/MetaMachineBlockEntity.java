@@ -16,15 +16,13 @@ import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
+import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
+import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -34,7 +32,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -53,20 +51,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
+public class MetaMachineBlockEntity extends ManagedSyncBlockEntity implements IMachineBlockEntity {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MetaMachineBlockEntity.class);
+    @Getter
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
-    @Getter
+    @SaveField(nbtKey = "machine")
+    @SyncToClient
     public final MetaMachine metaMachine;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
 
@@ -74,26 +71,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         super(type, pos, blockState);
         this.renderState = getDefinition().defaultRenderState();
         this.metaMachine = getDefinition().createMetaMachine(this);
-
-        this.getRootStorage().attach(getSyncStorage());
-    }
-
-    @Override
-    public MultiManagedStorage getRootStorage() {
-        return managedStorage;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void onChanged() {
-        var level = getLevel();
-        if (level != null && !level.isClientSide && level.getServer() != null) {
-            level.getServer().execute(this::setChanged);
-        }
     }
 
     @Override
@@ -324,9 +301,27 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(@NotNull CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
+        if (!tag.contains("machine")) {
+            var compound = tag.copy();
+            tag.put("machine", compound);
+        }
         super.load(tag);
+    }
+
+    @Override
+    public void scheduleRenderUpdate() {
+        var pos = getBlockPos();
+        var level = getLevel();
+        if (level != null) {
+            var state = level.getBlockState(pos);
+            if (level.isClientSide) {
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+            } else {
+                level.blockEvent(pos, state.getBlock(), 1, 0);
+            }
+        }
     }
 
     public static class AE2CallWrapper {

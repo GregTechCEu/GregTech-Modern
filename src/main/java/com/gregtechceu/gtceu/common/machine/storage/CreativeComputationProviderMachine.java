@@ -19,14 +19,11 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,16 +36,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CreativeComputationProviderMachine extends MetaMachine
                                                 implements IMuiMachine, IOpticalComputationProvider {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CreativeComputationProviderMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @Getter
-    @Setter
+    @SaveField
     private int maxCWUt;
     private int lastRequestedCWUt;
     private int requestedCWUPerSec;
-    @Persisted
+    @SaveField
     @Getter
     private boolean active;
     @Nullable
@@ -110,9 +102,9 @@ public class CreativeComputationProviderMachine extends MetaMachine
         updateComputationSubscription();
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void setMaxCWUt(int maxCWUt) {
+        this.maxCWUt = maxCWUt;
+        syncDataHolder.markClientSyncFieldDirty("maxCWUt");
     }
 
     @Override

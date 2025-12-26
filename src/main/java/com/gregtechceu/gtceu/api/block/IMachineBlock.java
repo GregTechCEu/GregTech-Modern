@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,8 +65,12 @@ public interface IMachineBlock extends EntityBlock {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
+                    pTile.setChanged();
                     if (pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().serverTick();
+                    }
+                    if (pTile instanceof ManagedSyncBlockEntity syncObj) {
+                        syncObj.updateTick();
                     }
                 };
             } else {

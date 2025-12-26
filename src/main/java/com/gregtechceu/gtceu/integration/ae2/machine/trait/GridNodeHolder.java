@@ -4,13 +4,9 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
@@ -27,13 +23,8 @@ import java.util.EnumSet;
  */
 public class GridNodeHolder extends MachineTrait {
 
-    protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHolder.class);
-
     @Getter
-    @Persisted
-    @ReadOnlyManaged(onDirtyMethod = "onGridNodeDirty",
-                     serializeMethod = "serializeGridNode",
-                     deserializeMethod = "deserializeGridNode")
+    @SaveField
     protected final SerializableManagedGridNode mainNode;
 
     public GridNodeHolder(IGridConnectedMachine machine) {
@@ -71,26 +62,5 @@ public class GridNodeHolder extends MachineTrait {
     public void onMachineUnLoad() {
         super.onMachineUnLoad();
         mainNode.destroy();
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean onGridNodeDirty(SerializableManagedGridNode node) {
-        return node != null && node.isActive() && node.isOnline();
-    }
-
-    @SuppressWarnings("unused")
-    public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
-        return node.serializeNBT();
-    }
-
-    @SuppressWarnings("unused")
-    public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
-        this.mainNode.deserializeNBT(tag);
-        return this.mainNode;
     }
 }

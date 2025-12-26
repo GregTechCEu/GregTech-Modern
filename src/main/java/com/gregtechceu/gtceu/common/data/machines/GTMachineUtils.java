@@ -56,6 +56,7 @@ import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -373,6 +374,7 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
+                        .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                         .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))

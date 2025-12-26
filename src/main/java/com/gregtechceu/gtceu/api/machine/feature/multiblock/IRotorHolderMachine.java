@@ -202,7 +202,7 @@ public interface IRotorHolderMachine extends IMultiPart {
      * default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {
      * attachTooltips(tooltipsPanel);
      * }
-     * 
+     *
      * @Override
      * default void attachTooltips(TooltipsPanel tooltipsPanel) {
      * tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(

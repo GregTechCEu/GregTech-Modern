@@ -4,17 +4,14 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -26,22 +23,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine implements IFluidRenderMulti {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            LargeChemicalBathMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Setter
-    @DescSynced
-    @RequireRerender
+    @SyncToClient
+    @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
     public LargeChemicalBathMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void setFluidBlockOffsets(Set<BlockPos> offsets) {
+        fluidBlockOffsets = offsets;
+        syncDataHolder.markClientSyncFieldDirty("fluidBlockOffsets");
     }
 
     @Override
