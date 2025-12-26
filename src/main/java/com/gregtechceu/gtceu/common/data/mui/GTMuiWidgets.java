@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.DynamicDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
@@ -46,18 +48,27 @@ import java.util.function.Supplier;
 public class GTMuiWidgets {
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
-        return createTitleBar(definition, panelWidth, GTGuiTextures.BACKGROUND);
+        UITexture background = GTGuiTextures.BACKGROUND;
+        if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().getTheme()
+                    .getBackground();
+        }
+        if (background == null) {
+            background = GTGuiTextures.BACKGROUND;
+        }
+
+        return createTitleBar(definition, panelWidth, background);
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         var displayItem = definition.asStack();
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
+        String machineName = displayItem.getHoverName().getString();
+        machineName = machineName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(hatchName);
+        int textTitleWidth = TextRenderer.getFont().width(machineName);
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
@@ -77,10 +88,9 @@ public class GTMuiWidgets {
                         .asWidget()
                         .marginLeft(borderRadius))
                 .mainAxisAlignment(Alignment.MainAxis.START)
-                .child(IKey.str(hatchName)
-                        .alignment(Alignment.CENTER)
+                .child(IKey.str(machineName)
                         .asWidget()
-                        .paddingTop(1)
+                        .paddingTop(3)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
@@ -297,6 +307,9 @@ public class GTMuiWidgets {
     }
 
     public static IDrawable.DrawableWidget createGTLogo() {
+        if (GTValues.XMAS.getAsBoolean()) {
+            return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO_XMAS);
+        }
         return new IDrawable.DrawableWidget(GTGuiTextures.GREGTECH_LOGO);
     }
 
