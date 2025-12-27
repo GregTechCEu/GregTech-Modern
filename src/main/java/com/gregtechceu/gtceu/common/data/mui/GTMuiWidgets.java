@@ -60,8 +60,8 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(ItemStack displayItem, int panelWidth, UITexture background) {
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
+        String machineName = displayItem.getHoverName().getString();
+        machineName = machineName.replaceAll("§.", "").trim();
 
         int borderRadius = 5;
         int iconSize = 16;
