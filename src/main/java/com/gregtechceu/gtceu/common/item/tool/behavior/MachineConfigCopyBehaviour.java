@@ -85,7 +85,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 configTag.merge(gatherMachineConfig(machineBlockEntity.getMetaMachine()));
 
                 ListTag itemsTag = new ListTag();
-                machineBlockEntity.getMetaMachine().getItemsRequiredToPaste().forEach(v -> itemsTag.add(v.serializeNBT()));
+                machineBlockEntity.getMetaMachine().getItemsRequiredToPaste()
+                        .forEach(v -> itemsTag.add(v.serializeNBT()));
                 configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
                 configTag.putString(COPY_SOURCE,

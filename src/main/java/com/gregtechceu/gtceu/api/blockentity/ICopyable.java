@@ -21,5 +21,4 @@ public interface ICopyable {
     default List<ItemStack> getItemsRequiredToPaste() {
         return List.of();
     }
-
 }
