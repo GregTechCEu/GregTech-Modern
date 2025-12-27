@@ -46,7 +46,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged {
         return getHolder().getBlockPos();
     }
 
-    default BlockState getState() {
+    default BlockState getBlockState() {
         return getHolder().getBlockState();
     }
 
