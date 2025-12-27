@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,6 +37,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     private static final String NONE_DIRECTION = "null";
     private static final String CONFIG_DATA = "config_data";
     private static final String COPY_SOURCE = "copy_source";
+    private static final String ITEMS_TO_PASTE = "items_to_paste";
 
     private static final Component ENABLED = Component.translatable("behaviour.memory_card.enabled");
     private static final Component DISABLED = Component.translatable("behaviour.memory_card.disabled");
@@ -81,13 +83,18 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 configTag.putString(COPY_SOURCE,
                         (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
                 configTag.merge(gatherMachineConfig(machineBlockEntity.getMetaMachine()));
-                machineBlockEntity.getMetaMachine().getCoverContainer()
-                        .getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
+
+                ListTag itemsTag = new ListTag();
+                machineBlockEntity.getMetaMachine().getItemsRequiredToPaste().forEach(v -> itemsTag.add(v.serializeNBT()));
+                configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBE) {
                 configTag.putString(COPY_SOURCE,
                         (new ItemStack(blockEntity.getBlockState().getBlock().asItem())).getDisplayName().getString());
                 configTag.merge(gatherPipeConfig(pipeBE));
-                pipeBE.getCoverContainer().getItemsRequiredToPaste(stack.getTagElement(CONFIG_DATA));
+
+                ListTag itemsTag = new ListTag();
+                pipeBE.getItemsRequiredToPaste().forEach(v -> itemsTag.add(v.serializeNBT()));
+                configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else {
                 stack.removeTagKey(CONFIG_DATA);
                 player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
@@ -171,7 +178,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         }
 
-        pipe.getCoverContainer().loadCopyConfig(player, tag.getCompound(COVER));
+        pipe.getCoverContainer().pasteConfig(player, tag.getCompound(COVER));
     }
 
     private static CompoundTag gatherMachineConfig(MetaMachine machine) {
@@ -203,9 +210,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             }
         }
 
-        tag.put(COVER, machine.getCoverContainer().saveCopyConfig(new CompoundTag()));
+        tag.put(COVER, machine.getCoverContainer().copyConfig(new CompoundTag()));
 
-        tag = machine.saveCopyConfig(tag);
+        tag = machine.copyConfig(tag);
 
         return tag;
     }
@@ -239,9 +246,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
         }
 
-        machine.getCoverContainer().loadCopyConfig(player, tag.getCompound(COVER));
+        machine.getCoverContainer().pasteConfig(player, tag.getCompound(COVER));
 
-        machine.loadCopyConfig(player, tag);
+        machine.pasteConfig(player, tag);
     }
 
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag) {

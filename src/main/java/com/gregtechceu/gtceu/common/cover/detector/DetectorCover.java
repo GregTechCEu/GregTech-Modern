@@ -107,14 +107,14 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     }
 
     @Override
-    public CompoundTag saveCopyConfig(CompoundTag tag) {
+    public CompoundTag copyConfig(CompoundTag tag) {
         tag.putBoolean("inverted", isInverted);
-        return super.saveCopyConfig(tag);
+        return super.copyConfig(tag);
     }
 
     @Override
-    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setInverted(tag.getBoolean("inverted"));
-        super.loadCopyConfig(player, tag);
+        super.pasteConfig(player, tag);
     }
 }

@@ -300,18 +300,18 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public CompoundTag saveCopyConfig(CompoundTag tag) {
+    public CompoundTag copyConfig(CompoundTag tag) {
         tag.putBoolean("inverted", isInverted);
         tag.putInt("redstoneLvl", minRedstoneStrength);
         tag.putBoolean("preventPowerfail", preventPowerFail);
-        return super.saveCopyConfig(tag);
+        return super.copyConfig(tag);
     }
 
     @Override
-    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setInverted(tag.getBoolean("inverted"));
         setMinRedstoneStrength(tag.getInt("redstoneLvl"));
         preventPowerFail = tag.getBoolean("preventPowerfail");
-        super.loadCopyConfig(player, tag);
+        super.pasteConfig(player, tag);
     }
 }

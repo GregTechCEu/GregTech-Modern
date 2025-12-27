@@ -273,7 +273,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
         tag.put("item", cover.getAttachItem().serializeNBT());
-        tag.put("data", cover.saveCopyConfig(new CompoundTag()));
+        tag.put("data", cover.copyConfig(new CompoundTag()));
         return tag;
     }
 
@@ -287,11 +287,11 @@ public interface ICoverable extends ITickSubscription, ICopyable {
 
         CoverBehavior placedCover = getCoverAtSide(dir);
         if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
-            placedCover.loadCopyConfig(player, tag.getCompound("data"));
+            placedCover.pasteConfig(player, tag.getCompound("data"));
     }
 
     @Override
-    default CompoundTag saveCopyConfig(CompoundTag tag) {
+    default CompoundTag copyConfig(CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
@@ -300,7 +300,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
     }
 
     @Override
-    default void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+    default void pasteConfig(ServerPlayer player, CompoundTag tag) {
         for (Direction side : GTUtil.DIRECTIONS) {
             removeCover(side, player);
         }
@@ -311,7 +311,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
     }
 
     @Override
-    default void getItemsRequiredToPaste(CompoundTag tag) {
+    default List<ItemStack> getItemsRequiredToPaste() {
         Map<Item, Integer> allDrops = new HashMap<>();
         List<ItemStack> rawDrops = new ArrayList<>();
 
@@ -333,8 +333,8 @@ public interface ICoverable extends ITickSubscription, ICopyable {
             }
         }
 
-        var dropsTag = new ListTag();
-        allDrops.forEach((k, v) -> dropsTag.add(new ItemStack(k, v).serializeNBT()));
-        tag.put("itemsToPaste", dropsTag);
+        List<ItemStack> mergedStacks = new ArrayList<>();
+        allDrops.forEach((k, v) -> mergedStacks.add(new ItemStack(k, v)));
+        return mergedStacks;
     }
 }

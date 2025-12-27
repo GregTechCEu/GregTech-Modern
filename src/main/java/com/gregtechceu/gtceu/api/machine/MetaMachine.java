@@ -848,14 +848,17 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public CompoundTag saveCopyConfig(CompoundTag tag) {
-        return ICopyable.super.saveCopyConfig(tag);
+    public CompoundTag copyConfig(CompoundTag tag) {
+        return ICopyable.super.copyConfig(tag);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.loadCopyConfig(player, tag);
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getItemsRequiredToPaste() {
+        return coverContainer.getItemsRequiredToPaste();
     }
 }

@@ -169,16 +169,16 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    public CompoundTag saveCopyConfig(CompoundTag tag) {
+    public CompoundTag copyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalVoidingLimit());
-        return super.saveCopyConfig(tag);
+        return super.copyConfig(tag);
     }
 
     @Override
-    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
         globalVoidingLimit = tag.getInt("voidSize");
-        super.loadCopyConfig(player, tag);
+        super.pasteConfig(player, tag);
     }
 }

@@ -225,16 +225,16 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    public CompoundTag saveCopyConfig(CompoundTag tag) {
+    public CompoundTag copyConfig(CompoundTag tag) {
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
-        return super.saveCopyConfig(tag);
+        return super.copyConfig(tag);
     }
 
     @Override
-    public void loadCopyConfig(ServerPlayer player, CompoundTag tag) {
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
         setGlobalTransferLimit(tag.getInt("transferLimit"));
-        super.loadCopyConfig(player, tag);
+        super.pasteConfig(player, tag);
     }
 }
