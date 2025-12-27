@@ -17,7 +17,8 @@ import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.LongValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -131,15 +132,26 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .build();
     }
 
+    private LongValue.Dynamic getStored(PanelSyncManager syncManager) {
+        LongSyncValue stored = new LongSyncValue(() -> steamEnergy.getStored(), ((ignored) -> {}));
+        syncManager.syncValue("stored", stored);
+        return new LongValue.Dynamic(stored::getLongValue, stored::setLongValue);
+    }
+
     // @Override
     public void addDisplayText(List<Component> textList) {
         // IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-            if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
-                long steamStored = steamEnergy.getStored();
-                textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
-                        steamEnergy.getCapacity()));
-            }
+
+            // TODO sync stored and capacity
+
+            /*
+             * if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
+             * long steamStored = steamEnergy.getStored();
+             * textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
+             * steamEnergy.getCapacity()));
+             * }
+             */
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
