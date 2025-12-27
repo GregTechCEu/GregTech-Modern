@@ -6,18 +6,19 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -36,7 +37,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -131,9 +131,9 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .build();
     }
 
- //   @Override
+    // @Override
     public void addDisplayText(List<Component> textList) {
-      //  IDisplayUIMachine.super.addDisplayText(textList);
+        // IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
                 long steamStored = steamEnergy.getStored();
@@ -145,7 +145,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
 
             } else if (isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.running"));
+                textList.add(Component.translatable("gtceu.multiblock.running")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
                 if (maxParallels > 1) textList.add(Component.translatable("gtceu.multiblock.parallel", maxParallels));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
                 double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
@@ -165,9 +166,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
         return new ModularPanel(getDefinition().getName())
-                .size(200, 172)
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
+                // size(200, 172)
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176,
+                        (UITexture) theme.getPanelTheme().getTheme().getBackground()))
                 .bindPlayerInventory()
                 .child(Flow.row()
                         .coverChildrenHeight()
@@ -176,7 +179,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                         .child(Flow.column()
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .padding(5)
-                                .background(GTGuiTextures.DISPLAY)
+                                .background(GTGuiTextures.DISPLAY_BRONZE)
                                 .height(80)
                                 .child(new TextWidget<>(IKey.dynamic(() -> {
                                     List<Component> text = new ArrayList<>();
@@ -185,38 +188,27 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                                             .map(Component::copy)
                                             .reduce((a, b) -> a.append("\n").append(b))
                                             .orElse(Component.empty());
-                                })))))
-                .child(new Column()
-                        .coverChildren()
-                        .leftRel(1.0f)
-                        .reverseLayout(true)
-                        .bottom(16)
-                        .padding(0, 8, 4, 4)
-                        .childPadding(2)
-                        .excludeAreaInXei()
-                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
-                                syncManager)));
+                                })))));
     }
-/*
-    @Override
-    public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121).setBackground(getScreenTexture());
-        screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
-        screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick));
-        return new ModularUI(176, 216, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
-                .widget(screen)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134,
-                        true));
-    }
+    /*
+     * @Override
+     * public IGuiTexture getScreenTexture() {
+     * return GuiTextures.DISPLAY_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
+     * }
+     * 
+     * @Override
+     * public ModularUI createUI(Player entityPlayer) {
+     * var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121).setBackground(getScreenTexture());
+     * screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
+     * screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+     * .setMaxWidthLimit(150)
+     * .clickHandler(this::handleDisplayClick));
+     * return new ModularUI(176, 216, this, entityPlayer)
+     * .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
+     * .widget(screen)
+     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
+     * GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134,
+     * true));
+     * }
      */
 }
