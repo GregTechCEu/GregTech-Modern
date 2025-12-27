@@ -1,5 +1,28 @@
 # ChangeLog
 
+## Version [v7.4.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.3.0-1.20.1...v7.4.0-1.20.1)
+### Added
+
+- Add Bucket/Tank items interaction with coke oven by @Spicierspace153 in [#4190](https://github.com/GregTechCEu/GregTech-Modern/pull/4190)
+- NBT Predicate Ingredient by @jurrejelle in [#4175](https://github.com/GregTechCEu/GregTech-Modern/pull/4175)
+- Add a SpeedBoost When Walking on Concrete by @YoungOnionMC in [#3985](https://github.com/GregTechCEu/GregTech-Modern/pull/3985)
+
+### Fixed
+
+- Change paused steel boiler texture to be consistent with other boilers by @GirixK in [#4196](https://github.com/GregTechCEu/GregTech-Modern/pull/4196)
+- Fix server disconnections and other network errors from causing a crash by @gustovafing in [#4169](https://github.com/GregTechCEu/GregTech-Modern/pull/4169)
+- Implement creating Chanced and Ranged NBTPredicateIngredients by @DilithiumThoride in [#4202](https://github.com/GregTechCEu/GregTech-Modern/pull/4202)
+- Fix machines set to disable after current cycle not disabling on powerstall by @DilithiumThoride in [#4215](https://github.com/GregTechCEu/GregTech-Modern/pull/4215)
+- Balance chemical titanium recipe by @jurrejelle in [#4228](https://github.com/GregTechCEu/GregTech-Modern/pull/4228)
+- Fix Jade showing all singleblock generators as producing at LV by @DilithiumThoride in [#4193](https://github.com/GregTechCEu/GregTech-Modern/pull/4193)
+- Use manual tag checking instead of IsSameItemSameTags by @YoungOnionMC in [#4210](https://github.com/GregTechCEu/GregTech-Modern/pull/4210)
+
+### Changed
+
+- Update zh_cn.json 1.20 by @iouter in [#4226](https://github.com/GregTechCEu/GregTech-Modern/pull/4226)
+- Refactor OR and XOR chance logic rolls to multiply outputs for Guaranteed Rolls rather than adding by @DilithiumThoride in [#4211](https://github.com/GregTechCEu/GregTech-Modern/pull/4211)
+
+ 
 ## Version [v7.3.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.2.1-1.20.1...v7.3.0-1.20.1)
 ### Added
 

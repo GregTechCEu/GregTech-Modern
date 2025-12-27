@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -64,6 +65,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     public static long getVoltage(RecipeLogic capability) {
         long voltage = -1;
         if (capability.machine instanceof SimpleTieredMachine machine) {
+            voltage = GTValues.V[machine.getTier()];
+        } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
             voltage = GTValues.V[machine.getTier()];
         } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
             voltage = machine.getParts().stream()

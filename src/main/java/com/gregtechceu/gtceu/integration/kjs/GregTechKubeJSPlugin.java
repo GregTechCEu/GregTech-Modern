@@ -98,7 +98,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -548,7 +547,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // get the recipe ID without the leading type path
         GTRecipeBuilder builder = gtRecipeType.recipeBuilder(gtRecipe.idWithoutType());
         if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-            builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            int duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+            if (duration <= 0) {
+                GTCEu.LOGGER.error("Duration must be a positive value, skipping recipe id: {}", gtRecipe.getId());
+                return;
+            }
+            builder.duration = duration;
         }
         if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
             builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
@@ -663,7 +667,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
             var ingredient = entry.value().kjs$asIngredient();
             var values = ((IngredientAccessor) ingredient).getValues();
-            if (values.length == 0 || values[0] instanceof Ingredient.TagValue) continue;
+            if (values.length == 0) continue;
 
             ItemStack[] stacks = ingredient.getItems();
             ItemStack stack;
