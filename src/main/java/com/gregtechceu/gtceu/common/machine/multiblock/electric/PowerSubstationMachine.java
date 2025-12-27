@@ -279,7 +279,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                             getTimeToFillDrainText(timeToDrainSeconds).setStyle(STYLE_RED)));
                 }
             }
-        }
+        } else textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
         getDefinition().getAdditionalDisplay().accept(this, textList);
     }
 
