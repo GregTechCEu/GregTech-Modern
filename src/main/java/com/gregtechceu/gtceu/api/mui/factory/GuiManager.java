@@ -74,7 +74,6 @@ public class GuiManager {
         settings.defaultCanInteractWith(factory, guiData);
         PanelSyncManager syncManager = new PanelSyncManager(false);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
-        if (panel == null) return;
         WidgetTree.collectSyncValues(syncManager, panel);
 
         // create the menu
