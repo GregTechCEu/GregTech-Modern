@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc.compat;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 
 import biomesoplenty.api.item.BOPItems;
@@ -11,7 +12,7 @@ public class BiomesOPlentyRecipes {
     private static ArrayList<WoodTypeEntry> DEFAULT_ENTRIES;
 
     public static ArrayList<WoodTypeEntry> woodMachineRecipes() {
-        final String bopModId = "biomesoplenty";
+        final String bopModId = GTValues.MODID_BOP;
         if (DEFAULT_ENTRIES == null) {
             DEFAULT_ENTRIES = new ArrayList<WoodTypeEntry>();
             DEFAULT_ENTRIES.add(new WoodTypeEntry.Builder(bopModId, "fir")
@@ -274,7 +275,6 @@ public class BiomesOPlentyRecipes {
                     .pressurePlate(BOPItems.EMPYREAL_PRESSURE_PLATE, "empyreal_pressure_plate")
                     .registerAllMaterialInfo()
                     .build());
-            return DEFAULT_ENTRIES;
         }
         return DEFAULT_ENTRIES;
     }

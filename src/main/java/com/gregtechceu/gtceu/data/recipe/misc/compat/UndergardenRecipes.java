@@ -1,18 +1,44 @@
 package com.gregtechceu.gtceu.data.recipe.misc.compat;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
+
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import quek.undergarden.registry.UGBlocks;
 import quek.undergarden.registry.UGItems;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class UndergardenRecipes {
+    /*
+     * 
+     * TODO: add cloggrum material first?
+     * 
+     * private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {
+     * VanillaRecipeHelper.addShapedRecipe(provider, "iron_bars", new ItemStack(UGBlocks.CLOGGRUM_BARS.get(), 8), " h ",
+     * "XXX",
+     * "XXX",
+     * 'X', new MaterialEntry(TagPrefix.rod, GTMaterials.Iron)); // CHANGE IRON TO CLOGGRUM
+     * }
+     */
+
+    public static void hardRedstoneRecipes(Consumer<FinishedRecipe> provider) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "compat/undergarden/sticky_piston_from_goo_ball",
+                new ItemStack(Blocks.STICKY_PISTON), "h",
+                "R", "P",
+                'R', new ItemStack(UGItems.GOO_BALL.get()),
+                'P', new ItemStack(Blocks.PISTON));
+    }
 
     private static ArrayList<WoodTypeEntry> DEFAULT_ENTRIES;
 
     public static ArrayList<WoodTypeEntry> woodMachineRecipes() {
-        final String undergardenModId = "undergarden";
+        final String undergardenModId = GTValues.MODID_UNDERGARDEN;
         if (DEFAULT_ENTRIES == null) {
             DEFAULT_ENTRIES = new ArrayList<WoodTypeEntry>();
             DEFAULT_ENTRIES.add(new WoodTypeEntry.Builder(undergardenModId, "smogstem")
@@ -75,7 +101,6 @@ public class UndergardenRecipes {
                     .pressurePlate(UGBlocks.GRONGLE_PRESSURE_PLATE.get().asItem(), "grongle_pressure_plate")
                     .registerAllMaterialInfo()
                     .build());
-            return DEFAULT_ENTRIES;
         }
         return DEFAULT_ENTRIES;
     }

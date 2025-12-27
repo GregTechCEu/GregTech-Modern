@@ -13,6 +13,10 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.AlexsCavesRecipes;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.BiomesOPlentyRecipes;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.BiomesWeveGoneRecipes;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.UndergardenRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +29,7 @@ import net.minecraftforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -305,13 +308,16 @@ public class WoodMachineRecipes {
                     .generateLogToPlankRecipe(false)
                     .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                     .build());
-            if (GTCEu.isModLoaded("alexscaves")) {
+            if (GTCEu.isModLoaded(GTValues.MODID_ALEXSCAVES)) {
                 DEFAULT_ENTRIES.addAll(AlexsCavesRecipes.woodMachineRecipes());
             }
-            if (GTCEu.isModLoaded("biomesoplenty")) {
+            if (GTCEu.isModLoaded(GTValues.MODID_BOP)) {
                 DEFAULT_ENTRIES.addAll(BiomesOPlentyRecipes.woodMachineRecipes());
             }
-            if (GTCEu.isModLoaded("undergarden")) {
+            if (GTCEu.isModLoaded(GTValues.MODID_BWG)) {
+                DEFAULT_ENTRIES.addAll(BiomesWeveGoneRecipes.woodMachineRecipes());
+            }
+            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN)) {
                 DEFAULT_ENTRIES.addAll(UndergardenRecipes.woodMachineRecipes());
             }
         }

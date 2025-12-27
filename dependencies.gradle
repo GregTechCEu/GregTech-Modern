@@ -74,6 +74,8 @@ dependencies {
     // Compat mods
     modCompileOnly(forge.alexscaves)
     modCompileOnly(forge.biomesoplenty)
+    modCompileOnly(forge.biomeswevegone)
+    modCompileOnly(forge.letsdobloomingnature)
     modCompileOnly(forge.undergarden)
 
     // Standard runtime mods //

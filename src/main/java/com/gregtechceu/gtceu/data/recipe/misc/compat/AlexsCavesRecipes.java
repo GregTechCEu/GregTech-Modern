@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc.compat;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 
 import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
@@ -12,7 +13,7 @@ public class AlexsCavesRecipes {
     private static ArrayList<WoodTypeEntry> DEFAULT_ENTRIES;
 
     public static ArrayList<WoodTypeEntry> woodMachineRecipes() {
-        final String alexsCavesModId = "alexscaves";
+        final String alexsCavesModId = GTValues.MODID_ALEXSCAVES;
         if (DEFAULT_ENTRIES == null) {
             DEFAULT_ENTRIES = new ArrayList<WoodTypeEntry>();
             DEFAULT_ENTRIES.add(new WoodTypeEntry.Builder(alexsCavesModId, "pewen")
@@ -55,7 +56,6 @@ public class AlexsCavesRecipes {
                     .pressurePlate(ACBlockRegistry.THORNWOOD_PRESSURE_PLATE.get().asItem(), "thornwood_pressure_plate")
                     .registerAllMaterialInfo()
                     .build());
-            return DEFAULT_ENTRIES;
         }
         return DEFAULT_ENTRIES;
     }
