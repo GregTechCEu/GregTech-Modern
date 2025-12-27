@@ -6,7 +6,7 @@
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
-        "KeyboardHandlerMixin",
+        "client.KeyboardHandlerMixin",
         "client.AbstractClientPlayerAccessor",
         "client.AbstractContainerScreenAccessor",
         "client.AbstractContainerScreenMixin",
