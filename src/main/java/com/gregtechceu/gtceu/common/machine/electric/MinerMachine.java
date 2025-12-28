@@ -96,7 +96,7 @@ public class MinerMachine extends WorkableTieredMachine
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
         super(info, tier,
                 (m) -> new MinerLogic(m, fortune, speed, maximumRadius),
-                0, (tier + 1) * (tier + 1), 0, 0, 0, 0);
+                0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
     }
