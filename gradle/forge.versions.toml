@@ -34,7 +34,6 @@ modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
 alexscaves = "2.0.2"
 biomesoplenty = "19.0.0.96"
 biomeswevegone = "1.7.3-Forge"
-letsdobloomingnature = "1.0.12"
 undergarden = "0.8.14"
 
 ## cursemaven ##
@@ -100,7 +99,6 @@ modernfix           = { module = "maven.modrinth:modernfix", version.ref = "mode
 alexscaves          = { module = "maven.modrinth:alexs-caves", version.ref = "alexscaves" }
 biomesoplenty       = { module = "maven.modrinth:biomes-o-plenty", version.ref = "biomesoplenty" }
 biomeswevegone      = { module = "maven.modrinth:oh-the-biomes-weve-gone", version.ref = "biomeswevegone" }
-letsdobloomingnature= { module = "maven.modrinth:lets-do-bloomingnature", version.ref = "letsdobloomingnature" }
 undergarden         = { module = "maven.modrinth:the-undergarden", version.ref = "undergarden" }
 
 

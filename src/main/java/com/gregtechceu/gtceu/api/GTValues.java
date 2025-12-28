@@ -145,7 +145,6 @@ public class GTValues {
             MODID_ALEXSCAVES = "alexscaves",
             MODID_BOP = "biomesoplenty",
             MODID_BWG = "biomeswevegone",
-            MODID_LETS_DO_BLOOMINGNATURE = "bloomingnature",
             MODID_UNDERGARDEN = "undergarden";
 
     /**
