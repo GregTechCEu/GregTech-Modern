@@ -51,7 +51,7 @@ public class WoodMachineRecipes {
     private static ArrayList<WoodTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
             final String mcModId = "minecraft";
-            DEFAULT_ENTRIES = new ArrayList<WoodTypeEntry>();
+            DEFAULT_ENTRIES = new ArrayList<>();
             DEFAULT_ENTRIES.add(new WoodTypeEntry.Builder(mcModId, "oak")
                     .planks(Items.OAK_PLANKS, "oak_planks")
                     .log(Items.OAK_LOG).removeCharcoalRecipe()
