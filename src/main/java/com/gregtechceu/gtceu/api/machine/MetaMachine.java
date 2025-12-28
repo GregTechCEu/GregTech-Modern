@@ -542,7 +542,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             return machineBlock.getDefinition();
         } else {
             throw new IllegalStateException(
-                    "MetaMachine created for an un available block: " + getBlockState().getBlock());
+                    "MetaMachine created for an incompatible block: " + getBlockState().getBlock());
         }
     }
 
