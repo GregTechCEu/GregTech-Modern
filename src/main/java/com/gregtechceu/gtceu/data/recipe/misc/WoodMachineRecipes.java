@@ -26,6 +26,7 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -42,9 +43,9 @@ public class WoodMachineRecipes {
         registerPyrolyseOvenRecipes(provider);
     }
 
-    private static ArrayList<WoodTypeEntry> DEFAULT_ENTRIES;
+    private static List<WoodTypeEntry> DEFAULT_ENTRIES;
 
-    private static ArrayList<WoodTypeEntry> getDefaultEntries() {
+    private static List<WoodTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
             final String mcModId = "minecraft";
             DEFAULT_ENTRIES = new ArrayList<>();

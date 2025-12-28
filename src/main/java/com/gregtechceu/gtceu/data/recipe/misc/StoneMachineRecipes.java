@@ -21,6 +21,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -32,9 +33,9 @@ public class StoneMachineRecipes {
         registerStoneRecipes(provider);
     }
 
-    private static ArrayList<StoneTypeEntry> DEFAULT_ENTRIES;
+    private static List<StoneTypeEntry> DEFAULT_ENTRIES;
 
-    private static ArrayList<StoneTypeEntry> getDefaultEntries() {
+    private static List<StoneTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
             final String mcModID = "minecraft";
             DEFAULT_ENTRIES = new ArrayList<>();
