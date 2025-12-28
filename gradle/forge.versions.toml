@@ -31,10 +31,6 @@ jade = "11.6.3"
 embeddium = "0.3.31+mc1.20.1"
 oculus = "1.20.1-1.8.0"
 modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
-alexscaves = "2.0.2"
-biomesoplenty = "19.0.0.96"
-biomeswevegone = "1.7.3-Forge"
-undergarden = "0.8.14"
 
 ## cursemaven ##
 worldStripper = "4578579"
@@ -94,12 +90,6 @@ jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
-
-
-alexscaves          = { module = "maven.modrinth:alexs-caves", version.ref = "alexscaves" }
-biomesoplenty       = { module = "maven.modrinth:biomes-o-plenty", version.ref = "biomesoplenty" }
-biomeswevegone      = { module = "maven.modrinth:oh-the-biomes-weve-gone", version.ref = "biomeswevegone" }
-undergarden         = { module = "maven.modrinth:the-undergarden", version.ref = "undergarden" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }

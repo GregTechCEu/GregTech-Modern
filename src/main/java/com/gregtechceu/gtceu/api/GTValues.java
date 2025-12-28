@@ -141,11 +141,7 @@ public class GTValues {
             MODID_FTB_QUEST = "ftbquests",
             MODID_CCTWEAKED = "computercraft",
             MODID_ENDERIO = "enderio",
-            MODID_ENSORCELLATION = "ensorcellation",
-            MODID_ALEXSCAVES = "alexscaves",
-            MODID_BOP = "biomesoplenty",
-            MODID_BWG = "biomeswevegone",
-            MODID_UNDERGARDEN = "undergarden";
+            MODID_ENSORCELLATION = "ensorcellation";
 
     /**
      * Spray painting compat modids

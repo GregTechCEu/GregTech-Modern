@@ -13,10 +13,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
-import com.gregtechceu.gtceu.data.recipe.misc.compat.AlexsCavesRecipes;
-import com.gregtechceu.gtceu.data.recipe.misc.compat.BiomesOPlentyRecipes;
-import com.gregtechceu.gtceu.data.recipe.misc.compat.BiomesWeveGoneRecipes;
-import com.gregtechceu.gtceu.data.recipe.misc.compat.UndergardenRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +25,7 @@ import net.minecraftforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -46,9 +42,9 @@ public class WoodMachineRecipes {
         registerPyrolyseOvenRecipes(provider);
     }
 
-    private static ArrayList<WoodTypeEntry> DEFAULT_ENTRIES;
+    private static List<WoodTypeEntry> DEFAULT_ENTRIES;
 
-    private static ArrayList<WoodTypeEntry> getDefaultEntries() {
+    private static List<WoodTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
             final String mcModId = "minecraft";
             DEFAULT_ENTRIES = new ArrayList<>();
@@ -308,20 +304,6 @@ public class WoodMachineRecipes {
                     .generateLogToPlankRecipe(false)
                     .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                     .build());
-            if (GTCEu.isModLoaded(GTValues.MODID_ALEXSCAVES) &&
-                    ConfigHolder.INSTANCE.compat.recipes.alexsCavesRecipes) {
-                DEFAULT_ENTRIES.addAll(AlexsCavesRecipes.woodMachineRecipes());
-            }
-            if (GTCEu.isModLoaded(GTValues.MODID_BOP) && ConfigHolder.INSTANCE.compat.recipes.biomesOPlentyRecipes) {
-                DEFAULT_ENTRIES.addAll(BiomesOPlentyRecipes.woodMachineRecipes());
-            }
-            if (GTCEu.isModLoaded(GTValues.MODID_BWG) && ConfigHolder.INSTANCE.compat.recipes.biomesWeveGoneRecipes) {
-                DEFAULT_ENTRIES.addAll(BiomesWeveGoneRecipes.woodMachineRecipes());
-            }
-            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN) &&
-                    ConfigHolder.INSTANCE.compat.recipes.undergardenRecipes) {
-                DEFAULT_ENTRIES.addAll(UndergardenRecipes.woodMachineRecipes());
-            }
         }
         return DEFAULT_ENTRIES;
     }
