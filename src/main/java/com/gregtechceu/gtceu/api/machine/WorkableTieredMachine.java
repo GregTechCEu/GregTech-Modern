@@ -65,7 +65,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean previouslyMuffled = true;
 
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Function<WorkableTieredMachine, RecipeLogic> recipeLogicSupplier, int importSlots, int exportSlots,
-                                 int fluidImportSlots, int fluidImportTankSize, int fluidExportSlots, int fluidExportTankSize) {
+                                 int fluidImportSlots, int fluidExportSlots, int fluidImportTankSize, int fluidExportTankSize) {
         super(info, tier);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
