@@ -40,7 +40,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
 
-        long tierVoltage = GTValues.V[getTier()];
+        long tierVoltage = GTValues.V[tier];
         if (isEnergyEmitter()) {
             energyContainer = NotifiableEnergyContainer.emitterContainer(this,
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());

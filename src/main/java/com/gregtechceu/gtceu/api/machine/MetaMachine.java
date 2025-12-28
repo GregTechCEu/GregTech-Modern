@@ -143,7 +143,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final long offset = GTValues.RNG.nextInt(20);
 
     public MetaMachine(BlockEntityCreationInfo info) {
-        super(info.type(), info.pos(), info.state());
+        super(info);
         this.renderState = getDefinition().defaultRenderState();
         this.coverContainer = new MachineCoverContainer(this);
         this.traits = new ArrayList<>();
@@ -619,7 +619,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 Direction.NORTH;
     }
 
-    public void setUpwardsFacing(Direction upwardsFacing) {
+    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
@@ -689,7 +689,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public boolean canConnectRedstone(Direction side) {
+    public boolean canConnectRedstone(@NotNull Direction side) {
         // For some reason, Minecraft requests the output signal from the opposite side...
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover == null) return false;
@@ -863,11 +863,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        var result = GTCapabilityHelper.getMetaMachineCapability(this, cap, side);
+        var result = getCapability(this, cap, side);
         return result.isPresent() ? result : super.getCapability(cap, side);
     }
 
-    public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, @Nullable Direction accessSide,
+    private static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, @Nullable Direction accessSide,
                                                         Class<T> capability) {
         if (traits.isEmpty()) return Collections.emptyList();
         List<T> list = new ArrayList<>();
@@ -877,6 +877,142 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
         return list;
+    }
+
+    public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
+                                                                        @Nullable Direction side) {
+        if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> machine));
+        } else if (cap == GTCapability.CAPABILITY_WORKABLE) {
+            if (machine instanceof IWorkable workable) {
+                return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+            }
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof IWorkable workable) {
+                    return GTCapability.CAPABILITY_WORKABLE.orEmpty(cap, LazyOptional.of(() -> workable));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_CONTROLLABLE) {
+            if (machine instanceof IControllable controllable) {
+                return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+            }
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof IControllable controllable) {
+                    return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_RECIPE_LOGIC) {
+            for (MachineTrait trait : machine.getTraits()) {
+                if (trait instanceof RecipeLogic recipeLogic) {
+                    return GTCapability.CAPABILITY_RECIPE_LOGIC.orEmpty(cap, LazyOptional.of(() -> recipeLogic));
+                }
+            }
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+            if (machine instanceof IEnergyContainer energyContainer) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyContainer.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER) {
+            if (machine instanceof IEnergyInfoProvider energyInfoProvider) {
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> energyInfoProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyInfoProvider.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
+            if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
+                return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap,
+                        LazyOptional.of(() -> cleanroomReceiver));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
+            if (machine instanceof IMaintenanceMachine maintenanceMachine) {
+                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> maintenanceMachine));
+            }
+        } else if (cap == GTCapability.CAPABILITY_TURBINE_MACHINE) {
+            if (machine instanceof ITurbineMachine turbineMachine) {
+                return GTCapability.CAPABILITY_TURBINE_MACHINE.orEmpty(cap,
+                        LazyOptional.of(() -> turbineMachine));
+            }
+        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            var handler = machine.getItemHandlerCap(side, true);
+            if (handler != null) {
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
+            }
+        } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            var handler = machine.getFluidHandlerCap(side, true);
+            if (handler != null) {
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
+            }
+        } else if (cap == ForgeCapabilities.ENERGY) {
+            if (machine instanceof IEnergyStorage energyStorage) {
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> energyStorage));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyStorage.class);
+            if (!list.isEmpty()) {
+                // TODO wrap list in the future
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_LASER) {
+            if (machine instanceof ILaserContainer energyContainer) {
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ILaserContainer.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_LASER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
+            if (machine instanceof IOpticalComputationProvider computationProvider) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> computationProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IOpticalComputationProvider.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
+            if (machine instanceof IDataAccessHatch computationProvider) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_MONITOR_COMPONENT) {
+            if (machine instanceof IMonitorComponent monitorComponent) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> monitorComponent));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IMonitorComponent.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_MONITOR_COMPONENT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_CENTRAL_MONITOR) {
+            if (machine instanceof ICentralMonitor centralMonitor) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> centralMonitor));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ICentralMonitor.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_CENTRAL_MONITOR.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
+            LazyOptional<?> opt = MetaMachine.AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            if (opt.isPresent()) {
+                // noinspection unchecked
+                return (LazyOptional<T>) opt;
+            }
+        }
+        return LazyOptional.empty();
     }
 
     public static class AE2CallWrapper {

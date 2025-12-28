@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.syncsystem;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
@@ -30,6 +31,10 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Getter
     @Setter
     private boolean isDirty;
+
+    public ManagedSyncBlockEntity(BlockEntityCreationInfo info) {
+        super(info.type(), info.pos(), info.state());
+    }
 
     public ManagedSyncBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
