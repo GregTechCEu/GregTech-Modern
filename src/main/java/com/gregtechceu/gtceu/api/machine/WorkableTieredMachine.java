@@ -74,9 +74,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = recipeLogicSupplier.apply(this);
-        this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN);
+        this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN, IO.BOTH);
         this.exportItems = new NotifiableItemStackHandler(this, exportSlots, IO.OUT);
-        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, tankScalingFunction.applyAsInt(getTier()), IO.IN);
+        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, tankScalingFunction.applyAsInt(getTier()), IO.IN, IO.BOTH);
         this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, tankScalingFunction.applyAsInt(getTier()), IO.OUT);
         this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
         this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
