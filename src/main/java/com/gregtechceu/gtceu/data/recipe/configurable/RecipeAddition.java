@@ -141,6 +141,8 @@ public class RecipeAddition {
         if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
             VanillaRecipeHelper.addShapelessRecipe(provider, "nether_quartz_block_to_nether_quartz",
                     new ItemStack(Items.QUARTZ, 4), Blocks.QUARTZ_BLOCK);
+            VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_copper",
+                    ChemicalHelper.get(nugget, Copper, 9), new ItemStack(Items.COPPER_INGOT));
         }
     }
 

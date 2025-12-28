@@ -629,11 +629,5 @@ public class MiscRecipeLoader {
                 new MaterialEntry(gem, Lazurite));
         VanillaRecipeHelper.addShapelessRecipe(provider, "sodalite_to_dye", new ItemStack(Items.BLUE_DYE),
                 new MaterialEntry(gem, Sodalite));
-
-        // Copper Ingot disassembling
-        if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_copper",
-                    ChemicalHelper.get(nugget, Copper, 9), new ItemStack(Items.COPPER_INGOT));
-        }
     }
 }
