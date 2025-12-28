@@ -139,19 +139,14 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     // @Override
-    public void addDisplayText(List<Component> textList) {
+    public void addDisplayText(List<Component> textList, Long stored, Long capacity) {
         // IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-
-            // TODO sync stored and capacity
-
-            /*
-             * if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
-             * long steamStored = steamEnergy.getStored();
-             * textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
-             * steamEnergy.getCapacity()));
-             * }
-             */
+            if (stored != -1 && capacity > 0) {
+                ;
+                textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", stored,
+                        capacity));
+            }
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
@@ -174,11 +169,18 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 textList.add(Component.translatable("gtceu.multiblock.steam.low_steam")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
-        }
+        } else textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
     }
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
+        LongSyncValue stored = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getStored(),
+                (ignored) -> {});
+        LongSyncValue capacity = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getCapacity(),
+                (ignored) -> {});
+        syncManager.syncValue("stored", stored);
+        syncManager.syncValue("capacity", capacity);
         return new ModularPanel(getDefinition().getName())
                 // size(200, 172)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176,
@@ -195,7 +197,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                                 .height(80)
                                 .child(new TextWidget<>(IKey.dynamic(() -> {
                                     List<Component> text = new ArrayList<>();
-                                    addDisplayText(text);
+                                    addDisplayText(text, stored.getValue(), capacity.getValue());
                                     return text.stream()
                                             .map(Component::copy)
                                             .reduce((a, b) -> a.append("\n").append(b))
