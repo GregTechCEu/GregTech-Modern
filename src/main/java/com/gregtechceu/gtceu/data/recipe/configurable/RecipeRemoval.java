@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.configurable;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -164,6 +166,14 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:stone_button"));
         registry.accept(new ResourceLocation("minecraft:polished_blackstone_button"));
         registry.accept(new ResourceLocation("minecraft:calibrated_sculk_sensor"));
+        if (GTCEu.isModLoaded(GTValues.MODID_CREATE) && ConfigHolder.INSTANCE.compat.recipes.createRecipes) {
+            registry.accept(new ResourceLocation("create:crafting/logistics/pulse_repeater"));
+            registry.accept(new ResourceLocation("create:crafting/logistics/pulse_extender"));
+            registry.accept(new ResourceLocation("create:crafting/logistics/pulse_timer"));
+        }
+        if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN) && ConfigHolder.INSTANCE.compat.recipes.undergardenRecipes) {
+            registry.accept(new ResourceLocation("undergarden:sticky_piston_from_goo_ball"));
+        }
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {

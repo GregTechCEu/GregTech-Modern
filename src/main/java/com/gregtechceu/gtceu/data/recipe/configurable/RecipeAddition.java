@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.configurable;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -11,6 +12,8 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.CreateRecipes;
+import com.gregtechceu.gtceu.data.recipe.misc.compat.UndergardenRecipes;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -551,6 +554,14 @@ public class RecipeAddition {
                     .inputItems(new ItemStack(Items.HAY_BLOCK))
                     .outputItems(new ItemStack(Items.TARGET))
                     .duration(200).EUt(120).save(provider);
+
+            if (GTCEu.isModLoaded(GTValues.MODID_CREATE) && ConfigHolder.INSTANCE.compat.recipes.createRecipes) {
+                CreateRecipes.hardRedstoneRecipes(provider);
+            }
+            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN) &&
+                    ConfigHolder.INSTANCE.compat.recipes.undergardenRecipes) {
+                UndergardenRecipes.hardRedstoneRecipes(provider);
+            }
 
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "piston_bronze", new ItemStack(Blocks.PISTON, 1), "WWW",
