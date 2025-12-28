@@ -141,11 +141,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     // @Override
     public void addDisplayText(List<Component> textList, Long stored, Long capacity) {
         // IDisplayUIMachine.super.addDisplayText(textList);
+        Style STYLE_WHITE = Style.EMPTY.withColor(ChatFormatting.WHITE);
         if (isFormed()) {
             if (stored != -1 && capacity > 0) {
-                ;
                 textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", stored,
-                        capacity));
+                        capacity).setStyle(STYLE_WHITE));
             }
 
             if (!isWorkingEnabled()) {
@@ -153,14 +153,15 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
-                if (maxParallels > 1) textList.add(Component.translatable("gtceu.multiblock.parallel", maxParallels));
+                        .setStyle(STYLE_WHITE));
+                if (maxParallels > 1) textList
+                        .add(Component.translatable("gtceu.multiblock.parallel", maxParallels).setStyle(STYLE_WHITE));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
                 double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
                 double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
                 textList.add(
                         Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-                                String.format("%.2f", (float) maxInSec), currentProgress));
+                                String.format("%.2f", (float) maxInSec), currentProgress).setStyle(STYLE_WHITE));
             } else {
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
@@ -170,7 +171,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         } else textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)));
+                .setStyle(STYLE_WHITE));
     }
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
