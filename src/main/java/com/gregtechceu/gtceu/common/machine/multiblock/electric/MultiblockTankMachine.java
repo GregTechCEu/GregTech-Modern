@@ -44,7 +44,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
     public MultiblockTankMachine(BlockEntityCreationInfo info, int capacity, @Nullable PropertyFluidFilter filter) {
         super(info);
 
-        tank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
+        this.tank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
         if (filter != null) tank.setFilter(filter);
     }
 

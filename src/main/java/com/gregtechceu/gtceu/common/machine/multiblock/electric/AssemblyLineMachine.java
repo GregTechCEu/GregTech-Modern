@@ -256,7 +256,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches);
     }
 
-    static class AsslineRecipeLogic extends RecipeLogic {
+    private static class AsslineRecipeLogic extends RecipeLogic {
 
         private final AssemblyLineMachine machine;
 
