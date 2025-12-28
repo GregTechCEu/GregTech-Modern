@@ -555,10 +555,11 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Items.TARGET))
                     .duration(200).EUt(120).save(provider);
 
-            if (GTCEu.isModLoaded(GTValues.MODID_CREATE)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_CREATE) && ConfigHolder.INSTANCE.compat.recipes.createRecipes) {
                 CreateRecipes.hardRedstoneRecipes(provider);
             }
-            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN) &&
+                    ConfigHolder.INSTANCE.compat.recipes.undergardenRecipes) {
                 UndergardenRecipes.hardRedstoneRecipes(provider);
             }
 

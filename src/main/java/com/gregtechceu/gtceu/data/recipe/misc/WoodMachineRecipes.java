@@ -308,16 +308,18 @@ public class WoodMachineRecipes {
                     .generateLogToPlankRecipe(false)
                     .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                     .build());
-            if (GTCEu.isModLoaded(GTValues.MODID_ALEXSCAVES)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_ALEXSCAVES) &&
+                    ConfigHolder.INSTANCE.compat.recipes.alexsCavesRecipes) {
                 DEFAULT_ENTRIES.addAll(AlexsCavesRecipes.woodMachineRecipes());
             }
-            if (GTCEu.isModLoaded(GTValues.MODID_BOP)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_BOP) && ConfigHolder.INSTANCE.compat.recipes.biomesOPlentyRecipes) {
                 DEFAULT_ENTRIES.addAll(BiomesOPlentyRecipes.woodMachineRecipes());
             }
-            if (GTCEu.isModLoaded(GTValues.MODID_BWG)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_BWG) && ConfigHolder.INSTANCE.compat.recipes.biomesWeveGoneRecipes) {
                 DEFAULT_ENTRIES.addAll(BiomesWeveGoneRecipes.woodMachineRecipes());
             }
-            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_UNDERGARDEN) &&
+                    ConfigHolder.INSTANCE.compat.recipes.undergardenRecipes) {
                 DEFAULT_ENTRIES.addAll(UndergardenRecipes.woodMachineRecipes());
             }
         }

@@ -171,6 +171,10 @@ public class ConfigHolder {
         public MinimapCompatConfig minimap = new MinimapCompatConfig();
 
         @Configurable
+        @Configurable.Comment("Config options regarding GTEU compatibility with other mods by changing their recipes")
+        public RecipeCompatConfig recipes = new RecipeCompatConfig();
+
+        @Configurable
         @Configurable.Comment({ "Whether to hide facades of all blocks in JEI and creative search menu.",
                 "Default: true" })
         // todo: implement or purge
@@ -351,6 +355,31 @@ public class ConfigHolder {
                     return 0x00000000;
                 }
             }
+        }
+
+        public static class RecipeCompatConfig {
+
+            // Will only be loaded if each mod is detected, so all default to true
+
+            @Configurable
+            @Configurable.Comment({ "Include Alex's Caves in recipe changes" })
+            public boolean alexsCavesRecipes = true;
+
+            @Configurable
+            @Configurable.Comment({ "Include Biomes O' Plenty in recipe changes" })
+            public boolean biomesOPlentyRecipes = true;
+
+            @Configurable
+            @Configurable.Comment({ "Include Oh The Biomes We've Gone in recipe changes" })
+            public boolean biomesWeveGoneRecipes = true;
+
+            @Configurable
+            @Configurable.Comment({ "Include Create in recipe changes" })
+            public boolean createRecipes = true;
+
+            @Configurable
+            @Configurable.Comment({ "Include The Undergarden in recipe changes" })
+            public boolean undergardenRecipes = true;
         }
     }
 
