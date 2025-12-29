@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
@@ -30,11 +28,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -46,6 +42,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -238,7 +235,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 
             var throttleText = Component.translatable("gtceu.multiblock.large_boiler.throttle",
-                            ChatFormatting.AQUA.toString() + getThrottle() + "%")
+                    ChatFormatting.AQUA.toString() + getThrottle() + "%")
                     .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
             textList.add(throttleText);
@@ -259,7 +256,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                         .child(Flow.column()
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .padding(5)
-                                .background((maxTemperature > 800)?  GTGuiTextures.DISPLAY : GTGuiTextures.DISPLAY_BRONZE)
+                                .background(
+                                        (maxTemperature > 800) ? GTGuiTextures.DISPLAY : GTGuiTextures.DISPLAY_BRONZE)
                                 .height(80)
                                 .child(new TextWidget<>(IKey.dynamic(() -> {
                                     List<Component> text = new ArrayList<>();
@@ -270,25 +268,28 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                                             .orElse(Component.empty());
                                 })))
                                 .childIf(isFormed(), new ParentWidget<>().child(Flow.row().coverChildren().marginTop(1)
-                                        .child(new TextWidget<>(IKey.lang("gtceu.multiblock.large_boiler.throttle_modify")).style(ChatFormatting.WHITE).marginRight(5))
-                                        .child(new ButtonWidget<>().height(8).onMousePressed((x,y,button) -> {
-                                            if (button == InputConstants.MOUSE_BUTTON_LEFT){
+                                        .child(new TextWidget<>(
+                                                IKey.lang("gtceu.multiblock.large_boiler.throttle_modify"))
+                                                .style(ChatFormatting.WHITE).marginRight(5))
+                                        .child(new ButtonWidget<>().height(8).onMousePressed((x, y, button) -> {
+                                            if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                                                 this.throttle = Mth.clamp(throttle - 5, 25, 100);
                                                 this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
                                             }
                                             return true;
-                                        }).background(IKey.str("[-]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[-]").style(ChatFormatting.YELLOW)))
-                                        .child(new ButtonWidget<>().height(8).marginLeft(2).onMousePressed((x,y,button) -> {
-                                            if (button == InputConstants.MOUSE_BUTTON_LEFT){
-                                                this.throttle = Mth.clamp(throttle + 5, 25, 100);
-                                                this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
-                                            }
-                                            return true;
-                                        }).background(IKey.str("[+]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[+]").style(ChatFormatting.YELLOW)))
+                                        }).background(IKey.str("[-]").style(ChatFormatting.YELLOW))
+                                                .hoverBackground(IKey.str("[-]").style(ChatFormatting.YELLOW)))
+                                        .child(new ButtonWidget<>().height(8).marginLeft(2)
+                                                .onMousePressed((x, y, button) -> {
+                                                    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+                                                        this.throttle = Mth.clamp(throttle + 5, 25, 100);
+                                                        this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
+                                                    }
+                                                    return true;
+                                                }).background(IKey.str("[+]").style(ChatFormatting.YELLOW))
+                                                .hoverBackground(IKey.str("[+]").style(ChatFormatting.YELLOW)))
 
-                                )
-                        )
-                        ));
+                                ))));
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
