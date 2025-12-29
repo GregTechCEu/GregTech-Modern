@@ -30,6 +30,11 @@ public class ByteValue implements IByteValue<Byte> {
         setByteValue(value);
     }
 
+    @Override
+    public Class<Byte> getValueType() {
+        return Byte.class;
+    }
+
     public static class Dynamic extends ByteValue {
 
         private final Supplier getter;

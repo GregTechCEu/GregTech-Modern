@@ -75,9 +75,8 @@ public class LongSyncValue extends ValueSyncHandler<Long>
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -122,5 +121,10 @@ public class LongSyncValue extends ValueSyncHandler<Long>
     @Override
     public String getStringValue() {
         return String.valueOf(this.cache);
+    }
+
+    @Override
+    public Class<Long> getValueType() {
+        return Long.class;
     }
 }

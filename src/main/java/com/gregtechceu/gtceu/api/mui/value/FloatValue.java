@@ -64,6 +64,11 @@ public class FloatValue implements IFloatValue<Float>, IDoubleValue<Float>, IStr
         setFloatValue(Float.parseFloat(val));
     }
 
+    @Override
+    public Class<Float> getValueType() {
+        return Float.class;
+    }
+
     public static class Dynamic implements IFloatValue<Float>, IDoubleValue<Float>, IStringValue<Float> {
 
         private final FloatSupplier getter;
@@ -112,6 +117,11 @@ public class FloatValue implements IFloatValue<Float>, IDoubleValue<Float>, IStr
         @Override
         public void setDoubleValue(double val) {
             setFloatValue((float) val);
+        }
+
+        @Override
+        public Class<Float> getValueType() {
+            return Float.class;
         }
     }
 }

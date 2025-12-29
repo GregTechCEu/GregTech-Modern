@@ -57,8 +57,9 @@ public class ModularSyncManager {
         this.panelSyncManagerMap.values().forEach(psm -> psm.detectAndSendChanges(init));
     }
 
-    public void onClose() {
+    public void dispose() {
         this.panelSyncManagerMap.values().forEach(PanelSyncManager::onClose);
+        this.panelSyncManagerMap.clear();
     }
 
     public void onOpen() {

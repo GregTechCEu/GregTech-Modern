@@ -7,16 +7,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * See {@link GuiData} for an explanation for what this is for.
  */
+@Getter
 public class PosGuiData extends GuiData {
 
-    @Getter
     private final BlockPos blockPos;
 
-    public PosGuiData(Player player, BlockPos blockPos) {
+    public PosGuiData(@NotNull Player player, BlockPos blockPos) {
         super(player);
         this.blockPos = blockPos;
     }

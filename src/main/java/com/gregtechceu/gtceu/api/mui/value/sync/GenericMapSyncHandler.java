@@ -59,9 +59,8 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
         if (setSource && this.setter != null) {
             this.setter.accept(value);
         }
-        if (sync) {
-            sync(0, this::write);
-        }
+        onValueChanged();
+        if (sync) sync();
     }
 
     @Override
@@ -111,6 +110,11 @@ public class GenericMapSyncHandler<K, V> extends ValueSyncHandler<Map<K, V>> {
     @Override
     public Map<K, V> getValue() {
         return Collections.unmodifiableMap(this.cache);
+    }
+
+    @Override
+    public Class<Map<K, V>> getValueType() {
+        return (Class<Map<K, V>>) (Object) Map.class;
     }
 
     public static class Builder<K, V> {

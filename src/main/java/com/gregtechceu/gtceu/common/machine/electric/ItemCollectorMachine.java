@@ -503,9 +503,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                         .childPadding(2)
                         .excludeAreaInXei()
                         .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                        .child(GTMuiWidgets.createBatterySlot(getChargerInventory(), 0, syncManager))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager))
+                        .child(GTMuiWidgets.createBatterySlot(getChargerInventory(), 0, syncManager))
                         .child(GTMuiWidgets.createAutoOutputItemButton(this, syncManager)));
     }
 }

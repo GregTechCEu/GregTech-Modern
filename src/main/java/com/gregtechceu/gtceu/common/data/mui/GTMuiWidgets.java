@@ -77,6 +77,7 @@ public class GTMuiWidgets {
                         .marginLeft(borderRadius))
                 .mainAxisAlignment(Alignment.MainAxis.START)
                 .child(IKey.str(hatchName)
+                        .alignment(Alignment.CENTER)
                         .asWidget()
                         .paddingTop(1)
                         .margin(borderRadius, borderRadius, borderRadius, 1)
