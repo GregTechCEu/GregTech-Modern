@@ -231,37 +231,13 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
             textList.add(throttleText);
-
-/*            var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-            textList.add(buttonText);*/
         }
     }
-/*
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
-            int result = componentData.equals("add") ? 5 : -5;
-            this.throttle = Mth.clamp(throttle + result, 25, 100);
-            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
-        }
-    }*/
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-     //   ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
-      /*  LongSyncValue stored = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getStored(),
-                (ignored) -> {});
-        LongSyncValue capacity = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getCapacity(),
-                (ignored) -> {});
-        syncManager.syncValue("stored", stored);
-       syncManager.syncValue("capacity", capacity);
-       */
         return new ModularPanel(getDefinition().getName())
                 // size(200, 172)
                 .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
-                       // (UITexture) theme.getPanelTheme().getTheme().getBackground()))
                 .bindPlayerInventory()
                 .child(Flow.row()
                         .coverChildrenHeight()
