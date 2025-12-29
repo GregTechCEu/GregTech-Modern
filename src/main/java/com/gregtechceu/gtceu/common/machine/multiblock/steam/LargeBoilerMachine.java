@@ -2,28 +2,39 @@ package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -45,7 +56,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IMuiMachine {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
@@ -53,9 +64,14 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     public final int maxTemperature, heatSpeed;
     @SaveField
     @Getter
-    private int currentTemperature, throttle;
+    @SyncToClient
+    private int currentTemperature;
+    @SaveField
+    @Getter
+    private int throttle;
     @Nullable
     protected TickableSubscription temperatureSubs;
+    @SyncToClient
     private int steamGenerated;
 
     public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
@@ -118,10 +134,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             if (getOffsetTimer() % 10 == 0) {
                 if (currentTemperature < getMaxTemperature()) {
                     currentTemperature = Mth.clamp(currentTemperature + heatSpeed * 10, 0, getMaxTemperature());
+                    syncDataHolder.markClientSyncFieldDirty("currentTemperature");
                 }
             }
         } else if (currentTemperature > 0) {
             currentTemperature -= getCoolDownRate();
+            syncDataHolder.markClientSyncFieldDirty("currentTemperature");
         }
 
         if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
@@ -129,6 +147,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
             if (currentTemperature < 100) {
                 steamGenerated = 0;
+                syncDataHolder.markClientSyncFieldDirty("steamGenerated");
             } else if (maxDrain > 0) { // if maxDrain is 0 because throttle is too low, skip trying to make steam
                 // drain water
                 var drainWater = List.of(FluidIngredient.of(Fluids.WATER, maxDrain));
@@ -145,6 +164,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                         maxDrain - drainWater.get(0).getAmount();
 
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
+                syncDataHolder.markClientSyncFieldDirty("steamGenerated");
 
                 if (drained > 0) {
                     // fill steam
@@ -187,6 +207,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         boolean value = super.onWorking();
         if (currentTemperature < getMaxTemperature()) {
             currentTemperature = Math.max(1, currentTemperature);
+            syncDataHolder.markClientSyncFieldDirty("currentTemperature");
             updateSteamSubscription();
         }
         return value;
@@ -198,7 +219,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
      * Does not modify recipe. Real recipe duration is determined by
      * {@link LargeBoilerRecipeLogic#modifyFuelBurnTime(int)}
      * </p>
-     * 
+     *
      * @param machine a {@link LargeBoilerMachine}
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Large Boiler and recipe
@@ -208,39 +229,66 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        // IDisplayUIMachine.super.addDisplayText(textList);
+        Style STYLE_WHITE = Style.EMPTY.withColor(ChatFormatting.WHITE);
         if (isFormed()) {
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    currentTemperature + 274, maxTemperature + 274));
+                    currentTemperature + 274, maxTemperature + 274).setStyle(STYLE_WHITE));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 
             var throttleText = Component.translatable("gtceu.multiblock.large_boiler.throttle",
-                    ChatFormatting.AQUA.toString() + getThrottle() + "%")
+                            ChatFormatting.AQUA.toString() + getThrottle() + "%")
                     .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
             textList.add(throttleText);
-
-            var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-            textList.add(buttonText);
+        } else {
+            textList.add(Component.translatable("gtceu.multiblock.invalid_structure").setStyle(STYLE_WHITE));
         }
     }
 
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
-            int result = componentData.equals("add") ? 5 : -5;
-            this.throttle = Mth.clamp(throttle + result, 25, 100);
-            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
-        }
-    }
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new ModularPanel(getDefinition().getName())
+                // size(200, 172)
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
+                .bindPlayerInventory()
+                .child(Flow.row()
+                        .coverChildrenHeight()
+                        .margin(5)
+                        .childPadding(5)
+                        .child(Flow.column()
+                                .crossAxisAlignment(Alignment.CrossAxis.START)
+                                .padding(5)
+                                .background((maxTemperature > 800)?  GTGuiTextures.DISPLAY : GTGuiTextures.DISPLAY_BRONZE)
+                                .height(80)
+                                .child(new TextWidget<>(IKey.dynamic(() -> {
+                                    List<Component> text = new ArrayList<>();
+                                    addDisplayText(text);
+                                    return text.stream()
+                                            .map(Component::copy)
+                                            .reduce((a, b) -> a.append("\n").append(b))
+                                            .orElse(Component.empty());
+                                })))
+                                .childIf(isFormed(), new ParentWidget<>().child(Flow.row().coverChildren().marginTop(1)
+                                        .child(new TextWidget<>(IKey.lang("gtceu.multiblock.large_boiler.throttle_modify")).style(ChatFormatting.WHITE).marginRight(5))
+                                        .child(new ButtonWidget<>().height(8).onMousePressed((x,y,button) -> {
+                                            if (button == InputConstants.MOUSE_BUTTON_LEFT){
+                                                this.throttle = Mth.clamp(throttle - 5, 25, 100);
+                                                this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
+                                            }
+                                            return true;
+                                        }).background(IKey.str("[-]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[-]").style(ChatFormatting.YELLOW)))
+                                        .child(new ButtonWidget<>().height(8).marginLeft(2).onMousePressed((x,y,button) -> {
+                                            if (button == InputConstants.MOUSE_BUTTON_LEFT){
+                                                this.throttle = Mth.clamp(throttle + 5, 25, 100);
+                                                this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
+                                            }
+                                            return true;
+                                        }).background(IKey.str("[+]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[+]").style(ChatFormatting.YELLOW)))
 
-    @Override
-    public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+                                )
+                        )
+                        ));
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
