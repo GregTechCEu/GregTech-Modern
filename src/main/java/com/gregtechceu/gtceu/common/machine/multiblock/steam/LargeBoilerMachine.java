@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -31,10 +31,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -235,22 +232,22 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                             Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
             textList.add(throttleText);
 
-            var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
+/*            var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
             buttonText.append(" ");
             buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
             buttonText.append(" ");
             buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-            textList.add(buttonText);
+            textList.add(buttonText);*/
         }
     }
-
+/*
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             int result = componentData.equals("add") ? 5 : -5;
             this.throttle = Mth.clamp(throttle + result, 25, 100);
             this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
         }
-    }
+    }*/
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
      //   ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
@@ -282,12 +279,26 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                                             .map(Component::copy)
                                             .reduce((a, b) -> a.append("\n").append(b))
                                             .orElse(Component.empty());
-                                })))));
-    }
+                                })))
+                                .child(Flow.row().coverChildren().marginTop(1)
+                                        .child(new TextWidget<>(IKey.lang("gtceu.multiblock.large_boiler.throttle_modify")).style(ChatFormatting.WHITE))
+                                    .child(new ButtonWidget<>().height(8).onMousePressed((x,y,button) -> {
+                                        if (button == InputConstants.MOUSE_BUTTON_LEFT){
+                                            this.throttle = Mth.clamp(throttle - 5, 25, 100);
+                                            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
+                                        }
+                                        return true;
+                                    }).background(IKey.str("[-]")).hoverBackground(IKey.str("[-]")))
+                                    .child(new ButtonWidget<>().height(8).paddingLeft(50).onMousePressed((x,y,button) -> {
+                                        if (button == InputConstants.MOUSE_BUTTON_LEFT){
+                                            this.throttle = Mth.clamp(throttle + 5, 25, 100);
+                                            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
+                                        }
+                                        return true;
+                                    }).background(IKey.str("[+]")).hoverBackground(IKey.str("[+]")))
 
-    //@Override
-    public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(false);
+                                )
+                        ));
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
