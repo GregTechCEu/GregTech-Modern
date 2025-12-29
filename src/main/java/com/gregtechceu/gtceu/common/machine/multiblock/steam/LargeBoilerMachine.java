@@ -7,15 +7,26 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
@@ -45,7 +56,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IMuiMachine {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
@@ -53,9 +64,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     public final int maxTemperature, heatSpeed;
     @SaveField
     @Getter
+    @SyncToClient
     private int currentTemperature, throttle;
     @Nullable
     protected TickableSubscription temperatureSubs;
+    @SyncToClient
     private int steamGenerated;
 
     public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
@@ -208,10 +221,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+       // IDisplayUIMachine.super.addDisplayText(textList);
+        Style STYLE_WHITE = Style.EMPTY.withColor(ChatFormatting.WHITE);
         if (isFormed()) {
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    currentTemperature + 274, maxTemperature + 274));
+                    currentTemperature + 274, maxTemperature + 274).setStyle(STYLE_WHITE));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 
@@ -238,9 +252,42 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         }
     }
 
-    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+     //   ITheme theme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
+      /*  LongSyncValue stored = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getStored(),
+                (ignored) -> {});
+        LongSyncValue capacity = new LongSyncValue(() -> (steamEnergy == null) ? -1L : steamEnergy.getCapacity(),
+                (ignored) -> {});
+        syncManager.syncValue("stored", stored);
+       syncManager.syncValue("capacity", capacity);
+       */
+        return new ModularPanel(getDefinition().getName())
+                // size(200, 172)
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176))
+                       // (UITexture) theme.getPanelTheme().getTheme().getBackground()))
+                .bindPlayerInventory()
+                .child(Flow.row()
+                        .coverChildrenHeight()
+                        .margin(5)
+                        .childPadding(5)
+                        .child(Flow.column()
+                                .crossAxisAlignment(Alignment.CrossAxis.START)
+                                .padding(5)
+                                .background((maxTemperature > 800)?  GTGuiTextures.DISPLAY : GTGuiTextures.DISPLAY_BRONZE)
+                                .height(80)
+                                .child(new TextWidget<>(IKey.dynamic(() -> {
+                                    List<Component> text = new ArrayList<>();
+                                    addDisplayText(text);
+                                    return text.stream()
+                                            .map(Component::copy)
+                                            .reduce((a, b) -> a.append("\n").append(b))
+                                            .orElse(Component.empty());
+                                })))));
+    }
+
+    //@Override
     public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+        return GuiTextures.DISPLAY_STEAM.get(false);
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
