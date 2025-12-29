@@ -281,21 +281,21 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                                             .orElse(Component.empty());
                                 })))
                                 .child(Flow.row().coverChildren().marginTop(1)
-                                        .child(new TextWidget<>(IKey.lang("gtceu.multiblock.large_boiler.throttle_modify")).style(ChatFormatting.WHITE))
+                                        .child(new TextWidget<>(IKey.lang("gtceu.multiblock.large_boiler.throttle_modify")).style(ChatFormatting.WHITE).marginRight(5))
                                     .child(new ButtonWidget<>().height(8).onMousePressed((x,y,button) -> {
                                         if (button == InputConstants.MOUSE_BUTTON_LEFT){
                                             this.throttle = Mth.clamp(throttle - 5, 25, 100);
                                             this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
                                         }
                                         return true;
-                                    }).background(IKey.str("[-]")).hoverBackground(IKey.str("[-]")))
-                                    .child(new ButtonWidget<>().height(8).paddingLeft(50).onMousePressed((x,y,button) -> {
+                                    }).background(IKey.str("[-]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[-]").style(ChatFormatting.YELLOW)))
+                                    .child(new ButtonWidget<>().height(8).marginLeft(2).onMousePressed((x,y,button) -> {
                                         if (button == InputConstants.MOUSE_BUTTON_LEFT){
                                             this.throttle = Mth.clamp(throttle + 5, 25, 100);
                                             this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
                                         }
                                         return true;
-                                    }).background(IKey.str("[+]")).hoverBackground(IKey.str("[+]")))
+                                    }).background(IKey.str("[+]").style(ChatFormatting.YELLOW)).hoverBackground(IKey.str("[+]").style(ChatFormatting.YELLOW)))
 
                                 )
                         ));
