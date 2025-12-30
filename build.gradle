@@ -104,12 +104,18 @@ jacoco {
     applyTo runGameTestServer
 }
 
-tasks.register('testCoverageReport', JacocoReport) {
+jacocoTestReport {
     executionData runGameTestServer
     sourceSets sourceSets.main
+    dependsOn runGameTestServer
     reports {
         xml.required = false
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('coverage')
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: '**/client/**')
+        }))
     }
 }
