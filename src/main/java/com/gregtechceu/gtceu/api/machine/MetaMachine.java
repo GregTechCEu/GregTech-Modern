@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
@@ -29,6 +28,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
@@ -94,7 +94,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighlight,
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
@@ -678,7 +678,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void animateTick(RandomSource random) {}
 
-    @Override
     @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                          BlockState sourceState, BlockPos sourcePos) {
@@ -747,7 +746,15 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof ItemFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
+            if (cover instanceof ItemFilterCover filterCover) {
+                if (!filterCover.getFilterMode().filters(io)) {
+                    if (filterCover.getAllowFlow() == ManualIOMode.DISABLED) {
+                        return item -> false;
+                    }
+                    if (filterCover.getAllowFlow() == ManualIOMode.UNFILTERED) {
+                        return item -> true;
+                    }
+                }
                 return filterCover.getItemFilter();
             }
         }
@@ -757,7 +764,15 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof FluidFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
+            if (cover instanceof FluidFilterCover filterCover) {
+                if (!filterCover.getFilterMode().filters(io)) {
+                    if (filterCover.getAllowFlow() == ManualIOMode.DISABLED) {
+                        return fluid -> false;
+                    }
+                    if (filterCover.getAllowFlow() == ManualIOMode.UNFILTERED) {
+                        return fluid -> true;
+                    }
+                }
                 return filterCover.getFluidFilter();
             }
         }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -19,6 +20,7 @@ import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
-public class IntProviderFluidIngredient extends FluidIngredient {
+public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
@@ -37,6 +39,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     /**
      * The last result of {@link IntProviderFluidIngredient#getSampledCount()}. -1 if not rolled.
      */
+    @Getter
     @Setter
     protected int sampledCount = -1;
     /**
@@ -51,6 +54,13 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         super(inner.values, provider.getMaxValue(), null);
         this.inner = inner;
         this.countProvider = provider;
+    }
+
+    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
+        super(inner.values, provider.getMaxValue(), null);
+        this.inner = inner;
+        this.countProvider = provider;
+        this.sampledCount = sampledCount;
     }
 
     @Override
@@ -83,7 +93,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     @Override
     public FluidStack[] getStacks() {
         if (fluidStacks == null) {
-            int cachedAmount = getSampledCount(GTValues.RNG);
+            int cachedAmount = rollSampledCount(GTValues.RNG);
             if (cachedAmount == 0) {
                 return EMPTY_STACK_ARRAY;
             }
@@ -114,24 +124,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
      * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
      * returns the roll.
      * If it has, returns the existing roll.
-     * Passthrough method, invokes {@link IntProviderFluidIngredient#getSampledCount(RandomSource)} using the threadsafe
-     * {@link GTValues#RNG}.
-     *
-     * @return the amount rolled
-     */
-    public int getSampledCount() {
-        return getSampledCount(GTValues.RNG);
-    }
-
-    /**
-     * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it and
-     * returns the roll.
-     * If it has, returns the existing roll.
      *
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
      * @return the amount rolled
      */
-    public int getSampledCount(@NotNull RandomSource random) {
+    public int rollSampledCount(@NotNull RandomSource random) {
         if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
         }
@@ -151,6 +148,14 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     /**
+     * Resets the random roll on this ingredient
+     */
+    public void reset() {
+        sampledCount = -1;
+        fluidStacks = null;
+    }
+
+    /**
      * @param inner    {@link FluidIngredient}
      * @param provider usually as {@link UniformInt#of(int, int)}
      */
@@ -160,6 +165,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient of(FluidStack inner, int min, int max) {
         return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
+    }
+
+    @Override
+    public boolean test(@Nullable FluidStack stack) {
+        return inner.test(stack);
     }
 
     /**
@@ -175,6 +185,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("inner", inner.toJson());
+        json.addProperty("sampledCount", sampledCount);
         return json;
     }
 
@@ -192,8 +203,9 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
+        int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
         FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
-        return new IntProviderFluidIngredient(inner, amount);
+        return new IntProviderFluidIngredient(inner, amount, sampledCount);
     }
 
     public CompoundTag toNBT() {
@@ -202,5 +214,17 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
+    }
+
+    public void toNetwork(FriendlyByteBuf buffer) {
+        inner.toNetwork(buffer);
+        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
+    }
+
+    public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        int[] range = buffer.readVarIntArray(2);
+        IntProvider provider = UniformInt.of(range[0], range[1]);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 }

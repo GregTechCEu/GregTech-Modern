@@ -38,8 +38,8 @@ public final class ToolChargeBarRenderer {
 
         int x = xPosition + 2;
         int y = yPosition + 13 - offset;
-        graphics.fill(RenderType.guiOverlay(), x, y, x + 13, y + (shadow ? 2 : 1), 400, colorShadow);
-        DrawUtil.fillHorizontalGradient(graphics, RenderType.guiOverlay(), x, y, x + level, y + 1, left, right, 400);
+        graphics.fill(RenderType.gui(), x, y, x + 13, y + (shadow ? 2 : 1), 190, colorShadow);
+        DrawUtil.fillHorizontalGradient(graphics, RenderType.gui(), x, y, x + level, y + 1, left, right, 190);
         // graphics.fill(RenderType.guiOverlay(), x + BAR_W, y, x + BAR_W - level, y - 1, colorBG);
     }
 

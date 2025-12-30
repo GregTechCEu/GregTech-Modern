@@ -62,7 +62,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
                 }
                 foundBlockItem = true;
             } else if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
-                if (platesCount > 3) {
+                if (platesCount > 1) {
                     return false;
                 }
                 platesCount++;
@@ -70,7 +70,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
                 return false;
             }
         }
-        return foundBlockItem && platesCount == 3;
+        return foundBlockItem && platesCount == 1;
     }
 
     @Override
@@ -98,19 +98,17 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     public NonNullList<Ingredient> getIngredients() {
         return NonNullList.of(Ingredient.EMPTY,
                 Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
-                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
-                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
                 Ingredient.of(Blocks.STONE));
     }
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 4;
+        return true;
     }
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryManager) {
-        var result = GTItems.COVER_FACADE.asStack();
+        ItemStack result = GTItems.COVER_FACADE.asStack(6);
         FacadeItemBehaviour.setFacadeState(result, Blocks.STONE.defaultBlockState());
         return result;
     }

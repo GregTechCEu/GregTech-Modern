@@ -577,7 +577,7 @@ public class GTMultiMachines {
                     .where('F', Predicates.frames(GTMaterials.TreatedWood))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
-                                    .or(blocks(FLUID_EXPORT_HATCH[LV].get(), FLUID_EXPORT_HATCH[MV].get())))
+                                    .or(blocks(FLUID_EXPORT_HATCH[ULV].get(), FLUID_EXPORT_HATCH[LV].get())))
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
@@ -1052,6 +1052,10 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
+            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
             .pattern((def) -> FactoryBlockPattern.start()
                     .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
                     .aisle(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")

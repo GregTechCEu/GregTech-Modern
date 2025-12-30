@@ -192,8 +192,13 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
-        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§Firefighter: §fDowses Campfires");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§1Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
+        provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
+        provider.add("item.gtceu.tool.behavior.prospecting.lava", "Found lava");
+        provider.add("item.gtceu.tool.behavior.prospecting.changing", "Detected material change");
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
         replace(provider, "item.gtceu.tool.shovel", "%s Shovel");
@@ -415,7 +420,7 @@ public class LangHandler {
         multilineLang(provider, "cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_prio",
-                "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
+                "Distribution Mode: §bRound Robin with Restriction\n§7Tries to split items equally across connected inventories.\n§7Will not send items down Restrictive item pipes unless no other paths are available.");
         multilineLang(provider, "cover.conveyor.distribution.insert_first",
                 "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         multilineLang(provider, "cover.conveyor.blocks_input.enabled",
@@ -534,6 +539,8 @@ public class LangHandler {
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
         replace(provider, "block.gtceu.oil_light", "Light Oil");
         replace(provider, "block.gtceu.oil_medium", "Raw Oil");
+        replace(provider, "block.gtceu.oil", "Oil");
+        replace(provider, "block.gtceu.creosote", "Creosote");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
@@ -1014,11 +1021,12 @@ public class LangHandler {
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
         multilineLang(provider, "gtceu.gui.chunkmode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        provider.add("gtceu.gui.multiblock.voiding_mode", "Voiding Mode:");
+        provider.add("gtceu.gui.item_voiding", "§7Voiding §6Items");
+        provider.add("gtceu.gui.fluid_voiding", "§7Voiding §9Fluids");
+        provider.add("gtceu.gui.all_voiding",
+                "§7Voiding §cAll");
+        provider.add("gtceu.gui.no_voiding", "§7Voiding Nothing");
         multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
@@ -1080,7 +1088,9 @@ public class LangHandler {
         provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
         provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
         provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
-        provider.add("gtceu.multiblock.batch_enabled", "Batching Mode: Enabled (%sx)");
+        provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
+        provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
+        provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
         provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
         provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
@@ -1121,7 +1131,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
-        provider.add("gtceu.multiblock.parallel.exact", "Performing %d Recipes in Parallel");
+        provider.add("gtceu.multiblock.parallel.exact", "- %dx from Parallels");
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
@@ -1211,6 +1221,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
         provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
+        provider.add("config.jade.plugin_gtceu.data_bank", "[GTCEu] Data Bank Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
@@ -1238,13 +1249,42 @@ public class LangHandler {
                 "allow items input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
                 "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
                 "allow fluids input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
                 "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        multilineLang(provider, "gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
@@ -1599,9 +1639,22 @@ public class LangHandler {
                 "  {eval \"repeating a: {repeat 5 \\\"a \\\"}\" -> repeating a: a a a a a ",
                 "  {eval \\\"\"{some random text}\"\\\" -> {some random text}",
                 "  {eval \"text \"\\\"\"{something with spaces}\"\\\"\" more text\" -> text {something with spaces} more text");
+        multiLang(provider, "gtceu.placeholder_info.bufferText",
+                "Returns the text from a buffer accessible by ComputerCraft",
+                "Usage:",
+                "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
+        provider.add("gtceu.ender_item_link_cover.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
         provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
+        provider.add("gtceu.ender_redstone_link_cover.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("gtceu.gui.computer_monitor_cover.update_interval", "Update interval (in ticks)");
         provider.add("gtceu.gui.computer_monitor_cover.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gtceu.gui.computer_monitor_cover.edit_displayed_text", "Edit displayed text");
@@ -1631,7 +1684,7 @@ public class LangHandler {
                 "Slot number: %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");

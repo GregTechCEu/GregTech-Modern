@@ -250,6 +250,15 @@ public class VanillaRecipeHelper {
     /**
      * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
      */
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
+                                             @NotNull String regName,
+                                             @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, false, regName, result, recipe);
@@ -335,7 +344,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
         builder.save(provider);
 
@@ -427,7 +436,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
         builder.save(provider);
 
@@ -499,7 +508,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
         }
 
         builder.save(provider);
@@ -566,7 +575,7 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+                builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
             }
         }
         builder.save(provider);

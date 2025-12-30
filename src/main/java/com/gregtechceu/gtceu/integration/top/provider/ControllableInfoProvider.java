@@ -35,7 +35,9 @@ public class ControllableInfoProvider extends CapabilityInfoProvider<IControllab
                                 IProbeHitData data) {
         IProbeInfo horizontalPane = probeInfo
                 .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-        if (!capability.isWorkingEnabled())
-            horizontalPane.text(CompoundText.create().warning("gtceu.top.working_disabled"));
+        if (capability.isSuspendAfterFinish())
+            horizontalPane.text(CompoundText.create().warning("behaviour.soft_hammer.disabled_cycle"));
+        else if (!capability.isWorkingEnabled())
+            horizontalPane.text(CompoundText.create().warning("behaviour.soft_hammer.disabled"));
     }
 }

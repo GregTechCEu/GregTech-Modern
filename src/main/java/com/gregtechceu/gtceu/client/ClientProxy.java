@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
@@ -30,6 +31,7 @@ import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.forge.ForgeCommonEventListener;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
@@ -71,6 +73,7 @@ public class ClientProxy extends CommonProxy {
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
+            ForgeCommonEventListener.registerCapes(new RegisterGTCapesEvent());
         }
         initializeDynamicRenders();
     }
@@ -149,6 +152,7 @@ public class ClientProxy extends CommonProxy {
         DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
 
         DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("growing_plant"), GrowingPlantRender.TYPE);
 
         DynamicRenderManager.register(GTCEu.id("central_monitor"), CentralMonitorRender.TYPE);
     }

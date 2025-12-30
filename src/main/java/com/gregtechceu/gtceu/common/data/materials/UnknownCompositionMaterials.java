@@ -48,7 +48,7 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Creosote = new Material.Builder(GTCEu.id("creosote"))
-                .liquid(new FluidBuilder().customStill().burnTime(6400)).color(0x804000)
+                .liquid(new FluidBuilder().block().customStill().burnTime(6400)).color(0x804000)
                 .flags(STICKY).buildAndRegister();
 
         Diesel = new Material.Builder(GTCEu.id("diesel"))
@@ -367,7 +367,7 @@ public class UnknownCompositionMaterials {
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
-                .components(Saltpeter, 2, Sulfur, 1, Coal, 3)
+                .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
                 .buildAndRegister();
 
         Oilsands = new Material.Builder(GTCEu.id("oilsands"))
@@ -575,7 +575,7 @@ public class UnknownCompositionMaterials {
         Lapotron = new Material.Builder(GTCEu.id("lapotron"))
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
-                .flags(NO_UNIFICATION)
+                .flags(DISABLE_MATERIAL_RECIPES)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
 

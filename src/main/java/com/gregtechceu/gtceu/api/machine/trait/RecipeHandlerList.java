@@ -196,6 +196,14 @@ public class RecipeHandlerList {
         return copy;
     }
 
+    public List<IRecipeHandler<?>> getHandlersFlat() {
+        List<IRecipeHandler<?>> handlerList = new ArrayList<>();
+        for (var handlerEntry : getHandlerMap().entrySet()) {
+            handlerList.addAll(handlerEntry.getValue());
+        }
+        return handlerList;
+    }
+
     private record Subscription(List<ISubscription> subs) implements ISubscription {
 
         @Override

@@ -196,6 +196,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether dimension markers should show the dimension tier value.", "Default: false" })
         public boolean showDimensionTier = false;
 
+        @Configurable
+        @Configurable.Comment({ "Whether Create compatibility will be available.", "Default: true" })
+        public boolean createCompat = true;
+
         public static class EnergyCompatConfig {
 
             @Configurable
@@ -358,11 +362,6 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({ "Should all Stone Types drop unique Ore Item Blocks?",
-                "Default: false (meaning only Stone, Netherrack, and Endstone)" })
-        public boolean allUniqueStoneTypes = false;
-
-        @Configurable
         @Configurable.Comment({ "Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.",
                 "Default: false (no falling ores)" })
         public boolean sandOresFall = false;
@@ -476,6 +475,11 @@ public class ConfigHolder {
                 "This does nothing if enableCleanroom is false.", "Default: false" })
         public boolean cleanMultiblocks = false;
         @Configurable
+        @Configurable.Comment({
+                "Whether the miner should attempt to replace the block mined with a cobbled version of the ore",
+                "Default: true" })
+        public boolean replaceWithCobbleVersion = true;
+        @Configurable
         @Configurable.Comment({ "Block to replace mined ores with in the miner and multiblock miner.",
                 "Default: minecraft:cobblestone" })
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
@@ -487,9 +491,10 @@ public class ConfigHolder {
         public boolean enableMaintenance = true;
         @Configurable
         @Configurable.Comment({
-                "Time in ticks between when Multiblocks can require Maintenance. By default, 48 hours.",
-                "Default: 3456000" })
-        public int maintenanceTime = 3456000;
+                "How often to check for maintenance, rolling a 1/6000 chance every X ticks (before secondary effects like Configurable Maintenance Hatch).",
+                "In default settings, this equates to a 5% chance every hour of a machine running.",
+                "Default: 1000 (ticks)" })
+        public int maintenanceCheckRate = 1000;
 
         @Configurable
         @Configurable.Comment({
@@ -575,6 +580,10 @@ public class ConfigHolder {
                 "Default: 8"
         })
         public int steamMultiParallelAmount = 8;
+
+        @Configurable
+        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
+        public boolean allowDrumsInputFluidsFromOutputSide = false;
 
         @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
@@ -680,7 +689,7 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
         @Configurable
-        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
+        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
         @Configurable
@@ -844,6 +853,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
         public boolean renderFluids = true;
+
+        @Configurable
+        @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
+        public boolean renderGrowingPlants = true;
 
         @Configurable
         @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
