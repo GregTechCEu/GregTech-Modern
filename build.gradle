@@ -4,6 +4,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'jacoco'
     alias libs.plugins.modDevGradle
     //alias libs.plugins.shadow
     alias libs.plugins.spotless
@@ -97,4 +98,18 @@ tasks.withType(JavaCompile).configureEach {
 
 lombok {
     version = "1.18.38"
+}
+
+jacoco {
+    applyTo runGameTestServer
+}
+
+tasks.register('testCoverageReport', JacocoReport) {
+    executionData runGameTestServer
+    sourceSets sourceSets.main
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('coverage')
+    }
 }
