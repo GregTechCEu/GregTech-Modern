@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 
@@ -27,7 +26,9 @@ public class SolarPanelTest {
         helper.setDayTime(6000);
         BatteryBufferMachine machine = getBatteryBuffer(helper);
         machine.onLoad();
-        machine.energyContainer.acceptEnergyFromNetwork(null, GTValues.V[GTValues.HV], 1);
+        for (int y = helper.absolutePos(new BlockPos(0, 2, 0)).getY(); y < helper.getLevel().getMaxBuildHeight(); y++) {
+            helper.setBlock(0, helper.relativePos(new BlockPos(0, y, 0)).getY(), 0, Blocks.AIR);
+        }
         helper.runAtTickTime(80, () -> {
             helper.assertTrue(machine.energyContainer.getEnergyStored() > 0,
                     "Solar panel cover didn't generate energy at day time");
