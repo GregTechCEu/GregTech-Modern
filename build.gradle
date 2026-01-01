@@ -105,17 +105,28 @@ jacoco {
 }
 
 jacocoTestReport {
+    doFirst {
+        try {
+            runGameTestServer.exec()
+        } catch (RuntimeException ignored) {}
+    }
+    doLast {
+        println "Coverage report location:"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('index.html')).get()}"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml')).get()}"
+    }
     executionData runGameTestServer
-    sourceSets sourceSets.main
-    dependsOn runGameTestServer
+    sourceSets sourceSets.test
     reports {
-        xml.required = false
         csv.required = false
+        xml.required = true
         html.outputLocation = layout.buildDirectory.dir('coverage')
+        xml.outputLocation = layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml'))
     }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: '**/client/**')
+            fileTree(dir: it, exclude: '**/mixins/**')
         }))
     }
 }
