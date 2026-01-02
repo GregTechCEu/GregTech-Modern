@@ -108,7 +108,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @Override
     public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        IMachineLife.super.onMachinePlaced(player, stack);
+        super.onMachinePlaced(player, stack);
         CompoundTag tag = stack.getTag();
         if (tag != null) {
             if (tag.contains("taped") && tag.getBoolean("taped")) {

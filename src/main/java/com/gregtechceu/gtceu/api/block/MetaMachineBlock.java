@@ -123,18 +123,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (!pLevel.isClientSide) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
-                if (player instanceof ServerPlayer sPlayer) {
-                    machine.setOwnerUUID(sPlayer.getUUID());
-                }
-            }
-            if (machine instanceof IDropSaveMachine dropSaveMachine) {
-                CompoundTag tag = pStack.getTag();
-                if (tag != null) {
-                    dropSaveMachine.loadFromItem(tag);
-                }
-            }
-            if (machine instanceof IMachineLife machineLife) {
-                machineLife.onMachinePlaced(player, pStack);
+                machine.onMachinePlaced(player, pStack);
             }
         }
     }

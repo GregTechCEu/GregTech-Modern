@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
@@ -52,10 +53,13 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -102,7 +106,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
-                         IFancyTooltip, IPaintable {
+                         IFancyTooltip, IPaintable, IMachineFeature {
 
     public static final ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
     public static final ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
@@ -130,9 +134,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Getter
     protected final List<MachineTrait> traits;
 
-    private final List<TickableSubscription> serverTicks;
-    private final List<TickableSubscription> waitingToAdd;
-
     @Getter
     @Setter
     @SaveField
@@ -152,58 +153,27 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     //////////////////////////////////////
-    // ***** Initialization ******//
+    // ***** Machine Lifecycle ******//
     //////////////////////////////////////
 
-    @Override
-    public final void setRemoved() {
-        super.setRemoved();
-        onUnload();
-    }
+    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
+        if (player instanceof ServerPlayer sPlayer) {
+            ownerUUID = sPlayer.getUUID();
+        }
 
-    public @UnknownNullability Level getLevel() {
-        return super.getLevel();
-    }
-
-    public void setOwnerUUID(UUID uuid) {
-        ownerUUID = uuid;
-        syncDataHolder.markClientSyncFieldDirty("ownerUUID");
-    }
-
-    @Override
-    public boolean triggerEvent(int id, int para) {
-        if (id == 1) { // chunk re render
-            if (level != null && level.isClientSide) {
-                scheduleRenderUpdate();
+        if (this instanceof IDropSaveMachine dropSaveMachine) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null) {
+                dropSaveMachine.loadFromItem(tag);
             }
-            return true;
-        }
-        return false;
-    }
-
-    public void setPaintingColor(int color) {
-        if (color == this.paintingColor) return;
-
-        this.paintingColor = color;
-        syncDataHolder.markClientSyncFieldDirty("paintingColor");
-        this.onPaintingColorChanged(color);
-
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(GTMachineModelProperties.IS_PAINTED)) {
-            setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
     }
 
-    public void onPaintingColorChanged(int color) {}
-
-    @OverridingMethodsMustInvokeSuper
-    public void onUnload() {
-        traits.forEach(MachineTrait::onMachineUnLoad);
-        coverContainer.onUnload();
-        for (TickableSubscription serverTick : serverTicks) {
-            serverTick.unsubscribe();
+    public void onRemoved() {
+        for (Direction direction : GTUtil.DIRECTIONS) {
+            getCoverContainer().removeCover(direction, null);
         }
-        serverTicks.clear();
+        if (this instanceof IMachineLife l) l.onMachineRemoved();
     }
 
     @OverridingMethodsMustInvokeSuper
@@ -219,15 +189,28 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public void notifyBlockUpdate() {
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+    @Override
+    public final void setRemoved() {
+        super.setRemoved();
+        onUnload();
+    }
+
+    @OverridingMethodsMustInvokeSuper
+    public void onUnload() {
+        traits.forEach(MachineTrait::onMachineUnLoad);
+        coverContainer.onUnload();
+        for (TickableSubscription serverTick : serverTicks) {
+            serverTick.unsubscribe();
         }
+        serverTicks.clear();
     }
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
+
+    private final List<TickableSubscription> serverTicks;
+    private final List<TickableSubscription> waitingToAdd;
 
     /**
      * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link #onLoad()}
@@ -468,6 +451,47 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
         return null;
     }
+
+    public void notifyBlockUpdate() {
+        if (getLevel() != null) {
+            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        }
+    }
+
+    public @UnknownNullability Level getLevel() {
+        return super.getLevel();
+    }
+
+    public void setOwnerUUID(UUID uuid) {
+        ownerUUID = uuid;
+        syncDataHolder.markClientSyncFieldDirty("ownerUUID");
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int para) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void setPaintingColor(int color) {
+        if (color == this.paintingColor) return;
+
+        this.paintingColor = color;
+        syncDataHolder.markClientSyncFieldDirty("paintingColor");
+        this.onPaintingColorChanged(color);
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(GTMachineModelProperties.IS_PAINTED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
+        }
+    }
+
+    public void onPaintingColorChanged(int color) {}
 
     /**
      * All traits should be initialized while MetaMachine is creating. you cannot add them on the fly.
@@ -721,7 +745,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         return cover.canConnectRedstone();
     }
-
 
     //////////////////////////////////////
     // ****** Ownership ********//
