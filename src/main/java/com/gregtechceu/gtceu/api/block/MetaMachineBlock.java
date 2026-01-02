@@ -326,6 +326,15 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
+
+    //////////////////////////////////////
+    // ***** Redstone Signals ****//
+    //////////////////////////////////////
+
+    public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
+        return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
+    }
+
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
@@ -343,6 +352,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return MetaMachine.getMachine(level, pos).getAnalogOutputSignal();
     }
+
+    /////////
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
@@ -417,7 +428,4 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return null;
     }
 
-    public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
-        return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
-    }
 }

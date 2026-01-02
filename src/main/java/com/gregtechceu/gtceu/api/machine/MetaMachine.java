@@ -102,7 +102,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolable, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+                         IFancyTooltip, IPaintable {
 
     public static final ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
     public static final ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
@@ -677,26 +677,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    @Override
-    public int getOutputSignal(@Nullable Direction side) {
-        if (side == null) return 0;
-
-        // For some reason, Minecraft requests the output signal from the opposite side...
-        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
-        if (cover == null) return 0;
-
-        return cover.getRedstoneSignalOutput();
-    }
-
-    @Override
-    public boolean canConnectRedstone(@NotNull Direction side) {
-        // For some reason, Minecraft requests the output signal from the opposite side...
-        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        if (cover == null) return false;
-
-        return cover.canConnectRedstone();
-    }
-
     public long getOffsetTimer() {
         if (getLevel() == null) return getOffset();
         else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
@@ -710,6 +690,38 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public boolean isRemote() {
         return IGregtechBlockEntity.super.isRemote();
     }
+
+    ////////////////////////////////
+    // ***** Redstone Signals ****//
+    ////////////////////////////////
+
+    public int getOutputSignal(@Nullable Direction side) {
+        if (side == null) return 0;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
+        if (cover == null) return 0;
+
+        return cover.getRedstoneSignalOutput();
+    }
+
+    public int getOutputDirectSignal(@Nullable Direction side) {
+        // IDK what this does but MC wants it
+        return 0;
+    }
+
+    public int getAnalogOutputSignal() {
+        return 0;
+    }
+
+    public boolean canConnectRedstone(@NotNull Direction side) {
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
+        if (cover == null) return false;
+
+        return cover.canConnectRedstone();
+    }
+
 
     //////////////////////////////////////
     // ****** Ownership ********//
