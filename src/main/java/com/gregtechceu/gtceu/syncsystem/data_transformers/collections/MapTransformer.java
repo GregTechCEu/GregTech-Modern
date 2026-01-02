@@ -40,7 +40,6 @@ public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
     @Override
     public Map<K, V> deserializeNBT(Tag tag, ISyncManaged holder, Map<K, V> current) {
         if (!(tag instanceof ListTag listTag)) return current;
-        // current.clear();
         if (current != null) current.clear();
         else current = new HashMap<>();
         for (Tag entryTag : listTag) {
