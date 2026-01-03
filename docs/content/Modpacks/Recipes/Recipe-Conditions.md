@@ -12,7 +12,7 @@ These conditions can be used in both java and kubejs recipes. However, custom co
 ### Base Conditons 
 
 - Biome: `.biome("namespace:biome_id")`
-    - Locks a recipe behind being inside a certain biome, works with any biome a pack has loaded. For example, you could use `minecraft:plains`.
+    - Locks a recipe behind being inside a certain biome, works with any biome a pack has loaded. For example, you could use `minecraft:plains`. We also have `biomeTag("minecraft:biome")`.
 - Dimension: `.dimension("namespace:dimension_id")`
     - Locks a recipe being behind a certain dimension, the gas collector is a good example of this. For example, you could use `minecraft:the_end`
 - Position_Y: `.posY(int min, int max)`

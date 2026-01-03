@@ -1140,6 +1140,14 @@ public class GTRecipeBuilder {
         return biome(biome, false);
     }
 
+    public GTRecipeBuilder biomeTag(TagKey<Biome> biome, boolean reverse) {
+        return addCondition(new BiomeTagCondition(biome).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder biomeTag(TagKey<Biome> biome) {
+        return biomeTag(biome, false);
+    }
+
     public GTRecipeBuilder rain(float level, boolean reverse) {
         return addCondition(new RainingCondition(level).setReverse(reverse));
     }
