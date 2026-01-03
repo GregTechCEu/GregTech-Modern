@@ -66,7 +66,7 @@ public class GemSlurryRecipes {
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("green_sapphire_slurry_from_washed_green_sapphire").duration(280).EUt(VA[EV])
-                .inputItems(crushcrushedPurifieded, GreenSapphire, 2)
+                .inputItems(crushedPurified, GreenSapphire, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(GreenSapphireSlurry.getFluid(3000))
                 .save(provider);
