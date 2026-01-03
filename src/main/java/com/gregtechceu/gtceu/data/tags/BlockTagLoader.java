@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.tags;
 
+import com.gregtechceu.gtceu.common.block.StoneTypes;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -28,7 +30,34 @@ public class BlockTagLoader {
                         Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER,
                         Blocks.BLACK_CONCRETE_POWDER);
 
+        var speedConcretes = provider.addTag(CustomTags.VERY_FAST_WALKABLE_BLOCKS);
+        speedConcretes.add(GTBlocks.LIGHT_CONCRETE.get(), GTBlocks.DARK_CONCRETE.get());
+
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_LIGHT)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_DARK)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+
+        var studs = provider.addTag(CustomTags.FAST_WALKABLE_BLOCKS);
+        GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
+
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
+
+        provider.addTag(CustomTags.TALL_PLANTS)
+                .add(Blocks.SUGAR_CANE, Blocks.CACTUS)
+                .add(Blocks.TALL_GRASS, Blocks.LARGE_FERN)
+                .add(Blocks.BAMBOO, Blocks.BAMBOO_SAPLING)
+                .add(Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT)
+                .add(Blocks.VINE,
+                        Blocks.WEEPING_VINES, Blocks.WEEPING_VINES_PLANT,
+                        Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT)
+                .add(Blocks.PITCHER_CROP)
+                .addTag(BlockTags.CAVE_VINES)
+                .addTag(BlockTags.TALL_FLOWERS)
+                .addOptionalTag(new ResourceLocation("forge:cacti"))
+                .addOptionalTag(new ResourceLocation("forge:crops/cactus"))
+                .addOptionalTag(new ResourceLocation("forge:crops/sugar_cane"))
+                .addOptionalTag(new ResourceLocation("forge:reeds"));
 
         provider.addTag(BlockTags.REPLACEABLE)
                 .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
@@ -43,7 +72,12 @@ public class BlockTagLoader {
 
         // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
         provider.addTag(CustomTags.MINEABLE_WITH_WRENCH)
-                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH);
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+                .add(Blocks.PISTON, Blocks.PISTON_HEAD, Blocks.STICKY_PISTON, Blocks.OBSERVER, Blocks.REDSTONE_LAMP,
+                        Blocks.REDSTONE_BLOCK, Blocks.IRON_DOOR, Blocks.IRON_TRAPDOOR,
+                        Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE,
+                        Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, Blocks.HOPPER, Blocks.DISPENSER, Blocks.DROPPER,
+                        Blocks.LIGHTNING_ROD, Blocks.DAYLIGHT_DETECTOR, Blocks.BELL);
         provider.addTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
                 .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
 

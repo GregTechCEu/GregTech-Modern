@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
@@ -58,7 +59,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
-        setRenderState(getRenderState().setValue(ConverterMachine.FE_TO_EU_PROPERTY, feToEu));
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
         machine.notifyBlockUpdate();
     }
 
@@ -102,12 +103,20 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
             if (!feToEu || maxReceive <= 0) return 0;
-            int received = Math.min(this.getMaxEnergyStored() - this.getEnergyStored(), maxReceive);
+            int received = (int) (Math.min(this.getMaxLongEnergyStored() - this.getLongEnergyStored(), maxReceive));
             received -= received % FeCompat.ratio(true); // avoid rounding issues
             if (!simulate) {
                 addEnergy(FeCompat.toEu(received, FeCompat.ratio(true)));
             }
             return received;
+        }
+
+        public long getMaxLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyCapacity(), FeCompat.ratio(feToEu));
+        }
+
+        public long getLongEnergyStored() {
+            return FeCompat.toFeLong(ConverterTrait.this.getEnergyStored(), FeCompat.ratio(feToEu));
         }
 
         @Override

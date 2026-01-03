@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,11 @@ public class HoeGroundBehavior implements IToolBehavior {
     public static final HoeGroundBehavior INSTANCE = new HoeGroundBehavior();
 
     protected HoeGroundBehavior() {/**/}
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == ToolActions.HOE_TILL;
+    }
 
     @NotNull
     @Override
@@ -71,7 +77,7 @@ public class HoeGroundBehavior implements IToolBehavior {
         }
 
         if (tilled) {
-            level.playSound(player, blocks.get(0), SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;

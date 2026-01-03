@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -44,7 +45,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -91,7 +92,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         allowExtendedFacing(true);
         allowCoverOnFront(true);
         // always add the formed property to multi controllers
-        modelProperty(IMultiController.IS_FORMED_PROPERTY, false);
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
     public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
@@ -186,7 +187,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.tier(tier);
     }
 
-    public MultiblockMachineBuilder recipeOutputLimits(Object2IntMap<RecipeCapability<?>> map) {
+    public MultiblockMachineBuilder recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
         return (MultiblockMachineBuilder) super.recipeOutputLimits(map);
     }
 

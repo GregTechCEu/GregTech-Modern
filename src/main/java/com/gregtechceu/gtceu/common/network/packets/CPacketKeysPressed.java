@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Deprecated
 @SuppressWarnings("unchecked")
 @NoArgsConstructor
 public class CPacketKeysPressed implements GTNetwork.INetPacket {

@@ -96,11 +96,14 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
 
-        if (currentFuel.isEmpty())
-            findNewRecipe(stack);
-
         performFlying(player, jetpackEnabled, hoverMode, stack);
-        data.putShort("burnTimer", (short) burnTimer);
+
+        if (!world.isClientSide) {
+            if (currentFuel.isEmpty())
+                findNewRecipe(stack);
+
+            data.putShort("burnTimer", (short) burnTimer);
+        }
     }
 
     @Override
@@ -162,8 +165,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public boolean canUseEnergy(ItemStack stack, int amount) {
-        if (currentFuel.isEmpty()) return false;
         if (burnTimer > 0) return true;
+        if (currentFuel.isEmpty()) return false;
         var ret = FluidUtil.getFluidHandler(stack)
                 .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE))
                 .map(drained -> drained.getAmount() >= currentFuel.getAmount())

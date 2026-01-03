@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -45,13 +46,16 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
@@ -131,10 +135,18 @@ public class CommonProxy {
         TagPrefix.init();
         GTSoundEntries.init();
         GTDamageTypes.init();
+        GTPlaceholders.initPlaceholders();
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.init();
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+
         GTCovers.init();
-        GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
+        GTFluids.init();
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
@@ -149,7 +161,6 @@ public class CommonProxy {
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
-        // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
 
         GregTechDatagen.initPost();
@@ -186,6 +197,7 @@ public class CommonProxy {
         GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
+        SyncedKeyMappings.init();
         MachineOwner.init();
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
@@ -247,6 +259,7 @@ public class CommonProxy {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
+            CraftingHelper.register(NBTPredicateIngredient.TYPE, NBTPredicateIngredient.Serializer.INSTANCE);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
 
             // register the map ingredient converters for all of our ingredients
@@ -264,6 +277,7 @@ public class CommonProxy {
 
             MapIngredientTypeManager.registerMapIngredient(StrictNBTIngredient.class, StrictNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(PartialNBTIngredient.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(NBTPredicateIngredient.class, NBTPredicateItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(IntersectionIngredient.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemStackMapIngredient::from);
@@ -272,6 +286,7 @@ public class CommonProxy {
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, ItemTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, StrictNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, NBTPredicateItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, CustomMapIngredient::from);
             // spotless:on

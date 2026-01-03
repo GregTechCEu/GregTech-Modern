@@ -47,7 +47,7 @@ public class FacadeCover extends CoverBehavior {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
         this.facadeState = FacadeItemBehaviour.getFacadeState(itemStack);
     }

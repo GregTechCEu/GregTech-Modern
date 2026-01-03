@@ -32,10 +32,7 @@ sourceSets {
     }
 
     test {
-        kotlin {
-            srcDirs += 'src/test/java'
-        }
-        compileClasspath += main.output
+        compileClasspath += main.output + main.compileClasspath
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 
@@ -89,6 +86,7 @@ apply from: "$rootDir/dependencies.gradle"
 apply from: "$rootDir/gradle/scripts/resources.gradle"
 apply from: "$rootDir/gradle/scripts/publishing.gradle"
 apply from: "$rootDir/gradle/scripts/spotless.gradle"
+apply from: "$rootDir/gradle/scripts/docs.gradle"
 
 
 tasks.withType(JavaCompile).configureEach {

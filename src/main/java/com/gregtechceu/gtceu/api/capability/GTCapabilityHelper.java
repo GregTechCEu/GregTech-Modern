@@ -12,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +28,16 @@ public class GTCapabilityHelper {
     @Nullable
     public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
         return itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+    }
+
+    @Nullable
+    public static IItemHandler getItemHandler(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(ForgeCapabilities.ITEM_HANDLER, level, pos, side);
+    }
+
+    @Nullable
+    public static IFluidHandler getFluidHandler(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(ForgeCapabilities.FLUID_HANDLER, level, pos, side);
     }
 
     @Nullable
@@ -103,6 +115,11 @@ public class GTCapabilityHelper {
     @Nullable
     public static IHazardParticleContainer getHazardContainer(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, level, pos, side);
+    }
+
+    @Nullable
+    public static IMonitorComponent getMonitorComponent(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, level, pos, side);
     }
 
     @Nullable

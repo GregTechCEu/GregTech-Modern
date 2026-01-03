@@ -8,15 +8,12 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -72,34 +69,5 @@ public class BiomeCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new BiomeCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("biome", biome.location().toString());
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        biome = ResourceKey.create(Registries.BIOME,
-                new ResourceLocation(GsonHelper.getAsString(config, "biome", "dummy")));
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        biome = buf.readResourceKey(Registries.BIOME);
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeResourceKey(biome);
     }
 }

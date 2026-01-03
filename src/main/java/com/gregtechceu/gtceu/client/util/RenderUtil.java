@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -15,20 +16,33 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -202,6 +216,39 @@ public class RenderUtil {
                 Math.fma(face.getStepZ(), 0.5f, z));
     }
 
+    public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,
+                                 MultiBufferSource bufferSource, PoseStack poseStack) {
+        int packedLight = LevelRenderer.getLightColor(level, state, pos);
+
+        RenderShape renderShape = state.getRenderShape();
+        if (renderShape == RenderShape.INVISIBLE) {
+            return;
+        } else if (renderShape == RenderShape.ENTITYBLOCK_ANIMATED) {
+            // if it's a block entity, use the BEWLR to render it instead of the empty block model
+            ItemStack stack = new ItemStack(state.getBlock());
+            IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemDisplayContext.NONE,
+                    poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
+            return;
+        }
+
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderer.getBlockModel(state);
+        ModelData modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
+
+        int blockColor = Minecraft.getInstance().getBlockColors().getColor(state, level, pos, 0);
+        float r = (float) (blockColor >> 16 & 0xFF) / 255.0F;
+        float g = (float) (blockColor >> 8 & 0xFF) / 255.0F;
+        float b = (float) (blockColor & 0xFF) / 255.0F;
+
+        for (RenderType renderType : model.getRenderTypes(state, RandomSource.create(42), modelData)) {
+            blockRenderer.getModelRenderer().renderModel(poseStack.last(),
+                    bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType, false)),
+                    state, model, r, g, b,
+                    packedLight, OverlayTexture.NO_OVERLAY,
+                    modelData, renderType);
+        }
+    }
+
     /**
      * Rotate the current coordinate system, so it is on the face of the given block side.
      * This can be used to render on the given face as if it was a 2D canvas,
@@ -252,7 +299,7 @@ public class RenderUtil {
                 ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
-                    if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, stack)) {
+                    if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
                         originalMethod.call(entity, level, output, x, y, seed, z);
                         return true;
                     }

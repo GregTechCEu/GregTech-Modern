@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
@@ -44,7 +45,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
 
-    public static final BooleanProperty TAPED_PROPERTY = BooleanProperty.create("taped");
+    public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -106,7 +107,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                     stack.shrink(1);
                 }
                 isTaped = true;
-                setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
+                setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
@@ -118,16 +119,11 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         IMachineLife.super.onMachinePlaced(player, stack);
         CompoundTag tag = stack.getTag();
         if (tag != null) {
-            this.isTaped = tag.contains("taped") && tag.getBoolean("taped");
-            if (isTaped) {
+            if (tag.contains("taped") && tag.getBoolean("taped")) {
                 this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
             }
-
-            tag.remove("taped");
-            this.isTaped = false;
-            setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
         }
-        stack.setTag(null);
     }
 
     @Override
