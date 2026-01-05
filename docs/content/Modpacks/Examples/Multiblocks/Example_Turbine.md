@@ -18,7 +18,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
             .machine((holder) => new $LargeTurbineMachine(holder, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes("gas_turbine")
-            .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, (machine, recipe) => GTRecipeModifiers.LargeTurbineMachine(machine, recipe)])
+            .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, (machine, recipe) => $LargeTurbineMachine.recipeModifier(machine, recipe)])
             .appearanceBlock(GTBlocks.CASING_STAINLESS_TURBINE)
             .pattern(definition => FactoryBlockPattern.start()
                     .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")

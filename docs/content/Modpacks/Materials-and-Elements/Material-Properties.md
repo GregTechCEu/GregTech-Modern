@@ -29,7 +29,7 @@ Properties can be applied to a material to decide how they behave. An example of
 
 ## `Blast Furnace Properties`
 - `.blastTemp()` is meant to be paired together with `.ingot()`. Will generate a EBF recipe (and an ABS recipe) based on the parameters you give it:
-    1. `int temperature` -> dictates what coil tier it will require (check the coil tooltips for their max temperature).
+    1. `int temperature` -> dictates what coil tier it will require (check the coil tooltips for their max temperature, or visit [Standard Coils](../Other-Topics/Custom-Coils.md#standard-coils)).
         If the temperature is below 1000, it will also generate a PBF recipe.
         If temperature is above 1750, a hot ingot will be generated, this requiring a Vacuum Freezer.
     2. (optional) `string gasTier` -> can be `null` for none, `'low'` for nitrogen, `'mid'` for helium, `'high'` for argon, `'higher'` for neon or `'highest'` for krypton.

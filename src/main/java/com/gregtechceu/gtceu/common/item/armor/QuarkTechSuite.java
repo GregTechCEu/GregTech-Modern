@@ -86,9 +86,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
-            ret = supplyAir(item, player) || supplyFood(item, player);
 
-            removeNegativeEffects(item, player);
+            if (!world.isClientSide) {
+                ret = supplyAir(item, player) || supplyFood(item, player);
+                removeNegativeEffects(item, player);
+            }
 
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
@@ -160,7 +162,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
             boolean boostedJump = data.contains("boostedJump") && data.getBoolean("boostedJump");
-            if (toggleBootsTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
+            if (boostedJumpTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
                 boostedJump = !boostedJump;
                 toggleBootsTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component

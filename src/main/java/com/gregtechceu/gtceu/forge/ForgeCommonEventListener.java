@@ -320,15 +320,14 @@ public class ForgeCommonEventListener {
         if (player instanceof ServerPlayer serverPlayer) {
             GTNetwork.sendToPlayer(serverPlayer, new SPacketSendWorldID());
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
-                return;
-
-            ServerLevel level = serverPlayer.serverLevel();
-            var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                ServerLevel level = serverPlayer.serverLevel();
+                var data = EnvironmentalHazardSavedData.getOrCreate(level);
+                GTNetwork.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            }
+            CapeRegistry.detectNewCapes(serverPlayer);
+            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
         }
-        CapeRegistry.detectNewCapes(player);
-        CapeRegistry.loadCurrentCapesOnLogin(player);
     }
 
     @SubscribeEvent
