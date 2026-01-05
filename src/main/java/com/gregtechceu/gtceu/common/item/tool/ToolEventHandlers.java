@@ -49,55 +49,60 @@ public class ToolEventHandlers {
     /**
      * Handles returning broken stacks for tools
      */
-    public static void onPlayerDestroyItem(ItemStack original, InteractionHand hand, Player player) {
-        Item item = original.getItem();
-        if (item instanceof IGTTool def) {
-            ItemStack brokenStack = def.getToolStats().getBrokenStack();
-            // Transfer over remaining charge to power units
-            if (GTCapabilityHelper.getElectricItem(brokenStack) != null && def.isElectric()) {
-                long remainingCharge = def.getCharge(original);
-                IElectricItem electricStack = GTCapabilityHelper.getElectricItem(brokenStack);
-                if (electricStack != null) {
-                    // update the max charge of the item, if possible
-                    // applies to items like power units, which can have different max charges depending on their recipe
-                    if (electricStack instanceof ElectricItem electricItem) {
-                        electricItem.setMaxChargeOverride(def.getMaxCharge(original));
-                    }
+    @SubscribeEvent
+    public static void onPlayerDestroyItem(PlayerDestroyItemEvent event) {
+        ItemStack original = event.getOriginal();
+        InteractionHand hand = event.getHand();
+        Player player = event.getEntity();
 
-                    electricStack.charge(Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(),
-                            true, false);
+        if (!(original.getItem() instanceof IGTTool gtTool)) {
+            return;
+        }
+        ItemStack brokenStack = gtTool.getToolStats().getBrokenStack();
+        // Transfer over remaining charge to power units
+        if (GTCapabilityHelper.getElectricItem(brokenStack) != null && gtTool.isElectric()) {
+            long remainingCharge = gtTool.getCharge(original);
+            IElectricItem electricStack = GTCapabilityHelper.getElectricItem(brokenStack);
+            if (electricStack != null) {
+                // update the max charge of the item, if possible
+                // applies to items like power units, which can have different max charges depending on their recipe
+                if (electricStack instanceof ElectricItem electricItem) {
+                    electricItem.setMaxChargeOverride(gtTool.getMaxCharge(original));
                 }
+
+                electricStack.charge(Math.min(remainingCharge, gtTool.getMaxCharge(original)), gtTool.getElectricTier(),
+                        true, false);
             }
-            if (!brokenStack.isEmpty()) {
-                if (hand == null) {
-                    if (!player.addItem(brokenStack)) {
-                        player.drop(brokenStack, true);
-                    }
-                } else {
-                    player.setItemInHand(hand, brokenStack);
-                }
+        }
+        if (brokenStack.isEmpty()) {
+            return;
+        }
+        if (hand == null) {
+            if (!player.addItem(brokenStack)) {
+                player.drop(brokenStack, true);
             }
+        } else {
+            player.setItemInHand(hand, brokenStack);
         }
     }
 
-    public static InteractionResult onPlayerEntityInteract(Player player, InteractionHand hand, Entity target) {
-        ItemStack itemStack = player.getItemInHand(hand);
-        Item item = itemStack.getItem();
+    /**
+     * Handle item frame power unit duping
+     */
+    @SubscribeEvent
+    public static void onPlayerEntityInteract(PlayerInteractEvent.EntityInteract event) {
+        ItemStack itemStack = event.getItemStack();
 
-        /*
-         * Handle item frame power unit duping
-         */
-        if (item instanceof IGTTool def) {
-            if (target instanceof ItemFrame itemFrame) {
-                ItemStack brokenStack = def.getToolStats().getBrokenStack();
-                if (!brokenStack.isEmpty()) {
-                    itemFrame.interact(player, hand);
-
-                    return InteractionResult.SUCCESS;
-                }
-            }
+        if (!(itemStack.getItem() instanceof IGTTool gtTool) || !(event.getTarget() instanceof ItemFrame itemFrame)) {
+            return;
         }
-        return InteractionResult.PASS;
+        ItemStack brokenStack = gtTool.getToolStats().getBrokenStack();
+        if (!brokenStack.isEmpty()) {
+            itemFrame.interact(event.getEntity(), event.getHand());
+
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+        }
     }
 
     /**
@@ -141,7 +146,7 @@ public class ToolEventHandlers {
                 // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
                 ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
 
-                if (fireItemPickupEvent(drop, player) && player.addItem(dropStack)) {
+                if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
                     EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
                     dropItr.remove();
                 }
@@ -153,7 +158,7 @@ public class ToolEventHandlers {
         return drops;
     }
 
-    public static boolean fireItemPickupEvent(ItemEntity drop, Player player) {
+    public static boolean isPickupAllowedByEvent(ItemEntity drop, Player player) {
         return !EventHooks.fireItemPickupPre(drop, player).canPickup().isFalse();
     }
 
@@ -162,63 +167,42 @@ public class ToolEventHandlers {
      * Electric tools can still be repaired with ingots in the anvil, but electric tools cannot
      * be combined with other GT tools, electric or otherwise.
      */
-    public static boolean onAnvilUpdateEvent(ItemStack left, ItemStack right) {
-        if (left.getItem() instanceof IGTTool leftTool && right.getItem() instanceof IGTTool rightTool) {
-            if (leftTool.getToolMaterial(left) != rightTool.getToolMaterial(right)) {
-                return false;
-            }
-            if (leftTool.isElectric() || rightTool.isElectric()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @SubscribeEvent
-    public static void onPlayerDestroyItem(@NotNull PlayerDestroyItemEvent event) {
-        ToolEventHandlers.onPlayerDestroyItem(event.getOriginal(), event.getHand(), event.getEntity());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerEntityInteract(@NotNull PlayerInteractEvent.EntityInteract event) {
-        InteractionResult result = ToolEventHandlers.onPlayerEntityInteract(event.getEntity(), event.getHand(),
-                event.getTarget());
-        if (result != InteractionResult.PASS) {
-            event.setCanceled(true);
-            event.setCancellationResult(result);
-        }
-    }
-
     @SubscribeEvent
     public static void onAnvilUpdateEvent(AnvilUpdateEvent event) {
-        if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
+        ItemStack left = event.getLeft();
+        ItemStack right = event.getRight();
+        if (!(left.getItem() instanceof IGTTool leftTool) || !(right.getItem() instanceof IGTTool rightTool)) {
+            return;
+        }
+        if (leftTool.isElectric() || rightTool.isElectric()) {
             event.setCanceled(true);
         }
-    }
-
-    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
-                                                              Collection<ItemEntity> drops) {
-        if (tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
-            Iterator<ItemEntity> dropItr = drops.iterator();
-
-            while (dropItr.hasNext()) {
-                ItemEntity drop = dropItr.next();
-                ItemStack dropStack = drop.getItem();
-
-                if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
-                    EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
-                    dropItr.remove();
-                }
-            }
+        if (leftTool.getToolMaterial(left) != rightTool.getToolMaterial(right)) {
+            event.setCanceled(true);
         }
-        return drops;
     }
 
     @SubscribeEvent
     public static void onPlayerKilledEntity(LivingDropsEvent event) {
         Entity entity = event.getSource().getEntity();
-        if (entity instanceof Player player) {
-            ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+        ItemStack tool = player.getMainHandItem();
+
+        if (!tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+            return;
+        }
+        Iterator<ItemEntity> dropItr = event.getDrops().iterator();
+
+        while (dropItr.hasNext()) {
+            ItemEntity drop = dropItr.next();
+            ItemStack dropStack = drop.getItem();
+
+            if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
+                EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
+                dropItr.remove();
+            }
         }
     }
 }
