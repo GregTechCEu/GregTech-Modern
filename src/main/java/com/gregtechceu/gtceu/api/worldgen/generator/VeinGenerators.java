@@ -33,9 +33,8 @@ public class VeinGenerators {
     public static final MapCodec<CuboidVeinGenerator> CUBOID = register(GTCEu.id("cuboid"), CuboidVeinGenerator.CODEC,
             CuboidVeinGenerator::new);
 
-    public static <
-            T extends VeinGenerator> MapCodec<T> register(ResourceLocation id, MapCodec<T> codec,
-                                                          Supplier<? extends VeinGenerator> function) {
+    public static <T extends VeinGenerator> MapCodec<T> register(ResourceLocation id, MapCodec<T> codec,
+                                                                 Supplier<T> function) {
         WorldGeneratorUtils.VEIN_GENERATORS.put(id, codec);
         WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.put(id, function);
         return codec;

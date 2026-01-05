@@ -62,6 +62,22 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
         super(id);
     }
 
+    public static OreVeinDefinitionBuilder from(OreVeinDefinition definition, ResourceLocation id) {
+        var builder = new OreVeinDefinitionBuilder(id);
+        builder.clusterSize(definition.clusterSize());
+        builder.density(definition.density());
+        builder.weight(definition.weight());
+        builder.layer(definition.layer());
+        builder.dimensionFilter(definition.dimensionFilter());
+        builder.heightRange(definition.heightRange());
+        builder.discardChanceOnAirExposure(definition.discardChanceOnAirExposure());
+        builder.biomes(definition.biomes());
+        builder.biomeWeightModifier(definition.biomeWeightModifier());
+        builder.veinGenerator(definition.veinGenerator().copy());
+        builder.indicatorGenerators.addAll(definition.indicatorGenerators());
+        return builder;
+    }
+
     @Tolerate
     public OreVeinDefinitionBuilder clusterSize(int clusterSize) {
         this.clusterSize = ConstantInt.of(clusterSize);
