@@ -200,7 +200,8 @@ public class ToolHelper {
                     if (user != null) {
                         user.breakItem(stack);
                         user.onEquippedItemBroken(stack.getItem(),
-                                LivingEntity.getSlotForHand(user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
+                                LivingEntity.getSlotForHand(
+                                        user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
                     }
                     stack.shrink(1);
                 }
@@ -449,7 +450,7 @@ public class ToolHelper {
     }
 
     public static LootContext createBlockLootContext(ServerLevel level, BlockState state,
-                                                      LootParams.Builder lootParams) {
+                                                     LootParams.Builder lootParams) {
         LootParams params = lootParams.withParameter(LootContextParams.BLOCK_STATE, state)
                 .create(LootContextParamSets.BLOCK);
         LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(state.getBlock().getLootTable());
