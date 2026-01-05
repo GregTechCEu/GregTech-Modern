@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.mui.base.widget.ISynced;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
@@ -49,14 +48,12 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
         String key = "player";
         for (int i = 0; i < 9; i++) {
             slotGroupWidget.child(slotConsumer.apply(i, new ItemSlot())
-                    .background(GTGuiTextures.SLOT)
                     .syncHandler(key, i)
                     .pos(i * 18, 3 * 18 + 4)
                     .name("slot_" + i));
         }
         for (int i = 0; i < 27; i++) {
             slotGroupWidget.child(slotConsumer.apply(i + 9, new ItemSlot())
-                    .background(GTGuiTextures.SLOT)
                     .syncHandler(key, i + 9)
                     .pos(i % 9 * 18, i / 9 * 18)
                     .name("slot_" + (i + 9)));

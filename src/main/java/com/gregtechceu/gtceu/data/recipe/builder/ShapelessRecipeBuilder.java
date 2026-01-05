@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 @Accessors(chain = true, fluent = true)
 public class ShapelessRecipeBuilder {
 
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private final List<Ingredient> ingredients = new ArrayList<>();
     @Setter
     protected String group;
 

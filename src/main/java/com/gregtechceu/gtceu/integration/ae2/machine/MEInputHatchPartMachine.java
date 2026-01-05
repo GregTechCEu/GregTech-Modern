@@ -7,16 +7,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -37,9 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEInputHatchPartMachine extends MEHatchPartMachine
                                      implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
-
     protected ExportOnlyAEFluidList aeFluidHandler;
 
     public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -59,11 +49,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEFluidList(this, slots);
         return aeFluidHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -127,19 +112,21 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
-        // ME Network status
-        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-
-        // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
-
-        return group;
-    }
+    /*
+     * @Override
+     * public Widget createUIWidget() {
+     * WidgetGroup group = new WidgetGroup(new Position(0, 0));
+     * // ME Network status
+     * group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
+     * "gtceu.gui.me_network.online" :
+     * "gtceu.gui.me_network.offline"));
+     *
+     * // Config slots
+     * group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
+     *
+     * return group;
+     * }
+     */
 
     ////////////////////////////////
     // ******* Interaction *******//

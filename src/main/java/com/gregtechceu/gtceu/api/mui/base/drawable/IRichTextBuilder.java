@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.mui.base.drawable;
 
 import com.gregtechceu.gtceu.api.mui.drawable.text.Spacer;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import java.util.function.UnaryOperator;
@@ -97,6 +99,19 @@ public interface IRichTextBuilder<T extends IRichTextBuilder<T>> {
      */
     default T addLine(IDrawable line) {
         getRichText().add(line).newLine();
+        return getThis();
+    }
+
+    /**
+     * Adds all translated components of a multilang's subkeys and creates a new line for each.
+     * 
+     * @param lang lang key of the multilang to add.
+     * @return this
+     */
+    default T addMultiLine(String lang) {
+        for (MutableComponent text : LangHandler.getMultiLang(lang)) {
+            getRichText().addLine(text);
+        }
         return getThis();
     }
 

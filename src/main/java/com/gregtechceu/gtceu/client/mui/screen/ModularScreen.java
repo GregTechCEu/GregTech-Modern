@@ -326,7 +326,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
-            this.context.updateZ(panel.getArea().getPanelLayer() * 20);
+            this.context.updateZ(0);
             if (panel.disablePanelsBelow()) {
                 GuiDraw.drawRect(graphics, 0, 0, this.context.getScreenArea().w(), this.context.getScreenArea().h(),
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
@@ -354,7 +354,7 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
         this.context.reset();
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel panel : this.panelManager.getReverseOpenPanels()) {
-            this.context.updateZ(100 + panel.getArea().getPanelLayer() * 20);
+            this.context.updateZ(100);
             if (panel.isEnabled()) {
                 WidgetTree.drawTreeForeground(panel, this.context);
             }

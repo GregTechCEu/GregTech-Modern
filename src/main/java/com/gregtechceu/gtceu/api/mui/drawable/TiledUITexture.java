@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.api.mui.drawable;
 
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 public class TiledUITexture extends UITexture {
 
@@ -26,6 +28,7 @@ public class TiledUITexture extends UITexture {
             super.draw(context, x, y, width, height);
             return;
         }
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         GuiDraw.drawTiledTexture(context.getLastGraphicsPose(), this.location, x, y, width, height,
                 this.u0, this.v0, this.u1, this.v1,
                 this.imageWidth, this.imageHeight, 0);

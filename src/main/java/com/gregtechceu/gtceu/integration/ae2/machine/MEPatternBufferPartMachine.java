@@ -1,16 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -21,22 +15,13 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -50,6 +35,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -63,7 +49,6 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.stacks.*;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import com.google.common.collect.BiMap;
@@ -87,8 +72,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEPatternBufferPartMachine extends MEBusPartMachine
                                         implements ICraftingProvider, PatternContainer, IDataStickInteractable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
     protected static final int MAX_PATTERN_COUNT = 27;
     private final InternalInventory internalPatternInventory = new InternalInventory() {
 
@@ -111,33 +94,33 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     };
 
     @Getter
-    @Persisted
-    @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
-                // version.
+    @SaveField
+    @SyncToClient
+    // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
+    // version.
     private final CustomItemStackHandler patternInventory = new CustomItemStackHandler(MAX_PATTERN_COUNT);
 
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler shareInventory;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableFluidTank shareTank;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
     private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
 
-    @DescSynced
-    @Persisted
-    @Setter
+    @SyncToClient
+    @SaveField
     private String customName = "";
 
     private boolean needPatternSync;
 
-    @Persisted
+    @SaveField
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
@@ -149,6 +132,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
+        patternInventory.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
@@ -184,6 +168,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Override
     public boolean isWorkingEnabled() {
         return true;
+    }
+
+    public void setCustomName(String newName) {
+        customName = newName;
+        syncDataHolder.markClientSyncFieldDirty("customName");
     }
 
     @Override
@@ -269,64 +258,66 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        configuratorPanel.attachConfigurators(new ButtonConfigurator(
-                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
-                .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
-        if (isHasCircuitSlot() && isCircuitSlotEnabled()) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-        }
-        configuratorPanel.attachConfigurators(new FancyInvConfigurator(
-                shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
-                .setTooltips(List.of(
-                        Component.translatable("gui.gtceu.share_inventory.desc.0"),
-                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
-        configuratorPanel.attachConfigurators(new FancyTankConfigurator(
-                shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
-                .setTooltips(List.of(
-                        Component.translatable("gui.gtceu.share_tank.desc.0"),
-                        Component.translatable("gui.gtceu.share_inventory.desc.1"))));
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        int rowSize = 9;
-        int colSize = 3;
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        int index = 0;
-        for (int y = 0; y < colSize; ++y) {
-            for (int x = 0; x < rowSize; ++x) {
-                int finalI = index;
-                var slot = new AEPatternViewSlotWidget(patternInventory, index++, 8 + x * 18, 14 + y * 18)
-                        .setOccupiedTexture(GuiTextures.SLOT)
-                        .setItemHook(stack -> {
-                            if (!stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem iep) {
-                                final ItemStack out = iep.getOutput(stack);
-                                if (!out.isEmpty()) {
-                                    return out;
-                                }
-                            }
-                            return stack;
-                        })
-                        .setChangeListener(() -> onPatternChange(finalI))
-                        .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
-                group.addWidget(slot);
-            }
-        }
-        // ME Network status
-        group.addWidget(new LabelWidget(
-                8,
-                2,
-                () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"));
-
-        group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
-                .setText(customName)
-                .setOnConfirm(this::setCustomName)
-                .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
-
-        return group;
-    }
+    /*
+     * @Override
+     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+     * configuratorPanel.attachConfigurators(new ButtonConfigurator(
+     * new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.REFUND_OVERLAY), this::refundAll)
+     * .setTooltips(List.of(Component.translatable("gui.gtceu.refund_all.desc"))));
+     * if (isHasCircuitSlot() && isCircuitSlotEnabled()) {
+     * configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+     * }
+     * configuratorPanel.attachConfigurators(new FancyInvConfigurator(
+     * shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
+     * .setTooltips(List.of(
+     * Component.translatable("gui.gtceu.share_inventory.desc.0"),
+     * Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+     * configuratorPanel.attachConfigurators(new FancyTankConfigurator(
+     * shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
+     * .setTooltips(List.of(
+     * Component.translatable("gui.gtceu.share_tank.desc.0"),
+     * Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+     * }
+     *
+     * @Override
+     * public Widget createUIWidget() {
+     * int rowSize = 9;
+     * int colSize = 3;
+     * var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
+     * int index = 0;
+     * for (int y = 0; y < colSize; ++y) {
+     * for (int x = 0; x < rowSize; ++x) {
+     * int finalI = index;
+     * var slot = new AEPatternViewSlotWidget(patternInventory, index++, 8 + x * 18, 14 + y * 18)
+     * .setOccupiedTexture(GuiTextures.SLOT)
+     * .setItemHook(stack -> {
+     * if (!stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem iep) {
+     * final ItemStack out = iep.getOutput(stack);
+     * if (!out.isEmpty()) {
+     * return out;
+     * }
+     * }
+     * return stack;
+     * })
+     * .setChangeListener(() -> onPatternChange(finalI))
+     * .setBackground(GuiTextures.SLOT, GuiTextures.PATTERN_OVERLAY);
+     * group.addWidget(slot);
+     * }
+     * }
+     * // ME Network status
+     * group.addWidget(new LabelWidget(
+     * 8,
+     * 2,
+     * () -> this.isOnline ? "gtceu.gui.me_network.online" : "gtceu.gui.me_network.offline"));
+     *
+     * group.addWidget(new AETextInputButtonWidget(18 * rowSize + 8 - 70, 2, 70, 10)
+     * .setText(customName)
+     * .setOnConfirm(this::setCustomName)
+     * .setButtonTooltips(Component.translatable("gui.gtceu.rename.desc")));
+     *
+     * return group;
+     * }
+     */
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
@@ -362,11 +353,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             if (illegal) return false;
         }
         return true;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -444,7 +430,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         return new BufferData(items, fluids);
     }
 
-    public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
+    public class InternalSlot implements INBTSerializable<CompoundTag> {
 
         @Getter
         @Setter

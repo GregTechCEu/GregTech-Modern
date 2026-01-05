@@ -160,6 +160,21 @@ public interface IKey extends IDrawable, IJsonSerializable<IKey> {
      * @return dynamic text key
      */
     static IKey dynamic(@NotNull Supplier<@NotNull Component> getter) {
+        Component c = getter.get();
+        if (c instanceof MutableComponent m) {
+            return dynamicKey(() -> IKey.lang(m));
+        } else {
+            return dynamicKey(() -> IKey.lang(c.copy()));
+        }
+    }
+
+    /**
+     * Creates a dynamic text key.
+     *
+     * @param getter key supplier
+     * @return dynamic text key
+     */
+    static IKey dynamicKey(@NotNull Supplier<@NotNull IKey> getter) {
         return new DynamicKey(getter);
     }
 

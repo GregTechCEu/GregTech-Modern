@@ -7,11 +7,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
@@ -28,12 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
                                                implements IHPCAComponentHatch, IMachineModifyDrops {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            HPCAComponentPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     private boolean damaged;
 
     public HPCAComponentPartMachine(IMachineBlockEntity holder) {
@@ -78,8 +73,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         if (!canBeDamaged()) return;
         if (this.damaged != damaged) {
             this.damaged = damaged;
-            markDirty();
-
+            syncDataHolder.markClientSyncFieldDirty("damaged");
             MachineRenderState state = getRenderState();
             if (state.hasProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED)) {
                 setRenderState(state.setValue(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, damaged));
@@ -122,8 +116,4 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
      * return super.getMetaName();
      * }
      */
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 }

@@ -33,7 +33,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -372,7 +371,7 @@ public class GTUtil {
     }
 
     public static int getItemBurnTime(Item item) {
-        return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
+        return ForgeHooks.getBurnTime(item.getDefaultInstance(), null);
     }
 
     public static int getPumpBiomeModifier(Holder<Biome> biome) {
@@ -603,6 +602,10 @@ public class GTUtil {
                     Component.literal(String.valueOf(100 * probability))
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
+    }
+
+    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
+        return (ItemStack.isSameItem(s1, s2) && Objects.equals(s1.getTag(), s2.getTag()));
     }
 
     public static <T> T getLast(List<T> list) {

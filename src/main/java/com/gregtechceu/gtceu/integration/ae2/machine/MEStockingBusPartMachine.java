@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -15,11 +12,8 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -52,23 +46,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MEStockingBusPartMachine extends MEInputBusPartMachine implements IMEStockingPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @DescSynced
-    @Persisted
+    @SyncToClient
+    @SaveField
     @Getter
     private boolean autoPull;
 
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int minStackSize = 1;
     @Getter
     @Setter
-    @Persisted
-    @DropSaved
+    @SaveField
     private int ticksPerCycle = 40;
 
     @Setter
@@ -99,11 +88,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     protected NotifiableItemStackHandler createInventory(Object... args) {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -143,10 +127,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
     }
 
-    @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    /*
+     * @Override
+     * public void attachSideTabs(TabsWidget sideTabs) {
+     * sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
+     * }
+     */
 
     @Override
     protected void flushInventory() {
@@ -194,6 +180,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("autoPull");
             if (!this.autoPull) {
                 this.aeItemHandler.clearInventory(0);
             } else if (updateMEStatus()) {
@@ -271,12 +258,14 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     // ********** GUI ***********//
     ///////////////////////////////
 
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
-    }
+    /*
+     * @Override
+     * public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+     * IMEStockingPart.super.attachConfigurators(configuratorPanel);
+     * super.attachConfigurators(configuratorPanel);
+     * configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
+     * }
+     */
 
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,

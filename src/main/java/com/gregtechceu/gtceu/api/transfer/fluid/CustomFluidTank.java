@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -14,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class CustomFluidTank extends FluidTank
-                             implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
+                             implements IFluidHandlerModifiable, INBTSerializable<CompoundTag> {
 
     @Getter
     @Setter
@@ -51,11 +49,14 @@ public class CustomFluidTank extends FluidTank
 
     @Override
     public CompoundTag serializeNBT() {
-        return writeToNBT(new CompoundTag());
+        var tag = new CompoundTag();
+        if (isEmpty() || getFluidAmount() <= 0) tag.putBoolean("isNull", true);
+        return writeToNBT(tag);
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        if (nbt.getBoolean("isNull")) return;
         readFromNBT(nbt);
     }
 }

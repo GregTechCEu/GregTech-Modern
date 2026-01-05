@@ -19,7 +19,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes("gas_turbine")
             .recipeModifiers([GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, (machine, recipe) => GTRecipeModifiers.LargeTurbineMachine(machine, recipe)])
-            .appearanceBlock(GTBlocks.CASING_TITANIUM_STABLE)
+            .appearanceBlock(GTBlocks.CASING_STAINLESS_TURBINE)
             .pattern(definition => FactoryBlockPattern.start()
                     .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
                     .aisle("BBBCBBB", "BBCACBB", "BBCFCBB", "BBCACBB", "BBBCBBB")
@@ -46,10 +46,11 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
 === "Java"
     ```java title="MultiMachines.java"
     public static final MultiblockMachineDefinition HYPER_GAS_TURBINE = REGISTRATE
-            .multiblock("hyper_gas_turbine", (holder) -> new LargeTurbineMachine(holder, GTValues.LuV, 4)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
+            .multiblock("hyper_gas_turbine", (holder) -> new LargeTurbineMachine(holder, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.GAS_TURBINE_FUELS)
             .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK, GTRecipeModifiers.BATCH_MODE, LargeTurbineMachine::recipeModifier)
+            .appearanceBlock(GTBlocks.CASING_STAINLESS_TURBINE)
             .pattern(definition -> FactoryBlockPattern.start()
                 .aisle("BBBBBBB", "BBBCBBB", "BBBDBBB", "BBBCBBB", "BBBBBBB")
                 .aisle("BBBCBBB", "BBCACBB", "BBCECBB", "BBCACBB", "BBBCBBB")

@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -61,8 +62,8 @@ import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -139,7 +140,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter // getter for KJS
     private int tier;
     @Setter
-    private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     @Setter
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     @Setter
@@ -175,6 +176,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     @Getter
     private PanelFactory UI = null;
+    @Getter
+    private String themeId = ThemeAPI.DEFAULT_ID;
 
     @Setter
     private boolean allowCoverOnFront = false;
@@ -405,6 +408,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> themeId(String themeId) {
+        this.themeId = themeId;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> themeId(Function<Integer, String> themeId) {
+        this.themeId = themeId.apply(tier);
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> modelProperty(Property<?> property) {
         return modelProperty(property, null);
     }
@@ -569,6 +582,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         var blockEntity = blockEntityBuilder.register();
         if (this.UI != null) {
             definition.setUI(UI);
+        }
+        if (this.themeId != null) {
+            definition.setThemeId(themeId);
         }
         definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);

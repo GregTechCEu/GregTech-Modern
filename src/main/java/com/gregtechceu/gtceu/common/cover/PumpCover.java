@@ -20,15 +20,14 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -55,40 +54,37 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     // .5b 2b 8b
     public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV));
 
     public final int tier;
     public final int maxFluidTransferRate;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected int transferRate;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
-    @RequireRerender
+    @RerenderOnChanged
     protected IO io = IO.OUT;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int mBLeftToTransferLastSecond;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Integer> transferRateWidget;
@@ -130,10 +126,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public boolean canAttach() {
@@ -176,6 +168,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (this.isWorkingEnabled != isWorkingAllowed) {
             this.isWorkingEnabled = isWorkingAllowed;
+            syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
             subscriptionHandler.updateSubscription();
         }
     }
@@ -193,7 +186,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         var newMultiplier = bucketMode.multiplier;
 
         this.bucketMode = bucketMode;
-
+        syncDataHolder.markClientSyncFieldDirty("bucketMode");
         if (transferRateWidget == null) return;
 
         if (oldMultiplier > newMultiplier) {
@@ -209,7 +202,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
     protected void setManualIOMode(ManualIOMode manualIOMode) {
         this.manualIOMode = manualIOMode;
-        coverHolder.markDirty();
+        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
     }
 
     protected void update() {
@@ -369,10 +362,15 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return 0;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return 0;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.fill(resource, action);
+                }
             }
-            if (!filterHandler.test(resource) && manualIOMode == ManualIOMode.FILTERED) {
+            if (!filterHandler.test(resource)) {
                 return 0;
             }
             return super.fill(resource, action);
@@ -380,10 +378,15 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return FluidStack.EMPTY;
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return FluidStack.EMPTY;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.drain(resource, action);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(resource)) {
+            if (!filterHandler.test(resource)) {
                 return FluidStack.EMPTY;
             }
             return super.drain(resource, action);

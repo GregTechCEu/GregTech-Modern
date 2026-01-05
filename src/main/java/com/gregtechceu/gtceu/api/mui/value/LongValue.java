@@ -64,6 +64,11 @@ public class LongValue implements ILongValue<Long>, IIntValue<Long>, IStringValu
         setLongValue(val);
     }
 
+    @Override
+    public Class<Long> getValueType() {
+        return Long.class;
+    }
+
     public static class Dynamic implements ILongValue<Long>, IIntValue<Long>, IStringValue<Long> {
 
         private final LongSupplier getter;
@@ -112,6 +117,11 @@ public class LongValue implements ILongValue<Long>, IIntValue<Long>, IStringValu
         @Override
         public void setIntValue(int val) {
             setLongValue(val);
+        }
+
+        @Override
+        public Class<Long> getValueType() {
+            return Long.class;
         }
     }
 }

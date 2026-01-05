@@ -81,6 +81,10 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return new ParentWidget<>().height(16).widthRel(1.0f).marginBottom(2);
     }
 
+    default int getIncrementValue() {
+        return getIncrementValue(MouseData.create(-1));
+    }
+
     default int getIncrementValue(MouseData data) {
         int adjust = 1;
         if (data.shift()) adjust *= 4;

@@ -14,15 +14,14 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -38,7 +37,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -51,24 +49,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine, IFluidRenderMulti {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            PrimitiveBlastFurnaceMachine.class, PrimitiveWorkableMachine.MANAGED_FIELD_HOLDER);
-
     private TickableSubscription hurtSubscription;
 
     @Getter
-    @Setter
-    @DescSynced
-    @RequireRerender
+    @SyncToClient
+    @RerenderOnChanged
     private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -81,6 +70,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
                 IO.NONE);
+    }
+
+    public void setFluidBlockOffsets(Set<BlockPos> offsets) {
+        fluidBlockOffsets = offsets;
+        syncDataHolder.markClientSyncFieldDirty("fluidBlockOffsets");
     }
 
     @Override

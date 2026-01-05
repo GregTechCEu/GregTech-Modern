@@ -1,28 +1,28 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,21 +30,22 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquareSlotGroupFromInventory;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IUIMachine {
+public class MufflerPartMachine extends TieredPartMachine implements IMufflerMachine, IMuiMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MufflerPartMachine.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
     private final int recoveryChance;
     @Getter
-    @Persisted
+    @SaveField
     private final CustomItemStackHandler inventory;
 
     private TickableSubscription snowSubscription;
@@ -53,14 +54,6 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
         super(holder, tier);
         this.recoveryChance = Math.max(1, tier * 10);
         this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -128,24 +121,55 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     // ********** GUI ***********//
     //////////////////////////////////////
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        int rowSize = (int) Math.sqrt(inventory.getSlots());
-        int xOffset = rowSize == 10 ? 9 : 0;
-        var modular = new ModularUI(176 + xOffset * 2,
-                18 + 18 * rowSize + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset,
-                        18 + 18 * rowSize + 12, true));
+    public @NotNull ModularPanel buildUI(@NotNull PosGuiData data, @NotNull PanelSyncManager syncManager,
+                                         @NotNull UISettings settings) {
+        int size = (int) Math.sqrt(inventory.getSlots());
 
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                modular.widget(new SlotWidget(inventory, index,
-                        (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, false)
-                        .setBackgroundTexture(GuiTextures.SLOT));
-            }
-        }
-        return modular;
+        return new ModularPanel(this.getDefinition().getName())
+                .size(Math.max(176, 20 + (18 * size)), 100 + (18 * size))
+                .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
+                .child(new ParentWidget<>()
+                        .widthRel(1)
+                        .height(20 + 18 * size)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER)
+                                .coverChildren()
+                                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager)
+                                        .marginLeft(30)
+                                        .marginRight(30)
+                                        .verticalCenter())))
+                .child(new ParentWidget<>()
+                        .bottom(7)
+                        .widthRel(1)
+                        .height(76)
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                                .align(Alignment.CENTER).coverChildren().child(
+                                        SlotGroupWidget.playerInventory(false))));
     }
+
+    /*
+     * @Override
+     * public ModularUI createUI(Player entityPlayer) {
+     * int rowSize = (int) Math.sqrt(inventory.getSlots());
+     * int xOffset = rowSize == 10 ? 9 : 0;
+     * var modular = new ModularUI(176 + xOffset * 2,
+     * 18 + 18 * rowSize + 94, this, entityPlayer)
+     * .background(GuiTextures.BACKGROUND)
+     * .widget(new LabelWidget(10, 5, getBlockState().getBlock().getDescriptionId()))
+     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset,
+     * 18 + 18 * rowSize + 12, true));
+     *
+     * for (int y = 0; y < rowSize; y++) {
+     * for (int x = 0; x < rowSize; x++) {
+     * int index = y * rowSize + x;
+     * modular.widget(new SlotWidget(inventory, index,
+     * (88 - rowSize * 9 + x * 18) + xOffset, 18 + y * 18, true, false)
+     * .setBackgroundTexture(GuiTextures.SLOT));
+     * }
+     * }
+     * return modular;
+     * }
+     */
 }

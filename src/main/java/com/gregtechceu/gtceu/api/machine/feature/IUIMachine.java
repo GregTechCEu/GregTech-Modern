@@ -43,7 +43,5 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
     }
 
     @Override
-    default void markAsDirty() {
-        self().markDirty();
-    }
+    default void markAsDirty() {};
 }

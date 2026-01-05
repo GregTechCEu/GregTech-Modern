@@ -36,6 +36,15 @@ public class GTValues {
     public static final int L = 144;
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
+    // shortcut for various lengths of time in ticks
+    public static final long SECONDS = 20;
+    public static final long MINUTES = 60 * SECONDS;
+    public static final long HOURS = 60 * MINUTES;
+    public static final long DAYS = 24 * HOURS;
+    public static final long WEEKS = 7 * DAYS;
+    public static final long MONTHS = 30 * DAYS;
+    public static final long YEARS = 365 * DAYS;
+
     /**
      * The Item WildCard Tag. Even shorter than the "-1" of the past
      */

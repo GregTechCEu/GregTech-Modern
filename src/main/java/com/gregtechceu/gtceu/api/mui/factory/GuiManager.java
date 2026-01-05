@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
 import com.gregtechceu.gtceu.api.mui.base.XeiSettings;
-import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.client.mui.screen.*;
@@ -158,11 +157,15 @@ public class GuiManager {
 
     @SubscribeEvent
     public static void onOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getContainer() instanceof ModularContainerMenu modular) {
-            ModularSyncManager syncManager = modular.getSyncManager();
-            if (syncManager != null) {
-                syncManager.onOpen();
-            }
+        if (event.getContainer() instanceof ModularContainerMenu modularContainer) {
+            modularContainer.opened();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCloseContainer(PlayerContainerEvent.Close event) {
+        if (event.getContainer() instanceof ModularContainerMenu modularContainer) {
+            modularContainer.removed();
         }
     }
 }

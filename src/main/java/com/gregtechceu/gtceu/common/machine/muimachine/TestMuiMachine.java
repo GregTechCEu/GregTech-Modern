@@ -149,7 +149,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         // spotless:off
         Rectangle colorPickerBackground = new Rectangle().setColor(Color.RED.main);
         ModularPanel panel = new ModularPanel("test_tile");
-        IPanelHandler panelSyncHandler = syncManager.panel("other_panel", this::openSecondWindow, true);
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
                 (mainPanel, player) -> new ColorPickerDialog(colorPickerBackground::setColor, colorPickerBackground.getColor(), true)
                          .setDraggable(true)
@@ -205,7 +205,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                         .row("III  D")
                                         .row("III  O")
                                         .row("III   ")
-                                        .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i)))
+                                        .key('I', i -> new ItemSlot().slot(new ModularSlot(this.craftingInventory, i))
+                                                .addTooltipLine("This slot is empty"))
                                         .key('O', new ItemSlot().slot(new ModularCraftingSlot(this.craftingInventory, 9)))
                                         .key('D', new ItemDisplayWidget().syncHandler("display_item").displayAmount(true))
                                         .build()
@@ -552,8 +553,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         syncManager.registerSlotGroup(slotGroup);
         AtomicInteger number = new AtomicInteger(0);
         syncManager.syncValue("int_value", new IntSyncValue(number::get, number::set));
-        IPanelHandler panelSyncHandler = syncManager.panel("other_panel_2",
-                (syncManager1, syncHandler1) -> openThirdWindow(syncManager1, syncHandler1, number), true);
+        IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel_2", true,
+                (syncManager1, syncHandler1) -> openThirdWindow(syncManager1, syncHandler1, number));
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)

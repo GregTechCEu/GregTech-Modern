@@ -6,7 +6,31 @@
     "all"
   ],
   "variants": {
-    "": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/part/computer_monitor",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/part/computer_monitor",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/part/computer_monitor",
+        "textures": {
+          "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
       "model": {
         "parent": "gtceu:block/machine/part/computer_monitor",
         "textures": {
