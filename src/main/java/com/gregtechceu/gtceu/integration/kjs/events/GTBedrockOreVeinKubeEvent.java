@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
 
 import net.minecraft.core.RegistrationInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +14,6 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.SourceLine;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 
 import java.util.Set;
@@ -70,7 +68,8 @@ public class GTBedrockOreVeinKubeEvent implements KubeEvent {
 
     public void remove(Context cx, ResourceLocation id) {
         if (!this.registry.containsKey(id)) {
-            ConsoleJS.SERVER.error("Trying to remove nonexistent bedrock ore vein %s".formatted(id), SourceLine.of(cx), null, null);
+            ConsoleJS.SERVER.error("Trying to remove nonexistent bedrock ore vein %s".formatted(id), SourceLine.of(cx),
+                    null, null);
             return;
         }
         // blank out the vein info because we can't remove from the registry

@@ -62,7 +62,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.apache.logging.log4j.util.TriConsumer;

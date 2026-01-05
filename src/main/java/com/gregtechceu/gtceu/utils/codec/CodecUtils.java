@@ -31,15 +31,15 @@ public class CodecUtils {
         return nullableOptionalFieldOf(self, name, defaultValue, false);
     }
 
-    public static <T> MapCodec<T> lenientNullableOptionalFieldOf(Codec<T> self, final String name, final T defaultValue) {
+    public static <T> MapCodec<T> lenientNullableOptionalFieldOf(Codec<T> self, final String name,
+                                                                 final T defaultValue) {
         return nullableOptionalFieldOf(self, name, defaultValue, true);
     }
 
     public static <T> MapCodec<T> nullableOptionalFieldOf(Codec<T> self, final String name, final T defaultValue,
-                                                   final boolean lenient) {
+                                                          final boolean lenient) {
         return Codec.optionalField(name, self, lenient).xmap(
                 o -> o.orElse(defaultValue),
-                a -> a == null || Objects.equals(a, defaultValue) ? Optional.empty() : Optional.of(a)
-        );
+                a -> a == null || Objects.equals(a, defaultValue) ? Optional.empty() : Optional.of(a));
     }
 }
