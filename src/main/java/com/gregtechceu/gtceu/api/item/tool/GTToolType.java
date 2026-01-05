@@ -593,7 +593,7 @@ public class GTToolType {
         @Setter
         private char symbol = ' ';
         @Setter
-        private ToolConstructor constructor = GTToolItem::create;
+        private ToolConstructor constructor = GTToolItem::new;
         @Setter
         private ResourceLocation modelLocation;
         private SoundEntry sound;

@@ -54,11 +54,6 @@ public class GTToolItem extends TieredItem implements IGTTool {
         definition$init();
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material,
-                                    IGTToolDefinition definition, Properties properties) {
-        return new GTToolItem(toolType, tier, material, definition, properties);
-    }
-
     @Override
     public ItemStack getDefaultInstance() {
         return get();
