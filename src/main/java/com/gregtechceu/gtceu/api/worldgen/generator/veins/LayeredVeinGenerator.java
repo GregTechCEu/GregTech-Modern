@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.worldgen.generator.veins;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.worldgen.GTLayerPattern;
+import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
@@ -19,20 +20,23 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 @NoArgsConstructor
@@ -42,16 +46,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public static final MapCodec<LayeredVeinGenerator> CODEC = GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns")
             .xmap(LayeredVeinGenerator::new, LayeredVeinGenerator::getLayerPatterns);
     // spotless:on
-    private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
-
-    public List<GTLayerPattern> layerPatterns;
-
-    public List<GTLayerPattern> getLayerPatterns() {
-        if (layerPatterns == null || this.layerPatterns.isEmpty()) {
-            layerPatterns = bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList());
-        }
-        return layerPatterns;
-    }
+    @Getter
+    public List<GTLayerPattern> layerPatterns = new ArrayList<>();
 
     @Override
     public List<VeinEntry> getAllEntries() {
@@ -204,21 +200,37 @@ public class LayeredVeinGenerator extends VeinGenerator {
         }
     }
 
-    public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
-        super();
+    public LayeredVeinGenerator(@NotNull List<GTLayerPattern> layerPatterns) {
         this.layerPatterns = layerPatterns;
     }
 
-    public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {
-        this.bakingLayerPatterns.add(pattern);
+    public LayeredVeinGenerator buildLayerPattern(IWorldGenLayer layer, Consumer<GTLayerPattern.Builder> config) {
+        return buildLayerPattern(layer.getTarget(), config);
+    }
+
+    @HideFromJS
+    public LayeredVeinGenerator buildLayerPattern(RuleTest rule, Consumer<GTLayerPattern.Builder> config) {
+        var builder = GTLayerPattern.builder(rule);
+        config.accept(builder);
+
+        return withLayerPattern(builder);
+    }
+
+    public LayeredVeinGenerator withLayerPattern(Supplier<GTLayerPattern> pattern) {
+        return this.withLayerPattern(pattern.get());
+    }
+
+    public LayeredVeinGenerator withLayerPattern(GTLayerPattern pattern) {
+        this.layerPatterns.add(pattern);
         return this;
     }
 
+    public LayeredVeinGenerator withLayerPattern(GTLayerPattern.Builder builder) {
+        return this.withLayerPattern(builder.build());
+    }
+
+    @Override
     public VeinGenerator build() {
-        if (this.layerPatterns != null && !this.layerPatterns.isEmpty()) return this;
-        this.layerPatterns = this.bakingLayerPatterns.stream()
-                .map(NonNullSupplier::get)
-                .toList();
         return this;
     }
 

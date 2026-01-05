@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class GTLayerPattern {
 
     public @Nullable Layer rollNext(@Nullable Layer previous, RandomSource random) {
         if (layers.isEmpty()) return null;
-        if (layers.size() == 1) return layers.get(0);
+        if (layers.size() == 1) return layers.getFirst();
 
         int totalWeight = 0;
         for (Layer layer : layers) {
@@ -56,6 +57,11 @@ public class GTLayerPattern {
         return null;
     }
 
+    public static Builder builder(IWorldGenLayer layer) {
+        return builder(layer.getTarget());
+    }
+
+    @HideFromJS
     public static Builder builder(RuleTest... rules) {
         return new Builder(rules);
     }

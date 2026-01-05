@@ -366,7 +366,9 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("GTOreVein", OreVeinDefinition.class);
         event.add("OreVeinDefinition", OreVeinDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
+        event.add("LayerPattern", GTLayerPattern.class);
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
+        event.add("DikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOreVeins.class);
         event.add("GTOreVeins", GTOreVeins.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
