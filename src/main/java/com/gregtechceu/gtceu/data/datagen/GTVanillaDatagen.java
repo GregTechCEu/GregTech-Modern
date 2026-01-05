@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
-import com.gregtechceu.gtceu.data.datagen.tag.BiomeTagsLoader;
-import com.gregtechceu.gtceu.data.datagen.tag.DamageTypeTagsLoader;
+import com.gregtechceu.gtceu.data.datagen.tag.*;
 import com.gregtechceu.gtceu.data.enchantment.GTEnchantmentProviders;
 import com.gregtechceu.gtceu.data.sound.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.worldgen.*;
@@ -36,8 +35,6 @@ public class GTVanillaDatagen {
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(packOutput, GTCEu.MOD_ID));
         }
         if (event.includeServer()) {
-            var set = Set.of(GTCEu.MOD_ID);
-            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
@@ -49,9 +46,12 @@ public class GTVanillaDatagen {
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
                             .add(GTRegistries.BEDROCK_FLUID_REGISTRY, GTBedrockFluids::bootstrap)
                             .add(GTRegistries.ORE_VEIN_REGISTRY, GTOreVeins::bootstrap),
-                    set));
-            generator.addProvider(true,
-                    new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+                    Set.of(GTCEu.MOD_ID)));
+            registries = provider.getRegistryProvider();
+
+            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new DamageTypeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new EnchantmentTagsLoader(packOutput, registries, existingFileHelper));
         }
     }
 }
