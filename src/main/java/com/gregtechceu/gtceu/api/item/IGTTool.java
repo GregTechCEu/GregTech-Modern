@@ -146,7 +146,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return getMaterial().getProperty(PropertyKey.TOOL);
     }
 
-    @Nullable
     default DustProperty getDustProperty(ItemStack stack) {
         return getToolMaterial(stack).getProperty(PropertyKey.DUST);
     }
@@ -417,8 +416,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 .anyMatch(behavior -> behavior.canDisableShield(stack, shield, entity, attacker));
     }
 
-    default boolean definition$doesSneakBypassUse(@NotNull ItemStack stack, @NotNull BlockGetter world,
-                                                  @NotNull BlockPos pos, @NotNull Player player) {
+    default boolean definition$doesSneakBypassUse(ItemStack stack, BlockGetter world, BlockPos pos, Player player) {
         return getToolStats().doesSneakBypassUse();
     }
 
@@ -559,7 +557,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return true;
     }
 
-    default void definition$fillItemCategory(CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
+    default void definition$fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
         if (isElectric()) {
             items.add(get(Integer.MAX_VALUE));
         } else {
@@ -567,8 +565,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
     }
 
-    default void definition$appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                            @NotNull List<Component> tooltip, TooltipFlag flag) {
+    default void definition$appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                            List<Component> tooltip, TooltipFlag flag) {
         if (!(stack.getItem() instanceof IGTTool tool)) return;
 
         IGTToolDefinition toolStats = tool.getToolStats();
