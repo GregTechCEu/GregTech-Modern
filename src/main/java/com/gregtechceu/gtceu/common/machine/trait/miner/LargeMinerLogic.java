@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.trait.miner;
 
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -10,7 +11,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -19,9 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import lombok.Getter;
@@ -29,7 +27,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 
 public class LargeMinerLogic extends MinerLogic {
 
@@ -50,8 +47,6 @@ public class LargeMinerLogic extends MinerLogic {
     @Getter
     @Persisted
     private boolean isSilkTouchMode;
-
-    private LootItemFunction dropMultiplier;
 
     /**
      * Creates the logic for multiblock ore block miners
@@ -141,20 +136,19 @@ public class LargeMinerLogic extends MinerLogic {
             super.dropPostProcessing(blockDrops, outputs, blockState, builder);
             return;
         }
+        ServerLevel level = builder.getLevel();
+
+        var fortuneHolder = level.registryAccess().holderOrThrow(Enchantments.FORTUNE);
         ItemStack fortunePick = this.pickaxeTool.copy();
-        var registry = builder.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-        var fortuneHolder = registry.getHolderOrThrow(Enchantments.FORTUNE);
-        if (dropMultiplier == null) {
-            dropMultiplier = ApplyBonusCount.addOreBonusCount(fortuneHolder).build();
-        }
         fortunePick.enchant(fortuneHolder, getDropCountMultiplier());
-        LootParams params = builder.withParameter(LootContextParams.TOOL, fortunePick)
-                .create(LootContextParamSets.BLOCK);
-        LootContext context = new LootContext.Builder(params).create(Optional.empty());
+
+        LootItemFunction fortuneDropMultiplier = ToolHelper.getOrInitOreDropMultiplier(level.registryAccess());
+        LootContext lootContext = ToolHelper.createBlockLootContext(level, blockState,
+                builder.withParameter(LootContextParams.TOOL, fortunePick));
 
         for (ItemStack outputStack : outputs) {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
-                outputStack = dropMultiplier.apply(outputStack, context);
+                outputStack = fortuneDropMultiplier.apply(outputStack.copy(), lootContext);
             }
             blockDrops.add(outputStack);
         }
