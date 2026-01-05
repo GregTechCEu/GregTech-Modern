@@ -40,7 +40,7 @@ public final class SyncedKeyMappings {
             "gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V);
     public static final SyncedKeyMapping STEP_ASSIST_ENABLE = SyncedKeyMapping.createConfigurable(
             "gtceu.key.enable_step_assist", KeyConflictContext.IN_GAME,
-                    InputConstants.KEY_APOSTROPHE);
+            InputConstants.KEY_APOSTROPHE);
 
     public static void init() {
         if (GTCEu.isClientSide()) {
