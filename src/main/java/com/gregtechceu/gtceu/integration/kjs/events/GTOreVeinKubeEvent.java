@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.data.worldgen.GTOreVeins;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilder;
 
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
@@ -27,31 +29,34 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class GTOreVeinKubeEvent implements KubeEvent {
 
-    public GTOreVeinKubeEvent() {}
+    private final WritableRegistry<OreVeinDefinition> registry;
 
-    public void add(Context cx, ResourceLocation id, Consumer<OreVeinDefinition> consumer) {
-        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        var biomes = registries.access().lookupOrThrow(Registries.BIOME);
-
-        var vein = GTOreVeins.blankOreDefinition(biomes);
-        consumer.accept(vein);
-
-        if (registry instanceof WritableRegistry<OreVeinDefinition> writable) {
-            writable.register(GTOreVeins.create(id), vein, RegistrationInfo.BUILT_IN);
-        }
+    public GTOreVeinKubeEvent(WritableRegistry<OreVeinDefinition> registry) {
+        this.registry = registry;
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<OreVeinDefinition> consumer) {
+    public void add(Context cx, ResourceLocation id, Consumer<OreVeinDefinitionBuilder> consumer) {
+        RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
+
+        OreVeinDefinitionBuilder builder = new OreVeinDefinitionBuilder(id);
+        consumer.accept(builder);
+        register(id, builder.createTransformedObject());
+    }
+
+    private void register(ResourceLocation id, OreVeinDefinition def) {
+        this.registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
+    }
+
+    public void modify(Context cx, ResourceLocation id, Consumer<OreVeinDefinitionBuilder> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
         var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
         var vein = registry.get(id);
         if (vein == null) throw new IllegalArgumentException("Ore vein doesn't exist: " + id);
 
-        vein.biomeLookup(biomes);
-        consumer.accept(vein);
+        var builder = OreVeinDefinitionBuilder.from(vein, id);
+        consumer.accept(builder);
+        register(id, builder.createTransformedObject());
     }
 
     public void modifyAll(Context cx, BiConsumer<ResourceLocation, OreVeinDefinition> consumer) {
@@ -103,5 +108,9 @@ public class GTOreVeinKubeEvent implements KubeEvent {
         holder.value().veinGenerator(NoopVeinGenerator.INSTANCE);
         holder.value().biomeWeightModifier(BiomeWeightModifier.EMPTY);
         holder.value().weight(0);
+    }
+
+    public static ResourceKey<OreVeinDefinition> createKey(ResourceLocation id) {
+        return ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
     }
 }

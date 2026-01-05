@@ -17,6 +17,9 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
@@ -36,6 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -133,6 +137,9 @@ public class MixinHelpers {
 
             GTMaterialItems.ARMOR_ITEMS.rowMap().forEach((material, map) -> {
                 map.forEach((type, item) -> {
+                    if (type == null || type == ArmorItem.Type.BODY) {
+                        return;
+                    }
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE);
@@ -143,14 +150,7 @@ public class MixinHelpers {
                             case CHESTPLATE -> ItemTags.CHEST_ARMOR.location();
                             case LEGGINGS -> ItemTags.LEG_ARMOR.location();
                             case BOOTS -> ItemTags.FOOT_ARMOR.location();
-                            case BODY -> Tags.Items.ARMORS.location();
-                        }, $ -> new ArrayList<>()).add(entry);
-                        tagMap.computeIfAbsent(switch (type) {
-                            case HELMET -> ItemTags.HEAD_ARMOR_ENCHANTABLE.location();
-                            case CHESTPLATE -> ItemTags.CHEST_ARMOR_ENCHANTABLE.location();
-                            case LEGGINGS -> ItemTags.LEG_ARMOR_ENCHANTABLE.location();
-                            case BOOTS -> ItemTags.FOOT_ARMOR_ENCHANTABLE.location();
-                            case BODY -> Tags.Items.ENCHANTABLES.location();
+                            default -> throw new IllegalStateException("Unexpected value: " + type);
                         }, $ -> new ArrayList<>()).add(entry);
                     }
                 });
@@ -395,17 +395,18 @@ public class MixinHelpers {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public static void postKJSVeinEvents(WritableRegistry<?> registry) {
         if (!GTCEu.Mods.isKubeJSLoaded()) {
             return;
         }
 
         if (registry.key() == GTRegistries.ORE_VEIN_REGISTRY) {
-            KJSCallWrapper.postOreVeinEvent();
+            KJSCallWrapper.postOreVeinEvent((WritableRegistry<OreVeinDefinition>) registry);
         } else if (registry.key() == GTRegistries.BEDROCK_FLUID_REGISTRY) {
-            KJSCallWrapper.postBedrockFluidEvent();
+            KJSCallWrapper.postBedrockFluidEvent((WritableRegistry<BedrockFluidDefinition>) registry);
         } else if (registry.key() == GTRegistries.BEDROCK_ORE_REGISTRY) {
-            KJSCallWrapper.postBedrockOreEvent();
+            KJSCallWrapper.postBedrockOreEvent((WritableRegistry<BedrockOreDefinition>) registry);
         }
     }
 
@@ -421,16 +422,16 @@ public class MixinHelpers {
 
     private static final class KJSCallWrapper {
 
-        private static void postOreVeinEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinKubeEvent());
+        private static void postOreVeinEvent(WritableRegistry<OreVeinDefinition> registry) {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinKubeEvent(registry));
         }
 
-        private static void postBedrockFluidEvent() {
-            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinKubeEvent());
+        private static void postBedrockFluidEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinKubeEvent(registry));
         }
 
-        private static void postBedrockOreEvent() {
-            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent());
+        private static void postBedrockOreEvent(WritableRegistry<BedrockOreDefinition> registry) {
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent(registry));
         }
     }
 
