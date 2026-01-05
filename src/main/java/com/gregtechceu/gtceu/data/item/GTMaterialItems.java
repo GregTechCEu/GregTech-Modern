@@ -150,11 +150,9 @@ public class GTMaterialItems {
                     p.component(DataComponents.TOOL, new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock()));
                     p.component(GTDataComponents.TOOL_BEHAVIORS, new ToolBehaviors(toolType.toolDefinition.getBehaviors()));
 
-
                     float baseDamage = toolStats.getBaseDamage();
                     float attackDamage = 0;
                     // represents a tool that should always have an attack damage value of 0
-                    // formatted like this to have attackDamage be final for the lambda.
                     if (baseDamage != Float.MIN_VALUE) {
                         attackDamage = toolProperty.getAttackDamage() + baseDamage;
                     }
@@ -173,17 +171,15 @@ public class GTMaterialItems {
                     p.attributes(modifiers);
 
                     // Durability formula we are working with:
-                    // Final Durability = (material durability * material durability
-                    // multiplier) + (tool definition durability *
-                    // definition durability multiplier) - 1
-                    // Subtracts 1 internally since Minecraft treats "0" as a valid
-                    // durability, but we don't want to display this.
-
+                    // Final Durability = (material durability * material durability multiplier)
+                    //                     + (tool definition durability * definition durability multiplier) - 1
+                    // Subtracts 1 internally since Minecraft treats "0" as a valid durability,
+                    // but we don't want to display this.
                     int durability = toolProperty.getDurability() * toolProperty.getDurabilityMultiplier();
 
-                    // Most Tool Definitions do not set a base durability, which will lead
-                    // to ignoring the multiplier if present. So
-                    // apply the multiplier to the material durability if that would happen
+                    // Most Tool Definitions do not set a base durability, which will lead to
+                    // ignoring the multiplier if present.
+                    // So apply the multiplier to the material durability if that would happen
                     if (toolStats.getBaseDurability() == 0) {
                         durability *= (int) toolStats.getDurabilityMultiplier();
                     } else {
