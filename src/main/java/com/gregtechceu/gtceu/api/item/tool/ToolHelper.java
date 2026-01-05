@@ -710,16 +710,11 @@ public class ToolHelper {
     }
 
     // Suppliers for broken tool stacks
-    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_LV = () -> GTItems.POWER_UNIT_LV.get()
-            .getDefaultInstance();
-    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_MV = () -> GTItems.POWER_UNIT_MV.get()
-            .getDefaultInstance();
-    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_HV = () -> GTItems.POWER_UNIT_HV.get()
-            .getDefaultInstance();
-    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_EV = () -> GTItems.POWER_UNIT_EV.get()
-            .getDefaultInstance();
-    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get()
-            .getDefaultInstance();
+    public static final Supplier<ItemStack> POWER_UNIT_LV = () -> GTItems.POWER_UNIT_LV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> POWER_UNIT_MV = () -> GTItems.POWER_UNIT_MV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> POWER_UNIT_HV = () -> GTItems.POWER_UNIT_HV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> POWER_UNIT_EV = () -> GTItems.POWER_UNIT_EV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get().getDefaultInstance();
 
     /**
      * @param state the BlockState of the block
