@@ -5,6 +5,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class CodecUtils {
@@ -23,5 +25,21 @@ public class CodecUtils {
 
     public static <T, A> DataResult<A> encodeMap(T value, MapCodec<T> codec, DynamicOps<A> ops) {
         return codec.encode(value, ops, ops.mapBuilder()).build(ops.empty());
+    }
+
+    public static <T> MapCodec<T> nullableOptionalFieldOf(Codec<T> self, final String name, final T defaultValue) {
+        return nullableOptionalFieldOf(self, name, defaultValue, false);
+    }
+
+    public static <T> MapCodec<T> lenientNullableOptionalFieldOf(Codec<T> self, final String name, final T defaultValue) {
+        return nullableOptionalFieldOf(self, name, defaultValue, true);
+    }
+
+    public static <T> MapCodec<T> nullableOptionalFieldOf(Codec<T> self, final String name, final T defaultValue,
+                                                   final boolean lenient) {
+        return Codec.optionalField(name, self, lenient).xmap(
+                o -> o.orElse(defaultValue),
+                a -> a == null || Objects.equals(a, defaultValue) ? Optional.empty() : Optional.of(a)
+        );
     }
 }

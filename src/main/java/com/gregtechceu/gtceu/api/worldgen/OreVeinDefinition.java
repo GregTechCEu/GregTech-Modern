@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -32,6 +33,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.ExtensionMethod;
 import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @SuppressWarnings("UnusedReturnValue")
+@ExtensionMethod(CodecUtils.class)
 @Accessors(chain = true, fluent = true)
 public class OreVeinDefinition {
 
@@ -53,8 +56,8 @@ public class OreVeinDefinition {
             ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter)),
             HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(OreVeinDefinition::heightRange),
             Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(OreVeinDefinition::discardChanceOnAirExposure),
-            RegistryCodecs.homogeneousList(Registries.BIOME).lenientOptionalFieldOf("biomes", HolderSet.empty()).forGetter(OreVeinDefinition::biomes),
-            BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(ext -> ext.biomeWeightModifier),
+            RegistryCodecs.homogeneousList(Registries.BIOME).lenientNullableOptionalFieldOf("biomes", HolderSet.empty()).forGetter(OreVeinDefinition::biomes),
+            BiomeWeightModifier.CODEC.lenientNullableOptionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(ext -> ext.biomeWeightModifier),
             VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator),
             Codec.list(IndicatorGenerator.DIRECT_CODEC).fieldOf("indicators").forGetter(ft -> ft.indicatorGenerators)
     ).apply(instance, OreVeinDefinition::new));

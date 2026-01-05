@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.worldgen.bedrockore;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -24,10 +25,12 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.ExtensionMethod;
 import lombok.experimental.Tolerate;
 
 import java.util.*;
 
+@ExtensionMethod(CodecUtils.class)
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
 
@@ -40,9 +43,9 @@ public class BedrockOreDefinition {
             ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(BedrockOreDefinition::depletionChance),
             Codec.INT.fieldOf("depleted_yield").forGetter(BedrockOreDefinition::depletedYield),
             WeightedMaterial.CODEC.listOf().fieldOf("materials").forGetter(BedrockOreDefinition::materials),
-            BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(BedrockOreDefinition::biomeWeightModifier),
+            BiomeWeightModifier.CODEC.lenientNullableOptionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(BedrockOreDefinition::biomeWeightModifier),
             ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
-            ).apply(instance, BedrockOreDefinition::new));
+    ).apply(instance, BedrockOreDefinition::new));
     public static final Codec<Holder<BedrockOreDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.BEDROCK_ORE_REGISTRY);
     // spotless:on
     @Getter
