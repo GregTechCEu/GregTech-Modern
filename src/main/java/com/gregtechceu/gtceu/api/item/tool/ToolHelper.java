@@ -146,7 +146,7 @@ public class ToolHelper {
         return stack.getDamageValue() <= stack.getMaxDamage();
     }
 
-    public static void damageItem(@NotNull ItemStack stack, @Nullable LivingEntity user, int damage) {
+    public static void damageItem(ItemStack stack, @Nullable LivingEntity user, int damage) {
         if (!(stack.getItem() instanceof IGTTool tool)) {
             if (user != null) stack.hurtAndBreak(damage, user, EquipmentSlot.MAINHAND);
         } else {
@@ -504,8 +504,7 @@ public class ToolHelper {
      * @param level  the level in which the click happened
      * @param pos    the position that was clicked
      */
-    public static void onActionDone(@Nullable Player player, @NotNull ItemStack stack,
-                                    @NotNull Level level, @NotNull Vec3 pos) {
+    public static void onActionDone(@Nullable Player player, ItemStack stack, Level level, Vec3 pos) {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
@@ -514,7 +513,6 @@ public class ToolHelper {
         }
     }
 
-    @NotNull
     public static Set<GTToolType> getToolTypes(final ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {
@@ -526,7 +524,6 @@ public class ToolHelper {
         return types;
     }
 
-    @NotNull
     public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
         Set<GTToolType> types = new HashSet<>();
         if (tool.getItem() instanceof IGTTool gtTool) {
@@ -579,7 +576,7 @@ public class ToolHelper {
      * @param stack  stack to be damaged
      * @param entity entity that has damaged this stack
      */
-    public static void damageItemWhenCrafting(@NotNull ItemStack stack, @Nullable LivingEntity entity) {
+    public static void damageItemWhenCrafting(ItemStack stack, @Nullable LivingEntity entity) {
         int damage = 2;
         if (stack.getItem() instanceof IGTTool) {
             damage = ((IGTTool) stack.getItem()).getToolStats().getToolDamagePerCraft(stack);
@@ -601,7 +598,7 @@ public class ToolHelper {
      * @param stack  stack to be damaged
      * @param entity entity that has damaged this stack
      */
-    public static void damageItem(@NotNull ItemStack stack, @Nullable LivingEntity entity) {
+    public static void damageItem(ItemStack stack, @Nullable LivingEntity entity) {
         damageItem(stack, entity, 1);
     }
 
@@ -636,8 +633,7 @@ public class ToolHelper {
      * @param state the BlockState of the block
      * @return the silk touch drop
      */
-    @NotNull
-    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos origin, @NotNull BlockState state) {
+    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos origin, BlockState state) {
         ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(

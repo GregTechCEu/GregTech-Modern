@@ -42,7 +42,7 @@ public class MaterialToolTier implements Tier {
     }
 
     @Override
-    public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
+    public TagKey<Block> getIncorrectBlocksForDrops() {
         return CustomTags.INCORRECT_TOOL_TIERS[property.getHarvestLevel()];
     }
 

@@ -595,7 +595,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param values to find the mean of
      * @return the mean value
      */
-    private static long mean(@NotNull long[] values) {
+    private static long mean(long @NotNull [] values) {
         if (values.length == 0L)
             return 0L;
 
