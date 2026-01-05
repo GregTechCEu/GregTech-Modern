@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
@@ -172,11 +171,10 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        var blockState = event.getLevel().getBlockState(event.getPos());
-        if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
-                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
-            if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
-                    event.getFace())) {
+        MetaMachine machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
+        if (machine instanceof IInteractedMachine interactedMachine) {
+            if (interactedMachine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(),
+                    event.getPos(), event.getFace())) {
                 event.setCanceled(true);
             }
         }
