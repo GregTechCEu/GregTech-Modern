@@ -604,8 +604,7 @@ public class ToolHelper {
     }
 
     // encompasses all vanilla special case tool checks for harvesting
-    public static boolean isToolEffective(ItemStack stack, BlockState state, Set<GTToolType> toolClasses,
-                                          int harvestLevel) {
+    public static boolean isToolEffective(ItemStack stack, BlockState state) {
         Tool tool = stack.get(DataComponents.TOOL);
         return tool != null && tool.isCorrectForDrops(state);
     }

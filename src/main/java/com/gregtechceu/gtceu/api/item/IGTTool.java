@@ -259,15 +259,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return getMaterialHarvestLevel() + getToolStats().getBaseQuality();
     }
 
-    // Item.class methods
-    default float definition$getDestroySpeed(ItemStack stack, BlockState state) {
-        if (isToolEffective(stack, state, getToolClasses(stack), getTotalHarvestLevel())) {
-            return getTotalToolSpeed();
-        }
-
-        return getToolStats().isToolEffective(state) ? getToolStats().getTool().getMiningSpeed(state) : 1.0F;
-    }
-
     default boolean definition$hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         getBehaviorsComponent(stack).behaviors()
                 .forEach((key, behavior) -> behavior.hitEntity(stack, target, attacker));
@@ -734,13 +725,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             ElectricStats item = ElectricStats.createElectricItem(0L, getElectricTier());
             item.attachCapabilities(event, this.asItem());
         }
-    }
-
-    default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (stack.getItem() instanceof IGTTool gtTool) {
-            return isToolEffective(stack, state, gtTool.getToolClasses(stack), gtTool.getTotalHarvestLevel());
-        }
-        return stack.isCorrectToolForDrops(state);
     }
 
     @OnlyIn(Dist.CLIENT)
