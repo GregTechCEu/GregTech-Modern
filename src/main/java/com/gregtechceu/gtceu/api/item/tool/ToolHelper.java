@@ -94,6 +94,10 @@ public class ToolHelper {
     // Crafting Symbols
     private static final Char2ReferenceMap<GTToolType> symbols = new Char2ReferenceOpenHashMap<>();
 
+    // Enchantments aren't reloadable so these are safe to keep around between reloads
+    private static @Nullable LootItemFunction uniformDropMultiplier;
+    private static @Nullable LootItemFunction oreDropMultiplier;
+
     private ToolHelper() {/**/}
 
     /**
@@ -675,11 +679,12 @@ public class ToolHelper {
                 tool,
                 level.registryAccess(),
                 GTEnchantmentProviders.SILK_TOUCH,
-                level.getCurrentDifficultyAt(origin),
+                level.getCurrentDifficultyAt(pos),
                 level.getRandom());
 
-        return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
-                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(origin))
-                .withParameter(LootContextParams.TOOL, tool));
+        return state.getDrops(new LootParams.Builder(level)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                .withParameter(LootContextParams.TOOL, tool)
+                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));
     }
 }
