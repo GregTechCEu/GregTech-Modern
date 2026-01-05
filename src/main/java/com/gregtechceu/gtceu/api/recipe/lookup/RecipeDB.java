@@ -325,11 +325,11 @@ public final class RecipeDB {
                 }
 
                 // Option 1: It's a recipe
-                GTRecipe recipe = result.map(
-                        r -> predicate.test(r) ? r : null,
-                        b -> null);
-                if (recipe != null) {
-                    return recipe;
+                if (result.left().isPresent()) {
+                    var recipe = result.left().get();
+                    if (predicate.test(recipe)) {
+                        return recipe;
+                    }
                 }
 
                 // Option 2: It's a branch, dive deeper
