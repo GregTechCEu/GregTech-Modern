@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiMachine, IParallelHatch {
 

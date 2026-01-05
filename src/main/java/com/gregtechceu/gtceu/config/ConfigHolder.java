@@ -481,11 +481,6 @@ public class ConfigHolder {
                 "Default: true" })
         public boolean replaceWithCobbleVersion = true;
         @Configurable
-        @Configurable.Comment({
-                "Whether the miner should attempt to replace the block mined with a cobbled version of the ore",
-                "Default: true" })
-        public boolean replaceWithCobbleVersion = true;
-        @Configurable
         @Configurable.Comment({ "Block to replace mined ores with in the miner and multiblock miner.",
                 "Default: minecraft:cobblestone" })
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
@@ -752,11 +747,6 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
-        @Configurable
-        @Configurable.Comment({
-                "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",
-                "Disable if experiencing performance issues.", "Default: true" })
-        public boolean machinesHaveBERsByDefault = true;
         @Configurable
         @Configurable.Comment({
                 "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",

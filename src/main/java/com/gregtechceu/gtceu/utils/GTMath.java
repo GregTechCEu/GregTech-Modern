@@ -56,10 +56,6 @@ public class GTMath {
         return start + Mth.floor(delta * (end - start));
     }
 
-    public static int lerpInt(double delta, int start, int end) {
-        return start + Mth.floor(delta * (end - start));
-    }
-
     public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
         int fullStacks = (int) (amount / Integer.MAX_VALUE);
         int rem = (int) (amount % Integer.MAX_VALUE);

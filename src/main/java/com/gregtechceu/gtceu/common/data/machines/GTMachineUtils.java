@@ -215,14 +215,6 @@ public class GTMachineUtils {
                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
                                                              int... tiers) {
-        return registerTieredMachines(REGISTRATE, name, factory, builder, tiers);
-    }
-
-    public static MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
-                                                             String name,
-                                                             BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
-                                                             int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
@@ -256,14 +248,6 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition[] registerFluidHatches(String name, String displayName, String tooltip,
-                                                           IO io, int initialCapacity, int slots,
-                                                           int[] tiers, PartAbility... abilities) {
-        return registerFluidHatches(REGISTRATE, name, displayName, tooltip, io, initialCapacity, slots, tiers,
-                abilities);
-    }
-
-    public static MachineDefinition[] registerFluidHatches(GTRegistrate registrate, String name, String displayName,
-                                                           String tooltip,
                                                            IO io, int initialCapacity, int slots,
                                                            int[] tiers, PartAbility... abilities) {
         return registerFluidHatches(REGISTRATE, name, displayName, tooltip, io, initialCapacity, slots, tiers,
