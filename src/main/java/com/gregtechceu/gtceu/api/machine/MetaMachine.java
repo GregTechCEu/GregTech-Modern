@@ -706,8 +706,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
 
         var server = getLevel().getServer();
-        if (server != null) return server.getTickCount() + getOffset();
-        return getOffset();
+        if (server == null) return getOffset();
+        return server.getTickCount() + getOffset();
     }
 
     @Override
