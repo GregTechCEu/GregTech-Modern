@@ -161,11 +161,9 @@ public class CommonEventListener {
             return;
         }
 
-        ItemStack toolStack = event.getPlayer().getItemInHand(event.getPlayer().getUsedItemHand());
+        ItemStack toolStack = event.getPlayer().getMainHandItem();
         if (toolStack.getItem() instanceof IGTTool tool) {
-            if (tool.definition$onBlockStartBreak(toolStack, event.getPos(), event.getPlayer())) {
-                event.setCanceled(true);
-            }
+            tool.definition$onBlockStartBreak(toolStack, event.getPos(), event.getPlayer());
         }
     }
 
