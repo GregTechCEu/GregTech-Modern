@@ -37,8 +37,9 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (serverData.contains("batteries")) {
                     CompoundTag tag = serverData.getCompound("batteries");
-                    long changed = tag.getLong("changed"), stored = tag.getLong("stored"),
-                            capacity = tag.getLong("capacity");
+                    CompoundTag container = tag.getCompound("energy");
+                    long changed = container.getLong("changed"), stored = container.getLong("stored"),
+                            capacity = container.getLong("capacity");
                     iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatEnergy(changed, 100000)));
                     if (changed > 0) {
                         iTooltip.add(Component
@@ -95,23 +96,26 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
         else return "" + energy;
     }
 
+    private CompoundTag getEnergyData(IEnergyContainer container) {
+        CompoundTag tag = new CompoundTag();
+        tag.putLong("changed", container.getInputPerSec() - container.getOutputPerSec());
+        tag.putLong("capacity", container.getEnergyCapacity());
+        tag.putLong("stored", container.getEnergyStored());
+        return tag;
+    }
+
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof ChargerMachine machine) {
                 CompoundTag tag = new CompoundTag();
-                IEnergyContainer container = machine.energyContainer;
-                tag.putLong("changed", container.getInputPerSec() - container.getOutputPerSec());
-                tag.putLong("capacity", container.getEnergyCapacity());
-                tag.putLong("stored", container.getEnergyStored());
+                tag.put("energy", getEnergyData(machine.energyContainer));
                 tag.put("storage", machine.getChargerInventory().serializeNBT());
                 compoundTag.put("batteries", tag);
             } else if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine machine) {
                 CompoundTag tag = new CompoundTag();
                 IEnergyContainer container = machine.energyContainer;
-                tag.putLong("changed", container.getInputPerSec() - container.getOutputPerSec());
-                tag.putLong("capacity", container.getEnergyCapacity());
-                tag.putLong("stored", container.getEnergyStored());
+                tag.put("energy", getEnergyData(machine.energyContainer));
                 tag.put("storage", machine.getBatteryInventory().serializeNBT());
                 compoundTag.put("batteries", tag);
             }
