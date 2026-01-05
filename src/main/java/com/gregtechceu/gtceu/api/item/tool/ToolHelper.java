@@ -256,7 +256,7 @@ public class ToolHelper {
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
-                if (!destroyBlock(player, stack, pos, pos == targeted)) {
+                if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
 
@@ -510,25 +510,19 @@ public class ToolHelper {
     }
 
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsComponent(stack)) return List.of();
+        if (!hasBehaviorsComponent(stack)) return Collections.emptyList();
 
-        var aoeDefinition = getAoEDefinition(stack);
+        AoESymmetrical aoeDefinition = getAoEDefinition(stack);
         if (aoeDefinition.isZero()) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
-        var toolType = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GTToolItem toolItem ?
-                toolItem.toolType : null;
-        if (toolType == null) return Collections.emptyList();
-        var hand = is(player.getItemInHand(InteractionHand.MAIN_HAND), toolType) ?
-                InteractionHand.MAIN_HAND : null;
-        if (hand == null) return Collections.emptyList();
-        UseOnContext context = new UseOnContext(player, hand, hitResult);
+        UseOnContext context = new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult);
         return getHarvestableBlocks(aoeDefinition, context);
     }
 
-    public static BlockHitResult getPlayerDefaultRaytrace(@NotNull Player player) {
+    public static BlockHitResult getPlayerDefaultRaytrace(Player player) {
         return entityPickBlock(player, player.blockInteractionRange(), 1.0f, false);
     }
 
