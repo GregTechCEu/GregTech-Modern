@@ -67,7 +67,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.event.EventHooks;
 
 import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
@@ -408,10 +407,6 @@ public class ToolHelper {
 
     public static boolean destroyBlock(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
         DO_BLOCK_BREAK_SOUND_PARTICLES.set(playSound);
-        // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
-        if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
-            return false;
-        }
         Level level = player.level();
 
         // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
@@ -620,45 +615,6 @@ public class ToolHelper {
             Block block = state.getBlock();
             if (block instanceof WebBlock) {
                 return 15.0F;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Shearing a Block.
-     *
-     * @return -1 if not shearable, otherwise return 0 or 1, 0 if tool is now broken.
-     */
-    public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
-        if (!player.isCreative()) {
-            Level world = player.serverLevel();
-            BlockState state = world.getBlockState(pos);
-            if (state.getBlock() instanceof IShearable shearable) {
-                if (shearable.isShearable(player, tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos);
-                    boolean relocateMinedBlocks = tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS);
-                    Iterator<ItemStack> iter = shearedDrops.iterator();
-                    while (iter.hasNext()) {
-                        ItemStack stack = iter.next();
-                        if (relocateMinedBlocks && player.addItem(stack)) {
-                            iter.remove();
-                        } else {
-                            float f = 0.7F;
-                            double xo = world.random.nextFloat() * f + 0.15D;
-                            double yo = world.random.nextFloat() * f + 0.15D;
-                            double zo = world.random.nextFloat() * f + 0.15D;
-                            ItemEntity entityItem = new ItemEntity(world, pos.getX() + xo, pos.getY() + yo,
-                                    pos.getZ() + zo, stack);
-                            entityItem.setDefaultPickUpDelay();
-                            world.addFreshEntity(entityItem);
-                        }
-                    }
-                    ToolHelper.damageItem(tool, player, 1);
-                    player.awardStat(Stats.BLOCK_MINED.get((Block) shearable));
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
-                    return tool.isEmpty() ? 0 : 1;
-                }
             }
         }
         return -1;
