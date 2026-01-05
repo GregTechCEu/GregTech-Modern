@@ -96,7 +96,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
-        return definition$mineBlock(stack, level, state, pos, miningEntity);
+        definition$mineBlock(stack, level, state, pos, miningEntity);
+        return true;
     }
 
     @Override
@@ -116,17 +117,8 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, BlockState state) {
-        return definition$getDestroySpeed(stack, state);
-    }
-
-    @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         return definition$hurtEnemy(stack, target, attacker);
-    }
-
-    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        return definition$onBlockStartBreak(stack, pos, player);
     }
 
     @Override
@@ -188,10 +180,5 @@ public class GTToolItem extends TieredItem implements IGTTool {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         return definition$use(level, player, usedHand);
-    }
-
-    @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return this.definition$isCorrectToolForDrops(stack, state);
     }
 }
