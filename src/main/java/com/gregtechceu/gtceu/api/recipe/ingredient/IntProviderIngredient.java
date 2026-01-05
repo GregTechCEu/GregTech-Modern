@@ -161,12 +161,12 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
     }
 
     /**
-     * If this ingredient has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it and
-     * returns the roll.
+     * If this ingredient has not yet had its {@link IntProviderIngredient#sampledCount} rolled, rolls it and returns
+     * the roll.
      * If it has, returns the existing roll.
-     *
+     * 
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
-     * @return the amount rolled
+     * @return the count rolled
      */
     @Override
     public int rollSampledCount(@NotNull RandomSource random) {

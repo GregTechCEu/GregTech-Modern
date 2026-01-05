@@ -30,6 +30,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
         this.internal = new Material.Builder(id);
+        this.dummyBuilder = true;
     }
 
     /*
@@ -658,5 +659,14 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     @Override
     public Material createObject() {
         return internal.buildAndRegister();
+    }
+
+    @Override
+    public Material transformObject(Material material) {
+        // this method is called right after `createObject`.
+        // here, you can add things that have to be done after registration
+        // but would be nice to do without using a separate material modification event.
+
+        return super.transformObject(material);
     }
 }

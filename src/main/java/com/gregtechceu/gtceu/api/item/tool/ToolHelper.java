@@ -512,6 +512,14 @@ public class ToolHelper {
         return removed;
     }
 
+    /**
+     * Calculates the harvestable blocks, used for tool AoE harvesting
+     *
+     * @param player the player clicking the item
+     * @param stack  the item that was used
+     *
+     * @return listOfBlockPositions or empty list if none
+     */
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
         if (!hasBehaviorsComponent(stack)) return Collections.emptyList();
 

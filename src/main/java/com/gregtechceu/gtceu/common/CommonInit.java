@@ -100,6 +100,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -162,10 +163,12 @@ public class CommonInit {
 
     public static void init(final IEventBus modBus) {
         CommonInit.modBus = modBus;
-        modBus.register(CommonInit.class);
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            modBus.addListener(EventPriority.LOWEST, GTKubeJSPlugin::registerKJSMachines);
+            // initialize this before the class's static listeners
+            // so KubeJS materials are registered before the material registry is closed.
+            modBus.addListener(EventPriority.LOW, GTKubeJSPlugin::registerWrappers);
         }
+        modBus.register(CommonInit.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
@@ -175,6 +178,7 @@ public class CommonInit {
         GTRegistrateDatagen.initPre();
 
         GTRegistries.init(modBus);
+        REGISTRATE.registerEventListeners(modBus);
         GTCreativeModeTabs.init();
         GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
 
@@ -264,8 +268,8 @@ public class CommonInit {
         GTCEuAPI.materialManager.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onRegisterEarly(RegisterEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onRegisterLate(RegisterEvent event) {
         // Material event *should* happen before any of the others here
         if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
@@ -305,7 +309,7 @@ public class CommonInit {
         }
     }
 
-    private static void postInitMaterials() {
+    private static void postInitMaterials(Registry<Material> registry) {
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
@@ -341,7 +345,7 @@ public class CommonInit {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) registry -> postInitMaterials());
+        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonInit::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 

@@ -96,7 +96,7 @@ public class FluidBuilder {
      * @param temperature the temperature of the fluid in Kelvin
      * @return this;
      */
-    public @NotNull FluidBuilder temperature(int temperature) {
+    public FluidBuilder temperature(int temperature) {
         Preconditions.checkArgument(temperature > 0, "temperature must be > 0");
         this.temperature = temperature;
         return this;
@@ -109,7 +109,7 @@ public class FluidBuilder {
      * @param color the color
      * @return this
      */
-    public @NotNull FluidBuilder color(int color) {
+    public FluidBuilder color(int color) {
         this.color = GTUtil.convertRGBtoARGB(color);
         if (this.color == INFER_COLOR) {
             return disableColor();
@@ -122,7 +122,7 @@ public class FluidBuilder {
      *
      * @return this
      */
-    public @NotNull FluidBuilder disableColor() {
+    public FluidBuilder disableColor() {
         this.isColorEnabled = false;
         return this;
     }
@@ -132,7 +132,7 @@ public class FluidBuilder {
      * @return this
      */
     @Tolerate
-    public @NotNull FluidBuilder density(double density) {
+    public FluidBuilder density(double density) {
         return density(convertToMCDensity(density));
     }
 
@@ -156,7 +156,7 @@ public class FluidBuilder {
      * @param luminosity of the fluid from [0, 16)
      * @return this
      */
-    public @NotNull FluidBuilder luminosity(int luminosity) {
+    public FluidBuilder luminosity(int luminosity) {
         Preconditions.checkArgument(luminosity >= 0 && luminosity < 16, "luminosity must be >= 0 and < 16");
         this.luminosity = luminosity;
         return this;
@@ -166,7 +166,7 @@ public class FluidBuilder {
      * @param mcViscosity the MC viscosity of the fluid
      * @return this
      */
-    public @NotNull FluidBuilder viscosity(int mcViscosity) {
+    public FluidBuilder viscosity(int mcViscosity) {
         Preconditions.checkArgument(mcViscosity >= 0, "viscosity must be >= 0");
         this.viscosity = mcViscosity;
         return this;
@@ -176,7 +176,7 @@ public class FluidBuilder {
      * @param viscosity the viscosity of the fluid in Poise
      * @return this
      */
-    public @NotNull FluidBuilder viscosity(double viscosity) {
+    public FluidBuilder viscosity(double viscosity) {
         return viscosity(convertViscosity(viscosity));
     }
 
@@ -194,7 +194,7 @@ public class FluidBuilder {
      * @param attribute the attribute to add
      * @return this
      */
-    public @NotNull FluidBuilder attribute(@NotNull FluidAttribute attribute) {
+    public FluidBuilder attribute(FluidAttribute attribute) {
         this.attributes.add(attribute);
         return this;
     }
@@ -203,7 +203,7 @@ public class FluidBuilder {
      * @param attributes the attributes to add
      * @return this
      */
-    public @NotNull FluidBuilder attributes(@NotNull FluidAttribute @NotNull... attributes) {
+    public FluidBuilder attributes(FluidAttribute @NotNull... attributes) {
         Collections.addAll(this.attributes, attributes);
         return this;
     }
@@ -213,7 +213,7 @@ public class FluidBuilder {
      * 
      * @return this
      */
-    public @NotNull FluidBuilder customStill() {
+    public FluidBuilder customStill() {
         return textures(true);
     }
 
@@ -221,7 +221,7 @@ public class FluidBuilder {
      * @param hasCustomStill if the fluid has a custom still texture
      * @return this
      */
-    public @NotNull FluidBuilder textures(boolean hasCustomStill) {
+    public FluidBuilder textures(boolean hasCustomStill) {
         this.hasCustomStill = hasCustomStill;
         this.isColorEnabled = false;
         return this;
@@ -232,7 +232,7 @@ public class FluidBuilder {
      * @param hasCustomFlowing if the fluid has a custom flowing texture
      * @return this
      */
-    public @NotNull FluidBuilder textures(boolean hasCustomStill, boolean hasCustomFlowing) {
+    public FluidBuilder textures(boolean hasCustomStill, boolean hasCustomFlowing) {
         this.hasCustomStill = hasCustomStill;
         this.hasCustomFlowing = hasCustomFlowing;
         this.isColorEnabled = false;
@@ -244,7 +244,7 @@ public class FluidBuilder {
      *
      * @return this
      */
-    public @NotNull FluidBuilder block() {
+    public FluidBuilder block() {
         this.hasFluidBlock = true;
         return this;
     }
@@ -254,14 +254,13 @@ public class FluidBuilder {
      *
      * @return this
      */
-    public @NotNull FluidBuilder disableBucket() {
+    public FluidBuilder disableBucket() {
         this.hasBucket = false;
         return this;
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public @NotNull Supplier<? extends Fluid> build(Material material, @NotNull FluidStorageKey key,
-                                                    GTRegistrate registrate) {
+    public Supplier<? extends Fluid> build(Material material, FluidStorageKey key, GTRegistrate registrate) {
         determineName(material, key);
         determineTextures(material, key);
 
@@ -293,9 +292,6 @@ public class FluidBuilder {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
             builder.block()
-                    .blockstate((ctx, prov) -> prov
-                            .simpleBlock(ctx.getEntry(), prov.models().getBuilder(this.name)
-                                    .texture("particle", this.still)))
                     .color(() -> () -> (state, level, pos, index) -> {
                         return IClientFluidTypeExtensions.of(state.getFluidState())
                                 .getTintColor(state.getFluidState(), level, pos);
@@ -324,14 +320,14 @@ public class FluidBuilder {
         return builder.register()::getSource;
     }
 
-    private void determineName(@NotNull Material material, @Nullable FluidStorageKey key) {
+    private void determineName(Material material, @Nullable FluidStorageKey key) {
         if (name != null) return;
         if (material.isNull() || key == null) throw new IllegalArgumentException("Fluid must have a name");
         name = key.getRegistryNameFor(material);
     }
 
     @ApiStatus.Internal
-    public void determineTextures(@NotNull Material material, @NotNull FluidStorageKey key) {
+    public void determineTextures(Material material, FluidStorageKey key) {
         if (hasCustomStill || material.isNull()) {
             still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
         } else {
@@ -347,7 +343,7 @@ public class FluidBuilder {
         }
     }
 
-    private void determineTemperature(@NotNull Material material) {
+    private void determineTemperature(Material material) {
         if (temperature != INFER_TEMPERATURE) return;
         if (material.isNull()) {
             temperature = ROOM_TEMPERATURE;
@@ -380,7 +376,7 @@ public class FluidBuilder {
         }
     }
 
-    private void determineColor(@NotNull Material material) {
+    private void determineColor(Material material) {
         if (color != INFER_COLOR) return;
         if (isColorEnabled && !material.isNull()) {
             color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
@@ -396,7 +392,7 @@ public class FluidBuilder {
         };
     }
 
-    private void determineLuminosity(@NotNull Material material) {
+    private void determineLuminosity(Material material) {
         if (luminosity != INFER_LUMINOSITY) return;
         if (state == FluidState.PLASMA) {
             luminosity = 15;
@@ -414,7 +410,7 @@ public class FluidBuilder {
         }
     }
 
-    private void determineViscosity(@NotNull Material material) {
+    private void determineViscosity(Material material) {
         if (viscosity != INFER_VISCOSITY) return;
         viscosity = switch (state) {
             case LIQUID -> {

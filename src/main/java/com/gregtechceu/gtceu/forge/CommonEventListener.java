@@ -261,15 +261,14 @@ public class CommonEventListener {
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new SPacketSendWorldID());
 
-            if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
-                return;
-
-            ServerLevel level = serverPlayer.serverLevel();
-            var data = EnvironmentalHazardSavedData.getOrCreate(level);
-            PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+                ServerLevel level = serverPlayer.serverLevel();
+                var data = EnvironmentalHazardSavedData.getOrCreate(level);
+                PacketDistributor.sendToPlayer(serverPlayer, new SPacketSyncLevelHazards(data.getHazardZones()));
+            }
+            CapeRegistry.detectNewCapes(serverPlayer);
+            CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
         }
-        CapeRegistry.detectNewCapes(player);
-        CapeRegistry.loadCurrentCapesOnLogin(player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

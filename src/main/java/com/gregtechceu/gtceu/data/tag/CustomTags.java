@@ -129,6 +129,8 @@ public class CustomTags {
 
     public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
 
+    public static final TagKey<Item> SKIP_ITEM_DETECTOR = TagUtil.createModItemTag("skip_item_detector");
+
     // Mineability tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
     public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");
@@ -150,6 +152,7 @@ public class CustomTags {
             .createModBlockTag("incorrect_for_neutronium_tool");
 
     // Tool tags
+    public static final TagKey<Item> TOOLS_IGNITER = TagUtil.createItemTag("tools/igniter");
     public static final TagKey<Item> TOOLS_BUTCHERY_KNIFE = TagUtil.createItemTag("tools/butchery_knife");
     public static final TagKey<Item> TOOLS_BUZZSAW = TagUtil.createItemTag("tools/buzzsaw");
     public static final TagKey<Item> TOOLS_CHAINSAW = TagUtil.createItemTag("tools/chainsaw");

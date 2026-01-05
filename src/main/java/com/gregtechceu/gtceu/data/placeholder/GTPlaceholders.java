@@ -855,5 +855,28 @@ public class GTPlaceholders {
                 return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
             }
         });
+        // PORT TODO: Replace with blockComponent
+        // PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
+
+        // @Override
+        // public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
+        // BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
+        // if (blockEntity == null) return MultiLineComponent.empty();
+        // Tag tag = blockEntity.saveWithFullMetadata();
+        // if (tag instanceof CompoundTag compoundTag && compoundTag.contains("cover")) {
+        // CompoundTag coverTag = compoundTag.getCompound("cover");
+        // if (coverTag.contains(ctx.side().getName())) {
+        // CompoundTag cover = coverTag.getCompound(ctx.side().getName()).getCompound("payload")
+        // .getCompound("d");
+        // cover.putString("text", "[REMOVED]");
+        // }
+        // }
+        // for (MultiLineComponent arg : args) {
+        // if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
+        // tag = compoundTag.get(arg.toString());
+        // }
+        // return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
+        // }
+        // });
     }
 }

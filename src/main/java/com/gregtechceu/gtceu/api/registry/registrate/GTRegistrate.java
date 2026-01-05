@@ -76,7 +76,22 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
      * @return The {@link GTRegistrate} instance
      */
     public static GTRegistrate create(String modId) {
-        return innerCreate(modId, true);
+        return create(modId, true);
+    }
+
+    /**
+     * Get or create a new {@link GTRegistrate} and conditionally register event listeners.
+     * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
+     * <br>
+     * Note that if you do not allow event listeners to be registered automatically, you <strong>must</strong>
+     * call {@link #registerEventListeners(IEventBus)} yourself with your {@link IEventBus mod event bus}.
+     *
+     * @param modId          The mod ID for which objects will be registered
+     * @param registerEvents Whether to register required event listeners.
+     * @return The {@link GTRegistrate} instance
+     */
+    public static GTRegistrate create(String modId, boolean registerEvents) {
+        return innerCreate(modId, false, registerEvents);
     }
 
     /**
@@ -90,26 +105,28 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
      */
     @ApiStatus.Internal
     public static GTRegistrate createIgnoringListenerErrors(String modId) {
-        return innerCreate(modId, false);
+        return innerCreate(modId, true, false);
     }
 
-    private static GTRegistrate innerCreate(String modId, boolean strict) {
+    private static GTRegistrate innerCreate(String modId, boolean registerEvents, boolean requireValidEventBus) {
         if (EXISTING_REGISTRATES.containsKey(modId)) {
             return EXISTING_REGISTRATES.get(modId);
         }
         var registrate = new GTRegistrate(modId);
-        Optional<IEventBus> modEventBus = ModList.get().getModContainerById(modId).map(ModContainer::getEventBus);
-        if (strict) {
-            modEventBus.ifPresentOrElse(registrate::registerEventListeners, () -> {
-                String message = "# [GTRegistrate] Failed to register eventListeners for mod " + modId +
-                        ", This should be reported to this mod's dev #";
-                String hashtags = "#".repeat(message.length());
-                GTCEu.LOGGER.fatal(hashtags);
-                GTCEu.LOGGER.fatal(message);
-                GTCEu.LOGGER.fatal(hashtags);
-            });
-        } else {
-            registrate.registerEventListeners(modEventBus.orElse(GTCEu.gtModBus));
+        if (registerEvents) {
+            Optional<IEventBus> modEventBus = ModList.get().getModContainerById(modId).map(ModContainer::getEventBus);
+            if (requireValidEventBus) {
+                modEventBus.ifPresentOrElse(registrate::registerEventListeners, () -> {
+                    String message = "# [GTRegistrate] Failed to register eventListeners for mod " + modId +
+                            ", This should be reported to this mod's dev #";
+                    String hashtags = "#".repeat(message.length());
+                    GTCEu.LOGGER.fatal(hashtags);
+                    GTCEu.LOGGER.fatal(message);
+                    GTCEu.LOGGER.fatal(hashtags);
+                });
+            } else {
+                registrate.registerEventListeners(modEventBus.orElse(GTCEu.gtModBus));
+            }
         }
         EXISTING_REGISTRATES.put(modId, registrate);
         return registrate;
@@ -117,26 +134,28 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     @Override
     public GTRegistrate registerEventListeners(IEventBus bus) {
-        if (!registered.getAndSet(true)) {
-            if (((AbstractRegistrateAccessor) this).getModEventBus() == null) {
-                ((AbstractRegistrateAccessor) this).setModEventBus(bus);
-            }
-            // recreate the super method so we can register the event listener with LOW priority.
-            Consumer<RegisterEvent> onRegister = this::onRegister;
-            Consumer<RegisterEvent> onRegisterLate = this::onRegisterLate;
-            bus.addListener(EventPriority.LOW, onRegister);
-            bus.addListener(EventPriority.LOWEST, onRegisterLate);
+        if (registered.getAndSet(true)) {
+            // early exit if event listeners are already registered
+            return this;
+        }
+        if (this.getModEventBus() == null) {
+            this.setModEventBus(bus);
+        }
+        // recreate the super method so we can register the event listener with LOW priority.
+        Consumer<RegisterEvent> onRegister = this::onRegister;
+        Consumer<RegisterEvent> onRegisterLate = this::onRegisterLate;
+        bus.addListener(EventPriority.LOW, onRegister);
+        bus.addListener(EventPriority.LOWEST, onRegisterLate);
 
-            // Fired multiple times when ever tabs need contents rebuilt (changing op tab perms for example)
-            bus.addListener(this::onBuildCreativeModeTabContents);
-            // Register events fire multiple times, so clean them up on common setup
-            OneTimeEventReceiver.addModListener(this, FMLCommonSetupEvent.class, $ -> {
-                OneTimeEventReceiver.unregister(this, onRegister, RegisterEvent.class);
-                OneTimeEventReceiver.unregister(this, onRegisterLate, RegisterEvent.class);
-            });
-            if (((AbstractRegistrateAccessor) this).getDoDatagen().get()) {
-                OneTimeEventReceiver.addModListener(this, GatherDataEvent.class, this::onData);
-            }
+        // Fired multiple times when ever tabs need contents rebuilt (changing op tab perms for example)
+        bus.addListener(this::onBuildCreativeModeTabContents);
+        // Register events fire multiple times, so clean them up on common setup
+        OneTimeEventReceiver.addModListener(this, FMLCommonSetupEvent.class, $ -> {
+            OneTimeEventReceiver.unregister(this, onRegister, RegisterEvent.class);
+            OneTimeEventReceiver.unregister(this, onRegisterLate, RegisterEvent.class);
+        });
+        if (((AbstractRegistrateAccessor) this).getDoDatagen().get()) {
+            OneTimeEventReceiver.addModListener(this, GatherDataEvent.class, this::onData);
         }
         return this;
     }
@@ -216,11 +235,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
-    @Nullable
-    private RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
+    private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
-    public RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
+    public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;
     }
 

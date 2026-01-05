@@ -167,7 +167,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
      * @return the amount rolled
      */
-    public int rollSampledCount(RandomSource random) {
+    public int rollSampledCount(@NotNull RandomSource random) {
         if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
         }

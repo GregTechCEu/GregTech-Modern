@@ -17,7 +17,7 @@ import static com.examplemod.common.registry.ExampleRegistration.REGISTRATE;
 
 public class ExampleSound {
 
-    public static final SoundEntry MICROVERSE = REGISTRATE.sound("microverse").build();
+    public static final SoundEntry MICROVERSE = REGISTRATE.sound(ExampleMod.id("microverse")).build();
 
     public static void init() {}
 }

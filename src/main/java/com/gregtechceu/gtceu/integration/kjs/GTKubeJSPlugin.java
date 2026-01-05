@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
@@ -101,9 +102,11 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComp
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
@@ -126,21 +129,28 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.rhino.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 
 public class GTKubeJSPlugin implements KubeJSPlugin {
 
-    public static void registerKJSMachines(RegisterEvent event) {
-        if (event.getRegistryKey() != GTRegistries.MACHINE_REGISTRY) {
+    @ApiStatus.Internal
+    public static void registerWrappers(RegisterEvent event) {
+        registerWrappers(event, GTRegistries.MACHINE_REGISTRY);
+        registerWrappers(event, GTRegistries.MATERIAL_REGISTRY);
+    }
+
+    private static <T> void registerWrappers(RegisterEvent event, ResourceKey<Registry<T>> registryKey) {
+        if (event.getRegistryKey() != registryKey) {
             return;
         }
-        var objStorage = RegistryObjectStorage.of(GTRegistries.MACHINE_REGISTRY);
-        ResourceLocation registryLoc = GTRegistries.MACHINE_REGISTRY.location();
+        var objStorage = RegistryObjectStorage.of(registryKey);
+        ResourceLocation registryLoc = registryKey.location();
 
         int added = 0;
 
         for (var builder : objStorage) {
             if (builder.dummyBuilder) {
-                // don't actually register it here, the machine builders register themselves with Registrate
+                // don't actually register anything here, the wrapper builders register themselves with Registrate
                 builder.createTransformedObject();
 
                 if (DevProperties.get().logRegistryEventObjects) {
@@ -293,6 +303,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("MaterialEntry", MaterialEntry.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
+        event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
         event.add("GTFluidState", FluidState.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);

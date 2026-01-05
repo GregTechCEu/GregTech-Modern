@@ -218,7 +218,7 @@ public class IntProviderFluidIngredientTest {
         helper.assertTrue(FluidStack.matches(stacks[0], ingredient.getFluidStacks()[0]),
                 "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
         ingredient.reset();
-        helper.assertFalse(FluidStack.matches(stacks[0], ingredient.getFluidStacks()[0]),
+        helper.assertFalse(FluidStack.matches(stacks[0], ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks should have changed after rerolling");
         helper.succeed();
     }
@@ -305,10 +305,10 @@ public class IntProviderFluidIngredientTest {
                     "Sabotaged Singleblock Ranged Fluid Output rolled min value on every roll! " +
                             "This is the failure this sabotage was intended to induce.");
             helper.assertFalse((results.getAmount() == runs * 9),
-                    "Sabotaged Singleblock Ranged Fluid Output rolled max value on every roll (how??)");
+                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
             helper.assertTrue(TestUtils.isFluidWithinRange(results, runs, runs * 9),
-                    "Sabotaged Singleblock Ranged Fluid Output didn't produce correct number of fluids, " +
-                            "produced [" + results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
+                    "Sabotaged Singleblock CR didn't produce correct number of fluids, produced [" +
+                            results.getAmount() + "] not [" + runs + "-" + (runs * 9) + "]");
 
             // check if all the rolls were equal, but not min/max
             int[] rolls = new int[runs];
