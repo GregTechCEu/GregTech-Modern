@@ -195,8 +195,7 @@ public class ToolHelper {
                     if (user != null) {
                         user.breakItem(stack);
                         user.onEquippedItemBroken(stack.getItem(),
-                                user.getSlotForHand(
-                                        user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
+                                LivingEntity.getSlotForHand(user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
                     }
                     stack.shrink(1);
                 }
@@ -253,7 +252,7 @@ public class ToolHelper {
         int currentDurability = stack.getDamageValue();
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
-        var harvestableBlocks = getHarvestableBlocks(stack, player);
+        List<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
                 if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
@@ -306,7 +305,7 @@ public class ToolHelper {
         for (int depth = 0; depth <= aoeDefinition.layer(); depth++) {
             for (int top = aoeRowEnd; top >= aoeRowStart; top--) {
                 for (int side = -aoeDefinition.column(); side <= aoeDefinition.column(); side++) {
-                    var pos = context.getClickedPos()
+                    BlockPos pos = context.getClickedPos()
                             .relative(depthDirection, depth)
                             .relative(topDirection, top)
                             .relative(sideDirection, side);
