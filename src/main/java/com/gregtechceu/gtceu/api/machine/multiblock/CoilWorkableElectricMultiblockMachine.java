@@ -83,7 +83,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                         .margin(4, 0)
                         .left(3).top(3)
                     .child(new Row()
-                        .child(widget1.size(15, 16))
+                        .child(widget1)
                         .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(.95f).heightRel(1.0f))
                         .child(widget2)
                     )
