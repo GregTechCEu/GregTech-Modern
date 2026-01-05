@@ -21,11 +21,10 @@ import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.data.mui.GTMultiblockPanelUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
@@ -65,6 +64,8 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
         var panel = GTGuis.createPanel(this, 176 + 32, 164 + 36);
 
+        var panelUtil = new GTMultiblockPanelUtil(this);
+
         //IntSyncValue coilTierSV = new IntSyncValue(() -> this.coilTier);
         //syncManager.syncValue("coil", coilTierSV);
 
@@ -84,7 +85,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                         .left(3).top(3)
                     .child(new Row()
                         .child(widget1)
-                        .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(.95f).heightRel(1.0f))
+                        .child(panelUtil.getMainTextPanel())
                         .child(widget2)
                     )
                     .child(new Column()
