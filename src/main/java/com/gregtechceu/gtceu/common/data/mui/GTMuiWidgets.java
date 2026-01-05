@@ -137,7 +137,7 @@ public class GTMuiWidgets {
     public static ToggleButton createVoidingButton(IVoidable machine, PanelSyncManager syncManager) {
         // TODO pull in voiding mode pr
         return new ToggleButton();
-        //EnumSyncValue voidMode = new EnumSyncValue(IVoidable.VoidingMode.class, machine.)
+        // EnumSyncValue voidMode = new EnumSyncValue(IVoidable.VoidingMode.class, machine.)
     }
 
     public static ToggleButton createAutoOutputItemButton(IAutoOutputItem machine, PanelSyncManager syncManager) {

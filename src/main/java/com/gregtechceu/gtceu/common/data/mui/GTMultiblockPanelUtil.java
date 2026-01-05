@@ -8,12 +8,9 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widget.ScrollWidget;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
-import com.gregtechceu.gtceu.api.mui.widget.scroll.ScrollArea;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ScrollingTextWidget;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 public class GTMultiblockPanelUtil {
@@ -25,10 +22,11 @@ public class GTMultiblockPanelUtil {
     }
 
     public Widget<?> getMainTextPanel() {
-
         boolean isFormed = controller.isFormed();
 
-        var parentWidget = new ListWidget<>();
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>()
+                .coverChildren();
         parentWidget.size(187, 90)
                 .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(1.0f).heightRel(1.0f));
 
@@ -37,10 +35,13 @@ public class GTMultiblockPanelUtil {
             boolean isActive = recipeLogic.isActive();
             boolean isWorking = recipeLogic.isWorking();
 
-            parentWidget.child(IKey.dynamic(() ->
-                            GTMultiblockTextUtil.addProgressLine(isFormed, isActive, recipeLogic.getProgress(),
-                                    recipeLogic.getMaxProgress(), recipeLogic.getProgressPercent())).asWidget());
+            listWidget.child(IKey
+                    .dynamic(() -> GTMultiblockTextUtil.addProgressLine(isFormed, isActive, recipeLogic.getProgress(),
+                            recipeLogic.getMaxProgress(), recipeLogic.getProgressPercent()))
+                    .asWidget()
+                    .tooltipAutoUpdate(true));
         }
+        parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
     }
 
@@ -51,8 +52,8 @@ public class GTMultiblockPanelUtil {
 
             if (rl.isWaiting()) {
                 var reason = rl.getWaitingReason();
-                //recipeActionResultWidget.
-                //recipeActionResultWidget = rl
+                // recipeActionResultWidget.
+                // recipeActionResultWidget = rl
             }
         }
         return new EmptyWidget();

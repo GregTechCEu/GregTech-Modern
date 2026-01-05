@@ -25,9 +25,7 @@ public class ConfigHolder {
         }
     }
 
-    void myMethod() {
-
-    }
+    void myMethod() {}
 
     @Configurable.ValueUpdateCallback(method = "myMethod")
     @Configurable

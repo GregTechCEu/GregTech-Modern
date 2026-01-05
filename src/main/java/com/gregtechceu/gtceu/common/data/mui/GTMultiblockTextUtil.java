@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -34,8 +35,7 @@ public class GTMultiblockTextUtil {
     }
 
     public static IKey addEnergyTierLine(boolean formed, int tier) {
-
-        if(!formed || tier < GTValues.ULV || tier > GTValues.MAX)
+        if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return IKey.EMPTY;
 
         Component voltageName = Component.literal(GTValues.VNF[tier]);
@@ -48,7 +48,8 @@ public class GTMultiblockTextUtil {
                 .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
     }
 
-    public static Component addProgressLine(boolean formed, boolean active, double currentDuration, double maxDuration, double progressPercent) {
+    public static Component addProgressLine(boolean formed, boolean active, double currentDuration, double maxDuration,
+                                            double progressPercent) {
         if (!formed || !active)
             return CommonComponents.EMPTY;
 
@@ -59,6 +60,4 @@ public class GTMultiblockTextUtil {
                 String.format("%.2f", (float) currentInSec),
                 String.format("%.2f", (float) maxInSec), currentProgress);
     }
-
-
 }
