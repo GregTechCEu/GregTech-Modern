@@ -81,6 +81,7 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import lombok.experimental.ExtensionMethod;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -694,5 +695,14 @@ public class ToolHelper {
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
                 .withParameter(LootContextParams.TOOL, tool)
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));
+    }
+
+    /**
+     * For internal use only, do not call!
+     */
+    @ApiStatus.Internal
+    public static void clearCachedLootModifiers() {
+        uniformDropMultiplier = null;
+        oreDropMultiplier = null;
     }
 }

@@ -38,6 +38,8 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -204,5 +206,10 @@ public class ToolEventHandlers {
                 dropItr.remove();
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerClosing(ServerStoppingEvent event) {
+        ToolHelper.clearCachedLootModifiers();
     }
 }
