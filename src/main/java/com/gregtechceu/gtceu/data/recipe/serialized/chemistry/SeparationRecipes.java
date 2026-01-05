@@ -426,14 +426,6 @@ public class SeparationRecipes {
                 .outputFluids(Oxygen.getFluid(9000))
                 .duration(270).EUt(VA[LV] * 2L).save(provider);
 
-        ELECTROLYZER_RECIPES.recipeBuilder("zeolite_electrolysis")
-                .inputItems(dust, Zeolite, 41)
-                .outputItems(dust, Sodium)
-                .outputItems(dust, Calcium, 4)
-                .outputItems(dust, Silicon, 27)
-                .outputItems(dust, Aluminium, 9)
-                .duration(656).EUt(VA[MV]).save(provider);
-
         ELECTROLYZER_RECIPES.recipeBuilder("bentonite_electrolysis")
                 .inputItems(dust, Bentonite, 30)
                 .outputItems(dust, Sodium)

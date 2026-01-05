@@ -34,19 +34,24 @@ public class GTLayerPattern {
         this.layers = layers;
     }
 
-    public Layer rollNext(@Nullable Layer previous, RandomSource random) {
+    public @Nullable Layer rollNext(@Nullable Layer previous, RandomSource random) {
+        if (layers.isEmpty()) return null;
+        if (layers.size() == 1) return layers.get(0);
+
         int totalWeight = 0;
-        for (Layer layer : layers)
-            if (layer != previous)
-                totalWeight += layer.weight;
+        for (Layer layer : layers) {
+            if (layer != previous) totalWeight += layer.weight;
+        }
+        // totalWeight should be >0 here but better be safe than sorry
+        if (totalWeight <= 0) return null;
+
         int rolled = random.nextInt(totalWeight);
 
         for (Layer layer : layers) {
-            if (layer == previous)
-                continue;
+            if (layer == previous) continue;
+
             rolled -= layer.weight;
-            if (rolled < 0)
-                return layer;
+            if (rolled < 0) return layer;
         }
         return null;
     }

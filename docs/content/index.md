@@ -5,8 +5,7 @@ hide:
 title: Home
 ---
 
-
-# Welcome to GregTech CEu Modern's Documentation!
+# Welcome to GregTech CEu Modern's Documentation for 1.20.1!
 
 GregTech CEu Modern is a port of [GregTech Community Edition Unofficial](https://github.com/GregTechCEu/GregTech)
 to modern Minecraft versions.

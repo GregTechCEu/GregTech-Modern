@@ -45,14 +45,16 @@ public class EnderCoversTest {
         tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 1000),
                 IFluidHandler.FluidAction.EXECUTE);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(TestUtils.isFluidStackEqual(tank2.getStored(), new FluidStack(Fluids.WATER, 1000)),
+            helper.assertTrue(TestUtils.isFluidStackEqual(
+                    tank2.getFluidHandlerCap(null, false).getFluidInTank(0),
+                    new FluidStack(Fluids.WATER, 1000)),
                     "ender fluid link cover didn't transfer fluid");
             helper.succeed();
         });
     }
 
-    @GameTest(template = "empty_5x5", batch = "coverTests", required = false)
-    public static void only_works_in_game_itemLinkCoverTest(GameTestHelper helper) {
+    @GameTest(template = "empty_5x5", batch = "coverTests")
+    public static void itemLinkCoverTest(GameTestHelper helper) {
         QuantumChestMachine chest1 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1),
                 GTMachines.SUPER_CHEST[1]);
         QuantumChestMachine chest2 = (QuantumChestMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 3),
@@ -63,9 +65,11 @@ public class EnderCoversTest {
                 GTItems.COVER_ENDER_ITEM_LINK.asStack(), Direction.UP);
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
-        chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, new ItemStack(Items.DIAMOND, 64), false);
+        ItemStack stack = new ItemStack(Items.DIAMOND, 64);
+        chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, stack, false);
         helper.runAtTickTime(20, () -> {
-            helper.assertTrue(TestUtils.isItemStackEqual(chest2.getStored(), new ItemStack(Items.DIAMOND, 64)),
+            helper.assertTrue(
+                    ItemStack.isSameItem(chest2.getStored(), stack) && chest2.getStoredAmount() == stack.getCount(),
                     "ender item link cover didn't transfer items");
             helper.succeed();
         });

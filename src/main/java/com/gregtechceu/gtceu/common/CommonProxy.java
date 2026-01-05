@@ -260,6 +260,7 @@ public class CommonProxy {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
+            CraftingHelper.register(NBTPredicateIngredient.TYPE, NBTPredicateIngredient.Serializer.INSTANCE);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
 
             // register the map ingredient converters for all of our ingredients
@@ -277,6 +278,7 @@ public class CommonProxy {
 
             MapIngredientTypeManager.registerMapIngredient(StrictNBTIngredient.class, StrictNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(PartialNBTIngredient.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(NBTPredicateIngredient.class, NBTPredicateItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(IntersectionIngredient.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemStackMapIngredient::from);
@@ -285,6 +287,7 @@ public class CommonProxy {
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, ItemTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, StrictNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, NBTPredicateItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, CustomMapIngredient::from);
             // spotless:on

@@ -11,7 +11,6 @@ import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -275,29 +274,25 @@ public class CapeRegistry extends SavedData {
     }
 
     // For loading capes when the player logs in, so that it's synced to the clients.
-    public static void loadCurrentCapesOnLogin(Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            UUID uuid = player.getUUID();
-            // sync to others
-            GTNetwork.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
-            // sync to the one who's logging in
-            for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
-                uuid = otherPlayer.getUUID();
-                GTNetwork.sendToPlayer(serverPlayer, new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
-            }
+    public static void loadCurrentCapesOnLogin(ServerPlayer serverPlayer) {
+        UUID uuid = serverPlayer.getUUID();
+        // sync to others
+        GTNetwork.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
+        // sync to the one who's logging in
+        for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
+            uuid = otherPlayer.getUUID();
+            GTNetwork.sendToPlayer(serverPlayer, new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
         }
     }
 
     // Runs on login and gives the player all free capes & capes they've already unlocked.
-    public static void detectNewCapes(Player player) {
-        if (player instanceof ServerPlayer) {
-            var playerCapes = UNLOCKED_CAPES.get(player.getUUID());
-            if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
-                for (ResourceLocation cape : FREE_CAPES) {
-                    unlockCape(player.getUUID(), cape);
-                }
-                save();
+    public static void detectNewCapes(ServerPlayer serverPlayer) {
+        var playerCapes = UNLOCKED_CAPES.get(serverPlayer.getUUID());
+        if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
+            for (ResourceLocation cape : FREE_CAPES) {
+                unlockCape(serverPlayer.getUUID(), cape);
             }
+            save();
         }
     }
 

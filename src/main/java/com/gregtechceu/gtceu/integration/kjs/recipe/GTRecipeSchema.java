@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
@@ -291,25 +292,10 @@ public interface GTRecipeSchema {
             validateItems("input", inputs);
 
             for (ItemStack itemStack : inputs) {
-                // test simple item that have pure singular material stack
-                var matStack = ChemicalHelper.getMaterialStack(itemStack);
-                // test item that has multiple material stacks
-                var matInfo = ChemicalHelper.getMaterialInfo(itemStack);
-                if (chance == maxChance && chance != 0) {
-                    if (!matStack.isEmpty()) {
-                        itemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
-                    }
-                    if (matInfo != null) {
-                        for (var ms : matInfo.getMaterials()) {
-                            itemMaterialStacks.add(ms.multiply(itemStack.getCount()));
-                        }
-                    } else {
-                        tempItemStacks.add(itemStack);
-                    }
-                }
                 if (itemStack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
                 }
+                gatherMaterialInfoFromStacks(itemStack);
             }
             return input(ItemRecipeCapability.CAP,
                     Arrays.stream(inputs)
@@ -380,6 +366,15 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS itemInputsRanged(TagPrefix orePrefix, Material material, int min, int max) {
             return inputItemsRanged(ChemicalHelper.get(orePrefix, material), min, max);
+        }
+
+        public GTRecipeJS inputItemNbtPredicate(ItemStack itemStack, NBTPredicate predicate) {
+            if (itemStack.isEmpty()) {
+                throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
+            }
+            gatherMaterialInfoFromStacks(itemStack);
+
+            return itemInputs(InputItem.of(new NBTPredicateIngredient(itemStack, predicate), itemStack.getCount()));
         }
 
         public GTRecipeJS itemOutputs(ExtendedOutputItem... outputs) {
@@ -1234,6 +1229,25 @@ public interface GTRecipeSchema {
         public GTRecipeJS removePreviousMaterialInfo() {
             this.removeMaterialInfo = true;
             return this;
+        }
+
+        private void gatherMaterialInfoFromStacks(ItemStack itemStack) {
+            // test simple item that have pure singular material stack
+            var matStack = ChemicalHelper.getMaterialStack(itemStack);
+            // test item that has multiple material stacks
+            var matInfo = ChemicalHelper.getMaterialInfo(itemStack);
+            if (chance == maxChance && chance != 0) {
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
+                }
+                if (matInfo != null) {
+                    for (var ms : matInfo.getMaterials()) {
+                        itemMaterialStacks.add(ms.multiply(itemStack.getCount()));
+                    }
+                } else {
+                    tempItemStacks.add(itemStack);
+                }
+            }
         }
 
         /*
