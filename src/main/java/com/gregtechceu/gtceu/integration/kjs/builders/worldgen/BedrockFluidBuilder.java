@@ -16,6 +16,7 @@ import lombok.experimental.Accessors;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
 
