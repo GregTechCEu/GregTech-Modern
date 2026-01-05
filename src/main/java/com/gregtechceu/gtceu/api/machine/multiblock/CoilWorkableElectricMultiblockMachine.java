@@ -76,7 +76,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                         .left(3).top(3)
                         .child(new Row()
                                 .child(widget1)
-                                .child(panelUtil.getMainTextPanel())
+                                .child(panelUtil.getMainTextPanel(syncManager))
                                 .child(widget2))
                         .child(new Column()
                                 .widthRel(1)
