@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * @deprecated Use {@link SyncedKeyMappings} instead
  */
 @Deprecated
-@EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public enum KeyBind {
 
     VANILLA_JUMP(() -> () -> Minecraft.getInstance().options.keyJump),
