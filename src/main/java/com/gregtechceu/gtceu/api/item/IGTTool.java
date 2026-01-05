@@ -275,60 +275,48 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return true;
     }
 
-    default boolean definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide) return false;
+    default void definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        if (player.isShiftKeyDown()) return;
+
         getBehaviorsComponent(stack).behaviors()
                 .forEach((type, behavior) -> behavior.onBlockStartBreak(stack, pos, player));
 
-        if (!player.isShiftKeyDown()) {
-            ServerPlayer serverPlayer = (ServerPlayer) player;
-            int result = -1;
-            if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(serverPlayer, stack, pos);
-            }
-            if (result != 0) {
-                // prevent exploits with instantly breakable blocks
-                BlockState state = player.level().getBlockState(pos);
-                boolean effective = isToolEffective(stack, state, getToolClasses(stack), getTotalHarvestLevel());
+        // prevent exploits with instantly breakable blocks
+        BlockState state = player.level().getBlockState(pos);
 
-                if (effective) {
-                    if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-                        if (playSoundOnBlockDestroy()) playSound(player);
-                    } else {
-                        if (result == -1) {
-                            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
-                            if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
-                                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
-                            }
-                            if (playSoundOnBlockDestroy()) playSound(player);
-                        } else {
-                            return true;
-                        }
-                    }
-                }
+        if (!isToolEffective(stack, state)) {
+            return;
+        }
+        if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
+            if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
+                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
             }
         }
-        return false;
+        if (playSoundOnBlockDestroy()) {
+            playSound(player);
+        }
     }
 
-    default boolean definition$mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos,
-                                         LivingEntity entityLiving) {
-        if (!worldIn.isClientSide) {
-            getToolStats().getBehaviors()
-                    .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
+    default void definition$mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos,
+                                      LivingEntity entity) {
+        if (level.isClientSide) {
+            return;
+        }
+        getToolStats().getBehaviors()
+                .forEach(behavior -> behavior.onBlockDestroyed(stack, level, state, pos, entity));
 
-            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
-                damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
-            }
-            if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
-                // sneaking disables AOE, which means it is okay to play the sound
-                // not checking this means the sound will play for every AOE broken block, which is very loud
-                if (entityLiving.isShiftKeyDown()) {
-                    playSound((Player) entityLiving);
-                }
+        if (state.getDestroySpeed(level, pos) != 0.0) {
+            damageItem(stack, entity, getToolStats().getToolDamagePerBlockBreak(stack));
+        }
+        if (entity instanceof Player player && playSoundOnBlockDestroy()) {
+            // sneaking disables AOE, which means it is okay to play the sound
+            // not checking this means the sound will play for every AOE broken block, which is very loud
+            if (entity.isShiftKeyDown()) {
+                playSound(player);
             }
         }
-        return true;
     }
 
     default boolean definition$isValidRepairItem(ItemStack toRepair, ItemStack repair) {
