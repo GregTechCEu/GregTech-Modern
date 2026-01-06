@@ -20,26 +20,26 @@ public class LDPEndpointProvider implements IBlockComponentProvider, IServerData
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine machine) {
-                boolean isFormed = blockAccessor.getServerData().getBoolean("isFormed");
-                String ioType = blockAccessor.getServerData().getString("ioType");
-                String outputDirection = blockAccessor.getServerData().getString("outputDirection");
+            boolean isFormed = blockAccessor.getServerData().getBoolean("isFormed");
+            String ioType = blockAccessor.getServerData().getString("ioType");
+            String outputDirection = blockAccessor.getServerData().getString("outputDirection");
 
-                iTooltip.add(Component.translatable(
-                        isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));
-                iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.io_type", Component.translatable(ioType)
-                        .withStyle(ioType.contains("import") ? ChatFormatting.GREEN : ChatFormatting.RED)));
-                iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.output_direction",
-                        FormattingUtil.toEnglishName((outputDirection))));
-            }
+            iTooltip.add(Component.translatable(
+                    isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));
+            iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.io_type", Component.translatable(ioType)
+                    .withStyle(ioType.contains("import") ? ChatFormatting.GREEN : ChatFormatting.RED)));
+            iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.output_direction",
+                    FormattingUtil.toEnglishName((outputDirection))));
+        }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine ldpEndpoint) {
-                compoundTag.putBoolean("isFormed", ldpEndpoint.getLink() == null ? false : true);
-                compoundTag.putString("ioType", ldpEndpoint.getIoType().getTooltip());
-                compoundTag.putString("outputDirection", ldpEndpoint.getOutputFacing().getName());
-            }
+            compoundTag.putBoolean("isFormed", ldpEndpoint.getLink() == null ? false : true);
+            compoundTag.putString("ioType", ldpEndpoint.getIoType().getTooltip());
+            compoundTag.putString("outputDirection", ldpEndpoint.getOutputFacing().getName());
+        }
     }
 
     @Override

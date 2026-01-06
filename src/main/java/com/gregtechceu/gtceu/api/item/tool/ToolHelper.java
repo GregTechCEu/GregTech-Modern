@@ -26,9 +26,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import com.gregtechceu.gtceu.utils.DummyRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -435,11 +435,11 @@ public class ToolHelper {
                     cacheChances.put(cap, cap.makeChanceCache());
                 }
 
-
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
                         r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, cacheChances).isSuccess()) {
+                if (hammerRecipe != null &&
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, cacheChances).isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {
