@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -29,7 +30,7 @@ public class CoilBlockBuilder extends ActiveBlockBuilder {
     public transient String texture = "minecraft:missingno";
 
     public CoilBlockBuilder(ResourceLocation i) {
-        super(i);
+        super(ImplicitKubeResourceLocation.toGtceu(i));
         property(GTBlockStateProperties.ACTIVE);
         renderType(BlockRenderType.CUTOUT_MIPPED);
         noValidSpawns(true);
