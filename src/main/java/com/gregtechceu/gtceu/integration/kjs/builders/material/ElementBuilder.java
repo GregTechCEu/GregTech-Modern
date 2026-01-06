@@ -28,7 +28,7 @@ public class ElementBuilder extends BuilderBase<Element> {
     public ElementBuilder(ResourceLocation id) {
         super(ImplicitKubeResourceLocation.toGtceu(id));
         name = id.getPath();
-        translatableName = Component.translatable(id.toLanguageKey("element"));
+        translatableName = Component.translatable(this.id.toLanguageKey("element"));
     }
 
     @Override
