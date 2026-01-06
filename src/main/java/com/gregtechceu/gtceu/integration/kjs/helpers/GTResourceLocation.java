@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
@@ -78,9 +79,14 @@ public record GTResourceLocation(ResourceLocation wrapped) {
         IMPLICIT_KUBE_JS_NAMESPACE.set(true);
     }
 
+    @ApiStatus.Internal
+    public static void clearCurrentTrackedImplicitValue() {
+        IMPLICIT_KUBE_JS_NAMESPACE.remove();
+    }
+
     public static ResourceLocation unwrapMaybeImplicitResourceLocation(ResourceLocation location) {
         try {
-            if (IMPLICIT_KUBE_JS_NAMESPACE.get() == true) {
+            if (IMPLICIT_KUBE_JS_NAMESPACE.get() == true && location.getNamespace().equals(GTValues.MODID_KUBEJS)) {
                 return GTCEu.id(location.getPath());
             } else {
                 return location;
