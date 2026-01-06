@@ -91,10 +91,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuild
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilder;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.integration.kjs.helpers.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
@@ -102,6 +99,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComp
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -478,6 +476,8 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.wrapRuleTest(cx, o);
         });
+        // register a conditional type wrapper for early parsing of holder sets
+        registry.register(HolderSet.class, SpecialHolderWrapper::canWrapHolderSet, SpecialHolderWrapper::wrapHolderSet);
         registry.register(CraftingComponent.class, o -> {
             if (o instanceof CraftingComponent comp) return comp;
             if (o instanceof CharSequence str) return CraftingComponent.ALL_COMPONENTS.get(str.toString());
