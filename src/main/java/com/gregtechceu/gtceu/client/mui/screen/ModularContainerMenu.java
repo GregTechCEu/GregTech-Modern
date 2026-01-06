@@ -71,11 +71,11 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     }
 
     @ApiStatus.Internal
-    public void construct(Player player, PanelSyncManager panelSyncManager, UISettings settings, String mainPanelName,
+    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName,
                           GuiData guiData) {
         this.player = player;
-        this.syncManager = new ModularSyncManager(this);
-        this.syncManager.construct(mainPanelName, panelSyncManager);
+        this.syncManager = msm;
+        this.syncManager.construct(this, mainPanelName);
         this.settings = settings;
         this.guiData = guiData;
         sortShiftClickSlots();
@@ -298,8 +298,9 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     if (!heldStack.isEmpty() && clickedSlot.mayPlace(heldStack)) {
                         int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
 
-                        if (stackCount > clickedSlot.getMaxStackSize(heldStack)) {
-                            stackCount = clickedSlot.getMaxStackSize(heldStack);
+                        int lim = clickedSlot.getMaxStackSize(heldStack);
+                        if (stackCount > lim) {
+                            stackCount = lim;
                         }
 
                         clickedSlot.setByPlayer(heldStack.split(stackCount));
@@ -316,8 +317,9 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                         if (ItemStack.isSameItemSameTags(slotStack, heldStack)) {
                             int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
 
-                            if (stackCount > clickedSlot.getMaxStackSize(heldStack) - slotStack.getCount()) {
-                                stackCount = clickedSlot.getMaxStackSize(heldStack) - slotStack.getCount();
+                            int lim = clickedSlot.getMaxStackSize(heldStack);
+                            if (stackCount > lim - slotStack.getCount()) {
+                                stackCount = lim - slotStack.getCount();
                             }
 
                             heldStack.shrink(stackCount);

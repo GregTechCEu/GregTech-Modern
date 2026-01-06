@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeKey;
+import com.gregtechceu.gtceu.api.mui.value.sync.ISyncRegistrar;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
@@ -838,7 +839,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @Override
     public W syncHandler(String name, int id) {
-        this.syncKey = ModularSyncManager.makeSyncKey(name, id);
+        this.syncKey = ISyncRegistrar.makeSyncKey(name, id);
         return getThis();
     }
 

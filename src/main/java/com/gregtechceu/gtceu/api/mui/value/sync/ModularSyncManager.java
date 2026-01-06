@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
+import com.gregtechceu.gtceu.api.mui.base.ISyncedAction;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 
@@ -22,12 +24,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
-public class ModularSyncManager {
+public class ModularSyncManager implements ISyncRegistrar<ModularSyncManager> {
 
     public static final String AUTO_SYNC_PREFIX = "auto_sync:";
     protected static final String PLAYER_INVENTORY = "player_inventory";
-    private static final String CURSOR_KEY = makeSyncKey("cursor_slot", 255255);
+    private static final String CURSOR_KEY = ISyncRegistrar.makeSyncKey("cursor_slot", 255255);
 
     private final Map<String, PanelSyncManager> panelSyncManagerMap = new Object2ObjectOpenHashMap<>();
     // A set of all panels which have been opened during the ui. May also contain closed panels.
@@ -36,21 +39,27 @@ public class ModularSyncManager {
     @Getter
     private PanelSyncManager mainPSM;
     @Getter
-    private final ModularContainerMenu menu;
+    private ModularContainerMenu menu;
     private final CursorSlotSyncHandler cursorSlotSyncHandler = new CursorSlotSyncHandler();
+    @Getter
+    private final boolean client;
 
-    public ModularSyncManager(ModularContainerMenu menu) {
-        this.menu = menu;
+    public ModularSyncManager(boolean client) {
+        this.client = client;
+    }
+
+    void setMainPSM(PanelSyncManager mainPSM) {
+        this.mainPSM = mainPSM;
     }
 
     @ApiStatus.Internal
-    public void construct(String mainPanelName, PanelSyncManager mainPSM) {
-        this.mainPSM = mainPSM;
+    public void construct(ModularContainerMenu menu, String mainPanelName) {
+        this.menu = menu;
         if (this.mainPSM.getSlotGroup(PLAYER_INVENTORY) == null) {
             this.mainPSM.bindPlayerInventory(getPlayer());
         }
-        mainPSM.syncValue(CURSOR_KEY, this.cursorSlotSyncHandler);
-        open(mainPanelName, mainPSM);
+        this.mainPSM.syncValue(CURSOR_KEY, this.cursorSlotSyncHandler);
+        open(mainPanelName, this.mainPSM);
     }
 
     public void detectAndSendChanges(boolean init) {
@@ -97,7 +106,7 @@ public class ModularSyncManager {
     public void open(String name, PanelSyncManager syncManager) {
         this.panelSyncManagerMap.put(name, syncManager);
         this.panelHistory.add(name);
-        syncManager.initialize(name, this);
+        syncManager.initialize(name);
     }
 
     public void close(String name) {
@@ -125,10 +134,6 @@ public class ModularSyncManager {
         return this.menu.getPlayer();
     }
 
-    public boolean isClient() {
-        return this.menu.isClient();
-    }
-
     private static boolean isPlayerSlot(Slot slot) {
         if (slot == null) return false;
         if (slot.container instanceof Inventory) {
@@ -143,7 +148,52 @@ public class ModularSyncManager {
         return false;
     }
 
+    @Override
+    public ModularSyncManager syncValue(String name, int id, SyncHandler syncHandler) {
+        this.mainPSM.syncValue(name, id, syncHandler);
+        return this;
+    }
+
+    @Override
+    public IPanelHandler syncedPanel(String key, boolean subPanel, PanelSyncHandler.IPanelBuilder panelBuilder) {
+        return this.mainPSM.syncedPanel(key, subPanel, panelBuilder);
+    }
+
+    @Override
+    public @Nullable IPanelHandler findPanelHandlerNullable(String key) {
+        return this.mainPSM.findPanelHandlerNullable(key);
+    }
+
+    @Override
+    public ModularSyncManager registerSlotGroup(SlotGroup slotGroup) {
+        this.mainPSM.registerSlotGroup(slotGroup);
+        return this;
+    }
+
+    @Override
+    public ModularSyncManager registerSyncedAction(String mapKey, boolean executeClient, boolean executeServer, ISyncedAction action) {
+        this.mainPSM.registerSyncedAction(mapKey, executeClient, executeServer, action);
+        return this;
+    }
+
+    @Override
+    public <T extends SyncHandler> T getOrCreateSyncHandler(String name, int id, Class<T> clazz, Supplier<T> supplier) {
+        return this.mainPSM.getOrCreateSyncHandler(name, id, clazz, supplier);
+    }
+
+    @Override
+    public @Nullable SyncHandler findSyncHandlerNullable(String name, int id) {
+        return this.mainPSM.findSyncHandlerNullable(name, id);
+    }
+
+    @Override
+    public SlotGroup getSlotGroup(String name) {
+        return this.mainPSM.getSlotGroup(name);
+    }
+
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
     public static String makeSyncKey(String name, int id) {
-        return name + ":" + id;
+        return ISyncRegistrar.makeSyncKey(name, id);
     }
 }

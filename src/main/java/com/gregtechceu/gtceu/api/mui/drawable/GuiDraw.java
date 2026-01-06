@@ -58,19 +58,8 @@ public class GuiDraw {
 
     public static void drawRect(GuiGraphics graphics, float x0, float y0, float w, float h, int color) {
         Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer bufferbuilder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
-
-        int r = Color.getRed(color);
-        int g = Color.getGreen(color);
-        int b = Color.getBlue(color);
-        int a = Color.getAlpha(color);
-        if (a == 0 && color != 0) a = 0xFF;
-
-        float x1 = x0 + w, y1 = y0 + h;
-        bufferbuilder.vertex(pose, x0, y0, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x0, y1, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x1, y1, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x1, y0, 0.0f).color(r, g, b, a).endVertex();
+        VertexConsumer builder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        drawRectRaw(builder, pose, x0, y0, x0 + w, y0 + h, color);
     }
 
     public static void drawHorizontalGradientRect(GuiGraphics graphics, float x0, float y0, float w, float h,
@@ -103,6 +92,21 @@ public class GuiDraw {
         bufferbuilder.vertex(pose, x1, y0, 0.0f)
                 .color(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR))
                 .endVertex();
+    }
+
+    public static void drawRectRaw(VertexConsumer buffer, Matrix4f pose, float x0, float y0, float x1, float y1, int color) {
+        int r = Color.getRed(color);
+        int g = Color.getGreen(color);
+        int b = Color.getBlue(color);
+        int a = Color.getAlpha(color);
+        drawRectRaw(buffer, pose, x0, y0, x1, y1, r, g, b, a);
+    }
+
+    public static void drawRectRaw(VertexConsumer buffer, Matrix4f pose, float x0, float y0, float x1, float y1, int r, int g, int b, int a) {
+        buffer.vertex(x0, y0, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(x0, y1, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(x1, y1, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(x1, y0, 0.0f).color(r, g, b, a).endVertex();
     }
 
     public static void drawCircle(GuiGraphics graphics, float x0, float y0, float diameter, int color, int segments) {
@@ -550,6 +554,68 @@ public class GuiDraw {
         graphics.fill(left + border, bottom - border, right - border, bottom, color);
     }
 
+    private static void drawBorderLTRB(GuiGraphics graphics, float left, float top, float right, float bottom, float border, int color, boolean outside) {
+        if (outside) {
+            left -= border;
+            top -= border;
+            right += border;
+            bottom += border;
+        }
+        float x0 = left, y0 = top, x1 = right, y1 = bottom, d = border;
+
+        var buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleStrip());
+        pc(buffer, x0, y0, color);
+        pc(buffer, x1 - d, y0 + d, color);
+        pc(buffer, x1, y0, color);
+        pc(buffer, x1 - d, y1 - d, color);
+        pc(buffer, x1, y1, color);
+        pc(buffer, x0 + d, y1 - d, color);
+        pc(buffer, x0, y1, color);
+        pc(buffer, x0 + d, y0 + d, color);
+        pc(buffer, x0, y0, color);
+        pc(buffer, x1 - d, y0 + d, color);
+    }
+
+    public static void drawBorderOutsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, 1, color, true);
+    }
+
+    public static void drawBorderOutsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom, float border, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, border, color, true);
+    }
+
+    public static void drawBorderInsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, 1, color, false);
+    }
+
+    public static void drawBorderInsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom, float border, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, border, color, false);
+    }
+
+    private static void drawBorderXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border, int color, boolean outside) {
+        drawBorderLTRB(graphics, x, y, x + w, y + h, border, color, outside);
+    }
+
+    public static void drawBorderOutsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, border, color, true);
+    }
+
+    public static void drawBorderOutsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, 1, color, true);
+    }
+
+    public static void drawBorderInsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, border, color, false);
+    }
+
+    public static void drawBorderInsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, 1, color, false);
+    }
+
+    private static void pc(VertexConsumer buffer, float x, float y, int c) {
+        buffer.vertex(x, y, 0).color(Color.getRed(c), Color.getGreen(c), Color.getBlue(c), Color.getAlpha(c)).endVertex();
+    }
+
     /**
      * Draws a rectangular shadow
      *
@@ -705,10 +771,11 @@ public class GuiDraw {
     @OnlyIn(Dist.CLIENT)
     public static void drawBorder(GuiGraphics graphics, float x, float y, float width, float height, int color,
                                   float border) {
-        drawRect(graphics, x - border, y - border, width + 2 * border, border, color);
-        drawRect(graphics, x - border, y + height, width + 2 * border, border, color);
-        drawRect(graphics, x - border, y, border, height, color);
-        drawRect(graphics, x + width, y, border, height, color);
+        drawBorderLTRB(graphics, x, y, x + width, y + height, border, color, false);
+        //drawRect(graphics, x - border, y - border, width + 2 * border, border, color);
+        //drawRect(graphics, x - border, y + height, width + 2 * border, border, color);
+        //drawRect(graphics, x - border, y, border, height, color);
+        //drawRect(graphics, x + width, y, border, height, color);
     }
 
     @OnlyIn(Dist.CLIENT)

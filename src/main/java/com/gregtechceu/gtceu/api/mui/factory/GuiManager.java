@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
 import com.gregtechceu.gtceu.api.mui.base.XeiSettings;
+import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.client.mui.screen.*;
@@ -72,7 +73,8 @@ public class GuiManager {
         // create panel, collect sync handlers and create menu
         UISettings settings = new UISettings(XeiSettings.DUMMY);
         settings.defaultCanInteractWith(factory, guiData);
-        PanelSyncManager syncManager = new PanelSyncManager(false);
+        ModularSyncManager msm = new ModularSyncManager(false);
+        PanelSyncManager syncManager = new PanelSyncManager(msm, true);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
 
@@ -84,7 +86,7 @@ public class GuiManager {
         int windowId = player.containerCounter;
         ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
                 factory.createContainer(windowId);
-        menu.construct(player, syncManager, settings, panel.getName(), guiData);
+        menu.construct(player, msm, settings, panel.getName(), guiData);
 
         // sync to client
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -104,14 +106,15 @@ public class GuiManager {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
         settings.defaultCanInteractWith(factory, guiData);
-        PanelSyncManager syncManager = new PanelSyncManager(true);
+        ModularSyncManager msm = new ModularSyncManager(true);
+        PanelSyncManager syncManager = new PanelSyncManager(msm, true);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
         ModularScreen screen = factory.createScreen(guiData, panel);
         screen.getContext().setSettings(settings);
         ModularContainerMenu container = settings.hasContainer() ? settings.createContainer(windowId) :
                 factory.createContainer(windowId);
-        container.construct(player, syncManager, settings, panel.getName(), guiData);
+        container.construct(player, msm, settings, panel.getName(), guiData);
         IMuiScreen wrapper = factory.createScreenWrapper(container, screen);
         if (!(wrapper.getWrappedScreen() instanceof AbstractContainerScreen<?> guiContainer)) {
             throw new IllegalStateException("The wrapping screen must be a GuiContainer for synced GUIs!");

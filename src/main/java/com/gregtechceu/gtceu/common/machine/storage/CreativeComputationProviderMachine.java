@@ -123,7 +123,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(this::getMaxCWUt, this::setMaxCWUt))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)
@@ -131,7 +131,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
                                         () -> new Object[] { lastRequestedCWUt }))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)
