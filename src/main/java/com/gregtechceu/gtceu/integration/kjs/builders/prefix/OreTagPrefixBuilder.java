@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -37,7 +38,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     public transient boolean shouldDropAsItem = false;
 
     public OreTagPrefixBuilder(ResourceLocation id) {
-        super(id);
+        super(ImplicitKubeResourceLocation.toGtceu(id));
     }
 
     @Override

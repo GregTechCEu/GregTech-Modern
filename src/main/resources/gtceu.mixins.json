@@ -70,6 +70,7 @@
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "kubejs.KubeResourceLocationMixin",
         "ldlib.ButtonWidgetMixin",
         "ldlib.DummyWorldMixin",
         "ldlib.ItemStackPayloadMixin",
