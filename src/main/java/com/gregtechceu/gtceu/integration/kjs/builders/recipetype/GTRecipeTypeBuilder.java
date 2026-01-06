@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -57,9 +58,9 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     @Setter
     protected transient BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
 
-    public GTRecipeTypeBuilder(ResourceLocation i) {
-        super(i);
-        name = i.getPath();
+    public GTRecipeTypeBuilder(ResourceLocation id) {
+        super(GTResourceLocation.unwrapMaybeImplicitResourceLocation(id));
+        name = this.id.getPath();
         category = "custom";
         maxInputs = new Object2IntOpenHashMap<>();
         maxOutputs = new Object2IntOpenHashMap<>();

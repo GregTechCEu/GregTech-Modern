@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -32,10 +34,11 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     public TagPrefixBuilder(ResourceLocation id) {
-        super(id);
-        this.base = create(id.getPath());
+        super(GTResourceLocation.unwrapMaybeImplicitResourceLocation(id));
+        this.base = create(this.id.getPath());
     }
 
+    @HideFromJS
     public TagPrefix create(String id) {
         return new TagPrefix(id);
     }

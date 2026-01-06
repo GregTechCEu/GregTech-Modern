@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -40,6 +42,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
         super(id);
     }
 
+    @HideFromJS
     @Override
     public TagPrefix create(String id) {
         return new TagPrefix(id)
