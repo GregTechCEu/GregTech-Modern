@@ -28,6 +28,8 @@ import java.util.List;
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
+    public static TraitType<NotifiableComputationContainer> TYPE = new TraitType<>(NotifiableComputationContainer.class);
+
     @Getter
     protected IO handlerIO;
     @Getter
@@ -42,6 +44,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         this.transmitter = transmitter;
 
         this.lastTimeStamp = Long.MIN_VALUE;
+    }
+
+    @Override
+    public TraitType<NotifiableComputationContainer> getTraitType() {
+        return TYPE;
     }
 
     @Override
@@ -67,7 +74,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.requestCWUt(cwut, simulate, seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.requestCWUt(cwut, simulate, seen);
                             }
@@ -111,7 +118,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.getMaxCWUt(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.getMaxCWUt(seen);
                             }
@@ -154,7 +161,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.canBridge(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.canBridge(seen);
                             }

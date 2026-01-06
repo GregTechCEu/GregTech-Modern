@@ -87,8 +87,15 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     private class FEContainer extends MachineTrait implements IEnergyStorage {
 
+        public static TraitType<FEContainer> TYPE = new TraitType<>(FEContainer.class);
+
         public FEContainer(MetaMachine machine) {
             super(machine);
+        }
+
+        @Override
+        public TraitType<FEContainer> getTraitType() {
+            return TYPE;
         }
 
         @Override

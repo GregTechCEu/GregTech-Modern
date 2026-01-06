@@ -34,6 +34,8 @@ import java.util.function.Predicate;
 
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
+    public static TraitType<NotifiableEnergyContainer> TYPE = new TraitType<>(NotifiableEnergyContainer.class);
+
     @Getter
     protected IO handlerIO;
     @Getter
@@ -68,6 +70,11 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         var isIn = (inputVoltage != 0 && inputAmperage != 0);
         var isOut = (outputVoltage != 0 && outputAmperage != 0);
         this.handlerIO = (isIn && isOut) ? IO.BOTH : isIn ? IO.IN : isOut ? IO.OUT : IO.NONE;
+    }
+
+    @Override
+    public TraitType<NotifiableEnergyContainer> getTraitType() {
+        return TYPE;
     }
 
     public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity,

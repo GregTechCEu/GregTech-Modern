@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 
+    public static TraitType<FluidTankProxyTrait> TYPE = new TraitType<>(FluidTankProxyTrait.class);
+
     @Getter
     public final IO capabilityIO;
     @Setter
@@ -25,6 +27,11 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
     public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
         this.capabilityIO = capabilityIO;
+    }
+
+    @Override
+    public TraitType<FluidTankProxyTrait> getTraitType() {
+        return TYPE;
     }
 
     //////////////////////////////////////

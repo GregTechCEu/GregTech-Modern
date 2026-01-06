@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
@@ -441,11 +442,18 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
+        public static TraitType<ItemCache> TYPE = new TraitType<>(ItemCache.class);
+
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 GTUtil.isSameItemSameTags(i, getLockedItem());
 
         public ItemCache(MetaMachine holder) {
             super(holder);
+        }
+
+        @Override
+        public TraitType<ItemCache> getTraitType() {
+            return TYPE;
         }
 
         @Override

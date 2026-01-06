@@ -13,6 +13,8 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
+    public static TraitType<GridNodeHostTrait> TYPE = new TraitType<>(GridNodeHostTrait.class);
+
     private final IManagedGridNode proxy;
 
     public GridNodeHostTrait(MetaMachine machine) {
@@ -20,6 +22,11 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
         this.proxy = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(machine.getDefinition().getItem());
+    }
+
+    @Override
+    public TraitType<GridNodeHostTrait> getTraitType() {
+        return TYPE;
     }
 
     public void init() {

@@ -35,6 +35,8 @@ import java.util.function.Predicate;
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 
+    public static TraitType<NotifiableItemStackHandler> TYPE = new TraitType<>(NotifiableItemStackHandler.class);
+
     @Getter
     public final IO handlerIO;
     @Getter
@@ -68,6 +70,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public NotifiableItemStackHandler setFilter(Predicate<ItemStack> filter) {
         this.storage.setFilter(filter);
         return this;
+    }
+
+    @Override
+    public TraitType<NotifiableItemStackHandler> getTraitType() {
+        return TYPE;
     }
 
     public void onContentsChanged() {

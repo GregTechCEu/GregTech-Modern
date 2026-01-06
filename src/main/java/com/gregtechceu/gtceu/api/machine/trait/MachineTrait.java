@@ -14,12 +14,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-/**
- * represents an abstract capability held by machine. Such as item, fluid, energy, etc.
- * All trait should be added while MetaMachine is creating. you cannot modify it on the fly。
- */
 public abstract class MachineTrait implements ISyncManaged {
 
+    public static class TraitType<T extends MachineTrait> {
+        public final Class<T> traitCls;
+        public final boolean allowMultiplePerMachine;
+        public TraitType(Class<T> cls) {
+            traitCls = cls;
+            allowMultiplePerMachine = true;
+        }
+
+        public TraitType(Class<T> cls, boolean allowMultiplePerMachine) {
+            traitCls = cls;
+            this.allowMultiplePerMachine = allowMultiplePerMachine;
+        }
+
+    }
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
@@ -33,8 +43,10 @@ public abstract class MachineTrait implements ISyncManaged {
         this.capabilityValidator = side -> true;
         /// Machine should never be null, unless this trait is a recipe handler instantiated outside a machine for
         /// recipe search.
-        if (machine != null) machine.attachTraits(this);
+        if (machine != null) machine.attachTrait(this);
     }
+
+    public abstract TraitType<?> getTraitType();
 
     public final boolean hasCapability(@Nullable Direction side) {
         return capabilityValidator.test(side);

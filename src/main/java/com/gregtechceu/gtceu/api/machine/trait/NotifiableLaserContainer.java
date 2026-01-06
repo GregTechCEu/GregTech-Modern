@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
 
+    public static TraitType<NotifiableLaserContainer> TYPE = new TraitType<>(NotifiableLaserContainer.class);
+
     public NotifiableLaserContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
         super(machine, maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
@@ -23,6 +25,11 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     public static NotifiableLaserContainer receiverContainer(MetaMachine machine, long maxCapacity,
                                                              long maxInputVoltage, long maxInputAmperage) {
         return new NotifiableLaserContainer(machine, maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
+    }
+
+    @Override
+    public TraitType<NotifiableLaserContainer> getTraitType() {
+        return TYPE;
     }
 
     @Override

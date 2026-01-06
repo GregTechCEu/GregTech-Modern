@@ -23,6 +23,8 @@ import java.util.EnumSet;
  */
 public class GridNodeHolder extends MachineTrait {
 
+    public static TraitType<GridNodeHolder> TYPE = new TraitType<>(GridNodeHolder.class);
+
     @Getter
     @SaveField
     protected final SerializableManagedGridNode mainNode;
@@ -30,6 +32,11 @@ public class GridNodeHolder extends MachineTrait {
     public GridNodeHolder(IGridConnectedMachine machine) {
         super(machine.self());
         this.mainNode = createManagedNode();
+    }
+
+    @Override
+    public TraitType<GridNodeHolder> getTraitType() {
+        return TYPE;
     }
 
     protected SerializableManagedGridNode createManagedNode() {

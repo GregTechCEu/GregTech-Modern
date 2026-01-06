@@ -2,10 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -96,6 +93,13 @@ public final class ProxySlotRecipeHandler {
     @Getter
     private static class ProxyItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
+        public static TraitType<ProxyItemRecipeHandler> TYPE = new TraitType<>(ProxyItemRecipeHandler.class);
+
+        @Override
+        public TraitType<ProxyItemRecipeHandler> getTraitType() {
+            return TYPE;
+        }
+
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
@@ -150,6 +154,13 @@ public final class ProxySlotRecipeHandler {
 
     @Getter
     private static class ProxyFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        public static TraitType<ProxyFluidRecipeHandler> TYPE = new TraitType<>(ProxyFluidRecipeHandler.class);
+
+        @Override
+        public TraitType<ProxyFluidRecipeHandler> getTraitType() {
+            return TYPE;
+        }
 
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;
