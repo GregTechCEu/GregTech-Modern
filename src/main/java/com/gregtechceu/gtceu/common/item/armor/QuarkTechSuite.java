@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
@@ -94,7 +93,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
 
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
-            if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+            if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
@@ -163,7 +162,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
             boolean boostedJump = data.contains("boostedJump") && data.getBoolean("boostedJump");
-            if (boostedJumpTimer == 0 && KeyBind.BOOTS_ENABLE.isKeyDown(player)) {
+            if (boostedJumpTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
                 boostedJump = !boostedJump;
                 boostedJumpTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
