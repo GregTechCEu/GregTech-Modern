@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -61,7 +61,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     private List<IndicatorGenerator> indicatorGenerators;
 
     public OreVeinDefinitionBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
     }
 
     @Tolerate

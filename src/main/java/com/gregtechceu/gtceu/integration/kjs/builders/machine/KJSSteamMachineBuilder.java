@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,7 +40,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     private MachineDefinition lpObject = null, hpObject = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.dummyBuilder = true;
     }
 

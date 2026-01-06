@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,12 +39,12 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
     public KJSTieredMultiblockBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.dummyBuilder = true;
     }
 
     public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.machine = machine;
         this.dummyBuilder = true;
     }

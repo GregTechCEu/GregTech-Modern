@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     public TagPrefixBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.base = create(id.getPath());
     }
 

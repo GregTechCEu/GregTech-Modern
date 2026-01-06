@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
         this.dummyBuilder = true;
@@ -65,7 +65,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
                                    BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.machine = machine;
         this.editableUI = editableUI;
         this.isGenerator = isGenerator;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.data.material.GTElements;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,9 +26,9 @@ public class ElementBuilder extends BuilderBase<Element> {
     public transient boolean isIsotope;
 
     public ElementBuilder(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         name = id.getPath();
-        translatableName = Component.translatable(this.id.toLanguageKey("element"));
+        translatableName = Component.translatable(id.toLanguageKey("element"));
     }
 
     @Override

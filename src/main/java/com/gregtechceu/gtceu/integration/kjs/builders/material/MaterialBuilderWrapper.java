@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.integration.kjs.ImplicitKubeResourceLocation;
+import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     private final Material.Builder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
-        super(ImplicitKubeResourceLocation.toGtceu(id));
+        super(KubeResourceLocationHelper.toGtceu(id));
         this.internal = new Material.Builder(this.id);
         this.dummyBuilder = true;
     }
