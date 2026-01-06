@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
 
