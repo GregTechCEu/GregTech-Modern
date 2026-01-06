@@ -11,11 +11,12 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(ID.class)
 public interface IDMixin {
 
-    @ModifyVariable(method = "of", name = "s", at = @At(value = "LOAD", ordinal = 0))
+    /// This mixin is injected just before the {@code s = "kubejs:" + s} line, inside the if statement.
+    /// That way we don't need to duplicate the implicit namespace checks.
+    /// @author screret
+    @ModifyVariable(method = "of", name = "s", at = @At(value = "LOAD", ordinal = 1))
     private static String gtceu$hookInferredKubeJSNamespace(String s, @Nullable Object o, boolean preferKJS) {
-        if (preferKJS && s.indexOf(':') == -1) {
-            GTResourceLocation.nextKubeResLocNamespaceIsImplicit();
-        }
+        GTResourceLocation.nextKubeResLocNamespaceIsImplicit();
         return s;
     }
 }
