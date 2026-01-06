@@ -247,8 +247,8 @@ public class CapeRegistry extends SavedData {
     }
 
     @SneakyThrows(CommandSyntaxException.class)
-    public static void giveRawCape(UUID uuid, @NotNull ResourceLocation cape) {
-        if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
+    public static void giveRawCape(UUID uuid, @Nullable ResourceLocation cape) {
+        if (cape != null && !CapeRegistry.ALL_CAPES.containsKey(cape)) {
             throw ERROR_NO_SUCH_CAPE.create(cape.toString());
         }
         CURRENT_CAPES.put(uuid, cape);
