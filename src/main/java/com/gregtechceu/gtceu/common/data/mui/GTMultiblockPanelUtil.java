@@ -52,7 +52,7 @@ public class GTMultiblockPanelUtil {
                                             String.format("%.2f", (float) 100.0f), 0.0f))
                     //.dynamic(() -> GTMultiblockTextUtil.addProgressLine(controller.isFormed(), isActiveSync.getBoolValue(), currentProgressSync.getIntValue(),
                     //        recipeLogic.getMaxProgress(), recipeLogic.getProgressPercent()))
-                    .asWidget()
+                    .asWidget().setEnabledIf((r) -> rlMachine.getRecipeLogic().isWorking())
                     );
         }
         parentWidget.child(listWidget.left(3).top(3));

@@ -60,7 +60,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         // IntSyncValue coilTierSV = new IntSyncValue(() -> this.coilTier);
         // syncManager.syncValue("coil", coilTierSV);
 
-        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[0].getTexture())
+        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[5].getTexture())
                 .imageSize(16, 16).colorType(ColorType.DEFAULT).tiled().build();
 
         // var coilWidget = coilTexture.asWidget().size(4, 16).heightRel(1.0f);
@@ -78,12 +78,13 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                                 .child(widget1)
                                 .child(panelUtil.getMainTextPanel(syncManager))
                                 .child(widget2))
-                        .child(new Column()
-                                .widthRel(1)
-                                .crossAxisAlignment(Alignment.CrossAxis.START)
-                                .childPadding(1)
-                                .child(new Rectangle().setColor(0xFF606060).asWidget()
-                                        .size(40, 1))
+                        //.child(new Column()
+                        //        .widthRel(1)
+                        //        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        //        .childPadding(1)
+                        //        .alignY(0.5f)
+                        //        .child(new Rectangle().setColor(0xFF606060).asWidget()
+                        //                .size(40, 1))
                                 /*
                                  * .child(IKey.dynamic(() ->
                                  * GTMultiblockTextUtil.addProgressLine(isFormed, isActive(),
@@ -97,7 +98,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                                 // getTier()).color(0xffffff).asWidget())
                                 // .child(GTMultiblockTextUtil.addEnergyUsageLine(isFormed,
                                 // getEnergyContainer()).color(0xffffff).asWidget())
-                                .left(20))
+                        //        .left(20))
 
                 )
                 .child(new Column()
