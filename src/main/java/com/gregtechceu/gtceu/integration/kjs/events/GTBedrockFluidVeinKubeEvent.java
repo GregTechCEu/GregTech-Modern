@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
 
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,12 +22,16 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class GTBedrockFluidVeinKubeEvent implements KubeEvent {
 
     private final WritableRegistry<BedrockFluidDefinition> registry;
+    private final RegistryAccess registries;
 
-    public GTBedrockFluidVeinKubeEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+    public GTBedrockFluidVeinKubeEvent(WritableRegistry<BedrockFluidDefinition> registry,
+                                       RegistryAccess registries) {
         this.registry = registry;
+        this.registries = registries;
     }
 
     public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
