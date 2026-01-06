@@ -12,6 +12,7 @@ import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.rhino.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.UnaryOperator;
@@ -68,5 +69,24 @@ public record GTResourceLocation(ResourceLocation wrapped) {
 
     public GTResourceLocation withSuffix(String pathSuffix) {
         return new GTResourceLocation(wrapped.withSuffix(pathSuffix));
+    }
+
+    private static final ThreadLocal<Boolean> IMPLICIT_KUBE_JS_NAMESPACE = ThreadLocal.withInitial(() -> false);
+
+    @ApiStatus.Internal
+    public static void nextKubeResLocNamespaceIsImplicit() {
+        IMPLICIT_KUBE_JS_NAMESPACE.set(true);
+    }
+
+    public static ResourceLocation unwrapMaybeImplicitResourceLocation(ResourceLocation location) {
+        try {
+            if (IMPLICIT_KUBE_JS_NAMESPACE.get() == true) {
+                return GTCEu.id(location.getPath());
+            } else {
+                return location;
+            }
+        } finally {
+            IMPLICIT_KUBE_JS_NAMESPACE.remove();
+        }
     }
 }
