@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
 import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
-import com.gregtechceu.gtceu.integration.kjs.KubeResourceLocationHelper;
 import com.gregtechceu.gtceu.integration.kjs.Validator;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -24,7 +24,7 @@ public class DimensionMarkerBuilder extends BuilderBase<DimensionMarker> {
     private String overrideName;
 
     public DimensionMarkerBuilder(ResourceLocation dimKey) {
-        super(KubeResourceLocationHelper.toGtceu(dimKey));
+        super(GTResourceLocation.implicitAsGtceu(dimKey));
     }
 
     @Override
