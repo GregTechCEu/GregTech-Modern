@@ -25,12 +25,9 @@ public class WirelessTransmitterCoverTest {
 
     @GameTest(template = "central_monitor", batch = "coverTests")
     public static void wirelessTransmitterCoverTest(GameTestHelper helper) {
-        CentralMonitorMachine machine = (CentralMonitorMachine) TestUtils
-                .getMetaMachine(helper.getBlockEntity(new BlockPos(1, 3, 2)));
-        DataAccessHatchMachine dataHatch = (DataAccessHatchMachine) TestUtils
-                .getMetaMachine(helper.getBlockEntity(new BlockPos(1, 2, 2)));
-        BatteryBufferMachine batteryBuffer = (BatteryBufferMachine) TestUtils
-                .getMetaMachine(helper.getBlockEntity(new BlockPos(2, 2, 3)));
+        CentralMonitorMachine machine = (CentralMonitorMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
+        DataAccessHatchMachine dataHatch = (DataAccessHatchMachine) helper.getBlockEntity(new BlockPos(1, 2, 2));
+        BatteryBufferMachine batteryBuffer = (BatteryBufferMachine) helper.getBlockEntity(new BlockPos(2, 2, 3));
         WirelessTransmitterCover cover = (WirelessTransmitterCover) batteryBuffer.getCoverContainer()
                 .getCoverAtSide(Direction.UP);
         MonitorGroup group = machine.getMonitorGroups().get(0);

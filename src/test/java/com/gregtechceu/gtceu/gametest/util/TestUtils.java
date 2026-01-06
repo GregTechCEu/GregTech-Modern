@@ -27,7 +27,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -262,16 +261,6 @@ public class TestUtils {
 
     public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
-    }
-
-    /**
-     * Shortcut function to cast a BE to a metamachine
-     *
-     * @param entity The BlockEntity
-     * @return the machine held, if any
-     */
-    public static MetaMachine getMetaMachine(BlockEntity entity) {
-        return (MetaMachine) entity;
     }
 
     /**
