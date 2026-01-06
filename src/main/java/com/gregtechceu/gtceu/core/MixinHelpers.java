@@ -36,6 +36,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -58,7 +59,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -133,6 +133,9 @@ public class MixinHelpers {
 
             GTMaterialItems.ARMOR_ITEMS.rowMap().forEach((material, map) -> {
                 map.forEach((type, item) -> {
+                    if (type == null || type == ArmorItem.Type.BODY) {
+                        return;
+                    }
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE);
@@ -143,14 +146,7 @@ public class MixinHelpers {
                             case CHESTPLATE -> ItemTags.CHEST_ARMOR.location();
                             case LEGGINGS -> ItemTags.LEG_ARMOR.location();
                             case BOOTS -> ItemTags.FOOT_ARMOR.location();
-                            case BODY -> Tags.Items.ARMORS.location();
-                        }, $ -> new ArrayList<>()).add(entry);
-                        tagMap.computeIfAbsent(switch (type) {
-                            case HELMET -> ItemTags.HEAD_ARMOR_ENCHANTABLE.location();
-                            case CHESTPLATE -> ItemTags.CHEST_ARMOR_ENCHANTABLE.location();
-                            case LEGGINGS -> ItemTags.LEG_ARMOR_ENCHANTABLE.location();
-                            case BOOTS -> ItemTags.FOOT_ARMOR_ENCHANTABLE.location();
-                            case BODY -> Tags.Items.ENCHANTABLES.location();
+                            default -> throw new IllegalStateException("Unexpected value: " + type);
                         }, $ -> new ArrayList<>()).add(entry);
                     }
                 });
