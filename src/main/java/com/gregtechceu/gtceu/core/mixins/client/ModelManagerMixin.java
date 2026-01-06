@@ -8,7 +8,6 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoader;
 
 import org.spongepowered.asm.mixin.Mixin;
