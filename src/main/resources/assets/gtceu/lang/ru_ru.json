@@ -5889,7 +5889,7 @@
     "item.gtceu.small_pipe_casting_mold": "Отливная форма (Малая труба)",
     "item.gtceu.text_module": "Текстовый модуль",
     "item.gtceu.tiny_pipe_casting_mold": "Отливная форма (Очень малая труба)",
-    "item.gtceu.tool.behavior.dowse_campfire": "§Пожаротушение: §fГасит костры",
+    "item.gtceu.tool.behavior.dowse_campfire": "§1Пожаротушение: §fГасит костры",
     "item.gtceu.tool.behavior.prospecting.air": "Обнаружен воздушный карман",
     "item.gtceu.tool.behavior.prospecting.changing": "Обнаружено изменение материала",
     "item.gtceu.tool.behavior.prospecting.lava": "Обнаружена лава",
@@ -5897,5 +5897,6 @@
     "item.gtceu.tool.behavior.prospecting.water": "Обнаружена вода",
     "item.gtceu.tool.tooltip.default_enchantments": "§5Стандартные чары:",
     "item.gtceu.wireless_transmitter_cover": "Беспроводной передатчик",
-    "config.gtceu.option.replaceWithCobbleVersion": "replaceWithCobbleVersion"
+    "config.gtceu.option.replaceWithCobbleVersion": "replaceWithCobbleVersion",
+    "material.gtceu.tuff": "Туфф"
 }
