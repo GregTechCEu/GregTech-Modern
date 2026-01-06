@@ -63,7 +63,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     @Override
-    public final TraitType getTraitType() {
+    public final TraitType<RecipeLogic> getTraitType() {
         return TYPE;
     }
 

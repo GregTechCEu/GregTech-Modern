@@ -246,7 +246,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @SuppressWarnings("unchecked")
     public <T extends MachineTrait> List<T> getTraits(MachineTrait.TraitType<T> type) {
-        return (List<T>) traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>());
+        return (List<T>)Collections.unmodifiableList(traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>()));
     }
 
 
