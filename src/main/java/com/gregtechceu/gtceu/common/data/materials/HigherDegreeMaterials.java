@@ -197,7 +197,7 @@ public class HigherDegreeMaterials {
 
         Blackstone = new Material.Builder(GTCEu.id("blackstone"))
                 .dust()
-                .color(0x090a0a).iconSet(ROUGH)
+                .color(0x3c3947).secondaryColor(0x160f10).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .components(DarkAsh, 2, Basalt, 1, Stone, 5)
                 .buildAndRegister();

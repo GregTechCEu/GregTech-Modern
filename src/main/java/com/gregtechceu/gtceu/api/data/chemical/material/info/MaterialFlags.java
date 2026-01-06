@@ -85,6 +85,11 @@ public class MaterialFlags {
      */
     public static final MaterialFlag PHOSPHORESCENT = new MaterialFlag.Builder("phosphorescent").build();
 
+    /**
+     * Add to material if it is fire resistant
+     */
+    public static final MaterialFlag FIRE_RESISTANT = new MaterialFlag.Builder("fire_resistant").build();
+
     //////////////////
     // DUST //
     //////////////////
