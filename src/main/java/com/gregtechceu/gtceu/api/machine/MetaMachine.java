@@ -39,8 +39,8 @@ import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
@@ -903,7 +903,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     private static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, @Nullable Direction accessSide,
-                                                        Class<T> capability) {
+                                                         Class<T> capability) {
         if (traits.isEmpty()) return Collections.emptyList();
         List<T> list = new ArrayList<>();
         for (MachineTrait trait : traits) {
@@ -915,7 +915,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public static @NotNull <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
-                                                                        @Nullable Direction side) {
+                                                             @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(machine::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {

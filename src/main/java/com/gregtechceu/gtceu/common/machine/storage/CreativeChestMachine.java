@@ -49,7 +49,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     protected void checkAutoOutput() {
         if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputItems()) {
+            if (isAutoOutputItems() && getOutputFacingItems() != null) {
                 cache.exportToNearby(getOutputFacingItems());
             }
             updateAutoOutputSubscription();

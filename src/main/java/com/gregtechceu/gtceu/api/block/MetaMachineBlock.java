@@ -19,7 +19,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -315,7 +314,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
-
     //////////////////////////////////////
     // ***** Redstone Signals ****//
     //////////////////////////////////////
@@ -416,5 +414,4 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         }
         return null;
     }
-
 }

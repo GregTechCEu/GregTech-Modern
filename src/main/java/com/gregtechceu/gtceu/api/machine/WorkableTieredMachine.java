@@ -64,7 +64,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Function<WorkableTieredMachine, RecipeLogic> recipeLogicSupplier, int importSlots, int exportSlots,
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier,
+                                 Function<WorkableTieredMachine, RecipeLogic> recipeLogicSupplier, int importSlots,
+                                 int exportSlots,
                                  int fluidImportSlots, int fluidExportSlots, Int2IntFunction tankScalingFunction) {
         super(info, tier);
         this.overclockTier = getMaxOverclockTier();
@@ -76,8 +78,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeLogic = recipeLogicSupplier.apply(this);
         this.importItems = new NotifiableItemStackHandler(this, importSlots, IO.IN, IO.BOTH);
         this.exportItems = new NotifiableItemStackHandler(this, exportSlots, IO.OUT);
-        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, tankScalingFunction.applyAsInt(getTier()), IO.IN, IO.BOTH);
-        this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, tankScalingFunction.applyAsInt(getTier()), IO.OUT);
+        this.importFluids = new NotifiableFluidTank(this, fluidImportSlots, tankScalingFunction.applyAsInt(getTier()),
+                IO.IN, IO.BOTH);
+        this.exportFluids = new NotifiableFluidTank(this, fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
+                IO.OUT);
         this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
         this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
     }
@@ -91,10 +95,14 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = new RecipeLogic(this);
-        this.importItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
-        this.exportItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
-        this.importFluids = new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP), tankScalingFunction.applyAsInt(getTier()), IO.IN);
-        this.exportFluids = new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP), tankScalingFunction.applyAsInt(getTier()), IO.OUT);
+        this.importItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
+                IO.IN);
+        this.exportItems = new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
+                IO.OUT);
+        this.importFluids = new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
+                tankScalingFunction.applyAsInt(getTier()), IO.IN);
+        this.exportFluids = new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                tankScalingFunction.applyAsInt(getTier()), IO.OUT);
         this.importComputation = new NotifiableComputationContainer(this, IO.IN, true);
         this.exportComputation = new NotifiableComputationContainer(this, IO.OUT, false);
     }
