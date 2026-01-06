@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Original logic from
+ * <a href=
+ * "https://https://github.com/KubeJS-Mods/KubeJS/blob/main/src/main/java/dev/latvian/mods/kubejs/holder/HolderWrapper.java">KubeJS</a>
+ */
 public interface SpecialHolderWrapper {
 
     static boolean canWrapHolderSet(@Nullable Object from, TypeInfo target) {
