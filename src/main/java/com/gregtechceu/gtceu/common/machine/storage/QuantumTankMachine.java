@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
@@ -375,12 +376,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     protected class FluidCache extends MachineTrait implements IFluidHandler {
 
-        public static MachineTrait.TraitType<FluidCache> TYPE = new TraitType<>(FluidCache.class);
-
-        @Override
-        public TraitType<FluidCache> getTraitType() {
-            return TYPE;
-        }
+        public static MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
 
         private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 

@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -220,31 +221,32 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
 
     private final List<MachineTrait> traits;
-    private final Map<MachineTrait.TraitType<?>, List<MachineTrait>> traitsByType;
+    private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
 
     public List<MachineTrait> getAllTraits() {
         return Collections.unmodifiableList(traits);
     }
 
     public void attachTrait(MachineTrait trait) {
-        traitsByType.computeIfAbsent(trait.getTraitType(), $ -> new ObjectArrayList<>());
-        if (!trait.getTraitType().allowMultiplePerMachine && traitsByType.get(trait.getTraitType()).size() == 1) {
+        var traitType = MachineTraitType.getTraitType(trait.getClass());
+        traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
+        if (!traitType.allowMultiplePerMachine && traitsByType.get(traitType).size() == 1) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
         }
         traits.add(trait);
-        traitsByType.get(trait.getTraitType()).add(trait);
+        traitsByType.get(traitType).add(trait);
     }
 
     // Gets the first trait with the specified type.
-    public <T extends MachineTrait> @Nullable T getTrait(MachineTrait.TraitType<T> type) {
+    public <T extends MachineTrait> Optional<T> getTrait(MachineTraitType<T> type) {
         traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>());
         List<MachineTrait> traitList = traitsByType.get(type);
-        if (traitList.isEmpty()) return null;
-        return type.traitCls.cast(traitList.get(0));
+        if (traitList.isEmpty()) return Optional.empty();
+        return Optional.ofNullable(type.traitCls.cast(traitList.get(0)));
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends MachineTrait> List<T> getTraits(MachineTrait.TraitType<T> type) {
+    public <T extends MachineTrait> List<T> getTraits(MachineTraitType<T> type) {
         return (List<T>)Collections.unmodifiableList(traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>()));
     }
 
@@ -761,6 +763,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (cover == null) return 0;
 
         return cover.getRedstoneSignalOutput();
+    }
+
+    public int getOutputDirectSignal(@Nullable Direction side) {
+        // IDK what this does but MC wants it
+        return 0;
     }
 
     public int getAnalogOutputSignal() {

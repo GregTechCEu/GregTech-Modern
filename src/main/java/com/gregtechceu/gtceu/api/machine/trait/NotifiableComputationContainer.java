@@ -28,7 +28,7 @@ import java.util.List;
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
-    public static TraitType<NotifiableComputationContainer> TYPE = new TraitType<>(NotifiableComputationContainer.class);
+    public static MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(NotifiableComputationContainer.class);
 
     @Getter
     protected IO handlerIO;
@@ -44,11 +44,6 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         this.transmitter = transmitter;
 
         this.lastTimeStamp = Long.MIN_VALUE;
-    }
-
-    @Override
-    public TraitType<NotifiableComputationContainer> getTraitType() {
-        return TYPE;
     }
 
     @Override

@@ -442,18 +442,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
-        public static TraitType<ItemCache> TYPE = new TraitType<>(ItemCache.class);
+        public static MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
 
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 GTUtil.isSameItemSameTags(i, getLockedItem());
 
         public ItemCache(MetaMachine holder) {
             super(holder);
-        }
-
-        @Override
-        public TraitType<ItemCache> getTraitType() {
-            return TYPE;
         }
 
         @Override

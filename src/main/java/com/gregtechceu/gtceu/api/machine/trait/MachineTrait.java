@@ -16,20 +16,6 @@ import java.util.function.Predicate;
 
 public abstract class MachineTrait implements ISyncManaged {
 
-    public static class TraitType<T extends MachineTrait> {
-        public final Class<T> traitCls;
-        public final boolean allowMultiplePerMachine;
-        public TraitType(Class<T> cls) {
-            traitCls = cls;
-            allowMultiplePerMachine = true;
-        }
-
-        public TraitType(Class<T> cls, boolean allowMultiplePerMachine) {
-            traitCls = cls;
-            this.allowMultiplePerMachine = allowMultiplePerMachine;
-        }
-
-    }
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
@@ -45,8 +31,6 @@ public abstract class MachineTrait implements ISyncManaged {
         /// recipe search.
         if (machine != null) machine.attachTrait(this);
     }
-
-    public abstract TraitType<?> getTraitType();
 
     public final boolean hasCapability(@Nullable Direction side) {
         return capabilityValidator.test(side);

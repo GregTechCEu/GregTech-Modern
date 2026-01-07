@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import net.minecraft.core.Direction;
 
 import appeng.api.networking.GridHelper;
@@ -13,7 +14,7 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
-    public static TraitType<GridNodeHostTrait> TYPE = new TraitType<>(GridNodeHostTrait.class);
+    public static MachineTraitType<GridNodeHostTrait> TYPE = new MachineTraitType<>(GridNodeHostTrait.class);
 
     private final IManagedGridNode proxy;
 
@@ -22,11 +23,6 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
         this.proxy = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(machine.getDefinition().getItem());
-    }
-
-    @Override
-    public TraitType<GridNodeHostTrait> getTraitType() {
-        return TYPE;
     }
 
     public void init() {

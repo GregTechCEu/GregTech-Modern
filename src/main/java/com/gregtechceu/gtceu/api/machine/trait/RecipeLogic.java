@@ -45,7 +45,7 @@ import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IWorkable, IFancyTooltip {
 
-    public static TraitType<RecipeLogic> TYPE = new TraitType<>(RecipeLogic.class, false);
+    public static MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
 
     public enum Status implements StringRepresentable {
 
@@ -60,11 +60,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         Status(String name) {
             this.serializedName = name;
         }
-    }
-
-    @Override
-    public final TraitType<RecipeLogic> getTraitType() {
-        return TYPE;
     }
 
     public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;

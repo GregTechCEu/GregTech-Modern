@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true)
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
-    public static TraitType<ItemHandlerProxyTrait> TYPE = new TraitType<>(ItemHandlerProxyTrait.class);
+    public static MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(ItemHandlerProxyTrait.class);
 
     @Getter
     public final IO capabilityIO;
@@ -29,11 +29,6 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
     public ItemHandlerProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
         this.capabilityIO = capabilityIO;
-    }
-
-    @Override
-    public TraitType<ItemHandlerProxyTrait> getTraitType() {
-        return TYPE;
     }
 
     //////////////////////////////////////

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -59,6 +60,8 @@ public final class InternalSlotRecipeHandler {
     @Getter
     private static class SlotItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
+        public static MachineTraitType<SlotItemRecipeHandler> TYPE = new MachineTraitType<>(SlotItemRecipeHandler.class);
+
         private final InternalSlot slot;
         private final int priority;
 
@@ -93,6 +96,9 @@ public final class InternalSlotRecipeHandler {
 
     @Getter
     private static class SlotFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        public static MachineTraitType<SlotFluidRecipeHandler> TYPE = new MachineTraitType<>(SlotFluidRecipeHandler.class);
+
 
         private final InternalSlot slot;
         private final int priority;
