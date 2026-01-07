@@ -62,7 +62,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
                 this.syncManager.getModularSyncManager() != getSyncManager().getModularSyncManager()) {
             throw new IllegalStateException("Can't reopen synced panel in another screen!");
         } else if (this.syncManager == null) {
-            this.syncManager = new PanelSyncManager(client);
+            this.syncManager = new PanelSyncManager(getSyncManager().getModularSyncManager(), false);
             this.openedPanel = Objects.requireNonNull(createUI(this.syncManager));
             this.panelName = this.openedPanel.getName();
             this.openedPanel.setPanelSyncHandler(this);
@@ -123,7 +123,7 @@ public final class PanelSyncHandler extends SyncHandler implements IPanelHandler
         if (openedPanel == null || isPanelOpen()) return;
         boolean canDispose = WidgetTree.foreachChild(openedPanel, iWidget -> {
             if (iWidget instanceof ISynced<?> synced && synced.isSynced()) {
-                return !(synced.getSyncHandler() instanceof ItemSlotSH);
+                return !(synced.getSyncHandler() instanceof ItemSlotSyncHandler);
             }
             return true;
         }, false);

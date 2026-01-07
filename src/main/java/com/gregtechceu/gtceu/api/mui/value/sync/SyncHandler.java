@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 
 import com.gregtechceu.gtceu.api.mui.base.IPacketWriter;
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
+import com.gregtechceu.gtceu.common.network.ModularNetworkSide;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
@@ -83,11 +84,7 @@ public abstract class SyncHandler implements ISyncOrValue {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         buffer.writeVarInt(id);
         bufferConsumer.write(buffer);
-        if (getSyncManager().isClient()) {
-            sendToServer(getSyncManager().getPanelName(), buffer, this);
-        } else {
-            sendToClient(getSyncManager().getPanelName(), buffer, this);
-        }
+        send(ModularNetwork.get(getSyncManager().isClient()), getSyncManager().getPanelName(), buffer, this);
     }
 
     /**
@@ -161,27 +158,31 @@ public abstract class SyncHandler implements ISyncOrValue {
         return this.syncManager;
     }
 
+    public final boolean isRegistered() {
+        return isValid() && this.syncManager.hasSyncHandler(this);
+    }
+
     @Override
     public boolean isSyncHandler() {
         return true;
     }
 
-    public static void sendToClient(String panel, FriendlyByteBuf buffer, SyncHandler syncHandler) {
+    private static void send(ModularNetworkSide network, String panel, FriendlyByteBuf buffer,
+                             SyncHandler syncHandler) {
         Objects.requireNonNull(buffer);
         Objects.requireNonNull(syncHandler);
         if (!syncHandler.isValid()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Not initialized sync handlers can't send packets!");
         }
-        GTNetwork.sendToPlayer((ServerPlayer) syncHandler.syncManager.getPlayer(),
-                new SyncHandlerPacket(panel, syncHandler.getKey(), false, buffer));
+        network.sendSyncHandlerPacket(panel, syncHandler, buffer, syncHandler.syncManager.getPlayer());
     }
 
+    public static void sendToClient(String panel, FriendlyByteBuf buffer, SyncHandler syncHandler) {
+        send(ModularNetwork.SERVER, panel, buffer, syncHandler);
+    }
+
+    @SideOnly(Side.CLIENT)
     public static void sendToServer(String panel, FriendlyByteBuf buffer, SyncHandler syncHandler) {
-        Objects.requireNonNull(buffer);
-        Objects.requireNonNull(syncHandler);
-        if (!syncHandler.isValid()) {
-            throw new IllegalStateException();
-        }
-        GTNetwork.sendToServer(new SyncHandlerPacket(panel, syncHandler.getKey(), false, buffer));
+        send(ModularNetwork.CLIENT, panel, buffer, syncHandler);
     }
 }

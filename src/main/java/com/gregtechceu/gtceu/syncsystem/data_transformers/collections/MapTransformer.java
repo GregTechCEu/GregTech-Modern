@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
@@ -39,7 +40,8 @@ public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
     @Override
     public Map<K, V> deserializeNBT(Tag tag, ISyncManaged holder, Map<K, V> current) {
         if (!(tag instanceof ListTag listTag)) return current;
-        current.clear();
+        if (current != null) current.clear();
+        else current = new HashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
             K key = keyTransformer.deserializeNBT(compound.get("k"), null, null);
