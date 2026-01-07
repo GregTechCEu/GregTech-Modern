@@ -1,10 +1,5 @@
 package com.gregtechceu.gtceu.common.network.packets.ui;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.mui.factory.GuiManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
-import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
-import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.ModularNetwork;
 import com.gregtechceu.gtceu.utils.NetworkUtils;

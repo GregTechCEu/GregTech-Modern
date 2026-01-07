@@ -120,7 +120,8 @@ public class GuiManager {
 
     @ApiStatus.Internal
     @OnlyIn(Dist.CLIENT)
-    public static <T extends GuiData> void openFromClient(int windowId, int networkId, boolean inWorldUI, @NotNull UIFactory<T> factory,
+    public static <T extends GuiData> void openFromClient(int windowId, int networkId, boolean inWorldUI,
+                                                          @NotNull UIFactory<T> factory,
                                                           @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
@@ -216,7 +217,7 @@ public class GuiManager {
     @SubscribeEvent
     public static void onCloseContainer(PlayerContainerEvent.Close event) {
         if (event.getContainer() instanceof ModularContainerMenu modularContainer) {
-            modularContainer.removed();
+            modularContainer.removed(event.getEntity());
         }
     }
 

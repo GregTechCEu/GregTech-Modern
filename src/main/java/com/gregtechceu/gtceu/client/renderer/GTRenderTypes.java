@@ -84,7 +84,7 @@ public class GTRenderTypes extends RenderType {
     public static RenderType inWorldGui() {
         return INWORLD_GUI;
     }
-    
+
     public static RenderType guiTriangleStrip() {
         return GUI_TRIANGLE_STRIP;
     }
