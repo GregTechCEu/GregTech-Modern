@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
@@ -476,7 +476,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     public ItemSlot createBatterySlot(PanelSyncManager syncManager) {
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(this.chargerInventory, 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(this.chargerInventory, 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }

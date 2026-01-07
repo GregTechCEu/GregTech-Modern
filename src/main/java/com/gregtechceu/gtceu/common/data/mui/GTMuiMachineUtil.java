@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
@@ -36,7 +36,7 @@ public class GTMuiMachineUtil {
                 .matrix(matrix)
                 .key(key, i -> {
                     ModularSlot slot = new ModularSlot(itemHandler, i);
-                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue(slotGroupName, i, syncHandler);
                     return slotModifier.apply(new ItemSlot()
                             .syncHandler(slotGroupName, i));

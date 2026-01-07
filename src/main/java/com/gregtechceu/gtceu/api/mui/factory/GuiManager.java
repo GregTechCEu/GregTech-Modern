@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.mui.base.IMuiScreen;
 import com.gregtechceu.gtceu.api.mui.base.MCHelper;
 import com.gregtechceu.gtceu.api.mui.base.UIFactory;
 import com.gregtechceu.gtceu.api.mui.base.XeiSettings;
+import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.WidgetTree;
 import com.gregtechceu.gtceu.client.mui.screen.*;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
 import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
 
 import net.minecraft.client.gui.screens.Screen;
@@ -72,7 +74,8 @@ public class GuiManager {
         // create panel, collect sync handlers and create menu
         UISettings settings = new UISettings(XeiSettings.DUMMY);
         settings.defaultCanInteractWith(factory, guiData);
-        PanelSyncManager syncManager = new PanelSyncManager(false);
+        ModularSyncManager msm = new ModularSyncManager(false);
+        PanelSyncManager syncManager = new PanelSyncManager(msm, true);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
 
@@ -82,51 +85,60 @@ public class GuiManager {
             player.closeContainer();
         }
         int windowId = player.containerCounter;
-        ModularContainerMenu menu = settings.hasContainer() ? settings.createContainer(windowId) :
+        ModularContainerMenu menu = settings.hasCustomContainer() ? settings.createContainer(windowId) :
                 factory.createContainer(windowId);
-        menu.construct(player, syncManager, settings, panel.getName(), guiData);
+        menu.construct(player, msm, settings, panel.getName(), guiData);
 
         // sync to client
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         factory.writeGuiData(guiData, buffer);
-        GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, factory, buffer));
+        int nid = ModularNetwork.SERVER.activate(msm);
+        GTNetwork.sendToPlayer(player, new OpenGuiPacket<>(windowId, nid, factory, buffer));
         // open the menu // this mimics forge behaviour
         player.initMenu(menu);
         player.containerMenu = menu;
+        // init mui syncer
+        msm.onOpen();
         // finally invoke event
         MinecraftForge.EVENT_BUS.post(new PlayerContainerEvent.Open(player, menu));
     }
 
     @ApiStatus.Internal
     @OnlyIn(Dist.CLIENT)
-    public static <T extends GuiData> void openFromClient(int windowId, @NotNull UIFactory<T> factory,
+    public static <T extends GuiData> void openFromClient(int windowId, int networkId, @NotNull UIFactory<T> factory,
                                                           @NotNull FriendlyByteBuf data, @NotNull LocalPlayer player) {
         T guiData = factory.readGuiData(player, data);
         UISettings settings = new UISettings();
         settings.defaultCanInteractWith(factory, guiData);
-        PanelSyncManager syncManager = new PanelSyncManager(true);
+        ModularSyncManager msm = new ModularSyncManager(true);
+        PanelSyncManager syncManager = new PanelSyncManager(msm, true);
         ModularPanel panel = factory.createPanel(guiData, syncManager, settings);
         WidgetTree.collectSyncValues(syncManager, panel);
         ModularScreen screen = factory.createScreen(guiData, panel);
         screen.getContext().setSettings(settings);
-        ModularContainerMenu container = settings.hasContainer() ? settings.createContainer(windowId) :
+        ModularContainerMenu container = settings.hasCustomContainer() ? settings.createContainer(windowId) :
                 factory.createContainer(windowId);
-        container.construct(player, syncManager, settings, panel.getName(), guiData);
-        IMuiScreen wrapper = factory.createScreenWrapper(container, screen);
+        container.construct(player, msm, settings, panel.getName(), guiData);
+        IMuiScreen wrapper = settings.hasCustomGui() ? settings.createGui(container, screen) :
+                factory.createScreenWrapper(container, screen);
         if (!(wrapper.getWrappedScreen() instanceof AbstractContainerScreen<?> guiContainer)) {
             throw new IllegalStateException("The wrapping screen must be a GuiContainer for synced GUIs!");
         }
         if (guiContainer.getMenu() != container)
             throw new IllegalStateException("Custom Containers are not yet allowed!");
+        ModularNetwork.CLIENT.activate(networkId, msm);
         MCHelper.setScreen(wrapper.getWrappedScreen());
         player.containerMenu = guiContainer.getMenu();
+        msm.onOpen();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <T extends GuiData> void openFromClient(@NotNull UIFactory<T> factory, @NotNull T guiData) {
+        // notify server to open the gui
+        // server will send packet back to actually open the gui
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         factory.writeGuiData(guiData, buffer);
-        GTNetwork.sendToServer(new OpenGuiPacket<>(0, factory, buffer));
+        GTNetwork.sendToServer(new OpenGuiPacket<>(0, 0, factory, buffer));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -138,7 +150,7 @@ public class GuiManager {
         }
         screen.getContext().setSettings(settings);
         Screen guiScreen;
-        if (settings.hasContainer()) {
+        if (settings.hasCustomContainer()) {
             ModularContainerMenu container = settings.createContainer(0);
             container.constructClientOnly();
             guiScreen = new ContainerScreenWrapper(container, screen);
@@ -152,20 +164,6 @@ public class GuiManager {
     public static void onTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             openedContainers.clear();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getContainer() instanceof ModularContainerMenu modularContainer) {
-            modularContainer.opened();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onCloseContainer(PlayerContainerEvent.Close event) {
-        if (event.getContainer() instanceof ModularContainerMenu modularContainer) {
-            modularContainer.removed();
         }
     }
 }

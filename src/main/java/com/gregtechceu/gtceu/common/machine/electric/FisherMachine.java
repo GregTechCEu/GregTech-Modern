@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -447,7 +447,7 @@ public class FisherMachine extends TieredEnergyMachine
                 (b) -> active = b);
         syncManager.syncValue("working_enabled", power);
 
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(getChargerInventory(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(getChargerInventory(), 0));
         syncManager.syncValue("battery", battery);
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
