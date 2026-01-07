@@ -131,23 +131,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     output = items[0];
                 }
                 amount = output.getCount();
-                if (io == IO.OUT) {
-                    int outputStorageLimit = 0;
-                    for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                        ItemStack stack = storage.getStackInSlot(slot);
-                        if (stack.isEmpty() || GTUtil.isSameItemSameTags(stack, output)) {
-                            outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
-                        }
-                    }
-                    if (provider.getCountProvider().getMinValue() > outputStorageLimit) {
-                        it.remove();
-                        continue;
-                    } else if (simulate) {
-                        amount = provider.getCountProvider().getMaxValue();
-                    } else {
-                        amount = Math.min(output.getCount(), outputStorageLimit);
-                    }
-                }
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {

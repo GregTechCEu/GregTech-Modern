@@ -106,7 +106,7 @@ public class ForgeClientEventListener {
         newFov *= ((float) getValueWithoutWalkingBoost(moveSpeed) / walkSpeed + 1.0F) /
                 2.0F;
 
-        event.setNewFovModifier(originalFov / newFov);
+        event.setNewFovModifier(newFov / originalFov);
     }
 
     private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
