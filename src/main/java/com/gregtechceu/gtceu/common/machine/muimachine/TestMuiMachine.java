@@ -19,12 +19,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
@@ -38,6 +34,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.network.chat.Component;
@@ -77,7 +74,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     };
 
     private final FluidTank fluidTank = new FluidTank(10000);
-    private final FluidTank fluidTankPhantom = new FluidTank(Integer.MAX_VALUE);
+    private final FluidTank fluidTankPhantom = new FluidTank(500000);
     private long time = 0;
     private int val, val2 = 0;
     private String value = "";
@@ -116,6 +113,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // settings.customContainer(() -> new CraftingModularContainer(3, 3, this.craftingInventory));
+        // settings.customGui(() -> TestGuiContainer::new);
 
         syncManager.registerSlotGroup("item_inv", 3);
         syncManager.registerSlotGroup("mixer_items", 2);
@@ -139,8 +137,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     for (int i = 0; i < handler.getSlots(); i++) {
                         int finalI = i;
                         flow.child(new ItemSlot()
-                                .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSH.class,
-                                        () -> new ItemSlotSH(new ModularSlot(handler, finalI)))));
+                                .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSyncHandler.class,
+                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, finalI)))));
                     }
                     return flow;
                 });
@@ -368,6 +366,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .child(new FluidSlot()
                                                                         .margin(2)
                                                                         .width(30)
+                                                                        .alwaysShowFull(false)
                                                                         .syncHandler(SyncHandlers
                                                                                 .fluidSlot(this.fluidTankPhantom)
                                                                                 .phantom(true)))
@@ -406,10 +405,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                             .slotGroup("item_inv"));
                                                         })
                                                         .build().name("9 slot inv")
-                                                        // .marginBottom(2)
-                                                        .child(new SortButtons()
-                                                                .slotGroup("item_inv")
-                                                                .right(0).top(-11)))
+                                                        .placeSortButtonsTopRightVertical()
+                                                // .marginBottom(2)
+                                                )
                                                 .child(SlotGroupWidget.builder()
                                                         .row("FII")
                                                         .row("FII")
@@ -423,7 +421,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                 .filter(stack -> !stack.getCapability(
                                                                                         ForgeCapabilities.ITEM_HANDLER)
                                                                                         .isPresent())))
-                                                        .build().name("mixer inv"))
+                                                        .build().name("mixer inv")
+                                                        .disableSortButtons())
                                                 .child(new Row()
                                                         .coverChildrenHeight()
                                                         .child(new CycleButtonWidget()
@@ -590,7 +589,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)
-                        .overlay(IKey.str("3"))
+                        .overlay((new FluidDrawable().setFluid(GTMaterials.Iron.getFluid(200))), IKey.str("3"))
+                        .size(50, 50)
                         .onMousePressed((mouseX, mouseY, mouseButton) -> {
                             panelSyncHandler.openPanel();
                             return true;

@@ -215,13 +215,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
 
     /**
      * Retrieves, verifies and initialises a linked sync handler.
-     * Custom logic should be handled in {@link #isValidSyncHandler(SyncHandler)}.
+     * Custom logic should be handled in {@link #setSyncOrValue(ISyncOrValue)}.
      */
     @Override
     public void initialiseSyncHandler(ModularSyncManager syncManager, boolean late) {
         SyncHandler handler = this.syncHandler;
         if (handler == null && this.syncKey != null) {
             handler = syncManager.getSyncHandler(getPanel().getName(), this.syncKey);
+            if (handler == null && !syncManager.getMainPSM().getPanelName().equals(getPanel().getName())) {
+                handler = syncManager.getMainPSM().getSyncHandlerFromMapKey(this.syncKey);
+            }
         }
         if (handler != null) setSyncOrValue(handler);
         setSyncHandler(handler);

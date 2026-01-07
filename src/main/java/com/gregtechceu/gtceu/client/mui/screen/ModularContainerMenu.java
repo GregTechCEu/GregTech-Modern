@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
@@ -111,12 +110,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         return (AbstractContainerMenuAccessor) this;
     }
 
-    @MustBeInvokedByOverriders
-    public void opened() {
-        if (this.syncManager != null) {
-            this.syncManager.onOpen();
-        }
-    }
+    public void opened() {}
 
     /**
      * Called when this container closes. This is different to {@link AbstractContainerMenu#removed(Player)}, since that
@@ -126,13 +120,10 @@ public class ModularContainerMenu extends AbstractContainerMenu {
      * This happens when a temporary client screen takes over (like JEI,NEI,etc.). This is only called when the
      * container actually closes.
      */
-    @MustBeInvokedByOverriders
-    public void removed() {
-        super.removed(player);
-        if (this.syncManager != null) {
-            this.syncManager.dispose();
-        }
-    }
+
+    public void closed() {}
+
+    public void disposed() {}
 
     @MustBeInvokedByOverriders
     @Override

@@ -11,12 +11,12 @@ import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.serialization.json.JsonHelper;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -108,7 +108,8 @@ public class Rectangle implements IDrawable, IJsonSerializable<Rectangle>, IAnim
             float x1 = x0 + width, y1 = y0 + height;
 
             Matrix4f pose = context.getGraphics().pose().last().pose();
-            VertexConsumer bufferbuilder = context.getGraphics().bufferSource().getBuffer(GTRenderTypes.guiTriangleStrip());
+            VertexConsumer bufferbuilder = context.getGraphics().bufferSource()
+                    .getBuffer(GTRenderTypes.guiTriangleStrip());
             v(pose, bufferbuilder, x0, y0, this.colorTL);
             v(pose, bufferbuilder, x1 - d, y0 + d, this.colorTR);
             v(pose, bufferbuilder, x1, y0, this.colorTR);
@@ -123,7 +124,8 @@ public class Rectangle implements IDrawable, IJsonSerializable<Rectangle>, IAnim
     }
 
     private static void v(Matrix4f pose, VertexConsumer buffer, float x, float y, int c) {
-        buffer.vertex(pose, x, y, 0).color(Color.getRed(c), Color.getGreen(c), Color.getBlue(c), Color.getAlpha(c)).endVertex();
+        buffer.vertex(pose, x, y, 0).color(Color.getRed(c), Color.getGreen(c), Color.getBlue(c), Color.getAlpha(c))
+                .endVertex();
     }
 
     @Override

@@ -840,7 +840,6 @@ public class Color {
      */
     @OnlyIn(Dist.CLIENT)
     public static void resetGlColor() {
-        RenderSystem.colorMask(true, true, true, true);
         setGlColorOpaque(WHITE.main);
     }
 

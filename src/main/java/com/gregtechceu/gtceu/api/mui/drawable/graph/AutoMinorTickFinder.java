@@ -9,14 +9,14 @@ public class AutoMinorTickFinder implements MinorTickFinder {
     }
 
     @Override
-    public float[] find(float min, float max, float[] majorTicks, float[] ticks) {
+    public double[] find(double min, double max, double[] majorTicks, double[] ticks) {
         int s = majorTicks.length * this.amountBetweenMajors;
-        if (ticks.length < s) ticks = new float[s];
+        if (ticks.length < s) ticks = new double[s];
         int k = 0;
         for (int i = 0; i < majorTicks.length - 1; i++) {
-            if (Float.isNaN(majorTicks[i + 1])) break;
-            float next = majorTicks[i];
-            float d = (majorTicks[i + 1] - next) / (amountBetweenMajors + 1);
+            if (Double.isNaN(majorTicks[i + 1])) break;
+            double next = majorTicks[i];
+            double d = (majorTicks[i + 1] - next) / (amountBetweenMajors + 1);
             for (int j = 0; j < amountBetweenMajors; j++) {
                 next += d;
                 if (next >= min) ticks[k++] = next;

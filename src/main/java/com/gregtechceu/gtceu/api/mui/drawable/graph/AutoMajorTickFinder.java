@@ -1,29 +1,54 @@
 package com.gregtechceu.gtceu.api.mui.drawable.graph;
 
-import com.gregtechceu.gtceu.api.mui.base.GuiAxis;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AutoMajorTickFinder implements MajorTickFinder {
 
-    private float multiple;
+    @Getter
+    private final boolean autoAdjust;
+    @Setter
+    private double multiple = 10;
 
-    public AutoMajorTickFinder(float multiple) {
+    public AutoMajorTickFinder(boolean autoAdjust) {
+        this.autoAdjust = autoAdjust;
+    }
+
+    public AutoMajorTickFinder(double multiple) {
+        autoAdjust = false;
         this.multiple = multiple;
     }
 
     @Override
-    public float[] find(float min, float max, float[] ticks) {
-        int s = (int) Math.ceil((max - min) / multiple) + 1;
-        if (s > ticks.length) ticks = new float[s];
-        float next = (float) (Math.floor(min / multiple) * multiple);
+    public double[] find(double min, double max, double[] ticks) {
+        int s = (int) Math.ceil((max - min) / multiple) + 2;
+        if (s > ticks.length) ticks = new double[s];
+        double next = (Math.floor(min / multiple) * multiple);
         for (int i = 0; i < s; i++) {
+            ticks[i] = next;
             if (next > max) {
-                s--;
+                s = i + 1;
                 break;
             }
-            ticks[i] = next;
             next += multiple;
         }
         if (ticks.length > s) ticks[s] = Float.NaN;
         return ticks;
+    }
+
+    void calculateAutoTickMultiple(double min, double max) {
+        double step = (max - min) / 5;
+        if (step < 1) {
+            int significantPlaces = (int) Math.abs(Math.log10(step)) + 2;
+            double ten = Math.pow(10, significantPlaces);
+            step = (int) (step * ten + 0.2f) / ten;
+        } else if (step == 1) {
+            step = 0.2f;
+        } else {
+            int significantPlaces = (int) Math.log10(step) - 1;
+            double ten = Math.pow(10, significantPlaces);
+            step = (int) (step / ten + 0.2f) * ten;
+        }
+        setMultiple(step);
     }
 }

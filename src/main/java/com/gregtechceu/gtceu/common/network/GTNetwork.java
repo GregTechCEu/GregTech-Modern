@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazar
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockOre;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
-import com.gregtechceu.gtceu.common.network.packets.ui.OpenGuiPacket;
-import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
+import com.gregtechceu.gtceu.common.network.packets.ui.*;
 import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -127,5 +126,8 @@ public class GTNetwork {
 
         register(OpenGuiPacket.class, OpenGuiPacket::new, null);
         register(SyncHandlerPacket.class, SyncHandlerPacket::new, null);
+        register(CloseAllGuiPacket.class, CloseAllGuiPacket::new, null);
+        register(CloseGuiPacket.class, CloseGuiPacket::new, null);
+        register(ReopenGuiPacket.class, ReopenGuiPacket::new, null);
     }
 }

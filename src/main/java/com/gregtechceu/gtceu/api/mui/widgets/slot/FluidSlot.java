@@ -6,22 +6,15 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.base.widget.Interactable;
 import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
-import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.SlotTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.widget.Widget;
+import com.gregtechceu.gtceu.api.mui.widgets.AbstractFluidDisplayWidget;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
-import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
-import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.math.SIPrefix;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -38,12 +31,13 @@ import net.minecraftforge.fml.ModList;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 
-public class FluidSlot extends Widget<FluidSlot>
+public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
                        implements Interactable, GhostIngredientSlot<FluidStack>, IngredientProvider<FluidStack> {
 
     public static final int DEFAULT_SIZE = 18;
@@ -57,17 +51,12 @@ public class FluidSlot extends Widget<FluidSlot>
         TOOLTIP_FORMAT.setGroupingSize(3);
     }
 
-    private final TextRenderer textRenderer = new TextRenderer();
     private FluidSlotSyncHandler syncHandler;
-    private int contentOffsetX = 1, contentOffsetY = 1;
     private boolean alwaysShowFull = true;
     private boolean displayAmount = true;
-    @Nullable
-    private IDrawable overlayTexture = null;
 
     public FluidSlot() {
-        size(DEFAULT_SIZE);
-        tooltip().autoUpdate(true);// .setHasTitleMargin(true);
+        tooltip().autoUpdate(true);
         tooltipBuilder(this::addTooltip);
     }
 
@@ -142,27 +131,8 @@ public class FluidSlot extends Widget<FluidSlot>
         return TOOLTIP_FORMAT.format(amount);
     }
 
-    protected double getBaseUnitAmount(double amount) {
-        return amount * getBaseUnitsSiPrefix().factor;
-    }
-
-    protected final String getUnit() {
-        return getBaseUnitsSiPrefix().stringSymbol + getBaseUnit();
-    }
-
-    protected final String getBaseUnit() {
-        return UNIT_BUCKET;
-    }
-
-    protected SIPrefix getBaseUnitsSiPrefix() {
-        return SIPrefix.Milli;
-    }
-
     @Override
     public void onInit() {
-        this.textRenderer.setShadow(true);
-        this.textRenderer.setScale(0.5f);
-        this.textRenderer.setColor(Color.WHITE.main);
         getContext().getXeiSettings().addGhostIngredientSlot(this);
     }
 
@@ -178,31 +148,8 @@ public class FluidSlot extends Widget<FluidSlot>
     }
 
     @Override
-    public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        IFluidTank fluidTank = getFluidTank();
-        FluidStack content = this.syncHandler.getValue();
-        if (content != null && !content.isEmpty()) {
-            float y = this.contentOffsetY;
-            float height = getArea().height - y * 2;
-            if (!this.alwaysShowFull) {
-                float newHeight = height * content.getAmount() * 1f / fluidTank.getCapacity();
-                y += height - newHeight;
-                height = newHeight;
-            }
-            GuiDraw.drawFluidTexture(context.getGraphics(), content,
-                    this.contentOffsetX, y, getArea().width - this.contentOffsetX * 2, height, 0);
-        }
-        if (this.overlayTexture != null) {
-            this.overlayTexture.drawAtZeroPadded(context, getArea(), getActiveWidgetTheme(widgetTheme, isHovering()));
-        }
-        if (content != null && !content.isEmpty() && this.syncHandler.controlsAmount() && this.displayAmount) {
-
-            String s = FormattingUtil.formatNumberReadable2F(getBaseUnitAmount(content.getAmount()), false) +
-                    getBaseUnit();
-            this.textRenderer.setAlignment(Alignment.CenterRight, getArea().width - this.contentOffsetX - 1f);
-            this.textRenderer.setPos((int) (this.contentOffsetX + 0.5f), (int) (getArea().height - 5.5f));
-            this.textRenderer.draw(context.getGraphics(), Component.literal(s));
-        }
+    protected boolean displayAmountText() {
+        return this.syncHandler == null || this.syncHandler.controlsAmount();
     }
 
     @Override
@@ -269,6 +216,11 @@ public class FluidSlot extends Widget<FluidSlot>
         return Interactable.super.onKeyReleased(keyCode, scanCode, modifiers);
     }
 
+    @Override
+    protected int getCapacity() {
+        return this.alwaysShowFull ? 0 : getFluidTank().getCapacity();
+    }
+
     @Nullable
     public FluidStack getFluidStack() {
         return this.syncHandler == null ? null : this.syncHandler.getValue();
@@ -285,10 +237,10 @@ public class FluidSlot extends Widget<FluidSlot>
      * @param x x offset
      * @param y y offset
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
     public FluidSlot contentOffset(int x, int y) {
-        this.contentOffsetX = x;
-        this.contentOffsetY = y;
-        return this;
+        return contentPaddingLeft(x).contentPaddingTop(y);
     }
 
     public FluidSlot displayAmount(boolean displayAmount) {
@@ -307,9 +259,10 @@ public class FluidSlot extends Widget<FluidSlot>
     /**
      * @param overlayTexture texture that is rendered on top of the fluid
      */
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.2.0")
+    @Deprecated
     public FluidSlot overlayTexture(@Nullable IDrawable overlayTexture) {
-        this.overlayTexture = overlayTexture;
-        return this;
+        return overlay(overlayTexture);
     }
 
     public FluidSlot syncHandler(IFluidTank fluidTank) {
@@ -334,15 +287,5 @@ public class FluidSlot extends Widget<FluidSlot>
     public @Nullable FluidStack castGhostIngredientIfValid(@NotNull Object ingredient) {
         return areAncestorsEnabled() && this.syncHandler.phantom() && ingredient instanceof FluidStack fluidStack ?
                 fluidStack : null;
-    }
-
-    @Override
-    public @NotNull Class<FluidStack> ingredientClass() {
-        return FluidStack.class;
-    }
-
-    @Override
-    public EntryList<FluidStack> getIngredients() {
-        return FluidStackList.of(getFluidStack());
     }
 }

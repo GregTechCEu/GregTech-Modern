@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
 import com.gregtechceu.gtceu.api.mui.theme.SlotTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.ClientScreenHandler;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
@@ -46,7 +46,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     private static final TextRenderer textRenderer = new TextRenderer();
-    private ItemSlotSH syncHandler;
+    private ItemSlotSyncHandler syncHandler;
     private RichTooltip tooltip;
     @Setter
     protected UnaryOperator<ItemStack> itemHook;
@@ -70,13 +70,13 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
-        return syncOrValue instanceof ItemSlotSH;
+        return syncOrValue instanceof ItemSlotSyncHandler;
     }
 
     @Override
     protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         super.setSyncOrValue(syncOrValue);
-        this.syncHandler = syncOrValue.castOrThrow(ItemSlotSH.class);
+        this.syncHandler = syncOrValue.castOrThrow(ItemSlotSyncHandler.class);
     }
 
     @Override
@@ -93,15 +93,18 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         if (this.syncHandler == null) return;
         Lighting.setupFor3DItems();
         drawSlot(context, getSlot());
-        Lighting.setupFor3DItems();
+        drawOverlay(context);
+    }
+
+    @Override
+    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+        super.drawOverlay(context, widgetTheme);
         drawOverlay(context);
     }
 
     protected void drawOverlay(ModularGuiContext context) {
         if (isHovering()) {
-            RenderSystem.colorMask(true, true, true, false);
             GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, getSlotHoverColor());
-            RenderSystem.colorMask(true, true, true, true);
         }
     }
 
@@ -167,7 +170,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     @Override
-    public @NotNull ItemSlotSH getSyncHandler() {
+    public @NotNull ItemSlotSyncHandler getSyncHandler() {
         if (this.syncHandler == null) {
             throw new IllegalStateException("Widget is not initialised!");
         }
@@ -205,14 +208,14 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     }
 
     public ItemSlot slot(ModularSlot slot) {
-        return syncHandler(new ItemSlotSH(slot));
+        return syncHandler(new ItemSlotSyncHandler(slot));
     }
 
     public ItemSlot slot(IItemHandlerModifiable itemHandler, int index) {
         return slot(new ModularSlot(itemHandler, index));
     }
 
-    public ItemSlot syncHandler(ItemSlotSH syncHandler) {
+    public ItemSlot syncHandler(ItemSlotSyncHandler syncHandler) {
         setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return this;
     }
@@ -226,7 +229,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         AbstractContainerScreenAccessor acc = (AbstractContainerScreenAccessor) guiScreen;
         ItemStack slotStack = slotIn.getItem();
         boolean isDragPreview = false;
-        boolean flag1 = slotIn == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
+        boolean doDrawItem = slotIn == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
                 !acc.getIsSplittingStack();
         ItemStack carried = guiScreen.getMinecraft().player.containerMenu.getCarried();
         int amount = -1;
@@ -267,9 +270,9 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         context.graphicsPose().pushPose();
         context.graphicsPose().translate(0, 0, z);
 
-        if (!flag1) {
+        if (!doDrawItem) {
             if (isDragPreview) {
-                GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, -2130706433);
+                GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, 0x80FFFFFF);
             }
 
             if (!slotStack.isEmpty()) {

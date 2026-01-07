@@ -5,5 +5,5 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Experimental
 public interface MajorTickFinder {
 
-    float[] find(float min, float max, float[] ticks);
+    double[] find(double min, double max, double[] ticks);
 }

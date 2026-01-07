@@ -6,38 +6,39 @@ import com.gregtechceu.gtceu.api.mui.drawable.GuiDraw;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.Mth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphDrawable implements IDrawable {
 
     private final GraphView view = new GraphView();
-    //private IDrawable background;
+    // private IDrawable background;
     private int backgroundColor = Color.WHITE.main;
 
-    private float lineWidth = 2;
-    private int lineColor = Color.BLUE_ACCENT.main;
-
-    private boolean borderTop = true, borderLeft = true, borderBottom = false, borderRight = false;
-
+    private float majorTickThickness = 1f, majorTickLength = 3f, minorTickThickness = 0.5f, minorTickLength = 1.5f;
     private float gridLineWidth = 0.5f;
     private int gridLineColor = Color.withAlpha(Color.BLACK.main, 0.4f);
-    private float minorGridLineWidth = 0.25f;
+    private float minorGridLineWidth = 0f;
     private int minorGridLineColor = Color.withAlpha(Color.BLACK.main, 0.15f);
 
     @Getter
     private final GraphAxis x = new GraphAxis(GuiAxis.X), y = new GraphAxis(GuiAxis.Y);
-
-    private float majorTickThickness = 0.5f, majorTickLength = 1f, minorTickThickness = 0.25f, minorTickLength = 0.5f;
+    private final List<Plot> plots = new ArrayList<>();
 
     private boolean dirty = true;
 
     public void redraw() {
         this.dirty = true;
+        for (Plot plot : this.plots) plot.redraw();
     }
 
     @Override
@@ -46,100 +47,86 @@ public class GraphDrawable implements IDrawable {
             this.x.applyPadding(this.view);
             this.y.applyPadding(this.view);
             this.view.setGraph(this.x.min, this.y.min, this.x.max, this.y.max);
+            this.view.postResize();
         }
 
-        if (this.backgroundColor != 0) {
-            GuiDraw.drawRect(context.getGraphics(), this.view.sx0, this.view.sy0, this.view.sx1 - this.view.sx0, this.view.sy1 - this.view.sy0, this.backgroundColor);
-        }
         var graphics = context.getGraphics();
-        var buffer = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
-        drawGrid(context, buffer);
-        drawData(context, this.view, this.x.data, this.y.data, this.lineWidth, this.lineColor);
+        // background
+        if (this.backgroundColor != 0) {
+            GuiDraw.drawRect(graphics, this.view.sx0, this.view.sy0, this.view.getScreenWidth(),
+                    this.view.getScreenHeight(), this.backgroundColor);
+        }
 
-        GuiDraw.drawBorderOutsideLTRB(graphics, this.view.sx0, this.view.sy0, this.view.sx1, this.view.sy1, 0.5f, Color.BLACK.main);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        var buffer = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        // grid lines
+        drawGrid(graphics, buffer);
+
+        var stencil = context.getStencil();
+        stencil.push((int) this.view.sx0, (int) this.view.sy0, (int) (this.view.getScreenWidth() + 1),
+                (int) (this.view.getScreenHeight() + 1));
+        // plots
+        for (Plot plot : this.plots) {
+            plot.draw(graphics, this.view);
+        }
+        stencil.pop();
+        // axis ticks
+        buffer = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        drawTicks(graphics, buffer);
+
+        // GuiDraw.drawBorderOutsideLTRB(graphics, this.view.sx0, this.view.sy0, this.view.sx1, this.view.sy1, 0.5f,
+        // Color.BLACK.main);
         this.x.drawLabels(this.view, this.y, graphics);
         this.y.drawLabels(this.view, this.x, graphics);
     }
 
-    public void drawGrid(GuiContext context, VertexConsumer buffer) {
+    public void drawGrid(GuiGraphics graphics, VertexConsumer buffer) {
         if (this.minorGridLineWidth > 0) {
             int r = Color.getRed(this.minorGridLineColor);
             int g = Color.getGreen(this.minorGridLineColor);
             int b = Color.getBlue(this.minorGridLineColor);
             int a = Color.getAlpha(this.minorGridLineColor);
-            this.x.drawGridLines(context.getGraphics(), buffer, this.view, this.y, false, this.minorGridLineWidth, r, g, b, a);
+            this.x.drawGridLines(graphics.pose().last().pose(), buffer, this.view, this.y, false,
+                    this.minorGridLineWidth, r, g, b, a);
         }
         if (this.gridLineWidth > 0) {
             int r = Color.getRed(this.gridLineColor);
             int g = Color.getGreen(this.gridLineColor);
             int b = Color.getBlue(this.gridLineColor);
             int a = Color.getAlpha(this.gridLineColor);
-            this.x.drawGridLines(context.getGraphics(), buffer, this.view, this.y, true, this.gridLineWidth, r, g, b, a);
-            this.y.drawGridLines(context.getGraphics(), buffer, this.view, this.x, true, this.gridLineWidth, r, g, b, a);
+            var pose = graphics.pose().last().pose();
+            this.x.drawGridLines(pose, buffer, this.view, this.y, true, this.gridLineWidth, r, g, b, a);
+            this.y.drawGridLines(pose, buffer, this.view, this.x, true, this.gridLineWidth, r, g, b, a);
         }
-
-        this.x.drawTicks(context.getGraphics(), buffer, this.view, this.y, false, this.minorTickThickness, this.minorTickLength, 0, 0, 0, 0xFF);
-        this.y.drawTicks(context.getGraphics(), buffer, this.view, this.x, false, this.minorTickThickness, this.minorTickLength, 0, 0, 0, 0xFF);
-        this.x.drawTicks(context.getGraphics(), buffer, this.view, this.y, true, this.majorTickThickness, this.majorTickLength, 0, 0, 0, 0xFF);
-        this.y.drawTicks(context.getGraphics(), buffer, this.view, this.x, true, this.majorTickThickness, this.majorTickLength, 0, 0, 0, 0xFF);
     }
 
-    public static void drawData(GuiContext context, GraphView view, float[] xs, float[] ys, float d, int color) {
-        int r = Color.getRed(color);
-        int g = Color.getGreen(color);
-        int b = Color.getBlue(color);
-        int a = Color.getAlpha(color);
-
-        var graphics = context.getGraphics();
-        var buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleStrip());
-        for (int i = 0; i < xs.length - 1; i++) {
-            float x0 = view.transformXGraphToScreen(xs[i]);
-            float y0 = view.transformYGraphToScreen(ys[i]);
-            float x1 = view.transformXGraphToScreen(xs[i + 1]);
-            float y1 = view.transformYGraphToScreen(ys[i + 1]);
-
-            float dx = x1 - x0;
-            float dy = y1 - y0;
-            float len = Mth.sqrt(dx * dx + dy * dy);
-            if (len == 0) continue;
-            dx /= len;
-            dy /= len;
-
-            // perpendicular
-            float px = -dy;
-            float py = dx;
-            // thickness offset
-            float ox = px * (d * 0.5f);
-            float oy = py * (d * 0.5f);
-
-            buffer.vertex(x0 - ox, y0 - oy, 0).color(r, g, b, a).endVertex();
-            buffer.vertex(x0 + ox, y0 + oy, 0).color(r, g, b, a).endVertex();
-            buffer.vertex(x1 - ox, y1 - oy, 0).color(r, g, b, a).endVertex();
-            buffer.vertex(x1 + ox, y1 + oy, 0).color(r, g, b, a).endVertex();
-        }
+    public void drawTicks(GuiGraphics graphics, VertexConsumer buffer) {
+        var pose = graphics.pose().last().pose();
+        this.x.drawTicks(pose, buffer, this.view, this.y, false, this.minorTickThickness, this.minorTickLength, 0, 0, 0,
+                0xFF);
+        this.y.drawTicks(pose, buffer, this.view, this.x, false, this.minorTickThickness, this.minorTickLength, 0, 0, 0,
+                0xFF);
+        this.x.drawTicks(pose, buffer, this.view, this.y, true, this.majorTickThickness, this.majorTickLength, 0, 0, 0,
+                0xFF);
+        this.y.drawTicks(pose, buffer, this.view, this.x, true, this.majorTickThickness, this.majorTickLength, 0, 0, 0,
+                0xFF);
     }
 
     private boolean compute() {
         if (!this.dirty) return false;
         this.dirty = false;
-        this.x.compute();
-        this.y.compute();
+        this.x.compute(this.plots);
+        this.y.compute(this.plots);
+        int colorIndex = 0;
+        for (Plot plot : this.plots) {
+            if (plot.defaultColor) {
+                plot.color = Plot.DEFAULT_PLOT_COLORS[colorIndex];
+                if (++colorIndex == Plot.DEFAULT_PLOT_COLORS.length) {
+                    colorIndex = 0;
+                }
+            }
+        }
         return true;
-    }
-
-    public GraphDrawable data(float[] x, float[] y) {
-        this.x.data = x;
-        this.y.data = y;
-        this.dirty |= this.x.autoLimits || this.y.autoLimits;
-        return this;
-    }
-
-    public GraphDrawable xData(float[] x) {
-        return data(x, this.y.data);
-    }
-
-    public GraphDrawable yData(float[] y) {
-        return data(this.x.data, y);
     }
 
     public GraphDrawable autoXLim() {
@@ -212,13 +199,32 @@ public class GraphDrawable implements IDrawable {
         return this;
     }
 
-    public GraphDrawable lineThickness(float thickness) {
-        this.lineWidth = thickness;
-        return this;
+    public GraphDrawable plot(double[] x, double[] y) {
+        return plot(new Plot().data(x, y));
     }
 
-    public GraphDrawable lineColor(int color) {
-        this.lineColor = color;
+    public GraphDrawable plot(double[] x, double[] y, int color) {
+        return plot(new Plot()
+                .data(x, y)
+                .color(color));
+    }
+
+    public GraphDrawable plot(double[] x, double[] y, float thickness) {
+        return plot(new Plot()
+                .data(x, y)
+                .thickness(thickness));
+    }
+
+    public GraphDrawable plot(double[] x, double[] y, float thickness, int color) {
+        return plot(new Plot()
+                .data(x, y)
+                .thickness(thickness)
+                .color(color));
+    }
+
+    public GraphDrawable plot(Plot plot) {
+        this.plots.add(plot);
+        plot.redraw();
         return this;
     }
 
@@ -231,6 +237,47 @@ public class GraphDrawable implements IDrawable {
     public GraphDrawable minorGridStyle(float thickness, int color) {
         this.minorGridLineWidth = thickness;
         this.minorGridLineColor = color;
+        return this;
+    }
+
+    public GraphDrawable disableMajorGrid() {
+        return majorGridLineThickness(0);
+    }
+
+    public GraphDrawable disableMinorGrid() {
+        return minorGridLineThickness(0);
+    }
+
+    public GraphDrawable enableMajorGrid() {
+        return majorGridLineThickness(0.5f);
+    }
+
+    public GraphDrawable enableMinorGrid() {
+        return majorGridLineThickness(0.25f);
+    }
+
+    public GraphDrawable majorGridLineThickness(float thickness) {
+        this.gridLineWidth = thickness;
+        return this;
+    }
+
+    public GraphDrawable minorGridLineThickness(float thickness) {
+        this.minorGridLineWidth = thickness;
+        return this;
+    }
+
+    public GraphDrawable majorGridLineColor(int color) {
+        this.gridLineColor = color;
+        return this;
+    }
+
+    public GraphDrawable minorGridLineColor(int color) {
+        this.minorGridLineColor = color;
+        return this;
+    }
+
+    public GraphDrawable graphAspectRatio(float aspectRatio) {
+        this.view.setAspectRatio(aspectRatio);
         return this;
     }
 }

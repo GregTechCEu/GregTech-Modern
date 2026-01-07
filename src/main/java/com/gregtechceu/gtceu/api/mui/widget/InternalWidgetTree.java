@@ -68,7 +68,6 @@ public class InternalWidgetTree {
         graphics.pose().pushPose();
         context.applyTo(graphics.pose());
 
-        RenderSystem.colorMask(true, true, true, true);
         if (canBeSeen) {
             // draw widget
             graphics.setColor(1f, 1f, 1f, alpha);

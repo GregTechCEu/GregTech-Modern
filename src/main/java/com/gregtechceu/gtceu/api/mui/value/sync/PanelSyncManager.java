@@ -6,20 +6,15 @@ import com.gregtechceu.gtceu.api.mui.base.ISyncedAction;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -31,11 +26,11 @@ import java.util.function.Supplier;
 
 public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
 
-    private final Map<String, SyncHandler> syncHandlers = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<String, SlotGroup> slotGroups = new Object2ObjectOpenHashMap<>();
-    private final Map<SyncHandler, String> reverseSyncHandlers = new Object2ObjectOpenHashMap<>();
-    private final Map<String, SyncedAction> syncedActions = new Object2ObjectOpenHashMap<>();
-    private final Map<String, PanelSyncHandler> subPanels = new Object2ObjectArrayMap<>();
+    private final Map<String, SyncHandler> syncHandlers = new Object2ReferenceLinkedOpenHashMap<>();
+    private final Map<String, SlotGroup> slotGroups = new Object2ReferenceOpenHashMap<>();
+    private final Map<SyncHandler, String> reverseSyncHandlers = new Object2ReferenceOpenHashMap<>();
+    private final Map<String, SyncedAction> syncedActions = new Object2ReferenceOpenHashMap<>();
+    private final Map<String, PanelSyncHandler> subPanels = new Object2ReferenceArrayMap<>();
     @Getter
     private final ModularSyncManager modularSyncManager;
     @Getter
@@ -64,7 +59,8 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
         this.syncHandlers.forEach((mapKey, syncHandler) -> syncHandler.init(mapKey, this));
         this.locked = true;
         this.init = true;
-        this.subPanels.forEach((s, syncHandler) -> this.modularSyncManager.getMainPSM().registerPanelSyncHandler(s, syncHandler));
+        this.subPanels.forEach(
+                (s, syncHandler) -> this.modularSyncManager.getMainPSM().registerPanelSyncHandler(s, syncHandler));
     }
 
     private void registerPanelSyncHandler(String name, SyncHandler syncHandler) {
@@ -170,6 +166,7 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
         getModularSyncManager().setCursorItem(stack);
     }
 
+    @Override
     public boolean hasSyncHandler(SyncHandler syncHandler) {
         return syncHandler.isValid() && syncHandler.getSyncManager() == this &&
                 this.reverseSyncHandlers.containsKey(syncHandler);
@@ -331,12 +328,8 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
 
     public void callSyncedAction(String mapKey, FriendlyByteBuf packet) {
         if (invokeSyncedAction(mapKey, packet)) {
-            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.panelName, mapKey, true, packet);
-            if (isClient()) {
-                GTNetwork.sendToServer(packetSyncHandler);
-            } else {
-                GTNetwork.sendToPlayer((ServerPlayer) getPlayer(), packetSyncHandler);
-            }
+            ModularNetwork.get(isClient()).sendActionPacket(getModularSyncManager(), this.panelName, mapKey, packet,
+                    getPlayer());
         }
     }
 
@@ -344,6 +337,10 @@ public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
         FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
         packetBuilder.accept(packet);
         callSyncedAction(mapKey, packet);
+    }
+
+    public void callSyncedAction(String mapKey) {
+        callSyncedAction(mapKey, new FriendlyByteBuf(Unpooled.buffer(0)));
     }
 
     @Override

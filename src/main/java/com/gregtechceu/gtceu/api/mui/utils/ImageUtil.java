@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -8,10 +9,9 @@ import net.minecraft.server.packs.resources.Resource;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class ImageUtil {
+
     private static final List<ImageType> TYPES = new ArrayList<>();
     private static final byte[] buffer = new byte[256];
 
@@ -41,7 +41,8 @@ public class ImageUtil {
 
     /**
      * Parses the image size from a resource. The returned packed size can be unpacked with {@link #getWidth(long)} and
-     * {@link #getHeight(long)}. If it failed a negative value is returned. Negative values can be translated into an error
+     * {@link #getHeight(long)}. If it failed a negative value is returned. Negative values can be translated into an
+     * error
      * message using {@link #getError(long)}.
      *
      * @param resLoc resource location of the image
@@ -58,7 +59,8 @@ public class ImageUtil {
 
     /**
      * Parses the image size from a resource. The returned packed size can be unpacked with {@link #getWidth(long)} and
-     * {@link #getHeight(long)}. If it failed a negative value is returned. Negative values can be translated into an error
+     * {@link #getHeight(long)}. If it failed a negative value is returned. Negative values can be translated into an
+     * error
      * message using {@link #getError(long)}. A resource can be obtained with {@link #getResource(ResourceLocation)}.
      *
      * @param resource resource to read image size from
@@ -73,7 +75,8 @@ public class ImageUtil {
     }
 
     /**
-     * Parses the image size from the input stream. The returned packed size can be unpacked with {@link #getWidth(long)} and
+     * Parses the image size from the input stream. The returned packed size can be unpacked with
+     * {@link #getWidth(long)} and
      * {@link #getHeight(long)}. If it failed a negative value is returned or an exception is thrown.
      * Negative values can be translated into an error message using {@link #getError(long)}.
      *
@@ -107,7 +110,8 @@ public class ImageUtil {
         int w = ImageUtil.getWidth(size);
         int h = ImageUtil.getHeight(size);
         if (w != width || h != height) {
-            GTCEu.LOGGER.error("Image size is incorrect of image '{}'. Expected {}|{}, but actually is {}|{}", resLoc, width, height, w, h);
+            GTCEu.LOGGER.error("Image size is incorrect of image '{}'. Expected {}|{}, but actually is {}|{}", resLoc,
+                    width, height, w, h);
         } else {
             GTCEu.LOGGER.info("Image '{}' has correct size", resLoc);
         }
@@ -190,7 +194,9 @@ public class ImageUtil {
     }
 
     private enum ImageType implements SizeParser {
+
         PNG(8, 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A) {
+
             @Override
             public long parse(InputStream inputStream) throws IOException {
                 DataInput dataInput = getDataInput(inputStream);
@@ -200,6 +206,7 @@ public class ImageUtil {
             }
         },
         JPEG(2, 0xFF, 0xD8) {
+
             @Override
             public long parse(InputStream inputStream) throws IOException {
                 DataInput dis = getDataInput(inputStream);
@@ -238,12 +245,12 @@ public class ImageUtil {
         },
         // 5th byte is variable -> only use the first 4
         GIF(6, 0x47, 0x49, 0x46, 0x38) {
+
             @Override
             public long parse(InputStream inputStream) throws IOException {
                 return packSize(readLittleEndianShort(inputStream), readLittleEndianShort(inputStream));
             }
         };
-
 
         private final int signatureLength;
         private final byte[] signatureStart;
