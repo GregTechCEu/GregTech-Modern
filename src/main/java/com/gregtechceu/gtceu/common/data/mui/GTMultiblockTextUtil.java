@@ -2,7 +2,19 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
+import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -48,16 +60,49 @@ public class GTMultiblockTextUtil {
                 .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
     }
 
-    public static Component addProgressLine(boolean formed, boolean active, double currentDuration, double maxDuration,
-                                            double progressPercent) {
-        if (!formed || !active)
-            return CommonComponents.EMPTY;
+    public static TextWidget<?> addProgressLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
 
-        int currentProgress = (int) (progressPercent * 100);
-        double currentInSec = currentDuration / 20.0;
-        double maxInSec = maxDuration / 20.0;
-        return Component.translatable("gtceu.multiblock.progress",
-                String.format("%.2f", (float) currentInSec),
-                String.format("%.2f", (float) maxInSec), currentProgress);
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
+        IntSyncValue currentProgress = syncManager.getOrCreateSyncHandler("currentProgress", IntSyncValue.class,
+                () -> new IntSyncValue(() -> rlMachine.getRecipeLogic().getProgress()));
+        IntSyncValue maxProgress = syncManager.getOrCreateSyncHandler("maxProgress", IntSyncValue.class,
+                () -> new IntSyncValue(() -> rlMachine.getRecipeLogic().getMaxProgress()));
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
+
+        return IKey.dynamic(() -> {
+                    int progress = (int) (progressPercent.getDoubleValue() * 100.f);
+                    float current = (float) currentProgress.getDoubleValue() / 20.f;
+                    float max = (float) maxProgress.getDoubleValue() / 20.f;
+                    return Component.translatable("gtceu.multiblock.progress",
+                            String.format("%.2f", current), String.format("%.2f", max), progress);
+                })
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
+    public static TextWidget<?> addEnergyTierLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager, int tier) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+
+        return IKey.dynamic(() -> {
+            Component voltageName = Component.literal(GTValues.VNF[tier]);
+            return Component.translatable(
+                    "gtceu.multiblock.max_recipe_tier",
+                    voltageName).withStyle(ChatFormatting.GRAY);
+        })
+                .asWidget()
+                .tooltip(new RichTooltip().add(Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
+                        .withStyle(ChatFormatting.GRAY)))
+                .setEnabledIf(widget -> isFormed.getBoolValue());
+
+    }
+
+    public static void addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager, ListWidget<IWidget, ?> listWidget) {
+
     }
 }
