@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class OpenGuiPacket<T extends GuiData> implements GTNetwork.INetPacket {
 
     private int windowId;
+    private int networkId;
     private UIFactory<T> factory;
     private FriendlyByteBuf data;
     private boolean inWorldUI;
@@ -26,6 +27,7 @@ public class OpenGuiPacket<T extends GuiData> implements GTNetwork.INetPacket {
     public OpenGuiPacket(FriendlyByteBuf buf) {
         this.windowId = buf.readVarInt();
         this.inWorldUI = buf.readBoolean();
+        this.networkId = buf.readVarInt();
         this.factory = (UIFactory<T>) GuiManager.getFactory(buf.readResourceLocation());
         this.data = NetworkUtils.readFriendlyByteBuf(buf);
     }
@@ -34,6 +36,7 @@ public class OpenGuiPacket<T extends GuiData> implements GTNetwork.INetPacket {
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(this.windowId);
         buf.writeBoolean(this.inWorldUI);
+        buf.writeVarInt(this.networkId);
         buf.writeResourceLocation(this.factory.getFactoryName());
         NetworkUtils.writeByteBuf(buf, this.data);
     }
@@ -41,7 +44,7 @@ public class OpenGuiPacket<T extends GuiData> implements GTNetwork.INetPacket {
     @Override
     public void execute(NetworkEvent.Context handler) {
         if (handler.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-            GuiManager.openFromClient(this.windowId, this.inWorldUI, this.factory, this.data,
+            GuiManager.openFromClient(this.windowId, this.networkId, this.inWorldUI, this.factory, this.data,
                     Minecraft.getInstance().player);
         } else if (handler.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
             T guiData = this.factory.readGuiData(handler.getSender(), this.data);

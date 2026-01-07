@@ -6,37 +6,42 @@ import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
 import com.gregtechceu.gtceu.client.mui.screen.ModularScreen;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
 import com.gregtechceu.gtceu.utils.NetworkUtils;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiStatus.Internal
 public class SyncHandlerPacket implements GTNetwork.INetPacket {
 
-    private int inWorldID;
-    private String panel;
-    private String key;
-    private boolean action;
-    private FriendlyByteBuf packet;
+    public int inWorldID;
+    public int networkId;
+    public String panel;
+    public String key;
+    public boolean action;
+    public FriendlyByteBuf packet;
 
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeVarInt(this.inWorldID);
-        NetworkUtils.writeStringSafe(buf, this.panel);
-        NetworkUtils.writeStringSafe(buf, this.key, 64, true);
+        buf.writeVarInt(this.networkId);
+        NetworkUtils.writeStringSafe(buf, this.panel, 256, true);
+        NetworkUtils.writeStringSafe(buf, this.key, 256, true);
         buf.writeBoolean(this.action);
         NetworkUtils.writeByteBuf(buf, this.packet);
     }
 
     public SyncHandlerPacket(FriendlyByteBuf buf) {
         this.inWorldID = buf.readVarInt();
+        this.networkId = buf.readVarInt();
         this.panel = NetworkUtils.readStringSafe(buf);
         this.key = NetworkUtils.readStringSafe(buf);
         this.action = buf.readBoolean();
@@ -46,26 +51,9 @@ public class SyncHandlerPacket implements GTNetwork.INetPacket {
     @Override
     public void execute(NetworkEvent.Context handler) {
         if (handler.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-            ModularScreen screen = inWorldID == -1 ? ModularScreen.getCurrent() :
-                    GuiManager.getClientInWorldMenu(inWorldID).getScreen();
-            if (screen != null) {
-                executeFromManager(screen.getSyncManager());
-            }
+            ModularNetwork.CLIENT.receivePacket(this);
         } else {
-            AbstractContainerMenu menu = inWorldID == -1 ? handler.getSender().containerMenu :
-                    GuiManager.getServerInWorldMenu(handler.getSender(), inWorldID);
-            if (menu instanceof ModularContainerMenu modularMenu) {
-                executeFromManager(modularMenu.getSyncManager());
-            }
-        }
-    }
-
-    private void executeFromManager(ModularSyncManager syncManager) {
-        try {
-            int id = this.action ? 0 : this.packet.readVarInt();
-            syncManager.receiveWidgetUpdate(this.panel, this.key, this.action, id, this.packet);
-        } catch (IndexOutOfBoundsException e) {
-            GTCEu.LOGGER.error("Failed to read packet for sync handler {} in panel {}", this.key, this.panel);
+            ModularNetwork.SERVER.receivePacket(this);
         }
     }
 }

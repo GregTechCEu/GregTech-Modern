@@ -382,10 +382,10 @@ public class GTUtil {
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
             return FluidType.BUCKET_VOLUME;
-        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidType.BUCKET_VOLUME * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {

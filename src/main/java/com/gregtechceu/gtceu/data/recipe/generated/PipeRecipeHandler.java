@@ -130,14 +130,6 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
-                .inputFluids(material.getFluid(L))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()))
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
                     .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
@@ -176,14 +168,6 @@ public final class PipeRecipeHandler {
                 .notConsumable(GTItems.SHAPE_EXTRUDER_PIPE_NORMAL)
                 .outputItems(pipeStack)
                 .duration((int) material.getMass() * 3)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
-                .inputFluids(material.getFluid(L * 3))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 3)
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
@@ -228,14 +212,6 @@ public final class PipeRecipeHandler {
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
-                .inputFluids(material.getFluid(L * 6))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 6)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
                     .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
@@ -273,14 +249,6 @@ public final class PipeRecipeHandler {
                 .notConsumable(GTItems.SHAPE_EXTRUDER_PIPE_HUGE)
                 .outputItems(pipeStack)
                 .duration((int) material.getMass() * 24)
-                .EUt(6L * getVoltageMultiplier(material))
-                .save(provider);
-
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
-                .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
-                .inputFluids(material.getFluid(L * 12))
-                .outputItems(pipeStack)
-                .duration((int) (material.getMass()) * 24)
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
 

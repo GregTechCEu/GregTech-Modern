@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.value.ObjectValue;
 import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.integration.xei.entry.EntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.xei.handlers.IngredientProvider;
 
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
+public class ItemDisplayWidget extends Widget<ItemDisplayWidget> implements IngredientProvider<ItemStack> {
 
     private IValue<ItemStack> value;
     private boolean displayAmount = false;
@@ -61,5 +64,15 @@ public class ItemDisplayWidget extends Widget<ItemDisplayWidget> {
     public ItemDisplayWidget displayAmount(boolean displayAmount) {
         this.displayAmount = displayAmount;
         return this;
+    }
+
+    @Override
+    public EntryList<ItemStack> getIngredients() {
+        return ItemStackList.of(value.getValue());
+    }
+
+    @Override
+    public @NotNull Class<ItemStack> ingredientClass() {
+        return ItemStack.class;
     }
 }

@@ -5,6 +5,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+
 public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceMachine {
 
     public AutoMaintenanceHatchPartMachine(IMachineBlockEntity holder) {
@@ -44,4 +48,9 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
 
     @Override
     public void setTimeActive(int time) {}
+
+    @Override
+    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
+    }
 }
