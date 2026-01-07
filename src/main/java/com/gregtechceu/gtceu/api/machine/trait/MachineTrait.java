@@ -59,7 +59,7 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public void onMachineLoad() {}
 
-    public void onMachineUnLoad() {}
+    public void onMachineUnload() {}
 
     public void updateModelData(ModelData.Builder builder) {}
 

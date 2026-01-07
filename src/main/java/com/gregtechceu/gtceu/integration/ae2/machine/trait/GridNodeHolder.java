@@ -66,8 +66,8 @@ public class GridNodeHolder extends MachineTrait {
     }
 
     @Override
-    public void onMachineUnLoad() {
-        super.onMachineUnLoad();
+    public void onMachineUnload() {
+        super.onMachineUnload();
         mainNode.destroy();
     }
 }
