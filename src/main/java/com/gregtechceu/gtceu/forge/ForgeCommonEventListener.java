@@ -259,7 +259,8 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
-        event.addListener(new ThemeManager());
+        if (GTCEu.isClientThread())
+            event.addListener(new ThemeManager());
     }
 
     @SubscribeEvent
