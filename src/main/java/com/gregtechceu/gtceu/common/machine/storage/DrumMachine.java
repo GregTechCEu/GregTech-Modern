@@ -228,6 +228,11 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
                                 .translatable("gtceu.machine.basic.input_from_output_side." +
                                         (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
                                 .append(Component.translatable("gtceu.creative.tank.fluid")));
+            } else if (!playerIn.isShiftKeyDown()) {
+                setAutoOutputFluids(!isAutoOutputFluids());
+                playerIn.sendSystemMessage(Component
+                        .translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
+                return InteractionResult.SUCCESS;
             }
             return InteractionResult.SUCCESS;
         }
@@ -238,21 +243,13 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
         if (!isRemote()) {
-            if (canInputFluidsFromOutputSide()) {
-                setAllowInputFromOutputSideFluids(!isAllowInputFromOutputSideFluids());
-                playerIn.sendSystemMessage(
-                        Component
-                                .translatable("gtceu.machine.basic.input_from_output_side." +
-                                        (isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
-                                .append(Component.translatable("gtceu.creative.tank.fluid")));
-            } else if (!playerIn.isShiftKeyDown()) {
+            if (!playerIn.isShiftKeyDown()) {
                 setAutoOutputFluids(!isAutoOutputFluids());
                 playerIn.sendSystemMessage(
                         Component.translatable(
                                 "gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
                 return InteractionResult.SUCCESS;
             }
-            return InteractionResult.SUCCESS;
         }
         return super.onSoftMalletClick(playerIn, hand, gridSide, hitResult);
     }

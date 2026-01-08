@@ -15,6 +15,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -81,6 +83,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
         return new GTGuiScreen(MOD_ID, mainPanel, getThemeId(data));
     }

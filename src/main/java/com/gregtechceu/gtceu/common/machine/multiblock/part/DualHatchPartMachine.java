@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
@@ -191,7 +191,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                         .key('I', i -> {
                             ModularSlot slot = new ModularSlot(getInventory(), i)
                                     .accessibility(io.support(IO.IN), true);
-                            ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                            ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                             syncManager.syncValue(slotGroupName, i, syncHandler);
                             return new ItemSlot().syncHandler(slotGroupName, i);
                         })

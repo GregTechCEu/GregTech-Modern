@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,7 +48,7 @@ public class ModularSlot extends SlotItemHandler {
     @Getter
     private boolean phantom = false;
 
-    private ItemSlotSH syncHandler = null;
+    private ItemSlotSyncHandler syncHandler = null;
 
     /**
      * Creates a ModularSlot
@@ -65,7 +65,7 @@ public class ModularSlot extends SlotItemHandler {
     }
 
     @ApiStatus.Internal
-    public void initialize(ItemSlotSH syncManager, boolean phantom) {
+    public void initialize(ItemSlotSyncHandler syncManager, boolean phantom) {
         this.syncHandler = syncManager;
         this.phantom = phantom;
     }
@@ -122,7 +122,7 @@ public class ModularSlot extends SlotItemHandler {
         return this.isEnabled();
     }
 
-    public @NotNull ItemSlotSH getSyncHandler() {
+    public @NotNull ItemSlotSyncHandler getSyncHandler() {
         if (this.syncHandler == null) {
             throw new IllegalStateException("ModularSlot is not yet initialized");
         }
