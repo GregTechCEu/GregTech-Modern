@@ -45,7 +45,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
-import lombok.AccessLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -88,6 +87,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import com.mojang.datafixers.util.Pair;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -212,7 +212,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
-
 
     /**
      * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link #onLoad()}
@@ -730,7 +729,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         return cover.getRedstoneSignalOutput();
     }
-
 
     public int getAnalogOutputSignal() {
         return 0;
