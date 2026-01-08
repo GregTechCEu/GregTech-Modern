@@ -32,12 +32,13 @@ public class SetTransformer<T> implements IValueTransformer<Set<T>> {
     }
 
     @Override
-    public Set<T> deserializeNBT(Tag tag, ISyncManaged holder, Set<T> currentVal) {
-        if (!(tag instanceof ListTag listTag)) return Set.of();
-        Set<T> set = new HashSet<>();
+    public Set<T> deserializeNBT(Tag tag, ISyncManaged holder, Set<T> current) {
+        if (!(tag instanceof ListTag listTag)) return current;
+        if (current != null) current.clear();
+        else current = new HashSet<>();
         for (Tag elementTag : listTag) {
-            set.add(elementTransformer.deserializeNBT(elementTag, null, null));
+            current.add(elementTransformer.deserializeNBT(elementTag, null, null));
         }
-        return set;
+        return current;
     }
 }
