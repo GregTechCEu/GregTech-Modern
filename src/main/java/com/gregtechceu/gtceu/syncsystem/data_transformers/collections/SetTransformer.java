@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
@@ -33,7 +34,10 @@ public class SetTransformer<T> implements IValueTransformer<Set<T>> {
 
     @Override
     public Set<T> deserializeNBT(Tag tag, ISyncManaged holder, Set<T> current) {
-        if (!(tag instanceof ListTag listTag)) return current;
+        if (!(tag instanceof ListTag listTag)) {
+            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
+            return current;
+        }
         if (current != null) current.clear();
         else current = new HashSet<>();
         for (Tag elementTag : listTag) {

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
@@ -28,7 +29,10 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
 
     @Override
     public List<T> deserializeNBT(Tag tag, ISyncManaged holder, List<T> current) {
-        if (!(tag instanceof ListTag listTag)) return current;
+        if (!(tag instanceof ListTag listTag)) {
+            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
+            return current;
+        }
         if (current != null) current.clear();
         else current = new ArrayList<>();
         List<T> finalCurrent = current;

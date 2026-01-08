@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
@@ -39,7 +40,10 @@ public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
 
     @Override
     public Map<K, V> deserializeNBT(Tag tag, ISyncManaged holder, Map<K, V> current) {
-        if (!(tag instanceof ListTag listTag)) return current;
+        if (!(tag instanceof ListTag listTag)) {
+            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
+            return current;
+        }
         if (current != null) current.clear();
         else current = new HashMap<>();
         for (Tag entryTag : listTag) {
