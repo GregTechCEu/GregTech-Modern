@@ -43,9 +43,11 @@ public class MaterialFlags {
     /**
      * Add to material to disable it's unification fully
      */
-    // TODO(Onion) rename to DISABLE_MATERIAL_RECIPES
+    @Deprecated
     public static final MaterialFlag NO_UNIFICATION = new MaterialFlag.Builder("no_unification").build();
 
+    public static final MaterialFlag DISABLE_MATERIAL_RECIPES = new MaterialFlag.Builder("disable_material_recipes")
+            .build();
     /**
      * Enables electrolyzer decomposition recipe generation
      */
@@ -82,6 +84,11 @@ public class MaterialFlags {
      * Add to material if it is some kind of phosphorescent
      */
     public static final MaterialFlag PHOSPHORESCENT = new MaterialFlag.Builder("phosphorescent").build();
+
+    /**
+     * Add to material if it is fire resistant
+     */
+    public static final MaterialFlag FIRE_RESISTANT = new MaterialFlag.Builder("fire_resistant").build();
 
     //////////////////
     // DUST //

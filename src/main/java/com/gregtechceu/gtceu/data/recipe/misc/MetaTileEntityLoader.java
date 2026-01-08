@@ -207,7 +207,7 @@ public class MetaTileEntityLoader {
                 GTBlocks.YELLOW_STRIPES_BLOCK_A.asStack(), "Y  ", " M ", "  B", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_small_yellow_stripes",
-                GTBlocks.YELLOW_STRIPES_BLOCK_B.asStack(), "  Y", " M ", "B  ", 'M',
+                GTBlocks.YELLOW_STRIPES_BLOCK_B.asStack(), "B  ", " M ", "  Y", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_radioactive_hazard",
                 GTBlocks.RADIOACTIVE_HAZARD_SIGN_BLOCK.asStack(), " YB", " M ", "   ", 'M',

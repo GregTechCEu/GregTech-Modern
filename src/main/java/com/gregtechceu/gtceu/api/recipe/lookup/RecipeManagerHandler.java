@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -38,10 +36,7 @@ public final class RecipeManagerHandler {
         proxyRecipes.clear();
         recipesByID.forEach((id, recipe) -> {
             if (recipe.getType() != proxyType) {
-                // should not happen
-                GTCEu.LOGGER.warn("Proxy Recipe '{}' with RecipeType '{}' did not match GTRecipeType '{}'.",
-                        recipe.getId(), ForgeRegistries.RECIPE_TYPES.getKey(recipe.getType()),
-                        gtRecipeType.registryName);
+                // do not add recipes of incompatible type
                 return;
             }
             GTRecipe gtRecipe = gtRecipeType.toGTrecipe(id, recipe);

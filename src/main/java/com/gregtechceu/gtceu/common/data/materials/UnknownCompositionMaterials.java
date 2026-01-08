@@ -367,7 +367,7 @@ public class UnknownCompositionMaterials {
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
-                .components(Saltpeter, 2, Sulfur, 1, Coal, 3)
+                .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
                 .buildAndRegister();
 
         Oilsands = new Material.Builder(GTCEu.id("oilsands"))
@@ -392,6 +392,7 @@ public class UnknownCompositionMaterials {
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
+                .flags(FIRE_RESISTANT)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
                 .buildAndRegister();
@@ -575,7 +576,7 @@ public class UnknownCompositionMaterials {
         Lapotron = new Material.Builder(GTCEu.id("lapotron"))
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
-                .flags(NO_UNIFICATION)
+                .flags(DISABLE_MATERIAL_RECIPES)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
 

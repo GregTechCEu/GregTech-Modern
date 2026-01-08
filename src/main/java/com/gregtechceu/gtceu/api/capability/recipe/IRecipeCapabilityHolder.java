@@ -34,11 +34,11 @@ public interface IRecipeCapabilityHolder {
                 .getOrDefault(cap, Collections.emptyList());
     }
 
-    default void addHandlerList(RecipeHandlerList handler) {
-        if (handler == RecipeHandlerList.NO_DATA) return;
-        IO io = handler.getHandlerIO();
-        getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handler);
-        var entrySet = handler.getHandlerMap().entrySet();
+    default void addHandlerList(RecipeHandlerList handlerList) {
+        if (handlerList == RecipeHandlerList.NO_DATA) return;
+        IO io = handlerList.getHandlerIO();
+        getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handlerList);
+        var entrySet = handlerList.getHandlerMap().entrySet();
         var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>(entrySet.size()));
         for (var entry : entrySet) {
             var entryList = entry.getValue();

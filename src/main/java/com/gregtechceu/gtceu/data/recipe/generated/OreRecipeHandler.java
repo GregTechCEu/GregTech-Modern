@@ -19,8 +19,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jetbrains.annotations.NotNull;
@@ -46,9 +44,7 @@ public final class OreRecipeHandler {
         }
 
         for (TagPrefix ore : ORES.keySet()) {
-            if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
-                processOre(provider, ore, property, material);
-            }
+            processOre(provider, ore, property, material);
         }
 
         processRawOre(provider, property, material);
@@ -81,6 +77,8 @@ public final class OreRecipeHandler {
             return;
         }
 
+        var inputStack = ChemicalHelper.get(orePrefix, material);
+
         Material byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
         if (byproductStack.isEmpty()) {
@@ -106,29 +104,28 @@ public final class OreRecipeHandler {
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         if (!crushedStack.isEmpty()) {
+            int crushedCount = property.getOreMultiplier() * oreTypeMultiplier;
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
-                            Ingredient.of(orePrefix.getItemParentTags()[0])))
-                    .category(GTRecipeCategories.ORE_FORGING)
-                    .duration(10).EUt(16);
+                    .inputItems(inputStack)
+                    .EUt(16)
+                    .duration(10)
+                    .category(GTRecipeCategories.ORE_FORGING);
             if (material.hasProperty(PropertyKey.GEM) && !ChemicalHelper.get(gem, material).isEmpty()) {
-                builder.outputItems(ChemicalHelper.get(gem, material)
-                        .copyWithCount(property.getOreMultiplier() * oreTypeMultiplier));
+                builder.outputItems(ChemicalHelper.get(gem, material).copyWithCount(crushedCount));
             } else {
-                builder.outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * oreTypeMultiplier));
+                builder.outputItems(crushedStack.copyWithCount(crushedCount));
             }
             builder.save(provider);
 
             builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
-                            Ingredient.of(orePrefix.getItemParentTags()[0])))
-                    .outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * 2 * oreTypeMultiplier))
+                    .inputItems(inputStack)
+                    .outputItems(crushedStack.copyWithCount(crushedCount * 2))
                     .chancedOutput(byproductStack, 1400, 0)
                     .EUt(2)
-                    .category(GTRecipeCategories.ORE_CRUSHING)
-                    .duration(400);
+                    .duration(400)
+                    .category(GTRecipeCategories.ORE_CRUSHING);
 
             for (MaterialStack secondaryMaterial : orePrefix.secondaryMaterials()) {
                 if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
@@ -144,14 +141,10 @@ public final class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
-                            Ingredient.of(orePrefix.getItemParentTags()[0])),
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
                     ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
-                            Ingredient.of(orePrefix.getItemParentTags()[0])),
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
                     ingotStack, xp);
         }
     }
@@ -206,13 +199,6 @@ public final class OreRecipeHandler {
                     .EUt(2)
                     .category(GTRecipeCategories.ORE_CRUSHING)
                     .duration(400);
-
-            for (MaterialStack secondaryMaterial : ore.secondaryMaterials()) {
-                if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
-                    ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
-                    builder.chancedOutput(dustStack, 6700, 0);
-                }
-            }
 
             builder.save(provider);
         }

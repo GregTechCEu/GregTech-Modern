@@ -223,8 +223,10 @@ public class RotorHolderPartMachine extends TieredPartMachine
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
-            player.hurt(GTDamageTypes.TURBINE.source(level),
-                    TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
+            TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
+            if (behaviour != null) {
+                player.hurt(GTDamageTypes.TURBINE.source(level), behaviour.getDamage(getRotorStack()));
+            }
             return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;

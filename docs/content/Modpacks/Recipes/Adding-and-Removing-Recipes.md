@@ -124,10 +124,12 @@ ServerEvents.recipes(event => {
     - Valid options for chanced logic are:
         - `or` - (default) Any item/fluid which succeeds on its chance roll is produced/consumed.
         - `and` - If _all_ items/fluids succeed on their chance roll, all are produced/consumed together. Otherwise, none are. 
-        - `xor` - Guarantees that exactly one of the chanced items/fluids will be produced/consumed on every run. 
-        Behavior was changed in 7.0.0.
+        - `xor` - Normalizes ingredient chances, and guarantees that exactly one of the chanced items/fluids will be 
+        produced/consumed on every run. XOR's behavior was changed in 7.0.0.
         - `first` - Makes a chance roll for each item/fluid, in order of registration. Only the first item which succeeds 
-        on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic.
+        on its roll is returned. Prior to 7.0.0, this was the behavior of `xor` logic. 
+            - Because of its unpredictable behavior, FIRST has been Deprecated as of 7.3.0, and is scheduled for removal
+            in 8.0.0.
 - Ranged Ingredients:
     - Item or Fluid ingredients that will be consumed or produced in a random amount within a `min, max` range (inclusive).
 - Circuits
@@ -180,16 +182,19 @@ ServerEvents.recipes(event => {
 
 Rock breaker recipes use AdjacentFluidConditions.
 
-To add a condition, you can use the `adjacentFluid(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
+To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
 ```js title="rock_breaker.js"
 ServerEvents.recipes(event => {
     event.recipes.gtceu.rock_breaker('rhino_jank')
         .notConsumable('minecraft:dirt')
         .itemOutputs('minecraft:dirt')
-        .adjacentFluid('minecraft:water')
-        .adjacentFluid('minecraft:lava')
+        .adjacentFluids('minecraft:water')
+        .adjacentFluids('minecraft:lava')
         .duration(16)
         .EUt(30)
 })
 ```
+
+### More custom ingredients
+For more custom ingredients, see the [Ingredients list in the sidebar](Ingredients/index.md)

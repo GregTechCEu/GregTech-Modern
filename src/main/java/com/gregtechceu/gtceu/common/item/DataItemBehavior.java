@@ -153,6 +153,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                 if (ResearchManager.readResearchId(itemStack) == null) {
                     return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                 }
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
             } else {
                 return interactable.onDataStickUse(context.getPlayer(), itemStack);
             }
@@ -167,13 +168,12 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     if (ResearchManager.readResearchId(itemStack) == null) {
                         return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                     }
+                    return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
                 } else {
                     return interactable.onDataStickUse(context.getPlayer(), itemStack);
                 }
-            } else {
-                return InteractionResult.PASS;
             }
         }
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.PASS;
     }
 }

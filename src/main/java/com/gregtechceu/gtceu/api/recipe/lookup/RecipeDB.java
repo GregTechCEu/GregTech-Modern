@@ -19,6 +19,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -343,6 +345,9 @@ public final class RecipeDB {
             return null; // no more recipes
         }
 
+        /**
+         * Reset the iterator
+         */
         public void reset() {
             stack.clear();
             for (int i = ingredients.size() - 1; i >= 0; i--) {
