@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.mui.base.widget.ISynced;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
@@ -13,6 +14,7 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
@@ -61,15 +63,66 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
         return slotGroupWidget;
     }
 
-    public interface SlotConsumer {
+    private String slotGroupName;
+    private SlotGroup slotGroup;
+    private boolean sortButtonsAdded = false;
+    private Consumer<SortButtons> sortButtonsEditor;
 
-        ItemSlot apply(int index, ItemSlot slot);
+    @Override
+    public void onInit() {
+        super.onInit();
+        if (!this.sortButtonsAdded) {
+            SortButtons sb = new SortButtons();
+            if (this.sortButtonsEditor == null) placeSortButtonsTopRightHorizontal();
+            if (getName() != null) {
+                sb.name(getName() + "_sorter_buttons");
+            }
+            child(sb);
+        }
     }
 
-    private String slotsKeyName;
+    @Override
+    public void afterInit() {
+        super.afterInit();
+        if (this.slotGroup != null) {
+            for (IWidget widget : getChildren()) {
+                if (widget instanceof ItemSlot itemSlot) {
+                    itemSlot.getSlot().slotGroup(this.slotGroup);
+                }
+            }
+        } else if (this.slotGroupName != null) {
+            for (IWidget widget : getChildren()) {
+                if (widget instanceof ItemSlot itemSlot) {
+                    itemSlot.getSlot().slotGroup(this.slotGroupName);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onChildAdd(IWidget child) {
+        super.onChildAdd(child);
+        if (child instanceof SortButtons sortButtons) {
+            this.sortButtonsAdded = true;
+            if (sortButtons.getSlotGroup() == null && sortButtons.getSlotGroupName() == null) {
+                if (this.slotGroup != null) {
+                    sortButtons.slotGroup(this.slotGroup);
+                } else if (this.slotGroupName != null) {
+                    sortButtons.slotGroup(this.slotGroupName);
+                }
+            }
+            if (this.sortButtonsEditor != null) {
+                this.sortButtonsEditor.accept(sortButtons);
+            }
+        }
+    }
+
+    public SlotGroupWidget disableSortButtons() {
+        this.sortButtonsAdded = true;
+        return this;
+    }
 
     public void setSlotsSynced(String name) {
-        this.slotsKeyName = name;
         int i = 0;
         for (IWidget widget : getChildren()) {
             if (widget instanceof ISynced<?> synced) {
@@ -79,8 +132,50 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
         }
     }
 
+    public SlotGroupWidget editSortButtons(Consumer<SortButtons> sortButtonsEditor) {
+        this.sortButtonsEditor = sortButtonsEditor;
+        return this;
+    }
+
+    public SlotGroupWidget placeSortButtonsTopRightVertical() {
+        return placeSortButtonsTopRightVertical(this.sortButtonsEditor);
+    }
+
+    public SlotGroupWidget placeSortButtonsTopRightHorizontal() {
+        return placeSortButtonsTopRightHorizontal(this.sortButtonsEditor);
+    }
+
+    public SlotGroupWidget placeSortButtonsTopRightVertical(Consumer<SortButtons> additionalEdits) {
+        return editSortButtons(sb -> {
+            sb.vertical().leftRelOffset(1f, 1).top(0);
+            if (additionalEdits != null) additionalEdits.accept(sb);
+        });
+    }
+
+    public SlotGroupWidget placeSortButtonsTopRightHorizontal(Consumer<SortButtons> additionalEdits) {
+        return editSortButtons(sb -> {
+            sb.horizontal().bottomRelOffset(1f, 1).right(0);
+            if (additionalEdits != null) additionalEdits.accept(sb);
+        });
+    }
+
+    public SlotGroupWidget slotGroup(String slotGroupName) {
+        this.slotGroupName = slotGroupName;
+        return this;
+    }
+
+    public SlotGroupWidget slotGroup(SlotGroup slotGroup) {
+        this.slotGroup = slotGroup;
+        return this;
+    }
+
     public static Builder builder() {
         return new Builder();
+    }
+
+    public interface SlotConsumer {
+
+        ItemSlot apply(int index, ItemSlot widgetSlot);
     }
 
     public static class Builder {
@@ -88,6 +183,8 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
         private String syncKey;
         private final List<String> matrix = new ArrayList<>();
         private final Char2ObjectMap<Object> keys = new Char2ObjectOpenHashMap<>();
+        private String slotGroupName;
+        private SlotGroup slotGroup;
 
         private Builder() {
             this.keys.put(' ', null);
@@ -119,8 +216,20 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
             return this;
         }
 
+        public Builder slotGroup(String slotGroupName) {
+            this.slotGroupName = slotGroupName;
+            return this;
+        }
+
+        public Builder slotGroup(SlotGroup slotGroup) {
+            this.slotGroup = slotGroup;
+            return this;
+        }
+
         public SlotGroupWidget build() {
-            SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
+            SlotGroupWidget slotGroupWidget = new SlotGroupWidget()
+                    .slotGroup(this.slotGroupName)
+                    .slotGroup(this.slotGroup);
             Char2IntMap charCount = new Char2IntOpenHashMap();
             int x = 0, y = 0, maxWidth = 0;
             int syncId = 0;
@@ -133,6 +242,11 @@ public class SlotGroupWidget extends ParentWidget<SlotGroupWidget> {
                     IWidget widget;
                     if (o instanceof IWidget iWidget) {
                         widget = iWidget;
+                        if (count > 0) {
+                            throw new IllegalArgumentException(
+                                    "A widget can only exist once in the widget tree, but the char '" + c +
+                                            "' exists more than once in this slot group widget and it has a static widget supplied.");
+                        }
                     } else if (o instanceof IntFunction<?> function) {
                         widget = (IWidget) function.apply(count);
                     } else {

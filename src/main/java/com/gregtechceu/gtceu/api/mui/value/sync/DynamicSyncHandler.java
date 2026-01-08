@@ -56,7 +56,7 @@ public class DynamicSyncHandler extends SyncHandler {
         // collects any unregistered sync handlers
         // since the sync manager is currently locked and we no longer allow bypassing the lock it will crash if it
         // finds any
-        int unregistered = WidgetTree.countUnregisteredSyncHandlers(getSyncManager(), widget);
+        int unregistered = WidgetTree.countUnregisteredSyncHandlers(widget);
         if (unregistered > 0) {
             throw new IllegalStateException(
                     "Widgets created by DynamicSyncHandler can't have implicitly registered sync" +

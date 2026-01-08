@@ -29,6 +29,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         return new MultiLineComponent(List.of(c.copy()));
     }
 
+    public static MultiLineComponent literal(char c) {
+        return MultiLineComponent.of(Component.literal(String.valueOf(c)));
+    }
+
     public static MultiLineComponent literal(String s) {
         return MultiLineComponent.of(Component.literal(s));
     }

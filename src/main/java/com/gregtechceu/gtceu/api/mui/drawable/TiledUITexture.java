@@ -42,4 +42,14 @@ public class TiledUITexture extends UITexture {
         }
         return true;
     }
+
+    @Override
+    protected TiledUITexture copy() {
+        return new TiledUITexture(location, u0, v0, u1, v1, imageWidth, imageHeight, colorType, nonOpaque);
+    }
+
+    @Override
+    public TiledUITexture withColorOverride(int color) {
+        return (TiledUITexture) super.withColorOverride(color);
+    }
 }

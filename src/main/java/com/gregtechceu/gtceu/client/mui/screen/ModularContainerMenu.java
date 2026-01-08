@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.mui.screen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.common.data.GTMenuTypes;
@@ -71,11 +70,11 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     }
 
     @ApiStatus.Internal
-    public void construct(Player player, PanelSyncManager panelSyncManager, UISettings settings, String mainPanelName,
+    public void construct(Player player, ModularSyncManager msm, UISettings settings, String mainPanelName,
                           GuiData guiData) {
         this.player = player;
-        this.syncManager = new ModularSyncManager(this);
-        this.syncManager.construct(mainPanelName, panelSyncManager);
+        this.syncManager = msm;
+        this.syncManager.construct(this, mainPanelName);
         this.settings = settings;
         this.guiData = guiData;
         sortShiftClickSlots();
@@ -111,12 +110,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         return (AbstractContainerMenuAccessor) this;
     }
 
-    @MustBeInvokedByOverriders
-    public void opened() {
-        if (this.syncManager != null) {
-            this.syncManager.onOpen();
-        }
-    }
+    public void opened() {}
 
     /**
      * Called when this container closes. This is different to {@link AbstractContainerMenu#removed(Player)}, since that
@@ -126,13 +120,10 @@ public class ModularContainerMenu extends AbstractContainerMenu {
      * This happens when a temporary client screen takes over (like JEI,NEI,etc.). This is only called when the
      * container actually closes.
      */
-    @MustBeInvokedByOverriders
-    public void removed() {
-        super.removed(player);
-        if (this.syncManager != null) {
-            this.syncManager.dispose();
-        }
-    }
+
+    public void closed() {}
+
+    public void disposed() {}
 
     @MustBeInvokedByOverriders
     @Override
@@ -298,8 +289,9 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     if (!heldStack.isEmpty() && clickedSlot.mayPlace(heldStack)) {
                         int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
 
-                        if (stackCount > clickedSlot.getMaxStackSize(heldStack)) {
-                            stackCount = clickedSlot.getMaxStackSize(heldStack);
+                        int lim = clickedSlot.getMaxStackSize(heldStack);
+                        if (stackCount > lim) {
+                            stackCount = lim;
                         }
 
                         clickedSlot.setByPlayer(heldStack.split(stackCount));
@@ -316,8 +308,9 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                         if (ItemStack.isSameItemSameTags(slotStack, heldStack)) {
                             int stackCount = mouseButton == LEFT_MOUSE ? heldStack.getCount() : 1;
 
-                            if (stackCount > clickedSlot.getMaxStackSize(heldStack) - slotStack.getCount()) {
-                                stackCount = clickedSlot.getMaxStackSize(heldStack) - slotStack.getCount();
+                            int lim = clickedSlot.getMaxStackSize(heldStack);
+                            if (stackCount > lim - slotStack.getCount()) {
+                                stackCount = lim - slotStack.getCount();
                             }
 
                             heldStack.shrink(stackCount);
