@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -68,8 +68,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private boolean hasAir = false;
 
-    public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CharcoalPileIgniterMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine) m));
     }
 
     @Override
@@ -87,11 +87,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             }
         }
         this.getRecipeLogic().setDuration(Math.max(1, (int) Math.sqrt(logPos.size() * 240_000)));
-    }
-
-    @Override
-    protected @NotNull CharcoalRecipeLogic createRecipeLogic(Object @NotNull... args) {
-        return new CharcoalRecipeLogic(this);
     }
 
     @Override
@@ -223,13 +218,13 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         Direction left = RelativeDirection.LEFT.getRelativeFacing(front, getUpwardsFacing(), false);
         Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, getUpwardsFacing(), false);
 
-        BlockPos down = getPos().relative(Direction.DOWN);
+        BlockPos down = getBlockPos().relative(Direction.DOWN);
 
         BlockPos.MutableBlockPos lPos = down.mutable();
         BlockPos.MutableBlockPos rPos = down.mutable();
         BlockPos.MutableBlockPos fPos = down.mutable();
         BlockPos.MutableBlockPos bPos = down.mutable();
-        BlockPos.MutableBlockPos hPos = getPos().mutable();
+        BlockPos.MutableBlockPos hPos = getBlockPos().mutable();
 
         int lDist = 0;
         int rDist = 0;
@@ -284,7 +279,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     public void clientTick() {
         super.clientTick();
         if (isActive()) {
-            var pos = this.getPos();
+            var pos = this.getBlockPos();
             var facing = Direction.UP;
             float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.25F + GTValues.RNG.nextFloat() / 2.0F;
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;

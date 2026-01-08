@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class QuantumTankMachineItem extends MetaMachineItem {
 
-    public QuantumTankMachineItem(IMachineBlock block, Properties properties) {
+    public QuantumTankMachineItem(MetaMachineBlock block, Properties properties) {
         super(block, properties);
     }
 

@@ -55,7 +55,7 @@ public class GTRecipeModifiers {
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-                BlockPos machinePos = machine.getPos();
+                BlockPos machinePos = machine.getBlockPos();
                 var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
                 if (zone == null) return ModifierFunction.IDENTITY;
 

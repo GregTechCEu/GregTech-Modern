@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -10,6 +11,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -27,6 +32,8 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -43,8 +50,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Getter
     protected boolean batchEnabled;
 
-    public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info,
+                                             Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
+        super(info, recipeLogicSupplier);
+    }
+
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     //////////////////////////////////////

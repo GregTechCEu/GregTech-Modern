@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -45,9 +45,9 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     @SaveField
     public final NotifiableItemStackHandler fuelHandler, ashHandler;
 
-    public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
-        this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> {
+    public SteamSolidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
+        this.fuelHandler = createFuelHandler().setFilter(itemStack -> {
             if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;
             }
@@ -63,18 +63,18 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
                 });
             });
         });
-        this.ashHandler = createAshHandler(args);
+        this.ashHandler = createAshHandler();
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
 
-    protected NotifiableItemStackHandler createFuelHandler(Object... args) {
+    protected NotifiableItemStackHandler createFuelHandler() {
         return new NotifiableItemStackHandler(this, 1, IO.IN, IO.BOTH);
     }
 
-    protected NotifiableItemStackHandler createAshHandler(Object... args) {
+    protected NotifiableItemStackHandler createAshHandler() {
         return new NotifiableItemStackHandler(this, 1, IO.OUT, IO.OUT);
     }
 

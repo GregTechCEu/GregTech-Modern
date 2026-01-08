@@ -705,7 +705,7 @@ public class GCYMMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();

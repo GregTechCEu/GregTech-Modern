@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -33,8 +33,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     protected ExportOnlyAEItemList aeItemHandler;
 
-    public MEInputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+    public MEInputBusPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.IN);
     }
 
     /////////////////////////////////
@@ -47,7 +47,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }

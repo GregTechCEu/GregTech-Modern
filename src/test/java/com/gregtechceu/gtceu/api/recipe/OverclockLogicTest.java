@@ -27,7 +27,6 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -93,16 +92,13 @@ public class OverclockLogicTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(1, 2, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 0)));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 2, 0));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
         return new BusHolder(inputBus1, inputBus2, outputBus1, controller);
     }
 
@@ -310,9 +306,9 @@ public class OverclockLogicTest {
     // Test for charge usage of a singleblock HV chemical reactor running an HV recipe
     @GameTest(template = "singleblock_charged_cr", batch = "OverclockLogic")
     public static void overclockLogicHVPowerTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
 
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableEnergyContainer energyContainer = (NotifiableEnergyContainer) machine
                 .getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP).get(0);
@@ -342,9 +338,8 @@ public class OverclockLogicTest {
     // Test for charge usage of a singleblock HV chemical reactor running an MV recipe
     @GameTest(template = "singleblock_charged_cr", batch = "OverclockLogic")
     public static void overclockLogicMVPowerTest(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableEnergyContainer energyContainer = (NotifiableEnergyContainer) machine
                 .getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP).get(0);

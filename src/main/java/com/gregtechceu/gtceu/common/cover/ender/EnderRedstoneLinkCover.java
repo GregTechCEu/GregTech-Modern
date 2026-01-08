@@ -96,7 +96,7 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     }
 
     protected int getSignalInput() {
-        return coverHolder.getLevel().getSignal(coverHolder.getPos().relative(attachedSide),
+        return coverHolder.getLevel().getSignal(coverHolder.getBlockPos().relative(attachedSide),
                 attachedSide.getOpposite());
     }
 }

@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -28,8 +29,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                                       implements IControllable, IExplosionMachine {
 
@@ -37,8 +42,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     private IEnergyContainer powerInput;
     protected ConditionalSubscriptionHandler converterSubscription;
 
-    public ActiveTransformerMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public ActiveTransformerMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
 
@@ -80,7 +85,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 Long2ObjectMaps::emptyMap);
 
         for (IMultiPart part : getPrioritySortedParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
