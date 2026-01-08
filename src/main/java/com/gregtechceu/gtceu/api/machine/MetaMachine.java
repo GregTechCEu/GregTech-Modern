@@ -136,7 +136,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     protected final List<MachineTrait> traits;
 
     @Getter
-    @Setter
     @SaveField
     @SyncToClient
     @RerenderOnChanged
@@ -191,6 +190,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 this.isPainted() != renderState.getValue(GTMachineModelProperties.IS_PAINTED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
+    }
+
+    public void setRenderState(MachineRenderState renderState) {
+        this.renderState = renderState;
+        if (level != null && !level.isClientSide) {
+            syncDataHolder.markClientSyncFieldDirty("renderState");
+        }
+        scheduleRenderUpdate();
     }
 
     @Override
