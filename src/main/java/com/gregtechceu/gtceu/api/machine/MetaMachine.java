@@ -45,6 +45,7 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
+import lombok.AccessLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -140,8 +141,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @SyncToClient
     @RerenderOnChanged
     private MachineRenderState renderState;
-    @Getter
+    @Getter(value = AccessLevel.PROTECTED)
     private final long offset = GTValues.RNG.nextInt(20);
+
+    private final List<TickableSubscription> serverTicks;
+    private final List<TickableSubscription> waitingToAdd;
 
     public MetaMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -209,8 +213,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ***** Tickable Manager ****//
     //////////////////////////////////////
 
-    private final List<TickableSubscription> serverTicks;
-    private final List<TickableSubscription> waitingToAdd;
 
     /**
      * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link #onLoad()}
@@ -701,7 +703,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
-    public long getOffsetTimer() {
+    public final long getOffsetTimer() {
         if (getLevel() == null) return getOffset();
         else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
 
@@ -729,10 +731,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return cover.getRedstoneSignalOutput();
     }
 
-    public int getOutputDirectSignal(@Nullable Direction side) {
-        // IDK what this does but MC wants it
-        return 0;
-    }
 
     public int getAnalogOutputSignal() {
         return 0;

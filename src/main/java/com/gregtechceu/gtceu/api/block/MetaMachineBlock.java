@@ -330,12 +330,6 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
-    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return MetaMachine.getMachine(level, pos).getOutputDirectSignal(direction);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return MetaMachine.getMachine(level, pos).getAnalogOutputSignal();
     }
@@ -385,7 +379,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public final BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return getDefinition().getBlockEntityType().create(pos, state);
     }
 

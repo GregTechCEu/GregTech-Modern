@@ -31,6 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,7 +75,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final List<ISubscription> traitSubscriptions;
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
-                                Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
+                                Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier, Function<SteamMachine, NotifiableFluidTank> steamTankFactory) {
         super(info, isHighPressure);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -83,6 +84,12 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
+    }
+
+    public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure, Function<SteamWorkableMachine, RecipeLogic> recipeLogicSupplier) {
+        this(info, isHighPressure, recipeLogicSupplier, (m) ->
+                new NotifiableFluidTank(m, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN)
+        );
     }
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
