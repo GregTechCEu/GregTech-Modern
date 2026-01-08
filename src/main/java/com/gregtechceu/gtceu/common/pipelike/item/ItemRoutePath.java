@@ -51,7 +51,7 @@ public class ItemRoutePath implements IRoutePath<IItemHandler> {
 
     @Override
     public @NotNull BlockPos getTargetPipePos() {
-        return targetPipe.getPipePos();
+        return targetPipe.getBlockPos();
     }
 
     @Override

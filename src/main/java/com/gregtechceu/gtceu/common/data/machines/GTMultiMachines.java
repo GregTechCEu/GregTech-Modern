@@ -503,7 +503,7 @@ public class GTMultiMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();

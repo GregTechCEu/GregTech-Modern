@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -30,10 +29,8 @@ public class ShutterCoverTest {
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void shutterCoverBlocksTransferTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover

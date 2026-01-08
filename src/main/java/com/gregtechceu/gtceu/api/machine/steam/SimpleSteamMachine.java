@@ -1,18 +1,17 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -32,7 +31,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.Tables;
 import lombok.Getter;
@@ -56,10 +54,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @SaveField
     private boolean needsVenting;
 
-    public SimpleSteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
-        this.importItems = createImportItemHandler(args);
-        this.exportItems = createExportItemHandler(args);
+    public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
+        this.importItems = createImportItemHandler();
+        this.exportItems = createExportItemHandler();
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
@@ -72,16 +70,11 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     // ***** Initialization *****//
     //////////////////////////////////////
 
-    @Override
-    protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {
+    protected NotifiableItemStackHandler createImportItemHandler() {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
 
-    protected NotifiableItemStackHandler createExportItemHandler(@SuppressWarnings("unused") Object... args) {
+    protected NotifiableItemStackHandler createExportItemHandler() {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 

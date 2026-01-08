@@ -48,13 +48,13 @@ public class EnergyNetHandler implements IEnergyContainer {
         }
 
         long amperesUsed = 0L;
-        for (EnergyRoutePath path : net.getNetData(cable.getPipePos())) {
+        for (EnergyRoutePath path : net.getNetData(cable.getBlockPos())) {
             if (path.getMaxLoss() >= voltage) {
                 // Will lose all the energy with this path, so don't use it
                 continue;
             }
 
-            if (cable.getPipePos().equals(path.getTargetPipePos()) && side == path.getTargetFacing()) {
+            if (cable.getBlockPos().equals(path.getTargetPipePos()) && side == path.getTargetFacing()) {
                 // Do not insert into source handler
                 continue;
             }
@@ -74,7 +74,7 @@ public class EnergyNetHandler implements IEnergyContainer {
                             45 + 36.5);
                     cable.applyHeat(heat);
 
-                    cableBroken = cable.isInValid();
+                    cableBroken = cable.isRemoved();
                     if (cableBroken) {
                         // a cable burned away (or insulation melted)
                         break;
@@ -98,7 +98,7 @@ public class EnergyNetHandler implements IEnergyContainer {
                 voltageTraveled -= cable.getNodeData().getLossPerBlock();
                 if (voltageTraveled <= 0) break;
 
-                if (!cable.isInValid()) {
+                if (!cable.isRemoved()) {
                     cable.incrementAmperage(amps, voltageTraveled);
                 }
             }

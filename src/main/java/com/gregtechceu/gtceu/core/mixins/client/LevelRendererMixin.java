@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -185,12 +185,12 @@ public abstract class LevelRendererMixin {
         if (!materialEntry.isEmpty()) {
             doRenderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
-        } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
+        } else if (level.getBlockEntity(pos) instanceof MetaMachine mbe) {
             if (rendererCfg.coloredTieredMachineOutline) {
-                if (mbe.getMetaMachine() instanceof SteamMachine steam) {
+                if (mbe instanceof SteamMachine steam) {
                     doRenderColoredOutline = true;
                     rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
-                } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                } else if (mbe instanceof ITieredMachine tiered) {
                     doRenderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }

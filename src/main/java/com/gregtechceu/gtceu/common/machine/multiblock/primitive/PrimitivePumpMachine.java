@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -28,8 +28,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
 
-    public PrimitivePumpMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public PrimitivePumpMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     private void produceWater() {
         if (getOffsetTimer() % 20 == 0 && isFormed() && !getMultiblockState().hasError()) {
             if (biomeModifier == 0) {
-                biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getPos()));
+                biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getBlockPos()));
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
@@ -105,7 +105,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     private Precipitation getBiomePrecipitation() {
-        return getLevel().getBiome(getPos()).value().getPrecipitationAt(getPos());
+        return getLevel().getBiome(getBlockPos()).value().getPrecipitationAt(getBlockPos());
     }
 
     public int getFluidProduction() {

@@ -51,7 +51,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     }
 
     default boolean shouldRender(T machine, Vec3 cameraPos) {
-        return Vec3.atCenterOf(machine.self().getPos()).closerThan(cameraPos, this.getViewDistance());
+        return Vec3.atCenterOf(machine.self().getBlockPos()).closerThan(cameraPos, this.getViewDistance());
     }
 
     default int getViewDistance() {
@@ -59,7 +59,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     }
 
     default AABB getRenderBoundingBox(T machine) {
-        BlockPos pos = machine.self().getPos();
+        BlockPos pos = machine.self().getBlockPos();
         return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
     }
 

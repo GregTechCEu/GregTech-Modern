@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -84,11 +83,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
-                                    BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, MultiblockMachineDefinition::new, metaMachine::apply, blockFactory,
+                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                    BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                    Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        super(registrate, name, MultiblockMachineDefinition::new, blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
         allowCoverOnFront(true);
@@ -115,11 +113,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return this;
-    }
-
-    @Override
-    public MultiblockMachineBuilder machine(Function<IMachineBlockEntity, MetaMachine> metaMachine) {
-        return (MultiblockMachineBuilder) super.machine(metaMachine);
     }
 
     @Override

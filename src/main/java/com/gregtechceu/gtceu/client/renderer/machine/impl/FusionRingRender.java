@@ -108,6 +108,6 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public AABB getRenderBoundingBox(FusionReactorMachine machine) {
-        return new AABB(machine.getPos()).inflate(getViewDistance() / 2.0D);
+        return new AABB(machine.getBlockPos()).inflate(getViewDistance() / 2.0D);
     }
 }

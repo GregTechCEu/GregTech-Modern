@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -31,23 +34,56 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription {
+public interface ICoverable extends ITickSubscription, ISyncManaged {
 
-    Level getLevel();
+    IGregtechBlockEntity getHolder();
 
-    BlockPos getPos();
+    default Level getLevel() {
+        return getHolder().getLevel();
+    }
 
-    BlockState getState();
+    default BlockPos getBlockPos() {
+        return getHolder().getBlockPos();
+    }
 
-    long getOffsetTimer();
+    default BlockState getBlockState() {
+        return getHolder().getBlockState();
+    }
 
-    boolean isInValid();
+    default long getOffsetTimer() {
+        return getHolder().getOffsetTimer();
+    }
 
-    void notifyBlockUpdate();
+    default boolean isRemoved() {
+        return getHolder().isRemoved();
+    }
 
-    void scheduleRenderUpdate();
+    default void notifyBlockUpdate() {
+        getHolder().notifyBlockUpdate();
+    }
 
-    void scheduleNeighborShapeUpdate();
+    default void scheduleRenderUpdate() {
+        getHolder().notifyBlockUpdate();
+    }
+
+    default void scheduleNeighborShapeUpdate() {
+        getHolder().scheduleNeighborShapeUpdate();
+    }
+
+    default void markAsChanged() {
+        getHolder().markAsChanged();
+    }
+
+    @Nullable
+    @Override
+    default TickableSubscription subscribeServerTick(Runnable runnable) {
+        return getHolder().subscribeServerTick(runnable);
+    }
+
+    @Override
+    default void unsubscribe(@Nullable TickableSubscription current) {
+        getHolder().unsubscribe(current);
+    }
 
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
 
@@ -109,7 +145,7 @@ public interface ICoverable extends ITickSubscription {
             if (player != null && player.getInventory().add(dropStack))
                 continue;
 
-            Block.popResource(getLevel(), getPos(), dropStack);
+            Block.popResource(getLevel(), getBlockPos(), dropStack);
 
         }
         notifyBlockUpdate();

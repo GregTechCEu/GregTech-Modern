@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -63,8 +65,8 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
-    public MEStockingBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public MEStockingBusPartMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.autoPullTest = $ -> false;
     }
 
@@ -85,7 +87,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     }
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
         return this.aeItemHandler;
     }

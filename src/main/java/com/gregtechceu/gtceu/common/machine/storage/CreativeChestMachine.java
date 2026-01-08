@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -38,12 +38,12 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @SaveField
     private int itemsPerCycle, ticksPerCycle = 1;
 
-    public CreativeChestMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, -1);
+    public CreativeChestMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX, -1);
     }
 
     @Override
-    protected ItemCache createCacheItemHandler(Object... args) {
+    protected ItemCache createCacheItemHandler() {
         return new InfiniteCache(this);
     }
 

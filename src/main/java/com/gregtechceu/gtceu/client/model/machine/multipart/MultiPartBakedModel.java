@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
+import static com.gregtechceu.gtceu.api.machine.MetaMachine.*;
 
 public class MultiPartBakedModel implements IDynamicBakedModel {
 

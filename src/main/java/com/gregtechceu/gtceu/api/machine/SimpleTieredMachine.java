@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -105,40 +106,29 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
-                               Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        super(info, tier, tankScalingFunction);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args);
-    }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
-        var handler = new CustomItemStackHandler() {
+        this.chargerInventory = new CustomItemStackHandler() {
 
             public int getSlotLimit(int slot) {
                 return 1;
             }
         };
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+        this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -249,9 +239,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         var outputFacingItems = getOutputFacingItems();
         var outputFacingFluids = getOutputFacingFluids();
         if ((isAutoOutputItems() && !exportItems.isEmpty() && outputFacingItems != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) ||
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacingItems)) ||
                 (isAutoOutputFluids() && !exportFluids.isEmpty() && outputFacingFluids != null &&
-                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids))) {
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacingFluids))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();

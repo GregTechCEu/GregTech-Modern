@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedFluidDetectorCover;
 import com.gregtechceu.gtceu.common.cover.detector.AdvancedItemDetectorCover;
@@ -33,7 +32,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         MutableInt expected = new MutableInt();
         helper.runAtTickTime(40 - machine.getOffsetTimer() % 20, () -> {
@@ -53,7 +52,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedActivityDetectorCoverWithoutActivity(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         TestUtils.placeCover(helper, machine, GTItems.COVER_ACTIVITY_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         helper.runAtTickTime(20 - machine.getOffsetTimer() % 20, () -> helper.pullLever(2, 2, 2));
         helper.runAtTickTime(45 - machine.getOffsetTimer() % 20, () -> {
@@ -65,7 +64,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedFluidDetectorCover cover = (AdvancedFluidDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_FLUID_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMaxValue(100000);
@@ -82,7 +81,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setLatched(true);
@@ -95,7 +94,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverBelowThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
         cover.setMinValue(1);
@@ -109,7 +108,7 @@ public class AdvancedDetectorCoverTest {
     @GameTest(template = "electrolyzer", batch = "coverTests")
     public static void testAdvancedItemDetectorCoverAboveThreshold(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
-        MetaMachine machine = ((IMachineBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 1))).getMetaMachine();
+        MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));
         machine.getItemHandlerCap(null, false).setStackInSlot(0, new ItemStack(Items.DIRT, 5));
         AdvancedItemDetectorCover cover = (AdvancedItemDetectorCover) TestUtils.placeCover(helper, machine,
                 GTItems.COVER_ITEM_DETECTOR_ADVANCED.asStack(), Direction.WEST);
