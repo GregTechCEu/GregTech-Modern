@@ -31,20 +31,21 @@ public class ObjectArrayTransformer<T> implements IValueTransformer<T[]> {
     }
 
     @Override
-    public T[] deserializeNBT(Tag tag, ISyncManaged holder, T[] currentVal) {
-        if (!(tag instanceof ListTag listTag)) throw new IllegalArgumentException("Expected ListTag");
+    public T[] deserializeNBT(Tag tag, ISyncManaged holder, T[] current) {
+        if (!(tag instanceof ListTag listTag)) return current;
 
-        if (listTag.size() != currentVal.length) {
-            currentVal = Arrays.copyOf(currentVal, listTag.size());
+        if (listTag.size() != current.length) {
+            current = Arrays.copyOf(current, listTag.size());
         }
-
         for (int i = 0; i < listTag.size(); i++) {
-            if (elementTransformer.mustProvideObject())
+            if (elementTransformer.mustProvideObject()) {
                 elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(listTag.get(i)), null,
-                        currentVal[i]);
-            else currentVal[i] = elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                    null, null);
+                        current[i]);
+            } else {
+                current[i] = elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(listTag.get(i)),
+                        null, null);
+            }
         }
-        return currentVal;
+        return current;
     }
 }
