@@ -89,7 +89,6 @@ import appeng.capabilities.Capabilities;
 import com.mojang.datafixers.util.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

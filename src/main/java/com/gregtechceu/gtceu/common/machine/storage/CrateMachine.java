@@ -62,7 +62,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
     @SaveField
     public final NotifiableItemStackHandler inventory;
 
-    public CrateMachine(BlockEntityCreationInfo info, Material material, int inventorySize) {
+    public CrateMachine(BlockEntityCreationInfo info, Material material, int inventorySize, int rowLength) {
         super(info);
         this.material = material;
         this.inventorySize = inventorySize;

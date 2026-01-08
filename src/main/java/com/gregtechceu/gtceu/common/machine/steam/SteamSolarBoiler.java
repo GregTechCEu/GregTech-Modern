@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -80,7 +79,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
                         .top(30).right(18)
                         .size(18)
                         .texture(progressTexture, 20)
-                        .progress(() -> GTUtil.canSeeSunClearly(getLevel(), getPos()) ? 1.0 : 0.0));
+                        .progress(() -> GTUtil.canSeeSunClearly(getLevel(), getBlockPos()) ? 1.0 : 0.0));
     }
 
     /*

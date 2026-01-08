@@ -31,8 +31,8 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         return (CoverBehavior) this;
     }
 
-    default boolean isInvalid() {
-        return self().coverHolder.isInValid() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
+    default boolean isRemoved() {
+        return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
 
     default GTGuiTheme getUITheme() {
