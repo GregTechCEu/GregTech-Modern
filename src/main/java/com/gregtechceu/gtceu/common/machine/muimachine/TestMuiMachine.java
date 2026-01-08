@@ -19,12 +19,8 @@ import com.gregtechceu.gtceu.api.mui.utils.Interpolation;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.IntValue;
 import com.gregtechceu.gtceu.api.mui.value.StringValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DynamicSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.GenericSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.*;
@@ -38,6 +34,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.network.chat.Component;
@@ -77,7 +74,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     };
 
     private final FluidTank fluidTank = new FluidTank(10000);
-    private final FluidTank fluidTankPhantom = new FluidTank(Integer.MAX_VALUE);
+    private final FluidTank fluidTankPhantom = new FluidTank(500000);
     private long time = 0;
     private int val, val2 = 0;
     private String value = "";
@@ -116,6 +113,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         // settings.customContainer(() -> new CraftingModularContainer(3, 3, this.craftingInventory));
+        // settings.customGui(() -> TestGuiContainer::new);
 
         syncManager.registerSlotGroup("item_inv", 3);
         syncManager.registerSlotGroup("mixer_items", 2);
@@ -123,7 +121,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         syncManager.syncValue("mixer_fluids", 0, SyncHandlers.fluidSlot(this.mixerFluids1));
         syncManager.syncValue("mixer_fluids", 1, SyncHandlers.fluidSlot(this.mixerFluids2));
         IntSyncValue cycleStateValue = new IntSyncValue(() -> this.cycleState, val -> this.cycleState = val);
-        syncManager.syncValue("cycle_state", cycleStateValue);
+        syncManager.getHyperVisor().syncValue("cycle_state", cycleStateValue);
         syncManager.syncValue("display_item", GenericSyncValue.forItem(() -> this.displayItem, null));
         syncManager.bindPlayerInventory(data.getPlayer());
 
@@ -139,18 +137,18 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     for (int i = 0; i < handler.getSlots(); i++) {
                         int finalI = i;
                         flow.child(new ItemSlot()
-                                .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSH.class,
-                                        () -> new ItemSlotSH(new ModularSlot(handler, finalI)))));
+                                .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSyncHandler.class,
+                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, finalI)))));
                     }
                     return flow;
                 });
 
-        Rectangle colorPickerBackground = new Rectangle().setColor(Color.RED.main);
+        Rectangle colorPickerBackground = new Rectangle().color(Color.RED.main);
         ModularPanel panel = new ModularPanel("test_tile");
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel", true, this::openSecondWindow);
         IPanelHandler colorPicker = IPanelHandler.simple(panel,
                 (mainPanel,
-                 player) -> new ColorPickerDialog(colorPickerBackground::setColor, colorPickerBackground.getColor(),
+                 player) -> new ColorPickerDialog(colorPickerBackground::color, colorPickerBackground.getColor(),
                          true)
                          .setDraggable(true)
                          .relative(panel)
@@ -368,6 +366,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .child(new FluidSlot()
                                                                         .margin(2)
                                                                         .width(30)
+                                                                        .alwaysShowFull(false)
                                                                         .syncHandler(SyncHandlers
                                                                                 .fluidSlot(this.fluidTankPhantom)
                                                                                 .phantom(true)))
@@ -406,10 +405,9 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                             .slotGroup("item_inv"));
                                                         })
                                                         .build().name("9 slot inv")
-                                                        // .marginBottom(2)
-                                                        .child(new SortButtons()
-                                                                .slotGroup("item_inv")
-                                                                .right(0).top(-11)))
+                                                        .placeSortButtonsTopRightVertical()
+                                                // .marginBottom(2)
+                                                )
                                                 .child(SlotGroupWidget.builder()
                                                         .row("FII")
                                                         .row("FII")
@@ -423,7 +421,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                 .filter(stack -> !stack.getCapability(
                                                                                         ForgeCapabilities.ITEM_HANDLER)
                                                                                         .isPresent())))
-                                                        .build().name("mixer inv"))
+                                                        .build().name("mixer inv")
+                                                        .disableSortButtons())
                                                 .child(new Row()
                                                         .coverChildrenHeight()
                                                         .child(new CycleButtonWidget()
@@ -496,7 +495,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                         .setNumbers(1, Short.MAX_VALUE)
                                                                         .setTextAlignment(Alignment.Center)
                                                                         .background(
-                                                                                new Rectangle().setColor(0xFFb1b1b1))
+                                                                                new Rectangle().color(0xFFb1b1b1))
                                                                         .setTextColor(IKey.TEXT_COLOR)
                                                                         .size(20, 14))
                                                                 .child(IKey.str("Number config").asWidget()
@@ -586,10 +585,12 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         syncManager.syncValue("int_value", new IntSyncValue(number::get, number::set));
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("other_panel_2", true,
                 (syncManager1, syncHandler1) -> openThirdWindow(syncManager1, syncHandler1, number));
+        IntSyncValue num = syncManager.getHyperVisor().findSyncHandler("cycle_state", IntSyncValue.class);
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)
-                        .overlay(IKey.str("3"))
+                        .overlay((new FluidDrawable().setFluid(GTMaterials.Iron.getFluid(200))), IKey.str("3"))
+                        .size(50, 50)
                         .onMousePressed((mouseX, mouseY, mouseButton) -> {
                             panelSyncHandler.openPanel();
                             return true;
@@ -603,6 +604,13 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                         .key('I', i -> new ItemSlot().slot(new ModularSlot(smallInv, i).slotGroup(slotGroup)))
                         .build()
                         .center())
+                .child(new CycleButtonWidget()
+                        .size(16).pos(5, 5 + 11)
+                        .value(num)
+                        .stateOverlay(0, IKey.str("1"))
+                        .stateOverlay(1, IKey.str("2"))
+                        .stateOverlay(2, IKey.str("3"))
+                        .addTooltipLine(IKey.str("Hyper Visor test")))
                 .child(new ButtonWidget<>()
                         .bottom(5)
                         .right(5)

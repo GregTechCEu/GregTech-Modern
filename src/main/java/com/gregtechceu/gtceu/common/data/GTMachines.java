@@ -82,6 +82,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/coal"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
@@ -95,6 +96,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/lava"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
@@ -108,6 +110,7 @@ public class GTMachines {
                     .recipeType(STEAM_BOILER_RECIPES)
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/solar"))
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
@@ -122,8 +125,8 @@ public class GTMachines {
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
-                    .themeId((i) -> GTGuiTheme.BRONZE.getId())
-                    .UI(GTSingleblockMachinePanels.STEAM_MACERATOR)
+                    .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
+                    .UI(GTSingleblockMachinePanels.STEAM_MACHINE)
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
