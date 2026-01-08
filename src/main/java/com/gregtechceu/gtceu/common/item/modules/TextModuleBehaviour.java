@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
-import com.gregtechceu.gtceu.api.mui.base.IPanelHandler;
 import com.gregtechceu.gtceu.api.mui.base.value.IBoolValue;
 import com.gregtechceu.gtceu.api.mui.base.value.IStringValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;

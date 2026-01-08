@@ -16,7 +16,8 @@ import java.util.Objects;
  * For example, if the GUI was opened by right-clicking a BlockEntity, then this data needs a world and a block pos.
  * <p>
  * Also see {@link PosGuiData} (useful for BlockEntities), {@link SidedPosGuiData} (useful for covers from GregTech) and
- * {@link HandGuiData} (useful for guis opened by interacting with an item in the players hand) for default
+ * {@link PlayerInventoryGuiData} (useful for guis opened by interacting with an item in the players inventory) for
+ * default
  * implementations.
  * </p>
  */

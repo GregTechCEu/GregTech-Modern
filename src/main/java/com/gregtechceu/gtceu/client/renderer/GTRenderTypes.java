@@ -43,6 +43,13 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setLightmapState(LIGHTMAP)
                     .createCompositeState(false));
+    private static final RenderType GUI_TRIANGLE_STRIP = RenderType.create("gui_triangle_strip",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.RENDERTYPE_GUI_SHADER)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                    .createCompositeState(false));
 
     private static final RenderType GUI_TRIANGLE_FAN = RenderType.create("gui_triangle_fan",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN, 256, false, false,
@@ -76,6 +83,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType inWorldGui() {
         return INWORLD_GUI;
+    }
+
+    public static RenderType guiTriangleStrip() {
+        return GUI_TRIANGLE_STRIP;
     }
 
     public static RenderType guiTriangleFan() {

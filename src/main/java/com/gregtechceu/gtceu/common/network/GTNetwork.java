@@ -102,7 +102,10 @@ public class GTNetwork {
         register(CPacketImageRequest.class, CPacketImageRequest::new, NetworkDirection.PLAY_TO_SERVER);
         register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
 
-        register(CPacketKeysPressed.class, CPacketKeysPressed::new, NetworkDirection.PLAY_TO_SERVER);
+        register(SCPacketMonitorGroupNBTChange.class, SCPacketMonitorGroupNBTChange::new, null);
+        register(CPacketImageRequest.class, CPacketImageRequest::new, NetworkDirection.PLAY_TO_SERVER);
+        register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
+
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);
 
         register(SPacketUpdateBESyncValue.class, SPacketUpdateBESyncValue::new, NetworkDirection.PLAY_TO_CLIENT);
@@ -128,5 +131,8 @@ public class GTNetwork {
         register(SContainerSetContent.class, SContainerSetContent::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SContainerSetData.class, SContainerSetData::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SContainerSetSlot.class, SContainerSetSlot::new, NetworkDirection.PLAY_TO_CLIENT);
+        register(CloseAllGuiPacket.class, CloseAllGuiPacket::new, null);
+        register(CloseGuiPacket.class, CloseGuiPacket::new, null);
+        register(ReopenGuiPacket.class, ReopenGuiPacket::new, null);
     }
 }

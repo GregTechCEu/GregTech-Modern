@@ -97,8 +97,12 @@ public class GTRecipeTypeUILayout {
                     int maxMachineSlots = 0;
                     if (maxRecipeTypeSlots == 0 || recipeCap == EURecipeCapability.CAP) continue;
                     if (recipeCap == ItemRecipeCapability.CAP) {
+                        if (in && inputItems == null) continue;
+                        if (!in && outputItems == null) continue;
                         maxMachineSlots = in ? inputItems.getSlots() : outputItems.getSlots();
                     } else if (recipeCap == FluidRecipeCapability.CAP) {
+                        if (in && inputFluids == null) continue;
+                        if (!in && outputFluids == null) continue;
                         maxMachineSlots = in ? inputFluids.getTanks() : outputFluids.getTanks();
                     }
 

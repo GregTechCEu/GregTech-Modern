@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.base.IJsonSerializable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
+import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.utils.Interpolations;
 import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
@@ -51,6 +52,8 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
     @Nullable
     public final ColorType colorType;
     public final boolean nonOpaque;
+
+    private int colorOverride = 0;
 
     /**
      * Creates a drawable texture
@@ -171,6 +174,15 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
                 lerpV(vEnd), this.nonOpaque);
     }
 
+    @Override
+    public void applyColor(int themeColor) {
+        if (this.colorOverride != 0) {
+            Color.setGlColor(this.colorOverride);
+        } else {
+            IDrawable.super.applyColor(themeColor);
+        }
+    }
+
     public static UITexture parseFromJson(JsonObject json) {
         String name = JsonHelper.getString(json, null, "name", "id");
         if (name != null) {
@@ -214,6 +226,8 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         } else if (JsonHelper.getBoolean(json, false, "canApplyTheme")) {
             builder.canApplyTheme();
         }
+        UITexture uiTexture = builder.build();
+        uiTexture.colorOverride = JsonHelper.getColor(json, 0, "colorOverride");
         return builder.build();
     }
 
@@ -230,7 +244,18 @@ public class UITexture implements IDrawable, IJsonSerializable<UITexture> {
         json.addProperty("u1", this.u1);
         json.addProperty("v1", this.v1);
         if (this.colorType != null) json.addProperty("colorType", this.colorType.getName());
+        json.addProperty("colorOverride", this.colorOverride);
         return true;
+    }
+
+    protected UITexture copy() {
+        return new UITexture(this.location, this.u0, this.v0, this.u1, this.v1, this.colorType);
+    }
+
+    public UITexture withColorOverride(int color) {
+        UITexture t = copy();
+        t.colorOverride = color;
+        return t;
     }
 
     private static int defaultImageWidth = 16, defaultImageHeight = 16;
