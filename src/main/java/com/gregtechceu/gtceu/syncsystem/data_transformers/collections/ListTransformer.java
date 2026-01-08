@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
