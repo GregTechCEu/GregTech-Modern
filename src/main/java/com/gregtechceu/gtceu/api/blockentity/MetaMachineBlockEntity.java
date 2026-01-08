@@ -87,6 +87,9 @@ public class MetaMachineBlockEntity extends ManagedSyncBlockEntity implements IM
     @Override
     public void setRenderState(MachineRenderState state) {
         this.renderState = state;
+        if (level != null && !level.isClientSide) {
+            syncDataHolder.markClientSyncFieldDirty("renderState");
+        }
         scheduleRenderUpdate();
     }
 
