@@ -20,6 +20,8 @@ import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 
+import java.util.List;
+
 public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, CentralMonitorRender> {
 
     // spotless:off
@@ -43,7 +45,11 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), machine.getUpwardsFacing());
         poseStack.translate(-machine.getRightDist() - 0.5f, -machine.getUpDist() - 0.5f, SCREEN_OFFSET_Z);
         if (machine.getRecipeLogic().isActive()) {
-            for (MonitorGroup group : machine.getMonitorGroups()) {
+            List<MonitorGroup> monitorGroups = machine.getMonitorGroups();
+            // this is not a for each loop to prevent ConcurrentModificationException
+            // noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < monitorGroups.size(); i++) {
+                MonitorGroup group = monitorGroups.get(i);
                 ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
                 if (!(itemStack.getItem() instanceof ComponentItem item)) {
                     continue;
