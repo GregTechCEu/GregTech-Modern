@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public interface IRecipeCapabilityHolder {
 
@@ -39,20 +37,6 @@ public interface IRecipeCapabilityHolder {
     default void addHandlerList(RecipeHandlerList handlerList) {
         if (handlerList == RecipeHandlerList.NO_DATA) return;
         IO io = handlerList.getHandlerIO();
-
-        var existingHandlers = getCapabilitiesProxy().getOrDefault(io, Collections.emptyList()).stream()
-                .flatMap(tempHandlerList -> tempHandlerList.getHandlersFlat().stream())
-                .collect(Collectors.toSet());
-
-        for (var handler : handlerList.getHandlersFlat()) {
-            if (existingHandlers.contains(handler)) {
-                GTCEu.LOGGER.error("Do not add the same handler twice, as this could cause duplication bugs! " +
-                        "Handler {} in List {}",
-                        handler.getClass().getName(),
-                        handlerList.getClass().getName());
-            }
-        }
-
         getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handlerList);
         var entrySet = handlerList.getHandlerMap().entrySet();
         var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>(entrySet.size()));

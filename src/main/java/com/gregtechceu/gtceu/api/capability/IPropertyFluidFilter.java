@@ -87,7 +87,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
         if (GTUtil.isShiftDown()) {
             if (showTemperatureInfo)
                 tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                        FormattingUtil.formatNumbers(getMaxFluidTemperature())));
+                        FormattingUtil.formatTemperature(getMaxFluidTemperature())));
             if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));

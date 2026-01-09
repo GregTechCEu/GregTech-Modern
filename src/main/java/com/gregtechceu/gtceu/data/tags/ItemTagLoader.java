@@ -189,5 +189,10 @@ public class ItemTagLoader {
 
         provider.addTag(CustomTags.TOOLS_IGNITER)
                 .addTag(ItemTags.CREEPER_IGNITERS);
+
+        // Add sodalite and lazurite as enchanting fuels
+        provider.addTag(Tags.Items.ENCHANTING_FUELS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get())
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get());
     }
 }
