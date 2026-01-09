@@ -71,8 +71,6 @@ public class CursorHandler {
                 return 0L;
             }
             return cursor;
-        } catch (Exception e) {
-            return 0L;
         }
     }
 
