@@ -51,7 +51,8 @@ public class SCPacketMonitorGroupNBTChange implements GTNetwork.INetPacket {
 
         MetaMachine machine = MetaMachine.getMachine(level, pos);
         if (machine instanceof CentralMonitorMachine centralMonitor) {
-            IItemHandlerModifiable itemHandler = centralMonitor.getMonitorGroups().get(monitorGroupId).getItemStackHandler();
+            IItemHandlerModifiable itemHandler = centralMonitor.getMonitorGroups().get(monitorGroupId)
+                    .getItemStackHandler();
             if (ItemStack.isSameItem(itemHandler.getStackInSlot(0), stack)) {
                 itemHandler.setStackInSlot(0, stack);
             }

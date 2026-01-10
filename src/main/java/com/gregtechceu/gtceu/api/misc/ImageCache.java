@@ -19,7 +19,7 @@ public class ImageCache {
     public static final long REFRESH_SECS = 120;
     public static final long EXPIRE_SECS = 300;
     private static final byte[] NULL_MARKER = new byte[0];
-    private static final String[] ALLOWED_PROTOCOLS = new String[] {"http", "https"};
+    private static final String[] ALLOWED_PROTOCOLS = new String[] { "http", "https" };
 
     private static boolean downloading = false;
 
