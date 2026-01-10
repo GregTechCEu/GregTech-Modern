@@ -927,7 +927,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
@@ -975,7 +975,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
-        provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
+        provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
@@ -1072,7 +1072,7 @@ public class LangHandler {
         provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
