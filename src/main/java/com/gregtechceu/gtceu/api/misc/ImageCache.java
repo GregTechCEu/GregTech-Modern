@@ -8,6 +8,7 @@ import com.google.common.cache.LoadingCache;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -26,28 +27,32 @@ public class ImageCache {
             .refreshAfterWrite(REFRESH_SECS, TimeUnit.SECONDS)
             .expireAfterAccess(EXPIRE_SECS, TimeUnit.SECONDS)
             .concurrencyLevel(3)
-            .build(CacheLoader.from(url -> {
-                if (!url.startsWith("http://") && !url.startsWith("https://") && !GTCEu.isClientSide()) return NULL_MARKER;
-                boolean allowedProtocol = false;
-                for (String protocol : ALLOWED_PROTOCOLS) {
-                    if (url.startsWith(protocol + "://")) {
-                        allowedProtocol = true;
-                        break;
+            .build(CacheLoader.from(urlString -> {
+                try {
+                    URL url = new URL(urlString);
+                    boolean allowedProtocol = false;
+                    for (String protocol : ALLOWED_PROTOCOLS) {
+                        if (url.getProtocol().equalsIgnoreCase(protocol)) {
+                            allowedProtocol = true;
+                            break;
+                        }
                     }
-                }
-                if (!allowedProtocol && !GTCEu.isClientSide()) return NULL_MARKER;
-                if (downloading) return NULL_MARKER;
-                downloading = true;
+                    if (!allowedProtocol && !GTCEu.isClientSide()) return NULL_MARKER;
+                    if (downloading) return NULL_MARKER;
+                    downloading = true;
 
-                try (InputStream stream = new URL(url).openStream()) {
-                    return stream.readAllBytes();
-                } catch (IOException e) {
-                    GTCEu.LOGGER.error("Could not load image {}", url, e);
-                    downloading = false;
+                    try (InputStream stream = url.openStream()) {
+                        return stream.readAllBytes();
+                    } catch (IOException e) {
+                        GTCEu.LOGGER.error("Could not load image {}", url, e);
+                        downloading = false;
+                        return NULL_MARKER;
+                    } finally {
+                        GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
+                        downloading = false;
+                    }
+                } catch (MalformedURLException e) {
                     return NULL_MARKER;
-                } finally {
-                    GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
-                    downloading = false;
                 }
             }));
 
