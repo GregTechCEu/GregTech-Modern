@@ -4,10 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
@@ -17,7 +13,7 @@ import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -184,7 +180,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .matrix(matrix)
                 .key(key, i -> {
                     ModularSlot slot = new ModularSlot(importItems.storage, i);
-                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
@@ -207,7 +203,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .key(key, i -> {
                     ModularSlot slot = new ModularSlot(exportItems.storage, i);
                     slot.accessibility(false, true);
-                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("export", i)
