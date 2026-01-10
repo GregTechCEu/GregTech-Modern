@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -89,7 +89,8 @@ public class StrictShapedRecipe extends ShapedRecipe {
             NonNullList<Ingredient> nonNullList = ShapedRecipeAccessor.callDissolvePattern(strings, map, i, j);
             ItemStack itemStack = StrictShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
             boolean matchSize = json.get("matchSize").getAsBoolean();
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack, matchSize);
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack,
+                    matchSize);
         }
 
         @Override
@@ -102,7 +103,8 @@ public class StrictShapedRecipe extends ShapedRecipe {
             nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
             ItemStack itemStack = buffer.readItem();
             boolean matchSize = buffer.readBoolean();
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack, matchSize);
+            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack,
+                    matchSize);
         }
 
         @Override
