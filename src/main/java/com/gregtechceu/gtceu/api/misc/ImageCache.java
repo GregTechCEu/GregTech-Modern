@@ -26,6 +26,7 @@ public class ImageCache {
             .expireAfterAccess(EXPIRE_SECS, TimeUnit.SECONDS)
             .concurrencyLevel(3)
             .build(CacheLoader.from(url -> {
+                if (url.startsWith("file://") && !GTCEu.isClientSide()) return NULL_MARKER;
                 if (downloading) return NULL_MARKER;
                 downloading = true;
 
