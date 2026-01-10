@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.LocatedWidget;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractContainerScreenAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.ScreenAccessor;
@@ -282,6 +283,8 @@ public class ClientScreenHandler {
         } else if (newScreen == null) {
             // closing -> clear stack and dispose every screen
             invalidateMuiStack();
+            // only when all screens are closed dispose all containers in the stack
+            ModularNetwork.CLIENT.closeAll();
         }
 
         OverlayManager.onOpenScreen(newScreen);
@@ -566,10 +569,11 @@ public class ClientScreenHandler {
             Area area = hovered.getArea();
             IWidget parent = hovered.getParent();
 
-            GuiDraw.drawBorder(graphics, 0, 0, area.width, area.height, color, scale);
+            GuiDraw.drawBorderOutsideXYWH(graphics, 0, 0, area.width, area.height, scale, color);
             if (hovered.hasParent()) {
-                GuiDraw.drawBorder(graphics, -area.rx, -area.ry, parent.getArea().width, parent.getArea().height,
-                        Color.withAlpha(color, 0.3f), scale);
+                GuiDraw.drawBorderOutsideXYWH(graphics, -area.rx, -area.ry, parent.getArea().width,
+                        parent.getArea().height,
+                        scale, Color.withAlpha(color, 0.3f));
             }
             graphics.pose().popPose();
             locatedHovered.unapplyMatrix(context);

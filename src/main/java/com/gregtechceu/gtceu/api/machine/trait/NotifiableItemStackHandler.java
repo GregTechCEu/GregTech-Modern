@@ -123,23 +123,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     output = items[0];
                 }
                 amount = output.getCount();
-                if (io == IO.OUT) {
-                    int outputStorageLimit = 0;
-                    for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                        ItemStack stack = storage.getStackInSlot(slot);
-                        if (stack.isEmpty() || GTUtil.isSameItemSameTags(stack, output)) {
-                            outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
-                        }
-                    }
-                    if (provider.getCountProvider().getMinValue() > outputStorageLimit) {
-                        it.remove();
-                        continue;
-                    } else if (simulate) {
-                        amount = provider.getCountProvider().getMaxValue();
-                    } else {
-                        amount = Math.min(output.getCount(), outputStorageLimit);
-                    }
-                }
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -264,7 +247,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
@@ -274,7 +257,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.IN);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)

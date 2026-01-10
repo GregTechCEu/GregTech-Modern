@@ -2,21 +2,20 @@ package com.gregtechceu.gtceu.api.mui.widgets.slot;
 
 import com.gregtechceu.gtceu.api.mui.base.value.ISyncOrValue;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
-import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PhantomItemSlotSyncHandler;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.integration.xei.handlers.GhostIngredientSlot;
 import com.gregtechceu.gtceu.integration.xei.handlers.RecipeViewerHandler;
 
 import net.minecraft.world.item.ItemStack;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<ItemStack> {
 
-    private PhantomItemSlotSH syncHandler;
+    private PhantomItemSlotSyncHandler syncHandler;
 
     @Override
     public void onInit() {
@@ -26,22 +25,20 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
 
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
-        return syncOrValue instanceof PhantomItemSlotSH;
+        return syncOrValue instanceof PhantomItemSlotSyncHandler;
     }
 
     @Override
     protected void setSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         super.setSyncOrValue(syncOrValue);
-        this.syncHandler = syncOrValue.castOrThrow(PhantomItemSlotSH.class);
+        this.syncHandler = syncOrValue.castOrThrow(PhantomItemSlotSyncHandler.class);
     }
 
     @Override
     protected void drawOverlay(ModularGuiContext context) {
         RecipeViewerHandler handler = RecipeViewerHandler.getCurrent();
         if (handler.isHoveringOver(this)) {
-            RenderSystem.colorMask(true, true, true, false);
             drawHighlight(context, getArea(), isHovering());
-            RenderSystem.colorMask(true, true, true, true);
         } else {
             super.drawOverlay(context);
         }
@@ -50,7 +47,7 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
     @Override
     public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
         MouseData mouseData = MouseData.create(button);
-        this.syncHandler.syncToServer(PhantomItemSlotSH.SYNC_CLICK, mouseData::writeToPacket);
+        this.syncHandler.syncToServer(PhantomItemSlotSyncHandler.SYNC_CLICK, mouseData::writeToPacket);
         return Result.SUCCESS;
     }
 
@@ -62,7 +59,7 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
         MouseData mouseData = MouseData.create((int) delta);
-        this.syncHandler.syncToServer(PhantomItemSlotSH.SYNC_SCROLL, mouseData::writeToPacket);
+        this.syncHandler.syncToServer(PhantomItemSlotSyncHandler.SYNC_SCROLL, mouseData::writeToPacket);
         return true;
     }
 
@@ -86,7 +83,7 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
 
     @Override
     @NotNull
-    public PhantomItemSlotSH getSyncHandler() {
+    public PhantomItemSlotSyncHandler getSyncHandler() {
         if (this.syncHandler == null) {
             throw new IllegalStateException("Widget is not initialised!");
         }
@@ -95,11 +92,11 @@ public class PhantomItemSlot extends ItemSlot implements GhostIngredientSlot<Ite
 
     @Override
     public PhantomItemSlot slot(ModularSlot slot) {
-        return syncHandler(new PhantomItemSlotSH(slot));
+        return syncHandler(new PhantomItemSlotSyncHandler(slot));
     }
 
     @Override
-    public PhantomItemSlot syncHandler(ItemSlotSH syncHandler) {
+    public PhantomItemSlot syncHandler(ItemSlotSyncHandler syncHandler) {
         setSyncOrValue(ISyncOrValue.orEmpty(syncHandler));
         return this;
     }

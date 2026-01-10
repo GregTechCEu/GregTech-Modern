@@ -20,7 +20,7 @@ public class ActivityDetectorCover extends DetectorCover {
     @Override
     public boolean canAttach() {
         return super.canAttach() &&
-                GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+                GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide) != null;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ActivityDetectorCover extends DetectorCover {
             return;
         }
 
-        var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide);
 
         boolean isCurrentlyWorking = workable.isActive() && workable.isWorkingEnabled();
 

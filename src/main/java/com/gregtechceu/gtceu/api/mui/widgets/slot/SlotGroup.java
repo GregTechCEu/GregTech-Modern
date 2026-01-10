@@ -97,6 +97,10 @@ public class SlotGroup {
         return Collections.unmodifiableList(this.slots);
     }
 
+    public Slot getFirstSlotForSorting() {
+        return this.slots.isEmpty() ? null : this.slots.get(0);
+    }
+
     public boolean isAllowSorting() {
         return this.slots.size() > 1 && this.allowSorting;
     }

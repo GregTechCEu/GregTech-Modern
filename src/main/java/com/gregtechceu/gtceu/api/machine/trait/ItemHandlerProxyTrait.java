@@ -104,7 +104,7 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
     public void exportToNearby(Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)

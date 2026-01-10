@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
@@ -91,10 +90,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
-                        return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
-                    }
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
+                    return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
@@ -106,10 +103,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
-                        return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().capacity().longValue());
-                    }
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
+                    return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().capacity().longValue());
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);

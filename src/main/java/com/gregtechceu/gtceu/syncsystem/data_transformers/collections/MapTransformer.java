@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
 
@@ -7,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
@@ -38,8 +40,12 @@ public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
 
     @Override
     public Map<K, V> deserializeNBT(Tag tag, ISyncManaged holder, Map<K, V> current) {
-        if (!(tag instanceof ListTag listTag)) return current;
-        current.clear();
+        if (!(tag instanceof ListTag listTag)) {
+            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
+            return current;
+        }
+        if (current != null) current.clear();
+        else current = new HashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
             K key = keyTransformer.deserializeNBT(compound.get("k"), null, null);

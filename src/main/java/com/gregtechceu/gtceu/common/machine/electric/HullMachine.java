@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
@@ -36,8 +36,8 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     @SaveField
     protected NotifiableEnergyContainer energyContainer;
 
-    public HullMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier);
+    public HullMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
             this.gridNodeHost = new GridNodeHostTrait(this);
         } else {

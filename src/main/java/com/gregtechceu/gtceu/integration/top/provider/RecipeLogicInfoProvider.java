@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.top.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -54,8 +54,7 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 }
                 Component text = null;
 
-                if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-                    var machine = machineBlockEntity.getMetaMachine();
+                if (blockEntity instanceof MetaMachine machine) {
                     long MBt = 0;
                     if (machine instanceof SimpleSteamMachine ssm) {
                         MBt = (long) Math.ceil(EUt.getTotalEU() * ssm.getConversionRate());

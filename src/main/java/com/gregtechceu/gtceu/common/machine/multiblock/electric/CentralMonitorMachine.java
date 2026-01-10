@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
@@ -11,13 +12,11 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -81,8 +80,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     private static TraceabilityPredicate MULTI_PREDICATE = null;
 
-    public CentralMonitorMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CentralMonitorMachine(BlockEntityCreationInfo info) {
+        super(info, CentralMonitorLogic::new);
     }
 
     public static TraceabilityPredicate getMultiPredicate() {
@@ -112,11 +111,6 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return (CentralMonitorLogic) super.getRecipeLogic();
     }
 
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new CentralMonitorLogic(this);
-    }
-
     public @Nullable EnergyContainerList getFormedEnergyContainer() {
         return this.energyContainer;
     }
@@ -138,7 +132,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     continue;
                 }
                 module.tick(stack, this, group);
-                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getBlockPos()),
                         new SCPacketMonitorGroupNBTChange(stack, group, this));
             }
         }
@@ -158,7 +152,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     protected MultiblockState getPatternFindingState() {
         if (this.patternFindingState == null) {
-            this.patternFindingState = new MultiblockState(getLevel(), getPos());
+            this.patternFindingState = new MultiblockState(getLevel(), getBlockPos());
             this.patternFindingState.clean();
         }
         return this.patternFindingState;
@@ -188,10 +182,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction right = RelativeDirection.RIGHT.getRelative(front, spin, false);
         Direction up = RelativeDirection.UP.getRelative(front, spin, false);
         Direction down = RelativeDirection.DOWN.getRelative(front, spin, false);
-        BlockPos.MutableBlockPos posLeft = getPos().mutable().move(left);
-        BlockPos.MutableBlockPos posRight = getPos().mutable().move(right);
-        BlockPos.MutableBlockPos posUp = getPos().mutable().move(up);
-        BlockPos.MutableBlockPos posDown = getPos().mutable().move(down);
+        BlockPos.MutableBlockPos posLeft = getBlockPos().mutable().move(left);
+        BlockPos.MutableBlockPos posRight = getBlockPos().mutable().move(right);
+        BlockPos.MutableBlockPos posUp = getBlockPos().mutable().move(up);
+        BlockPos.MutableBlockPos posDown = getBlockPos().mutable().move(down);
         this.leftDist = 0;
         this.rightDist = 0;
         this.upDist = 0;
@@ -266,7 +260,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
         Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
 
-        BlockPos tmp = getPos().mutable().move(right, rightDist).move(up, upDist);
+        BlockPos tmp = getBlockPos().mutable().move(right, rightDist).move(up, upDist);
 
         return new BlockPos(Math.abs(tmp.get(right.getAxis()) - pos.get(right.getAxis())),
                 Math.abs(tmp.get(up.getAxis()) - pos.get(up.getAxis())),
@@ -286,7 +280,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
 
         col = leftDist + rightDist - col;
-        BlockPos pos = getPos().relative(left, leftDist - col).relative(up, upDist - row);
+        BlockPos pos = getBlockPos().relative(left, leftDist - col).relative(up, upDist - row);
 
         return GTCapabilityHelper.getMonitorComponent(level, pos, null);
     }
@@ -306,7 +300,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     private boolean isInAnyGroup(IMonitorComponent component) {
-        return monitorGroups.stream().anyMatch(group -> group.contains(component.getPos()));
+        return monitorGroups.stream().anyMatch(group -> group.contains(component.getBlockPos()));
     }
 
     @Override
@@ -441,7 +435,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             .getString());
             for (IMonitorComponent component : selectedComponents) {
                 if (isInAnyGroup(component)) return;
-                group.add(component.getPos());
+                group.add(component.getBlockPos());
             }
             monitorGroups.add(group);
             addGroupToList.accept(group);
@@ -451,18 +445,18 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             Iterator<IMonitorComponent> it = selectedComponents.iterator();
             while (it.hasNext()) {
                 IMonitorComponent c = it.next();
-                BlockPos rel = toRelative(c.getPos());
+                BlockPos rel = toRelative(c.getBlockPos());
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
             if (!selectedTargets.isEmpty()) {
-                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getPos(), () -> {}).run();
+                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getBlockPos(), () -> {}).run();
             }
         });
         setTargetButton.setOnPressCallback(click -> {
             MonitorGroup group = null;
             for (MonitorGroup group2 : monitorGroups) {
                 for (IMonitorComponent component : selectedComponents) {
-                    if (group2.contains(component.getPos())) {
+                    if (group2.contains(component.getBlockPos())) {
                         group = group2;
                         break;
                     }
@@ -472,13 +466,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             if (group == null) return;
             if (selectedTargets.isEmpty()) group.setTarget(null);
             else {
-                group.setTarget(selectedTargets.get(0).getPos());
+                group.setTarget(selectedTargets.get(0).getBlockPos());
                 group.setDataSlot(dataSlot[0] - 1);
             }
         });
         removeFromGroupButton.setOnPressCallback(click -> {
             for (MonitorGroup group : monitorGroups) {
-                for (IMonitorComponent component : selectedComponents) group.remove(component.getPos());
+                for (IMonitorComponent component : selectedComponents) group.remove(component.getBlockPos());
             }
             Iterator<MonitorGroup> itg = monitorGroups.iterator();
             while (itg.hasNext()) {
@@ -497,13 +491,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             Iterator<IMonitorComponent> it = selectedComponents.iterator();
             while (it.hasNext()) {
                 IMonitorComponent c = it.next();
-                BlockPos rel = toRelative(c.getPos());
+                BlockPos rel = toRelative(c.getBlockPos());
                 if (imageButtons.size() - 1 < rel.getY()) continue;
                 if (imageButtons.get(rel.getY()).size() - 1 < rel.getX()) continue;
                 imageButtons.get(rel.getY()).get(rel.getX()).accept(it);
             }
             if (!selectedTargets.isEmpty()) {
-                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getPos(), () -> {}).run();
+                rightClickCallbacks.getOrDefault(selectedTargets.get(0).getBlockPos(), () -> {}).run();
             }
         });
         createGroupButton.setButtonTexture(new TextTexture("gtceu.central_monitor.gui.create_group"));
@@ -570,7 +564,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                     }
                     if (isInAnyGroup(component)) {
                         monitorGroups.forEach(group -> {
-                            if (group.contains(component.getPos())) {
+                            if (group.contains(component.getBlockPos())) {
                                 img.setHoverTooltips(
                                         Component.translatable("gtceu.gui.central_monitor.group", group.getName()));
                             }
@@ -582,7 +576,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 Runnable rightClickCallback = () -> {
                     if (!selectedTargets.isEmpty()) {
-                        if (selectedTargets.get(0).getPos() == component.getPos()) {
+                        if (selectedTargets.get(0).getBlockPos() == component.getBlockPos()) {
                             selectedTargets.clear();
                             if (selectedComponents.contains(component)) {
                                 ColorRectTexture rect = new ColorRectTexture(Color.RED);
@@ -594,12 +588,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             return;
                         } else {
                             try {
-                                rightClickCallbacks.get(selectedTargets.get(0).getPos()).run();
+                                rightClickCallbacks.get(selectedTargets.get(0).getBlockPos()).run();
                             } catch (StackOverflowError e) {
                                 GTCEu.LOGGER.error(
                                         "Stack overflow when right-clicking monitor component {} at {} (selectedTarget is {} at {})",
-                                        component, component.getPos(), selectedTargets.get(0),
-                                        selectedTargets.get(0).getPos());
+                                        component, component.getBlockPos(), selectedTargets.get(0),
+                                        selectedTargets.get(0).getBlockPos());
                             }
                         }
                     }
@@ -616,7 +610,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                         MonitorGroup selectedGroup = null;
                         for (MonitorGroup group : monitorGroups) {
                             for (IMonitorComponent c : selectedComponents) {
-                                if (group.contains(c.getPos())) {
+                                if (group.contains(c.getBlockPos())) {
                                     if (selectedGroup == null || selectedGroup == group) {
                                         selectedGroup = group;
                                     } else {
@@ -635,7 +629,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 };
                 if (isInAnyGroup(component)) {
                     monitorGroups.forEach(group -> {
-                        if (group.contains(component.getPos())) img.setHoverTooltips(
+                        if (group.contains(component.getBlockPos())) img.setHoverTooltips(
                                 Component.translatable("gtceu.gui.central_monitor.group", group.getName()));
                     });
                 } else {
@@ -648,7 +642,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 });
                 componentSelection.addWidget(img);
                 GTUtil.getLast(imageButtons).add(callback);
-                rightClickCallbacks.put(component.getPos(), rightClickCallback);
+                rightClickCallbacks.put(component.getBlockPos(), rightClickCallback);
             }
         }
         builder.addWidget(main);

@@ -58,19 +58,8 @@ public class GuiDraw {
 
     public static void drawRect(GuiGraphics graphics, float x0, float y0, float w, float h, int color) {
         Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer bufferbuilder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
-
-        int r = Color.getRed(color);
-        int g = Color.getGreen(color);
-        int b = Color.getBlue(color);
-        int a = Color.getAlpha(color);
-        if (a == 0 && color != 0) a = 0xFF;
-
-        float x1 = x0 + w, y1 = y0 + h;
-        bufferbuilder.vertex(pose, x0, y0, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x0, y1, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x1, y1, 0.0f).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(pose, x1, y0, 0.0f).color(r, g, b, a).endVertex();
+        VertexConsumer builder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        drawRectRaw(builder, pose, x0, y0, x0 + w, y0 + h, color);
     }
 
     public static void drawHorizontalGradientRect(GuiGraphics graphics, float x0, float y0, float w, float h,
@@ -103,6 +92,23 @@ public class GuiDraw {
         bufferbuilder.vertex(pose, x1, y0, 0.0f)
                 .color(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR))
                 .endVertex();
+    }
+
+    public static void drawRectRaw(VertexConsumer buffer, Matrix4f pose, float x0, float y0, float x1, float y1,
+                                   int color) {
+        int r = Color.getRed(color);
+        int g = Color.getGreen(color);
+        int b = Color.getBlue(color);
+        int a = Color.getAlpha(color);
+        drawRectRaw(buffer, pose, x0, y0, x1, y1, r, g, b, a);
+    }
+
+    public static void drawRectRaw(VertexConsumer buffer, Matrix4f pose, float x0, float y0, float x1, float y1, int r,
+                                   int g, int b, int a) {
+        buffer.vertex(pose, x0, y0, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(pose, x0, y1, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(pose, x1, y1, 0.0f).color(r, g, b, a).endVertex();
+        buffer.vertex(pose, x1, y0, 0.0f).color(r, g, b, a).endVertex();
     }
 
     public static void drawCircle(GuiGraphics graphics, float x0, float y0, float diameter, int color, int segments) {
@@ -477,38 +483,50 @@ public class GuiDraw {
 
     public static void drawStandardSlotAmountText(ModularGuiContext context, int amount, String format, Area area,
                                                   float z) {
-        drawAmountText(context, amount, format, 1, 1, area.width - 1, area.height - 1, Alignment.BottomRight, z);
+        drawAmountText(context, amount, format, 0, 0, area.width, area.height, Alignment.BottomRight, z);
     }
 
     public static void drawAmountText(ModularGuiContext context, int amount, String format, int x, int y, int width,
-                                      int height,
-                                      Alignment alignment, float z) {
-        // render the amount overlay
-        if (amount > 1 || format != null) {
-            String amountText = FormattingUtil.formatNumberReadable(amount, false);
-            if (format != null) {
-                amountText = format + amountText;
-            }
-            float scale = 1f;
-            if (amountText.length() == 3) {
-                scale = 0.8f;
-            } else if (amountText.length() == 4) {
-                scale = 0.6f;
-            } else if (amountText.length() > 4) {
-                scale = 0.5f;
-            }
-            textRenderer.setShadow(true);
-            textRenderer.setScale(scale);
-            textRenderer.setColor(Color.WHITE.main);
-            textRenderer.setAlignment(alignment, width, height);
-            textRenderer.setPos(x, y);
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableBlend();
-            context.graphicsPose().translate(0, 0, 100 + z);
-            textRenderer.draw(context.getGraphics(), amountText);
-            RenderSystem.enableDepthTest();
-            RenderSystem.enableBlend();
+                                      int height, Alignment alignment, float z) {
+        if (amount == 1) return;
+
+        String amountText = FormattingUtil.formatNumberReadable(amount, false);
+        if (format != null) {
+            amountText = format + amountText;
         }
+        drawScaledAlignedTextInBox(context, amountText, x, y, width, height, alignment, 1f, z);
+    }
+
+    public static void drawScaledAlignedTextInBox(ModularGuiContext context, String amountText, int x, int y, int width,
+                                                  int height, Alignment alignment) {
+        drawScaledAlignedTextInBox(context, amountText, x, y, width, height, alignment, 1f, 0.0f);
+    }
+
+    public static void drawScaledAlignedTextInBox(ModularGuiContext context, String amountText, int x, int y, int width,
+                                                  int height,
+                                                  Alignment alignment, float maxScale, float z) {
+        if (amountText == null || amountText.isEmpty()) return;
+        // render the amount overlay
+        textRenderer.setShadow(true);
+        textRenderer.setScale(1f);
+        textRenderer.setColor(Color.WHITE.main);
+        textRenderer.setAlignment(alignment, width, height);
+        textRenderer.setPos(x, y);
+        textRenderer.setHardWrapOnBorder(false);
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
+        if (amountText.length() > 2 && width > 16) { // we know that numbers below 100 will always fit in standard slots
+            // simulate and calculate scale with width
+            textRenderer.setSimulate(true);
+            textRenderer.draw(context.getGraphics(), amountText);
+            textRenderer.setSimulate(false);
+            textRenderer.setScale(Math.min(maxScale, width / textRenderer.getLastWidth()));
+        }
+        context.graphicsPose().translate(0, 0, 100 + z);
+        textRenderer.draw(context.getGraphics(), amountText);
+        textRenderer.setHardWrapOnBorder(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
     }
 
     public static void drawSprite(Matrix4f pose, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
@@ -548,6 +566,78 @@ public class GuiDraw {
         graphics.fill(right - border, top, right, bottom, color);
         graphics.fill(left + border, top, right - border, top + border, color);
         graphics.fill(left + border, bottom - border, right - border, bottom, color);
+    }
+
+    private static void drawBorderLTRB(GuiGraphics graphics, float left, float top, float right, float bottom,
+                                       float border, int color, boolean outside) {
+        if (outside) {
+            left -= border;
+            top -= border;
+            right += border;
+            bottom += border;
+        }
+        float x0 = left, y0 = top, x1 = right, y1 = bottom, d = border;
+
+        var buffer = graphics.bufferSource().getBuffer(GTRenderTypes.guiTriangleStrip());
+        var pose = graphics.pose().last().pose();
+        pc(buffer, pose, x0, y0, color);
+        pc(buffer, pose, x1 - d, y0 + d, color);
+        pc(buffer, pose, x1, y0, color);
+        pc(buffer, pose, x1 - d, y1 - d, color);
+        pc(buffer, pose, x1, y1, color);
+        pc(buffer, pose, x0 + d, y1 - d, color);
+        pc(buffer, pose, x0, y1, color);
+        pc(buffer, pose, x0 + d, y0 + d, color);
+        pc(buffer, pose, x0, y0, color);
+        pc(buffer, pose, x1 - d, y0 + d, color);
+    }
+
+    public static void drawBorderOutsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom,
+                                             int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, 1, color, true);
+    }
+
+    public static void drawBorderOutsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom,
+                                             float border, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, border, color, true);
+    }
+
+    public static void drawBorderInsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom,
+                                            int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, 1, color, false);
+    }
+
+    public static void drawBorderInsideLTRB(GuiGraphics graphics, float left, float top, float right, float bottom,
+                                            float border, int color) {
+        drawBorderLTRB(graphics, left, top, right, bottom, border, color, false);
+    }
+
+    private static void drawBorderXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border,
+                                       int color, boolean outside) {
+        drawBorderLTRB(graphics, x, y, x + w, y + h, border, color, outside);
+    }
+
+    public static void drawBorderOutsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border,
+                                             int color) {
+        drawBorderXYWH(graphics, x, y, w, h, border, color, true);
+    }
+
+    public static void drawBorderOutsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, 1, color, true);
+    }
+
+    public static void drawBorderInsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, float border,
+                                            int color) {
+        drawBorderXYWH(graphics, x, y, w, h, border, color, false);
+    }
+
+    public static void drawBorderInsideXYWH(GuiGraphics graphics, float x, float y, float w, float h, int color) {
+        drawBorderXYWH(graphics, x, y, w, h, 1, color, false);
+    }
+
+    private static void pc(VertexConsumer buffer, Matrix4f pose, float x, float y, int c) {
+        buffer.vertex(pose, x, y, 0).color(Color.getRed(c), Color.getGreen(c), Color.getBlue(c), Color.getAlpha(c))
+                .endVertex();
     }
 
     /**
@@ -705,10 +795,11 @@ public class GuiDraw {
     @OnlyIn(Dist.CLIENT)
     public static void drawBorder(GuiGraphics graphics, float x, float y, float width, float height, int color,
                                   float border) {
-        drawRect(graphics, x - border, y - border, width + 2 * border, border, color);
-        drawRect(graphics, x - border, y + height, width + 2 * border, border, color);
-        drawRect(graphics, x - border, y, border, height, color);
-        drawRect(graphics, x + width, y, border, height, color);
+        drawBorderLTRB(graphics, x, y, x + width, y + height, border, color, false);
+        // drawRect(graphics, x - border, y - border, width + 2 * border, border, color);
+        // drawRect(graphics, x - border, y + height, width + 2 * border, border, color);
+        // drawRect(graphics, x - border, y, border, height, color);
+        // drawRect(graphics, x + width, y, border, height, color);
     }
 
     @OnlyIn(Dist.CLIENT)
