@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,14 +31,22 @@ public class ImageCache {
             .build(CacheLoader.from(urlString -> {
                 try {
                     URL url = new URL(urlString);
-                    boolean allowedProtocol = false;
+                    boolean allowedProtocol = GTCEu.isClientSide();
                     for (String protocol : ALLOWED_PROTOCOLS) {
                         if (url.getProtocol().equalsIgnoreCase(protocol)) {
                             allowedProtocol = true;
                             break;
                         }
                     }
-                    if (!allowedProtocol && !GTCEu.isClientSide()) return NULL_MARKER;
+                    if (!allowedProtocol) return NULL_MARKER;
+                    boolean allowedDomain = GTCEu.isClientSide();
+                    for (String domain : ConfigHolder.INSTANCE.gameplay.allowedDomains) {
+                        if (url.getHost().matches(domain)) {
+                            allowedDomain = true;
+                            break;
+                        }
+                    }
+                    if (!allowedDomain) return NULL_MARKER;
                     if (downloading) return NULL_MARKER;
                     downloading = true;
 
