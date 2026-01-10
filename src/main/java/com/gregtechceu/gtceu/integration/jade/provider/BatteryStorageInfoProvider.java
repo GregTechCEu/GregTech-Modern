@@ -23,9 +23,8 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
 
-import java.math.BigInteger;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
+import static com.gregtechceu.gtceu.utils.GTUtil.formatLongNumber;
+import static com.gregtechceu.gtceu.utils.GTUtil.getStringRemainTime;
 
 public class BatteryStorageInfoProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
@@ -40,12 +39,12 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                     CompoundTag container = tag.getCompound("energy");
                     long changed = container.getLong("changed"), stored = container.getLong("stored"),
                             capacity = container.getLong("capacity");
-                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatEnergy(changed, 100000)));
-                    if (changed > 0) {
+                    iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
+                    if (changed > 0L) {
                         iTooltip.add(Component
                                 .translatable("gtceu.jade.remaining_charge_time",
                                         getStringRemainTime((capacity - stored) / changed)));
-                    } else if (changed < 0) {
+                    } else if (changed < 0L) {
                         iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
                                 getStringRemainTime((stored) / -changed)));
                     }
@@ -60,40 +59,14 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                                 IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
                                 if (item == null) continue;
                                 iTooltip.append(Component.literal(
-                                        GTValues.VNF[item.getTier()] + "§r " + formatEnergy(item.getCharge(), 100000) +
-                                                " / " + formatEnergy(item.getMaxCharge(), 100000) + " EU"));
+                                        GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
+                                                " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    private String getStringRemainTime(long time) {
-        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
-        time /= 60;
-        if (time > 0) {
-            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
-            time /= 60;
-            if (time > 0) {
-                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
-                time /= 60;
-                if (time > 0) {
-                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
-                    time /= 24;
-                    if (time > 0) {
-                        s = Component.translatable("gtceu.jade.years", formatEnergy(time, 10000)).getString() + " " + s;
-                    }
-                }
-            }
-        }
-        return s;
-    }
-
-    String formatEnergy(long energy, long trueshold) {
-        if (energy >= trueshold) return DECIMAL_FORMAT_SIC_2F.format(BigInteger.valueOf(energy));
-        else return "" + energy;
     }
 
     private CompoundTag getEnergyData(IEnergyContainer container) {
