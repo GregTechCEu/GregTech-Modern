@@ -31,7 +31,8 @@ public class ImageCache {
             .build(CacheLoader.from(urlString -> {
                 try {
                     URL url = new URL(urlString);
-                    boolean allowedProtocol = GTCEu.isClientSide();
+                    boolean singleplayer = GTCEu.getMinecraftServer().isSingleplayer();
+                    boolean allowedProtocol = singleplayer;
                     for (String protocol : ALLOWED_PROTOCOLS) {
                         if (url.getProtocol().equalsIgnoreCase(protocol)) {
                             allowedProtocol = true;
@@ -39,7 +40,7 @@ public class ImageCache {
                         }
                     }
                     if (!allowedProtocol) return NULL_MARKER;
-                    boolean allowedDomain = GTCEu.isClientSide();
+                    boolean allowedDomain = singleplayer;
                     for (String domain : ConfigHolder.INSTANCE.gameplay.allowedDomains) {
                         if (url.getHost().equalsIgnoreCase(domain)) {
                             allowedDomain = true;
