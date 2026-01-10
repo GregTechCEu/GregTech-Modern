@@ -41,7 +41,7 @@ public class ImageCache {
                     if (!allowedProtocol) return NULL_MARKER;
                     boolean allowedDomain = GTCEu.isClientSide();
                     for (String domain : ConfigHolder.INSTANCE.gameplay.allowedDomains) {
-                        if (url.getHost().matches(domain)) {
+                        if (url.getHost().equalsIgnoreCase(domain)) {
                             allowedDomain = true;
                             break;
                         }
