@@ -6,20 +6,15 @@ import com.gregtechceu.gtceu.api.mui.base.ISyncedAction;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularContainerMenu;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.ui.SyncHandlerPacket;
+import com.gregtechceu.gtceu.common.network.ModularNetwork;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -29,14 +24,15 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class PanelSyncManager {
+public class PanelSyncManager implements ISyncRegistrar<PanelSyncManager> {
 
-    private final Map<String, SyncHandler> syncHandlers = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<String, SlotGroup> slotGroups = new Object2ObjectOpenHashMap<>();
-    private final Map<SyncHandler, String> reverseSyncHandlers = new Object2ObjectOpenHashMap<>();
-    private final Map<String, SyncedAction> syncedActions = new Object2ObjectOpenHashMap<>();
-    private final Map<String, PanelSyncHandler> subPanels = new Object2ObjectArrayMap<>();
-    private ModularSyncManager modularSyncManager;
+    private final Map<String, SyncHandler> syncHandlers = new Object2ReferenceLinkedOpenHashMap<>();
+    private final Map<String, SlotGroup> slotGroups = new Object2ReferenceOpenHashMap<>();
+    private final Map<SyncHandler, String> reverseSyncHandlers = new Object2ReferenceOpenHashMap<>();
+    private final Map<String, SyncedAction> syncedActions = new Object2ReferenceOpenHashMap<>();
+    private final Map<String, PanelSyncHandler> subPanels = new Object2ReferenceArrayMap<>();
+    @Getter
+    private final ModularSyncManager modularSyncManager;
     @Getter
     private String panelName;
     private boolean init = true;
@@ -50,18 +46,21 @@ public class PanelSyncManager {
     private final List<Consumer<Player>> closeListener = new ArrayList<>();
     private final List<Runnable> tickListener = new ArrayList<>();
 
-    public PanelSyncManager(boolean client) {
-        this.client = client;
+    @ApiStatus.Internal
+    public PanelSyncManager(ModularSyncManager msm, boolean main) {
+        this.modularSyncManager = msm;
+        this.client = msm.isClient();
+        if (main) msm.setMainPSM(this);
     }
 
     @ApiStatus.Internal
-    public void initialize(String panelName, ModularSyncManager msm) {
-        this.modularSyncManager = msm;
+    public void initialize(String panelName) {
         this.panelName = panelName;
         this.syncHandlers.forEach((mapKey, syncHandler) -> syncHandler.init(mapKey, this));
         this.locked = true;
         this.init = true;
-        this.subPanels.forEach((s, syncHandler) -> msm.getMainPSM().registerPanelSyncHandler(s, syncHandler));
+        this.subPanels.forEach(
+                (s, syncHandler) -> this.modularSyncManager.getMainPSM().registerPanelSyncHandler(s, syncHandler));
     }
 
     private void registerPanelSyncHandler(String name, SyncHandler syncHandler) {
@@ -105,7 +104,7 @@ public class PanelSyncManager {
     }
 
     public boolean isInitialised() {
-        return this.modularSyncManager != null;
+        return this.panelName != null;
     }
 
     void detectAndSendChanges(boolean init) {
@@ -167,6 +166,7 @@ public class PanelSyncManager {
         getModularSyncManager().setCursorItem(stack);
     }
 
+    @Override
     public boolean hasSyncHandler(SyncHandler syncHandler) {
         return syncHandler.isValid() && syncHandler.getSyncManager() == this &&
                 this.reverseSyncHandlers.containsKey(syncHandler);
@@ -205,42 +205,12 @@ public class PanelSyncManager {
         }
     }
 
-    public PanelSyncManager syncValue(String name, SyncHandler syncHandler) {
-        return syncValue(name, 0, syncHandler);
-    }
-
+    @Override
     public PanelSyncManager syncValue(String name, int id, SyncHandler syncHandler) {
         Objects.requireNonNull(name, "Name must not be null");
         Objects.requireNonNull(syncHandler, "Sync Handler must not be null");
         putSyncValue(name, id, syncHandler);
         return this;
-    }
-
-    public PanelSyncManager syncValue(int id, SyncHandler syncHandler) {
-        return syncValue("_", id, syncHandler);
-    }
-
-    public PanelSyncManager itemSlot(String key, ModularSlot slot) {
-        return itemSlot(key, 0, slot);
-    }
-
-    public PanelSyncManager itemSlot(String key, int id, ModularSlot slot) {
-        return syncValue(key, id, new ItemSlotSH(slot));
-    }
-
-    public PanelSyncManager itemSlot(int id, ModularSlot slot) {
-        return itemSlot("_", id, slot);
-    }
-
-    public DynamicSyncHandler dynamicSyncHandler(String key, DynamicSyncHandler.IWidgetProvider widgetProvider) {
-        return dynamicSyncHandler(key, 0, widgetProvider);
-    }
-
-    public DynamicSyncHandler dynamicSyncHandler(String key, int id,
-                                                 DynamicSyncHandler.IWidgetProvider widgetProvider) {
-        DynamicSyncHandler syncHandler = new DynamicSyncHandler().widgetProvider(widgetProvider);
-        syncValue(key, id, syncHandler);
-        return syncHandler;
     }
 
     /**
@@ -279,6 +249,7 @@ public class PanelSyncManager {
      * @throws IllegalArgumentException if the build panel of the builder is the main panel
      * @throws IllegalStateException    if this method was called too late
      */
+    @Override
     public IPanelHandler syncedPanel(String key, boolean subPanel, PanelSyncHandler.IPanelBuilder panelBuilder) {
         IPanelHandler ph = findPanelHandlerNullable(key);
         if (ph != null) return ph;
@@ -298,54 +269,16 @@ public class PanelSyncManager {
         return syncHandler;
     }
 
+    @Override
     public @Nullable IPanelHandler findPanelHandlerNullable(String key) {
         return this.subPanels.get(key);
     }
 
-    public @NotNull IPanelHandler findPanelHandler(String key) {
-        IPanelHandler panelHandler = findPanelHandlerNullable(key);
-        if (panelHandler == null) {
-            throw new NoSuchElementException(
-                    "Expected to find panel sync handler with key '" + key + "', but none was found.");
-        }
-        return panelHandler;
-    }
-
+    @Override
     public PanelSyncManager registerSlotGroup(SlotGroup slotGroup) {
         if (!slotGroup.isSingleton()) {
             this.slotGroups.put(slotGroup.getName(), slotGroup);
         }
-        return this;
-    }
-
-    public PanelSyncManager registerSlotGroup(String name, int rowSize, int shiftClickPriority) {
-        return registerSlotGroup(new SlotGroup(name, rowSize, shiftClickPriority, true));
-    }
-
-    public PanelSyncManager registerSlotGroup(String name, int rowSize, boolean allowShiftTransfer) {
-        return registerSlotGroup(new SlotGroup(name, rowSize, 100, allowShiftTransfer));
-    }
-
-    public PanelSyncManager registerSlotGroup(String name, int rowSize) {
-        return registerSlotGroup(new SlotGroup(name, rowSize, 100, true));
-    }
-
-    public PanelSyncManager bindPlayerInventory(Player player) {
-        return bindPlayerInventory(player, ModularSlot::new);
-    }
-
-    public PanelSyncManager bindPlayerInventory(Player player, @NotNull SlotFunction slotFunction) {
-        if (getSlotGroup(ModularSyncManager.PLAYER_INVENTORY) != null) {
-            throw new IllegalStateException("The player slot group is already registered!");
-        }
-        PlayerMainInvWrapper playerInventory = new PlayerMainInvWrapper(player.getInventory());
-        String key = "player";
-        for (int i = 0; i < 36; i++) {
-            itemSlot(key, i, slotFunction.apply(playerInventory, i).slotGroup(ModularSyncManager.PLAYER_INVENTORY));
-        }
-        // player inv sorting is handled by bogosorter
-        registerSlotGroup(new SlotGroup(ModularSyncManager.PLAYER_INVENTORY, 9, SlotGroup.PLAYER_INVENTORY_PRIO, true)
-                .setAllowSorting(false));
         return this;
     }
 
@@ -384,22 +317,7 @@ public class PanelSyncManager {
         return this;
     }
 
-    public PanelSyncManager registerSyncedAction(String mapKey, ISyncedAction action) {
-        return registerSyncedAction(mapKey, true, true, action);
-    }
-
-    public PanelSyncManager registerSyncedAction(String mapKey, Side side, ISyncedAction action) {
-        return registerSyncedAction(mapKey, side.isClient(), side.isServer(), action);
-    }
-
-    public PanelSyncManager registerClientSyncedAction(String mapKey, ISyncedAction action) {
-        return registerSyncedAction(mapKey, true, false, action);
-    }
-
-    public PanelSyncManager registerServerSyncedAction(String mapKey, ISyncedAction action) {
-        return registerSyncedAction(mapKey, false, true, action);
-    }
-
+    @Override
     public PanelSyncManager registerSyncedAction(String mapKey, boolean executeClient, boolean executeServer,
                                                  ISyncedAction action) {
         if (executeClient || executeServer) {
@@ -410,12 +328,8 @@ public class PanelSyncManager {
 
     public void callSyncedAction(String mapKey, FriendlyByteBuf packet) {
         if (invokeSyncedAction(mapKey, packet)) {
-            SyncHandlerPacket packetSyncHandler = new SyncHandlerPacket(this.panelName, mapKey, true, packet);
-            if (isClient()) {
-                GTNetwork.sendToServer(packetSyncHandler);
-            } else {
-                GTNetwork.sendToPlayer((ServerPlayer) getPlayer(), packetSyncHandler);
-            }
+            ModularNetwork.get(isClient()).sendActionPacket(getModularSyncManager(), this.panelName, mapKey, packet,
+                    getPlayer());
         }
     }
 
@@ -425,10 +339,11 @@ public class PanelSyncManager {
         callSyncedAction(mapKey, packet);
     }
 
-    public <T extends SyncHandler> T getOrCreateSyncHandler(String name, Class<T> clazz, Supplier<T> supplier) {
-        return getOrCreateSyncHandler(name, 0, clazz, supplier);
+    public void callSyncedAction(String mapKey) {
+        callSyncedAction(mapKey, new FriendlyByteBuf(Unpooled.buffer(0)));
     }
 
+    @Override
     public <T extends SyncHandler> T getOrCreateSyncHandler(String name, int id, Class<T> clazz, Supplier<T> supplier) {
         SyncHandler syncHandler = findSyncHandlerNullable(name, id);
         if (syncHandler == null) {
@@ -452,10 +367,7 @@ public class PanelSyncManager {
                 syncHandler.getClass() + ", but type " + clazz + " was expected!");
     }
 
-    public ItemSlotSH getOrCreateSlot(String name, int id, Supplier<ModularSlot> slotSupplier) {
-        return getOrCreateSyncHandler(name, id, ItemSlotSH.class, () -> new ItemSlotSH(slotSupplier.get()));
-    }
-
+    @Override
     public SlotGroup getSlotGroup(String name) {
         return this.slotGroups.get(name);
     }
@@ -474,65 +386,17 @@ public class PanelSyncManager {
         return this.syncHandlers.get(mapKey);
     }
 
+    @Override
     public @Nullable SyncHandler findSyncHandlerNullable(String name, int id) {
         return this.syncHandlers.get(makeSyncKey(name, id));
-    }
-
-    public @Nullable SyncHandler findSyncHandlerNullable(String name) {
-        return findSyncHandlerNullable(name, 0);
-    }
-
-    public @NotNull SyncHandler findSyncHandler(String name, int id) {
-        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
-        if (syncHandler == null) {
-            throw new NoSuchElementException(
-                    "Expected to find sync handler with key '" + makeSyncKey(name, id) + "', but none was found.");
-        }
-        return syncHandler;
-    }
-
-    public @NotNull SyncHandler findSyncHandler(String name) {
-        return findSyncHandler(name, 0);
-    }
-
-    public <T extends SyncHandler> @Nullable T findSyncHandlerNullable(String name, int id, Class<T> type) {
-        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
-        if (syncHandler != null && type.isAssignableFrom(syncHandler.getClass())) {
-            return type.cast(syncHandler);
-        }
-        return null;
-    }
-
-    public <T extends SyncHandler> @Nullable T findSyncHandlerNullable(String name, Class<T> type) {
-        return findSyncHandlerNullable(name, 0, type);
-    }
-
-    public <T extends SyncHandler> @NotNull T findSyncHandler(String name, int id, Class<T> type) {
-        SyncHandler syncHandler = this.syncHandlers.get(makeSyncKey(name, id));
-        if (syncHandler == null) {
-            throw new NoSuchElementException(
-                    "Expected to find sync handler with key '" + makeSyncKey(name, id) + "', but none was found.");
-        }
-        if (!type.isAssignableFrom(syncHandler.getClass())) {
-            throw new ClassCastException("Expected to find sync handler with key '" + makeSyncKey(name, id) +
-                    "' of type '" + type.getName() + "', but found type '" + syncHandler.getClass().getName() + "'.");
-        }
-        return type.cast(syncHandler);
-    }
-
-    public <T extends SyncHandler> @NotNull T findSyncHandler(String name, Class<T> type) {
-        return findSyncHandler(name, 0, type);
     }
 
     public Player getPlayer() {
         return getModularSyncManager().getPlayer();
     }
 
-    public ModularSyncManager getModularSyncManager() {
-        if (!isInitialised()) {
-            throw new IllegalStateException("PanelSyncManager is not yet initialised!");
-        }
-        return modularSyncManager;
+    public ISyncRegistrar<?> getHyperVisor() {
+        return this.modularSyncManager.getMainPSM();
     }
 
     public ModularContainerMenu getContainer() {

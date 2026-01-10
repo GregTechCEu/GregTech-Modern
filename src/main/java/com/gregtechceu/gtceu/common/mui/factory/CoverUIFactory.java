@@ -32,13 +32,13 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
     public void open(ServerPlayer player, IMuiCover cover) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(cover);
-        if (cover.isInvalid()) {
+        if (cover.isRemoved()) {
             throw new IllegalArgumentException("Can't open Cover GUI on invalid cover holder!");
         }
         if (player.level() != cover.self().coverHolder.getLevel()) {
             throw new IllegalArgumentException("Cover must be in same dimension as the player!");
         }
-        BlockPos pos = cover.self().coverHolder.getPos();
+        BlockPos pos = cover.self().coverHolder.getBlockPos();
         Direction side = cover.self().attachedSide;
         SidedPosGuiData data = new SidedPosGuiData(player, pos, side);
         GuiManager.open(this, data, player);

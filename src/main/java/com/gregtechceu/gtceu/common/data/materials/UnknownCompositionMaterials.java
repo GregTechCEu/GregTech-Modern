@@ -392,6 +392,7 @@ public class UnknownCompositionMaterials {
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
+                .flags(FIRE_RESISTANT)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
                 .buildAndRegister();

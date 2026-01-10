@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -46,8 +46,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
     @Nullable
     private TickableSubscription computationSubs;
 
-    public CreativeComputationProviderMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CreativeComputationProviderMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(this::getMaxCWUt, this::setMaxCWUt))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)
@@ -131,7 +131,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
                                         () -> new Object[] { lastRequestedCWUt }))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)

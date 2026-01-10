@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -33,8 +33,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputBusPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+    public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////
@@ -42,7 +42,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
     /////////////////////////////////
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteHandler(this);
     }

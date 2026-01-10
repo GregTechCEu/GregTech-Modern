@@ -105,6 +105,11 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_computation", " / %s CWU");
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
+
+        provider.add("gtceu.top.ldp_endpoint.is_formed", "§aPipeline Formed§r");
+        provider.add("gtceu.top.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
+        provider.add("gtceu.top.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("gtceu.top.ldp_endpoint.output_direction", "Output Direction: %s");
     }
 
     private static void initMinimapLang(RegistrateLangProvider provider) {

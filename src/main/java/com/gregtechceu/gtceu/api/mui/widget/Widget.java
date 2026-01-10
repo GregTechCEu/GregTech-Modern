@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.mui.factory.GuiData;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetTheme;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeEntry;
 import com.gregtechceu.gtceu.api.mui.theme.WidgetThemeKey;
+import com.gregtechceu.gtceu.api.mui.value.sync.ISyncRegistrar;
 import com.gregtechceu.gtceu.api.mui.value.sync.ModularSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.ValueSyncHandler;
@@ -214,13 +215,16 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
 
     /**
      * Retrieves, verifies and initialises a linked sync handler.
-     * Custom logic should be handled in {@link #isValidSyncHandler(SyncHandler)}.
+     * Custom logic should be handled in {@link #setSyncOrValue(ISyncOrValue)}.
      */
     @Override
     public void initialiseSyncHandler(ModularSyncManager syncManager, boolean late) {
         SyncHandler handler = this.syncHandler;
         if (handler == null && this.syncKey != null) {
             handler = syncManager.getSyncHandler(getPanel().getName(), this.syncKey);
+            if (handler == null && !syncManager.getMainPSM().getPanelName().equals(getPanel().getName())) {
+                handler = syncManager.getMainPSM().getSyncHandlerFromMapKey(this.syncKey);
+            }
         }
         if (handler != null) setSyncOrValue(handler);
         setSyncHandler(handler);
@@ -838,7 +842,7 @@ public class Widget<W extends Widget<W>> implements IWidget, IPositioned<W>, ITo
      */
     @Override
     public W syncHandler(String name, int id) {
-        this.syncKey = ModularSyncManager.makeSyncKey(name, id);
+        this.syncKey = ISyncRegistrar.makeSyncKey(name, id);
         return getThis();
     }
 

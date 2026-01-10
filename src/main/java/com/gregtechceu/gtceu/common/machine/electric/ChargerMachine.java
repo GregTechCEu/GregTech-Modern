@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -81,11 +81,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @RerenderOnChanged
     private State state;
 
-    public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
-        super(holder, tier, inventorySize);
+    public ChargerMachine(BlockEntityCreationInfo info, int tier, int inventorySize) {
+        super(info, tier,
+                (TieredEnergyMachine machine) -> new EnergyBatteryTrait((ChargerMachine) machine, inventorySize));
         this.isWorkingEnabled = true;
         this.inventorySize = inventorySize;
-        this.chargerInventory = createChargerInventory(args);
+        this.chargerInventory = createChargerInventory();
         this.state = State.IDLE;
     }
 
@@ -93,12 +94,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        return new EnergyBatteryTrait((int) args[0]);
-    }
-
-    protected CustomItemStackHandler createChargerInventory(Object... args) {
+    protected CustomItemStackHandler createChargerInventory() {
         var handler = new CustomItemStackHandler(this.inventorySize) {
 
             @Override
@@ -210,12 +206,14 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         }
     }
 
-    protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
+    protected static class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
-        protected EnergyBatteryTrait(int inventorySize) {
-            super(ChargerMachine.this, GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier],
+        private ChargerMachine machine;
+
+        protected EnergyBatteryTrait(ChargerMachine machine, int inventorySize) {
+            super(machine, GTValues.V[machine.tier] * inventorySize * 32L, GTValues.V[machine.tier],
                     inventorySize * AMPS_PER_ITEM, 0L, 0L);
-            this.setSideInputCondition(side -> isWorkingEnabled());
+            this.setSideInputCondition(side -> machine.isWorkingEnabled());
             this.setSideOutputCondition(side -> false);
         }
 
@@ -227,11 +225,11 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 lastTimeStamp = latestTimeStamp;
             }
             if (amperage <= 0 || voltage <= 0) {
-                changeState(State.IDLE);
+                machine.changeState(State.IDLE);
                 return 0;
             }
 
-            var electricItems = getNonFullElectricItem();
+            var electricItems = machine.getNonFullElectricItem();
             var maxAmps = electricItems.size() * AMPS_PER_ITEM - amps;
             var usedAmps = Math.min(maxAmps, amperage);
             if (maxAmps <= 0) {
@@ -240,7 +238,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
             if (side == null || inputsEnergy(side)) {
                 if (voltage > getInputVoltage()) {
-                    doExplosion(GTUtil.getExplosionPower(voltage));
+                    machine.doExplosion(GTUtil.getExplosionPower(voltage));
                     return usedAmps;
                 }
 
@@ -258,10 +256,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     long charged = 0;
                     if (electricItem instanceof IElectricItem item) {
                         charged = item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM),
-                                getTier(), true, false);
+                                machine.tier, true, false);
                     } else if (electricItem instanceof IEnergyStorage energyStorage) {
                         charged = FeCompat.insertEu(energyStorage,
-                                Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM), false);
+                                Math.min(distributed, GTValues.V[machine.tier] * AMPS_PER_ITEM), false);
                     }
                     if (charged > 0) {
                         changed = true;
@@ -271,7 +269,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 }
 
                 if (changed) {
-                    changeState(State.RUNNING);
+                    markAsChanged();
+                    machine.changeState(State.RUNNING);
                 }
 
                 // Remove energy used and then transfer overflow energy into the internal buffer
@@ -284,8 +283,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         @Override
         public long getEnergyCapacity() {
             long energyCapacity = 0L;
-            for (int i = 0; i < chargerInventory.getSlots(); i++) {
-                var electricItemStack = chargerInventory.getStackInSlot(i);
+            for (int i = 0; i < machine.chargerInventory.getSlots(); i++) {
+                var electricItemStack = machine.chargerInventory.getStackInSlot(i);
                 var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
                 if (electricItem != null) {
                     energyCapacity += electricItem.getMaxCharge();
@@ -299,7 +298,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             }
 
             if (energyCapacity == 0) {
-                changeState(State.IDLE);
+                machine.changeState(State.IDLE);
             }
 
             return energyCapacity;
@@ -308,8 +307,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         @Override
         public long getEnergyStored() {
             long energyStored = 0L;
-            for (int i = 0; i < chargerInventory.getSlots(); i++) {
-                var electricItemStack = chargerInventory.getStackInSlot(i);
+            for (int i = 0; i < machine.chargerInventory.getSlots(); i++) {
+                var electricItemStack = machine.chargerInventory.getStackInSlot(i);
                 var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
                 if (electricItem != null) {
                     energyStored += electricItem.getCharge();
@@ -325,7 +324,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             var capacity = getEnergyCapacity();
 
             if (capacity != 0 && capacity == energyStored) {
-                changeState(State.FINISHED);
+                machine.changeState(State.FINISHED);
             }
 
             return energyStored;

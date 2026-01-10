@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -32,8 +32,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+    public MEOutputHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////
@@ -41,15 +41,9 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     /////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteTank(this);
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (isRemote()) return;
     }
 
     @Override

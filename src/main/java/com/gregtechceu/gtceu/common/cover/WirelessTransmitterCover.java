@@ -41,9 +41,9 @@ public class WirelessTransmitterCover extends CoverBehavior
 
     @Override
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
-        dataStick.getOrCreateTag().putInt("targetX", coverHolder.getPos().getX());
-        dataStick.getOrCreateTag().putInt("targetY", coverHolder.getPos().getY());
-        dataStick.getOrCreateTag().putInt("targetZ", coverHolder.getPos().getZ());
+        dataStick.getOrCreateTag().putInt("targetX", coverHolder.getBlockPos().getX());
+        dataStick.getOrCreateTag().putInt("targetY", coverHolder.getBlockPos().getY());
+        dataStick.getOrCreateTag().putInt("targetZ", coverHolder.getBlockPos().getZ());
         dataStick.getOrCreateTag().putString("face", attachedSide.getName());
         dataStick.getOrCreateTag().putString("dim", coverHolder.getLevel().dimension().location().toString());
         return InteractionResult.SUCCESS;

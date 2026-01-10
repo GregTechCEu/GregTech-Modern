@@ -106,11 +106,11 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
             return null;
         }
         LaserPipeNet currentPipeNet = this.currentPipeNet.get();
-        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(getPipePos())) {
+        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos())) {
             return currentPipeNet;
         }
-        LevelLaserPipeNet worldNet = (LevelLaserPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) getPipeLevel());
-        currentPipeNet = worldNet.getNetFromPos(getPipePos());
+        LevelLaserPipeNet worldNet = (LevelLaserPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) this.getLevel());
+        currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
         if (currentPipeNet != null) {
             this.currentPipeNet = new WeakReference<>(currentPipeNet);
         }

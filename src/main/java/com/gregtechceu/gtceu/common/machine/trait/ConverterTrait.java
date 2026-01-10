@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
@@ -34,7 +35,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(ConverterMachine machine, int amps) {
+    public ConverterTrait(@NotNull ConverterMachine machine, int amps) {
         super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
                 GTValues.V[machine.getTier()], amps);
         this.amps = amps;
@@ -69,7 +70,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         } else { // output fe
             var fontFacing = machine.getFrontFacing();
             var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getPos().relative(fontFacing), fontFacing.getOpposite());
+                    machine.getBlockPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);

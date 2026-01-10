@@ -144,7 +144,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {
@@ -197,7 +197,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     private int getInputSignal() {
         Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
+        BlockPos sourcePos = coverHolder.getBlockPos().relative(attachedSide);
 
         return level.getSignal(sourcePos, attachedSide);
     }
@@ -234,7 +234,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                 .child(IKey.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         // Separating line
-                        .child(new Rectangle().setColor(UI_TEXT_COLOR).asWidget()
+                        .child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).alignX(0.5f).marginBottom(4).marginTop(4))
 
                         // Controlling selector

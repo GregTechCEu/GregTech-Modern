@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
@@ -23,8 +23,8 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
     public static final int FLUID_AMOUNT = 2_000_000_000;
 
-    public ReservoirHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, GTValues.EV, IO.IN, FLUID_AMOUNT, 1, args);
+    public ReservoirHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.EV, IO.IN, FLUID_AMOUNT, 1);
     }
 
     //////////////////////////////////
@@ -32,7 +32,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     //////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.waterTank = new InfiniteWaterTank(initialCapacity);
         // allow both importing and exporting from the tank
         return new NotifiableFluidTank(this, Collections.singletonList(waterTank), io, IO.BOTH);

@@ -79,8 +79,8 @@ public class Circle implements IDrawable, IJsonSerializable<Circle>, IAnimatable
 
     @Override
     public Circle interpolate(Circle start, Circle end, float t) {
-        this.colorInner = Color.interpolate(start.colorInner, end.colorInner, t);
-        this.colorOuter = Color.interpolate(start.colorOuter, end.colorOuter, t);
+        this.colorInner = Color.lerp(start.colorInner, end.colorInner, t);
+        this.colorOuter = Color.lerp(start.colorOuter, end.colorOuter, t);
         this.segments = Interpolations.lerp(start.segments, end.segments, t);
         return this;
     }

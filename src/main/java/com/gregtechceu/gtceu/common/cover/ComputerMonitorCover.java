@@ -100,7 +100,8 @@ public class ComputerMonitorCover extends CoverBehavior
         tmp = tmp.stream().map(str -> '{' + str + '}').toList();
         return PlaceholderHandler.processPlaceholders(
                 GTStringUtils.replace(s, "\\{}", tmp),
-                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemStackHandler,
+                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide,
+                        itemStackHandler,
                         this, new MultiLineComponent(text), placeholderUUID));
     }
 

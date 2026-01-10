@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -62,8 +62,8 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
     @SaveField
     public final NotifiableItemStackHandler inventory;
 
-    public CrateMachine(IMachineBlockEntity holder, Material material, int inventorySize, int rowLength) {
-        super(holder);
+    public CrateMachine(BlockEntityCreationInfo info, Material material, int inventorySize, int rowLength) {
+        super(info);
         this.material = material;
         this.inventorySize = inventorySize;
         this.rowLength = rowLength;
@@ -93,33 +93,6 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
                 .bindPlayerInventory();
     }
 
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * int xOffset = inventorySize >= 90 ? 162 : 0;
-     * int yOverflow = xOffset > 0 ? 18 : 9;
-     * int yOffset = inventorySize > 3 * yOverflow ?
-     * (inventorySize - 3 * yOverflow - (inventorySize - 3 * yOverflow) % yOverflow) / yOverflow * 18 : 0;
-     * var modularUI = new ModularUI(176 + xOffset, 166 + yOffset, this, entityPlayer)
-     * .background(GuiTextures.BACKGROUND)
-     * .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7 + xOffset / 2,
-     * 82 + yOffset, true));
-     * int x = 0;
-     * int y = 0;
-     * for (int slot = 0; slot < inventorySize; slot++) {
-     * modularUI.widget(new SlotWidget(inventory, slot, x * 18 + 7, y * 18 + 17)
-     * .setBackgroundTexture(GuiTextures.SLOT));
-     * x++;
-     * if (x == yOverflow) {
-     * x = 0;
-     * y++;
-     * }
-     * }
-     * return modularUI;
-     * }
-     */
-
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
@@ -140,7 +113,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine, IMachineLi
 
     @Override
     public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        IMachineLife.super.onMachinePlaced(player, stack);
+        super.onMachinePlaced(player, stack);
         CompoundTag tag = stack.getTag();
         if (tag != null) {
             if (tag.contains("taped") && tag.getBoolean("taped")) {
