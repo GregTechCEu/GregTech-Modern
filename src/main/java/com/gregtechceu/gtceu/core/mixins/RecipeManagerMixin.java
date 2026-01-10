@@ -50,6 +50,7 @@ public abstract class RecipeManagerMixin {
             });
             var recipesByID = recipes.get(gtRecipeType);
             if (recipesByID == null) {
+                gtRecipeType.getAdditionHandler().completeStaging();
                 continue;
             }
             RecipeManagerHandler.addRecipesToLookup(recipesByID, gtRecipeType);
