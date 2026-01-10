@@ -18,6 +18,7 @@ public class ImageCache {
     public static final long REFRESH_SECS = 120;
     public static final long EXPIRE_SECS = 300;
     private static final byte[] NULL_MARKER = new byte[0];
+    private static final String[] ALLOWED_PROTOCOLS = new String[] {"http", "https"};
 
     private static boolean downloading = false;
 
@@ -26,7 +27,15 @@ public class ImageCache {
             .expireAfterAccess(EXPIRE_SECS, TimeUnit.SECONDS)
             .concurrencyLevel(3)
             .build(CacheLoader.from(url -> {
-                if (url.startsWith("file://") && !GTCEu.isClientSide()) return NULL_MARKER;
+                if (!url.startsWith("http://") && !url.startsWith("https://") && !GTCEu.isClientSide()) return NULL_MARKER;
+                boolean allowedProtocol = false;
+                for (String protocol : ALLOWED_PROTOCOLS) {
+                    if (url.startsWith(protocol + "://")) {
+                        allowedProtocol = true;
+                        break;
+                    }
+                }
+                if (!allowedProtocol && !GTCEu.isClientSide()) return NULL_MARKER;
                 if (downloading) return NULL_MARKER;
                 downloading = true;
 
