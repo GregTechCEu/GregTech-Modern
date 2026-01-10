@@ -741,7 +741,8 @@ public class ConfigHolder {
         public float environmentalHazardDecayRate = 0.001f;
         @Configurable
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
-        public String[] allowedDomains = new String[] { "imgur.com", "discord.com", "github.com", "raw.githubusercontent.com"};
+        public String[] allowedDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {

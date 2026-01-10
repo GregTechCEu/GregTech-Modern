@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
