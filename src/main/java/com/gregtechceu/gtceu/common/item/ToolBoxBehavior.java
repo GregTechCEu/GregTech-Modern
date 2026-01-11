@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IRecipeRemainder;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.mui.base.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -94,7 +95,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         }
 
         // panel.child(grid);
-        panel.child(grid.top(7).left(7).right(7).height(18));
+        panel.child(grid.top(7).left(7).height(18));
         syncManager.bindPlayerInventory(data.getPlayer());
         panel.bindPlayerInventory();
 
@@ -131,6 +132,17 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
 
         if (changed) {
             result.getOrCreateTag().put(INV_TAG, handler.serializeNBT());
+        }
+        return result;
+    }
+
+    public List<GTToolType> getAvailableTools(ItemStack stack) {
+        CustomItemStackHandler inventory = getInventory(stack);
+        List<GTToolType> result = new ArrayList<>();
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof IGTTool tool) {
+                result.add(tool.getToolType());
+            }
         }
         return result;
     }

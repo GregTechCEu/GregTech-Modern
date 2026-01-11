@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.ToolIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -143,6 +144,10 @@ public class ToolHelper {
      */
     public static GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
+    }
+
+    public static ToolIngredient getIngredientFromSymbol(char symbol) {
+        return new ToolIngredient(symbols.get(symbol));
     }
 
     @UnmodifiableView
