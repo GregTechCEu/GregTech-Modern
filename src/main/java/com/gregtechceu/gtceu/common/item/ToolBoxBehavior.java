@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -78,24 +77,34 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack stack = data.getUsedItemStack();
         CustomItemStackHandler inventory = getInventory(stack);
+        // TODO: Open/closed state
+
         // stack.getOrCreateTag().putBoolean("is_opened", true);
         syncManager.registerSlotGroup("toolbox_slots", SLOTS);
         for (int i = 0; i < SLOTS; i++) {
             syncManager.itemSlot(SYNC_KEY, i, new ModularSlot(inventory, i).slotGroup("toolbox_slots"));
         }
 
-        ModularPanel panel = new ModularPanel("tool_box")
-                .background(GTGuiTextures.BACKGROUND)
-                .size(176, 115)
-                .child(GTMuiWidgets.createTitleBar(stack, 174));
         ParentWidget<?> grid = new ParentWidget<>()
                 .size(18 * SLOTS, 18);
         for (int i = 0; i < SLOTS; i++) {
             grid.child(new ItemSlot().syncHandler(SYNC_KEY, i).pos(i * 18, 0));
         }
-        panel.child(grid.top(7).left(7).height(18));
-        syncManager.bindPlayerInventory(data.getPlayer());
+
+        ModularPanel panel = new ModularPanel("tool_box")
+                .height(113)
+                .child(GTMuiWidgets.createTitleBar(stack, 172).left(48).right(48))
+                .child(grid.top(7).left(7));
+
         panel.bindPlayerInventory();
+
+        syncManager.bindPlayerInventory(data.getPlayer(), (inv, index) -> {
+            ModularSlot slot = new ModularSlot(inv, index);
+            if (inv.getStackInSlot(index) == stack) {
+                slot.accessibility(false, false); // Запрещаем вынимать
+            }
+            return slot;
+        });
 
         // panel.onCloseAction(() -> {
         // ItemStack finalStack = data.getUsedItemStack();
@@ -113,22 +122,15 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         ItemStack result = stack.copy();
         ItemStackHandler handler = getInventory(result);
         boolean changed = false;
-        String lastUsedTool = stack.getOrCreateTagElement("last_used_tool").getString("type");
-        GTToolType type = GTToolType.getTypes().get(lastUsedTool);
-        GTCEu.LOGGER.info(type.name);
+        String typeName = stack.getOrCreateTagElement("last_used_tool").getString("type");
+        GTToolType lastType = GTToolType.getTypes().get(typeName);
+        if (lastType == null) return result;
 
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
             if (inner.getItem() instanceof IGTTool tool) {
-                if (tool.getToolType().craftingTags.get(0).equals(type.craftingTags.get(0))) {
-                    GTCEu.LOGGER.info("crafted");
-                    int dmg = tool.getToolStats().getToolDamagePerCraft(inner);
-                    GTCEu.LOGGER.info("dmg: " + dmg);
-                    GTCEu.LOGGER.info("now damaged " + inner.getDamageValue());
-                    // tool.damageItem(inner, dmg, null, e -> {});
-                    ToolHelper.damageItem(inner, null, dmg);
-
-                    GTCEu.LOGGER.info("after damage " + inner.getDamageValue());
+                if (tool.getToolType().craftingTags.get(0).equals(lastType.craftingTags.get(0))) {
+                    ToolHelper.damageItem(inner, null, tool.getToolStats().getToolDamagePerCraft(inner));
                     handler.setStackInSlot(i, inner);
                     changed = true;
                     break;
