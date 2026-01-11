@@ -31,7 +31,8 @@ public class ImageCache {
             .build(CacheLoader.from(urlString -> {
                 try {
                     URL url = new URL(urlString);
-                    boolean singleplayer = GTCEu.getMinecraftServer().isSingleplayer() && !GTCEu.getMinecraftServer().isPublished();
+                    boolean singleplayer = GTCEu.getMinecraftServer().isSingleplayer() &&
+                            !GTCEu.getMinecraftServer().isPublished();
                     boolean allowedProtocol = singleplayer;
                     for (String protocol : ALLOWED_PROTOCOLS) {
                         if (url.getProtocol().equalsIgnoreCase(protocol)) {
