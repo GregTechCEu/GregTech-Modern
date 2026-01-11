@@ -22,6 +22,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -116,19 +118,19 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         ItemStackHandler handler = getInventory(result);
         boolean changed = false;
         String lastUsedTool = stack.getOrCreateTagElement("last_used_tool").getString("type");
+        GTToolType type = GTToolType.getTypes().get(lastUsedTool);
 
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
-            if (!inner.isEmpty() && inner.getItem() instanceof IGTTool tool &&
-                    tool.getToolType().name.equals(lastUsedTool)) {
-                int damage = tool.getToolStats().getToolDamagePerCraft(inner);
-                if (inner.getDamageValue() + damage >= inner.getMaxDamage()) {
-                    handler.setStackInSlot(i, ItemStack.EMPTY);
-                } else {
-                    inner.setDamageValue(inner.getDamageValue() + damage);
+            if (inner.getItem() instanceof IGTTool tool) {
+                if (tool.getToolType().craftingTags.get(0).equals(type.craftingTags.get(0))) {
+                    GTCEu.LOGGER.info("crafted");
+                    int dmg = tool.getToolStats().getToolDamagePerCraft(inner);
+                    tool.damageItem(inner, dmg, null, e -> {});
+                    handler.setStackInSlot(i, inner);
+                    changed = true;
+                    break;
                 }
-                changed = true;
-                break;
             }
         }
 
@@ -138,12 +140,12 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         return result;
     }
 
-    public List<GTToolType> getAvailableTools(ItemStack stack) {
+    public List<TagKey<Item>> getAvailableTools(ItemStack stack) {
         CustomItemStackHandler inventory = getInventory(stack);
-        List<GTToolType> result = new ArrayList<>();
+        List<TagKey<Item>> result = new ArrayList<>();
         for (int i = 0; i < inventory.getSlots(); i++) {
             if (inventory.getStackInSlot(i).getItem() instanceof IGTTool tool) {
-                result.add(tool.getToolType());
+                result.add(tool.getToolType().craftingTags.get(0));
             }
         }
         return result;
@@ -156,8 +158,10 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
             if (!inner.isEmpty()) {
-                tooltips.add(Component.literal(" • ").withStyle(ChatFormatting.DARK_GRAY)
-                        .append(inner.getHoverName().copy().withStyle(ChatFormatting.AQUA)));
+                tooltips.add(Component.literal(" • ")
+                        .append(inner.getHoverName().copy()
+                                .append(Component.literal(
+                                        " §a%d / %d".formatted(inner.getDamageValue(), inner.getMaxDamage())))));
             }
         }
         if (tooltips.isEmpty()) {

@@ -40,7 +40,7 @@ public class ToolIngredient extends AbstractIngredient {
                 return true;
             }
             if (input.is(GTItems.TOOL_BOX.asItem())) {
-                if (ToolBoxBehavior.INSTANCE.getAvailableTools(input).contains(toolType)) {
+                if (ToolBoxBehavior.INSTANCE.getAvailableTools(input).contains(toolType.craftingTags.get(0))) {
                     input.getOrCreateTagElement("last_used_tool").putString("type", toolType.name);
                     return true;
                 }
