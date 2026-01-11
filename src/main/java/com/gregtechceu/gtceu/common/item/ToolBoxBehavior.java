@@ -115,10 +115,12 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         ItemStack result = stack.copy();
         ItemStackHandler handler = getInventory(result);
         boolean changed = false;
+        String lastUsedTool = stack.getOrCreateTagElement("last_used_tool").getString("type");
 
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
-            if (!inner.isEmpty() && inner.getItem() instanceof IGTTool tool) {
+            if (!inner.isEmpty() && inner.getItem() instanceof IGTTool tool &&
+                    tool.getToolType().name.equals(lastUsedTool)) {
                 int damage = tool.getToolStats().getToolDamagePerCraft(inner);
                 if (inner.getDamageValue() + damage >= inner.getMaxDamage()) {
                     handler.setStackInSlot(i, ItemStack.EMPTY);
