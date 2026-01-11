@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.ChatFormatting;
@@ -27,6 +28,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipeRemainder, IAddInformation {
@@ -72,7 +74,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack stack = data.getUsedItemStack();
         CustomItemStackHandler inventory = getInventory(stack);
-        stack.getOrCreateTag().putBoolean("is_opened", true);
+        // stack.getOrCreateTag().putBoolean("is_opened", true);
 
         syncManager.registerSlotGroup("toolbox_slots", SLOTS);
         for (int i = 0; i < SLOTS; i++) {
@@ -81,7 +83,8 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
 
         ModularPanel panel = new ModularPanel("tool_box")
                 .background(GTGuiTextures.BACKGROUND)
-                .size(176, 115);
+                .size(176, 115)
+                .child(GTMuiWidgets.createTitleBar(stack, 174));
 
         ParentWidget<?> grid = new ParentWidget<>()
                 .size(18 * SLOTS, 18);
@@ -103,7 +106,6 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
                 data.getPlayer().setItemInHand(data.getPlayer().getUsedItemHand(), finalStack);
             }
         });
-
         return panel;
     }
 
@@ -136,18 +138,18 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         CustomItemStackHandler handler = getInventory(stack);
-        boolean hasItems = false;
-
+        List<Component> tooltips = new ArrayList<Component>();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
             if (!inner.isEmpty()) {
-                if (!hasItems) {
-                    tooltip.add(Component.translatable("item.gtceu.tool_box.contents").withStyle(ChatFormatting.GRAY));
-                    hasItems = true;
-                }
-                tooltip.add(Component.literal(" • ").withStyle(ChatFormatting.DARK_GRAY)
+                tooltips.add(Component.literal(" • ").withStyle(ChatFormatting.DARK_GRAY)
                         .append(inner.getHoverName().copy().withStyle(ChatFormatting.AQUA)));
             }
+        }
+        if (tooltips.isEmpty()) {
+            tooltip.add(Component.translatable("item.gtceu.tool_box.empty").withStyle(ChatFormatting.GRAY));
+        } else {
+            tooltip.addAll(tooltips);
         }
     }
 }
