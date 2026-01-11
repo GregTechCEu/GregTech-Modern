@@ -20,7 +20,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -35,20 +34,15 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     private final int SLOTS = 9;
 
     public static final ToolBoxBehavior INSTANCE = new ToolBoxBehavior();
-    private static final String INV_TAG = "Inventory";
+    private static final String INV_TAG = "inventory";
     private static final String SYNC_KEY = "toolbox_slot";
 
     private ToolBoxBehavior() {}
 
     public static final ResourceLocation MODEL_OVERRIDE_KEY = new ResourceLocation(GTCEu.MOD_ID, "tool_box_opened");
 
-    public static float getOpenedPredicate(ItemStack stack, @Nullable Level level, @Nullable LivingEntity entity,
-                                           int seed) {
-        return isOpened(stack) ? 1.0f : 0.0f;
-    }
-
     public static boolean isOpened(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean("IsOpened");
+        return stack.hasTag() && stack.getTag().getBoolean("is_opened");
     }
 
     public CustomItemStackHandler getInventory(ItemStack stack) {
@@ -78,8 +72,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack stack = data.getUsedItemStack();
         CustomItemStackHandler inventory = getInventory(stack);
-
-        stack.getOrCreateTag().putBoolean("IsOpened", true);
+        stack.getOrCreateTag().putBoolean("is_opened", true);
 
         syncManager.registerSlotGroup("toolbox_slots", SLOTS);
         for (int i = 0; i < SLOTS; i++) {
@@ -88,7 +81,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
 
         ModularPanel panel = new ModularPanel("tool_box")
                 .background(GTGuiTextures.BACKGROUND)
-                .size(176, 166);
+                .size(176, 115);
 
         ParentWidget<?> grid = new ParentWidget<>()
                 .size(18 * SLOTS, 18);
@@ -97,19 +90,20 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
             grid.child(new ItemSlot().syncHandler(SYNC_KEY, i).pos(i * 18, 0));
         }
 
-        panel.child(grid);
+        // panel.child(grid);
+        panel.child(grid.top(7).left(7).right(7).height(18));
         syncManager.bindPlayerInventory(data.getPlayer());
         panel.bindPlayerInventory();
 
         panel.onCloseAction(() -> {
             ItemStack finalStack = data.getUsedItemStack();
             if (!finalStack.isEmpty()) {
-                finalStack.getOrCreateTag().putBoolean("IsOpened", false);
+                finalStack.getOrCreateTag().putBoolean("is_opened", false);
                 finalStack.getOrCreateTag().put(INV_TAG, inventory.serializeNBT());
                 data.getPlayer().setItemInHand(data.getPlayer().getUsedItemHand(), finalStack);
             }
         });
-      //  panel.onClose();
+
         return panel;
     }
 
