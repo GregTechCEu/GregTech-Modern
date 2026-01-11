@@ -2186,7 +2186,7 @@ public class GTItems {
                         .end();
             })
             .onRegister(modelPredicate(ToolBoxBehavior.MODEL_OVERRIDE_KEY,
-                    () -> () -> ToolBoxBehavior::getOpenedPredicate))
+                    () -> () -> (stack, level, entity, layer) -> ToolBoxBehavior.isOpened(stack) ? 1.0f : 0.0f))
             .register();
 
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::create)

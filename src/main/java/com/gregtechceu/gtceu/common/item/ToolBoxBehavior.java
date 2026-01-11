@@ -77,29 +77,14 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack stack = data.getUsedItemStack();
-        ItemStackHandler inventory = getInventory(stack);
+        CustomItemStackHandler inventory = getInventory(stack);
+
         stack.getOrCreateTag().putBoolean("IsOpened", true);
 
-        syncManager.registerSlotGroup("toolbox_slots", 3);
-
+        syncManager.registerSlotGroup("toolbox_slots", SLOTS);
         for (int i = 0; i < SLOTS; i++) {
             syncManager.itemSlot(SYNC_KEY, i, new ModularSlot(inventory, i).slotGroup("toolbox_slots"));
         }
-
-        syncManager.addCloseListener(player -> {
-            stack.getOrCreateTag().putBoolean("IsOpened", false);
-            stack.getOrCreateTag().put(INV_TAG, inventory.serializeNBT());
-        });
-        syncManager.registerSlotGroup("toolbox_slots", 3);
-
-        for (int i = 0; i < SLOTS; i++) {
-            syncManager.itemSlot(SYNC_KEY, i, new ModularSlot(inventory, i)
-                    .slotGroup("toolbox_slots"));
-        }
-
-        syncManager.addCloseListener(player -> {
-            stack.getOrCreateTag().put(INV_TAG, inventory.serializeNBT());
-        });
 
         ModularPanel panel = new ModularPanel("tool_box")
                 .background(GTGuiTextures.BACKGROUND)
@@ -107,7 +92,6 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
 
         ParentWidget<?> grid = new ParentWidget<>()
                 .size(18 * SLOTS, 18);
-        // .align(Alignment.CENTER);
 
         for (int i = 0; i < SLOTS; i++) {
             grid.child(new ItemSlot().syncHandler(SYNC_KEY, i).pos(i * 18, 0));
@@ -117,6 +101,15 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         syncManager.bindPlayerInventory(data.getPlayer());
         panel.bindPlayerInventory();
 
+        panel.onCloseAction(() -> {
+            ItemStack finalStack = data.getUsedItemStack();
+            if (!finalStack.isEmpty()) {
+                finalStack.getOrCreateTag().putBoolean("IsOpened", false);
+                finalStack.getOrCreateTag().put(INV_TAG, inventory.serializeNBT());
+                data.getPlayer().setItemInHand(data.getPlayer().getUsedItemHand(), finalStack);
+            }
+        });
+      //  panel.onClose();
         return panel;
     }
 
