@@ -137,7 +137,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void tickPlayerInventoryHazards(TickEvent.PlayerTickEvent event) {
+    public static void tickPlayerHazards(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.CLIENT || event.phase != TickEvent.Phase.END) {
             return;
         }
