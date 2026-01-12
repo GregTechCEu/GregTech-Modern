@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -17,6 +19,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +36,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.api.item.component.ElectricStats.addCurrentChargeTooltip;
+import static dev.emi.emi.search.EmiSearch.tooltips;
 
 public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipeRemainder, IAddInformation {
 
@@ -155,6 +161,28 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         return result;
     }
 
+    private List<Component> getTooltip(ItemStack inner, @Nullable Level level) {
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.literal(" • ").append(inner.getHoverName().copy()
+                .append(Component.literal(
+                        " §a%d / %d".formatted(inner.getMaxDamage() - inner.getDamageValue(), inner.getMaxDamage())))));
+
+        if (inner.getItem() instanceof IGTTool tool) {
+            if (tool.isElectric()) {
+                IElectricItem item = GTCapabilityHelper.getElectricItem(inner);
+                if (item != null) {
+                    if (GTUtil.isShiftDown()) {
+                        addCurrentChargeTooltip(tooltip, item.getCharge(), item.getMaxCharge(), item.getTier(), false);
+                        tooltip.set(tooltip.size() - 1,
+                                Component.literal("    ").append(tooltip.get(tooltip.size() - 1)));
+                    }
+                }
+            }
+        }
+
+        return tooltip;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         CustomItemStackHandler handler = getInventory(stack);
@@ -162,11 +190,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
             if (!inner.isEmpty()) {
-                tooltips.add(Component.literal(" • ")
-                        .append(inner.getHoverName().copy()
-                                .append(Component.literal(
-                                        " §a%d / %d".formatted(inner.getMaxDamage() - inner.getDamageValue(),
-                                                inner.getMaxDamage())))));
+                tooltips.addAll(getTooltip(inner, level));
             }
         }
         if (tooltips.isEmpty()) {
