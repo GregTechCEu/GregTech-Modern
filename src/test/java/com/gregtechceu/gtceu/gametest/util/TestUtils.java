@@ -303,18 +303,6 @@ public class TestUtils {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
     }
 
-    public static Player makeHungry(Player player) {
-        player.getFoodData().setSaturation(5);
-        player.getFoodData().setFoodLevel(3);
-        return player;
-    }
-
-    public static Player makeMockSurvivalPlayerInLevel(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayer();
-        helper.getLevel().addFreshEntity(player);
-        return player;
-    }
-
     public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
         return useItem(helper, player, item, InteractionHand.MAIN_HAND);
     }

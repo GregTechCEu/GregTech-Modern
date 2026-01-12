@@ -38,12 +38,14 @@ public class MedicalConditionTest {
     // spotless:off
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testMedicalConditionTicking(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // add 'max' amount of nausea (600 seconds)
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.NAUSEA, 600))
-                // wait for 5 seconds (ticking the medical condition tracker), then check if player has nausea effect
-                .thenExecuteAfter(5 * 20, () -> helper.assertTrue(player.hasEffect(MobEffects.CONFUSION),
+                // tick the medical condition tracker for 5 seconds
+                .thenExecuteFor(5 * 20, player::tick)
+                // check if player has nausea effect
+                .thenExecute(() -> helper.assertTrue(player.hasEffect(MobEffects.CONFUSION),
                         "Player " + player + " should have nausea effect"))
                 // nausea condition lowers by 5 'counts' per second
                 // so the player should have it for another (600 / 5) - 5 = 115 seconds
@@ -55,21 +57,26 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testItemHazardApplication(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // give 1x Nt ingot (VERY radioactive, 10 'counts' per second)
                 .thenExecute(() -> player.addItem(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Neutronium)))
-                // wait for 10 seconds (ticking the medical condition tracker)
-                // then check if player has 100 'counts' of cancer
-                .thenExecuteAfter(10 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player has 100 'counts' of cancer
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
                 // remove Nt ingot from player
                 .thenExecute(() -> player.getInventory().clearContent())
-                // wait for 10 seconds, check every tick that count hasn't changed
-                .thenExecuteFor(10 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check that count hasn't changed
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
                 // add more cancer to reach max mining fatigue symptom
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 14400))
-                // wait 2 ticks, just to be safe. Then check that the slowness attribute modifier is properly applied.
-                .thenExecuteAfter(2, () -> {
+                // tick the medical condition tracker for 2 ticks, just to be safe
+                .thenExecuteFor(2, player::tick)
+                // check that the slowness attribute modifier is properly applied.
+                .thenExecute(() -> {
                     AttributeModifier modifier = helper.getAndAssertAttributeModifier(player,
                             Attributes.MOVEMENT_SPEED, Symptom.SYMPTOM_SLOWNESS_UUID);
                     // this value is based on the slowness symptom's default stage count and multiplier (7 and 0.08 respectively)
@@ -81,12 +88,14 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // add a low-ish amount of weak poisoning that won't kill the mock player
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100))
-                // wait for 2 seconds, check every tick that count hasn't changed
-                .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
+                // tick the medical condition tracker for 2 seconds
+                .thenExecuteFor(2 * 20, player::tick)
+                // check that count hasn't changed
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
                 // give Player 16x Paracetamol and make it eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
@@ -95,9 +104,10 @@ public class MedicalConditionTest {
                     helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
                             "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
                 })
-                // consuming a single Paracetamol takes 16 ticks, so wait 16 * 16 = 256 ticks for all 10 to be eaten
+                // tick the player for 16 * 16 = 256 ticks to eat Paracetamol
                 // (+2 for safety)
-                .thenExecuteAfter(16 * 16 + 2, () -> {
+                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that the poisoning is gone
@@ -108,12 +118,14 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // add a low-ish amount of weak poisoning that won't kill the mock player
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 3600))
-                // wait for 2 seconds, check every tick that count hasn't changed
-                .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
+                // tick the medical condition tracker for 2 seconds
+                .thenExecuteFor(2 * 20, player::tick)
+                // check that count hasn't changed
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
                 // give Player 16x Paracetamol and make it eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
@@ -122,9 +134,10 @@ public class MedicalConditionTest {
                     helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
                             "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
                 })
-                // consuming a single Paracetamol takes 16 ticks, so wait 16 * 16 = 256 ticks for all 10 to be eaten
+                // tick the player for 16 * 16 = 256 ticks to eat Paracetamol
                 // (+2 for safety)
-                .thenExecuteAfter(16 * 16 + 2, () -> {
+                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that count is STILL 3600, as Paracetamol shouldn't be able to remove cancer.
@@ -135,12 +148,14 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testRadAwayWorksOnCancer(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // add a low-ish amount of weak poisoning that won't kill the mock player
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 3600))
-                // wait for 2 seconds, check every tick that count hasn't changed
-                .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
+                // tick the medical condition tracker for 2 seconds
+                .thenExecuteFor(2 * 20, player::tick)
+                // check that count hasn't changed
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
                 // give Player 16x RadAway and make it eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
@@ -149,9 +164,10 @@ public class MedicalConditionTest {
                     helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
                             "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
                 })
-                // consuming a single RadAway takes 16 ticks, so wait 16 * 16 = 256 ticks for all 10 to be eaten
+                // tick the player for 16 * 16 = 256 ticks to eat RadAway
                 // (+2 for safety)
-                .thenExecuteAfter(16 * 16 + 2, () -> {
+                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that the cancer is gone
@@ -162,7 +178,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions")
     public static void testRadAwayDoesntWorkOnWeakPoison(GameTestHelper helper) {
-        Player player = helper.makeMockSurvivalPlayerInLevel();
+        Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
                 // add a low-ish amount of weak poisoning that won't kill the mock player
                 .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100))
@@ -176,9 +192,10 @@ public class MedicalConditionTest {
                     helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
                             "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
                 })
-                // consuming a single RadAway takes 16 ticks, so wait 16 * 16 = 256 ticks for all 10 to be eaten
+                // tick the player for 16 * 16 = 256 ticks to eat RadAway
                 // (+2 for safety)
-                .thenExecuteAfter(16 * 16 + 2, () -> {
+                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that count is STILL 100, as RadAway shouldn't be able to remove weak poisoning.
