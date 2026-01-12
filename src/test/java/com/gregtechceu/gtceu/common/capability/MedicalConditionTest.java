@@ -51,8 +51,12 @@ public class MedicalConditionTest {
                         "Player " + player + " should have nausea effect"))
                 // nausea condition lowers by 5 'counts' per second
                 // so the player should have it for another (600 / 5) - 5 = 115 seconds
-                .thenExecuteFor(115 * 20, () -> helper.assertHasCondition(player, GTMedicalConditions.NAUSEA))
                 // tick the medical condition tracker for 2 ticks, just to be safe
+                .thenExecuteFor(115 * 20, () -> {
+                    player.doTick();
+                    helper.assertHasCondition(player, GTMedicalConditions.NAUSEA);
+                })
+                // tick the player 2 more times, just to be safe
                 .thenExecuteFor(2, player::doTick)
                 .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.NAUSEA))
                 .thenSucceed();
