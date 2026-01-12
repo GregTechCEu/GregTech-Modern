@@ -14,11 +14,11 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -41,7 +41,7 @@ public class MedicalConditionTest {
     public static void testMedicalConditionTicking(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add 'max' count of nausea (600 seconds)
-        helper.addMedicalCondition(player, GTMedicalConditions.NAUSEA, 600);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.NAUSEA, 600);
 
         helper.startSequence()
                 // tick the medical condition tracker for 5 seconds
@@ -180,7 +180,7 @@ public class MedicalConditionTest {
         // give the player Regeneration 7 so they don't die
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
-        helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON, 100);
         // give Player 16x Paracetamol
         ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -218,7 +218,7 @@ public class MedicalConditionTest {
         // give the player Regeneration 7 so they don't die
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
-        helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 100);
         // give Player 16x Paracetamol
         ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -256,7 +256,7 @@ public class MedicalConditionTest {
         // give the player Regeneration 7 so they don't
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low count of cancer
-        helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 100);
         // give Player 16x RadAway
         ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -294,7 +294,7 @@ public class MedicalConditionTest {
         // give the player Regeneration 7 so they don't
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
-        helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON, 100);
         // give Player 16x RadAway
         ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);

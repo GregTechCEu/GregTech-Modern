@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.gametest.util.TestUtils;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.experimental.ExtensionMethod;
@@ -18,12 +16,19 @@ import java.util.UUID;
 @ExtensionMethod(TestUtils.class)
 public class MedicalConditionTestHelpers {
 
-    public static void addMedicalCondition(GameTestHelper helper, Player player,
-                                           MedicalCondition condition, float counts) {
+    public static void addMedicalConditionCounts(GameTestHelper helper, Player player,
+                                                 MedicalCondition condition, float counts) {
         getMedicalConditionTracker(helper, player).progressCondition(condition, counts);
     }
 
-    public static void removeMedicalCondition(GameTestHelper helper, Player player, MedicalCondition condition) {
+    public static void setMedicalConditionCounts(GameTestHelper helper, Player player,
+                                           MedicalCondition condition, float counts) {
+        MedicalConditionTracker tracker = getMedicalConditionTracker(helper, player);
+        tracker.medicalConditions.put(condition, counts);
+        tracker.updateActiveSymptoms();
+    }
+
+    public static void clearMedicalCondition(GameTestHelper helper, Player player, MedicalCondition condition) {
         getMedicalConditionTracker(helper, player).removeMedicalCondition(condition);
     }
 
