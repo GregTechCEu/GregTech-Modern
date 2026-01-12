@@ -60,7 +60,7 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testItemHazardApplication(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
-        // give 1x Nt ingot (VERY radioactive, 10 'counts' per second)
+        // give player 1x Nt ingot (VERY radioactive, 10 'counts' per second)
         player.addItem(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Neutronium));
 
         helper.startSequence()
@@ -102,7 +102,7 @@ public class MedicalConditionTest {
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
-                // give Player 16x Paracetamol and make it eat them
+                // give Player 16x Paracetamol and make them eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
                     player.setItemInHand(InteractionHand.MAIN_HAND, item);
@@ -125,7 +125,7 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
-        // give the player Regeneration 7 so they don't
+        // give the player Regeneration 7 so they don't die
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
         helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
@@ -135,7 +135,7 @@ public class MedicalConditionTest {
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
-                // give Player 16x Paracetamol and make it eat them
+                // give Player 16x Paracetamol and make them eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
                     player.setItemInHand(InteractionHand.MAIN_HAND, item);
@@ -168,7 +168,7 @@ public class MedicalConditionTest {
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
-                // give Player 16x RadAway and make it eat them
+                // give Player 16x RadAway and make them eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
                     player.setItemInHand(InteractionHand.MAIN_HAND, item);
@@ -199,7 +199,7 @@ public class MedicalConditionTest {
         helper.startSequence()
                 // wait for 2 seconds, check every tick that count hasn't changed
                 .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
-                // give Player 16x RadAway and make it eat them
+                // give Player 16x RadAway and make them eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
                     player.setItemInHand(InteractionHand.MAIN_HAND, item);
