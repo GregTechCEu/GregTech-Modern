@@ -57,20 +57,7 @@ public class MedicalConditionTestHelpers {
                 "Player " + player + " should have " + expectedCounts + " 'counts' of medical condition " + condition.id + ", has " + counts);
     }
 
-    public static AttributeModifier getAndAssertAttributeModifier(GameTestHelper helper, Player player,
-                                                                  Attribute attribute, UUID modifierId) {
-        helper.assertEntityAlive(player);
-
-        AttributeInstance instance = player.getAttribute(attribute);
-        helper.assertTrue(instance != null,
-                "Player " + player + " should have attribute " + attribute.getDescriptionId());
-
-        assert instance != null;
-        AttributeModifier modifier = instance.getModifier(modifierId);
-        helper.assertTrue(modifier != null,
-                "Player " + player + " should have a modifier with UUID " + modifierId + " for attribute " +
-                        attribute.getDescriptionId());
-
-        return modifier;
+    public static double getAndAssertAttributeModifier(Player player, Attribute attribute, UUID modifierId) {
+        return player.getAttributes().getModifierValue(attribute, modifierId);
     }
 }
