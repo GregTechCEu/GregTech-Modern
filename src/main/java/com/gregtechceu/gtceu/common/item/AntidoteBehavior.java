@@ -25,14 +25,14 @@ import java.util.Set;
  * Defines an antidote for a hazard (e.g. poisoning)
  *
  * @param types         the type of the hazard to remove
- * @param removePercent the time to remove from the chosen hazard, as a percentage of the current time [0, 100].
- *                      -1 for all.
+ * @param removePercent how many 'counts' should be removed from the chosen condition(s),
+ *                      as a percentage of the current 'counts' in the range [0, 100]. -1 for all.
  */
 public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
         implements IInteractionItem, IAddInformation {
 
-    public AntidoteBehavior(int timeToRemove, MedicalCondition... types) {
-        this(new HashSet<>(), timeToRemove);
+    public AntidoteBehavior(int removePercent, MedicalCondition... types) {
+        this(new HashSet<>(), removePercent);
         this.types.addAll(Arrays.asList(types));
     }
 

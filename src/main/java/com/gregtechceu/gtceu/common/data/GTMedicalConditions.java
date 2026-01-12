@@ -39,7 +39,7 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputFluids(SulfurTrioxide.getFluid(1000)));
     // having weakly poisonous items in the player's inventory gives them the weak poison effect
-    // the effect ramps up in 6 "stages", getting progressively worse every stage. It caps out at
+    // the effect ramps up in 6 "stages", getting progressively worse every stage. It caps out at Weak Poison 10.
     // does NOT heal automatically
     public static final MedicalCondition WEAK_POISON = register("weak_poison", 0x6D7917, 1800,
             MedicalCondition.IdleProgressionType.NONE, 0, false,
