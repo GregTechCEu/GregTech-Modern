@@ -5,8 +5,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.ToolBoxBehavior;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.AbstractIngredient;
@@ -17,18 +20,32 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ToolIngredient extends AbstractIngredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("tool_ingredient");
     private final GTToolType toolType;
+    private ItemStack[] cachedStacks;
 
     public ToolIngredient(GTToolType toolType) {
-        super(Stream.of(
-                new Ingredient.TagValue(toolType.craftingTags.get(0)),
-                new Ingredient.ItemValue(GTItems.TOOL_BOX.asStack())));
+        super(Stream.of(new Ingredient.TagValue(toolType.craftingTags.get(0))));
         this.toolType = toolType;
+    }
+
+    @Override
+    public ItemStack @NotNull [] getItems() {
+        if (this.cachedStacks == null) {
+            List<ItemStack> list = new ArrayList<>();
+            for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(toolType.craftingTags.get(0))) {
+                list.add(new ItemStack(holder));
+            }
+            list.add(GTItems.TOOL_BOX.asStack());
+            this.cachedStacks = list.toArray(ItemStack[]::new);
+        }
+        return this.cachedStacks;
     }
 
     @Override
