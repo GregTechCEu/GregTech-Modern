@@ -30,13 +30,15 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
 public class MedicalConditionTracker implements ICapabilitySerializable<CompoundTag> {
 
     @Getter
-    private final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
+    @VisibleForTesting
+    protected final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
     private final Set<MedicalCondition> permanentConditions = new ReferenceOpenHashSet<>();
     private final Object2IntMap<ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
     private final Reference2IntMap<MobEffect> activeMobEffects = new Reference2IntOpenHashMap<>();

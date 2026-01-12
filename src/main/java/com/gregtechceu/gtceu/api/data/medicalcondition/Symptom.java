@@ -68,6 +68,7 @@ public class Symptom {
     // default is 2, stage 10 result will be 0.5
     public static final Symptom WEAKNESS = new Symptom(defaultKey("weakness"), 10, 0.0f, 1.0f, 0.025f, Attributes.ATTACK_DAMAGE, SYMPTOM_WEAKNESS_UUID);
     // default is 0.7, stage 7 result will be 0.392
+    // REMEMBER TO UPDATE TESTS IF YOU CHANGE THIS
     public static final Symptom SLOWNESS = new Symptom(defaultKey("slowness"), 7, 0.0f, 1.0f, 0.08f, Attributes.MOVEMENT_SPEED, SYMPTOM_SLOWNESS_UUID);
     // default is 300, stage 10 result will be 200
     public static final Symptom AIR_SUPPLY_DEBUFF = new Symptom(defaultKey("air_supply_debuff"), 10, 0.0f, 1.0f,

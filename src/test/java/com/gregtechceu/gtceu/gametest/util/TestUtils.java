@@ -22,10 +22,7 @@ import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -38,12 +35,10 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -314,19 +309,9 @@ public class TestUtils {
         return player;
     }
 
-    public static ServerPlayer makeMockSurvivalServerPlayerInLevel(GameTestHelper helper) {
-        ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
-                new GameProfile(UUID.randomUUID(), "test-mock-player")) {
-
-            public boolean isSpectator() {
-                return false;
-            }
-
-            public boolean isCreative() {
-                return false;
-            }
-        };
-        helper.getLevel().getServer().getPlayerList().placeNewPlayer(new Connection(PacketFlow.SERVERBOUND), player);
+    public static Player makeMockSurvivalPlayerInLevel(GameTestHelper helper) {
+        Player player = helper.makeMockSurvivalPlayer();
+        helper.getLevel().addFreshEntity(player);
         return player;
     }
 
