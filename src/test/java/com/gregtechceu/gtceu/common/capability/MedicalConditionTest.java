@@ -15,7 +15,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -199,7 +198,11 @@ public class MedicalConditionTest {
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.doTick();
                     // constantly eat another item
-                    helper.useItem(player, pillStack);
+                    var result = helper.useItem(player,
+                            player.getItemInHand(InteractionHand.MAIN_HAND));
+                    if (result.getResult().consumesAction()) {
+                        player.setItemInHand(InteractionHand.MAIN_HAND, result.getObject());
+                    }
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -233,7 +236,11 @@ public class MedicalConditionTest {
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.doTick();
                     // constantly eat another item
-                    helper.useItem(player, pillStack);
+                    var result = helper.useItem(player,
+                            player.getItemInHand(InteractionHand.MAIN_HAND));
+                    if (result.getResult().consumesAction()) {
+                        player.setItemInHand(InteractionHand.MAIN_HAND, result.getObject());
+                    }
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -267,7 +274,11 @@ public class MedicalConditionTest {
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.doTick();
                     // constantly eat another item
-                    helper.useItem(player, pillStack);
+                    var result = helper.useItem(player,
+                            player.getItemInHand(InteractionHand.MAIN_HAND));
+                    if (result.getResult().consumesAction()) {
+                        player.setItemInHand(InteractionHand.MAIN_HAND, result.getObject());
+                    }
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -301,7 +312,11 @@ public class MedicalConditionTest {
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.doTick();
                     // constantly eat another item
-                    helper.useItem(player, pillStack);
+                    var result = helper.useItem(player,
+                            player.getItemInHand(InteractionHand.MAIN_HAND));
+                    if (result.getResult().consumesAction()) {
+                        player.setItemInHand(InteractionHand.MAIN_HAND, result.getObject());
+                    }
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
