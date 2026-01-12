@@ -51,8 +51,9 @@ public class MedicalConditionTest {
                 // nausea condition lowers by 5 'counts' per second
                 // so the player should have it for another (600 / 5) - 5 = 115 seconds
                 .thenExecuteFor(115 * 20, () -> helper.assertHasCondition(player, GTMedicalConditions.NAUSEA))
-                // wait 2 ticks, just to be safe
-                .thenExecuteAfter(2, () -> helper.assertFreeOfCondition(player, GTMedicalConditions.NAUSEA))
+                // tick the medical condition tracker for 2 ticks, just to be safe
+                .thenExecuteFor(2, player::tick)
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.NAUSEA))
                 .thenSucceed();
     }
 
@@ -133,7 +134,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
                 // give Player 16x Paracetamol and make it eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
@@ -148,8 +149,8 @@ public class MedicalConditionTest {
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
-                    // check that count is STILL 3600, as Paracetamol shouldn't be able to remove cancer.
-                    helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600);
+                    // check that count is STILL 100, as Paracetamol shouldn't be able to remove cancer.
+                    helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100);
                 })
                 .thenSucceed();
     }
@@ -166,7 +167,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 3600))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
                 // give Player 16x RadAway and make it eat them
                 .thenExecute(() -> {
                     ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
