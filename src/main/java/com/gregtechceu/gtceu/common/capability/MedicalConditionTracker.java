@@ -38,7 +38,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
     @Getter
     @VisibleForTesting
-    protected final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
+    final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
     private final Set<MedicalCondition> permanentConditions = new ReferenceOpenHashSet<>();
     private final Object2IntMap<ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
     private final Reference2IntMap<MobEffect> activeMobEffects = new Reference2IntOpenHashMap<>();
@@ -94,7 +94,8 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         updateActiveSymptoms();
     }
 
-    private void updateActiveSymptoms() {
+    @VisibleForTesting
+    void updateActiveSymptoms() {
         for (MedicalCondition condition : medicalConditions.keySet()) {
             if (medicalConditions.getFloat(condition) >= condition.maxProgression * 2) {
                 // If condition has been applied for 2x the maximum time, make it permanent.
