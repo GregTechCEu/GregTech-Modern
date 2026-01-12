@@ -40,7 +40,7 @@ public class MedicalConditionTest {
     // spotless:off
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 2450)
     public static void testMedicalConditionTicking(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // add 'max' count of nausea (600 seconds)
         helper.addMedicalCondition(player, GTMedicalConditions.NAUSEA, 600);
 
@@ -61,7 +61,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testItemHazardApplication(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // give player 1x Nt ingot (VERY radioactive, 10 'counts' per second)
         player.addItem(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Neutronium));
 
@@ -93,7 +93,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testHazardProtectionInhalation(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // equip face mask
         player.setItemSlot(EquipmentSlot.HEAD, GTItems.FACE_MASK.asStack());
         // give 16x asbestos dust
@@ -118,7 +118,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testHazardProtectionSkinContact(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // equip rubber gloves
         player.setItemSlot(EquipmentSlot.CHEST, GTItems.RUBBER_GLOVES.asStack());
         // give a bucket of Fluorine
@@ -143,7 +143,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testHazardProtectionAnyContact(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // equip hazmat suit
         player.setItemSlot(EquipmentSlot.HEAD, GTItems.HAZMAT_HELMET.asStack());
         player.setItemSlot(EquipmentSlot.CHEST, GTItems.HAZMAT_CHESTPLATE.asStack());
@@ -178,7 +178,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // give the player Regeneration 7 so they don't die
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
@@ -198,10 +198,8 @@ public class MedicalConditionTest {
                 // (+2 for safety)
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.tick();
-                    if (helper.getTick() - startTick % 16 == 0) {
-                        // use another item every 16 ticks
-                        helper.useItem(player, pillStack);
-                    }
+                    // constantly eat another item
+                    helper.useItem(player, pillStack);
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -214,7 +212,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // give the player Regeneration 7 so they don't die
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
@@ -234,10 +232,8 @@ public class MedicalConditionTest {
                 // (+2 for safety)
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.tick();
-                    if (helper.getTick() - startTick % 16 == 0) {
-                        // use another item every 16 ticks
-                        helper.useItem(player, pillStack);
-                    }
+                    // constantly eat another item
+                    helper.useItem(player, pillStack);
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -250,7 +246,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayWorksOnCancer(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // give the player Regeneration 7 so they don't
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low count of cancer
@@ -270,10 +266,8 @@ public class MedicalConditionTest {
                 // (+2 for safety)
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.tick();
-                    if (helper.getTick() - startTick % 16 == 0) {
-                        // use another item every 16 ticks
-                        helper.useItem(player, pillStack);
-                    }
+                    // constantly eat another item
+                    helper.useItem(player, pillStack);
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
@@ -286,7 +280,7 @@ public class MedicalConditionTest {
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayDoesntWorkOnWeakPoison(GameTestHelper helper) {
-        Player player = helper.makeSurvivalFakePlayer();
+        Player player = helper.makeMockSurvivalServerPlayer();
         // give the player Regeneration 7 so they don't
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
@@ -298,16 +292,16 @@ public class MedicalConditionTest {
         final long startTick = helper.getTick();
 
         helper.startSequence()
-                // wait for 2 seconds, check every tick that count hasn't changed
-                .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
+                // tick the medical condition tracker for 2 seconds
+                .thenExecuteFor(2 * 20, player::tick)
+                // check that count hasn't changed
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
                 // make player eat RadAway for 16 * 16 = 256 ticks
                 // (+2 for safety)
                 .thenExecuteFor(16 * 16 + 2, () -> {
                     player.tick();
-                    if (helper.getTick() - startTick % 16 == 0) {
-                        // use another item every 16 ticks
-                        helper.useItem(player, pillStack);
-                    }
+                    // constantly eat another item
+                    helper.useItem(player, pillStack);
                 })
                 .thenExecute(() -> {
                     // check if they were all consumed
