@@ -75,17 +75,16 @@ public class MedicalConditionTest {
                 .thenExecuteFor(10 * 20, player::doTick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
-                // add more cancer to reach max mining fatigue symptom
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 14400))
+                // add more cancer to reach max slowness symptom
+                .thenExecute(() -> helper.setMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 18000))
                 // tick the medical condition tracker for 2 ticks, just to be safe
                 .thenExecuteFor(2, player::doTick)
                 // check that the slowness attribute modifier is properly applied.
                 .thenExecute(() -> {
-                    AttributeModifier modifier = helper.getAndAssertAttributeModifier(player,
-                            Attributes.MOVEMENT_SPEED, Symptom.SYMPTOM_SLOWNESS_UUID);
+                    double modifier = MedicalConditionTestHelpers.getAndAssertAttributeModifier(player, Attributes.MOVEMENT_SPEED, Symptom.SYMPTOM_SLOWNESS_UUID);
                     // this value is based on the slowness symptom's default stage count and multiplier (7 and 0.08 respectively)
-                    helper.assertTrue(modifier.getAmount() == -7 * 0.08f,
-                            "Slowness symprom attribute modifier should have a value of " + (-7 * 0.08f) + " after " + helper.getTick() + " ticks. (is " + modifier.getAmount() + ")");
+                    helper.assertTrue(Mth.equal(modifier, -7 * 0.08f),
+                            "Slowness symprom attribute modifier should have a value of " + (-7 * 0.08f) + " at 18000 counts. (is " + modifier + ")");
                 })
                 .thenSucceed();
     }
