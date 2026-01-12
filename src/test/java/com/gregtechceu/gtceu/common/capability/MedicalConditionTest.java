@@ -36,7 +36,7 @@ public class MedicalConditionTest {
     public static void prepare(ServerLevel level) {}
 
     // spotless:off
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 2450)
     public static void testMedicalConditionTicking(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
@@ -55,7 +55,7 @@ public class MedicalConditionTest {
                 .thenSucceed();
     }
 
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testItemHazardApplication(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
@@ -86,7 +86,7 @@ public class MedicalConditionTest {
                 .thenSucceed();
     }
 
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
@@ -116,7 +116,7 @@ public class MedicalConditionTest {
                 .thenSucceed();
     }
 
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
@@ -146,7 +146,7 @@ public class MedicalConditionTest {
                 .thenSucceed();
     }
 
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayWorksOnCancer(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
@@ -176,7 +176,7 @@ public class MedicalConditionTest {
                 .thenSucceed();
     }
 
-    @GameTest(template = "empty", batch = "medical_conditions")
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayDoesntWorkOnWeakPoison(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
         helper.startSequence()
