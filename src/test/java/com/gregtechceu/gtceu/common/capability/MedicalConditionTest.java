@@ -39,9 +39,10 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 2450)
     public static void testMedicalConditionTicking(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // add 'max' count of nausea (600 seconds)
+        helper.addMedicalCondition(player, GTMedicalConditions.NAUSEA, 600);
+
         helper.startSequence()
-                // add 'max' amount of nausea (600 seconds)
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.NAUSEA, 600))
                 // tick the medical condition tracker for 5 seconds
                 .thenExecuteFor(5 * 20, player::tick)
                 // check if player has nausea effect
@@ -58,9 +59,10 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
     public static void testItemHazardApplication(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // give 1x Nt ingot (VERY radioactive, 10 'counts' per second)
+        player.addItem(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Neutronium));
+
         helper.startSequence()
-                // give 1x Nt ingot (VERY radioactive, 10 'counts' per second)
-                .thenExecute(() -> player.addItem(ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Neutronium)))
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, player::tick)
                 // check if player has 100 'counts' of cancer
@@ -89,9 +91,12 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // give the player Regeneration 7 so they don't die
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
+        // add a low-ish count of weak poisoning
+        helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+
         helper.startSequence()
-                // add a low-ish amount of weak poisoning that won't kill the mock player
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100))
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
@@ -119,9 +124,12 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // give the player Regeneration 7 so they don't
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
+        // add a low-ish count of weak poisoning
+        helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+
         helper.startSequence()
-                // add a low-ish amount of weak poisoning that won't kill the mock player
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 3600))
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
@@ -149,9 +157,12 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayWorksOnCancer(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // give the player Regeneration 7 so they don't
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
+        // add a low count of cancer
+        helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+
         helper.startSequence()
-                // add a low-ish amount of weak poisoning that won't kill the mock player
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 3600))
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
@@ -179,9 +190,12 @@ public class MedicalConditionTest {
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testRadAwayDoesntWorkOnWeakPoison(GameTestHelper helper) {
         Player player = helper.makeMockSurvivalPlayer();
+        // give the player Regeneration 7 so they don't
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
+        // add a low-ish count of weak poisoning
+        helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+
         helper.startSequence()
-                // add a low-ish amount of weak poisoning that won't kill the mock player
-                .thenExecute(() -> helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100))
                 // wait for 2 seconds, check every tick that count hasn't changed
                 .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
                 // give Player 16x RadAway and make it eat them
