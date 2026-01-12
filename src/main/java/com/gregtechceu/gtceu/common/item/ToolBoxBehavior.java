@@ -138,7 +138,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
             ItemStack inner = handler.getStackInSlot(i);
             if (inner.getItem() instanceof IGTTool tool) {
                 if (tool.getToolType().craftingTags.get(0).equals(lastType.craftingTags.get(0))) {
-                    ToolHelper.damageItem(inner, null, tool.getToolStats().getToolDamagePerCraft(inner));
+                    ToolHelper.damageItemWhenCrafting(inner, null);
                     handler.setStackInSlot(i, inner);
                     changed = true;
                     break;
