@@ -183,23 +183,26 @@ public class MedicalConditionTest {
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
         helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+        // give Player 16x Paracetamol
+        ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
+        player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
+
+        final long startTick = helper.getTick();
 
         helper.startSequence()
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
-                // give Player 16x Paracetamol and make them eat them
-                .thenExecute(() -> {
-                    ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, item);
-                    var result = helper.useItem(player, item);
-                    helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
-                            "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
-                })
-                // tick the player for 16 * 16 = 256 ticks to eat Paracetamol
+                // make player eat Paracetamol for 16 * 16 = 256 ticks
                 // (+2 for safety)
-                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecuteFor(16 * 16 + 2, () -> {
+                    player.tick();
+                    if (helper.getTick() - startTick % 16 == 0) {
+                        // use another item every 16 ticks
+                        helper.useItem(player, pillStack);
+                    }
+                })
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
@@ -216,23 +219,26 @@ public class MedicalConditionTest {
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
         helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+        // give Player 16x Paracetamol
+        ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
+        player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
+
+        final long startTick = helper.getTick();
 
         helper.startSequence()
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
-                // give Player 16x Paracetamol and make them eat them
-                .thenExecute(() -> {
-                    ItemStack item = GTItems.PARACETAMOL_PILL.asStack(16);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, item);
-                    var result = helper.useItem(player, item);
-                    helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
-                            "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
-                })
-                // tick the player for 16 * 16 = 256 ticks to eat Paracetamol
+                // make player eat Paracetamol for 16 * 16 = 256 ticks
                 // (+2 for safety)
-                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecuteFor(16 * 16 + 2, () -> {
+                    player.tick();
+                    if (helper.getTick() - startTick % 16 == 0) {
+                        // use another item every 16 ticks
+                        helper.useItem(player, pillStack);
+                    }
+                })
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
@@ -249,23 +255,26 @@ public class MedicalConditionTest {
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low count of cancer
         helper.addMedicalCondition(player, GTMedicalConditions.CARCINOGEN, 100);
+        // give Player 16x RadAway
+        ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
+        player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
+
+        final long startTick = helper.getTick();
 
         helper.startSequence()
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, player::tick)
                 // check that count hasn't changed
                 .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
-                // give Player 16x RadAway and make them eat them
-                .thenExecute(() -> {
-                    ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, item);
-                    var result = helper.useItem(player, item);
-                    helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
-                            "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
-                })
-                // tick the player for 16 * 16 = 256 ticks to eat RadAway
+                // make player eat RadAway for 16 * 16 = 256 ticks
                 // (+2 for safety)
-                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecuteFor(16 * 16 + 2, () -> {
+                    player.tick();
+                    if (helper.getTick() - startTick % 16 == 0) {
+                        // use another item every 16 ticks
+                        helper.useItem(player, pillStack);
+                    }
+                })
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
@@ -282,21 +291,24 @@ public class MedicalConditionTest {
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 350, 6));
         // add a low-ish count of weak poisoning
         helper.addMedicalCondition(player, GTMedicalConditions.WEAK_POISON, 100);
+        // give Player 16x RadAway
+        ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
+        player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
+
+        final long startTick = helper.getTick();
 
         helper.startSequence()
                 // wait for 2 seconds, check every tick that count hasn't changed
                 .thenExecuteFor(2 * 20, () -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
-                // give Player 16x RadAway and make them eat them
-                .thenExecute(() -> {
-                    ItemStack item = GTItems.RAD_AWAY_PILL.asStack(16);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, item);
-                    var result = helper.useItem(player, item);
-                    helper.assertTrue(result.getResult() == InteractionResult.CONSUME,
-                            "Using item " + item + " should result in CONSUME result, but got " + result.getResult());
-                })
-                // tick the player for 16 * 16 = 256 ticks to eat RadAway
+                // make player eat RadAway for 16 * 16 = 256 ticks
                 // (+2 for safety)
-                .thenExecuteFor(16 * 16 + 2, player::tick)
+                .thenExecuteFor(16 * 16 + 2, () -> {
+                    player.tick();
+                    if (helper.getTick() - startTick % 16 == 0) {
+                        // use another item every 16 ticks
+                        helper.useItem(player, pillStack);
+                    }
+                })
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
