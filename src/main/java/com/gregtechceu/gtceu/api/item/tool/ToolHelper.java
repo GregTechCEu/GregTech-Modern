@@ -69,6 +69,7 @@ import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
@@ -147,7 +148,9 @@ public class ToolHelper {
     }
 
     public static ToolIngredient getIngredientFromSymbol(char symbol) {
-        return new ToolIngredient(symbols.get(symbol));
+        GTToolType toolType = getToolFromSymbol(symbol);
+        Preconditions.checkNotNull(toolType, "No tool type with symbol '%s'", symbol);
+        return new ToolIngredient(toolType);
     }
 
     @UnmodifiableView

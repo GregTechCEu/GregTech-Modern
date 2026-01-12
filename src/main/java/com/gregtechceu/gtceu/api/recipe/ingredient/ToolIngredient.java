@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.item.ToolBoxBehavior;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.AbstractIngredient;
@@ -32,6 +31,7 @@ public class ToolIngredient extends AbstractIngredient {
         this.toolType = toolType;
     }
 
+    @Override
     public boolean test(@Nullable ItemStack input) {
         if (input == null) {
             return false;
@@ -49,14 +49,17 @@ public class ToolIngredient extends AbstractIngredient {
         return false;
     }
 
+    @Override
     public boolean isSimple() {
         return false;
     }
 
+    @Override
     public @NotNull IIngredientSerializer<? extends Ingredient> getSerializer() {
         return ToolIngredient.Serializer.INSTANCE;
     }
 
+    @Override
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
@@ -68,17 +71,19 @@ public class ToolIngredient extends AbstractIngredient {
 
         public static final ToolIngredient.Serializer INSTANCE = new ToolIngredient.Serializer();
 
+        @Override
         public @NotNull ToolIngredient parse(FriendlyByteBuf buffer) {
-            var json = GsonHelper.parse(buffer.readUtf());
-            return new ToolIngredient(GTToolType.getTypes().get(json.get("toolType").getAsString()));
+            return new ToolIngredient(GTToolType.getTypes().get(buffer.readUtf()));
         }
 
+        @Override
         public @NotNull ToolIngredient parse(@NotNull JsonObject json) {
             return new ToolIngredient(GTToolType.getTypes().get(json.get("toolType").getAsString()));
         }
 
+        @Override
         public void write(FriendlyByteBuf buffer, ToolIngredient ingredient) {
-            buffer.writeUtf(ingredient.toJson().toString());
+            buffer.writeUtf(ingredient.toolType.name);
         }
     }
 }

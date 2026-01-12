@@ -35,14 +35,16 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.item.component.ElectricStats.addCurrentChargeTooltip;
 import static dev.emi.emi.search.EmiSearch.tooltips;
 
 public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipeRemainder, IAddInformation {
 
-    private final int SLOTS = 9;
+    private static final int SLOTS = 9;
 
     public static final ToolBoxBehavior INSTANCE = new ToolBoxBehavior();
     private static final String INV_TAG = "inventory";
@@ -56,7 +58,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         return stack.hasTag() && stack.getTag().getBoolean("is_opened");
     }
 
-    public CustomItemStackHandler getInventory(ItemStack stack) {
+    public static CustomItemStackHandler getInventory(ItemStack stack) {
         CustomItemStackHandler handler = new CustomItemStackHandler(SLOTS);
 
         handler.setFilter(s -> {
@@ -107,7 +109,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         syncManager.bindPlayerInventory(data.getPlayer(), (inv, index) -> {
             ModularSlot slot = new ModularSlot(inv, index);
             if (inv.getStackInSlot(index) == stack) {
-                slot.accessibility(false, false); // Запрещаем вынимать
+                slot.accessibility(false, false);
             }
             return slot;
         });
@@ -150,9 +152,9 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         return result;
     }
 
-    public List<TagKey<Item>> getAvailableTools(ItemStack stack) {
+    public static Set<TagKey<Item>> getAvailableTools(ItemStack stack) {
         CustomItemStackHandler inventory = getInventory(stack);
-        List<TagKey<Item>> result = new ArrayList<>();
+        Set<TagKey<Item>> result = new HashSet<>();
         for (int i = 0; i < inventory.getSlots(); i++) {
             if (inventory.getStackInSlot(i).getItem() instanceof IGTTool tool) {
                 result.add(tool.getToolType().craftingTags.get(0));
@@ -161,7 +163,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         return result;
     }
 
-    private List<Component> getTooltip(ItemStack inner, @Nullable Level level) {
+    private static List<Component> getTooltip(ItemStack inner, @Nullable Level level) {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.literal(" • ").append(inner.getHoverName().copy()
                 .append(Component.literal(
