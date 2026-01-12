@@ -40,7 +40,7 @@ public class ToolIngredient extends AbstractIngredient {
                 return true;
             }
             if (input.is(GTItems.TOOL_BOX.asItem())) {
-                if (ToolBoxBehavior.INSTANCE.getAvailableTools(input).contains(toolType.craftingTags.get(0))) {
+                if (ToolBoxBehavior.getAvailableTools(input).contains(toolType.craftingTags.get(0))) {
                     input.getOrCreateTagElement("last_used_tool").putString("type", toolType.name);
                     return true;
                 }
@@ -60,7 +60,7 @@ public class ToolIngredient extends AbstractIngredient {
     }
 
     @Override
-    public JsonElement toJson() {
+    public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
         json.addProperty("toolType", toolType.name);
