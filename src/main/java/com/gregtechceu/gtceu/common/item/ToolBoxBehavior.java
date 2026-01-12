@@ -134,11 +134,13 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         GTToolType lastType = GTToolType.getTypes().get(typeName);
         if (lastType == null) return result;
 
+        var player = net.minecraftforge.common.ForgeHooks.getCraftingPlayer();
+
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
             if (inner.getItem() instanceof IGTTool tool) {
                 if (tool.getToolType().craftingTags.get(0).equals(lastType.craftingTags.get(0))) {
-                    ToolHelper.damageItemWhenCrafting(inner, null);
+                    ToolHelper.damageItemWhenCrafting(inner, player);
                     handler.setStackInSlot(i, inner);
                     changed = true;
                     break;
