@@ -22,7 +22,14 @@ import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -31,10 +38,12 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -297,5 +306,47 @@ public class TestUtils {
 
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    public static Player makeHungry(Player player) {
+        player.getFoodData().setSaturation(5);
+        player.getFoodData().setFoodLevel(3);
+        return player;
+    }
+
+    public static ServerPlayer makeMockSurvivalServerPlayerInLevel(GameTestHelper helper) {
+        ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+
+            public boolean isSpectator() {
+                return false;
+            }
+
+            public boolean isCreative() {
+                return false;
+            }
+        };
+        helper.getLevel().getServer().getPlayerList().placeNewPlayer(new Connection(PacketFlow.SERVERBOUND), player);
+        return player;
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
+        return useItem(helper, player, item, InteractionHand.MAIN_HAND);
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item,
+                                                             InteractionHand hand) {
+        return item.use(helper.getLevel(), player, hand);
+    }
+
+    public static void assertHeldItemCountIs(GameTestHelper helper, Player player,
+                                             @Nullable Item item, int count, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (item != null && item != Items.AIR) {
+            helper.assertTrue(stack.is(item), "Item stack " + stack + " in hand " + hand + " is not a " + item);
+        }
+        helper.assertTrue(stack.getCount() == count,
+                "Item stack " + stack + " in hand " + hand + " should have " + count + " items, has " +
+                        stack.getCount());
     }
 }
