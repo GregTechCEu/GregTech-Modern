@@ -25,6 +25,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -321,5 +322,9 @@ public class TestUtils {
         helper.assertTrue(stack.getCount() == count,
                 "Item stack " + stack + " in hand " + hand + " should have " + count + " items, has " +
                         stack.getCount());
+    }
+
+    public static void assertEntityAlive(GameTestHelper helper, Entity entity) {
+        helper.assertTrue(entity.isAlive(), "Entity " + entity + " should be alive");
     }
 }

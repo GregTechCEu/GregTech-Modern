@@ -15,7 +15,9 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -88,6 +90,91 @@ public class MedicalConditionTest {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
+    public static void testHazardProtectionInhalation(GameTestHelper helper) {
+        Player player = helper.makeMockSurvivalPlayer();
+        // equip face mask
+        player.setItemSlot(EquipmentSlot.HEAD, GTItems.FACE_MASK.asStack());
+        // give 16x asbestos dust
+        player.addItem(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Asbestos, 16));
+
+        helper.startSequence()
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player did NOT get asbestosis
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.ASBESTOSIS))
+                // remove face mask
+                .thenExecute(() -> player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY))
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player DID get asbestosis this time
+                .thenExecute(() -> {
+                    if (!player.isAlive()) return; // we don't care if the player died here, that means the asbestos got them
+                    helper.assertHasCondition(player, GTMedicalConditions.ASBESTOSIS);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
+    public static void testHazardProtectionSkinContact(GameTestHelper helper) {
+        Player player = helper.makeMockSurvivalPlayer();
+        // equip rubber gloves
+        player.setItemSlot(EquipmentSlot.CHEST, GTItems.RUBBER_GLOVES.asStack());
+        // give a bucket of Fluorine
+        player.addItem(new ItemStack(GTMaterials.Fluorine.getBucket()));
+
+        helper.startSequence()
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player did NOT get chemical burns
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.CHEMICAL_BURNS))
+                // remove rubber gloves
+                .thenExecute(() -> player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY))
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player DID get chemical burns this time
+                .thenExecute(() -> {
+                    if (!player.isAlive()) return; // we don't care if the player died here, that means the chemical burns got them
+                    helper.assertHasCondition(player, GTMedicalConditions.CHEMICAL_BURNS);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 450)
+    public static void testHazardProtectionAnyContact(GameTestHelper helper) {
+        Player player = helper.makeMockSurvivalPlayer();
+        // equip hazmat suit
+        player.setItemSlot(EquipmentSlot.HEAD, GTItems.HAZMAT_HELMET.asStack());
+        player.setItemSlot(EquipmentSlot.CHEST, GTItems.HAZMAT_CHESTPLATE.asStack());
+        player.setItemSlot(EquipmentSlot.LEGS, GTItems.HAZMAT_LEGGINGS.asStack());
+        player.setItemSlot(EquipmentSlot.FEET, GTItems.HAZMAT_BOOTS.asStack());
+        // give 16x Cadmium dust
+        player.addItem(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Cadmium, 16));
+
+        helper.startSequence()
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player did NOT get poisoned
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.POISON))
+                // remove hazmat suit
+                .thenExecute(() -> {
+                    player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                    player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+                    player.setItemSlot(EquipmentSlot.LEGS, ItemStack.EMPTY);
+                    player.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
+                })
+                // tick the medical condition tracker for 10 seconds
+                .thenExecuteFor(10 * 20, player::tick)
+                // check if player DID get poisoned this time
+                .thenExecute(() -> {
+                    if (!player.isAlive()) return; // we don't care if the player died here, that means the poisoning got them
+                    helper.assertHasCondition(player, GTMedicalConditions.POISON);
+                })
+                .thenSucceed();
+    }
+
+    // TODO add test for consumption hazard if that ever gets used for anything
 
     @GameTest(template = "empty", batch = "medical_conditions", timeoutTicks = 350)
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {

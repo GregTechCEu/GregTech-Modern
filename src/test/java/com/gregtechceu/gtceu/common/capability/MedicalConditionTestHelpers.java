@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.util.Mth;
@@ -10,8 +11,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 
+import lombok.experimental.ExtensionMethod;
+
 import java.util.UUID;
 
+@ExtensionMethod(TestUtils.class)
 public class MedicalConditionTestHelpers {
 
     public static void addMedicalCondition(GameTestHelper helper, Player player,
@@ -24,9 +28,10 @@ public class MedicalConditionTestHelpers {
     }
 
     public static MedicalConditionTracker getMedicalConditionTracker(GameTestHelper helper, Player player) {
+        helper.assertEntityAlive(player);
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         helper.assertTrue(tracker != null,
-                "Player " + player + " doesn't have a medical condition tracker capability.");
+                "Player " + player + " doesn't have a medical condition tracker capability");
         return tracker;
     }
 
@@ -41,22 +46,26 @@ public class MedicalConditionTestHelpers {
     }
 
     public static void assertConditionCountEquals(GameTestHelper helper, Player player,
-                                                  MedicalCondition condition, float count) {
-        helper.assertTrue(
-                Mth.equal(getMedicalConditionTracker(helper, player).medicalConditions.getFloat(condition), count),
-                "Player " + player + " should have " + count + " 'counts' of medical condition " + condition.id);
+                                                  MedicalCondition condition, float expectedCounts) {
+        float counts = getMedicalConditionTracker(helper, player).medicalConditions.getFloat(condition);
+        helper.assertTrue(Mth.equal(counts, expectedCounts),
+                "Player " + player + " should have " + expectedCounts + " 'counts' of medical condition " + condition.id + ", has " + counts);
     }
 
     public static AttributeModifier getAndAssertAttributeModifier(GameTestHelper helper, Player player,
                                                                   Attribute attribute, UUID modifierId) {
+        helper.assertEntityAlive(player);
+
         AttributeInstance instance = player.getAttribute(attribute);
         helper.assertTrue(instance != null,
                 "Player " + player + " should have attribute " + attribute.getDescriptionId());
+
         assert instance != null;
         AttributeModifier modifier = instance.getModifier(modifierId);
         helper.assertTrue(modifier != null,
                 "Player " + player + " should have a modifier with UUID " + modifierId + " for attribute " +
                         attribute.getDescriptionId());
+
         return modifier;
     }
 }
