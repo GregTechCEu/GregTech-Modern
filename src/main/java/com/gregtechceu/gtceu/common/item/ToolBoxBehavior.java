@@ -101,7 +101,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
 
         ModularPanel panel = new ModularPanel("tool_box")
                 .height(113)
-                .child(GTMuiWidgets.createTitleBar(stack, 172).left(48).right(48))
+                .child(GTMuiWidgets.createTitleBar(stack, 172).right(48))
                 .child(grid.top(7).left(7));
 
         panel.bindPlayerInventory();

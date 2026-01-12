@@ -50,18 +50,14 @@ public class ToolIngredient extends AbstractIngredient {
 
     @Override
     public boolean test(@Nullable ItemStack input) {
-        if (input == null) {
-            return false;
-        } else {
-            if (input.is(toolType.craftingTags.get(0))) {
-                return true;
-            }
-            if (input.is(GTItems.TOOL_BOX.asItem())) {
-                if (ToolBoxBehavior.getAvailableTools(input).contains(toolType.craftingTags.get(0))) {
-                    input.getOrCreateTagElement("last_used_tool").putString("type", toolType.name);
-                    return true;
-                }
-            }
+        if (input == null || input.isEmpty()) return false;
+        if (input.is(toolType.craftingTags.get(0))) {
+            return true;
+        }
+        if (input.is(GTItems.TOOL_BOX.asItem()) &&
+                ToolBoxBehavior.getAvailableTools(input).contains(toolType.craftingTags.get(0))) {
+            input.getOrCreateTagElement("last_used_tool").putString("type", toolType.name);
+            return true;
         }
         return false;
     }
