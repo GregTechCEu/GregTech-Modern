@@ -53,6 +53,9 @@ public class MiscRecipeLoader {
                 new MaterialEntry(dust, Tin),
                 new MaterialEntry(dust, Tin),
                 new MaterialEntry(dust, Lead));
+        // Tool Box recipe
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TOOL_BOX.asStack(),
+                "SGS", "SSS", "   ", 'S', new MaterialEntry(plate, Bronze), 'G', Tags.Items.CHESTS_WOODEN);
 
         MIXER_RECIPES.recipeBuilder("fermented_spider_eye_brown").duration(100).EUt(VA[ULV])
                 .inputItems(dust, Sugar)
