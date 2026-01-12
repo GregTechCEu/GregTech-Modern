@@ -34,12 +34,15 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -302,6 +305,18 @@ public class TestUtils {
 
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    public static Player makeSurvivalFakePlayer(GameTestHelper helper) {
+        return new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+            public boolean isSpectator() {
+                return false;
+            }
+
+            public boolean isCreative() {
+                return false;
+            }
+        };
     }
 
     public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
