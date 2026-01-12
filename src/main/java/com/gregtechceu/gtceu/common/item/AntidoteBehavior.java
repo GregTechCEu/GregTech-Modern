@@ -74,7 +74,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.antidote.description_shift"));
             for (var type : types) {
-                tooltipComponents.add(type.getTranslatableName());
+                tooltipComponents.add(type.getAffectedName());
             }
             if (removePercent == -1) {
                 tooltipComponents
