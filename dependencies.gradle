@@ -70,6 +70,7 @@ dependencies {
     // CC: Tweaked
     modCompileOnly(forge.cc.tweaked.core.api)
     modCompileOnly(forge.cc.tweaked.forge.api)
+    //modLocalRuntime(forge.cc.tweaked.forge.impl)
 
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
