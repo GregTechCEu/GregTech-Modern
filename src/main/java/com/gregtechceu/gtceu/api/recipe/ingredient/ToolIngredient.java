@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class ToolIngredient extends AbstractIngredient {
 
-    public static final ResourceLocation TYPE = GTCEu.id("tool_ingredient");
+    public static final ResourceLocation TYPE = GTCEu.id("tool");
     private final GTToolType toolType;
     private ItemStack[] cachedStacks;
 

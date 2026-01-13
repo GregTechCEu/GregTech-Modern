@@ -30,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import org.jetbrains.annotations.Nullable;
@@ -134,7 +135,7 @@ public class ToolBoxBehavior implements IInteractionItem, IItemUIHolder, IRecipe
         GTToolType lastType = GTToolType.getTypes().get(typeName);
         if (lastType == null) return result;
 
-        var player = net.minecraftforge.common.ForgeHooks.getCraftingPlayer();
+        var player = ForgeHooks.getCraftingPlayer();
 
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack inner = handler.getStackInSlot(i);
