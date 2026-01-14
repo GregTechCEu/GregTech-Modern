@@ -260,7 +260,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -279,12 +279,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getDisplayRecipeVoltage() {
-        return this.getParts().stream()
-                .filter(EnergyHatchPartMachine.class::isInstance)
-                .map(EnergyHatchPartMachine.class::cast)
-                .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
-                .max()
-                .orElse(-1);
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**
