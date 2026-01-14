@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -69,12 +68,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
             voltage = GTValues.V[machine.getTier()];
         } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
-            voltage = machine.getParts().stream()
-                    .filter(EnergyHatchPartMachine.class::isInstance)
-                    .map(EnergyHatchPartMachine.class::cast)
-                    .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
-                    .max()
-                    .orElse(-1);
+            voltage = Math.max(machine.getEnergyContainer().getHighestInputVoltage(),
+                    machine.getEnergyContainer().getOutputVoltage());
         }
         // default display as LV, this shouldn't happen because a machine is either electric or steam
         if (voltage == -1) voltage = 32;
