@@ -42,8 +42,8 @@ public class ImageCache {
                     }
                     if (!allowedProtocol) return NULL_MARKER;
                     boolean allowedDomain = singleplayer;
-                    for (String domain : ConfigHolder.INSTANCE.gameplay.allowedDomains) {
-                        if (url.getHost().equalsIgnoreCase(domain)) {
+                    for (String domain : ConfigHolder.INSTANCE.gameplay.allowedImageDomains) {
+                        if (url.getHost().equals(domain)) {
                             allowedDomain = true;
                             break;
                         }
