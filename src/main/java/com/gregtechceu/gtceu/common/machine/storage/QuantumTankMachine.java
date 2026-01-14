@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -83,7 +84,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected Direction outputFacingFluids;
+    protected @Nullable Direction outputFacingFluids;
     @Getter
     @SaveField
     @SyncToClient
@@ -115,11 +116,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
-        super(holder, tier);
+    public QuantumTankMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
+        super(info, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
     }
 
@@ -127,7 +128,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new FluidCache(this);
     }
 
@@ -214,7 +215,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
         if ((isAutoOutputFluids() && !stored.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -512,7 +513,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         public void exportToNearby(@NotNull Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
-            var pos = getMachine().getPos();
+            var pos = getMachine().getBlockPos();
             for (Direction facing : facings) {
                 var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
                 GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
@@ -8,11 +9,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -66,24 +65,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     protected FluidHandlerList inputFluidInventory;
     private final int drillingFluidConsumePerTick;
 
-    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune,
+    public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(holder, fortune, speed, maximumChunkDiameter);
+        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
-        if (args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed &&
-                args[args.length - 1] instanceof Integer maxRadius) {
-            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
     }
 
     @Override
@@ -129,7 +115,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
@@ -151,7 +137,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(
                 Math.max(1, GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()) - this.tier));
-        getRecipeLogic().initPos(getPos(), getRecipeLogic().getCurrentRadius());
+        getRecipeLogic().initPos(getBlockPos(), getRecipeLogic().getCurrentRadius());
     }
 
     public int getEnergyTier() {

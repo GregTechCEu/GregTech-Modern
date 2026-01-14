@@ -164,7 +164,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
                 var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
-                        machine.getPos().relative(side), oppositeSide);
+                        machine.getBlockPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
                     amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
                             outputAmperes - amperesUsed);

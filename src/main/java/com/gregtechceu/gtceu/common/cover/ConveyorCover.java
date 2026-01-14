@@ -125,7 +125,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     }
 
     protected @Nullable IItemHandler getAdjacentItemHandler() {
-        return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+        return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
                 .resolve().orElse(null);
     }
 
@@ -413,8 +413,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
 
     public boolean shouldRespectDistributionMode() {
         return ((io == IO.IN) ?
-                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
-                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getBlockPos()) instanceof ItemPipeBlockEntity) :
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getBlockPos()
                         .relative(attachedSide)) instanceof ItemPipeBlockEntity));
     }
 

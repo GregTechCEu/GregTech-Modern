@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -92,15 +91,12 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 boolean isSteam = false;
 
                 if (EUt > 0) {
-                    if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                        var machine = mbe.getMetaMachine();
-                        if (machine instanceof SimpleSteamMachine ssm) {
-                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
-                            isSteam = true;
-                        } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
-                            isSteam = true;
-                        }
+                    if (blockEntity instanceof SimpleSteamMachine ssm) {
+                        EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
+                        isSteam = true;
+                    } else if (blockEntity instanceof SteamParallelMultiblockMachine smb) {
+                        EUt = (long) Math.ceil(EUt * smb.getConversionRate());
+                        isSteam = true;
                     }
 
                     MutableComponent text;

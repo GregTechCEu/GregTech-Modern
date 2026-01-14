@@ -212,4 +212,15 @@ public class AdaptableUITexture extends UITexture {
         json.addProperty("tiled", this.tiled);
         return true;
     }
+
+    @Override
+    protected AdaptableUITexture copy() {
+        return new AdaptableUITexture(location, u0, v0, u1, v1, colorType, nonOpaque, imageWidth, imageHeight, bl, bt,
+                br, bb, tiled);
+    }
+
+    @Override
+    public AdaptableUITexture withColorOverride(int color) {
+        return (AdaptableUITexture) super.withColorOverride(color);
+    }
 }

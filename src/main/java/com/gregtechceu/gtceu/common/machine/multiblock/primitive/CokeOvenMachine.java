@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,8 +42,8 @@ import static com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets.createTankWidge
 @MethodsReturnNonnullByDefault
 public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMachine {
 
-    public CokeOvenMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public CokeOvenMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -51,14 +51,14 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 166)
                 // Top half of the screen
-                .child(new ItemSlot().syncHandler(new ItemSlotSH(
+                .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(importItems.storage, 0)
                                 .slotGroup(new SlotGroup("import_items", 1))))
                         .background(uiTheme.getItemSlotTheme().getTheme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY)
                         .margin(52, 0, 30, 0))
 
-                .child(new ItemSlot().syncHandler(new ItemSlotSH(
+                .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
@@ -80,34 +80,10 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * return new ModularUI(176, 166, this, entityPlayer)
-     * .background(GuiTextures.PRIMITIVE_BACKGROUND)
-     * .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-     * .widget(new SlotWidget(importItems.storage, 0, 52, 30, true, true)
-     * .setBackgroundTexture(
-     * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-     * .widget(new ProgressWidget(recipeLogic::getProgressPercent, 76, 32, 20, 15,
-     * GuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR))
-     * .widget(new SlotWidget(exportItems.storage, 0, 103, 30, true, false)
-     * .setBackgroundTexture(
-     * new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
-     * .widget(new TankWidget(exportFluids.getStorages()[0], 134, 13, 20, 58, true, false)
-     * .setBackground(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
-     * .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-     * .setShowAmountOverlay(false)
-     * .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY))
-     * .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84,
-     * true));
-     * }
-     */
-
     @Override
     public void animateTick(RandomSource random) {
         if (this.isActive()) {
-            final BlockPos pos = getPos();
+            final BlockPos pos = getBlockPos();
             float x = pos.getX() + 0.5F;
             float z = pos.getZ() + 0.5F;
 

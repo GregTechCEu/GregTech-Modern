@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -8,8 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -89,8 +88,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public HPCAMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, args);
+    public HPCAMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.progressSupplier = new TimedProgressSupplier(200, 47, false);
         this.hpcaHandler = new HPCAGridHandler(this);
@@ -105,7 +104,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (part instanceof IHPCAComponentHatch componentHatch) {
                 componentHatches.add(componentHatch);
             }
@@ -264,7 +263,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // we need to know what components we have on the client
         if (getLevel().isClientSide) {
             if (isFormed) {
-                hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
+                hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getBlockPos(), this.getFrontFacing(),
                         this.getUpwardsFacing(), this.isFlipped);
             } else {
                 hpcaHandler.clearClientComponents();
@@ -733,11 +732,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         BlockEntity be = world.getBlockEntity(tempPos);
                         if (be instanceof IHPCAComponentHatch hatch) {
                             components.add(hatch);
-                        } else if (be instanceof IMachineBlockEntity machineBE) {
-                            MetaMachine machine = machineBE.getMetaMachine();
-                            if (machine instanceof IHPCAComponentHatch hatch) {
-                                components.add(hatch);
-                            }
                         }
                         // if here without a hatch, something went wrong, better to skip than add a null into the mix.
                     }

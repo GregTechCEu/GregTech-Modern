@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -130,9 +130,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected TickableSubscription updateSubs;
 
-    public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
-        patternInventory.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("patternInventory"));
+    public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.IN);
+        patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
@@ -173,6 +173,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void setCustomName(String newName) {
         customName = newName;
         syncDataHolder.markClientSyncFieldDirty("customName");
+        markAsChanged();
     }
 
     @Override
@@ -209,12 +210,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     public void addProxy(MEPatternBufferProxyPartMachine proxy) {
-        proxies.add(proxy.getPos());
+        proxies.add(proxy.getBlockPos());
         proxyMachines.add(proxy);
     }
 
     public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
-        proxies.remove(proxy.getPos());
+        proxies.remove(proxy.getBlockPos());
         proxyMachines.remove(proxy);
     }
 
@@ -414,7 +415,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
-        dataStick.getOrCreateTag().putIntArray("pos", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
+        dataStick.getOrCreateTag().putIntArray("pos",
+                new int[] { getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() });
         return InteractionResult.SUCCESS;
     }
 

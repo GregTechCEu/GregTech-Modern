@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
@@ -68,12 +68,12 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected Direction outputFacingItems;
+    protected @Nullable Direction outputFacingItems;
     @Getter
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected Direction outputFacingFluids;
+    protected @Nullable Direction outputFacingFluids;
     @Getter
     @SaveField
     @SyncToClient
@@ -107,10 +107,10 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     @Nullable
     protected ISubscription invSubs, tankSubs;
 
-    public BufferMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
-        this.inventory = createInventory(args);
-        this.tank = createTank(args);
+    public BufferMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
+        this.inventory = createInventory();
+        this.tank = createTank();
     }
 
     ////////////////////////////////
@@ -125,11 +125,11 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
         return tier + 2;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, getInventorySize(tier), IO.BOTH);
     }
 
-    protected NotifiableFluidTank createTank(Object... args) {
+    protected NotifiableFluidTank createTank() {
         return new NotifiableFluidTank(this, getTankSize(tier), TANK_SIZE, IO.BOTH);
     }
 
@@ -199,9 +199,9 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
         var outputFacingItems = getOutputFacingItems();
         var outputFacingFluids = getOutputFacingFluids();
         if ((isAutoOutputItems() && !inventory.isEmpty() && outputFacingItems != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) ||
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacingItems)) ||
                 (isAutoOutputFluids() && !tank.isEmpty() && outputFacingFluids != null &&
-                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids))) {
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacingFluids))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();

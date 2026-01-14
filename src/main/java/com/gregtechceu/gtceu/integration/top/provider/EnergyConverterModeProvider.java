@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
 import net.minecraft.network.chat.Component;
@@ -25,8 +24,7 @@ public class EnergyConverterModeProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
-        if (level.getBlockEntity(iProbeHitData.getPos()) instanceof MetaMachineBlockEntity blockEntity &&
-                blockEntity.getMetaMachine() instanceof ConverterMachine converter) {
+        if (level.getBlockEntity(iProbeHitData.getPos()) instanceof ConverterMachine converter) {
             if (converter.isFeToEu()) {
                 iProbeInfo.text(Component.translatable("gtceu.top.convert_fe"));
             } else {

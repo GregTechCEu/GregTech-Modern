@@ -47,7 +47,7 @@ public class GridNodeHolder extends MachineTrait {
     }
 
     protected void createMainNode() {
-        this.mainNode.create(machine.getLevel(), machine.getPos());
+        this.mainNode.create(machine.getLevel(), machine.getBlockPos());
     }
 
     @Override

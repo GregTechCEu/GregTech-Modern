@@ -1,17 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
+import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -32,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,9 +51,9 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     @SaveField
     public final NotifiableFluidTank fuelTank;
 
-    public SteamLiquidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder, isHighPressure, args);
-        this.fuelTank = createFuelTank(args).setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
+    public SteamLiquidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        super(info, isHighPressure);
+        this.fuelTank = createFuelTank().setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
             if (isRemote()) return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                 var list = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
@@ -63,7 +70,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     // ***** Initialization *****//
     //////////////////////////////////////
 
-    protected NotifiableFluidTank createFuelTank(Object... args) {
+    protected NotifiableFluidTank createFuelTank() {
         return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
@@ -74,19 +81,45 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return super.createUI(entityPlayer)
-                .widget(new TankWidget(fuelTank.getStorages()[0], 119, 26, 10, 54, true, true)
-                        .setShowAmount(false)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)));
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_STEEL :
+                GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
+
+        return super.buildUI(data, syncManager, settings)
+                .child(new Row()
+                        .coverChildren()
+                        .right(12).top(12)
+                        .childPadding(4)
+                        .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                        .child(new ProgressWidget()
+                                .size(18)
+                                .texture(progressTexture, 18)
+                                .progress(recipeLogic::getProgressPercent)
+                                .direction(ProgressWidget.Direction.UP))
+                        .child(new FluidSlot()
+                                .syncHandler(new FluidSlotSyncHandler(fuelTank.getStorages()[0])
+                                        .canFillSlot(true).canDrainSlot(true))
+                                .size(14, 54)
+                                .displayAmount(false)));
     }
+
+    /*
+     * @Override
+     * public ModularUI createUI(Player entityPlayer) {
+     * return super.createUI(entityPlayer)
+     * .widget(new TankWidget(fuelTank.getStorages()[0], 119, 26, 10, 54, true, true)
+     * .setShowAmount(false)
+     * .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
+     * .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)));
+     * }
+     */
 
     @Override
     protected void randomDisplayTick(RandomSource random, float x, float y, float z) {
         super.randomDisplayTick(random, x, y, z);
         if (random.nextFloat() < 0.3F) {
-            getLevel().addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y, z + random.nextFloat(), 0.0F, 0.0F,
+            Objects.requireNonNull(getLevel()).addParticle(ParticleTypes.LAVA, x + random.nextFloat(), y,
+                    z + random.nextFloat(), 0.0F, 0.0F,
                     0.0F);
         }
     }

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -80,36 +80,31 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
 
-    // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
-    // We can't use fields here because those won't be available while createTank() is called.
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots,
-                                 Object... args) {
-        super(holder, tier, io);
+    public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int initialCapacity, int slots) {
+        super(info, tier, io);
         this.slots = slots;
-        this.tank = createTank(initialCapacity, slots, args);
-        this.circuitSlotEnabled = true;
-        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        this.tank = createTank(initialCapacity, slots);
+
+        if (io == IO.IN) {
+            this.circuitSlotEnabled = true;
+            this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false);
+        } else {
+            this.circuitSlotEnabled = false;
+            this.circuitInventory = new NotifiableItemStackHandler(this, 0, IO.NONE).shouldSearchContent(false);
+        }
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {
         return initialCapacity * (1 << Math.min(9, tier));
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-        } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        }
     }
 
     @Override
@@ -200,7 +195,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     protected void updateTankSubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !tank.isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -245,7 +240,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
 
         if (io == IO.IN) {
@@ -263,14 +258,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof FluidHatchPartMachine newMachine) {
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-                newMachine.setPaintingColor(this.getPaintingColor());
-                for (int i = 0; i < this.tank.getTanks(); i++) {
-                    newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
-                }
+        if (getLevel().getBlockEntity(blockPos) instanceof FluidHatchPartMachine newMachine) {
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            newMachine.setPaintingColor(this.getPaintingColor());
+            for (int i = 0; i < this.tank.getTanks(); i++) {
+                newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
             }
         }
         return true;
