@@ -932,7 +932,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
@@ -980,7 +980,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
-        provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
+        provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
@@ -1077,7 +1077,7 @@ public class LangHandler {
         provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
@@ -1232,6 +1232,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+        provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         // gui
         provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
@@ -1287,6 +1288,9 @@ public class LangHandler {
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
         provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
@@ -1645,6 +1649,11 @@ public class LangHandler {
                 "Returns the text from a buffer accessible by ComputerCraft",
                 "Usage:",
                 "  {bufferText <line>} -> text from the buffer on the specified line (line is 1-100)");
+        multiLang(provider, "gtceu.placeholder_info.blockNbt",
+                "Returns the NBT of the block entity",
+                "Usage:",
+                "  {blockNbt} -> full block entity nbt",
+                "  {blockNbt [key1] [key2] ...} -> part of the nbt");
         provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
         provider.add("gtceu.ender_item_link_cover.tooltip",
                 "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
@@ -1681,7 +1690,7 @@ public class LangHandler {
                 "Slot number: %d");
         multiLang(provider, "gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
