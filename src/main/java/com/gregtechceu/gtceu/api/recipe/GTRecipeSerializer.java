@@ -294,9 +294,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
                     String msg = "Recipe " + field + " field is invalid!";
                     if (isKubeLoaded) {
-                        var ex = new com.google.gson.JsonParseException(msg);
-                        ex.setStackTrace(new StackTraceElement[0]);
-                        throw ex;
+                        throw quietException(msg);
                     } else {
                         GTCEu.LOGGER.error(msg);
                     }
