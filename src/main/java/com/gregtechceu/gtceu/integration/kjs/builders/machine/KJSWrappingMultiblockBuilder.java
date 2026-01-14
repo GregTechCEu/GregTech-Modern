@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -77,18 +76,16 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id) {
         return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::new);
+                WorkableElectricMultiblockMachine::new);
     }
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
                                                           KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
         return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                machine::create,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::new);
+                machine::create);
     }
 }

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -19,14 +19,11 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,23 +36,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CreativeComputationProviderMachine extends MetaMachine
                                                 implements IMuiMachine, IOpticalComputationProvider {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            CreativeComputationProviderMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @Getter
-    @Setter
+    @SaveField
     private int maxCWUt;
     private int lastRequestedCWUt;
     private int requestedCWUPerSec;
-    @Persisted
+    @SaveField
     @Getter
     private boolean active;
     @Nullable
     private TickableSubscription computationSubs;
 
-    public CreativeComputationProviderMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CreativeComputationProviderMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
@@ -110,9 +102,9 @@ public class CreativeComputationProviderMachine extends MetaMachine
         updateComputationSubscription();
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void setMaxCWUt(int maxCWUt) {
+        this.maxCWUt = maxCWUt;
+        syncDataHolder.markClientSyncFieldDirty("maxCWUt");
     }
 
     @Override
@@ -131,7 +123,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(this::getMaxCWUt, this::setMaxCWUt))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)
@@ -139,7 +131,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .coverChildren()
                                 .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
                                         () -> new Object[] { lastRequestedCWUt }))))
-                        .child(new Rectangle().setColor(0xFF555555).asWidget()
+                        .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .alignX(0)

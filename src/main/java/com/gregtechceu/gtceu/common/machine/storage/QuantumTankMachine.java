@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -31,15 +32,14 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -78,49 +78,49 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class QuantumTankMachine extends TieredMachine implements IAutoOutputFluid, IInteractedMachine, IControllable,
                                 IDropSaveMachine, IMuiMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    protected Direction outputFacingFluids;
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
+    protected @Nullable Direction outputFacingFluids;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputFluids;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideFluids;
-    @Persisted
+    @SaveField
     private boolean isVoiding;
 
     @Getter
     private final long maxAmount;
     protected final FluidCache cache;
-    @DescSynced
+    @SyncToClient
+    @SaveField
     private final CustomFluidTank lockedFluid;
 
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected long storedAmount = 0;
 
     @Nullable
     protected TickableSubscription autoOutputSubs;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
-        super(holder, tier);
+    public QuantumTankMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
+        super(info, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
     }
 
@@ -128,12 +128,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new FluidCache(this);
     }
 
@@ -147,6 +142,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     protected void onFluidChanged() {
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("storedAmount");
+            syncDataHolder.markClientSyncFieldDirty("stored");
             updateAutoOutputSubscription();
         }
     }
@@ -159,29 +156,6 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public boolean saveBreak() {
         return !stored.isEmpty();
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedFluid", lockedFluid.writeToNBT(new CompoundTag()));
-        tag.put("stored", stored.writeToNBT(new CompoundTag()));
-        tag.putLong("storedAmount", storedAmount);
-    }
-
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-
-        var from = tag.contains("cache") ? tag.getCompound("cache") : tag;
-        this.lockedFluid.readFromNBT(from.getCompound("lockedFluid"));
-
-        var stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("stored"));
-        this.stored = new FluidStack(stored, 1000);
-
-        if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
-        else this.storedAmount = tag.getLong("storedAmount");
-        if (storedAmount == 0 && !stored.isEmpty()) this.storedAmount = stored.getAmount();
     }
 
     //////////////////////////////////////
@@ -211,12 +185,14 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public void setAutoOutputFluids(boolean allow) {
         this.autoOutputFluids = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         this.outputFacingFluids = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
         updateAutoOutputSubscription();
     }
 
@@ -239,7 +215,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
         if ((isAutoOutputFluids() && !stored.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -328,16 +304,30 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         } else if (!locked) {
             lockedFluid.setFluid(FluidStack.EMPTY);
         }
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
     }
 
     protected void setLocked(FluidStack fluid) {
         if (fluid.isEmpty()) setLocked(false);
         else if (stored.isEmpty()) lockedFluid.setFluid(fluid);
         else if (stored.isFluidEqual(fluid)) setLocked(true);
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
     }
 
     public FluidStack getLockedFluid() {
         return lockedFluid.getFluid();
+    }
+
+    @Override
+    public void saveToItem(CompoundTag tag) {
+        tag.put("stored", stored.writeToNBT(new CompoundTag()));
+        tag.putLong("storedAmount", storedAmount);
+    }
+
+    @Override
+    public void loadFromItem(CompoundTag tag) {
+        stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("stored"));
+        storedAmount = tag.getLong("storedAmount");
     }
 
     //////////////////////////////////////
@@ -523,17 +513,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         public void exportToNearby(@NotNull Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
-            var pos = getMachine().getPos();
+            var pos = getMachine().getBlockPos();
             for (Direction facing : facings) {
                 var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
                 GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                         .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
             }
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 

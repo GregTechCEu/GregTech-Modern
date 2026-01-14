@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public class ColorPickerDialog extends Dialog<Integer> {
 
-    private static final IDrawable handleBackground = new Rectangle().setColor(Color.WHITE.main);
+    private static final IDrawable handleBackground = new Rectangle().color(Color.WHITE.main);
 
     private int color;
     private int red;
@@ -265,13 +265,13 @@ public class ColorPickerDialog extends Dialog<Integer> {
         int gs = Color.withGreen(color, 0), ge = Color.withGreen(color, 255);
         int bs = Color.withBlue(color, 0), be = Color.withBlue(color, 255);
         int as = Color.withAlpha(color, 0), ae = Color.withAlpha(color, 255);
-        this.sliderBackgroundR.setHorizontalGradient(rs, re);
-        this.sliderBackgroundG.setHorizontalGradient(gs, ge);
-        this.sliderBackgroundB.setHorizontalGradient(bs, be);
-        this.sliderBackgroundA.setHorizontalGradient(as, ae);
-        this.sliderBackgroundS.setHorizontalGradient(Color.withHSVSaturation(color, 0f),
+        this.sliderBackgroundR.horizontalGradient(rs, re);
+        this.sliderBackgroundG.horizontalGradient(gs, ge);
+        this.sliderBackgroundB.horizontalGradient(bs, be);
+        this.sliderBackgroundA.horizontalGradient(as, ae);
+        this.sliderBackgroundS.horizontalGradient(Color.withHSVSaturation(color, 0f),
                 Color.withHSVSaturation(color, 1f));
-        this.sliderBackgroundV.setHorizontalGradient(Color.withValue(color, 0f), Color.withValue(color, 1f));
-        this.preview.setColor(color);
+        this.sliderBackgroundV.horizontalGradient(Color.withValue(color, 0f), Color.withValue(color, 1f));
+        this.preview.color(color);
     }
 }

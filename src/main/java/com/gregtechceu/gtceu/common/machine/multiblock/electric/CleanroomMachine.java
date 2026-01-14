@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -39,10 +38,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMa
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.ChatFormatting;
@@ -80,20 +78,17 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 public class CleanroomMachine extends WorkableElectricMultiblockMachine
                               implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     public static final int CLEAN_AMOUNT_THRESHOLD = 95;
     public static final int MIN_CLEAN_AMOUNT = 0;
 
     public static final int MIN_RADIUS = 2;
     public static final int MIN_DEPTH = 4;
 
-    @Persisted
+    @SaveField
     private int lDist = 0, rDist = 0, bDist = 0, fDist = 0, hDist = 0;
     @Nullable
     private CleanroomType cleanroomType = null;
-    @Persisted
+    @SaveField
     private int cleanAmount;
     // runtime
     @Getter
@@ -103,20 +98,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @Nullable
     private Collection<ICleanroomReceiver> cleanroomReceivers;
 
-    public CleanroomMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId);
+    public CleanroomMachine(BlockEntityCreationInfo info) {
+        super(info, (m) -> new CleanroomLogic((CleanroomMachine) m));
     }
 
     //////////////////////////////////////
     // ****** Initialization ******//
     //////////////////////////////////////
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected RecipeLogic createRecipeLogic(Object... args) {
+    protected RecipeLogic createRecipeLogic() {
         return new CleanroomLogic(this);
     }
 
@@ -176,7 +166,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean shouldAddPartToController(IMultiPart part) {
         var cache = getMultiblockState().getCache();
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (!cache.contains(part.self().getPos().relative(side))) {
+            if (!cache.contains(part.self().getBlockPos().relative(side))) {
                 return true;
             }
         }
@@ -189,7 +179,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             if (isPartIgnored(part)) continue;
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
@@ -228,11 +218,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         Direction left = front.getCounterClockWise();
         Direction right = left.getOpposite();
 
-        BlockPos.MutableBlockPos lPos = getPos().mutable();
-        BlockPos.MutableBlockPos rPos = getPos().mutable();
-        BlockPos.MutableBlockPos fPos = getPos().mutable();
-        BlockPos.MutableBlockPos bPos = getPos().mutable();
-        BlockPos.MutableBlockPos hPos = getPos().mutable();
+        BlockPos.MutableBlockPos lPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos rPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos fPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos bPos = getBlockPos().mutable();
+        BlockPos.MutableBlockPos hPos = getBlockPos().mutable();
 
         // find the distances from the controller to the plascrete blocks on one horizontal axis and the Y axis
         // repeatable aisles take care of the second horizontal axis
@@ -432,8 +422,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
-            if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-                var machine = machineBlockEntity.getMetaMachine();
+            if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return false;
                 }

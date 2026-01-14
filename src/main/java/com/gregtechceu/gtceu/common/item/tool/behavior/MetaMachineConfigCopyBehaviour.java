@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -101,8 +100,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         // spotless:off
-        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity blockEntity) {
-            var machine = blockEntity.getMetaMachine();
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachine machine) {
             if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
                 return InteractionResult.FAIL;
             }

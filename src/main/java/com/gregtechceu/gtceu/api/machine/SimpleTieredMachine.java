@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -23,18 +24,17 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.Util;
@@ -69,84 +69,66 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SimpleTieredMachine extends WorkableTieredMachine
                                  implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class,
-            WorkableTieredMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingFluids;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputFluids;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideFluids;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
-                               Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        super(info, tier, tankScalingFunction);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
-        this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args);
-    }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
-        var handler = new CustomItemStackHandler() {
+        this.chargerInventory = new CustomItemStackHandler() {
 
             public int getSlotLimit(int slot) {
                 return 1;
             }
         };
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+        this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -215,6 +197,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setAutoOutputItems(boolean allow) {
         if (hasAutoOutputItem()) {
             this.autoOutputItems = allow;
+            syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
             updateAutoOutputSubscription();
         }
     }
@@ -223,6 +206,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setAutoOutputFluids(boolean allow) {
         if (hasAutoOutputFluid()) {
             this.autoOutputFluids = allow;
+            syncDataHolder.markClientSyncFieldDirty("autoOutputFluids");
             updateAutoOutputSubscription();
         }
     }
@@ -231,6 +215,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         if (hasAutoOutputFluid()) {
             this.outputFacingFluids = outputFacing;
+            syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
             updateAutoOutputSubscription();
         }
     }
@@ -239,6 +224,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         if (hasAutoOutputItem()) {
             this.outputFacingItems = outputFacing;
+            syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
             updateAutoOutputSubscription();
         }
     }
@@ -253,9 +239,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         var outputFacingItems = getOutputFacingItems();
         var outputFacingFluids = getOutputFacingFluids();
         if ((isAutoOutputItems() && !exportItems.isEmpty() && outputFacingItems != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) ||
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacingItems)) ||
                 (isAutoOutputFluids() && !exportFluids.isEmpty() && outputFacingFluids != null &&
-                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacingFluids))) {
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), outputFacingFluids))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -333,6 +319,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     private IFancyConfigurator createAutoOutputFluidConfigurator() {
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON,
+                "gtceu.gui.fluid_auto_output",
                 this::isAutoOutputFluids,
                 (cd, nextState) -> this.setAutoOutputFluids(nextState));
     }
@@ -340,14 +327,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     private IFancyConfigurator createAutoOutputItemConfigurator() {
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON,
+                "gtceu.gui.item_auto_output",
                 this::isAutoOutputItems,
                 (cd, nextState) -> this.setAutoOutputItems(nextState));
     }
 
     private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture,
+                                                            String tooltipBaseLangKey,
                                                             BooleanSupplier stateSupplier,
                                                             BiConsumer<ClickData, Boolean> onToggle) {
-        return new IFancyConfiguratorButton.Toggle(
+        var toggle = new IFancyConfiguratorButton.Toggle(
                 new GuiTextureGroup(
                         GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                         modesButtonTexture.getSubTexture(0, 1 / 3f, 1, 1 / 3f)),
@@ -356,6 +345,13 @@ public class SimpleTieredMachine extends WorkableTieredMachine
                         modesButtonTexture.getSubTexture(0, 2 / 3f, 1, 1 / 3f)),
                 stateSupplier,
                 onToggle);
+
+        toggle.setTooltipsSupplier(enabled -> {
+            var key = tooltipBaseLangKey + '.' + (enabled ? "enabled" : "disabled");
+            return List.of(Component.translatable(key));
+        });
+
+        return toggle;
     }
 
     @SuppressWarnings("UnstableApiUsage")

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -17,7 +18,7 @@ import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ProgressWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -34,14 +35,13 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -81,30 +81,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FisherMachine extends TieredEnergyMachine
                            implements IAutoOutputItem, IMuiMachine, IMachineLife, IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected Direction outputFacingItems;
     @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
+    @RerenderOnChanged
     protected boolean autoOutputItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler cache;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected boolean allowInputFromOutputSideItems;
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler baitHandler;
 
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, fishingSubs;
@@ -118,64 +115,52 @@ public class FisherMachine extends TieredEnergyMachine
     public final int maxProgress;
 
     @Getter
-    @Persisted
+    @SaveField
     private int progress = 0;
 
     @Getter
-    @Persisted
-    @Setter
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isWorkingEnabled = true;
 
     @Getter
-    @Persisted
+    @SaveField
     private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
 
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected boolean junkEnabled = true;
 
-    public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
-        super(holder, tier);
+    public FisherMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];
-        this.cache = createCacheItemHandler();
-        this.baitHandler = createBaitItemHandler();
-        this.chargerInventory = createChargerItemHandler();
+        this.cache = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
+
+        this.baitHandler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
+        baitHandler.setFilter(item -> item.is(Items.STRING));
+
+        this.chargerInventory = new CustomItemStackHandler();
+        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
+                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
+                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
+
         setOutputFacingItems(getFrontFacing());
     }
 
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
+    public void setWorkingEnabled(boolean enabled) {
+        isWorkingEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected NotifiableItemStackHandler createCacheItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
-    }
-
-    protected NotifiableItemStackHandler createBaitItemHandler() {
-        var handler = new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
-        handler.setFilter(item -> item.is(Items.STRING));
-        return handler;
+    public void setJunkEnabled(boolean enabled) {
+        junkEnabled = enabled;
+        syncDataHolder.markClientSyncFieldDirty("junkEnabled");
     }
 
     @Override
@@ -249,7 +234,8 @@ public class FisherMachine extends TieredEnergyMachine
     private void updateHasWater() {
         for (int x = 0; x < WATER_CHECK_SIZE; x++)
             for (int z = 0; z < WATER_CHECK_SIZE; z++) {
-                BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+                BlockPos waterCheckPos = getBlockPos().below().offset(x - WATER_CHECK_SIZE / 2, 0,
+                        z - WATER_CHECK_SIZE / 2);
                 if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
                     hasWater = false;
                     return;
@@ -282,7 +268,7 @@ public class FisherMachine extends TieredEnergyMachine
                     .withOptionalParameter(LootContextParams.THIS_ENTITY, simulatedHook)
                     .withParameter(LootContextParams.TOOL, fishingRod)
                     .withParameter(LootContextParams.ORIGIN,
-                            new Vec3(getPos().getX(), getPos().getY(), getPos().getZ()))
+                            new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()))
                     .create(LootContextParamSets.FISHING);
 
             NonNullList<ItemStack> generatedLoot = NonNullList.create();
@@ -327,12 +313,14 @@ public class FisherMachine extends TieredEnergyMachine
     @Override
     public void setAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
         updateAutoOutputSubscription();
     }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
         this.outputFacingItems = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
         updateAutoOutputSubscription();
     }
 
@@ -348,7 +336,7 @@ public class FisherMachine extends TieredEnergyMachine
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
         if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacing))
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacing))
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -446,7 +434,7 @@ public class FisherMachine extends TieredEnergyMachine
                 (b) -> active = b);
         syncManager.syncValue("working_enabled", power);
 
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(getChargerInventory(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(getChargerInventory(), 0));
         syncManager.syncValue("battery", battery);
 
         panel.size(176, 124 + Math.max(36, 18 * slotHeight));
@@ -524,116 +512,6 @@ public class FisherMachine extends TieredEnergyMachine
 
         return panel;
     }
-
-    /*
-     * public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-     * .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-     * var template = createTemplate(inventorySize).createDefault();
-     * var energyBar = createEnergyBar().createDefault();
-     * var batterySlot = createBatterySlot().createDefault();
-     * var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-     * batterySlot.setSelfPosition(
-     * new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-     * energyGroup.addWidget(energyBar);
-     * energyGroup.addWidget(batterySlot);
-     * var group = new WidgetGroup(0, 0,
-     * Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-     * Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-     * var size = group.getSize();
-     * energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-     * 
-     * template.setSelfPosition(new Position(
-     * (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-     * energyGroup.getSize().width + 2,
-     * (size.height - template.getSize().height) / 2));
-     * 
-     * group.addWidget(energyGroup);
-     * group.addWidget(template);
-     * return group;
-     * }, (template, machine) -> {
-     * if (machine instanceof FisherMachine fisherMachine) {
-     * createTemplate(inventorySize).setupUI(template, fisherMachine);
-     * createEnergyBar().setupUI(template, fisherMachine);
-     * createBatterySlot().setupUI(template, fisherMachine);
-     * createJunkButton().setupUI(template, fisherMachine);
-     * }
-     * }));
-     * 
-     * protected static EditableUI<SlotWidget, FisherMachine> createBatterySlot() {
-     * return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-     * var slotWidget = new SlotWidget();
-     * slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-     * return slotWidget;
-     * }, (slotWidget, machine) -> {
-     * slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-     * slotWidget.setCanPutItems(true);
-     * slotWidget.setCanTakeItems(true);
-     * slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-     * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-     * });
-     * }
-     * 
-     * protected static EditableUI<ToggleButtonWidget, FisherMachine> createJunkButton() {
-     * return new EditableUI<>("junk_button", ToggleButtonWidget.class, () -> {
-     * var toggleButtonWidget = new ToggleButtonWidget(10, 20, 18, 18,
-     * new ItemStackTexture(Items.NAME_TAG).scale(0.9F), () -> false, b -> {});
-     * toggleButtonWidget.setShouldUseBaseBackground();
-     * return toggleButtonWidget;
-     * }, (toggleButtonWidget, machine) -> {
-     * toggleButtonWidget.setSupplier(machine::isJunkEnabled);
-     * toggleButtonWidget.setOnPressCallback((data, bool) -> machine.setJunkEnabled(bool));
-     * toggleButtonWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
-     * GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-     * });
-     * }
-     * 
-     * protected static EditableUI<WidgetGroup, FisherMachine> createTemplate(int inventorySize) {
-     * return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
-     * int rowSize = (int) Math.sqrt(inventorySize);
-     * WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 20, rowSize * 18 + 8);
-     * 
-     * for (int y = 0; y < rowSize; y++) {
-     * for (int x = 0; x < rowSize; x++) {
-     * int index = y * rowSize + x;
-     * SlotWidget slotWidget = new SlotWidget();
-     * slotWidget.initTemplate();
-     * slotWidget.setSelfPosition(new Position(24 + x * 18, 4 + y * 18));
-     * slotWidget.setBackground(GuiTextures.SLOT);
-     * slotWidget.setId("slot_" + index);
-     * main.addWidget(slotWidget);
-     * }
-     * }
-     * 
-     * SlotWidget baitSlotWidget = new SlotWidget();
-     * baitSlotWidget.initTemplate();
-     * baitSlotWidget
-     * .setSelfPosition(new Position(4, (main.getSize().height - baitSlotWidget.getSize().height) / 2));
-     * baitSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.STRING_SLOT_OVERLAY);
-     * baitSlotWidget.setId("bait_slot");
-     * main.addWidget(baitSlotWidget);
-     * var junkButton = createJunkButton().createDefault();
-     * junkButton.setSelfPosition(new Position(4, (main.getSize().height - junkButton.getSize().height) - 4));
-     * junkButton.setId("junk_button");
-     * main.addWidget(junkButton);
-     * main.setBackground(GuiTextures.BACKGROUND_INVERSE);
-     * return main;
-     * }, (group, machine) -> {
-     * WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-     * var index = WidgetUtils.widgetIdIndex(slot);
-     * if (index >= 0 && index < machine.cache.getSlots()) {
-     * slot.setHandlerSlot(machine.cache, index);
-     * slot.setCanTakeItems(true);
-     * slot.setCanPutItems(false);
-     * }
-     * });
-     * WidgetUtils.widgetByIdForEach(group, "^bait_slot$", SlotWidget.class, slot -> {
-     * slot.setHandlerSlot(machine.baitHandler.storage, 0);
-     * slot.setCanTakeItems(true);
-     * slot.setCanPutItems(true);
-     * });
-     * });
-     * }
-     */
 
     //////////////////////////////////////
     // ******* Rendering ********//

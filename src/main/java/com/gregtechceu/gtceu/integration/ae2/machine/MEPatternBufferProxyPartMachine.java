@@ -1,18 +1,16 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -37,22 +35,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
                                              implements IMachineLife, IDataStickInteractable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
     @Getter
     private final ProxySlotRecipeHandler proxySlotRecipeHandler;
 
-    @Persisted
+    @SaveField
     @Getter
-    @DescSynced
+    @SyncToClient
     private @Nullable BlockPos bufferPos;
 
     private @Nullable MEPatternBufferPartMachine buffer = null;
     private boolean bufferResolved = false;
 
-    public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.LuV, IO.IN);
+    public MEPatternBufferProxyPartMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.LuV, IO.IN);
         proxySlotRecipeHandler = new ProxySlotRecipeHandler(this, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
     }
 
@@ -82,6 +77,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         } else {
             buffer = null;
         }
+        syncDataHolder.markClientSyncFieldDirty("bufferPos");
     }
 
     @Nullable
@@ -102,11 +98,6 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
      * return getBuffer().createUI(entityPlayer);
      * }
      */
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onMachineRemoved() {

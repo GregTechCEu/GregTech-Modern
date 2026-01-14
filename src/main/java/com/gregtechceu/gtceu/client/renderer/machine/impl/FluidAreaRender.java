@@ -111,7 +111,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
-                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getBlockPos());
             poseStack.popPose();
         }
     }

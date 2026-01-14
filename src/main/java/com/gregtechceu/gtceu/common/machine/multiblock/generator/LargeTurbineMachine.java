@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.ITurbineMachine;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -41,8 +40,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     @Getter
     private final int tier;
 
-    public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public LargeTurbineMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
     }
@@ -182,7 +181,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return capability != EURecipeCapability.CAP;
+        // void both eu and fluid tick outputs
+        return true;
     }
 
     //////////////////////////////////////

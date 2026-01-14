@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
@@ -35,6 +34,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
@@ -90,10 +90,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
-                        return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
-                    }
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
+                    return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().stored().longValue());
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
@@ -105,10 +103,8 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IMachineBlockEntity machineBE) {
-                    if (machineBE.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
-                        return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().capacity().longValue());
-                    }
+                if (ctx.level().getBlockEntity(ctx.pos()) instanceof IEnergyInfoProvider energyInfoProvider) {
+                    return MultiLineComponent.literal(energyInfoProvider.getEnergyInfo().capacity().longValue());
                 }
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);
@@ -703,7 +699,17 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 long n = PlaceholderUtils.toLong(args.get(0));
-                return MultiLineComponent.literal(GTStringUtils.formatInt(n));
+                Map<Long, String> suffixes = Map.of(
+                        1L, "",
+                        1000L, "K",
+                        1000000L, "M",
+                        1000000000L, "B",
+                        1000000000000L, "T");
+                long max = 1;
+                for (Long i : suffixes.keySet()) {
+                    if (n >= i && max < i) max = i;
+                }
+                return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("click") {
@@ -819,6 +825,28 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
+            }
+        });
+        PlaceholderHandler.addPlaceholder(new Placeholder("blockNbt") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
+                BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
+                if (blockEntity == null) return MultiLineComponent.empty();
+                Tag tag = blockEntity.saveWithFullMetadata();
+                if (tag instanceof CompoundTag compoundTag && compoundTag.contains("cover")) {
+                    CompoundTag coverTag = compoundTag.getCompound("cover");
+                    if (coverTag.contains(ctx.side().getName())) {
+                        CompoundTag cover = coverTag.getCompound(ctx.side().getName()).getCompound("payload")
+                                .getCompound("d");
+                        cover.putString("text", "[REMOVED]");
+                    }
+                }
+                for (MultiLineComponent arg : args) {
+                    if (!(tag instanceof CompoundTag compoundTag)) return MultiLineComponent.empty();
+                    tag = compoundTag.get(arg.toString());
+                }
+                return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
             }
         });
     }

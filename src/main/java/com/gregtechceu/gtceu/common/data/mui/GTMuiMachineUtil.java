@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSH;
+import com.gregtechceu.gtceu.api.mui.value.sync.ItemSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
@@ -33,7 +36,7 @@ public class GTMuiMachineUtil {
                 .matrix(matrix)
                 .key(key, i -> {
                     ModularSlot slot = new ModularSlot(itemHandler, i);
-                    ItemSlotSH syncHandler = new ItemSlotSH(slot.slotGroup(slotGroup));
+                    ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue(slotGroupName, i, syncHandler);
                     return slotModifier.apply(new ItemSlot()
                             .syncHandler(slotGroupName, i));
@@ -70,5 +73,14 @@ public class GTMuiMachineUtil {
                 .key(key, i -> new FluidSlot()
                         .syncHandler(syncHandlerName, i))
                 .build();
+    }
+
+    public static Flow createColumn(boolean reverse, Widget<?>... children) {
+        var column = new Column();
+        column.reverseLayout(reverse);
+        for (Widget<?> child : children) {
+            column.child(child);
+        }
+        return column;
     }
 }

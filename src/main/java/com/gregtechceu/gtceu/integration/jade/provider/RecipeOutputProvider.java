@@ -242,7 +242,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     }
 
     private Component getItemName(ItemStack stack) {
-        return stack.getDisplayName().copy().withStyle(ChatFormatting.WHITE);
+        return stack.getHoverName().copy().withStyle(ChatFormatting.WHITE);
     }
 
     private Component getFluidName(FluidStack stack) {

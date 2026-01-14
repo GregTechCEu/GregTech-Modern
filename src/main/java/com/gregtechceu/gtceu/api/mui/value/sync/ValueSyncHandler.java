@@ -9,29 +9,35 @@ import lombok.Setter;
 
 public abstract class ValueSyncHandler<T> extends SyncHandler implements IValueSyncHandler<T> {
 
+    public static final int SYNC_VALUE = 0;
+
     @Getter
     @Setter
     private Runnable changeListener;
 
     @Override
     public void readOnClient(int id, FriendlyByteBuf buf) {
-        read(buf);
-        onValueChanged();
+        if (id == SYNC_VALUE) read(buf);
     }
 
     @Override
     public void readOnServer(int id, FriendlyByteBuf buf) {
-        read(buf);
-        onValueChanged();
+        if (id == SYNC_VALUE) read(buf);
+    }
+
+    protected void sync() {
+        sync(SYNC_VALUE, this::write);
     }
 
     @Override
     public void detectAndSendChanges(boolean init) {
-        if (updateCacheFromSource(init)) {
-            syncToClient(0, this::write);
-        }
+        if (updateCacheFromSource(init)) sync();
     }
 
+    /**
+     * Called when the cached value of this sync handler updates. Implementations need to call this inside
+     * {@link #setValue(Object, boolean, boolean)}.
+     */
     protected void onValueChanged() {
         if (this.changeListener != null) {
             this.changeListener.run();

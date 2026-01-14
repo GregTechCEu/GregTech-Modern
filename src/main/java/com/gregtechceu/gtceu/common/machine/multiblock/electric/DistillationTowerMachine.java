@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -17,9 +17,8 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
+import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -48,8 +47,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     private IFluidHandler firstValid = null;
     private final int yOffset;
 
-    public DistillationTowerMachine(IMachineBlockEntity holder) {
-        this(holder, 1);
+    public DistillationTowerMachine(BlockEntityCreationInfo info) {
+        this(info, 1);
     }
 
     /**
@@ -58,14 +57,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
      * @param holder  BlockEntity holder
      * @param yOffset The Y difference between the controller and the first fluid output
      */
-    public DistillationTowerMachine(IMachineBlockEntity holder, int yOffset) {
-        super(holder);
+    public DistillationTowerMachine(BlockEntityCreationInfo info, int yOffset) {
+        super(info, DistillationTowerLogic::new);
         this.yOffset = yOffset;
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new DistillationTowerLogic(this);
     }
 
     @Override
@@ -76,15 +70,15 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        final int startY = getPos().getY() + yOffset;
+        final int startY = getBlockPos().getY() + yOffset;
         List<IMultiPart> parts = getParts().stream()
                 .filter(part -> PartAbility.EXPORT_FLUIDS.isApplicable(part.self().getBlockState().getBlock()))
-                .filter(part -> part.self().getPos().getY() >= startY)
+                .filter(part -> part.self().getBlockPos().getY() >= startY)
                 .toList();
 
         if (!parts.isEmpty()) {
             // Loop from controller y + offset -> the highest output hatch
-            int maxY = parts.get(parts.size() - 1).self().getPos().getY();
+            int maxY = parts.get(parts.size() - 1).self().getBlockPos().getY();
             fluidOutputs = new ObjectArrayList<>(maxY - startY);
             int outputIndex = 0;
             for (int y = startY; y <= maxY; ++y) {
@@ -94,7 +88,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 }
 
                 var part = parts.get(outputIndex);
-                if (part.self().getPos().getY() == y) {
+                if (part.self().getBlockPos().getY() == y) {
                     var handler = part.getRecipeHandlers().get(0).getCapability(FluidRecipeCapability.CAP)
                             .stream()
                             .filter(IFluidHandler.class::isInstance)
@@ -103,12 +97,12 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                             .orElse(VoidFluidHandler.INSTANCE);
                     addOutput(handler);
                     outputIndex++;
-                } else if (part.self().getPos().getY() > y) {
+                } else if (part.self().getBlockPos().getY() > y) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                 } else {
                     GTCEu.LOGGER.error(
                             "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
-                            getPos());
+                            getBlockPos());
                     onStructureInvalid();
                     return;
                 }
@@ -151,7 +145,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
         while (minMultiplier != maxMultiplier) {
             GTRecipe copy = modifyOutputs(recipe, ContentModifier.multiplier(multiplier));
-            boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE);
+            boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE, getVoidingMode());
             int[] bin = ParallelLogic.adjustMultiplier(filled, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
@@ -172,8 +166,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     public static class DistillationTowerLogic extends RecipeLogic {
 
         @Nullable
-        @Persisted
-        @DescSynced
+        @SaveField
+        @SyncToClient
         GTRecipe workingRecipe = null;
 
         public DistillationTowerLogic(IRecipeLogicMachine machine) {
@@ -218,7 +212,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 if (!result.isSuccess()) return result;
             }
 
-            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE)) {
+            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, machine.getVoidingMode())) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
                         .append(": ")
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
@@ -230,6 +224,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         private void updateWorkingRecipe(GTRecipe recipe) {
             if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
                 this.workingRecipe = recipe;
+                syncDataHolder.markClientSyncFieldDirty("workingRecipe");
                 return;
             }
 
@@ -241,6 +236,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 if (!(outputs.get(i) instanceof VoidFluidHandler)) trimmed.add(contents.get(i));
             }
             this.workingRecipe.outputs.put(FluidRecipeCapability.CAP, trimmed);
+            syncDataHolder.markClientSyncFieldDirty("workingRecipe");
         }
 
         @Override
@@ -261,7 +257,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
             }
 
-            if (applyFluidOutputs(recipe, FluidAction.EXECUTE)) {
+            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {
                 workingRecipe = null;
                 return ActionResult.SUCCESS;
             }
@@ -271,7 +267,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
         }
 
-        private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action) {
+        private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action, VoidingMode voidMode) {
             var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP)
                     .stream()
                     .map(Content::getContent)
@@ -297,7 +293,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 int filled = (handler instanceof NotifiableFluidTank nft) ?
                         nft.fillInternal(fluid, action) :
                         handler.fill(fluid, action);
-                if (filled != fluid.getAmount()) valid = false;
+                if (filled != fluid.getAmount() && !voidMode.canVoid(FluidRecipeCapability.CAP)) valid = false;
                 if (action.simulate() && !valid) break;
             }
             return valid;
