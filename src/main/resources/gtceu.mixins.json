@@ -61,6 +61,7 @@
         "TagManagerMixin",
         "TagValueAccessor",
         "client.ItemEntityMixin",
+        "dev.test.GameTestRegistryMixin",
         "emi.EmiRecipeFillerMixin",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
