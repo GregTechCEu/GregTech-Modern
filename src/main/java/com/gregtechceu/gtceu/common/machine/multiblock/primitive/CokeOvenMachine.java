@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.base.ITheme;
 import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
