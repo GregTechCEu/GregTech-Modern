@@ -243,7 +243,7 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
         replace(provider, "item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
         replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
-        provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click sto dismantle Machines");
+        provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
         provider.add("item.gtceu.tool.hv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
