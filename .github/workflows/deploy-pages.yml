@@ -2,13 +2,11 @@ name: Publish docs via GitHub Pages
 on:
   workflow_dispatch:
   push:
-    branches: [1.20.1]
+    branches: ["1.20.1", "1.21"]
     paths: ['docs/**']
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: 'pages'
@@ -24,33 +22,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: '1.20.1'
-          sparse-checkout: './docs'
+          ref: '${{ github.ref_name }}'
+          fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: pip install -r ./requirements.txt
-      - uses: actions/cache@v4
-        with:
-          key: 'mkdocs-cache'
-          path: './docs/.cache'
-      - name: Build static files
-        id: mkdocs
-        run: mkdocs build
-      - name: Upload pages as artifact
-        id: artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './docs/site/'
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Install packages
+        run: pip install -r ./requirements.txt
+      - name: Set git username and password
+        run: git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Deploy pages to gh-pages branch
+        run: mike deploy "${{ github.ref_name }}" --push
+      - name: Ensure 1.20.1 is the default version
+        run: mike set-default 1.20.1 --push
