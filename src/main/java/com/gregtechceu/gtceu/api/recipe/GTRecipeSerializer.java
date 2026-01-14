@@ -24,7 +24,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -36,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Function;
+
+import static com.gregtechceu.gtceu.api.codec.GTCodecUtils.quietExceptionCodec;
 
 @SuppressWarnings("DataFlowIssue")
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
@@ -285,28 +286,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             ).apply(instance, GTRecipe::new));
         }
         // spotless:on
-    }
-
-    private static <T> MapCodec<T> quietExceptionCodec(Codec<T> codec, String field, boolean isKubeLoaded) {
-        return codec.optionalFieldOf(field, null).flatXmap(
-                val -> {
-                    if (val != null) return DataResult.success(val);
-
-                    String msg = "Recipe " + field + " field is invalid!";
-                    if (isKubeLoaded) {
-                        throw quietException(msg);
-                    } else {
-                        GTCEu.LOGGER.error(msg);
-                    }
-                    return DataResult.error(() -> msg);
-                },
-                DataResult::success);
-    }
-
-    private static JsonParseException quietException(String msg) {
-        var ex = new JsonParseException(msg);
-        ex.setStackTrace(new StackTraceElement[0]);
-        return ex;
     }
 
     public static class KJSCallWrapper {
