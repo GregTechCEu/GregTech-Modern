@@ -24,6 +24,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
+import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -262,7 +263,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
             ).apply(instance, GTRecipe::new));
         } else {
@@ -279,11 +280,35 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     IngredientActionHolder.CODEC.listOf().optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
             ).apply(instance, GTRecipe::new));
         }
         // spotless:on
+    }
+
+    private static <T> MapCodec<T> quietExceptionCodec(Codec<T> codec, String field, boolean isKubeLoaded) {
+        return codec.optionalFieldOf(field, null).flatXmap(
+                val -> {
+                    if (val != null) return DataResult.success(val);
+
+                    String msg = "Recipe " + field + " field is invalid!";
+                    if (isKubeLoaded) {
+                        var ex = new com.google.gson.JsonParseException(msg);
+                        ex.setStackTrace(new StackTraceElement[0]);
+                        throw ex;
+                    } else {
+                        GTCEu.LOGGER.error(msg);
+                    }
+                    return DataResult.error(() -> msg);
+                },
+                DataResult::success);
+    }
+
+    private static JsonParseException quietException(String msg) {
+        var ex = new JsonParseException(msg);
+        ex.setStackTrace(new StackTraceElement[0]);
+        return ex;
     }
 
     public static class KJSCallWrapper {
