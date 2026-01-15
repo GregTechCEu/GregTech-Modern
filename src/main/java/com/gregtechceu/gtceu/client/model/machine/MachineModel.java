@@ -287,6 +287,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MachineRenderState renderState,
                                 @Nullable BlockState blockState, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        if (!modelsByState.containsKey(renderState)) {
+            renderState = definition.defaultRenderState();
+        }
         if (multiPart != null) {
             quads.addAll(multiPart.getMachineQuads(definition, renderState, blockState,
                     side, rand, modelData, renderType));
