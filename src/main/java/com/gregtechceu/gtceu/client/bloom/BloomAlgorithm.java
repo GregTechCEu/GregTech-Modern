@@ -3,15 +3,11 @@ package com.gregtechceu.gtceu.client.bloom;
 public enum BloomAlgorithm {
 
     /**
-     * Simple Gaussian Blur
-     */
-    GAUSSIAN,
-    /**
-     * Unity Bloom
+     * Unity Bloom (rescale)
      */
     UNITY,
     /**
-     * Unreal Bloom
+     * Unreal Bloom (gaussian blur)
      */
     UNREAL,
     /**

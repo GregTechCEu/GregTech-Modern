@@ -26,7 +26,7 @@ public class GTShaders {
     public static RenderTarget BLOOM_TARGET = null;
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
-        if (!innerAllowedShader()) {
+        if (!earlyAllowedShader()) {
             return;
         }
 
@@ -41,9 +41,6 @@ public class GTShaders {
         ResourceLocation id;
 
         switch (BLOOM_TYPE) {
-            case GAUSSIAN -> {
-                id = GTCEu.id("shaders/post/bloom_gaussian.json");
-            }
             case UNITY -> {
                 id = GTCEu.id("shaders/post/bloom_unity.json");
             }
@@ -79,10 +76,10 @@ public class GTShaders {
     }
 
     public static boolean allowedShader() {
-        return BLOOM_CHAIN != null && BLOOM_TARGET != null && innerAllowedShader();
+        return BLOOM_CHAIN != null && BLOOM_TARGET != null && earlyAllowedShader();
     }
 
-    private static boolean innerAllowedShader() {
+    private static boolean earlyAllowedShader() {
         return ConfigHolder.INSTANCE.client.shader.enableBloom &&
                 !GTCEu.isModLoaded(GTValues.MODID_OPTIFINE) &&
                 !(GTCEu.Mods.isIrisOculusLoaded() && IrisCallWrapper.isShaderActive());

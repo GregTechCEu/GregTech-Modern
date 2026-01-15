@@ -38,7 +38,9 @@
       "intarget": "final",
       "outtarget": "gtceu:filter_temp",
       "auxtargets": [
-        { "id": "minecraft:main", "name": "MainSampler" }
+        { "id": "final:depth", "name": "DiffuseDepthSampler" },
+        { "id": "minecraft:main", "name": "MainSampler" },
+        { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
       ]
     },
     {

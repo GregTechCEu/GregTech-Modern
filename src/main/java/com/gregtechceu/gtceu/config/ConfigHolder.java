@@ -834,9 +834,8 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Bloom Algorithm",
-                    "GAUSSIAN - Simple Gaussian Blur Bloom (Fast) NYI: WILL ERROR",
-                    "UNITY - Unity-like Bloom",
-                    "UNREAL - Unreal-like Bloom",
+                    "UNITY - Unity-like Bloom (rescale)",
+                    "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "Default: UNREAL" })
             public BloomAlgorithm bloomAlgorithm = BloomAlgorithm.UNREAL;
 
