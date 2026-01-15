@@ -70,7 +70,6 @@ dependencies {
     // CC: Tweaked
     modCompileOnly(forge.cc.tweaked.core.api)
     modCompileOnly(forge.cc.tweaked.forge.api)
-    //modLocalRuntime(forge.cc.tweaked.forge.impl)
 
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
@@ -94,8 +93,8 @@ dependencies {
     modExtraLocalRuntime(forge.javd)
     modExtraLocalRuntime(forge.trenzalore)
     modExtraLocalRuntime(forge.curios)
+    modExtraLocalRuntime(forge.cc.tweaked.forge.impl)
 //    modExtraLocalRuntime(forge.worldstripper)
-//    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
     modExtraLocalRuntime(forge.bundles.kjs)
 
