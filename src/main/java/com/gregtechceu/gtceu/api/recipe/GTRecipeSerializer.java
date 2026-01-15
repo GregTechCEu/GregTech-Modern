@@ -36,6 +36,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.gregtechceu.gtceu.api.codec.GTCodecUtils.quietExceptionCodec;
+
 @SuppressWarnings("DataFlowIssue")
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
@@ -262,7 +264,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
             ).apply(instance, GTRecipe::new));
         } else {
@@ -279,7 +281,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     IngredientActionHolder.CODEC.listOf().optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
             ).apply(instance, GTRecipe::new));
         }
