@@ -43,7 +43,7 @@ public class ImageCache {
                     if (!allowedProtocol) return NULL_MARKER;
                     boolean allowedDomain = singleplayer;
                     for (String domain : ConfigHolder.INSTANCE.gameplay.allowedImageDomains) {
-                        if (url.getHost().equals(domain)) {
+                        if (url.getHost().equalsIgnoreCase(domain)) {
                             allowedDomain = true;
                             break;
                         }
@@ -53,13 +53,13 @@ public class ImageCache {
                     downloading = true;
 
                     try (InputStream stream = url.openStream()) {
-                        return stream.readAllBytes();
+                        byte[] image = stream.readAllBytes();
+                        GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
+                        return image;
                     } catch (IOException e) {
                         GTCEu.LOGGER.error("Could not load image {}", url, e);
-                        downloading = false;
                         return NULL_MARKER;
                     } finally {
-                        GTCEu.LOGGER.debug("Downloaded image {}! Executing callback", url);
                         downloading = false;
                     }
                 } catch (MalformedURLException e) {
