@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
@@ -37,17 +36,21 @@ import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ToolEventHandlers {
 
     /**
      * Handles returning broken stacks for tools
      */
-    public static void onPlayerDestroyItem(ItemStack original, InteractionHand hand, Player player) {
+    @SubscribeEvent
+    public static void onPlayerDestroyItem(@NotNull PlayerDestroyItemEvent event) {
+        ItemStack original = event.getOriginal();
+        InteractionHand hand = event.getHand();
+        Player player = event.getEntity();
+
         Item item = original.getItem();
         if (item instanceof IGTTool def) {
             ItemStack brokenStack = def.getToolStats().getBrokenStack();
@@ -78,24 +81,25 @@ public class ToolEventHandlers {
         }
     }
 
-    public static InteractionResult onPlayerEntityInteract(Player player, InteractionHand hand, Entity target) {
-        ItemStack itemStack = player.getItemInHand(hand);
-        Item item = itemStack.getItem();
+    /**
+     * Handle item frame power unit duping
+     */
+    @SubscribeEvent
+    public static void onPlayerEntityInteract(@NotNull PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        InteractionHand hand = event.getHand();
+        ItemStack stack = player.getItemInHand(hand);
 
-        /*
-         * Handle item frame power unit duping
-         */
-        if (item instanceof IGTTool def) {
-            if (target instanceof ItemFrame itemFrame) {
-                ItemStack brokenStack = def.getToolStats().getBrokenStack();
-                if (!brokenStack.isEmpty()) {
-                    itemFrame.interact(player, hand);
-
-                    return InteractionResult.SUCCESS;
-                }
-            }
+        if (!(stack.getItem() instanceof IGTTool toolItem) || !(event.getTarget() instanceof ItemFrame itemFrame)) {
+            return;
         }
-        return InteractionResult.PASS;
+        ItemStack brokenStack = toolItem.getToolStats().getBrokenStack();
+        if (!brokenStack.isEmpty()) {
+            itemFrame.interact(player, hand);
+
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+        }
     }
 
     /**
@@ -107,7 +111,7 @@ public class ToolEventHandlers {
                                                  BlockPos pos, BlockState state, boolean isSilkTouch,
                                                  int fortuneLevel, List<ItemStack> drops,
                                                  float dropChance) {
-        if (!tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
+        if (!tool.hasTag() || !(tool.getItem() instanceof IGTTool toolItem)) {
             return drops;
         }
         if (!isSilkTouch) {
@@ -120,9 +124,10 @@ public class ToolEventHandlers {
         Block block = state.getBlock();
         if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
             Item iceBlock = block.asItem();
-            if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
-                drops.add(new ItemStack(iceBlock));
-                level.getServer().tell(new TickTask(0, () -> {
+            if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
+                drops.add(iceBlock.getDefaultInstance());
+
+                level.getServer().execute(() -> {
                     BlockState oldState = level.getBlockState(pos);
                     if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
                         // I think it may be a waterlogged block, although the probability is very small
@@ -131,28 +136,25 @@ public class ToolEventHandlers {
                                 Blocks.AIR.defaultBlockState();
                         level.setBlockAndUpdate(pos, newState);
                     }
-                }));
-                ((IGTTool) tool.getItem()).playSound(player);
+                });
+                toolItem.playSound(player);
             }
         }
         if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
             drops = new ArrayList<>(drops);
+
             Iterator<ItemStack> dropItr = drops.iterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
                 ItemEntity drop = new ItemEntity(EntityType.ITEM, level);
                 drop.setItem(dropStack);
 
-                if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
+                if (ForgeEventFactory.onItemPickup(drop, player) == -1 || player.addItem(dropStack)) {
                     dropItr.remove();
                 }
             }
         }
         return drops;
-    }
-
-    public static int fireItemPickupEvent(ItemEntity drop, Player player) {
-        return ForgeEventFactory.onItemPickup(drop, player);
     }
 
     /**
@@ -160,65 +162,41 @@ public class ToolEventHandlers {
      * Electric tools can still be repaired with ingots in the anvil, but electric tools cannot
      * be combined with other GT tools, electric or otherwise.
      */
-    public static boolean onAnvilUpdateEvent(ItemStack left, ItemStack right) {
-        if (left.getItem() instanceof IGTTool leftTool && right.getItem() instanceof IGTTool rightTool) {
-            if (leftTool.getToolMaterial(left) != rightTool.getToolMaterial(right)) {
-                return false;
-            }
-            if (leftTool.isElectric() || rightTool.isElectric()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @SubscribeEvent
-    public static void onPlayerDestroyItem(@NotNull PlayerDestroyItemEvent event) {
-        ToolEventHandlers.onPlayerDestroyItem(event.getOriginal(), event.getHand(), event.getEntity());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerEntityInteract(@NotNull PlayerInteractEvent.EntityInteract event) {
-        InteractionResult result = ToolEventHandlers.onPlayerEntityInteract(event.getEntity(), event.getHand(),
-                event.getTarget());
-        if (result != InteractionResult.PASS) {
-            event.setCanceled(true);
-            event.setCancellationResult(result);
-        }
-    }
-
     @SubscribeEvent
     public static void onAnvilUpdateEvent(AnvilUpdateEvent event) {
-        if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
-            event.setCanceled(true);
-        }
-    }
+        ItemStack left = event.getLeft();
+        ItemStack right = event.getRight();
 
-    public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
-                                                              Collection<ItemEntity> drops) {
-        if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
-        CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
-
-        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
-            Iterator<ItemEntity> dropItr = drops.iterator();
-
-            while (dropItr.hasNext()) {
-                ItemEntity drop = dropItr.next();
-                ItemStack dropStack = drop.getItem();
-
-                if (fireItemPickupEvent(drop, player) == -1 || player.addItem(dropStack)) {
-                    dropItr.remove();
-                }
+        if (left.getItem() instanceof IGTTool leftTool && right.getItem() instanceof IGTTool rightTool) {
+            if (leftTool.isElectric() || rightTool.isElectric()) {
+                event.setCanceled(true);
             }
         }
-        return drops;
     }
 
     @SubscribeEvent
     public static void onPlayerKilledEntity(LivingDropsEvent event) {
         Entity entity = event.getSource().getEntity();
-        if (entity instanceof Player player) {
-            ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+        ItemStack tool = player.getMainHandItem();
+        if (!ToolHelper.hasBehaviorsTag(tool)) {
+            return;
+        }
+
+        CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
+        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
+            Iterator<ItemEntity> dropItr = event.getDrops().iterator();
+
+            while (dropItr.hasNext()) {
+                ItemEntity drop = dropItr.next();
+                ItemStack dropStack = drop.getItem();
+
+                if (ForgeEventFactory.onItemPickup(drop, player) == -1 || player.addItem(dropStack)) {
+                    dropItr.remove();
+                }
+            }
         }
     }
 }

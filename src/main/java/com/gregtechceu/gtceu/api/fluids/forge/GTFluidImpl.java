@@ -4,15 +4,18 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.extensions.IForgeFluid;
 import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,6 +36,12 @@ public abstract class GTFluidImpl extends GTFluid implements IForgeFluid {
     @Override
     public FluidType getFluidType() {
         return fluidType.get();
+    }
+
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        return fluidType != null && fluidType.get() != null ?
+                Optional.ofNullable(fluidType.get().getSound(SoundActions.BUCKET_FILL)) : Optional.empty();
     }
 
     public static class Source extends GTFluidImpl {

@@ -2,10 +2,14 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -19,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,6 +70,24 @@ public interface ICoverableRenderer {
                 // noinspection DataFlowIssue
                 cover.getCoverRenderer().get()
                         .renderCover(quads, side, rand, cover, pos, level, modelData, renderType);
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack,
+                                     MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        ICoverable coverable = machine.getCoverContainer();
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = coverable.getCoverAtSide(face);
+            IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;
+            if (renderer != null) {
+                poseStack.pushPose();
+                RenderUtil.moveToFace(poseStack, .5f, .5f, .5f, face);
+                RenderUtil.rotateToFace(poseStack, face, Direction.NORTH);
+                poseStack.translate(-.5f, -.5f, .01f);
+                renderer.render(machine, face, partialTick, poseStack, buffer, packedLight, packedOverlay);
+                poseStack.popPose();
             }
         }
     }

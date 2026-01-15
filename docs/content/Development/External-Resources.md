@@ -16,9 +16,6 @@ as other resources you might find helpful.
     - [Forge-Wiki](https://docs.minecraftforge.net/en/1.20.x/)  
     - [NeoForge-Wiki](https://docs.neoforged.net/)
 
-!!! link "Official Fabric Docs"
-    [Fabric-Wiki :material-arrow-right: Mod Developer Docs](https://fabricmc.net/wiki/tutorial:start)
-
 !!! link "Other Modding Docs"
     - [Forge Community-Wiki](https://forge.gemwire.uk/wiki/Main_Page)
     - [MCJty's Modding Wiki](https://www.mcjty.eu/docs/intro)

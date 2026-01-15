@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,7 +22,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
     protected FluidStack fluidResearchStack = FluidStack.EMPTY;
     protected ItemStack dataStack;
     protected String researchId;
-    protected int eut;
+    protected EnergyStack eut;
 
     public T researchStack(@NotNull ItemStack researchStack) {
         if (!researchStack.isEmpty()) {
@@ -48,14 +50,19 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         return (T) this;
     }
 
-    public T EUt(int eut) {
-        this.eut = eut;
+    public T EUt(long eut) {
+        return EUt(eut, 1);
+    }
+
+    public T EUt(long eut, long amperage) {
+        this.eut = new EnergyStack(eut, amperage);
         return (T) this;
     }
 
-    protected void validateResearchItem() {
+    protected void validateResearchItem(ResourceLocation recipeId) {
         if (itemResearchStack.isEmpty() && fluidResearchStack.isEmpty()) {
-            throw new IllegalArgumentException("Research recipe must have an item or fluid stack!");
+            throw new IllegalArgumentException(String.format(
+                    "Research recipe must have an item or fluid stack, id: %s", recipeId));
         }
 
         if (researchId == null) {
@@ -85,7 +92,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
     public abstract ItemStack getDefaultDataItem();
 
-    public abstract GTRecipeBuilder.ResearchRecipeEntry build();
+    public abstract GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId);
 
     @NoArgsConstructor
     public static class ScannerRecipeBuilder extends ResearchRecipeBuilder<ScannerRecipeBuilder> {
@@ -106,10 +113,10 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         @Override
-        public GTRecipeBuilder.ResearchRecipeEntry build() {
-            validateResearchItem();
+        public GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId) {
+            validateResearchItem(recipeId);
             if (duration <= 0) duration = DEFAULT_SCANNER_DURATION;
-            if (eut <= 0) eut = DEFAULT_SCANNER_EUT;
+            if (eut == null || eut.voltage() <= 0) eut = new EnergyStack(DEFAULT_SCANNER_EUT, 1);
             return new GTRecipeBuilder.ResearchRecipeEntry(researchId, itemResearchStack, fluidResearchStack, dataStack,
                     duration, eut, 0);
         }
@@ -144,8 +151,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         @Override
-        public GTRecipeBuilder.ResearchRecipeEntry build() {
-            validateResearchItem();
+        public GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId) {
+            validateResearchItem(recipeId);
             if (cwut <= 0 || totalCWU <= 0) {
                 throw new IllegalArgumentException("CWU/t and total CWU must both be set, and non-zero!");
             }
@@ -156,7 +163,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
             // "duration" is the total CWU/t.
             // Not called duration in API because logic does not treat it like normal duration.
             int duration = totalCWU;
-            if (eut <= 0) eut = DEFAULT_STATION_EUT;
+            if (eut == null || eut.voltage() <= 0) eut = new EnergyStack(DEFAULT_STATION_EUT, 1);
 
             return new GTRecipeBuilder.ResearchRecipeEntry(researchId, itemResearchStack, fluidResearchStack, dataStack,
                     duration, eut, cwut);

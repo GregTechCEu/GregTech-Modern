@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -47,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
@@ -111,7 +113,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
      *
      * @param itemStack the item cover was attached from
      */
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         attachItem = itemStack.copy();
         attachItem.setCount(1);
     }
@@ -217,6 +219,10 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     @Nullable
     public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
         return null;
+    }
+
+    public Supplier<IDynamicCoverRenderer> getDynamicRenderer() {
+        return () -> null;
     }
 
     //////////////////////////////////////

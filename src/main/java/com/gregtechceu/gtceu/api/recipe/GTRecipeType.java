@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -30,6 +31,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,8 +81,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeCategory category;
     @Getter
     private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
+    private final RecipeDB db = new RecipeDB();
+    @ApiStatus.Internal
     @Getter
-    private final GTRecipeLookup lookup = new GTRecipeLookup(this);
+    private final RecipeAdditionHandler additionHandler = new RecipeAdditionHandler(db);
     @Setter
     @Getter
     private boolean offsetVoltageText = false;
@@ -90,6 +94,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
     @Getter
     private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
+    @Getter
+    private int minRecipeConditions = 0;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -172,6 +178,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
+    public void setMinRecipeConditions(int n) {
+        minRecipeConditions = Math.max(minRecipeConditions, n);
+    }
+
     /**
      *
      * @param recipeLogic A function which is passed the normal findRecipe() result. Returns null if no valid recipe for
@@ -189,7 +199,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
         if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
-        var iterator = getLookup().getRecipeIterator(holder, canHandle);
+        var iterator = db.iterator(holder, canHandle);
+        if (iterator == null) {
+            return Collections.emptyIterator();
+        }
         boolean any = false;
         while (iterator.hasNext()) {
             GTRecipe recipe = iterator.next();
@@ -313,6 +326,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
         return Collections.unmodifiableSet(categoryMap.getOrDefault(category, Set.of()));
+    }
+
+    public @NotNull RecipeDB db() {
+        return db;
     }
 
     public interface ICustomRecipeLogic {

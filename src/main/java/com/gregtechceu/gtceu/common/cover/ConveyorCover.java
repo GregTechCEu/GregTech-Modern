@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -36,7 +37,9 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -280,7 +283,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -312,7 +315,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {
@@ -420,6 +423,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         public int totalCount;
     }
 
+    public boolean shouldRespectDistributionMode() {
+        return ((io == IO.IN) ?
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()
+                        .relative(attachedSide)) instanceof ItemPipeBlockEntity));
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -431,9 +441,16 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
 
+        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
+                DistributionMode.values(), distributionMode, this::setDistributionMode);
+
+        distributionSelector.setVisible(shouldRespectDistributionMode());
+        group.addWidget(distributionSelector);
+
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {
                     setIo(value ? IO.IN : IO.OUT);
+                    distributionSelector.setVisible(shouldRespectDistributionMode());
                     ioModeSwitch.setHoverTooltips(
                             LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
                 })
@@ -445,11 +462,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
                         LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
         group.addWidget(ioModeSwitch);
 
-        if (shouldDisplayDistributionMode()) {
-            group.addWidget(new EnumSelectorWidget<>(146, 67, 20, 20,
-                    DistributionMode.VALUES, distributionMode, this::setDistributionMode));
-        }
-
         group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
                 ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
                 .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
@@ -460,12 +472,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         buildAdditionalUI(group);
 
         return group;
-    }
-
-    private boolean shouldDisplayDistributionMode() {
-        return coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity ||
-                coverHolder.getLevel()
-                        .getBlockEntity(coverHolder.getPos().relative(attachedSide)) instanceof ItemPipeBlockEntity;
     }
 
     @NotNull
@@ -508,10 +514,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return stack;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+            if (!filterHandler.test(stack)) {
                 return stack;
             }
             return super.insertItem(slot, stack, simulate);
@@ -520,17 +531,39 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return ItemStack.EMPTY;
-            }
-            if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true);
-                if (result.isEmpty() || !filterHandler.test(result)) {
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false);
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
             }
-            return super.extractItem(slot, amount, simulate);
+            ItemStack result = super.extractItem(slot, amount, true);
+            if (result.isEmpty() || !filterHandler.test(result)) {
+                return ItemStack.EMPTY;
+            }
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferRate", getTransferRate());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("distributionMode", getDistributionMode().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferRate(tag.getInt("transferRate"));
+        setIo(IO.values()[tag.getInt("io")]);
+        setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
     }
 }

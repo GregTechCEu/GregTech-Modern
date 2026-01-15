@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -115,7 +116,7 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
     }
 
@@ -212,5 +213,14 @@ public abstract class RecipeCapability<T> {
 
     public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
+    }
+
+    /**
+     * Should this RecipeCapability bypass distinct checks?
+     * E.g. should this bus be added to all recipe checks on a multi, even distinct ones like ME Pattern buffers.
+     * for example: energy hatches, soul hatches, other "global per multi" hatches.
+     */
+    public boolean shouldBypassDistinct() {
+        return true;
     }
 }

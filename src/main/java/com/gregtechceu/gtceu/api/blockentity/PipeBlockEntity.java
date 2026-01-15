@@ -34,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +62,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
                                      extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IEnhancedManaged,
-                                     IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighlight, IToolable {
+                                     IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighlight, IToolable,
+                                     ICopyable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
     @Getter
@@ -452,5 +454,20 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void load(CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
         super.load(tag);
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        return ICopyable.super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getItemsRequiredToPaste() {
+        return coverContainer.getItemsRequiredToPaste();
     }
 }

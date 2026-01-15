@@ -4,9 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
+import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -49,28 +52,34 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                     // do not show energy usage on machines that do not use energy
                     return;
                 }
-                String formatted = FormattingUtil.formatNumbers(EUt.getTotalEU()) + TextStyleClass.INFO;
                 Component text = null;
 
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
+                    long MBt = 0;
+                    if (machine instanceof SimpleSteamMachine ssm) {
+                        MBt = (long) Math.ceil(EUt.getTotalEU() * ssm.getConversionRate());
+                    } else if (machine instanceof SteamParallelMultiblockMachine smb) {
+                        MBt = (long) Math.ceil(EUt.getTotalEU() * smb.getConversionRate());
+                    }
                     if (machine instanceof SteamMachine) {
-                        text = Component.translatable("gtceu.jade.fluid_use", formatted)
+                        text = Component.translatable("gtceu.jade.fluid_use",
+                                FormattingUtil.formatNumbers(MBt) + TextStyleClass.INFO)
                                 .withStyle(ChatFormatting.GREEN);
                     }
                 }
 
                 if (text == null) {
-                    var tier = GTUtil.getTierByVoltage(EUt.voltage());
+                    var tier = GTUtil.getTierByVoltage(RecipeLogicProvider.getVoltage(capability));
                     String minAmperage = FormattingUtil
                             .formatNumber2Places((float) (EUt.getTotalEU()) / GTValues.V[tier]) + TextStyleClass.INFO;
 
                     text = Component.translatable("gtceu.jade.amperage_use", minAmperage).withStyle(ChatFormatting.RED)
                             .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN))
-                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
+                            .append(GTValues.VNF[tier])
                             .append(Component.translatable("gtceu.universal.padded_parentheses",
                                     (Component.translatable("gtceu.recipe.eu.total",
-                                            formatted)))
+                                            FormattingUtil.formatNumbers(EUt.getTotalEU()) + TextStyleClass.INFO)))
                                     .withStyle(ChatFormatting.WHITE));
                 }
 

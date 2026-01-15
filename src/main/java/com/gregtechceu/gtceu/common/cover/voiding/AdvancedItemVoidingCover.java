@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -15,6 +16,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -73,7 +76,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack is = handler.getStackInSlot(slot);
-                if (!is.isEmpty() && ItemStack.isSameItemSameTags(is, itemInfo.itemStack)) {
+                if (!is.isEmpty() && GTUtil.isSameItemSameTags(is, itemInfo.itemStack)) {
                     ItemStack extracted = handler.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {
@@ -164,5 +167,19 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalVoidingLimit());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        globalVoidingLimit = tag.getInt("voidSize");
+        super.pasteConfig(player, tag);
     }
 }

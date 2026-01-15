@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -66,23 +67,32 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 var function = recipe.getType().getChanceFunction();
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
+                int runs = recipe.getTotalRuns();
 
                 ListTag itemTags = new ListTag();
                 for (var item : itemContents) {
-                    var itemTag = new CompoundTag();
+                    CompoundTag itemTag;
                     if (item.content instanceof IntProviderIngredient provider) {
-                        // don't bother rolling output
-                        itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
+                        // don't roll for output but do copy for chance and batch
+                        IntProviderIngredient chanced = provider;
+                        if (item.chance < item.maxChance) {
+                            double countD = (double) runs *
+                                    function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                            chanced = (IntProviderIngredient) ItemRecipeCapability.CAP.copyWithModifier(provider,
+                                    ContentModifier.multiplier(countD));
+                        }
+                        itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, chanced.toJson());
                     } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
                         if (stacks.length == 0 || stacks[0].isEmpty()) continue;
                         var stack = stacks[0];
+                        itemTag = new CompoundTag();
                         GTUtil.saveItemStack(stack, itemTag);
                         if (item.chance < item.maxChance) {
                             int count = stack.getCount();
-                            double countD = (double) count * recipe.parallels *
+                            double countD = (double) count * runs *
                                     function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                            count = countD < 1 ? 1 : (int) Math.round(countD);
+                            count = Math.max(1, (int) Math.round(countD));
                             itemTag.putInt("Count", count);
                         }
                     }
@@ -95,22 +105,30 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                 ListTag fluidTags = new ListTag();
                 for (var fluid : fluidContents) {
-                    var fluidTag = new CompoundTag();
+                    CompoundTag fluidTag;
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
                         // don't bother rolling output for nothing
-                        fluidTag = provider.toNBT();
+                        IntProviderFluidIngredient chanced = provider;
+                        if (fluid.chance < fluid.maxChance) {
+                            double countD = (double) runs *
+                                    function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                            chanced = (IntProviderFluidIngredient) FluidRecipeCapability.CAP.copyWithModifier(provider,
+                                    ContentModifier.multiplier(countD));
+                        }
+                        fluidTag = chanced.toNBT();
                     } else {
                         FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
                         if (stacks.length == 0) continue;
                         if (stacks[0].isEmpty()) continue;
                         var stack = stacks[0];
+                        fluidTag = new CompoundTag();
                         stack.writeToNBT(fluidTag);
 
                         if (fluid.chance < fluid.maxChance) {
                             int amount = stacks[0].getAmount();
-                            double amountD = (double) amount * recipe.parallels *
+                            double amountD = (double) amount * runs *
                                     function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                            amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                            amount = Math.max(1, (int) Math.round(amountD));
                             fluidTag.putInt("Amount", amount);
                         }
                     }
@@ -177,21 +195,23 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         IElementHelper helper = iTooltip.getElementHelper();
         for (Ingredient itemOutput : outputItems) {
             if (itemOutput != null && !itemOutput.isEmpty()) {
-                ItemStack item = itemOutput.getItems()[0];
-                int count = item.getCount();
-                item.setCount(1);
-                iTooltip.add(helper.smallItem(item));
+                ItemStack item;
                 MutableComponent text = CommonComponents.space();
                 if (itemOutput instanceof IntProviderIngredient provider) {
+                    item = provider.getInner().getItems()[0];
                     text = text.append(Component.translatable("gtceu.gui.content.range",
                             String.valueOf(provider.getCountProvider().getMinValue()),
                             String.valueOf(provider.getCountProvider().getMaxValue())));
                 } else {
-                    text.append(String.valueOf(count));
+                    item = itemOutput.getItems()[0];
+                    text.append(String.valueOf(item.getCount()));
+                    item.setCount(1);
                 }
                 text.append(Component.translatable("gtceu.gui.content.times_item",
                         getItemName(item))
                         .withStyle(ChatFormatting.WHITE));
+
+                iTooltip.add(helper.smallItem(item));
                 iTooltip.append(text);
             }
         }
@@ -200,25 +220,29 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     private void addFluidTooltips(ITooltip iTooltip, List<FluidIngredient> outputFluids) {
         for (FluidIngredient fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
-                iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
+                FluidStack stack;
                 MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
+                    stack = provider.getInner().getStacks()[0];
                     text.append(Component.translatable("gtceu.gui.content.range",
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
                 } else {
-                    text.append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
+                    stack = fluidOutput.getStacks()[0];
+                    text.append(FluidTextHelper.getUnicodeMillibuckets(stack.getAmount(), true));
                 }
                 text.append(CommonComponents.space())
-                        .append(getFluidName(fluidOutput.getStacks()[0]))
+                        .append(getFluidName(stack))
                         .withStyle(ChatFormatting.WHITE);
+
+                iTooltip.add(GTElementHelper.smallFluid(getFluid(stack)));
                 iTooltip.append(text);
             }
         }
     }
 
     private Component getItemName(ItemStack stack) {
-        return ComponentUtils.wrapInSquareBrackets(stack.getItem().getDescription()).withStyle(ChatFormatting.WHITE);
+        return stack.getDisplayName().copy().withStyle(ChatFormatting.WHITE);
     }
 
     private Component getFluidName(FluidStack stack) {

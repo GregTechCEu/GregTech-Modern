@@ -46,6 +46,7 @@ public class GTCraftingComponents {
     public static CraftingComponent MOTOR;
     public static CraftingComponent ROTOR;
     public static CraftingComponent SENSOR;
+    public static CraftingComponent SENSOR_EMITTER_GEM;
     public static CraftingComponent GRINDER;
     public static CraftingComponent SAWBLADE;
     public static CraftingComponent PISTON;
@@ -511,6 +512,16 @@ public class GTCraftingComponents {
                     .add(UXV, GTItems.SENSOR_UXV.asStack())
                     .add(OpV, GTItems.SENSOR_OpV.asStack());
         }
+
+        SENSOR_EMITTER_GEM = CraftingComponent.of("sensor_emitter_gem", gem, Quartzite)
+                .add(LV, gem, Quartzite)
+                .add(MV, gemFlawless, Emerald)
+                .add(HV, gem, EnderEye)
+                .add(EV, GTItems.QUANTUM_EYE.asStack())
+                .add(IV, GTItems.QUANTUM_STAR.asStack())
+                .add(LuV, GTItems.QUANTUM_STAR.asStack())
+                .add(ZPM, GTItems.QUANTUM_STAR.asStack())
+                .add(UV, GTItems.GRAVI_STAR.asStack());
 
         CONVEYOR = CraftingComponent.of("conveyor", GTItems.CONVEYOR_MODULE_LV.asStack())
                 .add(LV, GTItems.CONVEYOR_MODULE_LV.asStack())

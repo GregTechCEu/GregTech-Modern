@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,6 +25,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.Collections;
 import java.util.List;
@@ -106,16 +108,36 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
         VertexConsumer consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
         for (RelativeDirection face : this.drawFaces) {
-            Direction dir = face.getRelative(full.getFrontFacing(), full.getUpwardsFacing(), full.isFlipped());
+            poseStack.pushPose();
+            Matrix4f pose = poseStack.last().pose();
+
+            Direction dir = face.getRelative(full.getFrontFacing(), full.getUpwardsFacing(),
+                    full.isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
-            fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), poseStack, consumer, cachedFluid,
+            fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
                     RenderUtil.FluidTextureType.STILL, packedOverlay, full.getPos());
+            poseStack.popPose();
         }
     }
 
     private Optional<Fluid> getFixedFluid() {
         if (fixedFluid) return Optional.ofNullable(cachedFluid);
         else return Optional.empty();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(IFluidRenderMulti machine) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(IFluidRenderMulti machine) {
+        AABB box = super.getRenderBoundingBox(machine);
+        var offsets = machine.getFluidOffsets();
+        for (var offset : offsets) {
+            box = box.minmax(new AABB(offset));
+        }
+        return box.inflate(getViewDistance());
     }
 }

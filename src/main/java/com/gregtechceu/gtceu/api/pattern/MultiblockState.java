@@ -63,14 +63,14 @@ public class MultiblockState {
         this.matchContext = new PatternMatchContext();
     }
 
-    protected void clean() {
+    public void clean() {
         this.matchContext.reset();
         this.globalCount = new Object2IntOpenHashMap<>();
         this.layerCount = new Object2IntOpenHashMap<>();
         cache = new LongOpenHashSet();
     }
 
-    protected boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
+    public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
         this.pos = posIn;
         this.blockState = null;
         this.tileEntity = null;
@@ -172,6 +172,11 @@ public class MultiblockState {
                 }
             } else {
                 IMultiController controller = getController();
+                if (controller == null && error == UNLOAD_ERROR) {
+                    if (!serverLevel.isLoaded(controllerPos)) {
+                        GTCEu.LOGGER.info("Controller not loaded, pos {}", controllerPos);
+                    }
+                }
                 if (controller != null) {
                     if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
                         LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());

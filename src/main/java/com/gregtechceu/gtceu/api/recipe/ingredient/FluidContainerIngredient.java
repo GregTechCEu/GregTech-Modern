@@ -84,7 +84,8 @@ public class FluidContainerIngredient extends Ingredient {
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null || stack.isEmpty())
             return false;
-        return FluidUtil.getFluidContained(stack).map(fluid::test).orElse(false) &&
+        return FluidUtil.getFluidContained(stack).map((s) -> fluid.test(s) && s.getAmount() >= fluid.getAmount())
+                .orElse(false) &&
                 FluidUtil.tryEmptyContainer(stack, VoidFluidHandler.INSTANCE, fluid.getAmount(), null, false)
                         .isSuccess();
     }

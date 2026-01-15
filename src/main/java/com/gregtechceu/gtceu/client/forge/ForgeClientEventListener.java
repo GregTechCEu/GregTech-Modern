@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
@@ -25,7 +27,11 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -129,6 +135,42 @@ public class ForgeClientEventListener {
             ResourceLocation cape = CapeRegistry.getPlayerCapeTexture(uuid);
             playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape == null ? defaultPlayerCape : cape);
         }
+    }
+
+    @SubscribeEvent
+    public static void updateFOV(ComputeFovModifierEvent event) {
+        Player player = event.getPlayer();
+
+        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
+
+        float multi = 1;
+        var state = player.level().getBlockState(player.getOnPos());
+
+        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+
+        multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
+        event.setNewFovModifier(event.getNewFovModifier() * multi);
+    }
+
+    private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
+        double base = attrib.getBaseValue();
+
+        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.ADDITION)) {
+            base += mod.getAmount();
+        }
+
+        double applied = base;
+        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_BASE)) {
+            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
+            applied += base * mod.getAmount();
+        }
+
+        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_TOTAL)) {
+            applied *= 1 + mod.getAmount();
+        }
+
+        return attrib.getAttribute().sanitizeValue(applied);
     }
 
     @SubscribeEvent

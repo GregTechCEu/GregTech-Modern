@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     @Override
     protected int hash() {
-        return ItemStackHashStrategy.comparingAllButCount().hashCode(stack) * 31;
+        return ItemStackHashStrategy.comparingItem().hashCode(stack) * 31;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
+                    return GTUtil.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
                             ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
                 } else {
                     this.nbtIngredient.test(other.stack);
