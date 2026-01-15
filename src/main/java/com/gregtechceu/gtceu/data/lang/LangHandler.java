@@ -241,6 +241,7 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
         replace(provider, "item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
         replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        replace(provider, "item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
         replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
         provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
@@ -251,6 +252,10 @@ public class LangHandler {
         provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.hv_screwdriver", "%s Screwdriver (HV)");
+        provider.add("item.gtceu.tool.hv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.iv_screwdriver", "%s Screwdriver (IV)");
+        provider.add("item.gtceu.tool.iv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
@@ -1230,6 +1235,7 @@ public class LangHandler {
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
+        provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
