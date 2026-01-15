@@ -235,7 +235,8 @@ public class BlockHighlightRenderer {
         RenderUtil.rotateToFace(poseStack, front, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
-        poseStack.scale(0.9f, 0.9f, 1);
+        //poseStack.translate(0.8, 0.8, 0);
+        //poseStack.scale(0.9f, 0.9f, 1f);
 
         if (leftBlocked != null) {
             int color = attachSide == left ? 0xffffffff : 0x44ffffff;
