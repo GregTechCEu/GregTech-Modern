@@ -42,6 +42,9 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (!LoadingModList.get().getErrors().isEmpty()) {
+            return false;
+        }
         if (mixinClassName.startsWith(DEV_PACKAGE)) {
             return !FMLLoader.isProduction();
         }
