@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
-import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.nbt.CompoundTag;
@@ -100,7 +99,6 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
         plusLayers.setOnMousePressed(data1 -> AoESymmetrical.increaseLayer(tag, defaultDefinition));
         return new ModularPanel("aoe_config")
                 .coverChildren()
-                .child(GTMuiWidgets.createTitleBar(held, 128, GTGuiTextures.BACKGROUND))
                 .child(Flow.row()
                         .coverChildren()
                         .childPadding(5)
