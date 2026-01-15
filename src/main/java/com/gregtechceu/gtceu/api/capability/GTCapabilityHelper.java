@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
@@ -69,11 +68,6 @@ public class GTCapabilityHelper {
     @Nullable
     public static IControllable getControllable(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_CONTROLLABLE, level, pos, side);
-    }
-
-    @Nullable
-    public static IHasCircuitSlot getCircuitSlot(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_CIRCUIT_SLOT, level, pos, side);
     }
 
     @Nullable

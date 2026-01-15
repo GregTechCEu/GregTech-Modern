@@ -93,8 +93,8 @@ dependencies {
     modExtraLocalRuntime(forge.javd)
     modExtraLocalRuntime(forge.trenzalore)
     modExtraLocalRuntime(forge.curios)
-    modExtraLocalRuntime(forge.cc.tweaked.forge.impl)
 //    modExtraLocalRuntime(forge.worldstripper)
+//    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
     modExtraLocalRuntime(forge.bundles.kjs)
 

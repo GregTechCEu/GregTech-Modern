@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -178,15 +177,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             for (MachineTrait trait : machine.getTraits()) {
                 if (trait instanceof IControllable controllable) {
                     return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
-                }
-            }
-        } else if (cap == GTCapability.CAPABILITY_CIRCUIT_SLOT) {
-            if (machine instanceof IHasCircuitSlot hasCircuitSlot) {
-                return GTCapability.CAPABILITY_CIRCUIT_SLOT.orEmpty(cap, LazyOptional.of(() -> hasCircuitSlot));
-            }
-            for (MachineTrait trait : machine.getTraits()) {
-                if (trait instanceof IHasCircuitSlot hasCircuitSlot) {
-                    return GTCapability.CAPABILITY_CIRCUIT_SLOT.orEmpty(cap, LazyOptional.of(() -> hasCircuitSlot));
                 }
             }
         } else if (cap == GTCapability.CAPABILITY_RECIPE_LOGIC) {

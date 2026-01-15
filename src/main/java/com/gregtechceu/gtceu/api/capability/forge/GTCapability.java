@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
@@ -20,8 +19,6 @@ public class GTCapability {
     public static final Capability<IToolable> CAPABILITY_TOOLABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IWorkable> CAPABILITY_WORKABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager
-            .get(new CapabilityToken<>() {});
-    public static final Capability<IHasCircuitSlot> CAPABILITY_CIRCUIT_SLOT = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<RecipeLogic> CAPABILITY_RECIPE_LOGIC = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -56,7 +53,6 @@ public class GTCapability {
         event.register(IToolable.class);
         event.register(IWorkable.class);
         event.register(IControllable.class);
-        event.register(IHasCircuitSlot.class);
         event.register(RecipeLogic.class);
         event.register(IElectricItem.class);
         event.register(ICleanroomReceiver.class);
