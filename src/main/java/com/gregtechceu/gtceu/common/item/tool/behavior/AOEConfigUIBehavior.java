@@ -99,10 +99,16 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
         InteractionSyncHandler plusLayers = new InteractionSyncHandler();
         plusLayers.setOnMousePressed(data1 -> AoESymmetrical.increaseLayer(tag, defaultDefinition));
         return new ModularPanel("aoe_config")
-                .child(GTMuiWidgets.createTitleBar(held, 174, GTGuiTextures.BACKGROUND))
+                .coverChildren()
+                .padding(5)
+                .child(GTMuiWidgets.createTitleBar(held, 135, GTGuiTextures.BACKGROUND))
                 .child(Flow.column()
                         .margin(5)
+                        .marginLeft(20)
+                        .marginRight(20)
                         .childPadding(2)
+                        .coverChildren()
+                        .center()
                         .child(Flow.row()
                                 .childPadding(2)
                                 .coverChildren()
