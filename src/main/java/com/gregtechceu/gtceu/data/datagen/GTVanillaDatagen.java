@@ -23,7 +23,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.Set;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class GTVanillaDatagen {
 
     @SubscribeEvent

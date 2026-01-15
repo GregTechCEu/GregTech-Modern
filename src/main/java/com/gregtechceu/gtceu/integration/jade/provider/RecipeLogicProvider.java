@@ -4,10 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -49,13 +53,32 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
             recipeInfo.putLong("EUt", EUt.getTotalEU());
-            recipeInfo.putLong("amperage", EUt.amperage());
+            recipeInfo.putLong("voltage", getVoltage(capability));
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+    }
+
+    public static long getVoltage(RecipeLogic capability) {
+        long voltage = -1;
+        if (capability.machine instanceof SimpleTieredMachine machine) {
+            voltage = GTValues.V[machine.getTier()];
+        } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
+            voltage = GTValues.V[machine.getTier()];
+        } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
+            voltage = machine.getParts().stream()
+                    .filter(EnergyHatchPartMachine.class::isInstance)
+                    .map(EnergyHatchPartMachine.class::cast)
+                    .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
+                    .max()
+                    .orElse(-1);
+        }
+        // default display as LV, this shouldn't happen because a machine is either electric or steam
+        if (voltage == -1) voltage = 32;
+        return voltage;
     }
 
     @Override
@@ -65,33 +88,36 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             var recipeInfo = capData.getCompound("Recipe");
             if (!recipeInfo.isEmpty()) {
                 var EUt = recipeInfo.getLong("EUt");
-                var amperage = recipeInfo.getLong("amperage");
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
 
-                if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                    var machine = mbe.getMetaMachine();
-                    if (machine instanceof SimpleSteamMachine ssm) {
-                        EUt = (long) (EUt * ssm.getConversionRate());
-                        isSteam = true;
-                    } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                        EUt = (long) (EUt * smb.getConversionRate());
-                        isSteam = true;
-                    }
-                }
-
                 if (EUt > 0) {
-                    MutableComponent text = Component.literal(FormattingUtil.formatNumbers(EUt));
+                    if (blockEntity instanceof MetaMachineBlockEntity mbe) {
+                        var machine = mbe.getMetaMachine();
+                        if (machine instanceof SimpleSteamMachine ssm) {
+                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
+                            isSteam = true;
+                        } else if (machine instanceof SteamParallelMultiblockMachine smb) {
+                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
+                            isSteam = true;
+                        }
+                    }
+
+                    MutableComponent text;
 
                     if (isSteam) {
-                        text = text.withStyle(ChatFormatting.GREEN)
-                                .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
+                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                                .withStyle(ChatFormatting.GREEN);
                     } else {
-                        var tier = GTUtil.getOCTierByVoltage(EUt / amperage);
+                        var voltage = recipeInfo.getLong("voltage");
+                        var tier = GTUtil.getTierByVoltage(voltage);
+                        float minAmperage = (float) EUt / voltage;
 
-                        text = text.withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" EU/t ").withStyle(ChatFormatting.RESET)
-                                        .append(Component.literal("(").withStyle(ChatFormatting.GREEN)));
+                        text = Component
+                                .translatable("gtceu.jade.amperage_use",
+                                        FormattingUtil.formatNumber2Places(minAmperage))
+                                .withStyle(ChatFormatting.RED)
+                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
@@ -104,7 +130,10 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                                             .append(FormattingUtil.formatNumbers(speed))));
 
                         }
-                        text = text.append(Component.literal(")").withStyle(ChatFormatting.GREEN));
+                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
+                                (Component.translatable("gtceu.recipe.eu.total",
+                                        FormattingUtil.formatNumbers(EUt))))
+                                .withStyle(ChatFormatting.WHITE));
                     }
 
                     if (isInput) {

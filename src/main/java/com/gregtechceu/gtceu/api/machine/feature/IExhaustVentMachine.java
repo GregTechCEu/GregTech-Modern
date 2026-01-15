@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,8 +30,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IExhaustVentMachine extends IMachineFeature {
 
-    EnumProperty<RelativeDirection> VENT_DIRECTION_PROPERTY = EnumProperty.create("steam_vent",
-            RelativeDirection.class);
+    EnumProperty<RelativeDirection> VENT_DIRECTION_PROPERTY = GTMachineModelProperties.VENT_DIRECTION;
 
     /**
      * @return the direction the vent faces
@@ -86,20 +87,33 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * @param pos   the position of the machine
      */
     default void tryDoVenting(@NotNull Level level, @NotNull BlockPos pos) {
-        if (isNeedsVenting() && !isVentingBlocked()) {
-            doVentingDamage(level, pos);
+        if (!isNeedsVenting()) return;
 
-            Direction ventingDirection = getVentingDirection();
-            double posX = pos.getX() + 0.5 + ventingDirection.getStepX() * 0.6;
-            double posY = pos.getY() + 0.5 + ventingDirection.getStepY() * 0.6;
-            double posZ = pos.getZ() + 0.5 + ventingDirection.getStepZ() * 0.6;
-            createVentingParticles(level, posX, posY, posZ);
-
-            if (ConfigHolder.INSTANCE.machines.machineSounds) {
-                playVentingSound(level, posX, posY, posZ);
-            }
-            markVentingComplete();
+        if (!isVentingBlocked()) {
+            performVenting(level, pos);
+            return;
         }
+
+        BlockPos ventingPos = pos.relative(getVentingDirection());
+        if (GTUtil.tryBreakSnow(level, ventingPos, level.getBlockState(ventingPos), false)) {
+            performVenting(level, pos);
+        }
+    }
+
+    private void performVenting(@NotNull Level level, @NotNull BlockPos pos) {
+        doVentingDamage(level, pos);
+
+        Direction ventingDirection = getVentingDirection();
+        double posX = pos.getX() + 0.5 + ventingDirection.getStepX() * 0.6;
+        double posY = pos.getY() + 0.5 + ventingDirection.getStepY() * 0.6;
+        double posZ = pos.getZ() + 0.5 + ventingDirection.getStepZ() * 0.6;
+        createVentingParticles(level, posX, posY, posZ);
+
+        if (ConfigHolder.INSTANCE.machines.machineSounds) {
+            playVentingSound(level, posX, posY, posZ);
+        }
+
+        markVentingComplete();
     }
 
     /**

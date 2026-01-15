@@ -6,10 +6,8 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -68,29 +66,5 @@ public class PositionYCondition extends RecipeCondition<PositionYCondition> {
     @Override
     public PositionYCondition createTemplate() {
         return new PositionYCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("min", this.min);
-        config.addProperty("max", this.max);
-        return config;
-    }
-
-    @Override
-    public PositionYCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        min = buf.readVarInt();
-        max = buf.readVarInt();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeVarInt(min);
-        buf.writeVarInt(max);
     }
 }

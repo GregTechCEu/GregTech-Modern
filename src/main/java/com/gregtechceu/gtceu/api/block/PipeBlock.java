@@ -68,7 +68,7 @@ import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
-        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends AppearanceBlock
+        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
                                implements EntityBlock, IBlockRendererProvider, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
@@ -407,15 +407,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     pipeBlockEntity = pipeTile;
                 }
 
-                // slightly cleaner this way, I hope?
-                boolean hasCover = CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
-                        coverDef -> ICoverable.canPlaceCover(coverDef, coverable));
-                boolean holdingSamePipe = held.getItem() instanceof BlockItem blockItem &&
-                        blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
-                        pipeBlock.pipeType.type().equals(pipeType.type());
-                boolean hasTool = types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is));
-                boolean hasAbility = pipeBlockEntity != null && pipeBlockEntity.hasCorrectAction(held);
-                if (hasCover || holdingSamePipe || hasTool || hasAbility) {
+                if ((player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) ||
+                        types.stream().anyMatch(type -> type.matchTags.stream().anyMatch(held::is)) ||
+                        CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
+                                coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
+                        (held.getItem() instanceof BlockItem blockItem &&
+                                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
+                                pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();
                 }
             }
@@ -441,15 +439,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         @Nullable BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var pipe = getPipeTile(level, pos);
         if (pipe != null) {
             var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState,
                     sourcePos);
             if (appearance != null) return appearance;
         }
-        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+        return super.getAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
     @Override
@@ -467,5 +465,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             }
         }
         return drops;
+    }
+
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WRENCH;
     }
 }

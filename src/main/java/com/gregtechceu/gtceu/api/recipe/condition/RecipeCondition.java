@@ -7,13 +7,21 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.util.GsonHelper;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -73,20 +81,30 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
     public abstract RecipeCondition<T> createTemplate();
 
     @NotNull
-    public JsonObject serialize() {
-        JsonObject jsonObject = new JsonObject();
-        if (isReverse) {
-            jsonObject.addProperty("reverse", true);
-        }
-        return jsonObject;
+    public final JsonObject serialize() {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        return CODEC.encodeStart(ops, this).getOrThrow().getAsJsonObject();
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        buf.writeBoolean(isReverse);
+    public static RecipeCondition deserialize(@NotNull JsonObject config) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        return CODEC.decode(ops, config).getOrThrow().getFirst();
     }
 
-    public RecipeCondition<T> fromNetwork(RegistryFriendlyByteBuf buf) {
-        isReverse = buf.readBoolean();
-        return this;
+    public final void toNetwork(FriendlyByteBuf buf) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.writeJsonWithCodec to include our RegistryOps
+        DataResult<JsonElement> dataresult = CODEC.encodeStart(ops, this);
+        buf.writeUtf(new Gson().toJson((JsonElement) dataresult.getOrThrow(
+                (p_261421_) -> new EncoderException("Failed to encode: " + p_261421_ + " " + String.valueOf(this)))));
+    }
+
+    public static RecipeCondition<?> fromNetwork(FriendlyByteBuf buf) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        // Code below was taken from buf.readJsonWithCodec to include our RegistryOps
+        JsonElement jsonelement = (JsonElement) GsonHelper.fromJson(new Gson(), buf.readUtf(), JsonElement.class);
+        DataResult<RecipeCondition<?>> dataresult = CODEC.parse(ops, jsonelement);
+        return (RecipeCondition) dataresult.getOrThrow(
+                (p_272382_) -> new DecoderException("Failed to decode json: " + p_272382_));
     }
 }

@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +40,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     private MachineDefinition lpObject = null, hpObject = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
-        super(id);
+        super(GTResourceLocation.implicitAsGtceu(id));
         this.dummyBuilder = true;
     }
 
@@ -52,7 +54,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(0)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
-                    .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
+                    .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(false, id.withPrefix("block/machines/"));
 
             definition.apply(false, lowPressureBuilder);
@@ -67,7 +69,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
-                    .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
+                    .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(true, id.withPrefix("block/machines/"));
 
             definition.apply(true, highPressureBuilder);

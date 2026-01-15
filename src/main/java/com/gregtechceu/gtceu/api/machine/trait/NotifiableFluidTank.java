@@ -115,37 +115,31 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         FluidStack[] visited = new FluidStack[storages.length];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (ingredient.ingredient().hasNoFluids()) {
+            if (!(ingredient.ingredient() instanceof IntProviderFluidIngredient) &&
+                    ingredient.ingredient().hasNoFluids()) {
                 it.remove();
                 continue;
             }
 
             FluidStack[] fluids;
-            int amount;
 
-            if (io == IO.OUT && ingredient.ingredient() instanceof IntProviderFluidIngredient provider) {
+            if (ingredient.ingredient() instanceof IntProviderFluidIngredient provider) {
                 provider.setFluidStacks(null);
                 provider.setSampledCount(-1);
 
                 if (simulate) {
                     fluids = new FluidStack[] { provider.getMaxSizeStack() };
-                    amount = provider.getCountProvider().getMaxValue();
                 } else {
-                    fluids = provider.getStacks();
-                    if (fluids.length == 0 || fluids[0].isEmpty()) {
-                        it.remove();
-                        continue;
-                    }
-                    amount = fluids[0].getAmount();
+                    fluids = provider.getFluidStacks();
                 }
             } else {
                 fluids = ingredient.getFluids();
-                if (fluids.length == 0 || fluids[0].isEmpty()) {
-                    it.remove();
-                    continue;
-                }
-                amount = ingredient.amount();
             }
+            if (fluids.length == 0 || fluids[0].isEmpty()) {
+                it.remove();
+                continue;
+            }
+            int amount = fluids[0].getAmount();
 
             if (io == IO.OUT && !allowSameFluids) {
                 CustomFluidTank existing = null;
@@ -182,7 +176,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
-                    if (ingredient.test(current)) {
+                    if (ingredient.ingredient().test(current)) {
                         var drained = storages[tank].drain(Math.min(count, amount), action);
                         if (!drained.isEmpty()) {
                             visited[tank] = drained.copyWithAmount(count - drained.getAmount());
@@ -230,7 +224,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     @Override
     public boolean test(SizedFluidIngredient ingredient) {
-        return !this.isLocked() || ingredient.test(this.lockedFluid.getFluid());
+        return !this.isLocked() || ingredient.ingredient().test(this.lockedFluid.getFluid());
     }
 
     @Override

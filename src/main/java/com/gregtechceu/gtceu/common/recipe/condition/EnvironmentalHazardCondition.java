@@ -10,11 +10,9 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -63,27 +61,6 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
         var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getPos());
         return zone != null && zone.strength() > 0;
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject value = super.serialize();
-        value.addProperty("condition", condition.name);
-        return value;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeUtf(this.condition.name);
-    }
-
-    @Override
-    public EnvironmentalHazardCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        this.condition = MedicalCondition.CONDITIONS.get(buf.readUtf());
-        return this;
     }
 
     @Override

@@ -18,8 +18,7 @@ public final class GTRecipeConditions {
             GTCEu.id("pos_y"), new RecipeConditionType<>(PositionYCondition::new, PositionYCondition.CODEC));
     public static final RecipeConditionType<RainingCondition> RAINING = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("rain"), new RecipeConditionType<>(RainingCondition::new, RainingCondition.CODEC));
-    public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            GTCEu.id("rock_breaker"), new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
+    public static final RecipeConditionType<AdjacentFluidCondition> ADJACENT_FLUID = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, GTCEu.id("adjacent_fluid"), new RecipeConditionType<>(AdjacentFluidCondition::new, AdjacentFluidCondition.CODEC));
     public static final RecipeConditionType<AdjacentBlockCondition> ADJACENT_BLOCK = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("adjacent_block"), new RecipeConditionType<>(AdjacentBlockCondition::new, AdjacentBlockCondition.CODEC));
     public static final RecipeConditionType<ThunderCondition> THUNDER = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
@@ -36,23 +35,25 @@ public final class GTRecipeConditions {
             GTCEu.id("environmental_hazard"), new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
             GTCEu.id("daytime"), new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
+    public static final RecipeConditionType<RockBreakerCondition> ROCK_BREAKER = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
+            GTCEu.id("rock_breaker"), new RecipeConditionType<>(RockBreakerCondition::new, RockBreakerCondition.CODEC));
     public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
-    public static RecipeConditionType<GameStageCondition> GAMESTAGE;
-    public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
+//     public static RecipeConditionType<GameStageCondition> GAMESTAGE;
+//     public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
 
     public static void init() {
         if (GTCEu.Mods.isFTBQuestsLoaded()) {
             FTB_QUEST = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
                     GTCEu.id("ftb_quest"), new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
         }
-        if (GTCEu.Mods.isGameStagesLoaded()) {
-            GAMESTAGE = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-                    GTCEu.id("game_stage"), new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
-        }
-        if (GTCEu.Mods.isHeraclesLoaded()) {
-            HERACLES_QUEST = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-                    GTCEu.id("heracles_quest"), new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
-        }
+        // if (GTCEu.Mods.isGameStagesLoaded()) {
+        //     GAMESTAGE = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
+        //             GTCEu.id("game_stage"), new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+        // }
+        // if (GTCEu.Mods.isHeraclesLoaded()) {
+        //     HERACLES_QUEST = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
+        //             GTCEu.id("heracles_quest"), new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
+        // }
     }
     // spotless:on
 }

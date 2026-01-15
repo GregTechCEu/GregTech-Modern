@@ -103,7 +103,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+        if (args.length > 0 && args[0] instanceof IO io && io.support(IO.IN)) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -193,7 +193,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected void updateTankSubscription(Direction newFacing) {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
+        if (isWorkingEnabled() && ((io.support(IO.OUT) && !tank.isEmpty()) || io.support(IO.IN)) &&
                 GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -205,9 +205,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     protected void autoIO() {
         if (getOffsetTimer() % 5 == 0) {
             if (isWorkingEnabled()) {
-                if (io == IO.OUT) {
+                if (io.support(IO.OUT)) {
                     tank.exportToNearby(getFrontFacing());
-                } else if (io == IO.IN) {
+                } else if (io.support(IO.IN)) {
                     tank.importFromNearby(getFrontFacing());
                 }
             }
@@ -237,11 +237,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         BlockPos blockPos = getHolder().pos();
         MachineDefinition newDefinition = null;
 
-        if (io == IO.IN) {
+        if (io.support(IO.IN)) {
             if (this.slots == 1) newDefinition = GTMachines.FLUID_EXPORT_HATCH[this.getTier()];
             else if (this.slots == 4) newDefinition = GTMachines.FLUID_EXPORT_HATCH_4X[this.getTier()];
             else if (this.slots == 9) newDefinition = GTMachines.FLUID_EXPORT_HATCH_9X[this.getTier()];
-        } else if (io == IO.OUT) {
+        } else if (io.support(IO.OUT)) {
             if (this.slots == 1) newDefinition = GTMachines.FLUID_IMPORT_HATCH[this.getTier()];
             else if (this.slots == 4) newDefinition = GTMachines.FLUID_IMPORT_HATCH_4X[this.getTier()];
             else if (this.slots == 9) newDefinition = GTMachines.FLUID_IMPORT_HATCH_9X[this.getTier()];
@@ -272,7 +272,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         super.attachConfigurators(configuratorPanel);
-        if (isCircuitSlotEnabled() && this.io == IO.IN) {
+        if (isCircuitSlotEnabled() && this.io.support(IO.IN)) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }
@@ -292,7 +292,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         TankWidget tankWidget;
 
         // Add input/output-specific widgets
-        if (this.io == IO.OUT) {
+        if (this.io.support(IO.OUT)) {
             // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
             group.addWidget(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 0, 67, 40, 18, 18,
                     () -> this.tank.getLockedFluid().getFluid(), f -> {

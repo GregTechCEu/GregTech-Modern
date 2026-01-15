@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.data.datagen.tag;
 
+import com.gregtechceu.gtceu.common.block.StoneTypes;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -15,31 +18,64 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 public class BlockTagLoader {
 
     public static void init(RegistrateTagsProvider.IntrinsicImpl<Block> provider) {
+        provider.addTag(CustomTags.CONCRETE_BLOCK)
+                .add(Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE,
+                        Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE, Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE,
+                        Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
+                        Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
+        provider.addTag(CustomTags.CONCRETE_POWDER_BLOCK)
+                .add(Blocks.WHITE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER,
+                        Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER,
+                        Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE_POWDER,
+                        Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER,
+                        Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER,
+                        Blocks.BLACK_CONCRETE_POWDER);
+
+        var speedConcretes = provider.addTag(CustomTags.VERY_FAST_WALKABLE_BLOCKS);
+        speedConcretes.add(GTBlocks.LIGHT_CONCRETE.get(), GTBlocks.DARK_CONCRETE.get());
+
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_LIGHT)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+        GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_DARK)
+                .forEach((type, block) -> speedConcretes.add(block.get()));
+
+        var studs = provider.addTag(CustomTags.FAST_WALKABLE_BLOCKS);
+        GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
+
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES)
                 .addTag(Tags.Blocks.END_STONES);
 
         provider.addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
         provider.addTag(CustomTags.NEEDS_DURANIUM_TOOL);
 
-        provider.addTag(CustomTags.INCORRECT_FOR_DURANIUM_TOOL)
-                .addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
-        provider.addTag(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
-                .addTag(Tags.Blocks.NEEDS_NETHERITE_TOOL)
-                .addTag(CustomTags.NEEDS_DURANIUM_TOOL)
-                .addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
-        provider.addTag(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
-                .addTag(CustomTags.NEEDS_DURANIUM_TOOL)
-                .addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
+        @SuppressWarnings("unchecked")
+        TagKey<Block>[] newToolRequirements = new TagKey[] {
+                CustomTags.NEEDS_NEUTRONIUM_TOOL,
+                CustomTags.NEEDS_DURANIUM_TOOL
+        };
+        @SuppressWarnings("unchecked")
+        TagKey<Block>[] incorrectForToolTags = new TagKey[] {
+                BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
+                BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
+                BlockTags.INCORRECT_FOR_IRON_TOOL,
+                BlockTags.INCORRECT_FOR_GOLD_TOOL,
+                BlockTags.INCORRECT_FOR_STONE_TOOL,
+                BlockTags.INCORRECT_FOR_WOODEN_TOOL
+        };
+        for (TagKey<Block> tag : incorrectForToolTags) {
+            provider.addTag(tag).addTags(newToolRequirements);
+        }
+        // do these manually
+        provider.addTag(CustomTags.INCORRECT_FOR_NEUTRONIUM_TOOL);
+        provider.addTag(CustomTags.INCORRECT_FOR_DURANIUM_TOOL).addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
 
         // this is awful. I don't care, though.
-        // spotless:off
         provider.addTag(BlockTags.REPLACEABLE)
                 .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
                 .add(GTMaterials.LightOil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
                 .add(GTMaterials.HeavyOil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
                 .add(GTMaterials.RawOil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
                 .add(GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
-        // spotless:on
 
         provider.addTag(BlockTags.MINEABLE_WITH_AXE)
                 .add(GTMachines.WOODEN_DRUM.getBlock())

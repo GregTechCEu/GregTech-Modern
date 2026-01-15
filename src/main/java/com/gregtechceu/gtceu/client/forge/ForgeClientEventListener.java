@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -26,6 +27,9 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,8 +51,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class ForgeClientEventListener {
 
@@ -82,6 +87,51 @@ public class ForgeClientEventListener {
             ResourceLocation cape = CapeRegistry.getPlayerCapeTexture(uuid);
             ((PlayerSkinAccessor) (Object) playerSkin).gtceu$setCapeTexture(cape == null ? defaultPlayerCape : cape);
         }
+    }
+
+    @SubscribeEvent
+    public static void updateFOV(ComputeFovModifierEvent event) {
+        Player player = event.getPlayer();
+
+        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
+        boolean flying = player.getAbilities().flying;
+        float originalFov = flying ? 1.1F : 1.0F;
+        float walkSpeed = player.getAbilities().getWalkingSpeed();
+
+        originalFov *= ((float) moveSpeed.getBaseValue() / walkSpeed + 1.0F) / 2.0F;
+        if (walkSpeed == 0.0F || Float.isNaN(originalFov) ||
+                Float.isInfinite(originalFov)) {
+            return;
+        }
+
+        float newFov = flying ? 1.1F : 1.0F;
+        newFov *= ((float) getValueWithoutWalkingBoost(moveSpeed) / walkSpeed + 1.0F) /
+                2.0F;
+
+        event.setNewFovModifier(newFov / originalFov);
+    }
+
+    private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
+        double base = attrib.getBaseValue();
+        Map<AttributeModifier.Operation, List<AttributeModifier>> mods = attrib.getModifiers().stream()
+                .collect(Collectors.groupingBy(t -> t.operation()));
+
+        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_VALUE)) {
+            base += mod.amount();
+        }
+
+        double applied = base;
+        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_BASE)) {
+            if (mod.id() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
+            applied += base * mod.amount();
+        }
+
+        for (AttributeModifier mod : mods.get(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
+            applied *= 1 + mod.amount();
+        }
+
+        return attrib.getAttribute().value().sanitizeValue(applied);
     }
 
     @SubscribeEvent

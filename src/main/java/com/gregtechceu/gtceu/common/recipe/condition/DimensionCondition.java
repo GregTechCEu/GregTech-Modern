@@ -15,7 +15,6 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -93,26 +91,5 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     @Override
     public DimensionCondition createTemplate() {
         return new DimensionCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("dimension", dimension.toString());
-        return config;
-    }
-
-    @Override
-    public DimensionCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        dimension = buf.readResourceKey(Registries.DIMENSION);
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeResourceKey(dimension);
     }
 }

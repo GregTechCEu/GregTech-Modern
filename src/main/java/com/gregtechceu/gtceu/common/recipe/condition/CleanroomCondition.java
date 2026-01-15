@@ -12,10 +12,8 @@ import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -65,27 +63,6 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
             return provider.isClean() && provider.getTypes().contains(this.cleanroom);
         }
         return true;
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject value = super.serialize();
-        value.addProperty("cleanroom", cleanroom.name());
-        return value;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeUtf(this.cleanroom.name());
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        this.cleanroom = CleanroomType.getByNameOrDefault(buf.readUtf());
-        return this;
     }
 
     @Override

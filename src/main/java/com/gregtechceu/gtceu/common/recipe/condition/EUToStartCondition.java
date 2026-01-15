@@ -7,10 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -56,26 +54,5 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
     @Override
     public RecipeCondition createTemplate() {
         return new EUToStartCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("euToStart", euToStart);
-        return config;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        euToStart = buf.readLong();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeLong(euToStart);
     }
 }

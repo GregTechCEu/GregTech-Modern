@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +29,9 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     private final Material.Builder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
-        super(id);
-        this.internal = new Material.Builder(id);
+        super(GTResourceLocation.implicitAsGtceu(id));
+        this.internal = new Material.Builder(this.id);
+        this.dummyBuilder = true;
     }
 
     /*
@@ -658,5 +660,14 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     @Override
     public Material createObject() {
         return internal.buildAndRegister();
+    }
+
+    @Override
+    public Material transformObject(Material material) {
+        // this method is called right after `createObject`.
+        // here, you can add things that have to be done after registration
+        // but would be nice to do without using a separate material modification event.
+
+        return super.transformObject(material);
     }
 }

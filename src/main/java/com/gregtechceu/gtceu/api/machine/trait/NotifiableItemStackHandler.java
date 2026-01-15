@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -117,7 +118,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
 
             ItemStack[] items;
             int amount;
-            if (io == IO.OUT && ingredient.getContainedCustom() instanceof IntProviderIngredient provider) {
+            if (ingredient.getContainedCustom() instanceof IntProviderIngredient provider) {
                 provider.setItemStacks(null);
                 provider.setSampledCount(-1);
 
@@ -133,22 +134,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                     }
                     output = items[0];
                 }
-
-                int outputStorageLimit = 0;
-                for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                    ItemStack stack = storage.getStackInSlot(slot);
-                    if (stack.isEmpty() || ItemStack.isSameItemSameComponents(stack, output)) {
-                        outputStorageLimit += storage.getSlotLimit(slot) - stack.getCount();
-                    }
-                }
-                if (provider.getCountProvider().getMinValue() > outputStorageLimit) {
-                    it.remove();
-                    continue;
-                } else if (simulate) {
-                    amount = provider.getCountProvider().getMaxValue();
-                } else {
-                    amount = Math.min(output.getCount(), outputStorageLimit);
-                }
+                amount = output.getCount();
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -164,7 +150,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
-                    if (ingredient.test(current)) {
+                    if (ingredient.ingredient().test(current)) {
                         var extracted = getActioned(storage, slot, recipe.ingredientActions);
                         if (extracted == null) extracted = storage.extractItem(slot, Math.min(count, amount), simulate);
                         if (!extracted.isEmpty()) {
@@ -176,7 +162,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || ItemStack.isSameItemSameComponents(visited[slot], output)) {
+                    if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);

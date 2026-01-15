@@ -107,4 +107,8 @@ public class TagUtil {
     public static TagKey<Fluid> createModFluidTag(String path) {
         return createModTag(Registries.FLUID, path);
     }
+
+    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation path) {
+        return TagKey.create(registryKey, path);
+    }
 }

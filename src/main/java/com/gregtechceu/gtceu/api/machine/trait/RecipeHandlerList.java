@@ -143,6 +143,20 @@ public class RecipeHandlerList {
         return getHandlerMap().getOrDefault(cap, Collections.emptyList());
     }
 
+    public @NotNull Set<RecipeCapability<?>> getCapabilities() {
+        return getHandlerMap().keySet();
+    }
+
+    /**
+     * @return whether any of the capabilities in this RHL should bypass distinct checks
+     */
+    public boolean doesCapabilityBypassDistinct() {
+        for (var capability : getCapabilities()) {
+            if (capability.shouldBypassDistinct()) return true;
+        }
+        return false;
+    }
+
     public boolean isValid(IO extIO) {
         if (this == NO_DATA || handlerIO == IO.NONE) return false;
         return (extIO == IO.BOTH || handlerIO == IO.BOTH || extIO == handlerIO);
@@ -180,6 +194,14 @@ public class RecipeHandlerList {
             }
         }
         return copy;
+    }
+
+    public List<IRecipeHandler<?>> getHandlersFlat() {
+        List<IRecipeHandler<?>> handlerList = new ArrayList<>();
+        for (var handlerEntry : getHandlerMap().entrySet()) {
+            handlerList.addAll(handlerEntry.getValue());
+        }
+        return handlerList;
     }
 
     private record Subscription(List<ISubscription> subs) implements ISubscription {

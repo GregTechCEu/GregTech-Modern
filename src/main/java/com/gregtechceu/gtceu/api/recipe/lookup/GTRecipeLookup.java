@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManag
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -145,7 +146,7 @@ public class GTRecipeLookup {
             if (index > 0) {
                 for (ItemStack unique : uniqueItems) {
                     if (unique == null) break;
-                    else if (ItemStack.isSameItemSameComponents(input, unique)) {
+                    else if (GTUtil.isSameItemSameTags(input, unique)) {
                         continue main;
                     }
                 }
@@ -175,7 +176,9 @@ public class GTRecipeLookup {
         // Try each ingredient as a starting point, adding it to the skip-list.
         // The skip-list is a packed long, where each 1 bit represents an index to skip
         for (int i = 0; i < ingredients.size(); i++) {
-            GTRecipe r = recurseIngredientTreeFindRecipe(ingredients, branchRoot, canHandle, i, 0, (1L << i));
+            BitSet skipSet = new BitSet();
+            skipSet.set(i);
+            GTRecipe r = recurseIngredientTreeFindRecipe(ingredients, branchRoot, canHandle, i, 0, skipSet);
             if (r != null) {
                 return r;
             }
@@ -197,7 +200,7 @@ public class GTRecipeLookup {
     @Nullable
     public GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
                                                     @NotNull Branch branchMap, @NotNull Predicate<GTRecipe> canHandle,
-                                                    int index, int count, long skip) {
+                                                    int index, int count, BitSet skip) {
         // exhausted all the ingredients, and didn't find anything
         if (count == ingredients.size()) return null;
 
@@ -236,18 +239,20 @@ public class GTRecipeLookup {
     private GTRecipe diveIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
                                                   @NotNull Branch map,
                                                   @NotNull Predicate<GTRecipe> canHandle, int currentIndex, int count,
-                                                  long skip) {
+                                                  BitSet skip) {
         // We loop around ingredients.size() if we reach the end.
         // only end when all ingredients are exhausted, or a recipe is found
         int i = (currentIndex + 1) % ingredients.size();
         while (i != currentIndex) {
             // Have we already used this ingredient? If so, skip this one.
-            if (((skip & (1L << i)) == 0)) {
+            if (!(skip.get(i))) {
                 // Recursive call
                 // Increase the count, so the recursion can terminate if needed (ingredients is exhausted)
                 // Append the current index to the skip list
+                BitSet copy = (BitSet) skip.clone();
+                copy.set(i);
                 GTRecipe found = recurseIngredientTreeFindRecipe(ingredients, map, canHandle, i, count + 1,
-                        skip | (1L << i));
+                        copy);
                 if (found != null) {
                     return found;
                 }

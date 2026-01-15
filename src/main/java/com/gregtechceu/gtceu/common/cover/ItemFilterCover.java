@@ -41,6 +41,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredItemHandlerWrapper itemFilterWrapper;
+    @Persisted
     @Setter
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
@@ -82,7 +83,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
     }
 
@@ -110,25 +111,35 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow == ManualIOMode.UNFILTERED)
-                return super.insertItem(slot, stack, simulate);
-            if (filterMode != FilterMode.FILTER_EXTRACT && getItemFilter().test(stack)) {
-                return super.insertItem(slot, stack, simulate);
+            if (filterMode == FilterMode.FILTER_EXTRACT) {
+                if (allowFlow == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (allowFlow == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            return stack;
+            if (!getItemFilter().test(stack)) {
+                return stack;
+            }
+            return super.insertItem(slot, stack, simulate);
         }
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (filterMode == FilterMode.FILTER_INSERT) {
+                if (allowFlow == ManualIOMode.DISABLED) {
+                    return ItemStack.EMPTY;
+                }
+                if (allowFlow == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
+            }
             ItemStack result = super.extractItem(slot, amount, true);
-            if (result.isEmpty() && (filterMode == FilterMode.FILTER_INSERT) && allowFlow == ManualIOMode.UNFILTERED) {
-                return super.extractItem(slot, amount, false);
+            if (result.isEmpty() || !getItemFilter().test(result)) {
+                return ItemStack.EMPTY;
             }
-
-            if (filterMode != FilterMode.FILTER_INSERT && getItemFilter().test(result)) {
-                return super.extractItem(slot, amount, false);
-            }
-            return ItemStack.EMPTY;
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
     }
 }

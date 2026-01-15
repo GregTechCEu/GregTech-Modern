@@ -190,6 +190,14 @@ public class ItemTagLoader {
                 .addOptional(GTItems.SENSOR_UIV.getId())
                 .addOptional(GTItems.SENSOR_UXV.getId())
                 .addOptional(GTItems.SENSOR_OpV.getId());
+
+        provider.addTag(CustomTags.TOOLS_IGNITER)
+                .addTag(ItemTags.CREEPER_IGNITERS);
+
+        // Add sodalite and lazurite as enchanting fuels
+        provider.addTag(Tags.Items.ENCHANTING_FUELS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get())
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get());
     }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,

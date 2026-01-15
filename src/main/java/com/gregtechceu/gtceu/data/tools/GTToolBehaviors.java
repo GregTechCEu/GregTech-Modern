@@ -42,6 +42,8 @@ public class GTToolBehaviors {
             GTCEu.id("wax_off"), new ToolBehaviorType<>(WaxOffBehavior.CODEC, WaxOffBehavior.STREAM_CODEC));
     public static final ToolBehaviorType<ToolModeSwitchBehavior> MODE_SWITCH = GTRegistries.register(GTRegistries.TOOL_BEHAVIORS,
             GTCEu.id("mode_switch"), new ToolBehaviorType<>(ToolModeSwitchBehavior.CODEC, ToolModeSwitchBehavior.STREAM_CODEC));
+    public static final ToolBehaviorType<ProspectingBehavior> PROSPECTING = GTRegistries.register(GTRegistries.TOOL_BEHAVIORS,
+            GTCEu.id("prospecting"), new ToolBehaviorType<>(ProspectingBehavior.CODEC, ProspectingBehavior.STREAM_CODEC));
     // spotless:on
     public static void init() {}
 }

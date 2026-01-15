@@ -15,4 +15,6 @@ public interface GTCEuStartupEvents {
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification",
             () -> MaterialModificationKubeEvent.class);
     EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsKubeEvent.class);
+
+    EventHandler REGISTER_WOODS = GROUP.startup("registerWoods", () -> RegisterWoodsKubeEvent.class);
 }

@@ -102,7 +102,8 @@ public class HigherDegreeMaterials {
                 .ingot(0)
                 .liquid(new FluidBuilder().temperature(1400))
                 .color(0xc55252).secondaryColor(0xC80000).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
+                .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, GENERATE_SPRING_SMALL,
+                        DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
                 .cableProperties(GTValues.V[0], 1, 0)
                 .buildAndRegister();
@@ -193,7 +194,7 @@ public class HigherDegreeMaterials {
 
         Blackstone = new Material.Builder(GTCEu.id("blackstone"))
                 .dust()
-                .color(0x090a0a).iconSet(ROUGH)
+                .color(0x3c3947).secondaryColor(0x160f10).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .components(DarkAsh, 2, Basalt, 1, Stone, 5)
                 .buildAndRegister();

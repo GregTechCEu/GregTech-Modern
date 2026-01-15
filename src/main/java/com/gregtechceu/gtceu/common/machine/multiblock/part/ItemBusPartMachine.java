@@ -98,7 +98,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+        if (args.length > 0 && args[0] instanceof IO io && io.support(IO.IN)) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -213,7 +213,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected void updateInventorySubscription(Direction newFacing) {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
+        if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
                 GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
@@ -229,6 +229,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                     getInventory().exportToNearby(getFrontFacing());
                 } else if (io == IO.IN) {
                     getInventory().importFromNearby(getFrontFacing());
+                } else if (io == IO.BOTH) {
+                    getInventory().importFromNearby(getFrontFacing());
+                    getInventory().exportToNearby(getFrontFacing().getOpposite());
                 }
             }
             updateInventorySubscription();
@@ -256,9 +259,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public boolean swapIO() {
         BlockPos blockPos = getHolder().pos();
         MachineDefinition newDefinition = null;
-        if (io == IO.IN) {
+        if (io.support(IO.IN)) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
-        } else if (io == IO.OUT) {
+        } else if (io.support(IO.OUT)) {
             newDefinition = GTMachines.ITEM_IMPORT_BUS[this.getTier()];
         }
         if (newDefinition == null) return false;
@@ -285,9 +288,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io == IO.OUT) {
+        if (this.io.support(IO.OUT)) {
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
-        } else if (this.io == IO.IN) {
+        } else if (this.io.support(IO.IN)) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
             if (hasCircuitSlot && isCircuitSlotEnabled()) {
                 configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
@@ -311,7 +314,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 container.addWidget(
                         new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
                                 .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+                                .setIngredientIO(this.io.support(IO.IN) ? IngredientIO.INPUT : IngredientIO.OUTPUT));
             }
         }
 

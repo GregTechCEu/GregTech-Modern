@@ -39,4 +39,30 @@ public interface IMappedRegistryAccess<T> {
     default Map<ResourceKey<T>, RegistrationInfo> gtceu$getRegistrationInfos() {
         throw new AssertionError();
     }
+
+    /// FOR TESTING ONLY; THIS WILL FUCK UP THINGS IF THINGS ARE IN USE!
+    default void gtceu$remove(ResourceKey<T> key) {
+        if (this.gtceu$isFrozen()) {
+            throw new IllegalStateException("Cannot remove entry from a frozen registry: " + key);
+        }
+
+        Holder.Reference<T> ref = this.gtceu$getByKey().remove(key);
+        if (ref == null) {
+            return; // not present, nothing to remove
+        }
+
+        this.gtceu$getByLocation().remove(key.location());
+
+        T value = ref.value();
+        this.gtceu$getByValue().remove(value);
+
+        int id = this.gtceu$getToId().removeInt(value);
+        ObjectList<Holder.Reference<T>> byId = this.gtceu$getById();
+
+        if (id >= 0 && id < byId.size()) {
+            byId.set(id, null);
+        }
+
+        this.gtceu$getRegistrationInfos().remove(key);
+    }
 }

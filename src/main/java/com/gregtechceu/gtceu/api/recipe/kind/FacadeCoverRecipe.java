@@ -47,14 +47,14 @@ public class FacadeCoverRecipe extends CustomRecipe {
                 }
                 foundBlockItem = true;
             } else if (item.is(IRON_PLATE_TAG)) {
-                if (++platesCount > 3) {
+                if (++platesCount > 1) {
                     return false;
                 }
             } else {
                 return false;
             }
         }
-        return foundBlockItem && platesCount == 3;
+        return foundBlockItem && platesCount == 1;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -13,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.RotationState;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
@@ -60,8 +59,8 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -111,7 +110,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter
     private boolean allowExtendedFacing = false;
     @Setter
-    private boolean hasBER;
+    private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
     @Setter
     private boolean renderMultiblockWorldPreview = true;
     @Setter
@@ -132,7 +131,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     @Setter // getter for KJS
     private int tier;
     @Setter
-    private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     @Setter
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     @Setter
@@ -231,8 +230,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
-        if (!modelProperties.containsKey(RecipeLogic.STATUS_PROPERTY)) {
-            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        if (!modelProperties.containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+            modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         }
     }
 
@@ -249,7 +248,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
-        return overlayTieredHullModel(registrate.makeResourceLocation("block/machine/part/" + name));
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        return overlayTieredHullModel(
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
@@ -263,7 +264,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay,
                                                                   @Nullable String pipeOverlay,
                                                                   @Nullable String emissiveOverlay) {
-        ResourceLocation overlayTex = registrate.makeResourceLocation("block/overlay/machine/" + overlay);
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+                "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
@@ -272,33 +275,52 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return colorOverlayTieredHullModel(overlay, null, null);
     }
 
     public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay,
                                                                   @Nullable ResourceLocation pipeOverlay,
                                                                   @Nullable ResourceLocation emissiveOverlay) {
-        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlayTieredHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
-        return overlaySteamHullModel(registrate.makeResourceLocation("block/machine/part/" + name));
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        return overlaySteamHullModel(
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
-        modelProperty(SteamMachine.STEEL_PROPERTY, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
+        modelProperty(GTMachineModelProperties.IS_STEEL_MACHINE, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay) {
-        return colorOverlaySteamHullModel(overlay, null, null);
+        return colorOverlaySteamHullModel(overlay, (String) null, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
+                                                                 @Nullable String pipeOverlay,
+                                                                 @Nullable String emissiveOverlay) {
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+                "block/overlay/machine/" + overlay);
+        ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+        ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
+                ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+                        "block/overlay/machine/" + emissiveOverlay);
+        return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable String emissiveOverlay) {
-        ResourceLocation overlayTex = registrate.makeResourceLocation("block/overlay/machine/" + overlay);
+        modelProperty(GTMachineModelProperties.IS_FORMED, false);
+        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+                "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
                 registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
@@ -313,27 +335,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
     public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay,
                                                                  @Nullable ResourceLocation pipeOverlay,
                                                                  @Nullable ResourceLocation emissiveOverlay) {
-        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        modelProperty(GTMachineModelProperties.IS_PAINTED, false);
         return model(createColorOverlaySteamHullMachineModel(overlay, pipeOverlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSimpleGeneratorModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
@@ -344,7 +366,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingModel(ResourceLocation baseCasing,
                                                                ResourceLocation workableModel) {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         return model(createSidedWorkableCasingMachineModel(baseCasing, workableModel));
     }
 

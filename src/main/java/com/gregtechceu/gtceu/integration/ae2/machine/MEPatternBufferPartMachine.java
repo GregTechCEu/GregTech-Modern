@@ -496,9 +496,16 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         public List<FluidStack> getFluids() {
             if (fluidStacks == null) {
+                // <<<<<<< HEAD
                 fluidStacks = fluidInventory.object2LongEntrySet().stream()
                         .map(e -> e.getKey().copyWithAmount(GTMath.saturatedCast(e.getLongValue())))
                         .toList();
+                // =======
+                // fluidStacks = new ArrayList<>();
+                // fluidInventory.object2LongEntrySet().stream()
+                // .map(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()))
+                // .forEach(fluidStacks::addAll);
+                // >>>>>>> v7.1.3-1.20.1
             }
             return fluidStacks;
         }

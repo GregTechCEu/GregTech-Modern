@@ -67,13 +67,13 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
         if (energyInfoProvider == null) return;
 
-        var energyInfo = energyInfoProvider.getEnergyInfo();
-        var isBigInt = energyInfoProvider.supportsBigIntEnergyValues();
+        IEnergyInfoProvider.EnergyInfo energyInfo = energyInfoProvider.getEnergyInfo();
+        boolean isBigInt = energyInfoProvider.supportsBigIntEnergyValues();
 
         if (isBigInt) {
             if (usePercent) {
                 if (energyInfo.capacity().compareTo(BigInteger.ZERO) > 0) {
-                    var ratio = GTMath.ratio(energyInfo.stored(), energyInfo.capacity());
+                    float ratio = GTMath.ratio(energyInfo.stored(), energyInfo.capacity());
                     setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
                             minValue, isInverted(), redstoneSignalOutput));
                 } else {
@@ -87,7 +87,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         } else {
             if (usePercent) {
                 if (energyInfo.capacity().longValue() > 0) {
-                    var ratio = energyInfo.stored().longValue() / energyInfo.capacity().longValue();
+                    float ratio = energyInfo.stored().floatValue() / energyInfo.capacity().floatValue();
                     setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
                             minValue, isInverted(), redstoneSignalOutput));
                 } else {
@@ -177,8 +177,10 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
             // This needs to be after setting the maximum, because otherwise the converted value would be
             // limited to 100.
             if (wasPercent) {
-                minValueInput.setValue(GTMath.clamp((long) ((minValue / 100.0) * energyCapacity), 0, energyCapacity));
-                maxValueInput.setValue(GTMath.clamp((long) ((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValueInput.setValue(
+                        GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity));
+                maxValueInput.setValue(
+                        GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
             }
         }
     }

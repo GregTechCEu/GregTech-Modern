@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public interface IAppearance {
 
     /**

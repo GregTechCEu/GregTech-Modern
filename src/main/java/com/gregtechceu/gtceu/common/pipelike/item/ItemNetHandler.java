@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -114,7 +115,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     public ItemStack insertFirst(ItemStack stack, boolean simulate) {
-        for (ItemRoutePath inv : net.getNetData(pipe.getPipePos(), facing)) {
+        for (ItemRoutePath inv : net.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.FULL)) {
             stack = insert(inv, stack, simulate);
             if (stack.isEmpty())
                 return ItemStack.EMPTY;
@@ -123,66 +124,241 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     public ItemStack insertRoundRobin(ItemStack stack, boolean simulate, boolean global) {
-        List<ItemRoutePath> routePaths = net.getNetData(pipe.getPipePos(), facing);
-        if (routePaths.isEmpty())
-            return stack;
-        if (routePaths.size() == 1)
-            return insert(routePaths.get(0), stack, simulate);
+        List<ItemRoutePath> routePaths = net.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.FULL);
+        if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
-        if (global) {
-            stack = insertToHandlersEnhanced(routePathsCopy, stack, routePaths.size(), simulate);
-        } else {
-            stack = insertToHandlers(routePathsCopy, stack, simulate);
-            if (!stack.isEmpty() && !routePathsCopy.isEmpty())
-                stack = insertToHandlers(routePathsCopy, stack, simulate);
+        CoverBehavior pipeCover = pipe.getCoverContainer().getCoverAtSide(facing);
+        CoverBehavior tileCover = getCoverOnNeighbour(pipe.getPipePos(), facing);
+
+        boolean pipeConveyor = pipeCover instanceof ConveyorCover, tileConveyor = tileCover instanceof ConveyorCover;
+        // abort if there are two conveyors
+        if (pipeConveyor && tileConveyor) return stack;
+
+        if (tileCover != null && !checkImportCover(tileCover, false, stack))
+            return stack;
+
+        if (!pipeConveyor && !tileConveyor)
+            return insertFirst(stack, simulate);
+
+        ConveyorCover conveyor = (ConveyorCover) (pipeConveyor ? pipeCover : tileCover);
+
+        if (conveyor == null) return distributeHighestPriority(routePathsCopy, stack, simulate);
+
+        switch (conveyor.getDistributionMode()) {
+            case INSERT_FIRST -> stack = distributeHighestPriority(routePathsCopy, stack, simulate);
+            case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, simulate);
+            case ROUND_ROBIN_PRIO -> stack = distributeEquallyNoRestrictive(stack, simulate);
         }
 
         return stack;
     }
 
     /**
-     * Inserts items equally to all handlers
-     * if it couldn't insert all items, the handler will be removed
+     * Distributes items to handlers, attempting to fill handlers with a higher priority first
+     */
+    private ItemStack distributeHighestPriority(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
+        for (ItemRoutePath inv : copy) {
+            stack = insertIntoTarget(inv, stack, simulate, false);
+            if (stack.isEmpty()) return ItemStack.EMPTY;
+        }
+        return stack;
+    }
+
+    /**
+     * Equally distributes items to all handlers.
      *
      * @param copy     to insert to
      * @param stack    to insert
      * @param simulate simulate
      * @return remainder
      */
-    private ItemStack insertToHandlers(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
-        Iterator<ItemRoutePath> routePathIterator = copy.listIterator();
+    private ItemStack distributeEqually(List<ItemRoutePath> copy, ItemStack stack, boolean simulate) {
+        List<EnhancedRoundRobinData> transferred = new ArrayList<>();
+        IntList steps = new IntArrayList();
+        int min = Integer.MAX_VALUE;
+        ItemStack simStack;
+
+        // find inventories that are not full and get the amount that was inserted in total
+        for (ItemRoutePath inv : copy) {
+            simStack = stack.copy();
+            int ins = stack.getCount() - insertIntoTarget(inv, simStack, true, true).getCount();
+            if (ins <= 0)
+                continue;
+            int didTransfer = didTransferTo(inv, simulate);
+            EnhancedRoundRobinData data = new EnhancedRoundRobinData(inv, ins, didTransfer);
+            transferred.add(data);
+
+            min = Math.min(min, didTransfer);
+
+            if (!steps.contains(didTransfer)) {
+                steps.add(didTransfer);
+            }
+        }
+
+        if (transferred.isEmpty() || steps.isEmpty())
+            return stack;
+
+        if (!simulate && min < Integer.MAX_VALUE) {
+            decrementBy(min);
+        }
+
+        transferred.sort(Comparator.comparingInt(data -> data.transferred));
+        steps.sort(Integer::compare);
+
+        if (transferred.get(0).transferred != steps.getInt(0)) {
+            return stack;
+        }
+
+        int amount = stack.getCount();
+        int c = amount / transferred.size();
+        int m = amount % transferred.size();
+        List<EnhancedRoundRobinData> transferredCopy = new ArrayList<>(transferred);
+        int nextStep = steps.removeInt(0);
+
+        // equally distribute items over all inventories
+        // it takes into account how much was inserted in total
+        // f.e. if inv1 has 2 inserted and inv2 has 6 inserted, it will first try to insert 4 into inv1 so that both
+        // have 6 and then it will distribute the rest equally
+        outer:
+        while (amount > 0 && !transferredCopy.isEmpty()) {
+            Iterator<EnhancedRoundRobinData> iterator = transferredCopy.iterator();
+            while (iterator.hasNext()) {
+                EnhancedRoundRobinData data = iterator.next();
+                if (nextStep >= 0 && data.transferred >= nextStep)
+                    break;
+
+                int toInsert;
+                if (nextStep <= 0) {
+                    if (amount <= m) {
+                        // break outer;
+                        toInsert = 1;
+                    } else {
+                        toInsert = Math.min(c, amount);
+                    }
+                } else {
+                    toInsert = Math.min(amount, nextStep - data.transferred);
+                }
+                if (data.toTransfer + toInsert >= data.maxInsertable) {
+                    data.toTransfer = data.maxInsertable;
+                    iterator.remove();
+                } else {
+                    data.toTransfer += toInsert;
+                }
+
+                data.transferred += toInsert;
+
+                if ((amount -= toInsert) == 0) {
+                    break outer;
+                }
+            }
+
+            for (EnhancedRoundRobinData data : transferredCopy) {
+                if (data.transferred < nextStep)
+                    continue outer;
+            }
+            if (steps.isEmpty()) {
+                if (nextStep >= 0) {
+                    c = amount / transferredCopy.size();
+                    m = amount % transferredCopy.size();
+                    nextStep = -1;
+                }
+            } else {
+                nextStep = steps.removeInt(0);
+            }
+        }
+
         int inserted = 0;
-        int count = stack.getCount();
-        int c = count / copy.size();
-        int m = c == 0 ? count % copy.size() : 0;
-        while (routePathIterator.hasNext()) {
-            ItemRoutePath routePath = routePathIterator.next();
 
-            int amount = c;
-            if (m > 0) {
-                amount++;
-                m--;
-            }
-            amount = Math.min(amount, stack.getCount() - inserted);
-            if (amount == 0) break;
+        // finally actually insert the item
+        for (EnhancedRoundRobinData data : transferred) {
             ItemStack toInsert = stack.copy();
-            toInsert.setCount(amount);
-            int r = insert(routePath, toInsert, simulate).getCount();
-            if (r < amount) {
-                inserted += (amount - r);
-            }
-            if (r == 1 && c == 0 && amount == 1) {
-                m++;
-            }
-
-            if (r > 0)
-                routePathIterator.remove();
+            toInsert.setCount(data.toTransfer);
+            int ins = data.toTransfer - insertIntoTarget(data.routePath, toInsert, simulate, false).getCount();
+            inserted += ins;
+            transferTo(data.routePath, simulate, ins);
         }
 
         ItemStack remainder = stack.copy();
-        remainder.setCount(count - inserted);
+        remainder.shrink(inserted);
         return remainder;
+    }
+
+    /////////////////////////////////////
+    // *** ENDPOINT INSERTION LOGIC ***//
+    /////////////////////////////////////
+
+    /// Insert items into a target inventory using the specified route
+    private ItemStack insertIntoTarget(ItemRoutePath routePath, ItemStack stack, boolean simulate,
+                                       boolean ignoreLimit) {
+        int allowed = ignoreLimit ? stack.getCount() :
+                checkTransferable(routePath.getProperties().getTransferRate(), stack.getCount(), simulate);
+        if (allowed == 0 || !routePath.matchesFilters(stack)) {
+            return stack;
+        }
+        CoverBehavior pipeCover = routePath.getTargetPipe().getCoverContainer()
+                .getCoverAtSide(routePath.getTargetFacing());
+        CoverBehavior tileCover = getCoverOnNeighbour(routePath.getTargetPipe().getPipePos(),
+                routePath.getTargetFacing());
+
+        if (pipeCover != null) {
+            var defaultHandler = new ItemStackHandler(1);
+            defaultHandler.setStackInSlot(0, stack.copy());
+            IItemHandlerModifiable itemHandler = pipeCover.getItemHandlerCap(defaultHandler);
+            if (itemHandler == null || (itemHandler != defaultHandler &&
+                    (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
+                return stack;
+            }
+        }
+        IItemHandler neighbourHandler = routePath.getHandler(net.getLevel());
+        if (pipeCover instanceof RobotArmCover robotArm && robotArm.getIo() == IO.OUT) {
+            return insertOverRobotArm(neighbourHandler, robotArm, stack, simulate, allowed, ignoreLimit);
+        }
+        if (tileCover instanceof RobotArmCover robotArm && robotArm.getIo() == IO.IN) {
+            return insertOverRobotArm(neighbourHandler, robotArm, stack, simulate, allowed, ignoreLimit);
+        }
+
+        return insertIntoDestination(neighbourHandler, stack, simulate, allowed, ignoreLimit);
+    }
+
+    /// Insert into the actual destination
+    private ItemStack insertIntoDestination(IItemHandler handler, ItemStack stack, boolean simulate, int allowed,
+                                            boolean ignoreLimit) {
+        if (stack.getCount() == allowed) {
+            ItemStack re = ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
+            if (!ignoreLimit)
+                transfer(simulate, stack.getCount() - re.getCount());
+            return re;
+        }
+        ItemStack toInsert = stack.copy();
+        toInsert.setCount(Math.min(allowed, stack.getCount()));
+        int r = ItemHandlerHelper.insertItemStacked(handler, toInsert, simulate).getCount();
+        if (!ignoreLimit)
+            transfer(simulate, toInsert.getCount() - r);
+        ItemStack remainder = stack.copy();
+        remainder.setCount(r + (stack.getCount() - toInsert.getCount()));
+        return remainder;
+    }
+
+    private ItemStack distributeEquallyNoRestrictive(ItemStack stack,
+                                                     boolean simulate) {
+        // Round-robin distribute to all non-Restrictive destinations
+        List<ItemRoutePath> routePathsNonRestrictedCopy = new ArrayList<>(
+                net.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.NONRESTRICTED));
+        ItemStack remainsNonRestricted;
+        if (routePathsNonRestrictedCopy.isEmpty()) {
+            remainsNonRestricted = stack;
+        } else {
+            remainsNonRestricted = distributeEqually(routePathsNonRestrictedCopy, stack, simulate);
+        }
+        // if anything is left, distribute to Restrictive destinations
+        if (!remainsNonRestricted.isEmpty()) {
+            List<ItemRoutePath> routePathsRestrictiveCopy = new ArrayList<>(
+                    net.getNetData(pipe.getPipePos(), facing, ItemRoutePathSet.RESTRICTED));
+            return distributeEqually(routePathsRestrictiveCopy, remainsNonRestricted, simulate);
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     private ItemStack insertToHandlersEnhanced(List<ItemRoutePath> copy, ItemStack stack, int dest, boolean simulate) {
@@ -367,11 +543,10 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             case TRANSFER_ANY:
                 return insert(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                if (arm.getFilterHandler().getFilter().supportsAmounts()) {
-                    count = rate - countStack(handler, stack, arm);
-                } else {
-                    count = rate;
+                if (rate == Integer.MAX_VALUE) {
+                    rate = arm.getGlobalTransferLimit();
                 }
+                count = rate - countStack(handler, stack, arm);
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insert(handler, stack, simulate, count, ignoreLimit);
@@ -401,7 +576,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
             if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
-            else if (!ItemStack.isSameItemSameComponents(stack, slot)) continue;
+            if (!ignoreNBT && !GTUtil.isSameItemSameTags(stack, slot)) continue;
             if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }

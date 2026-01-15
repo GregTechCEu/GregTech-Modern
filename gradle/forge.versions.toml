@@ -1,20 +1,20 @@
 [versions]
+configuration = "3.1.1-neoforge"
 ldlib = "1.0.35.a"
 registrate = "MC1.21-1.3.0+67"
-configuration = "3.1.0-neoforge"
 
-jei = "19.21.0.247"
+jei = "19.25.1.328"
 rei = "16.0.799"
-emi = "1.1.21+1.21.1"
+emi = "1.1.22+1.21.1"
 ae2 = "19.2.8"
-kubejs = "2101.7.1-build.181"
-rhino = "2101.2.7-build.74"
+kubejs = "2101.7.2-build.336"
+rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
 theoneprobe = "1.21_neo-12.0.4-6"
 curios = "9.4.2+1.21.1"
 kotlinforforge = "5.7.0"
-shimmer = "1.20.1-0.2.4"
+# shimmer = "1.20.1-0.2.4"
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
 ftblibrary = "2101.1.12"
 ftbteams = "2101.1.2"
@@ -27,7 +27,15 @@ bookshelf = "21.1.56"
 ae2wtlib = "19.2.2"
 argonauts = "1.2.4"
 # FIXME for some reason their maven only has versions up to 1.1.10?
-heracles = "1.1.10"
+# heracles = "1.1.13"
+# journeyMapApi = "1.20-1.9-SNAPSHOT"
+# ftblibrary = "2001.2.4"
+# ftbteams = "2001.3.0"
+# ftbquests = "2001.4.11"
+# ftbchunks = "2001.3.4"
+create = "6.0.8-168"
+ponder = "1.0.64"
+flywheel = "1.0.5"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -54,6 +62,8 @@ ftbchunks-cm = "6295696"
 ldlib               = { module = "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1", version.ref = "ldlib" }
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
 configuration       = { module = "dev.toma.configuration:configuration-1.21.1", version.ref = "configuration" }
+# mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
+# mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
 
 jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
@@ -68,22 +78,26 @@ kubejs              = { module = "dev.latvian.mods:kubejs-neoforge", version.ref
 rhino               = { module = "dev.latvian.mods:rhino", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-neoforge", version.ref = "clothconfig" }
+create              = { module = "com.simibubi.create:create-1.21.1", version.ref = "create" }
+ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
+flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
+flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
 theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
-shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
+# shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-neoforge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-neoforge", version.ref = "ftbchunks" }
 resourcefullib      = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefullib" }
-gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
+# gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.3", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1", version.ref = "bookshelf" }
 ae2wtlib            = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wtlib" }
 # TODO update these once there's 1.21 versions
-argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.20.4", version.ref = "argonauts" }
-heracles            = { module = "earth.terrarium.heracles:heracles-forge-1.20.1", version.ref = "heracles" }
+# argonauts           = { module = "earth.terrarium.argonauts:argonauts-neoforge-1.21.1`", version.ref = "argonauts" }
+# heracles            = { module = "earth.terrarium.heracles:heracles-neoforge-1.21.1", version.ref = "heracles" }
 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }

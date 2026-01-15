@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +27,16 @@ public class GTCapabilityHelper {
     @Nullable
     public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
         return itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+    }
+
+    @Nullable
+    public static IItemHandler getItemHandler(Level level, BlockPos pos, @Nullable Direction side) {
+        return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+    }
+
+    @Nullable
+    public static IFluidHandler getFluidHandler(Level level, BlockPos pos, @Nullable Direction side) {
+        return level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
     }
 
     @Nullable
@@ -100,5 +112,10 @@ public class GTCapabilityHelper {
 
     public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
         return entity.getData(GTAttachmentTypes.MEDICAL_CONDITION_TRACKER);
+    }
+
+    @Nullable
+    public static IMonitorComponent getMonitorComponent(Level level, BlockPos pos, @Nullable Direction side) {
+        return level.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, pos, side);
     }
 }

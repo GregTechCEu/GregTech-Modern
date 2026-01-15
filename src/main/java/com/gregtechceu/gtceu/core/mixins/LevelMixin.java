@@ -67,7 +67,7 @@ public abstract class LevelMixin implements LevelAccessor {
     @SuppressWarnings("ConstantValue")
     @Inject(method = "markAndNotifyBlock",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/level/Level;blockUpdated(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V",
+                     target = "Lnet/minecraft/world/level/Level;setBlocksDirty(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V",
                      remap = true),
             remap = false)
     private void gtceu$updateChunkMultiblocks(BlockPos pos, LevelChunk chunk,
@@ -78,10 +78,6 @@ public abstract class LevelMixin implements LevelAccessor {
         MultiblockWorldSavedData mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
         Set<MultiblockState> defensiveCopy = new HashSet<>(mwsd.getControllersInChunk(chunk.getPos()));
         for (MultiblockState structure : defensiveCopy) {
-            if (structure.getController() == null || !structure.getController().isFormed()) {
-                // skip for unloaded/unformed multiblocks
-                continue;
-            }
             if (structure.isPosInCache(pos)) {
                 serverLevel.getServer().executeBlocking(() -> structure.onBlockStateChanged(pos, newState));
             }

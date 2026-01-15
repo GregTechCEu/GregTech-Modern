@@ -22,7 +22,7 @@ All periodic table elements are present in GT, but some of them don't have any p
         GTMaterials.Selenium.setProperty(PropertyKey.DUST, new $DustProperty());
 
         // Blast Property
-        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new $BlastProperty(8000, 'higher', GTValues.VA(GTValues.MV), 8000));
+        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new $BlastProperty(8000, 'higher', GTValues.VA[GTValues.MV], 8000));
 
     });
 ```

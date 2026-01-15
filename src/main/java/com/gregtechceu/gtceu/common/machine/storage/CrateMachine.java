@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
@@ -27,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -38,13 +40,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+
 public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
                           IDropSaveMachine, IInteractedMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CrateMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
 
-    public static final BooleanProperty TAPED_PROPERTY = BooleanProperty.create("taped");
+    public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
 
     @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
@@ -113,7 +117,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     }
 
     @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
+    public void applyImplicitComponents(MetaMachineBlockEntity.ExDataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         if (componentInput.get(DataComponents.CONTAINER) != null) {
             var contents = componentInput.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
@@ -122,8 +126,19 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         }
     }
 
+    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
+        IMachineLife.super.onMachinePlaced(player, stack);
+        // CompoundTag tag = stack.getTag();
+        if (stack.getOrDefault(GTDataComponents.TAPED, null) != null) {
+            var contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+            contents.copyInto(inventory.storage.getStacks());
+            setRenderState(getRenderState().setValue(TAPED_PROPERTY, false));
+        }
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
+    }
+
     @Override
-    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (isTaped) {
             components.set(GTDataComponents.TAPED, Unit.INSTANCE);
@@ -132,7 +147,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     }
 
     @Override
-    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
+    public void removeItemComponentsFromTag(CompoundTag tag) {
         super.removeItemComponentsFromTag(tag);
         tag.remove("isTaped");
         tag.remove("inventory");

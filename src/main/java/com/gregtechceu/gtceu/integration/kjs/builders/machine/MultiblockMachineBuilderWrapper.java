@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -44,7 +45,7 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +60,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     private final MultiblockMachineBuilder internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id, MultiblockMachineBuilder internal) {
-        super(id);
+        super(GTResourceLocation.implicitAsGtceu(id));
         this.internal = internal;
         this.dummyBuilder = true;
     }
@@ -190,7 +191,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeOutputLimits(Object2IntMap<RecipeCapability<?>> map) {
+    public MultiblockMachineBuilderWrapper recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
         internal.recipeOutputLimits(map);
         return this;
     }

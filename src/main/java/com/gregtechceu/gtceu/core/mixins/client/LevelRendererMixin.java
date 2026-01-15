@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -108,14 +109,15 @@ public abstract class LevelRendererMixin {
         UseOnContext context = new UseOnContext(minecraft.player, InteractionHand.MAIN_HAND, hitResult);
         var positions = ToolHelper.getHarvestableBlocks(aoeDefinition, context);
 
-        Vec3 vec3 = camera.getPosition();
-        double camX = vec3.x();
-        double camY = vec3.y();
-        double camZ = vec3.z();
+        Vec3 camPos = camera.getPosition();
+
+        poseStack.pushPose();
+        poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
         for (BlockPos pos : positions) {
             poseStack.pushPose();
-            poseStack.translate(pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ);
+            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+
             PoseStack.Pose last = poseStack.last();
             VertexConsumer breakProgressDecal = new SheetedDecalTextureGenerator(
                     this.renderBuffers.crumblingBufferSource()
@@ -126,6 +128,8 @@ public abstract class LevelRendererMixin {
                     level, poseStack, breakProgressDecal, modelData);
             poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 
     @Shadow
@@ -187,9 +191,14 @@ public abstract class LevelRendererMixin {
             doRenderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
-            if (rendererCfg.coloredTieredMachineOutline && mbe.getMetaMachine() instanceof ITieredMachine tiered) {
-                doRenderColoredOutline = true;
-                rgb = GTValues.VCM[tiered.getTier()];
+            if (rendererCfg.coloredTieredMachineOutline) {
+                if (mbe.getMetaMachine() instanceof SteamMachine steam) {
+                    doRenderColoredOutline = true;
+                    rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
+                } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                    doRenderColoredOutline = true;
+                    rgb = GTValues.VCM[tiered.getTier()];
+                }
             }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             doRenderColoredOutline = true;

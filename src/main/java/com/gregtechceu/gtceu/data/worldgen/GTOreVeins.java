@@ -458,7 +458,6 @@ public class GTOreVeins {
                 .layeredVeinGenerator(generator -> generator
                         .withLayerPattern(() -> GTLayerPattern.builder(stoneRules)
                                 .layer(l -> l.weight(3).mat(Coal).size(2, 4))
-                                .layer(l -> l.weight(3).mat(Coal).size(2, 4))
                                 .build()))
                 .surfaceIndicatorGenerator(indicator -> indicator
                         .surfaceRock(Coal)));

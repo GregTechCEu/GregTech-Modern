@@ -20,7 +20,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTDimensionMarkers {
 
     static {
-        REGISTRATE.creativeModeTab(null);
+        REGISTRATE.resetCreativeModeTab();
     }
 
     public static final BlockEntry<Block> OVERWORLD_MARKER = createMarker("overworld");

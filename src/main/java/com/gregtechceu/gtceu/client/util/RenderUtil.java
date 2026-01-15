@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -15,20 +16,33 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -195,10 +209,47 @@ public class RenderUtil {
         return fluid;
     }
 
-    public static void moveToFace(PoseStack poseStack, double x, double y, double z, Direction face) {
-        poseStack.translate(x + 0.5d + face.getStepX() * 0.5d,
-                y + 0.5d + face.getStepY() * 0.5d,
-                z + 0.5d + face.getStepZ() * 0.5d);
+    public static void moveToFace(PoseStack poseStack, Vector3fc pos, Direction face) {
+        moveToFace(poseStack, pos.x(), pos.y(), pos.z(), face);
+    }
+
+    public static void moveToFace(PoseStack poseStack, float x, float y, float z, Direction face) {
+        poseStack.translate(Math.fma(face.getStepX(), 0.5f, x),
+                Math.fma(face.getStepY(), 0.5f, y),
+                Math.fma(face.getStepZ(), 0.5f, z));
+    }
+
+    public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,
+                                 MultiBufferSource bufferSource, PoseStack poseStack) {
+        int packedLight = LevelRenderer.getLightColor(level, state, pos);
+
+        RenderShape renderShape = state.getRenderShape();
+        if (renderShape == RenderShape.INVISIBLE) {
+            return;
+        } else if (renderShape == RenderShape.ENTITYBLOCK_ANIMATED) {
+            // if it's a block entity, use the BEWLR to render it instead of the empty block model
+            ItemStack stack = new ItemStack(state.getBlock());
+            IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemDisplayContext.NONE,
+                    poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
+            return;
+        }
+
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderer.getBlockModel(state);
+        ModelData modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
+
+        int blockColor = Minecraft.getInstance().getBlockColors().getColor(state, level, pos, 0);
+        float r = (float) (blockColor >> 16 & 0xFF) / 255.0F;
+        float g = (float) (blockColor >> 8 & 0xFF) / 255.0F;
+        float b = (float) (blockColor & 0xFF) / 255.0F;
+
+        for (RenderType renderType : model.getRenderTypes(state, RandomSource.create(42), modelData)) {
+            blockRenderer.getModelRenderer().renderModel(poseStack.last(),
+                    bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType, false)),
+                    state, model, r, g, b,
+                    packedLight, OverlayTexture.NO_OVERLAY,
+                    modelData, renderType);
+        }
     }
 
     /**
@@ -216,12 +267,12 @@ public class RenderUtil {
         Quaternionf rotation = new Quaternionf();
         if (face.getAxis() == Direction.Axis.Y) {
             poseStack.scale(1.0f, -1.0f, 1.0f);
-            rotation.rotateAxis(rotationAngle, new Vector3f(1, 0, 0));
+            rotation.rotateX(rotationAngle);
         } else {
             poseStack.scale(-1.0f, -1.0f, -1.0f);
-            rotation.rotateAxis(rotationAngle, new Vector3f(0, 1, 0));
+            rotation.rotateY(rotationAngle);
         }
-        rotation.rotateAxis(getSpinAngle(spin, face), new Vector3f(0, 0, 1));
+        rotation.rotateZ(getSpinAngle(spin, face));
 
         poseStack.mulPose(rotation);
     }
@@ -251,7 +302,7 @@ public class RenderUtil {
                 ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.getFirst().content).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
-                    if (!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, stack)) {
+                    if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
                         originalMethod.call(entity, level, output, x, y, seed, z);
                         return true;
                     }

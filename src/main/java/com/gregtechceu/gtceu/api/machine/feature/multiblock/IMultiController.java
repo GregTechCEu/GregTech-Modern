@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
@@ -30,7 +31,7 @@ import java.util.concurrent.locks.Lock;
 
 public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
-    BooleanProperty IS_FORMED_PROPERTY = BooleanProperty.create("is_formed");
+    BooleanProperty IS_FORMED_PROPERTY = GTMachineModelProperties.IS_FORMED;
 
     @Override
     default MultiblockControllerMachine self() {
@@ -161,6 +162,8 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     default boolean isBatchEnabled() {
         return false;
     }
+
+    default void setBatchEnabled(boolean batch) {}
 
     /**
      * Called from part, when part is invalid due to chunk unload or broken.

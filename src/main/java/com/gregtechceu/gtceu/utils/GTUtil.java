@@ -19,6 +19,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -30,7 +32,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -47,6 +54,7 @@ import org.lwjgl.glfw.GLFW;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
 
@@ -65,6 +73,17 @@ public class GTUtil {
     });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
+
+    private static final MapColor[] MAP_COLORS;
+
+    static {
+        int maxId = MapColor.GLOW_LICHEN.id;
+        MAP_COLORS = new MapColor[maxId];
+        for (int i = 0; i < maxId; i++) {
+            // Skip MapColor.NONE
+            MAP_COLORS[i] = MapColor.byId(i + 1);
+        }
+    }
 
     /**
      * Convenience method to get from VN -> Tier
@@ -358,10 +377,10 @@ public class GTUtil {
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
             return FluidType.BUCKET_VOLUME;
-        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidType.BUCKET_VOLUME * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
@@ -377,19 +396,30 @@ public class GTUtil {
     /**
      * Determines dye color nearest to specified RGB color
      */
-    public static @Nullable DyeColor determineDyeColor(int rgbColor) {
+    public static DyeColor determineDyeColor(int rgbColor) {
+        return closestColor(rgbColor, DyeColor.values(), DyeColor::getTextColor);
+    }
+
+    /**
+     * Determines map color nearest to specified RGB color
+     */
+    public static MapColor determineMapColor(int rgbColor) {
+        return closestColor(rgbColor, MAP_COLORS, c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+    }
+
+    private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
         double min = Double.MAX_VALUE;
-        DyeColor minColor = null;
-        for (DyeColor dyeColor : DyeColor.values()) {
-            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
+        T minColor = null;
+        for (T color : colors) {
+            float[] c2 = GradientUtil.getRGB(extractRgbColor.apply(color));
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            if (min > distance) {
-                minColor = dyeColor;
+            if (Double.compare(min, distance) > 0) {
+                minColor = color;
                 min = distance;
             }
         }
@@ -443,6 +473,45 @@ public class GTUtil {
         if (GTCEu.isModLoaded(GTValues.MODID_JAVD) && biome.is(javdVoidBiome)) {
             return !world.isDay();
         } else return world.isDay();
+    }
+
+    /**
+     * @param state the blockstate to check
+     * @return if the block is a snow layer or snow block
+     */
+    public static boolean isBlockSnow(@NotNull BlockState state) {
+        return state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK);
+    }
+
+    /**
+     * Attempt to break a (single) snow layer at the given BlockPos.
+     * Will also turn snow blocks into snow layers at height 7.
+     *
+     * @return true if the passed IBlockState was valid snow block
+     */
+    public static boolean tryBreakSnow(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
+                                       boolean playSound) {
+        boolean success = false;
+        if (state.is(Blocks.SNOW_BLOCK)) {
+            level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 7),
+                    Block.UPDATE_ALL_IMMEDIATE);
+            success = true;
+        } else if (state.getBlock() == Blocks.SNOW) {
+            int layers = state.getValue(SnowLayerBlock.LAYERS);
+            if (layers == 1) {
+                level.destroyBlock(pos, false);
+            } else {
+                level.setBlock(pos, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers - 1),
+                        Block.UPDATE_ALL_IMMEDIATE);
+            }
+            success = true;
+        }
+
+        if (success && playSound) {
+            level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
+        }
+
+        return success;
     }
 
     public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
@@ -507,5 +576,17 @@ public class GTUtil {
         }
 
         throw new IllegalArgumentException("Invalid slot '" + slotType + "': " + slotIndex);
+    }
+
+    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
+        return ItemStack.isSameItemSameComponents(s1, s2);
+    }
+
+    public static <T> T getLast(List<T> list) {
+        return list.get(list.size() - 1);
+    }
+
+    public static <T> ArrayList<T> list(T obj) {
+        return new ArrayList<>(List.of(obj));
     }
 }

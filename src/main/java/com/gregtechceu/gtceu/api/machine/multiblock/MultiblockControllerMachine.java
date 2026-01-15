@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockState;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -165,8 +166,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     public void onStructureFormed() {
         isFormed = true;
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
-            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, true));
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
         }
 
         this.parts.clear();
@@ -190,8 +191,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     public void onStructureInvalid() {
         isFormed = false;
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
-            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, false));
+        if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
         }
 
         for (IMultiPart part : parts) {

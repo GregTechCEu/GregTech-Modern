@@ -26,6 +26,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -52,12 +53,26 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipe> {
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
+        List<GTRecipeCategory> subCategories = new ArrayList<>();
+        // run main categories first
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
-            if (category == type.getCategory()) type.buildRepresentativeRecipes();
+            if (category == type.getCategory()) {
+                type.buildRepresentativeRecipes();
+            } else {
+                subCategories.add(category);
+                continue;
+            }
             var wrapped = List.copyOf(type.getRecipesInCategory(category));
             registration.addRecipes(TYPES.apply(category), wrapped);
+        }
+        // run subcategories
+        for (GTRecipeCategory subCategory : subCategories) {
+            if (!subCategory.shouldRegisterDisplays()) continue;
+            var type = subCategory.getRecipeType();
+            var wrapped = List.copyOf(type.getRecipesInCategory(subCategory));
+            registration.addRecipes(TYPES.apply(subCategory), wrapped);
         }
     }
 

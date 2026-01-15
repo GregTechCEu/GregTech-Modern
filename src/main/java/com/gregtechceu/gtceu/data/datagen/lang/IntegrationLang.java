@@ -97,11 +97,19 @@ public class IntegrationLang {
         provider.add("gtceu.jade.progress_sec", "%s / %s s");
         provider.add("gtceu.jade.progress_tick", "%s / %s t");
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
+        provider.add("gtceu.jade.fluid_use", "%s mB/t");
+        provider.add("gtceu.jade.amperage_use", "%s A");
+        provider.add("gtceu.jade.at", " @ ");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");
         provider.add("gtceu.top.progress_sec", " / %s s");
         provider.add("gtceu.top.progress_tick", " / %s t");
+
+        provider.add("gtceu.top.ldp_endpoint.is_formed", "§aPipeline Formed§r");
+        provider.add("gtceu.top.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
+        provider.add("gtceu.top.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("gtceu.top.ldp_endpoint.output_direction", "Output Direction: %s");
     }
 
     private static void initMinimapLang(RegistrateLangProvider provider) {

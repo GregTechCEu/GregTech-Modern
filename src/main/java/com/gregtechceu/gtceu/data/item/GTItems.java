@@ -23,8 +23,9 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
-import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.common.item.behavior.MetaMachineConfigCopyBehaviour;
+import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
+import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
 import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
@@ -53,7 +54,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
@@ -127,7 +127,7 @@ public class GTItems {
             .register();
 
     @SuppressWarnings("unchecked")
-    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
+    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[18];
     public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
     public static final ItemEntry<Item> SHAPE_MOLD_BOTTLE;
@@ -141,6 +141,11 @@ public class GTItems {
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
     public static final ItemEntry<Item> SHAPE_MOLD_ROTOR;
     public static final ItemEntry<Item> SHAPE_MOLD_PILL;
+    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_TINY;
+    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_SMALL;
+    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_NORMAL;
+    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_LARGE;
+    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_HUGE;
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
@@ -195,8 +200,29 @@ public class GTItems {
                 .lang("Casting Mold (Pill)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
+        SHAPE_MOLDS[13] = SHAPE_MOLD_PIPE_TINY = REGISTRATE.item("tiny_pipe_casting_mold", Item::new)
+                .lang("Casting Mold (Tiny Pipe)")
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
+        SHAPE_MOLDS[14] = SHAPE_MOLD_PIPE_SMALL = REGISTRATE.item("small_pipe_casting_mold", Item::new)
+                .lang("Casting Mold (Small Pipe)")
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
+        SHAPE_MOLDS[15] = SHAPE_MOLD_PIPE_NORMAL = REGISTRATE.item("normal_pipe_casting_mold", Item::new)
+                .lang("Casting Mold (Normal Pipe)")
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
+        SHAPE_MOLDS[16] = SHAPE_MOLD_PIPE_LARGE = REGISTRATE.item("large_pipe_casting_mold", Item::new)
+                .lang("Casting Mold (Large Pipe)")
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
+        SHAPE_MOLDS[17] = SHAPE_MOLD_PIPE_HUGE = REGISTRATE.item("huge_pipe_casting_mold", Item::new)
+                .lang("Casting Mold (Huge Pipe)")
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
     }
 
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] SHAPE_EXTRUDERS = new ItemEntry[27];
     public static ItemEntry<Item> SHAPE_EXTRUDER_PLATE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_ROD;
@@ -1431,15 +1457,15 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::new)
             .lang("Data Stick").onRegister(attach(DataItemBehavior.INSTANCE))
-            .properties(p -> p.component(GTDataComponents.DATA_ITEM, false))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, new DataItem(false, 8)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::new)
             .lang("Data Orb").onRegister(attach(DataItemBehavior.INSTANCE))
-            .properties(p -> p.component(GTDataComponents.DATA_ITEM, false))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, new DataItem(false, 64)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::new)
             .lang("Data Module").onRegister(attach(DataItemBehavior.INSTANCE))
-            .properties(p -> p.component(GTDataComponents.DATA_ITEM, true))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, new DataItem(true, 256)))
             .register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
@@ -1801,6 +1827,11 @@ public class GTItems {
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
+    public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
+            .item("wireless_transmitter_cover", ComponentItem::new)
+            .lang("Wireless Transmitter")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.WIRELESS_TRANSMITTER)))
+            .register();
 
     public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE
             .item("machine_controller_cover", ComponentItem::new)
@@ -1881,6 +1912,17 @@ public class GTItems {
             .item("ender_fluid_link_cover", ComponentItem::new)
             .lang("Ender Fluid Link")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
+            .register();
+
+    public static ItemEntry<ComponentItem> COVER_ENDER_ITEM_LINK = REGISTRATE
+            .item("ender_item_link_cover", ComponentItem::new)
+            .lang("Ender Item Link")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_ITEM_LINK)))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ENDER_REDSTONE_LINK = REGISTRATE
+            .item("ender_redstone_link_cover", ComponentItem::new)
+            .lang("Ender Redstone Link")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_REDSTONE_LINK)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
@@ -2002,6 +2044,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("circuit"),
                     (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
             .onRegister(attach(new IntCircuitBehaviour()))
+            .tag(CustomTags.SKIP_ITEM_DETECTOR)
             .register();
 
     // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",
@@ -2442,7 +2485,7 @@ public class GTItems {
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
             .item("electric_jetpack",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new Jetpack(30,
+                            .setArmorLogic(new Jetpack(15,
                                     1_000_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
                                     ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
@@ -2457,7 +2500,7 @@ public class GTItems {
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
             .item("advanced_electric_jetpack",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new AdvancedJetpack(512,
+                            .setArmorLogic(new AdvancedJetpack(256,
                                     6_400_000L * (long) Math.max(1,
                                             Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
                                     ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
@@ -2538,7 +2581,19 @@ public class GTItems {
             .lang("Treated Wood Boat with Chest")
             .register();
 
-    public static void init() {}
+    public static ItemEntry<ComponentItem> TEXT_MODULE = REGISTRATE.item("text_module", ComponentItem::new)
+            .onRegister(attach(new TextModuleBehaviour()))
+            .register();
+
+    public static ItemEntry<ComponentItem> IMAGE_MODULE = REGISTRATE.item("image_module", ComponentItem::new)
+            .onRegister(attach(new ImageModuleBehaviour()))
+            .register();
+
+    public static void init() {
+        // GTMaterialItems.generateMaterialItems();
+        // GTMaterialItems.generateTools();
+        // GTMaterialItems.generateArmors();
+    }
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
         return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo);

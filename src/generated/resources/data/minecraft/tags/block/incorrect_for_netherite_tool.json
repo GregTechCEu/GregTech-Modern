@@ -1,6 +1,6 @@
 {
     "values": [
-        "#gtceu:needs_duranium_tool",
-        "#gtceu:needs_neutronium_tool"
+        "#gtceu:needs_neutronium_tool",
+        "#gtceu:needs_duranium_tool"
     ]
 }

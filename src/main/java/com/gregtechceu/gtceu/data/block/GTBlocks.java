@@ -51,6 +51,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
@@ -1174,6 +1175,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/signs/machine_casing_stripes_b"));
 
     public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
+    public static Map<TagPrefix, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
 
     public static BlockEntry<Block> RED_GRANITE;
     public static BlockEntry<Block> MARBLE;
@@ -1248,6 +1250,12 @@ public class GTBlocks {
             }
         }
         STONE_BLOCKS = builder.build();
+
+        STONE_BLOCKS.row(StoneBlockType.COBBLE).forEach((ore, block) -> {
+            if (ore.generateBlocks) {
+                GTBlocks.registerCobbleBlock(ore.getTagPrefix(), block::getDefaultState);
+            }
+        });
 
         RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.RED_GRANITE);
         MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.MARBLE);
@@ -1382,9 +1390,18 @@ public class GTBlocks {
         };
     }
 
+    public static void registerCobbleBlock(TagPrefix orePrefix, Supplier<BlockState> state) {
+        COBBLE_BLOCKS.put(orePrefix, state);
+    }
+
+    public static void removeCobbleBlock(TagPrefix orePrefix) {
+        COBBLE_BLOCKS.remove(orePrefix);
+    }
+
     public static void init() {
         // Decor Blocks
         generateStoneBlocks();
+        initializeCobbleReplacements();
 
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
@@ -1394,6 +1411,27 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+    }
+
+    private static void initializeCobbleReplacements() {
+        // replacement blocks for mc based stone types
+        registerCobbleBlock(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreRedGranite,
+                STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.RED_GRANITE)::getDefaultState);
+        registerCobbleBlock(TagPrefix.oreMarble,
+                STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.MARBLE)::getDefaultState);
+        registerCobbleBlock(TagPrefix.oreSand, Blocks.SAND::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreGravel, Blocks.GRAVEL::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreRedSand, Blocks.RED_SAND::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreBasalt, Blocks.BASALT::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreBlackstone, Blocks.BLACKSTONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreEndstone, Blocks.END_STONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreNetherrack, Blocks.NETHERRACK::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreTuff, Blocks.TUFF::defaultBlockState);
     }
 
     public static boolean doMetalPipe(Material material) {

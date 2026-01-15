@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.core.MixinHelpers;
@@ -59,9 +60,11 @@ import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -156,8 +159,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(MixinHelpers.getCurrentBERegistries()));
-        tag.put("stored", stored.save(MixinHelpers.getCurrentBERegistries()));
+        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(GTRegistries.builtinRegistry()));
+        if (!stored.isEmpty()) {
+            tag.put("stored", stored.save(GTRegistries.builtinRegistry()));
+        } else {
+            tag.remove("stored");
+        }
         tag.putLong("storedAmount", storedAmount);
     }
 
@@ -166,10 +173,18 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         super.loadCustomPersistedData(tag);
 
         var from = tag.contains("cache") ? tag.getCompound("cache") : tag;
-        this.lockedFluid.readFromNBT(MixinHelpers.getCurrentBERegistries(), from.getCompound("lockedFluid"));
+        var registry = Objects.requireNonNullElse(MixinHelpers.getCurrentBERegistries(),
+                GTRegistries.builtinRegistry());
+        this.lockedFluid.readFromNBT(registry, from.getCompound("lockedFluid"));
 
-        var stored = FluidStack.parseOptional(MixinHelpers.getCurrentBERegistries(), tag.getCompound("stored"));
-        this.stored = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
+        if (tag.contains("stored")) {
+            var v = MixinHelpers.getCurrentBERegistries();
+            LogManager.getLogger().warn("{}", v);
+            var stored = FluidStack.parseOptional(registry, tag.getCompound("stored"));
+            this.stored = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
+        } else {
+            this.stored = FluidStack.EMPTY;
+        }
 
         if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
         else this.storedAmount = tag.getLong("storedAmount");

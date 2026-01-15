@@ -27,8 +27,8 @@ public class MachineLang {
 
         provider.add("gtceu.machine.lp_steam_extractor.tooltip", "§7Extracting your first Rubber");
         provider.add("gtceu.machine.hp_steam_extractor.tooltip", "§7Extracting your first Rubber");
-        provider.add("gtceu.machine.lp_steam_macerator.tooltip", "§7Macerating your Ores");
-        provider.add("gtceu.machine.hp_steam_macerator.tooltip", "§7Macerating your Ores");
+        provider.add("gtceu.machine.lp_steam_macerator.tooltip", "§7Macerating your Ores without Byproducts");
+        provider.add("gtceu.machine.hp_steam_macerator.tooltip", "§7Macerating your Ores without Byproducts");
         provider.add("gtceu.machine.lp_steam_compressor.tooltip", "§7Compressing Items");
         provider.add("gtceu.machine.hp_steam_compressor.tooltip", "§7Compressing Items");
         provider.add("gtceu.machine.lp_steam_forge_hammer.tooltip", "§7Forge Hammer");
@@ -51,9 +51,9 @@ public class MachineLang {
                 "§7Mines block on front face and collects its drops");
         provider.add("gtceu.machine.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
 
-        provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating up§r%s");
-        provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling down§r%s");
-        provider.add("gtceu.machine.boiler.info.producing.steam", " §a(boiling water)");
+        provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating§r");
+        provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling§r");
+        provider.add("gtceu.machine.boiler.info.production.data", "§aProducing %s§a mB/t");
 
         ///////////////////////////////////////////////////
         // Standard Machines //
@@ -484,6 +484,7 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.minez", "mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
+        provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
 
         provider.add("gtceu.machine.fluid_drilling_rig.description",
                 "§7Drills fluids from veins under bedrock.");
@@ -800,6 +801,21 @@ public class MachineLang {
                 "§oME Input Bus Configuration Data");
         provider.add("gtceu.machine.me.fluid_import.data_stick.name",
                 "§oME Input Hatch Configuration Data");
+
+        provider.add("gtceu.gui.title.adv_stocking_config.min_item_count",
+                "Min. Item Count");
+        provider.add("gtceu.gui.title.adv_stocking_config.min_fluid_count",
+                "Min. Fluid Count");
+        provider.add("gtceu.gui.adv_stocking_config.min_item_count",
+                "Minimum Item Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.adv_stocking_config.min_fluid_count",
+                "Minimum Fluid Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.title.adv_stocking_config.ticks_per_cycle",
+                "Ticks Per Cycle");
+        provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",
+                "Delay between item list updates");
+        provider.add("gtceu.gui.adv_stocking_config.title",
+                "Configure Automatic Stocking");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");

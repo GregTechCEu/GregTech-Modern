@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.data.datafixer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
-import com.gregtechceu.gtceu.common.datafixer.fixes.EntityDamageBehaviorFix;
-import com.gregtechceu.gtceu.common.datafixer.fixes.GTItemStackComponentizationFix;
-import com.gregtechceu.gtceu.common.datafixer.fixes.GTToolComponentFix;
-import com.gregtechceu.gtceu.common.datafixer.fixes.OilVariantsRenameFix;
+import com.gregtechceu.gtceu.common.datafixer.fixes.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.util.datafix.DataFixTypes;
@@ -63,12 +60,18 @@ public class GTDataFixers {
         builder.addFixer(ItemRenameFix.create(schemaV1, "advanced_nanomuscle_chestplate rename fix",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
-        builder.addFixer(ItemRenameFix.create(schemaV1, "U238 rename fix",
-                createRenamer(Pattern.compile("gtceu:uranium_"), "gtceu:uranium_238_")));
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 rename fix",
-                createRenamer(Pattern.compile("gtceu:plutonium_"), "gtceu:plutonium_239_")));
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Red granite rename fix",
-                createRenamer(Pattern.compile("gtceu:granite_red"), "gtceu:red_granite")));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "U238 item rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_")));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "U238 block rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_")));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Pu239 item rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_")));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Pu239 block rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_")));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Red granite item rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite")));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Red granite block rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite")));
 
         builder.addFixer(ItemRenameFix.create(schemaV1, "Raw oil bucket rename fix",
                 createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS)));
@@ -78,7 +81,7 @@ public class GTDataFixers {
         builder.addFixer(new GTItemStackComponentizationFix(schemaV1));
         Schema schemaV2 = builder.addSchema(2, SAME_NAMESPACED);
         builder.addFixer(ItemRenameFix.create(schemaV2, "Tungstensteel rename fix",
-                createRenamer(Pattern.compile("gtceu:tungstensteel"), "gtceu:tungsten_steel")));
+                createRenamer(Pattern.compile("gtceu:(.*)tungstensteel"), "gtceu:$1tungsten_steel")));
 
         builder.addFixer(ItemRenameFix.create(schemaV2, "Palladium Substation Casing item rename fix",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing")));
@@ -88,6 +91,13 @@ public class GTDataFixers {
         Schema schemaV3 = builder.addSchema(3, SAME_NAMESPACED);
         builder.addFixer(new GTToolComponentFix(schemaV3));
         builder.addFixer(new EntityDamageBehaviorFix(schemaV3));
+
+        Schema schemaV4 = builder.addSchema(4, SAME_NAMESPACED);
+        builder.addFixer(new DataItemComponentFix(schemaV4));
+        builder.addFixer(ItemRenameFix.create(schemaV1, "Limonite rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)yellow_limonite"), "gtceu:$1limonite")));
+        builder.addFixer(BlockRenameFix.create(schemaV1, "Limonite rename fix",
+                createRenamer(Pattern.compile("gtceu:(.*)yellow_limonite"), "gtceu:$1limonite")));
     }
 
     private static UnaryOperator<String> createRenamer(String oldName, String newName) {

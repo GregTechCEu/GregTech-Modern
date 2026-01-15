@@ -16,14 +16,13 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.component.*;
-import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
 import java.util.*;
 
 public class GTRecipeComponents {
 
-    public static final RecipeComponent<CompoundTag> TAG = new RecipeComponent<>() {
+    public static final RecipeComponent<CompoundTag> TAG = new RecipeComponent<CompoundTag>() {
 
         @Override
         public Codec<CompoundTag> codec() {
@@ -39,8 +38,13 @@ public class GTRecipeComponents {
         public String toString() {
             return "tag";
         }
+
+        @Override
+        public RecipeComponentType<CompoundTag> type() {
+            return RecipeComponentType.<CompoundTag>unit(ResourceLocation.parse("tag"), this);
+        }
     };
-    public static final RecipeComponent<ResourceLocation> RESOURCE_LOCATION = new RecipeComponent<>() {
+    public static final RecipeComponent<ResourceLocation> RESOURCE_LOCATION = new RecipeComponent<ResourceLocation>() {
 
         @Override
         public Codec<ResourceLocation> codec() {
@@ -56,8 +60,13 @@ public class GTRecipeComponents {
         public String toString() {
             return "resource_location";
         }
+
+        @Override
+        public RecipeComponentType<ResourceLocation> type() {
+            return RecipeComponentType.<ResourceLocation>unit(ResourceLocation.parse("resource_location"), this);
+        }
     };
-    public static final RecipeComponent<RecipeCapability<?>> RECIPE_CAPABILITY = new RecipeComponent<>() {
+    public static final RecipeComponent<RecipeCapability<?>> RECIPE_CAPABILITY = new RecipeComponent<RecipeCapability<?>>() {
 
         @Override
         public Codec<RecipeCapability<?>> codec() {
@@ -73,8 +82,13 @@ public class GTRecipeComponents {
         public String toString() {
             return "recipe_capability";
         }
+
+        @Override
+        public RecipeComponentType<RecipeCapability<?>> type() {
+            return RecipeComponentType.<RecipeCapability<?>>unit(ResourceLocation.parse("recipe_capability"), this);
+        }
     };
-    public static final RecipeComponent<ChanceLogic> CHANCE_LOGIC = new RecipeComponent<>() {
+    public static final RecipeComponent<ChanceLogic> CHANCE_LOGIC = new RecipeComponent<ChanceLogic>() {
 
         @Override
         public Codec<ChanceLogic> codec() {
@@ -90,9 +104,14 @@ public class GTRecipeComponents {
         public String toString() {
             return "chance_logic";
         }
+
+        @Override
+        public RecipeComponentType<ChanceLogic> type() {
+            return RecipeComponentType.<ChanceLogic>unit(ResourceLocation.parse("chance_logic"), this);
+        }
     };
 
-    public static final RecipeComponent<RecipeCondition<?>> RECIPE_CONDITION = new RecipeComponent<>() {
+    public static final RecipeComponent<RecipeCondition<?>> RECIPE_CONDITION = new RecipeComponent<RecipeCondition<?>>() {
 
         @Override
         public Codec<RecipeCondition<?>> codec() {
@@ -108,9 +127,14 @@ public class GTRecipeComponents {
         public String toString() {
             return "recipe_condition";
         }
+
+        @Override
+        public RecipeComponentType<RecipeCondition<?>> type() {
+            return RecipeComponentType.<RecipeCondition<?>>unit(ResourceLocation.parse("recipe_condition"), this);
+        }
     };
 
-    public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = new RecipeComponent<>() {
+    public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = new RecipeComponent<EnergyStack.WithIO>() {
 
         @Override
         public Codec<EnergyStack.WithIO> codec() {
@@ -129,14 +153,21 @@ public class GTRecipeComponents {
         public String toString() {
             return "energy_stack";
         }
+
+        @Override
+        public RecipeComponentType<EnergyStack.WithIO> type() {
+            return RecipeComponentType.<EnergyStack.WithIO>unit(ResourceLocation.parse("energy_stack"), this);
+        }
     };
 
-    public static final ContentJS<SizedIngredient> ITEM = ContentJS.create(SizedIngredientComponent.NESTED,
+    public static final ContentJS<SizedIngredient> ITEM = ContentJS.create(SizedIngredientComponent.SIZED_INGREDIENT,
             GTRecipeCapabilities.ITEM);
     public static final ContentJS<SizedFluidIngredient> FLUID = ContentJS.create(SizedFluidIngredientComponent.NESTED,
             GTRecipeCapabilities.FLUID);
-    public static final ContentJS<EnergyStack.WithIO> EU = ContentJS.create(ENERGY_STACK, GTRecipeCapabilities.EU);
-    public static final ContentJS<Integer> CWU = ContentJS.create(NumberComponent.INT, GTRecipeCapabilities.CWU);
+    public static final ContentJS<EnergyStack.WithIO> EU = ContentJS
+            .create((RecipeComponentType<EnergyStack.WithIO>) ENERGY_STACK.type(), GTRecipeCapabilities.EU);
+    public static final ContentJS<Integer> CWU = ContentJS.create(NumberComponent.NON_NEGATIVE_INT,
+            GTRecipeCapabilities.CWU);
 
     public static final RecipeComponent<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP = new JavaMapRecipeComponent<>(
             RECIPE_CAPABILITY, CHANCE_LOGIC);

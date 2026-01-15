@@ -17,7 +17,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -142,13 +141,16 @@ public class ToolEventHandlers {
             Iterator<ItemStack> dropItr = drops.iterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
-                ItemEntity drop = new ItemEntity(EntityType.ITEM, level);
-                drop.setItem(dropStack);
+                // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
+                ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
 
-                if (fireItemPickupEvent(drop, player) || player.addItem(dropStack)) {
+                if (fireItemPickupEvent(drop, player) && player.addItem(dropStack)) {
                     EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
                     dropItr.remove();
                 }
+
+                // Just in case, destroy it
+                drop.discard();
             }
         }
         return drops;

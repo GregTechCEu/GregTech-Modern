@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -65,6 +66,16 @@ public class Predicates {
     public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
         return new TraceabilityPredicate(
                 new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+    }
+
+    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
+        ArrayList<IMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
+        for (var definition : definitions) {
+            if (definition != null) {
+                machineBlocks.add(definition.get());
+            }
+        }
+        return blocks(machineBlocks.toArray(IMachineBlock[]::new));
     }
 
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {

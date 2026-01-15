@@ -138,11 +138,10 @@ public class TagPrefix {
                             .sound(SoundType.DEEPSLATE),
                     ResourceLocation.withDefaultNamespace("block/deepslate"), false, false, true);
 
-    // TODO figure out a composition for tuff
     public static final TagPrefix oreTuff = oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
             .registerOre(
-                    Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of()
+                    Blocks.TUFF::defaultBlockState, () -> GTMaterials.Tuff, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
                             .sound(SoundType.TUFF),
                     ResourceLocation.withDefaultNamespace("block/tuff"));
@@ -183,10 +182,9 @@ public class TagPrefix {
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
                     ResourceLocation.withDefaultNamespace("block/netherrack"), true, false, true);
 
-    // TODO figure out a composition for blackstone
     public static final TagPrefix oreBlackstone = oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Blackstone %s Ore")
-            .registerOre(Blocks.BLACKSTONE::defaultBlockState, null,
+            .registerOre(Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),

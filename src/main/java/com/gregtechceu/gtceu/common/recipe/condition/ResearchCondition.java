@@ -7,11 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -44,27 +41,6 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
     @Override
     public Component getTooltips() {
         return Component.translatable("gtceu.recipe.research");
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject value = super.serialize();
-        value.add("research", ResearchData.CODEC.encodeStart(JsonOps.INSTANCE, this.data).getOrThrow());
-        return value;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        this.data.toNetwork(buf);
-    }
-
-    @Override
-    public ResearchCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        this.data = ResearchData.fromNetwork(buf);
-        return this;
     }
 
     @Override

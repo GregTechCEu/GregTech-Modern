@@ -1,7 +1,8 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // LDLib
+    testJarJar(testApi(libs.testframework.get()))
+
     jarJar(api(forge.ldlib.get()))
 
     // Registrate
@@ -26,11 +27,16 @@ dependencies {
     compileOnly(forge.ae2)
     compileOnly(forge.ae2wtlib)
 
+    // Create
+    compileOnly(forge.ponder)
+    compileOnly(variantOf(forge.create) { classifier("slim") })
+    compileOnly(forge.flywheel.forge.api)
+
     // KJS
     compileOnly(forge.bundles.kjs)
 
     // Shimmer
-    compileOnly(forge.shimmer)
+    // compileOnly(forge.shimmer)
     compileOnly(forge.sodium)
     compileOnly(forge.iris)
     compileOnly(forge.modernfix)
@@ -40,8 +46,8 @@ dependencies {
     compileOnly(forge.ftbteams)
     compileOnly(forge.ftbquests)
     compileOnly(forge.resourcefullib)
-    compileOnly(forge.argonauts)
-    compileOnly(forge.heracles)
+    // compileOnly(forge.argonauts)
+    // compileOnly(forge.heracles)
 
     // Maps
     compileOnly(forge.ftbchunks)
@@ -51,26 +57,34 @@ dependencies {
     compileOnly(forge.journeymap.forge)
 
     // GameStages
-    compileOnly(forge.gamestages)
+    // compileOnly(forge.gamestages)
 
     // CC: Tweaked
     compileOnly(forge.cc.tweaked.core.api)
     compileOnly(forge.cc.tweaked.forge.api)
 
     // Standard runtime mods //
+    localRuntime(libs.testframework)
+
     localRuntime(forge.jade)
     localRuntime(forge.ae2)
     localRuntime(forge.spark)
     localRuntime(forge.modernfix)
+    localRuntime(forge.create) {
+        // Needed to prevent game-test crashes
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
+    }
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     localRuntime(forge.emi)
-//    localRuntime(forge.jei.forge.impl)
+    localRuntime(forge.jei.neoforge.impl)
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
     clientLocalRuntime(forge.sodium)
     clientLocalRuntime(forge.iris)
+    renderNurseCfg(libs.renderNurse)
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
@@ -79,9 +93,9 @@ dependencies {
     extraLocalRuntime(forge.trenzalore)
     extraLocalRuntime(forge.curios)
 //    extraLocalRuntime(forge.worldstripper)
-    extraLocalRuntime(forge.cc.tweaked.forge.impl)
+    localRuntime(forge.cc.tweaked.forge.impl)
 
-    extraLocalRuntime(forge.bundles.kjs)
+    localRuntime(forge.bundles.kjs)
 
     extraLocalRuntime(forge.ftblibrary)
     extraLocalRuntime(forge.ftbteams)
@@ -106,5 +120,4 @@ dependencies {
     extraLocalRuntime(forge.observable)
     //////////////////////////
 
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }

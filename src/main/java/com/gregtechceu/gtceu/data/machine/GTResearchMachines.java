@@ -2,14 +2,13 @@ package com.gregtechceu.gtceu.data.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.RotationState;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
@@ -46,6 +45,7 @@ import java.util.function.Function;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
@@ -114,7 +114,8 @@ public class GTResearchMachines {
             .tier(ZPM)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
-            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .modelProperty(IS_FORMED, false)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> {
                         model.addReplaceableTextures("bottom", "top", "side");
@@ -324,6 +325,18 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .register();
 
+    public static final MachineDefinition BASIC_DATA_ACCESS_HATCH = REGISTRATE
+            .machine("basic_data_access_hatch", (holder) -> new DataAccessHatchMachine(holder, HV, false))
+            .langValue("Basic Data Access Hatch")
+            .tier(HV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.DATA_ACCESS)
+            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
+                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 4),
+                    Component.translatable("gtceu.part_sharing.disabled"))
+            .overlayTieredHullModel("data_access_hatch")
+            .register();
+
     public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE
             .machine("data_access_hatch", (holder) -> new DataAccessHatchMachine(holder, EV, false))
             .langValue("Data Access Hatch")
@@ -354,6 +367,7 @@ public class GTResearchMachines {
             .tier(MAX)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
+            .modelProperty(IS_FORMED, false)
             .tooltipBuilder((s, list) -> {
                 list.add(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
                 CREATIVE_TOOLTIPS.accept(s, list);
@@ -441,8 +455,9 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .modelProperty(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY, false)
-                .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
+                .modelProperty(GTMachineModelProperties.IS_FORMED, false)
+                .modelProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, false)
+                .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                 .model(createHPCAPartModel(isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
                         GTCEu.id("block/overlay/machine/hpca/damaged" + (isAdvanced ? "_advanced" : ""))));

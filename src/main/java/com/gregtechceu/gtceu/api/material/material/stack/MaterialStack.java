@@ -24,6 +24,10 @@ public record MaterialStack(@NotNull Material material, long amount) {
         return new MaterialStack(material, this.amount + amount);
     }
 
+    public MaterialStack multiply(float amount) {
+        return new MaterialStack(material, (long) (this.amount * amount));
+    }
+
     public MaterialStack multiply(long amount) {
         return new MaterialStack(material, this.amount * amount);
     }

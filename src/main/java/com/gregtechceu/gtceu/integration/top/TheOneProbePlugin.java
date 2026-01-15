@@ -50,6 +50,7 @@ public class TheOneProbePlugin {
         probe.registerProvider(new MachineModeProvider());
         probe.registerProvider(new StainedColorProvider());
         probe.registerProvider(new PrimitivePumpProvider());
+        probe.registerProvider(new DataBankInfoProvider());
         probe.registerProvider(new CoverProvider());
         probe.registerProvider(new HazardCleanerInfoProvider());
         probe.registerProvider(new TransformerInfoProvider());

@@ -36,6 +36,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -58,7 +59,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -133,6 +133,9 @@ public class MixinHelpers {
 
             GTMaterialItems.ARMOR_ITEMS.rowMap().forEach((material, map) -> {
                 map.forEach((type, item) -> {
+                    if (type == null || type == ArmorItem.Type.BODY) {
+                        return;
+                    }
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE);
@@ -143,14 +146,7 @@ public class MixinHelpers {
                             case CHESTPLATE -> ItemTags.CHEST_ARMOR.location();
                             case LEGGINGS -> ItemTags.LEG_ARMOR.location();
                             case BOOTS -> ItemTags.FOOT_ARMOR.location();
-                            case BODY -> Tags.Items.ARMORS.location();
-                        }, $ -> new ArrayList<>()).add(entry);
-                        tagMap.computeIfAbsent(switch (type) {
-                            case HELMET -> ItemTags.HEAD_ARMOR_ENCHANTABLE.location();
-                            case CHESTPLATE -> ItemTags.CHEST_ARMOR_ENCHANTABLE.location();
-                            case LEGGINGS -> ItemTags.LEG_ARMOR_ENCHANTABLE.location();
-                            case BOOTS -> ItemTags.FOOT_ARMOR_ENCHANTABLE.location();
-                            case BODY -> Tags.Items.ENCHANTABLES.location();
+                            default -> throw new IllegalStateException("Unexpected value: " + type);
                         }, $ -> new ArrayList<>()).add(entry);
                     }
                 });
@@ -192,13 +188,32 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
-                        tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
-                                .addAll(entries);
+                        // Wood blocks with this tag always allow a Wrench, but only allow an Axe if the config is
+                        // not set. Pickaxe is never allowed (special case)
+                        if (entry.tagPrefix().miningToolTag()
+                                .contains(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
+                            tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(),
+                                    path -> new ArrayList<>()).addAll(entries);
+                            if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+                                tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(),
+                                        path -> new ArrayList<>())
+                                        .addAll(entries);
+                            }
+                        } else {
+                            // Other wood stuff should still get the Axe tag
+                            tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
+                                    .addAll(entries);
+                        }
                     } else {
                         for (var tag : entry.tagPrefix().miningToolTag()) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).addAll(entries);
                         }
                     }
+                }
+
+                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                            .addAll(entries);
                 }
             });
 
@@ -293,11 +308,6 @@ public class MixinHelpers {
                     ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
                     Block block = blockEntry.get();
 
-                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
-                        block = ChemicalHelper.getBlock(orePrefix, material);
-                    }
-
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
@@ -308,8 +318,8 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
-                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE)))); //disable fortune for
-                    // balance reasons. (for now, until we can think of a better solution.)
+                    // disable fortune for balance reasons. (for now, until we can think of a better solution.)
+                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
@@ -319,7 +329,7 @@ public class MixinHelpers {
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
                                     .when(blockLoot.doesNotHaveSilkTouch())
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(fortune))
+                                    // .apply(ApplyBonusCount.addUniformBonusCount(fortune))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
                             isEmpty = false;

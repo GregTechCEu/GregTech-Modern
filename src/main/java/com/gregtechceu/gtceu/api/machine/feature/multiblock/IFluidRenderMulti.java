@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
-
 import net.minecraft.core.BlockPos;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -9,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public interface IFluidRenderMulti extends IWorkableMultiController, IMachineFeature {
+public interface IFluidRenderMulti extends IWorkableMultiController {
 
     @ApiStatus.NonExtendable
     default Set<BlockPos> getFluidOffsets() {

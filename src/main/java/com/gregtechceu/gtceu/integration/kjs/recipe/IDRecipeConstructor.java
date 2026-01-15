@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.RecipeTypeFunction;
 import dev.latvian.mods.kubejs.recipe.component.ComponentValueMap;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
@@ -26,14 +27,14 @@ public class IDRecipeConstructor extends RecipeConstructor {
     public KubeRecipe create(Context cx, SourceLine sourceLine, RecipeTypeFunction type, RecipeSchemaType schemaType,
                              ComponentValueMap from) {
         var r = super.create(cx, sourceLine, type, schemaType, from);
-        r.id(KubeResourceLocation.wrap(from.getValue(cx, r, GTRecipeSchema.ID)));
+        r.id(KubeResourceLocation.wrap(from.getValue(new RecipeScriptContext.Impl(cx, r), GTRecipeSchema.ID)));
         return r;
     }
 
     @Override
-    public void setValues(Context cx, KubeRecipe recipe, RecipeSchemaType schemaType, ComponentValueMap from) {
+    public void setValues(RecipeScriptContext cx, RecipeSchemaType schemaType, ComponentValueMap from) {
         for (var entry : overrides.entrySet()) {
-            recipe.setValue(entry.getKey(), Cast.to(entry.getValue().getDefaultValue(schemaType)));
+            cx.recipe().setValue(entry.getKey(), Cast.to(entry.getValue().getDefaultValue(schemaType)));
         }
     }
 }

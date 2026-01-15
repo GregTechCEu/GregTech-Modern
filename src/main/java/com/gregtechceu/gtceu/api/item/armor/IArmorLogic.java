@@ -84,4 +84,8 @@ public interface IArmorLogic {
     default float getHeatResistance() {
         return 1.0f;
     }
+
+    default void onEquip(Player player) {}
+
+    default void onUnequip(Player player) {}
 }

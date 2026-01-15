@@ -81,13 +81,16 @@ import com.gregtechceu.gtceu.data.misc.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.data.misc.GTDimensionMarkers;
 import com.gregtechceu.gtceu.data.misc.GTValueProviderTypes;
 import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
+import com.gregtechceu.gtceu.data.placeholder.GTPlaceholders;
 import com.gregtechceu.gtceu.data.recipe.*;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.data.tools.GTToolTiers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationKubeEvent;
@@ -97,6 +100,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -159,10 +163,12 @@ public class CommonInit {
 
     public static void init(final IEventBus modBus) {
         CommonInit.modBus = modBus;
-        modBus.register(CommonInit.class);
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            modBus.addListener(EventPriority.LOWEST, GTKubeJSPlugin::registerKJSMachines);
+            // initialize this before the class's static listeners
+            // so KubeJS materials are registered before the material registry is closed.
+            modBus.addListener(EventPriority.LOW, GTKubeJSPlugin::registerWrappers);
         }
+        modBus.register(CommonInit.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
@@ -172,6 +178,7 @@ public class CommonInit {
         GTRegistrateDatagen.initPre();
 
         GTRegistries.init(modBus);
+        REGISTRATE.registerEventListeners(modBus);
         GTCreativeModeTabs.init();
         GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
 
@@ -192,6 +199,13 @@ public class CommonInit {
         }
         didRunRegistration = true;
 
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.init();
+        }
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
@@ -200,6 +214,7 @@ public class CommonInit {
 
         GTSoundEntries.init();
         GTDamageTypes.init();
+        GTPlaceholders.initPlaceholders();
 
         GTBlocks.init();
         GTFluids.init();
@@ -253,8 +268,8 @@ public class CommonInit {
         GTCEuAPI.materialManager.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onRegisterEarly(RegisterEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onRegisterLate(RegisterEvent event) {
         // Material event *should* happen before any of the others here
         if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
@@ -294,7 +309,7 @@ public class CommonInit {
         }
     }
 
-    private static void postInitMaterials() {
+    private static void postInitMaterials(Registry<Material> registry) {
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
@@ -330,7 +345,7 @@ public class CommonInit {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) registry -> postInitMaterials());
+        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonInit::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
@@ -341,10 +356,6 @@ public class CommonInit {
             // spotless:off
             MapIngredientTypeManager.registerMapIngredient(SizedFluidIngredient.class, (ingredient) -> {
                 FluidIngredient inner = ingredient.ingredient();
-                return MapIngredientTypeManager.getFrom(inner, FluidRecipeCapability.CAP);
-            });
-            MapIngredientTypeManager.registerMapIngredient(IntProviderFluidIngredient.class, (ingredient) -> {
-                FluidIngredient inner = ingredient.getInner();
                 return MapIngredientTypeManager.getFrom(inner, FluidRecipeCapability.CAP);
             });
             MapIngredientTypeManager.registerMapIngredient(CompoundFluidIngredient.class, (ingredient) -> {
@@ -358,7 +369,7 @@ public class CommonInit {
             MapIngredientTypeManager.registerMapIngredient(DataComponentFluidIngredient.class, FluidDataComponentMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(SingleFluidIngredient.class, FluidStackMapIngredient::from);
-            MapIngredientTypeManager.registerMapIngredient(SingleFluidIngredient.class, FluidStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(IntProviderFluidIngredient.class, FluidStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(IntersectionFluidIngredient.class, IntersectionMapIngredient::from);
 
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidTagMapIngredient::from);
@@ -458,6 +469,8 @@ public class CommonInit {
                 duct.attachCapabilities(event);
             } else if (block instanceof IMachineBlock machine) {
                 machine.attachCapabilities(event);
+            } else if (block instanceof OpticalPipeBlock optical) {
+                optical.attachCapabilities(event);
             }
         }
 

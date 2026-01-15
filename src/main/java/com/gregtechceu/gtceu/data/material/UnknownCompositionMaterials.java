@@ -48,7 +48,7 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Creosote = new Material.Builder(GTCEu.id("creosote"))
-                .liquid(new FluidBuilder().customStill().burnTime(6400)).color(0x804000)
+                .liquid(new FluidBuilder().block().customStill().burnTime(6400)).color(0x804000)
                 .flags(STICKY).buildAndRegister();
 
         Diesel = new Material.Builder(GTCEu.id("diesel"))
@@ -333,7 +333,7 @@ public class UnknownCompositionMaterials {
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
-                .components(Saltpeter, 2, Sulfur, 1, Coal, 3)
+                .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
                 .buildAndRegister();
 
         Oilsands = new Material.Builder(GTCEu.id("oilsands"))
@@ -358,6 +358,7 @@ public class UnknownCompositionMaterials {
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
+                .flags(FIRE_RESISTANT)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
                 .buildAndRegister();
@@ -443,7 +444,7 @@ public class UnknownCompositionMaterials {
 
         Paper = new Material.Builder(GTCEu.id("paper"))
                 .dust(0)
-                .color(0xFAFAFA).secondaryColor(0x878787).iconSet(FINE)
+                .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
                 .buildAndRegister();

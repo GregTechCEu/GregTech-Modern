@@ -30,14 +30,14 @@ public class ItemLang {
         }
 
         // Recipe Categories
-        provider.add("recipe_category.gtceu.arc_furnace_recycling", "Plasma Scrapping");
-        provider.add("recipe_category.gtceu.macerator_recycling", "Part Grinding");
-        provider.add("recipe_category.gtceu.extractor_recycling", "Scrap Remelting");
-        provider.add("recipe_category.gtceu.ore_crushing", "Ore Grinding");
-        provider.add("recipe_category.gtceu.ore_forging", "Ore Crushing");
-        provider.add("recipe_category.gtceu.ore_bathing", "Ore Treating");
-        provider.add("recipe_category.gtceu.chem_dyes", "Chemical Dyeing");
-        provider.add("recipe_category.gtceu.ingot_molding", "Metal Molding");
+        provider.add("gtceu.recipe.category.arc_furnace_recycling", "Arc Scrapping");
+        provider.add("gtceu.recipe.category.macerator_recycling", "Part Grinding");
+        provider.add("gtceu.recipe.category.extractor_recycling", "Scrap Remelting");
+        provider.add("gtceu.recipe.category.ore_crushing", "Ore Grinding");
+        provider.add("gtceu.recipe.category.ore_forging", "Ore Crushing");
+        provider.add("gtceu.recipe.category.ore_bathing", "Ore Treating");
+        provider.add("gtceu.recipe.category.chem_dyes", "Chemical Dyeing");
+        provider.add("gtceu.recipe.category.ingot_molding", "Metal Molding");
 
         // TagPrefix
         for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
@@ -331,7 +331,7 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.advanced_item_voiding_cover.tooltip",
                 "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         multilineLang(provider, "item.gtceu.facade_cover.tooltip",
-                "§7Decorative Outfit §fCover§7.\n§7Crafted using 3 Iron Plates and any block");
+                "§7Decorative Outfit §fCover§7.\n§7Crafted using an Iron Plate and any block");
         provider.add("item.gtceu.computer_monitor_cover.tooltip", "§7Displays §fData§7 as §fCover§7.");
         provider.add("item.gtceu.shutter_module_cover.tooltip",
                 "§fBlocks Transfer§7 through attached Side as §fCover§7.");

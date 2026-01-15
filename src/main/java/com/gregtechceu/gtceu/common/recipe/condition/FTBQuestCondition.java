@@ -8,10 +8,8 @@ import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -78,25 +76,5 @@ public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
     @Override
     public RecipeCondition<FTBQuestCondition> createTemplate() {
         return new FTBQuestCondition();
-    }
-
-    @Override
-    public @NotNull JsonObject serialize() {
-        var obj = super.serialize();
-        obj.addProperty("questId", parsedQuestId);
-        return obj;
-    }
-
-    @Override
-    public FTBQuestCondition fromNetwork(RegistryFriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        parsedQuestId = buf.readLong();
-        return this;
-    }
-
-    @Override
-    public void toNetwork(RegistryFriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeLong(parsedQuestId);
     }
 }

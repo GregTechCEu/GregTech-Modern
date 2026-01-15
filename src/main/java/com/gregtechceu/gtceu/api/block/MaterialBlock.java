@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,8 +53,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class MaterialBlock extends AppearanceBlock {
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+public class MaterialBlock extends Block {
 
     public final TagPrefix tagPrefix;
     public final Material material;

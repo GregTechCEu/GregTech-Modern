@@ -48,7 +48,7 @@ public class SeparationRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
                 .inputItems(ore, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 7500, 0)
-                .outputFluids(Oil.getFluid(2000))
+                .outputFluids(HeavyOil.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation")
@@ -107,7 +107,7 @@ public class SeparationRecipes {
                 .outputFluids(Glue.getFluid(100))
                 .save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(20)
+        CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(5)
                 .inputItems(GTBlocks.RUBBER_LOG.asStack())
                 .chancedOutput(STICKY_RESIN.asStack(), 6400, 0)
                 .chancedOutput(PLANT_BALL.asStack(), 4000, 0)
@@ -423,14 +423,6 @@ public class SeparationRecipes {
                 .outputItems(dust, Rutile)
                 .outputFluids(Oxygen.getFluid(9000))
                 .duration(270).EUt(VA[LV] * 2L).save(provider);
-
-        ELECTROLYZER_RECIPES.recipeBuilder("zeolite_electrolysis")
-                .inputItems(dust, Zeolite, 41)
-                .outputItems(dust, Sodium)
-                .outputItems(dust, Calcium, 4)
-                .outputItems(dust, Silicon, 27)
-                .outputItems(dust, Aluminium, 9)
-                .duration(656).EUt(VA[MV]).save(provider);
 
         ELECTROLYZER_RECIPES.recipeBuilder("bentonite_electrolysis")
                 .inputItems(dust, Bentonite, 30)

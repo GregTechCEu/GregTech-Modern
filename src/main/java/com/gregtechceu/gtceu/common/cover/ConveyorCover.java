@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -274,7 +275,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameComponents(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -306,7 +307,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameComponents(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {
@@ -414,6 +415,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         public int totalCount;
     }
 
+    public boolean shouldRespectDistributionMode() {
+        return ((io == IO.IN) ?
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()) instanceof ItemPipeBlockEntity) :
+                (coverHolder.getLevel().getBlockEntity(coverHolder.getPos()
+                        .relative(attachedSide)) instanceof ItemPipeBlockEntity));
+    }
+
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
@@ -424,6 +432,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
 
         group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
                 .setMin(1).setMax(maxItemTransferRate));
+
+        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
+                DistributionMode.values(), distributionMode, this::setDistributionMode);
+
+        distributionSelector.setVisible(shouldRespectDistributionMode());
+        group.addWidget(distributionSelector);
 
         ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
                 (clickData, value) -> {
@@ -502,10 +516,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return stack;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+            if (!filterHandler.test(stack)) {
                 return stack;
             }
             return super.insertItem(slot, stack, simulate);
@@ -514,17 +533,19 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return ItemStack.EMPTY;
-            }
-            if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true);
-                if (result.isEmpty() || !filterHandler.test(result)) {
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false);
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
             }
-            return super.extractItem(slot, amount, simulate);
+            ItemStack result = super.extractItem(slot, amount, true);
+            if (result.isEmpty() || !filterHandler.test(result)) {
+                return ItemStack.EMPTY;
+            }
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
     }
 }

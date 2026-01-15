@@ -21,14 +21,6 @@
                         "gtceu:coal"
                     ],
                     "weight": 3
-                },
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:coal"
-                    ],
-                    "weight": 3
                 }
             ]
         ]

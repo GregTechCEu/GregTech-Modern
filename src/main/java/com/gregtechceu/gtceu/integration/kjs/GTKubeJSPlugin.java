@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -52,6 +53,7 @@ import com.gregtechceu.gtceu.api.worldgen.generator.indicators.NoopIndicatorGene
 import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator.IndicatorPlacement;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.pack.GTDynamicResourcePack;
@@ -100,9 +102,11 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComp
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
@@ -115,7 +119,7 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
@@ -125,21 +129,28 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.rhino.Wrapper;
+import org.jetbrains.annotations.ApiStatus;
 
 public class GTKubeJSPlugin implements KubeJSPlugin {
 
-    public static void registerKJSMachines(RegisterEvent event) {
-        if (event.getRegistryKey() != GTRegistries.MACHINE_REGISTRY) {
+    @ApiStatus.Internal
+    public static void registerWrappers(RegisterEvent event) {
+        registerWrappers(event, GTRegistries.MACHINE_REGISTRY);
+        registerWrappers(event, GTRegistries.MATERIAL_REGISTRY);
+    }
+
+    private static <T> void registerWrappers(RegisterEvent event, ResourceKey<Registry<T>> registryKey) {
+        if (event.getRegistryKey() != registryKey) {
             return;
         }
-        var objStorage = RegistryObjectStorage.of(GTRegistries.MACHINE_REGISTRY);
-        ResourceLocation registryLoc = GTRegistries.MACHINE_REGISTRY.location();
+        var objStorage = RegistryObjectStorage.of(registryKey);
+        ResourceLocation registryLoc = registryKey.location();
 
         int added = 0;
 
         for (var builder : objStorage) {
             if (builder.dummyBuilder) {
-                // don't actually register it here, the machine builders register themselves with Registrate
+                // don't actually register anything here, the wrapper builders register themselves with Registrate
                 builder.createTransformedObject();
 
                 if (DevProperties.get().logRegistryEventObjects) {
@@ -162,7 +173,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         registry.addDefault(GTRegistries.MATERIAL_REGISTRY, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
         registry.of(GTRegistries.TAG_PREFIX_REGISTRY, reg -> {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
-            reg.add("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+            reg.add(ResourceLocation.parse("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
         registry.addDefault(GTRegistries.RECIPE_TYPE_REGISTRY, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
@@ -175,24 +186,25 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
                             new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
                                     SimpleTieredMachine.EDITABLE_UI_CREATOR, false)));
 
-            reg.add("custom", KJSWrappingMachineBuilder.class,
+            reg.add(ResourceLocation.parse("custom"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
-            reg.add("steam", KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
-            reg.add("generator", KJSWrappingMachineBuilder.class,
+            reg.add(ResourceLocation.parse("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
+            reg.add(ResourceLocation.parse("generator"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
                             new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
                                     SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)));
 
-            reg.add("multiblock", MultiblockMachineBuilderWrapper.class,
+            reg.add(ResourceLocation.parse("multiblock"), MultiblockMachineBuilderWrapper.class,
                     MultiblockMachineBuilderWrapper::createKJSMulti);
-            reg.add("tiered_multiblock", KJSWrappingMultiblockBuilder.class, KJSWrappingMultiblockBuilder::new);
-            reg.add("primitive", MultiblockMachineBuilderWrapper.class,
+            reg.add(ResourceLocation.parse("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
+                    KJSWrappingMultiblockBuilder::new);
+            reg.add(ResourceLocation.parse("primitive"), MultiblockMachineBuilderWrapper.class,
                     (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {
-            reg.add("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
-            reg.add("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
+            reg.add(ResourceLocation.parse("gtceu:active"), ActiveBlockBuilder.class, ActiveBlockBuilder::new);
+            reg.add(ResourceLocation.parse("gtceu:coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
         registry.addDefault(GTRegistries.ORE_VEIN_REGISTRY, OreVeinDefinitionBuilder.class,
@@ -262,17 +274,17 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
-    public void registerRecipeComponents(RecipeComponentFactoryRegistry registry) {
-        registry.register(GTRecipeComponents.TAG);
-        registry.register(GTRecipeComponents.RECIPE_CONDITION);
-        registry.register(GTRecipeComponents.RESOURCE_LOCATION);
-        registry.register(GTRecipeComponents.RECIPE_CAPABILITY);
-        registry.register(GTRecipeComponents.CHANCE_LOGIC);
-        registry.register(CapabilityMapComponent.INSTANCE);
+    public void registerRecipeComponents(RecipeComponentTypeRegistry registry) {
+        registry.register(GTRecipeComponents.TAG.type());
+        registry.register(GTRecipeComponents.RECIPE_CONDITION.type());
+        registry.register(GTRecipeComponents.RESOURCE_LOCATION.type());
+        registry.register(GTRecipeComponents.RECIPE_CAPABILITY.type());
+        registry.register(GTRecipeComponents.CHANCE_LOGIC.type());
+        registry.register(CapabilityMapComponent.INSTANCE.type());
 
-        registry.register(GTRecipeComponents.ITEM);
-        registry.register(GTRecipeComponents.FLUID);
-        registry.register(GTRecipeComponents.EU);
+        registry.register(GTRecipeComponents.ITEM.type());
+        registry.register(GTRecipeComponents.FLUID.type());
+        registry.register(GTRecipeComponents.EU.type());
     }
 
     @Override
@@ -334,6 +346,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         event.add("GTCraftingComponents", GTCraftingComponents.class);
         event.add("EnergyStack", EnergyStack.class);
         event.add("IOEnergyStack", EnergyStack.WithIO.class);
+        // event.add("NBTPredicates", NBTPredicates.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
@@ -342,6 +355,8 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         // Client/Server data related
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);
+        event.add("GTModelProperties", GTMachineModelProperties.class);
+        event.add("GTDynamicRenders", DynamicRenderHelper.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
@@ -459,7 +474,7 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
         registry.register(IWorldGenLayer.RuleTestSupplier.class, (cx, o, t) -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
-            return () -> BlockStatePredicate.ruleTestOf(cx, o);
+            return () -> BlockStatePredicate.wrapRuleTest(cx, o);
         });
         registry.register(CraftingComponent.class, o -> {
             if (o instanceof CraftingComponent comp) return comp;

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
@@ -96,7 +97,9 @@ public class GTMaterialItems {
     private static void generateMaterialItem(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
         MATERIAL_ITEMS_BUILDER.put(tagPrefix, material, registrate
                 .item(tagPrefix.idPattern().formatted(material.getName()),
-                        properties -> tagPrefix.itemConstructor().create(properties, tagPrefix, material))
+                        properties -> tagPrefix.itemConstructor()
+                                .create(material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() :
+                                        properties, tagPrefix, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .transform(GTItems.unificationItem(tagPrefix, material))
                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
@@ -228,7 +231,7 @@ public class GTMaterialItems {
         final ArmorProperty property = material.getProperty(PropertyKey.ARMOR);
         String id = "%s_%s".formatted(material.getName(), type.getName());
         ARMOR_ITEMS.put(material, type, registrate
-                .item(id, p -> new GTArmorItem(type, p, material, property))
+                .item(id, p -> new GTArmorItem(property.getArmorMaterial(), type, p, material, property))
                 .properties(p -> p.durability(type.getDurability(property.getDurabilityMultiplier())))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())

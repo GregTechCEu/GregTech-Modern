@@ -33,7 +33,8 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
         }
 
         final String copyFinal = copy;
-        cached = new MaterialStackWrapper(() -> GTMaterials.get(copyFinal), count);
+        Supplier<Material> mat = () -> GTMaterials.get(copyFinal);
+        cached = new MaterialStackWrapper(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();
     }
@@ -44,7 +45,7 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
     }
 
     public boolean isEmpty() {
-        return this.amount < 1 || this.material.get().isNull();
+        return this.amount < 1 || this.material == null;
     }
 
     public MaterialStack toMatStack() {
