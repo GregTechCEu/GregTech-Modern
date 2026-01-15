@@ -276,6 +276,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         }
     }
 
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
+    }
+
     /**
      * Is this multiblock a generator?
      * Used for max voltage calculations.

@@ -47,7 +47,7 @@ public class GTRecipeLookupTest {
                 .inputItems(Items.COBBLESTONE, 1)
                 .outputItems(Items.STONE, 1)
                 .buildRawRecipe();
-        GTRecipe SMELT_ACACIA_WOOD = recipeType.recipeBuilder("smelt_acacia_wood")
+        SMELT_ACACIA_WOOD = recipeType.recipeBuilder("smelt_acacia_wood")
                 .inputItems(Items.ACACIA_WOOD, 1)
                 .outputItems(Items.CHARCOAL, 1)
                 .buildRawRecipe();
