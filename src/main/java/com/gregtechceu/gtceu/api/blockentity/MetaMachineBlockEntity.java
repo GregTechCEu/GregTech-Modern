@@ -180,7 +180,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                     return GTCapability.CAPABILITY_CONTROLLABLE.orEmpty(cap, LazyOptional.of(() -> controllable));
                 }
             }
-        }  else if (cap == GTCapability.CAPABILITY_CIRCUIT_SLOT) {
+        } else if (cap == GTCapability.CAPABILITY_CIRCUIT_SLOT) {
             if (machine instanceof IHasCircuitSlot hasCircuitSlot) {
                 return GTCapability.CAPABILITY_CIRCUIT_SLOT.orEmpty(cap, LazyOptional.of(() -> hasCircuitSlot));
             }

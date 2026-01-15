@@ -21,7 +21,8 @@ public class GTCapability {
     public static final Capability<IWorkable> CAPABILITY_WORKABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<IHasCircuitSlot> CAPABILITY_CIRCUIT_SLOT = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IHasCircuitSlot> CAPABILITY_CIRCUIT_SLOT = CapabilityManager
+            .get(new CapabilityToken<>() {});
     public static final Capability<RecipeLogic> CAPABILITY_RECIPE_LOGIC = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IElectricItem> CAPABILITY_ELECTRIC_ITEM = CapabilityManager
