@@ -14,11 +14,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -61,9 +58,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
         var group = new WidgetGroup(0, 0, 100, 100);
         if (isRemote()) {
             group.addWidget(new ImageWidget((100 - 48) / 2, 60, 48, 16, GuiTextures.SCENE));
-            TrackedDummyWorld world = new TrackedDummyWorld();
-            world.addBlock(BlockPos.ZERO, BlockInfo.fromBlockState(self().getBlockState()));
-            SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, world) {
+            SceneWidget sceneWidget = new SceneWidget(0, 0, 100, 100, self().getLevel()) {
 
                 @Override
                 @OnlyIn(Dist.CLIENT)
@@ -86,7 +81,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     .setRenderSelect(false);
             sceneWidget.getRenderer().setFov(30);
             group.addWidget(sceneWidget);
-            sceneWidget.setRenderedCore(List.of(BlockPos.ZERO), null);
+            sceneWidget.setRenderedCore(List.of(self().getPos()), null);
         }
         return group;
     }
