@@ -27,7 +27,11 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+        return stack(configuration, 1);
+    }
+
+    public static ItemStack stack(int configuration, int count) {
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack(count);
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
