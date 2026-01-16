@@ -41,10 +41,6 @@ repositories {
             includeGroup("dev.latvian.apps")
         }
     }
-    exclusiveContent { // Configuration
-        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public/" } }
-        filter { includeGroup('dev.toma.configuration') }
-    }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases/" } }
         filter { includeGroup("dev.ftb.mods") }
