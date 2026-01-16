@@ -37,16 +37,24 @@ public class GTMultiblockPanelUtil {
         var listWidget = new ListWidget<>()
                 .widthRel(1f)
                 .heightRel(1f)
-                .childSeparator(Icon.EMPTY_2PX);
+                .childSeparator(Icon.EMPTY_2PX)
+                .alignX(Alignment.CenterLeft);
         parentWidget.size(187, 90)
                 .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(1.0f).heightRel(1.0f));
 
         if (controller instanceof IWorkableMultiController rlMachine) {
-            listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager).alignX(Alignment.CenterLeft));
+            listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager)
+                    .alignX(Alignment.CenterLeft));
 
             if (rlMachine instanceof ITieredMachine tieredMachine) {
-                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(rlMachine, syncManager, tieredMachine.getTier()).alignX(Alignment.CenterLeft));
+                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(rlMachine, syncManager, tieredMachine.getTier())
+                        .alignX(Alignment.CenterLeft));
             }
+
+            listWidget.child(GTMultiblockTextUtil.addParallelLine(rlMachine, syncManager));
+            listWidget.child(GTMultiblockTextUtil.addBatchModeLine(rlMachine, syncManager));
+            listWidget.child(GTMultiblockTextUtil.addSubtickParallelsLine(rlMachine, syncManager));
+            listWidget.child(GTMultiblockTextUtil.addTotalRunsLine(rlMachine, syncManager));
         }
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
@@ -100,6 +101,80 @@ public class GTMultiblockTextUtil {
                         .withStyle(ChatFormatting.GRAY)))
                 .setEnabledIf(widget -> isFormed.getBoolValue());
 
+    }
+
+    public static TextWidget<?> addParallelLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+
+        IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class, () ->
+                new IntSyncValue(() -> {
+                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastRecipe().parallels;
+                }));
+
+        return IKey.dynamic(() -> {
+                    Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String key = "gtceu.multiblock.parallel";
+                    return Component.translatable(key, runs)
+                            .withStyle(ChatFormatting.GRAY);
+                }).asWidget()
+                .setEnabledIf(widget -> parallelAmount.getIntValue() != 0);
+    }
+
+    public static TextWidget<?> addBatchModeLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+
+        BooleanSyncValue batchEnabled = syncManager.getOrCreateSyncHandler("batchEnabled", BooleanSyncValue.class, () ->
+                new BooleanSyncValue(rlMachine::isBatchEnabled));
+        IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class, () ->
+                new IntSyncValue(() -> {
+                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
+                }));
+
+        return IKey.dynamic(() -> {
+            Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount.getIntValue()))
+                    .withStyle(ChatFormatting.DARK_PURPLE);
+            String key = "gtceu.multiblock.batch_enabled";
+            return Component.translatable(key, runs)
+                    .withStyle(ChatFormatting.GRAY);
+        }).asWidget()
+                .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() != 0);
+    }
+
+    public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+
+        IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class, () ->
+                new IntSyncValue(() -> {
+                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
+                }));
+
+        return IKey.dynamic(() -> {
+                    Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String key = "gtceu.multiblock.subtick_parallels";
+                    return Component.translatable(key, runs)
+                            .withStyle(ChatFormatting.GRAY);
+                }).asWidget()
+                .setEnabledIf(widget -> subtickAmount.getIntValue() != 0);
+    }
+
+    public static TextWidget<?> addTotalRunsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
+
+        IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class, () ->
+                new IntSyncValue(() -> {
+                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
+                }));
+
+        return IKey.dynamic(() -> {
+                    Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
+                            .withStyle(ChatFormatting.DARK_PURPLE);
+                    String key = "gtceu.multiblock.total_runs";
+                    return Component.translatable(key, runs)
+                            .withStyle(ChatFormatting.GRAY);
+                }).asWidget()
+                .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
     }
 
     public static void addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager, ListWidget<IWidget, ?> listWidget) {
