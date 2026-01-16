@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -49,7 +50,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     @Override
-    public final void load(CompoundTag tag) {
+    @OverridingMethodsMustInvokeSuper
+    public void load(CompoundTag tag) {
         super.load(tag);
         getSyncDataHolder().deserializeNBT(tag,
                 (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));

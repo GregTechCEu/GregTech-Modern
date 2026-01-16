@@ -246,13 +246,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
-                if (machine instanceof IMachineLife machineLife) {
-                    machineLife.onMachineRemoved();
-                }
                 if (machine != null) {
-                    for (Direction direction : GTUtil.DIRECTIONS) {
-                        machine.getCoverContainer().removeCover(direction, null);
-                    }
+                    machine.onRemoved();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);

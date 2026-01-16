@@ -5,7 +5,12 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import dev.architectury.event.events.common.TickEvent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.data.ModelData;
 
 import lombok.Getter;
@@ -32,6 +37,10 @@ public abstract class MachineTrait implements ISyncManaged {
         if (machine != null) machine.attachTrait(this);
     }
 
+    public Level getLevel() {
+        return machine.getLevel();
+    }
+
     public final boolean hasCapability(@Nullable Direction side) {
         return capabilityValidator.test(side);
     }
@@ -40,12 +49,6 @@ public abstract class MachineTrait implements ISyncManaged {
     public void markAsChanged() {
         machine.markAsChanged();
     }
-
-    public void onMachineLoad() {}
-
-    public void onMachineUnload() {}
-
-    public void updateModelData(ModelData.Builder builder) {}
 
     public MachineRenderState getRenderState() {
         return getMachine().getRenderState();
@@ -58,4 +61,14 @@ public abstract class MachineTrait implements ISyncManaged {
     public void scheduleRenderUpdate() {
         machine.scheduleRenderUpdate();
     }
+
+    ////// MetaMachine methods which traits can hook into
+
+    public void onMachineLoad() {}
+
+    public void onMachineUnload() {}
+
+    public void onMachineNeighborChange(Block block, BlockPos fromPos, boolean isMoving) {}
+
+    public void updateModelData(ModelData.Builder builder) {}
 }

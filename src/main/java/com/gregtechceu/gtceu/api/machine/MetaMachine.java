@@ -22,6 +22,10 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IModifyFacingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -338,35 +342,46 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
+        Pair<GTToolType, InteractionResult> result = Pair.of(null, InteractionResult.PASS);
+
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
         if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
             if (coverBehavior != null) {
-                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+                result = Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             }
         }
         if (toolType.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
-                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
-            } else return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));
+                result = Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            } else result = Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));
         } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
             if (coverBehavior != null) {
-                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
-            } else return Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(playerIn, hand, gridSide, hitResult));
+                result = Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
+            } else result = Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(playerIn, hand, gridSide, hitResult));
         } else if (toolType.contains(GTToolType.WRENCH)) {
-            return Pair.of(GTToolType.WRENCH, onWrenchClick(playerIn, hand, gridSide, hitResult));
+            result = Pair.of(GTToolType.WRENCH, onWrenchClick(playerIn, hand, gridSide, hitResult));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
                     getCoverContainer().removeCover(gridSide, playerIn);
                 }
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
+
             }
-            return Pair.of(GTToolType.CROWBAR, onCrowbarClick(playerIn, hand, gridSide, hitResult));
+            result = Pair.of(GTToolType.CROWBAR, onCrowbarClick(playerIn, hand, gridSide, hitResult));
         } else if (toolType.contains(GTToolType.HARD_HAMMER)) {
-            return Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
+            result = Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
         }
-        return Pair.of(null, InteractionResult.PASS);
-    }
+
+        if (result.getSecond() != InteractionResult.PASS) return result;
+
+        for (var trait: traits) {
+            if (trait instanceof IInteractionTrait interactionTrait) {
+                var r = interactionTrait.onToolClick(toolType, playerIn, hand, gridSide, hitResult);
+                if (r.getSecond() != InteractionResult.PASS) return r;
+            }
+        }
+
+        return result;    }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
@@ -556,6 +571,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
+
+        for (var trait: traits) {
+            if (trait instanceof IRenderingTrait renderingTrait) {
+                var result = renderingTrait.shouldRenderGrid(player, pos, state, held, toolTypes);
+                if (result) return result;
+            }
+        }
+
         return false;
     }
 
@@ -583,6 +606,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
             }
         }
+
+        for (var trait: traits) {
+            if (trait instanceof IRenderingTrait renderingTrait) {
+                var result = renderingTrait.sideTips(player, pos, state, toolTypes, side);
+                if (result != null) return result;
+            }
+        }
+
         return null;
     }
 
@@ -646,6 +677,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return false;
             }
         }
+
+        for (var trait: traits) {
+            if (trait instanceof IModifyFacingTrait modifyFacingTrait) {
+                if (!modifyFacingTrait.isFacingValid(facing)) return false;
+            }
+        }
+
         return getRotationState().test(facing);
     }
 
@@ -714,6 +752,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         coverContainer.onNeighborChanged(block, fromPos, isMoving);
+        traits.forEach(t -> t.onMachineNeighborChange(block, fromPos, isMoving));
     }
 
     public void animateTick(RandomSource random) {}
