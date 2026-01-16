@@ -118,45 +118,57 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.REMOVE)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.REMOVE)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusCols))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getColumn(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusCols)))
                                 .child(Flow.row()
                                         .coverChildren()
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.REMOVE)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.REMOVE)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusRows))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getRow(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusRows)))
                                 .child(Flow.row()
                                         .coverChildren()
                                         .childPadding(2)
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.REMOVE)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.REMOVE)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusLayers))
                                         .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getLayer(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
-                                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.ADD)
-                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.ADD)
+                                                .background(GTGuiTextures.MC_BUTTON,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
+                                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED,
+                                                        GTGuiTextures.ADD.asIcon().size(10))
                                                 .syncHandler(plusLayers)))));
     }
 }
