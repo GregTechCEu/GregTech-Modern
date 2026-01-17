@@ -3,21 +3,27 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import lombok.Getter;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public abstract class MachineTraitProvider<T extends MachineTrait> implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public abstract class MachineTraitProvider<T extends MachineTrait>
+                                          implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
-    public final ResourceLocation uid;
+    private final ResourceLocation uid;
     public final MachineTraitType<T> traitType;
 
     protected MachineTraitProvider(ResourceLocation uid, MachineTraitType<T> type) {
@@ -47,5 +53,4 @@ public abstract class MachineTraitProvider<T extends MachineTrait> implements IB
 
     protected abstract void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                                        BlockEntity blockEntity, IPluginConfig config);
-
 }

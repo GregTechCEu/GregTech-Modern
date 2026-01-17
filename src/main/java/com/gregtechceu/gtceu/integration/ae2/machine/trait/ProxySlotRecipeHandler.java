@@ -93,7 +93,8 @@ public final class ProxySlotRecipeHandler {
     @Getter
     private static class ProxyItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
-        public static MachineTraitType<ProxyItemRecipeHandler> TYPE = new MachineTraitType<>(ProxyItemRecipeHandler.class);
+        public static MachineTraitType<ProxyItemRecipeHandler> TYPE = new MachineTraitType<>(
+                ProxyItemRecipeHandler.class);
 
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
@@ -150,7 +151,8 @@ public final class ProxySlotRecipeHandler {
     @Getter
     private static class ProxyFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
 
-        public static MachineTraitType<ProxyFluidRecipeHandler> TYPE = new MachineTraitType<>(ProxyFluidRecipeHandler.class);
+        public static MachineTraitType<ProxyFluidRecipeHandler> TYPE = new MachineTraitType<>(
+                ProxyFluidRecipeHandler.class);
 
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;

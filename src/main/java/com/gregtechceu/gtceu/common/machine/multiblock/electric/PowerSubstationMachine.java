@@ -375,7 +375,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
 
-        public static MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(PowerStationEnergyBank.class);
+        public static MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
+                PowerStationEnergyBank.class);
 
         private static final String NBT_SIZE = "Size";
         private static final String NBT_STORED = "Stored";

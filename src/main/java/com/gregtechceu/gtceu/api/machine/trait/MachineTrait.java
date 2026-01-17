@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

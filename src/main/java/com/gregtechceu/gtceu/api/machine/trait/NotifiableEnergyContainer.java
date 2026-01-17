@@ -34,7 +34,8 @@ import java.util.function.Predicate;
 
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
-    public static MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(NotifiableEnergyContainer.class);
+    public static MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
+            NotifiableEnergyContainer.class);
 
     @Getter
     protected IO handlerIO;

@@ -35,7 +35,8 @@ import java.util.function.Predicate;
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 
-    public static MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(NotifiableItemStackHandler.class);
+    public static MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
+            NotifiableItemStackHandler.class);
 
     @Getter
     public final IO handlerIO;

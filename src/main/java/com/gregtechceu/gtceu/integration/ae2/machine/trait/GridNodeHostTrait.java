@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+
 import net.minecraft.core.Direction;
 
 import appeng.api.networking.GridHelper;

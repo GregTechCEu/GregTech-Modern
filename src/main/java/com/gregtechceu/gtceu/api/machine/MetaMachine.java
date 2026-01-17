@@ -49,8 +49,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -93,6 +91,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -136,7 +136,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @SyncToClient
     @RerenderOnChanged
     private int paintingColor = -1;
-
 
     @Getter
     @SaveField
@@ -234,7 +233,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public void attachTrait(MachineTrait trait) {
         var traitType = MachineTraitType.getTraitType(trait.getClass());
         traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
-        if (!traitType.allowMultiplePerMachine && traitsByType.get(traitType).size() == 1) {
+        if (!traitType.allowsMultipleInstances() && traitsByType.get(traitType).size() == 1) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
         }
         traits.add(trait);
@@ -246,14 +245,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>());
         List<MachineTrait> traitList = traitsByType.get(type);
         if (traitList.isEmpty()) return Optional.empty();
-        return Optional.ofNullable(type.traitCls.cast(traitList.get(0)));
+        return Optional.ofNullable(type.castTrait(traitList.get(0)));
     }
 
     @SuppressWarnings("unchecked")
     public <T extends MachineTrait> List<T> getTraits(MachineTraitType<T> type) {
-        return (List<T>)Collections.unmodifiableList(traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>()));
+        return (List<T>) Collections.unmodifiableList(traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>()));
     }
-
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//
@@ -374,14 +372,15 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         if (result.getSecond() != InteractionResult.PASS) return result;
 
-        for (var trait: traits) {
+        for (var trait : traits) {
             if (trait instanceof IInteractionTrait interactionTrait) {
                 var r = interactionTrait.onToolClick(toolType, playerIn, hand, gridSide, hitResult);
                 if (r.getSecond() != InteractionResult.PASS) return r;
             }
         }
 
-        return result;    }
+        return result;
+    }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
@@ -572,7 +571,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
 
-        for (var trait: traits) {
+        for (var trait : traits) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.shouldRenderGrid(player, pos, state, held, toolTypes);
                 if (result) return result;
@@ -607,7 +606,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        for (var trait: traits) {
+        for (var trait : traits) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.sideTips(player, pos, state, toolTypes, side);
                 if (result != null) return result;
@@ -678,7 +677,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        for (var trait: traits) {
+        for (var trait : traits) {
             if (trait instanceof IModifyFacingTrait modifyFacingTrait) {
                 if (!modifyFacingTrait.isFacingValid(facing)) return false;
             }

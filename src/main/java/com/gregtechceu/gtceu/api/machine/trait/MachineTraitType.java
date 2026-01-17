@@ -7,24 +7,31 @@ import java.util.Map;
 
 public class MachineTraitType<T extends MachineTrait> {
 
-    public final Class<T> traitCls;
-    public final boolean allowMultiplePerMachine;
+    private static final Map<Class<? extends MachineTrait>, MachineTraitType<?>> MACHINE_TRAIT_TYPES = new HashMap<>();
 
-    public MachineTraitType(Class<T> cls) {
-        this(cls, true);
+    private final Class<T> clazz;
+    private final boolean allowMultipleInstances;
+
+    public MachineTraitType(@NotNull Class<T> clazz) {
+        this(clazz, true);
     }
 
-    public MachineTraitType(Class<T> cls, boolean allowMultiplePerMachine) {
-        traitCls = cls;
-        this.allowMultiplePerMachine = allowMultiplePerMachine;
+    public MachineTraitType(@NotNull Class<T> clazz, boolean allowMultipleInstances) {
+        this.clazz = clazz;
+        this.allowMultipleInstances = allowMultipleInstances;
 
-        MACHINE_TRAIT_TYPES.put(this, cls);
+        MACHINE_TRAIT_TYPES.put(clazz, this);
     }
 
-    private static final Map<MachineTraitType<?>, Class<?>> MACHINE_TRAIT_TYPES = new HashMap<>();
+    public boolean allowsMultipleInstances() {
+        return allowMultipleInstances;
+    }
+
+    public T castTrait(MachineTrait trait) {
+        return clazz.cast(trait);
+    }
 
     public static <T extends MachineTrait> MachineTraitType<?> getTraitType(Class<T> cls) {
-        var type = MACHINE_TRAIT_TYPES.entrySet().stream().filter(e -> e.getValue() == cls).findFirst();
-        return type.orElseThrow().getKey();
+        return MACHINE_TRAIT_TYPES.get(cls);
     }
 }

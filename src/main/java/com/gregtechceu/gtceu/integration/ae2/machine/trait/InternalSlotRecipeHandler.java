@@ -60,7 +60,8 @@ public final class InternalSlotRecipeHandler {
     @Getter
     private static class SlotItemRecipeHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
-        public static MachineTraitType<SlotItemRecipeHandler> TYPE = new MachineTraitType<>(SlotItemRecipeHandler.class);
+        public static MachineTraitType<SlotItemRecipeHandler> TYPE = new MachineTraitType<>(
+                SlotItemRecipeHandler.class);
 
         private final InternalSlot slot;
         private final int priority;
@@ -97,8 +98,8 @@ public final class InternalSlotRecipeHandler {
     @Getter
     private static class SlotFluidRecipeHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
 
-        public static MachineTraitType<SlotFluidRecipeHandler> TYPE = new MachineTraitType<>(SlotFluidRecipeHandler.class);
-
+        public static MachineTraitType<SlotFluidRecipeHandler> TYPE = new MachineTraitType<>(
+                SlotFluidRecipeHandler.class);
 
         private final InternalSlot slot;
         private final int priority;
