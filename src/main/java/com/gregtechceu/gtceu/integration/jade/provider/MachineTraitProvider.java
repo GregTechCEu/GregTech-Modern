@@ -45,7 +45,7 @@ public abstract class MachineTraitProvider<T extends MachineTrait>
         var be = blockAccessor.getBlockEntity();
         if (be instanceof MetaMachine machine) {
             var t = machine.getTrait(traitType);
-            t.ifPresent(value -> write(compoundTag.getCompound(uid.toString()), value));
+            if (t != null) write(compoundTag.getCompound(uid.toString()), t);
         }
     }
 

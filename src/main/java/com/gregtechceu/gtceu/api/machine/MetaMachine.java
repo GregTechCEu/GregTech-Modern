@@ -238,11 +238,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     // Gets the first trait with the specified type.
-    public <T extends MachineTrait> Optional<T> getTrait(MachineTraitType<T> type) {
+    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
         traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>());
         List<MachineTrait> traitList = traitsByType.get(type);
-        if (traitList.isEmpty()) return Optional.empty();
-        return Optional.ofNullable(type.castTrait(traitList.get(0)));
+        if (traitList.isEmpty()) return null;
+        return type.castTrait(traitList.get(0));
     }
 
     @SuppressWarnings("unchecked")
