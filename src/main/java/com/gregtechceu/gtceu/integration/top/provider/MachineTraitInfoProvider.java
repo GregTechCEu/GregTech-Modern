@@ -19,10 +19,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class MachineTraitInfoProvider<T extends MachineTrait> implements IProbeInfoProvider {
 
+    private final MachineTraitType<T> traitType;
+
+    public MachineTraitInfoProvider(MachineTraitType<T> traitType) {
+        this.traitType = traitType;
+    }
+
     protected abstract void addProbeInfo(T trait, IProbeInfo probeInfo, Player player, BlockEntity blockEntity,
                                          IProbeHitData data);
-
-    protected abstract MachineTraitType<T> getTraitType();
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState,
@@ -30,7 +34,7 @@ public abstract class MachineTraitInfoProvider<T extends MachineTrait> implement
         if (blockState.hasBlockEntity()) {
             BlockEntity blockEntity = world.getBlockEntity(data.getPos());
             if (blockEntity instanceof MetaMachine machine) {
-                var t = machine.getTrait(getTraitType());
+                var t = machine.getTrait(traitType);
                 t.ifPresent(v -> addProbeInfo(v, probeInfo, player, blockEntity, data));
             }
         }

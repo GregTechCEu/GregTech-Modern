@@ -95,10 +95,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -226,7 +223,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final List<MachineTrait> traits;
     private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
 
-    public List<MachineTrait> getAllTraits() {
+    public @Unmodifiable List<MachineTrait> getAllTraits() {
         return Collections.unmodifiableList(traits);
     }
 

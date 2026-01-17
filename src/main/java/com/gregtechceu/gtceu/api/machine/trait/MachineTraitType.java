@@ -27,7 +27,7 @@ public class MachineTraitType<T extends MachineTrait> {
         return allowMultipleInstances;
     }
 
-    public T castTrait(MachineTrait trait) {
+    public @NotNull T castTrait(@NotNull MachineTrait trait) {
         return clazz.cast(trait);
     }
 
