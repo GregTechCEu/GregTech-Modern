@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -28,6 +29,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
@@ -49,6 +51,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -94,7 +97,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+                         IFancyTooltip, IPaintable, IRedstoneSignalMachine, ICopyable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
@@ -533,8 +536,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
 
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isShiftKeyDown()) {
-                if (isFacingValid(side)) {
+            if (!player.isShiftKeyDown()) {
+                if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() && side == getFrontFacing())) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
@@ -745,7 +748,15 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public Predicate<ItemStack> getItemCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof ItemFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
+            if (cover instanceof ItemFilterCover filterCover) {
+                if (!filterCover.getFilterMode().filters(io)) {
+                    if (filterCover.getAllowFlow() == ManualIOMode.DISABLED) {
+                        return item -> false;
+                    }
+                    if (filterCover.getAllowFlow() == ManualIOMode.UNFILTERED) {
+                        return item -> true;
+                    }
+                }
                 return filterCover.getItemFilter();
             }
         }
@@ -755,7 +766,15 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {
         if (side != null) {
             var cover = getCoverContainer().getCoverAtSide(side);
-            if (cover instanceof FluidFilterCover filterCover && filterCover.getFilterMode().filters(io)) {
+            if (cover instanceof FluidFilterCover filterCover) {
+                if (!filterCover.getFilterMode().filters(io)) {
+                    if (filterCover.getAllowFlow() == ManualIOMode.DISABLED) {
+                        return fluid -> false;
+                    }
+                    if (filterCover.getAllowFlow() == ManualIOMode.UNFILTERED) {
+                        return fluid -> true;
+                    }
+                }
                 return filterCover.getFluidFilter();
             }
         }
@@ -842,5 +861,20 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        return ICopyable.super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        ICopyable.super.pasteConfig(player, tag);
+    }
+
+    @Override
+    public List<ItemStack> getItemsRequiredToPaste() {
+        return coverContainer.getItemsRequiredToPaste();
     }
 }

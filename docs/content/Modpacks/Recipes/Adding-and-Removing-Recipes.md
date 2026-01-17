@@ -195,3 +195,6 @@ ServerEvents.recipes(event => {
         .EUt(30)
 })
 ```
+
+### More custom ingredients
+For more custom ingredients, see the [Ingredients list in the sidebar](Ingredients/index.md)

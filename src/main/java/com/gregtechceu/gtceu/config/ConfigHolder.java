@@ -689,7 +689,7 @@ public class ConfigHolder {
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
         @Configurable
-        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
+        @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 6 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
         @Configurable
@@ -739,10 +739,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {
 
+        @Configurable
+        @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
+        public boolean temperaturesInCelsius = false;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;

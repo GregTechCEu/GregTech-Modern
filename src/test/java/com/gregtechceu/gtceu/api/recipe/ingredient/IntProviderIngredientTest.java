@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
@@ -66,11 +67,20 @@ public class IntProviderIngredientTest {
 
     @BeforeBatch(batch = "RangedIngredients")
     public static void prepare(ServerLevel level) {
-        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests", 2, 2, 3, 2);
-        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests", 3, 3, 5, 4);
-        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_centrifuge_tests", 2, 6, 1, 6);
+        CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_cr_tests", GTRecipeTypes.CHEMICAL_RECIPES);
+        LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_lcr_tests",
+                GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
+        CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_centrifuge_tests",
+                GTRecipeTypes.CENTRIFUGE_RECIPES);
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+        var LCRHandler = LCR_RECIPE_TYPE.getAdditionHandler();
+        LCRHandler.beginStaging();
+        var centHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
+        centHandler.beginStaging();
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
                 .inputItemsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -79,7 +89,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(CR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -87,7 +97,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
                 .inputItemsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -96,7 +106,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
                 .inputItems(LCR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -104,7 +114,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
                 .inputItemsRanged(LCENT_IN, UniformInt.of(0, 4))
                 .inputItems(COBBLE)
@@ -113,13 +123,17 @@ public class IntProviderIngredientTest {
                 .duration(4)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(LCENT_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
+
+        CRHandler.completeStaging();
+        LCRHandler.completeStaging();
+        centHandler.completeStaging();
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
@@ -206,7 +220,7 @@ public class IntProviderIngredientTest {
                 "IntProviderIngredient should have item equal to what it was made with");
         helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
                 "IntProviderIngredient.getItems shouldn't change between getStacks calls");
-        ingredient.reroll();
+        ingredient.reset();
         helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
                 "IntProviderIngredient.getItems should have changed after rerolling");
         helper.succeed();
@@ -263,7 +277,7 @@ public class IntProviderIngredientTest {
         // get the result of each roll independently
         int[] addedRolls = new int[runs];
 
-        helper.runAfterDelay(4, () -> {
+        helper.runAfterDelay(2, () -> {
             if (machine.getRecipeLogic().getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0)
                     .getContent() instanceof IntProviderIngredient ingredient) {
                 ingredient.setSampledCount(0);
@@ -286,14 +300,15 @@ public class IntProviderIngredientTest {
         // check the results of all rolls together
         helper.runAfterDelay(runs * 2 + 1, () -> {
             ItemStack results = itemOut.getStackInSlot(0);
-            helper.assertTrue(TestUtils.isItemWithinRange(results, runs, runs * 9),
-                    "Sabotaged Singleblock CR didn't produce correct number of items, produced [" +
-                            results.getCount() + "] not [" + runs + "-" + (runs * 9) + "]");
-            helper.assertFalse((results.getCount() == runs * 9),
-                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
             helper.assertFalse((results.getCount() == runs * 0),
                     "Sabotaged Singleblock CR rolled min value on every roll! " +
                             "This is the failure this sabotage was intended to induce.");
+            helper.assertFalse((results.getCount() == runs * 9),
+                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
+
+            helper.assertTrue(TestUtils.isItemWithinRange(results, runs, runs * 9),
+                    "Sabotaged Singleblock CR didn't produce correct number of items, produced [" +
+                            results.getCount() + "] not [" + runs + "-" + (runs * 9) + "]");
 
             // check if all the rolls were equal, but not min/max
             int[] rolls = new int[runs];
