@@ -10,17 +10,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
 /**
  * A machine trait that overrides some of the default machine rendering behaviour.
  */
+@ParametersAreNonnullByDefault
 public interface IRenderingTrait extends ITraitFeature {
 
-    default boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
-                                     Set<GTToolType> toolTypes) {
+    default boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held,
+                                            Set<GTToolType> toolTypes) {
         return false;
     }
 
@@ -28,4 +31,6 @@ public interface IRenderingTrait extends ITraitFeature {
                                                Direction side) {
         return null;
     }
+
+    default void updateModelData(ModelData.Builder builder) {}
 }

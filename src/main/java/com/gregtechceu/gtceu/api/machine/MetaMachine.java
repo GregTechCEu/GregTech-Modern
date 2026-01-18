@@ -24,7 +24,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
-import com.gregtechceu.gtceu.api.machine.trait.feature.IModifyFacingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -536,7 +536,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
-                var result = renderingTrait.shouldRenderGrid(player, pos, state, held, toolTypes);
+                var result = renderingTrait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
                 if (result) return result;
             }
         }
@@ -611,10 +611,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         collisionList.add(Shapes.block());
     }
 
-    public boolean canSetIoOnSide(@Nullable Direction direction) {
-        return !hasFrontFacing() || getFrontFacing() != direction;
-    }
-
     public static Direction getFrontFacing(@Nullable MetaMachine machine) {
         return machine == null ? Direction.NORTH : machine.getFrontFacing();
     }
@@ -641,8 +637,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
 
         for (var trait : getTraitHolder().getAllTraits()) {
-            if (trait instanceof IModifyFacingTrait modifyFacingTrait) {
-                if (!modifyFacingTrait.isFacingValid(facing)) return false;
+            if (trait instanceof IFrontFacingTrait modifyFacingTrait) {
+                if (!modifyFacingTrait.isValidFrontFace(facing)) return false;
             }
         }
 
@@ -734,7 +730,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @MustBeInvokedByOverriders
     public void updateModelData(ModelData.Builder builder) {
         for (MachineTrait trait : traitHolder.getAllTraits()) {
-            trait.updateModelData(builder);
+            if (trait instanceof IRenderingTrait renderingTrait) renderingTrait.updateModelData(builder);
         }
     }
 

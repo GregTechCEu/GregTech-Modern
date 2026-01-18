@@ -70,5 +70,4 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public void onMachineNeighborChange(Block block, BlockPos fromPos, boolean isMoving) {}
 
-    public void updateModelData(ModelData.Builder builder) {}
 }
