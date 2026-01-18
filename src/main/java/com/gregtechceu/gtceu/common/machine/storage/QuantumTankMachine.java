@@ -383,7 +383,6 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             return TYPE;
         }
 
-
         private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 
         public FluidCache(MetaMachine holder) {

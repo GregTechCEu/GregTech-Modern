@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MachineTraitType<T extends MachineTrait> {
+
     private final Class<T> clazz;
     private final boolean allowMultipleInstances;
 

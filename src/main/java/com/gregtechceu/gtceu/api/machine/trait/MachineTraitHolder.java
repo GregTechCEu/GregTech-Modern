@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -48,7 +46,7 @@ public final class MachineTraitHolder {
 
     @SuppressWarnings("unchecked")
     public <T extends MachineTrait> List<T> getTraitsWithType(MachineTraitType<T> type) {
-        List<T> traitList = (List<T>)traitsByType.get(type);
+        List<T> traitList = (List<T>) traitsByType.get(type);
         if (traitList == null) return List.of();
         return Collections.unmodifiableList(traitList);
     }

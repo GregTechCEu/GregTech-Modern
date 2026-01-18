@@ -9,12 +9,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.minecraftforge.client.model.data.ModelData;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A machine trait that overrides some of the default machine rendering behaviour.
@@ -31,9 +32,11 @@ public interface IRenderingTrait extends ITraitFeature {
     }
 
     /**
-     * Called when the machine grid overlay is being rendered to determine the icon to be rendered within the grid segment on a specifc side.
+     * Called when the machine grid overlay is being rendered to determine the icon to be rendered within the grid
+     * segment on a specifc side.
      */
-    default @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+    default @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
+                                                         Set<GTToolType> toolTypes,
                                                          Direction side) {
         return null;
     }

@@ -23,8 +23,8 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -1044,7 +1044,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> computationProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IOpticalComputationProvider.class);
+            var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side,
+                    IOpticalComputationProvider.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -1091,7 +1092,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
                 }
-                var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side, IInWorldGridNodeHost.class);
+                var list = getCapabilitiesFromTraits(machine.traitHolder.getAllTraits(), side,
+                        IInWorldGridNodeHost.class);
                 if (!list.isEmpty()) {
                     // TODO wrap list in the future (or not.)
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));

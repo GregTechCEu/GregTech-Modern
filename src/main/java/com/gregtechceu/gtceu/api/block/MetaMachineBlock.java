@@ -300,7 +300,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         }
 
         machine.getTraitHolder().getAllTraits().forEach(t -> {
-            if (t instanceof IInteractionTrait interactionTrait) interactionTrait.onUse(state, world, pos, player, hand, hit);
+            if (t instanceof IInteractionTrait interactionTrait)
+                interactionTrait.onUse(state, world, pos, player, hand, hit);
         });
 
         if (machine instanceof IInteractedMachine interactedMachine) {

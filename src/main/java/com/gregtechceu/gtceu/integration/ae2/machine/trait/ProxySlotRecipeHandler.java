@@ -101,7 +101,6 @@ public final class ProxySlotRecipeHandler {
             return TYPE;
         }
 
-
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
