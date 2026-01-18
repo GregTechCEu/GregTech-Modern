@@ -1,4 +1,55 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-public class MachineTraitHolder {
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
+import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+public final class MachineTraitHolder {
+
+    private final MetaMachine machine;
+    private final List<MachineTrait> traits;
+    private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
+
+    public MachineTraitHolder(MetaMachine machine) {
+        this.machine = machine;
+        this.traits = new ObjectArrayList<>();
+        this.traitsByType = new Object2ObjectOpenHashMap<>();
+    }
+
+    public @Unmodifiable List<MachineTrait> getAllTraits() {
+        return Collections.unmodifiableList(traits);
+    }
+
+    public void attachTrait(MachineTrait trait) {
+        var traitType = trait.getTraitType();
+        traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
+        if (!traitType.allowsMultipleInstances() && traitsByType.get(traitType).size() == 1) {
+            throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
+        }
+        traits.add(trait);
+        traitsByType.get(traitType).add(trait);
+    }
+
+    // Gets the first trait with the specified type.
+    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
+        List<MachineTrait> traitList = traitsByType.get(type);
+        if (traitList == null || traitList.isEmpty()) return null;
+        return type.castTrait(traitList.get(0));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends MachineTrait> List<T> getTraitsWithType(MachineTraitType<T> type) {
+        List<T> traitList = (List<T>)traitsByType.get(type);
+        if (traitList == null) return List.of();
+        return Collections.unmodifiableList(traitList);
+    }
 }

@@ -34,7 +34,7 @@ public abstract class MachineTraitInfoProvider<T extends MachineTrait> implement
         if (blockState.hasBlockEntity()) {
             BlockEntity blockEntity = world.getBlockEntity(data.getPos());
             if (blockEntity instanceof MetaMachine machine) {
-                var t = machine.getTrait(traitType);
+                var t = machine.getTraitHolder().getTrait(traitType);
                 if (t != null) addProbeInfo(t, probeInfo, player, blockEntity, data);
             }
         }

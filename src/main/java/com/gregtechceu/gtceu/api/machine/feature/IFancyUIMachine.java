@@ -133,7 +133,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     @Override
     default void attachTooltips(TooltipsPanel tooltipsPanel) {
         tooltipsPanel.attachTooltips(self());
-        self().getAllTraits().stream().filter(IFancyTooltip.class::isInstance).map(IFancyTooltip.class::cast)
+        self().getTraitHolder().getAllTraits().stream().filter(IFancyTooltip.class::isInstance).map(IFancyTooltip.class::cast)
                 .forEach(tooltipsPanel::attachTooltips);
     }
 
