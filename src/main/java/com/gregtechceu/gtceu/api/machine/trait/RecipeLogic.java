@@ -80,10 +80,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @UpdateListener(methodName = "onActiveSynced")
     protected boolean isActive;
 
+    @Getter
     @Nullable
     @Persisted
     @DescSynced
     private Component waitingReason = null;
+
+    @Getter
+    @DescSynced
+    protected List<Component> failReasons = new ArrayList<>();
+
+    @Getter
+    protected final Map<GTRecipe, Component> failReasonMap = new HashMap<>();
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
@@ -225,7 +233,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     // No recipes available and the machine wants to unsubscribe until notified
                     unsubscribe = true;
                 }
-
+        if (isIdle()) {
+            failReasons = failReasonMap.values().stream().toList();
+        }
         if (unsubscribe && subscription != null) {
             subscription.unsubscribe();
             subscription = null;
@@ -249,7 +259,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
-            }
+            } else failReasonMap.put(match, recipeMatch.reason());
             if (lastRecipe != null && getStatus() == Status.WORKING) {
                 lastOriginRecipe = match;
                 lastFailedMatches = null;
@@ -321,13 +331,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public void findAndHandleRecipe() {
         lastFailedMatches = null;
+
         // try to execute last recipe if possible
         if (!recipeDirty && lastRecipe != null && checkRecipe(lastRecipe).isSuccess()) {
             GTRecipe recipe = lastRecipe;
             lastRecipe = null;
             lastOriginRecipe = null;
             setupRecipe(recipe);
-        } else { // try to find and handle a new recipe
+        } else {
+            // try to find and handle a new recipe
+            failReasonMap.clear();
             lastRecipe = null;
             lastOriginRecipe = null;
             handleSearchingRecipes(searchRecipe());
@@ -379,6 +392,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
+            failReasonMap.clear();
             recipeDirty = false;
             lastRecipe = recipe;
             setStatus(Status.WORKING);
@@ -586,7 +600,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public IGuiTexture getFancyTooltipIcon() {
-        if (waitingReason != null) {
+        if (showFancyTooltip()) {
             return GuiTextures.INSUFFICIENT_INPUT;
         }
         return IGuiTexture.EMPTY;
@@ -594,15 +608,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public List<Component> getFancyTooltip() {
-        if (waitingReason != null) {
+        if (isWaiting() && waitingReason != null) {
             return List.of(waitingReason);
+        }
+        if (isIdle() && !failReasons.isEmpty()) {
+            return failReasons;
         }
         return Collections.emptyList();
     }
 
     @Override
     public boolean showFancyTooltip() {
-        return waitingReason != null;
+        return waitingReason != null || !failReasons.isEmpty();
     }
 
     protected Map<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {

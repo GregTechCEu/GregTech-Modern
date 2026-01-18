@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
+import net.minecraft.network.chat.Component;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
@@ -44,6 +46,21 @@ public interface ModifierFunction {
      */
     ModifierFunction IDENTITY = recipe -> recipe;
 
+    static ModifierFunction cancell(Component reason) {
+        return new ModifierFunction() {
+
+            @Override
+            public @Nullable GTRecipe apply(@NotNull GTRecipe recipe) {
+                return null;
+            }
+
+            @Override
+            public Component getFailReason() {
+                return reason;
+            }
+        };
+    }
+
     /**
      * Applies this modifier to the passed recipe
      * 
@@ -77,6 +94,10 @@ public interface ModifierFunction {
     private GTRecipe applySafe(@Nullable GTRecipe recipe) {
         if (recipe == null) return null;
         return apply(recipe);
+    }
+
+    default Component getFailReason() {
+        return Component.translatable("gtceu.recipe_modifier.default_fail");
     }
 
     /**

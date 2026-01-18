@@ -372,6 +372,19 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
+            if (!isStructureFormed || !recipeLogic.isIdle())
+                return this;
+            var reasons = recipeLogic.getFailReasons();
+            if (!reasons.isEmpty()) {
+                textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                for (var reason : reasons) {
+                    textList.add(Component.literal(" - " + reason.getString()));
+                }
+            }
+            return this;
+        }
+
         public Builder addBatchModeLine(boolean batchEnabled, int batchAmount) {
             if (batchEnabled && batchAmount > 0) {
                 Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount))
