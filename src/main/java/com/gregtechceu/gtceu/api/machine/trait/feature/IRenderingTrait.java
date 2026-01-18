@@ -14,7 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-/// A machine trait that overrides some of the default machine rendering behaviour
+/**
+ * A machine trait that overrides some of the default machine rendering behaviour.
+ */
 public interface IRenderingTrait extends ITraitFeature {
 
     default boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,

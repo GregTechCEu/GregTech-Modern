@@ -12,7 +12,9 @@ import com.mojang.datafixers.util.Pair;
 
 import java.util.Set;
 
-/// A machine trait that provides special interaction behaviour.
+/**
+ * A machine trait that provides special interaction behaviour.
+ */
 public interface IInteractionTrait extends ITraitFeature {
 
     default Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType,
