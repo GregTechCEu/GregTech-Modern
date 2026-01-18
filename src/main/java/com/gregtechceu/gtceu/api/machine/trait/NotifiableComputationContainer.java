@@ -31,6 +31,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     public static MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
             NotifiableComputationContainer.class);
 
+    @Override
+    public MachineTraitType<NotifiableComputationContainer> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     protected IO handlerIO;
     @Getter

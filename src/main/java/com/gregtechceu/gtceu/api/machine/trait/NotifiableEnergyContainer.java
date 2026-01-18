@@ -37,6 +37,11 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     public static MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
             NotifiableEnergyContainer.class);
 
+    @Override
+    public MachineTraitType<NotifiableEnergyContainer> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     protected IO handlerIO;
     @Getter

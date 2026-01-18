@@ -378,6 +378,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
         public static MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
 
+        @Override
+        public MachineTraitType<FluidCache> getTraitType() {
+            return TYPE;
+        }
+
+
         private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 
         public FluidCache(MetaMachine holder) {

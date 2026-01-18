@@ -47,6 +47,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
 
     public static MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
 
+    @Override
+    public MachineTraitType<RecipeLogic> getTraitType() {
+        return TYPE;
+    }
+
     public enum Status implements StringRepresentable {
 
         IDLE("idle"),

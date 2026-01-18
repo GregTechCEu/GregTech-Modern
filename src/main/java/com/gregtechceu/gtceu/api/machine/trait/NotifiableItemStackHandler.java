@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -37,6 +38,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public static MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
             NotifiableItemStackHandler.class);
+
+    @Override
+    public MachineTraitType<NotifiableItemStackHandler> getTraitType() {
+        return TYPE;
+    }
 
     @Getter
     public final IO handlerIO;

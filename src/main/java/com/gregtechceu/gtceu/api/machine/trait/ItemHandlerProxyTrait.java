@@ -19,6 +19,15 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
 
     public static MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(ItemHandlerProxyTrait.class);
 
+    @Override
+    public MachineTraitType<ItemHandlerProxyTrait> getTraitType() {
+        return TYPE;
+    }
+
+    public MachineTraitType<ItemHandlerProxyTrait> getType() {
+        return TYPE;
+    }
+
     @Getter
     public final IO capabilityIO;
     @Setter

@@ -18,6 +18,11 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
 
     public static MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class);
 
+    @Override
+    public MachineTraitType<FluidTankProxyTrait> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     public final IO capabilityIO;
     @Setter

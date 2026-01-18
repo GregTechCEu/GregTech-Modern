@@ -228,7 +228,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public void attachTrait(MachineTrait trait) {
-        var traitType = MachineTraitType.getTraitType(trait.getClass());
+        var traitType = trait.getTraitType();
         traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
         if (!traitType.allowsMultipleInstances() && traitsByType.get(traitType).size() == 1) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());

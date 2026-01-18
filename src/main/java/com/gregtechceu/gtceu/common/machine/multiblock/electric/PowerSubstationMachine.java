@@ -378,6 +378,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         public static MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
                 PowerStationEnergyBank.class);
 
+        @Override
+        public MachineTraitType<PowerStationEnergyBank> getTraitType() {
+            return TYPE;
+        }
+
         private static final String NBT_SIZE = "Size";
         private static final String NBT_STORED = "Stored";
         private static final String NBT_MAX = "Max";

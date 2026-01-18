@@ -22,6 +22,8 @@ public abstract class MachineTrait implements ISyncManaged {
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
+    public abstract MachineTraitType<?> getTraitType();
+
     @Getter
     protected final MetaMachine machine;
     @Setter

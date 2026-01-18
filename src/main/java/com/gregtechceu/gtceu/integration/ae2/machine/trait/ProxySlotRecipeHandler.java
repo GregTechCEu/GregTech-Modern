@@ -96,6 +96,12 @@ public final class ProxySlotRecipeHandler {
         public static MachineTraitType<ProxyItemRecipeHandler> TYPE = new MachineTraitType<>(
                 ProxyItemRecipeHandler.class);
 
+        @Override
+        public MachineTraitType<ProxyItemRecipeHandler> getTraitType() {
+            return TYPE;
+        }
+
+
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
@@ -153,6 +159,11 @@ public final class ProxySlotRecipeHandler {
 
         public static MachineTraitType<ProxyFluidRecipeHandler> TYPE = new MachineTraitType<>(
                 ProxyFluidRecipeHandler.class);
+
+        @Override
+        public MachineTraitType<ProxyFluidRecipeHandler> getTraitType() {
+            return TYPE;
+        }
 
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
@@ -89,6 +90,12 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     private class FEContainer extends MachineTrait implements IEnergyStorage {
 
         public static MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
+
+        @Override
+        public MachineTraitType<FEContainer> getTraitType() {
+            return TYPE;
+        }
+
 
         public FEContainer(MetaMachine machine) {
             super(machine);

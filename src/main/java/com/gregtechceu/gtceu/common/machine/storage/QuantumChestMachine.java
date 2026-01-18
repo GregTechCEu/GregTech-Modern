@@ -444,6 +444,11 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
         public static MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
 
+        @Override
+        public MachineTraitType<ItemCache> getTraitType() {
+            return TYPE;
+        }
+
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 GTUtil.isSameItemSameTags(i, getLockedItem());
 

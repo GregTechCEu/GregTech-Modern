@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
+import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import net.minecraft.core.Direction;
 
 import appeng.api.networking.GridHelper;
@@ -15,6 +16,11 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
     public static MachineTraitType<GridNodeHostTrait> TYPE = new MachineTraitType<>(GridNodeHostTrait.class);
+
+    @Override
+    public MachineTraitType<GridNodeHostTrait> getTraitType() {
+        return TYPE;
+    }
 
     private final IManagedGridNode proxy;
 

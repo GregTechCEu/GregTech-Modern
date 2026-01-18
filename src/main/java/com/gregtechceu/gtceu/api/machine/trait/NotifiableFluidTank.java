@@ -28,6 +28,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public static MachineTraitType<NotifiableFluidTank> TYPE = new MachineTraitType<>(NotifiableFluidTank.class);
 
+    @Override
+    public MachineTraitType<NotifiableFluidTank> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     public final IO handlerIO;
     @Getter

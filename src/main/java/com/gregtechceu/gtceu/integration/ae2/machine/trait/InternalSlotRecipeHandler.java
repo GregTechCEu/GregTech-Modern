@@ -63,6 +63,11 @@ public final class InternalSlotRecipeHandler {
         public static MachineTraitType<SlotItemRecipeHandler> TYPE = new MachineTraitType<>(
                 SlotItemRecipeHandler.class);
 
+        @Override
+        public MachineTraitType<SlotItemRecipeHandler> getTraitType() {
+            return TYPE;
+        }
+
         private final InternalSlot slot;
         private final int priority;
 
@@ -100,6 +105,11 @@ public final class InternalSlotRecipeHandler {
 
         public static MachineTraitType<SlotFluidRecipeHandler> TYPE = new MachineTraitType<>(
                 SlotFluidRecipeHandler.class);
+
+        @Override
+        public MachineTraitType<SlotFluidRecipeHandler> getTraitType() {
+            return TYPE;
+        }
 
         private final InternalSlot slot;
         private final int priority;
