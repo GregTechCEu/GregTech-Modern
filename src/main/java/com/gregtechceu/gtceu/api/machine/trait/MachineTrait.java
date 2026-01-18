@@ -62,12 +62,9 @@ public abstract class MachineTrait implements ISyncManaged {
         machine.scheduleRenderUpdate();
     }
 
-    ////// MetaMachine methods which traits can hook into
-
     public void onMachineLoad() {}
 
     public void onMachineUnload() {}
 
     public void onMachineNeighborChange(Block block, BlockPos fromPos, boolean isMoving) {}
-
 }

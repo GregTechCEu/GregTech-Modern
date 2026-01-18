@@ -303,7 +303,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
-        Pair<GTToolType, InteractionResult> result = Pair.of(null, InteractionResult.PASS);
+        Pair<GTToolType, InteractionResult> result = null;
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
         if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
@@ -333,7 +333,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             result = Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
         }
 
-        if (result.getSecond() != InteractionResult.PASS) return result;
+        if (result != null && result.getSecond() != InteractionResult.PASS) return result;
 
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
@@ -342,7 +342,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        return result;
+        return result != null ? result : Pair.of(null, InteractionResult.PASS);
     }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide,
@@ -571,7 +571,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
-                var result = renderingTrait.sideTips(player, pos, state, toolTypes, side);
+                var result = renderingTrait.getGridOverlayIcon(player, pos, state, toolTypes, side);
                 if (result != null) return result;
             }
         }
@@ -1074,7 +1074,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
         if (GTCEu.Mods.isAE2Loaded()) {
-            LazyOptional<?> opt = MetaMachine.AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
             if (opt.isPresent()) {
                 // noinspection unchecked
                 return (LazyOptional<T>) opt;

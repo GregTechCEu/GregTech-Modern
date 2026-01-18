@@ -22,13 +22,19 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 public interface IRenderingTrait extends ITraitFeature {
 
+    /**
+     * Called when a player is looking at this machine, returns whether the grid overlay should be rendered.
+     */
     default boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held,
                                             Set<GTToolType> toolTypes) {
         return false;
     }
 
-    default @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                               Direction side) {
+    /**
+     * Called when the machine grid overlay is being rendered to determine the icon to be rendered within the grid segment on a specifc side.
+     */
+    default @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                                         Direction side) {
         return null;
     }
 
