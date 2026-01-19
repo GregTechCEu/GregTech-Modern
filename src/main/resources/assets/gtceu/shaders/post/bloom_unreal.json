@@ -1,190 +1,206 @@
 {
-  "targets": [
-    "gtceu:filter_temp",
-    {
-      "name": "swap2a",
-      "bilinear": true
-    },
-    {
-      "name": "swap4a",
-      "bilinear": true
-    },
-    {
-      "name": "swap8a",
-      "bilinear": true
-    },
-    {
-      "name": "swap16a",
-      "bilinear": true
-    },
-    {
-      "name": "swap2b",
-      "bilinear": true
-    },
-    {
-      "name": "swap4b",
-      "bilinear": true
-    },
-    {
-      "name": "swap8b",
-      "bilinear": true
-    },
-    {
-      "name": "swap16b",
-      "bilinear": true
-    },
-    "final"
-  ],
-  "passes": [
-    {
-      "name": "gtceu:filter_bloom_color",
-      "intarget": "final",
-      "outtarget": "gtceu:filter_temp",
-      "auxtargets": [
-         { "id": "final:depth", "name": "DiffuseDepthSampler" },
-         { "id": "minecraft:main", "name": "MainSampler" },
-         { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "gtceu:filter_temp",
-      "outtarget": "swap2a",
-      "uniforms": [
+    "targets": [
+        "gtceu:filter_temp",
         {
-          "name": "BlurDir",
-          "values": [ 1.0, 0.0 ]
+            "name": "swap2a",
+            "bilinear": true,
+            "scale_width": 0.5,
+            "scale_height": 0.5
         },
         {
-          "name": "Radius",
-          "values": [3]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap2a",
-      "outtarget": "swap2b",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 0.0, 1.0 ]
+            "name": "swap4a",
+            "bilinear": true,
+            "scale_width": 0.25,
+            "scale_height": 0.25
         },
         {
-          "name": "Radius",
-          "values": [3]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap2b",
-      "outtarget": "swap4a",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 1.0, 0.0 ]
+            "name": "swap8a",
+            "bilinear": true,
+            "scale_width": 0.125,
+            "scale_height": 0.125
         },
         {
-          "name": "Radius",
-          "values": [5]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap4a",
-      "outtarget": "swap4b",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 0.0, 1.0 ]
+            "name": "swap16a",
+            "bilinear": true,
+            "scale_width": 0.0625,
+            "scale_height": 0.0625
         },
         {
-          "name": "Radius",
-          "values": [5]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap4b",
-      "outtarget": "swap8a",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 1.0, 0.0 ]
+            "name": "swap2b",
+            "bilinear": true,
+            "scale_width": 0.5,
+            "scale_height": 0.5
         },
         {
-          "name": "Radius",
-          "values": [7]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap8a",
-      "outtarget": "swap8b",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 0.0, 1.0 ]
+            "name": "swap4b",
+            "bilinear": true,
+            "scale_width": 0.25,
+            "scale_height": 0.25
         },
         {
-          "name": "Radius",
-          "values": [7]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap8b",
-      "outtarget": "swap16a",
-      "uniforms": [
-        {
-          "name": "BlurDir",
-          "values": [ 1.0, 0.0 ]
+            "name": "swap8b",
+            "bilinear": true,
+            "scale_width": 0.125,
+            "scale_height": 0.125
         },
         {
-          "name": "Radius",
-          "values": [9]
-        }
-      ]
-    },
-    {
-      "name": "blur",
-      "intarget": "swap16a",
-      "outtarget": "swap16b",
-      "uniforms": [
+            "name": "swap16b",
+            "bilinear": true,
+            "scale_width": 0.0625,
+            "scale_height": 0.0625
+        },
+        "final"
+    ],
+    "passes": [
         {
-          "name": "BlurDir",
-          "values": [ 0.0, 1.0 ]
+            "name": "gtceu:filter_bloom_color",
+            "intarget": "final",
+            "outtarget": "gtceu:filter_temp",
+            "auxtargets": [
+                { "id": "final:depth", "name": "DiffuseDepthSampler" },
+                { "id": "minecraft:main", "name": "MainSampler" },
+                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
+            ]
         },
         {
-          "name": "Radius",
-          "values": [9]
+            "name": "blur",
+            "intarget": "gtceu:filter_temp",
+            "outtarget": "swap2a",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [3]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap2a",
+            "outtarget": "swap2b",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [3]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap2b",
+            "outtarget": "swap4a",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [5]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap4a",
+            "outtarget": "swap4b",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [5]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap4b",
+            "outtarget": "swap8a",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [7]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap8a",
+            "outtarget": "swap8b",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [7]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap8b",
+            "outtarget": "swap16a",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [9]
+                }
+            ]
+        },
+        {
+            "name": "blur",
+            "intarget": "swap16a",
+            "outtarget": "swap16b",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [9]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:unreal_composite",
+            "intarget": "minecraft:main",
+            "outtarget": "final",
+            "auxtargets": [
+                { "id": "gtceu:filter_temp", "name": "HighlightSampler" },
+                { "id": "swap2b",            "name": "BlurTexture1" },
+                { "id": "swap4b",            "name": "BlurTexture2" },
+                { "id": "swap8b",            "name": "BlurTexture3" },
+                { "id": "swap16b",           "name": "BlurTexture4 "}
+            ],
+            "uniforms": [
+                { "name": "BloomRadius", "values": [1.0] }
+            ]
+        },
+        {
+            "name": "blit",
+            "intarget": "final",
+            "outtarget": "minecraft:main"
         }
-      ]
-    },
-    {
-      "name": "gtceu:unreal_composite",
-      "intarget": "minecraft:main",
-      "outtarget": "final",
-      "auxtargets": [
-        { "id": "gtceu:filter_temp", "name": "HighlightSampler" },
-        { "id": "swap2b",            "name": "BlurTexture1" },
-        { "id": "swap4b",            "name": "BlurTexture2" },
-        { "id": "swap8b",            "name": "BlurTexture3" },
-        { "id": "swap16b",           "name": "BlurTexture4" }
-      ],
-      "uniforms": [
-        { "name": "BloomRadius", "values": [1.0] }
-      ]
-    },
-    {
-      "name": "blit",
-      "intarget": "final",
-      "outtarget": "minecraft:main"
-    }
-  ]
+    ]
 }
