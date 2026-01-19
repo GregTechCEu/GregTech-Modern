@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.core.mixins.embeddium;
 import com.gregtechceu.gtceu.client.bloom.BloomUtil;
 import com.gregtechceu.gtceu.client.model.BloomMetadataSection;
 import com.gregtechceu.gtceu.client.shader.GTShaders;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
@@ -53,7 +54,7 @@ public class BlockRendererMixin {
         BlockPos chunkOrigin = SectionPos.of(ctx.pos()).origin();
         // Check if quad is full brightness OR we have bloom enabled for the quad
         // TODO improve, don't mixin to embeddium, maybe ask for an API? doubt we'll get it though
-        if (GTShaders.canUseBloomShader() && gtceu$isEmissive(quad, light)) {
+        if (GTShaders.canUseBloomShader() && gtceu$hasBloom(quad, light)) {
             ModelQuadOrientation orientation = this.useReorienting ?
                     ModelQuadOrientation.orientByBrightness(light.br, light.lm) : ModelQuadOrientation.NORMAL;
             for (int dstIndex = 0; dstIndex < 4; ++dstIndex) {
@@ -85,7 +86,7 @@ public class BlockRendererMixin {
     }
 
     @Unique
-    private static boolean gtceu$isEmissive(BakedQuadView quad, QuadLightData light) {
+    private static boolean gtceu$hasBloom(BakedQuadView quad, QuadLightData light) {
         if (!quad.hasShade() || !quad.hasAmbientOcclusion()) {
             return true;
         }
@@ -93,6 +94,11 @@ public class BlockRendererMixin {
             return true;
         }
 
+        // do not apply bloom to emissive quads if this config is off
+        // same check is done for vanilla quads in BloomMetadataSection
+        if (!ConfigHolder.INSTANCE.client.shader.emissiveTexturesHaveBloom) {
+            return false;
+        }
         for (int i = 0; i < 4; i++) {
             int quadLight = quad.getLight(i);
             int qBlock = LightTexture.block(quadLight), qSky = LightTexture.sky(quadLight);
