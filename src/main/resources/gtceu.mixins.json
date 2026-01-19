@@ -27,6 +27,7 @@
         "client.RebuildTaskMixin",
         "client.VariantDeserializerMixin",
         "client.VertexBufferAccessor",
+        "dev.client.KeyboardHandlerMixin",
         "embeddium.BlockRendererMixin",
         "forge.QuadLighterMixin",
         "ftbchunks.FTBChunksClientMixin",
