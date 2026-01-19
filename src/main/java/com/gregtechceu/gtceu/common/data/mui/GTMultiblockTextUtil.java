@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -13,8 +15,13 @@ import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -24,6 +31,8 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class GTMultiblockTextUtil {
 
@@ -177,7 +186,18 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
     }
 
-    public static void addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager, ListWidget<IWidget, ?> listWidget) {
+    public static ParentWidget<?> addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager, ListWidget<IWidget, ?> listWidget) {
+        BooleanSyncValue hasOutputs = syncManager.getOrCreateSyncHandler("hasRecipeOutputs", BooleanSyncValue.class, () ->
+                new BooleanSyncValue(() -> {
+                    if (rlmachine.getRecipeLogic().getLastRecipe() == null) return false;
+                    return !rlmachine.getRecipeLogic().getLastRecipe().outputs.isEmpty() ||
+                            !rlmachine.getRecipeLogic().getLastRecipe().tickOutputs.isEmpty();
+                }));
 
+        return null;
+
+        /*return IKey.dynamic(() -> {
+            return Component.translatable("");
+        });*/
     }
 }
