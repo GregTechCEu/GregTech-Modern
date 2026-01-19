@@ -223,7 +223,7 @@ public class BloomUtil {
 
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
-            GTRenderTypes.getBloom().setupRenderState();
+            GTRenderTypes.bloom().setupRenderState();
 
             preDraw();
             if (!BLOOM_RENDERS.isEmpty()) {
@@ -342,9 +342,9 @@ public class BloomUtil {
 
     public static BufferBuilder getOrStartBloomBuffer(BlockPos pos) {
         BufferBuilder builder = BLOOM_BUFFER_BUILDERS.computeIfAbsent(pos,
-                $ -> new BufferBuilder(GTRenderTypes.getBloom().bufferSize()));
+                $ -> new BufferBuilder(GTRenderTypes.bloom().bufferSize()));
         if (!builder.building()) {
-            builder.begin(GTRenderTypes.getBloom().mode(), GTRenderTypes.getBloom().format());
+            builder.begin(GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
         }
         return builder;
     }
@@ -429,10 +429,10 @@ public class BloomUtil {
         Minecraft.getInstance().getProfiler().pop();
 
         // noinspection UnstableApiUsage
-        ForgeHooksClient.dispatchRenderStage(GTRenderTypes.getBloom(), levelRenderer,
+        ForgeHooksClient.dispatchRenderStage(GTRenderTypes.bloom(), levelRenderer,
                 poseStack, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
 
-        GTRenderTypes.getBloom().clearRenderState();
+        GTRenderTypes.bloom().clearRenderState();
     }
 
     public static void copyToBloomBuffer(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
