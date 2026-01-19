@@ -38,24 +38,21 @@ public class GTShaders {
             BLOOM_CHAIN.close();
         }
 
-        ResourceLocation id;
+        ResourceLocation id = null;
 
         switch (BLOOM_TYPE) {
-            case UNITY -> {
-                id = GTCEu.id("shaders/post/bloom_unity.json");
-            }
-            case UNREAL -> {
-                id = GTCEu.id("shaders/post/bloom_unreal.json");
-            }
+            case UNITY -> id = GTCEu.id("shaders/post/bloom_unity.json");
+            case UNREAL -> id = GTCEu.id("shaders/post/bloom_unreal.json");
             case DISABLED -> {
                 return;
             }
-            default -> {
-                GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.shader.bloomAlgorithm);
-                ConfigHolder.INSTANCE.client.shader.bloomAlgorithm = BloomAlgorithm.DISABLED;
-                BLOOM_TYPE = BloomAlgorithm.DISABLED;
-                return;
-            }
+            // skip adding a default branch in favor of the if statement below
+        }
+        if (id == null) {
+            GTCEu.LOGGER.error("Invalid bloom style {}", ConfigHolder.INSTANCE.client.shader.bloomAlgorithm);
+            ConfigHolder.INSTANCE.client.shader.bloomAlgorithm = BloomAlgorithm.DISABLED;
+            BLOOM_TYPE = BloomAlgorithm.DISABLED;
+            return;
         }
 
         try {
