@@ -224,6 +224,8 @@ public class BloomUtil {
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             GTRenderTypes.bloom().setupRenderState();
+            // copy depth buffer from the main render target so bloom won't render through blocks
+            GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
             preDraw();
             if (!BLOOM_RENDERS.isEmpty()) {
