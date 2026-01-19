@@ -37,8 +37,7 @@ public class GTRenderTypes extends RenderType {
                     .setCullState(RenderStateShard.NO_CULL)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
                     .createCompositeState(false));
-
-    private static final RenderType BLOOM = RenderType.create("gtceu_bloom", DefaultVertexFormat.BLOCK,
+    private static final RenderType BLOOM = RenderType.create("gtceu:bloom", DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS, RenderType.BIG_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
                     .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -46,6 +45,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
                     .setOutputState(BLOOM_TARGET)
                     .createCompositeState(false));
+
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,

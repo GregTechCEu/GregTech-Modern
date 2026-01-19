@@ -219,7 +219,7 @@ public class BloomUtil {
             return;
         }
         Vec3 camPos = camera.getPosition();
-        Minecraft.getInstance().getProfiler().popPush("gtceu_block_bloom");
+        Minecraft.getInstance().getProfiler().popPush("gtceu:bloom");
 
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
@@ -366,6 +366,8 @@ public class BloomUtil {
 
     public static ThreadLocal<BlockPos> CURRENT_RENDERING_CHUNK_POS = new ThreadLocal<>();
 
+    private static final String FILTER_TOGGLE_UNIFORM = "EnableFilter";
+
     private static final String BLUR_SHADER_NAME = "blur";
     private static final String BLOOM_STRENGTH_UNIFORM = "BloomStrength";
     private static final String BASE_BRIGHTNESS_UNIFORM = "BaseBrightness";
@@ -378,15 +380,14 @@ public class BloomUtil {
 
         // Forcefully insert config values to shader
         List<PostPass> passes = ((PostChainAccessor) GTShaders.BLOOM_CHAIN).getPasses();
-        for (PostPass pass : passes) {
+        for (int i = 0; i < passes.size(); i++) {
+            PostPass pass = passes.get(i);
             EffectInstance shader = pass.getEffect();
-            String name = shader.getName();
 
-            shader.safeGetUniform("EnableFilter").set(drawBlockBloom ? 1 : 0);
+            shader.safeGetUniform(FILTER_TOGGLE_UNIFORM).set(drawBlockBloom ? 1 : 0);
 
-            if (name.contains(BLUR_SHADER_NAME)) {
-                int index = passes.indexOf(pass);
-                if (index % 2 == 0) {
+            if (shader.getName().contains(BLUR_SHADER_NAME)) {
+                if (i % 2 == 0) {
                     shader.safeGetUniform(BLUR_DIR_UNIFORM).set(0.0f, config.step);
                 } else {
                     shader.safeGetUniform(BLUR_DIR_UNIFORM).set(config.step, 0.0f);
@@ -402,19 +403,21 @@ public class BloomUtil {
     private static void drawBlockBloom(PoseStack poseStack, Matrix4f projectionMatrix, Vec3 camPos) {
         for (var entry : BLOOM_BUFFERS.entrySet()) {
             BlockPos pos = entry.getKey();
+            VertexBuffer buffer = entry.getValue();
 
             // return early if buffer is invalid or has no vertex data bound
             // VertexBuffer#mode's nullness is the easiest way to check this.
-            if (entry.getValue().isInvalid() || ((VertexBufferAccessor) entry.getValue()).getMode() == null) {
+            if (buffer.isInvalid() || ((VertexBufferAccessor) buffer).getMode() == null) {
                 continue;
             }
-            entry.getValue().bind();
+            buffer.bind();
 
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
-            entry.getValue().drawWithShader(poseStack.last().pose(), projectionMatrix,
+            //noinspection DataFlowIssue
+            buffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
                     GameRenderer.getRendertypeCutoutShader());
             poseStack.popPose();
         }
