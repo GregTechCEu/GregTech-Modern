@@ -171,7 +171,7 @@ public class BloomUtil {
                                                         @NotNull IBloomEffect render,
                                                         @Nullable Predicate<BloomRenderTicket> validityChecker,
                                                         @Nullable Supplier<Level> worldContext) {
-        if (!GTShaders.allowedShader()) return BloomRenderTicket.INVALID;
+        if (!GTShaders.canUseBloomShader()) return BloomRenderTicket.INVALID;
 
         BloomRenderTicket ticket = new BloomRenderTicket(setup, render, validityChecker, worldContext);
         BLOOM_RENDER_LOCK.writeLock().lock();
@@ -215,7 +215,7 @@ public class BloomUtil {
     public static void renderBloom(Camera camera, @NotNull Entity entity, LevelRenderer levelRenderer,
                                    PoseStack poseStack, Matrix4f projectionMatrix, Frustum frustum,
                                    float partialTicks) {
-        if (!GTShaders.allowedShader()) {
+        if (!GTShaders.canUseBloomShader()) {
             return;
         }
         Vec3 camPos = camera.getPosition();
@@ -350,7 +350,7 @@ public class BloomUtil {
     }
 
     public static void bakeBloomChunkBuffers(BlockPos pos, Vec3 camPos) {
-        if (!GTShaders.allowedShader()) {
+        if (!GTShaders.canUseBloomShader()) {
             return;
         }
 
@@ -442,7 +442,7 @@ public class BloomUtil {
         original.call(consumer, pose, quad,
                 colorMuls, red, green, blue,
                 combinedLights, combinedOverlay, mulColor);
-        if (!GTShaders.allowedShader()) {
+        if (!GTShaders.canUseBloomShader()) {
             return;
         }
 

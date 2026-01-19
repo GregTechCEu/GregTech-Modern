@@ -53,7 +53,7 @@ public class BlockRendererMixin {
         BlockPos chunkOrigin = SectionPos.of(ctx.pos()).origin();
         // Check if quad is full brightness OR we have bloom enabled for the quad
         // TODO improve, don't mixin to embeddium, maybe ask for an API? doubt we'll get it though
-        if (GTShaders.allowedShader() && gtceu$isEmissive(quad, light)) {
+        if (GTShaders.canUseBloomShader() && gtceu$isEmissive(quad, light)) {
             ModelQuadOrientation orientation = this.useReorienting ?
                     ModelQuadOrientation.orientByBrightness(light.br, light.lm) : ModelQuadOrientation.NORMAL;
             for (int dstIndex = 0; dstIndex < 4; ++dstIndex) {

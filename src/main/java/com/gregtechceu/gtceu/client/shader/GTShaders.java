@@ -26,7 +26,7 @@ public class GTShaders {
     public static RenderTarget BLOOM_TARGET = null;
 
     public static void onRegisterShaders(RegisterShadersEvent event) {
-        if (!earlyAllowedShader()) {
+        if (!canLoadBloomShader()) {
             return;
         }
 
@@ -75,11 +75,11 @@ public class GTShaders {
         }
     }
 
-    public static boolean allowedShader() {
-        return BLOOM_CHAIN != null && BLOOM_TARGET != null && earlyAllowedShader();
+    public static boolean canUseBloomShader() {
+        return BLOOM_CHAIN != null && BLOOM_TARGET != null && canLoadBloomShader();
     }
 
-    private static boolean earlyAllowedShader() {
+    private static boolean canLoadBloomShader() {
         return ConfigHolder.INSTANCE.client.shader.enableBloom &&
                 !GTCEu.isModLoaded(GTValues.MODID_OPTIFINE) &&
                 !(GTCEu.Mods.isIrisOculusLoaded() && IrisCallWrapper.isShaderActive());

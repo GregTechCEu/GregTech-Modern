@@ -15,7 +15,7 @@ public class BloomMeshAppender implements MeshAppender {
 
     @Override
     public void render(Context context) {
-        if (!GTShaders.allowedShader()) {
+        if (!GTShaders.canUseBloomShader()) {
             return;
         }
         BlockPos chunkOrigin = context.sectionOrigin().origin();

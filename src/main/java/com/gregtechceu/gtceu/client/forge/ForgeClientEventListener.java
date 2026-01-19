@@ -82,7 +82,7 @@ public class ForgeClientEventListener {
 
     @SubscribeEvent
     public static void onChunkUnloadEvent(ChunkEvent.Unload event) {
-        if (!GTShaders.allowedShader() || GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
+        if (!GTShaders.canUseBloomShader() || GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
             return;
         }
         ChunkAccess chunk = event.getChunk();
@@ -100,7 +100,7 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START && Minecraft.getInstance().level != null) {
-            if (GTShaders.allowedShader()) {
+            if (GTShaders.canUseBloomShader()) {
                 GTShaders.BLOOM_TARGET.clear(Minecraft.ON_OSX);
                 Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
             }
