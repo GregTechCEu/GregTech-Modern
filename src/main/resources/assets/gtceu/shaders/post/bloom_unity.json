@@ -3,45 +3,31 @@
         "gtceu:filter_temp",
         {
             "name": "swap2a",
-            "bilinear": true,
-            "scale_width": 0.5,
-            "scale_height": 0.5
+            "bilinear": true
         },
         {
             "name": "swap4a",
-            "bilinear": true,
-            "scale_width": 0.25,
-            "scale_height": 0.25
+            "bilinear": true
         },
         {
             "name": "swap8a",
-            "bilinear": true,
-            "scale_width": 0.125,
-            "scale_height": 0.125
+            "bilinear": true
         },
         {
             "name": "swap16a",
-            "bilinear": true,
-            "scale_width": 0.0625,
-            "scale_height": 0.0625
+            "bilinear": true
         },
         {
             "name": "swap2b",
-            "bilinear": true,
-            "scale_width": 0.5,
-            "scale_height": 0.5
+            "bilinear": true
         },
         {
             "name": "swap4b",
-            "bilinear": true,
-            "scale_width": 0.25,
-            "scale_height": 0.25
+            "bilinear": true
         },
         {
             "name": "swap8b",
-            "bilinear": true,
-            "scale_width": 0.125,
-            "scale_height": 0.125
+            "bilinear": true
         },
         "final",
         "swap"
@@ -80,10 +66,7 @@
         {
             "name": "blit",
             "intarget": "swap16a",
-            "outtarget": "swap8b",
-            "auxtargets": [
-                { "id": "swap8a", "name": "DownTexture" }
-            ]
+            "outtarget": "swap8b"
         },
         {
             "name": "gtceu:up_sampling",
