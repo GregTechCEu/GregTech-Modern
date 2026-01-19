@@ -224,8 +224,6 @@ public class BloomUtil {
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             GTRenderTypes.bloom().setupRenderState();
-            // copy depth buffer from the main render target so bloom won't render through blocks
-            GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
             preDraw();
             if (!BLOOM_RENDERS.isEmpty()) {
@@ -245,6 +243,8 @@ public class BloomUtil {
             } else {
                 setupBloomUniforms(false);
             }
+            // copy depth buffer from the main render target so bloom won't render through blocks
+            // GTShaders.BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
             render(partialTicks, poseStack, projectionMatrix, levelRenderer, camera, frustum);
         } finally {
@@ -369,6 +369,8 @@ public class BloomUtil {
     public static ThreadLocal<BlockPos> CURRENT_RENDERING_CHUNK_POS = new ThreadLocal<>();
 
     private static final String FILTER_TOGGLE_UNIFORM = "EnableFilter";
+    private static final String DEPTH_NEAR_UNIFORM = "DepthNear";
+    private static final String DEPTH_FAR_UNIFORM = "DepthFar";
 
     private static final String BLUR_SHADER_NAME = "blur";
     private static final String BLOOM_STRENGTH_UNIFORM = "BloomStrength";
@@ -387,6 +389,8 @@ public class BloomUtil {
             EffectInstance shader = pass.getEffect();
 
             shader.safeGetUniform(FILTER_TOGGLE_UNIFORM).set(drawBlockBloom ? 1 : 0);
+            shader.safeGetUniform(DEPTH_NEAR_UNIFORM).set(GameRenderer.PROJECTION_Z_NEAR);
+            shader.safeGetUniform(DEPTH_FAR_UNIFORM).set(Minecraft.getInstance().gameRenderer.getDepthFar());
 
             if (shader.getName().contains(BLUR_SHADER_NAME)) {
                 if (i % 2 == 0) {
