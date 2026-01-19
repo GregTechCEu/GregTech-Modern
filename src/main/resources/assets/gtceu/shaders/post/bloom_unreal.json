@@ -63,7 +63,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "gtceu:filter_temp",
             "outtarget": "swap2a",
             "uniforms": [
@@ -78,7 +78,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap2a",
             "outtarget": "swap2b",
             "uniforms": [
@@ -93,7 +93,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap2b",
             "outtarget": "swap4a",
             "uniforms": [
@@ -108,7 +108,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap4a",
             "outtarget": "swap4b",
             "uniforms": [
@@ -123,7 +123,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap4b",
             "outtarget": "swap8a",
             "uniforms": [
@@ -138,7 +138,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap8a",
             "outtarget": "swap8b",
             "uniforms": [
@@ -153,7 +153,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap8b",
             "outtarget": "swap16a",
             "uniforms": [
@@ -168,7 +168,7 @@
             ]
         },
         {
-            "name": "blur",
+            "name": "gtceu:blur",
             "intarget": "swap16a",
             "outtarget": "swap16b",
             "uniforms": [

@@ -5,11 +5,10 @@ uniform vec2 OutSize;
 uniform vec2 InSize;
 
 in vec2 texCoord;
-in vec2 oneTexel;
 
 out vec4 fragColor;
 
-vec2 inTexel = oneTexel;
+vec2 inTexel = 1.0 / InSize;
 vec2 inTexelNegX = vec2(-inTexel.x, inTexel.y);
 vec2 inTexelNegY = vec2(inTexel.x, -inTexel.y);
 
