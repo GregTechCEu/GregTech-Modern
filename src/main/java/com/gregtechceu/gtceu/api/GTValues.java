@@ -118,6 +118,7 @@ public class GTValues {
             MODID_SODIUM = "sodium",
             MODID_EMBEDDIUM = "embeddium",
             MODID_OPTIFINE = "optifine",
+            MODID_CREATE = "create",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_MODERNFIX = "modernfix",

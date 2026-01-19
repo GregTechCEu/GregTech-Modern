@@ -109,13 +109,12 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
 
         for (RelativeDirection face : this.drawFaces) {
             poseStack.pushPose();
-            Matrix4f pose = poseStack.last().pose();
 
             Direction dir = face.getRelative(full.getFrontFacing(), full.getUpwardsFacing(),
                     full.isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
-            fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), pose, consumer, cachedFluid,
+            fluidBlockRenderer.drawPlane(dir, machine.getFluidOffsets(), poseStack, consumer, cachedFluid,
                     RenderUtil.FluidTextureType.STILL, packedOverlay, full.getPos());
             poseStack.popPose();
         }

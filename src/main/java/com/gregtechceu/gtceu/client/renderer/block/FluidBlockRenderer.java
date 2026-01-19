@@ -45,8 +45,8 @@ public class FluidBlockRenderer {
             case Z -> offsetZ += properties.offsetFace;
         }
 
-        var newVertices = new Vector3f[4];
-        for (int i = 0; i < 4; i++) {
+        var newVertices = new Vector3f[vertices.length];
+        for (int i = 0; i < vertices.length; i++) {
             newVertices[i] = RenderUtil.transformVertex(vertices[i], face, offsetX, offsetY, offsetZ);
         }
         return newVertices;
