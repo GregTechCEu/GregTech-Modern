@@ -21,6 +21,7 @@
         "client.MultiPlayerGameModeMixin",
         "client.PlayerInfoAccessor",
         "client.VariantDeserializerMixin",
+        "dev.client.KeyboardHandlerMixin",
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",

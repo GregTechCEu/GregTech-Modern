@@ -850,6 +850,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+        @Configurable
+        @Configurable.Comment({ "Executes ./gradlew :processResources when F3+T is pressed",
+                "Only works in a development environment", "Default: false" })
+        public boolean autoRebuildResources = false;
     }
 
     public static class RendererConfigs {

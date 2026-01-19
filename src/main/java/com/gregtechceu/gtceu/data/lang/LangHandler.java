@@ -1233,6 +1233,9 @@ public class LangHandler {
         provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
+        provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
+        provider.add("gtceu.debug.resource_rebuild.start",
+                "Invoking gradle resource rebuild (./gradlew :processResources)");
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
