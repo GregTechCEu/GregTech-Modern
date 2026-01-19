@@ -69,13 +69,13 @@ public class StaticFaceBakery {
                 emissivity);
     }
 
-    public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,
-                                     int emissivity, boolean cull, boolean shade) {
+    public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation,
+                                     int tintIndex, int emissivity, boolean cull, boolean shade) {
         return bakeFace(FaceQuad.BLOCK, face, sprite, rotation, tintIndex, emissivity, cull, shade);
     }
 
-    public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation, int tintIndex,
-                                     int emissivity) {
+    public static BakedQuad bakeFace(Direction face, TextureAtlasSprite sprite, ModelState rotation,
+                                     int tintIndex, int emissivity) {
         return bakeFace(face, sprite, rotation, tintIndex, emissivity, true, true);
     }
 
@@ -95,15 +95,10 @@ public class StaticFaceBakery {
         return bakeFace(cube, face, sprite, BlockModelRotation.X0_Y0, -1, 0, true, true);
     }
 
-    public static BakedQuad bakeQuad(Vector3f posFrom,
-                                     Vector3f posTo,
-                                     BlockElementFace face,
-                                     TextureAtlasSprite sprite,
-                                     Direction facing,
-                                     ModelState transform,
-                                     @Nullable BlockElementRotation partRotation,
-                                     boolean shade,
-                                     int emissivity) {
+    public static BakedQuad bakeQuad(Vector3f posFrom, Vector3f posTo,
+                                     BlockElementFace face, TextureAtlasSprite sprite, Direction facing,
+                                     ModelState transform, @Nullable BlockElementRotation partRotation,
+                                     boolean shade, int emissivity) {
         BlockFaceUV uvs = face.uv;
         if (transform.isUvLocked()) {
             uvs = recomputeUVs(face.uv, facing, transform.getRotation());

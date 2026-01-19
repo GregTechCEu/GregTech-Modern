@@ -29,7 +29,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.Codec;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import static net.minecraft.util.FastColor.ARGB32.*;
 
@@ -124,8 +123,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
                 GTRenderTypes.getLightRing().bufferSize());
 
         @Override
-        public void renderBloomEffect(@NotNull PoseStack poseStack, @NotNull BufferBuilder buffer,
-                                      @NotNull EffectRenderContext context) {
+        public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
             BlockPos pos = machine.getPos();
 
             lightRingBuffer.begin(GTRenderTypes.getLightRing().mode(), GTRenderTypes.getLightRing().format());
@@ -145,7 +143,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         }
 
         @Override
-        public boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {
+        public boolean shouldRenderBloomEffect(EffectRenderContext context) {
             return (machine.recipeLogic.isWorking() || delta > 0) &&
                     context.frustum().isVisible(FusionRingRender.this.getRenderBoundingBox(machine));
         }

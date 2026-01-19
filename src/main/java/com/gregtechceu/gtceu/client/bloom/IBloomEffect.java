@@ -9,8 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Render callback interface for
- * {@link BloomUtil#registerBloomRender(IRenderSetup, BloomAlgorithm, IBloomEffect, BlockEntity)}.
+ * Render callback interface for {@link BloomUtil#registerBloomRender(IRenderSetup, IBloomEffect, BlockEntity)}.
  */
 @FunctionalInterface
 public interface IBloomEffect {
@@ -27,8 +26,8 @@ public interface IBloomEffect {
 
     /**
      * @param context render context
-     * @return if this effect should be rendered; returning {@code false} skips
-     *         {@link #renderBloomEffect(PoseStack, BufferBuilder, EffectRenderContext)} call.
+     * @return if this effect should be rendered; returning {@code false} skips calling
+     *         {@link #renderBloomEffect(PoseStack, BufferBuilder, EffectRenderContext)}.
      */
     @OnlyIn(Dist.CLIENT)
     default boolean shouldRenderBloomEffect(@NotNull EffectRenderContext context) {
