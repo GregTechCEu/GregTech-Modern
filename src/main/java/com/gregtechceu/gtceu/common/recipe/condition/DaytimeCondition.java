@@ -20,9 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
     // spotless:off
-    public static final Codec<DaytimeCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .apply(instance, DaytimeCondition::new));
+    public static final Codec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
     // spotless:off
 
     public DaytimeCondition(boolean isReverse) {

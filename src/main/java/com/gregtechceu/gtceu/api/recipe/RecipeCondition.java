@@ -13,7 +13,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -24,6 +23,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 @Accessors(chain = true)
 public abstract class RecipeCondition<T extends RecipeCondition<T>> {
 
@@ -31,11 +32,14 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
             .dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
 
     // spotless:off
-    public static <RC extends RecipeCondition<?>> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
+    public static <RC extends RecipeCondition<RC>> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
         return instance.group(Codec.BOOL.optionalFieldOf("reverse", false).forGetter(val -> val.isReverse));
     }
     // spotless:on
-    private static final Gson GSON = new Gson();
+
+    public static <RC extends RecipeCondition<RC>> Codec<RC> simpleCodec(Function<Boolean, RC> function) {
+        return RecordCodecBuilder.create(instance -> isReverse(instance).apply(instance, function));
+    }
 
     @Getter
     @Setter
