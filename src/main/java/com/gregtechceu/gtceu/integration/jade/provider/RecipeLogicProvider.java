@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -133,12 +132,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             if (blockEntity instanceof MetaMachineBlockEntity mbe &&
                     mbe.metaMachine instanceof IRecipeLogicMachine rlm) {
                 var logic = rlm.getRecipeLogic();
-                boolean formed = true;
-                if (rlm instanceof IMultiController controller) {
-                    formed = controller.isFormed();
-                }
 
-                if (logic.showFancyTooltip() && logic.isWorkingEnabled() && formed) {
+                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
                             Component.translatable("gtceu.recipe_logic.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :

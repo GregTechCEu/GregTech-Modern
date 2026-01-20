@@ -88,7 +88,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Getter
     @DescSynced
-    protected List<Component> failReasons = new ArrayList<>();
+    protected final List<Component> failReasons = new ArrayList<>();
 
     @Getter
     protected final Map<GTRecipe, Component> failReasonMap = new HashMap<>();
@@ -166,6 +166,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         duration = 0;
         isActive = false;
         lastFailedMatches = null;
+        waitingReason = null;
+        failReasons.clear();
         if (status != Status.SUSPEND) {
             setStatus(Status.IDLE);
         }
@@ -234,7 +236,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     unsubscribe = true;
                 }
         if (isIdle()) {
-            failReasons = failReasonMap.values().stream().toList();
+            failReasons.clear();
+            failReasons.addAll(failReasonMap.values());
         }
         if (unsubscribe && subscription != null) {
             subscription.unsubscribe();
@@ -532,9 +535,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setupRecipe(lastRecipe);
             } else {
                 setStatus(Status.IDLE);
-                if (recipeCheck.io() != IO.IN || recipeCheck.capability() == EURecipeCapability.CAP) {
-                    waitingReason = recipeCheck.reason();
-                }
                 consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
