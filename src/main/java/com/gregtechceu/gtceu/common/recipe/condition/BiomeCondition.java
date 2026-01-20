@@ -23,10 +23,11 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
-    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome))
-                    .apply(instance, BiomeCondition::new));
+    // spotless:off
+    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
+    ).apply(instance, BiomeCondition::new));
+    // spotless:on
 
     public final static BiomeCondition INSTANCE = new BiomeCondition();
     @Getter

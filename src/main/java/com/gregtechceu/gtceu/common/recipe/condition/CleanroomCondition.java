@@ -25,10 +25,11 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
 
-    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom))
-                    .apply(instance, CleanroomCondition::new));
+    // spotless:off
+    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom)
+    ).apply(instance, CleanroomCondition::new));
+    // spotless:on
     public final static CleanroomCondition INSTANCE = new CleanroomCondition();
 
     @Getter

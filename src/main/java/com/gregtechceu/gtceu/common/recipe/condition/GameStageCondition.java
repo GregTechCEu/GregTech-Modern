@@ -21,11 +21,10 @@ import org.jetbrains.annotations.NotNull;
 public class GameStageCondition extends RecipeCondition<GameStageCondition> {
 
     // spotless:off
-    public static final Codec<GameStageCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition
-            .isReverse(instance).and(
-                    Codec.STRING.fieldOf("stageName").forGetter(GameStageCondition::getStageName))
-            .apply(instance, GameStageCondition::new));
-    // spotless:off
+    public static final Codec<GameStageCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.STRING.fieldOf("stageName").forGetter(GameStageCondition::getStageName)
+    ).apply(instance, GameStageCondition::new));
+    // spotless:on
 
     @Getter(AccessLevel.PRIVATE)
     private String stageName;

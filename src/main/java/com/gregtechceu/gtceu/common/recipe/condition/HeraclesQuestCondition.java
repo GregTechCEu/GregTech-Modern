@@ -21,10 +21,11 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestCondition> {
 
-    public static final Codec<HeraclesQuestCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.STRING.fieldOf("questId").forGetter(val -> val.questId))
-                    .apply(instance, HeraclesQuestCondition::new));
+    // spotless:off
+    public static final Codec<HeraclesQuestCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.STRING.fieldOf("questId").forGetter(val -> val.questId)
+    ).apply(instance, HeraclesQuestCondition::new));
+    // spotless:on
 
     public final static HeraclesQuestCondition INSTANCE = new HeraclesQuestCondition();
 

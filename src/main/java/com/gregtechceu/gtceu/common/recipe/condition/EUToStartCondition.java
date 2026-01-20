@@ -17,10 +17,11 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
-    public static final Codec<EUToStartCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
-                    .apply(instance, EUToStartCondition::new));
+    // spotless:off
+    public static final Codec<EUToStartCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart)
+    ).apply(instance, EUToStartCondition::new));
+    // spotless:on
     public static final EUToStartCondition INSTANCE = new EUToStartCondition();
 
     private long euToStart;

@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
-    // spotless:off
     private static final Long2ObjectMap<QuestObject> QUEST_CACHE = new Long2ObjectOpenHashMap<>();
+    // spotless:off
     public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
             Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId)
     ).apply(instance, FTBQuestCondition::new));
