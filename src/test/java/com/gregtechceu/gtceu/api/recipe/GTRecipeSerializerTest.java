@@ -11,7 +11,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,15 +32,15 @@ import java.util.stream.Collectors;
 @GameTestHolder(GTCEu.MOD_ID)
 public class GTRecipeSerializerTest {
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty")
     public static void testSerializeAdjacentFluid(GameTestHelper helper) {
         // Create Fluid Condition based on fluidSetIn
+        @SuppressWarnings("deprecation")
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
         HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
                 .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
+                .getOrCreateTag(FluidTags.LAVA);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
         AdjacentFluidCondition fluidCondition = new AdjacentFluidCondition(fluidSetIn);
 
@@ -66,9 +66,10 @@ public class GTRecipeSerializerTest {
         helper.succeed();
     }
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty")
     public static void testSerializeAdjacentBlock(GameTestHelper helper) {
         // Create Block Condition based on blockSetIn
+        @SuppressWarnings("deprecation")
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
         HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
@@ -99,14 +100,15 @@ public class GTRecipeSerializerTest {
         helper.succeed();
     }
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty")
     public static void testSerializingFluidCondition(GameTestHelper helper) {
+        @SuppressWarnings("deprecation")
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
-        TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "lava"));
+        TagKey<Fluid> lavaTag = FluidTags.LAVA;
         HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
                 .registryOrThrow(Registries.FLUID)
-                .getOrCreateTag(lavaTag);
+                .getOrCreateTag(FluidTags.LAVA);
 
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
         AdjacentFluidCondition condition = new AdjacentFluidCondition(fluidSetIn);
@@ -123,8 +125,9 @@ public class GTRecipeSerializerTest {
         helper.succeed();
     }
 
-    @GameTest(template = "empty_5x5")
+    @GameTest(template = "empty")
     public static void testSerializingBlockCondition(GameTestHelper helper) {
+        @SuppressWarnings("deprecation")
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
         HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
