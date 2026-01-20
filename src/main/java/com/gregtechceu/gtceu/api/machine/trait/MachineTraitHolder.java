@@ -29,12 +29,14 @@ public final class MachineTraitHolder {
 
     public void attachTrait(MachineTrait trait) {
         var traitType = trait.getTraitType();
+
         traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
         if (!traitType.allowsMultipleInstances() && traitsByType.get(traitType).size() == 1) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
         }
-        traits.add(trait);
+
         traitsByType.get(traitType).add(trait);
+        traits.add(trait);
     }
 
     // Gets the first trait with the specified type.
