@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -8,10 +9,7 @@ import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.SyncDataHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.*;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -36,48 +34,8 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public void markAsChanged() {
-        machine.markAsChanged();
-    }
-
-    @Override
-    public BlockState getState() {
-        return machine.getBlockState();
-    }
-
-    @Override
-    public Level getLevel() {
-        return machine.getLevel();
-    }
-
-    @Override
-    public BlockPos getPos() {
-        return machine.getPos();
-    }
-
-    @Override
-    public long getOffsetTimer() {
-        return machine.getOffsetTimer();
-    }
-
-    @Override
-    public void notifyBlockUpdate() {
-        machine.notifyBlockUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        machine.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleNeighborShapeUpdate() {
-        machine.scheduleNeighborShapeUpdate();
-    }
-
-    @Override
-    public boolean isInValid() {
-        return machine.isInValid();
+    public IGregtechBlockEntity getHolder() {
+        return machine;
     }
 
     @Override
@@ -106,17 +64,6 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     @Override
     public boolean shouldRenderBackSide() {
         return !machine.getBlockState().canOcclude();
-    }
-
-    @Nullable
-    @Override
-    public TickableSubscription subscribeServerTick(Runnable runnable) {
-        return machine.subscribeServerTick(runnable);
-    }
-
-    @Override
-    public void unsubscribe(@Nullable TickableSubscription current) {
-        machine.unsubscribe(current);
     }
 
     @Override

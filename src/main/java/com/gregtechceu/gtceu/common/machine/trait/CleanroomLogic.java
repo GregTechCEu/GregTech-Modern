@@ -53,7 +53,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         if (duration > 0) {
             EnvironmentalHazardSavedData environmentalHazards = EnvironmentalHazardSavedData
                     .getOrCreate((ServerLevel) this.getMachine().getLevel());
-            var zone = environmentalHazards.getZoneByContainedPos(getMachine().getPos());
+            var zone = environmentalHazards.getZoneByContainedPos(getMachine().getBlockPos());
             // all maintenance problems not being fixed or there are environmental hazards in the area
             // means the machine does not run
             if (maintenanceMachine == null || maintenanceMachine.getNumMaintenanceProblems() < 6 || zone != null) {

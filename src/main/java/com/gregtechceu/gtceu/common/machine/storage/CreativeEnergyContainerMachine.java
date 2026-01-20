@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
@@ -49,8 +49,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     private long ampsReceived = 0;
     private boolean doExplosion = false;
 
-    public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX);
+    public CreativeEnergyContainerMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.MAX);
     }
 
     //////////////////////////////////////
@@ -72,7 +72,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
             this.setIOSpeed(energyIOPerSec / 20);
             energyIOPerSec = 0;
             if (doExplosion) {
-                getLevel().explode(null, getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5,
+                getLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5,
+                        getBlockPos().getZ() + 0.5,
                         1, Level.ExplosionInteraction.NONE);
                 doExplosion = false;
             }
@@ -82,11 +83,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing),
+            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(),
+                    getBlockPos().relative(facing),
                     opposite);
             // Try to get laser capability
             if (container == null)
-                container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
+                container = GTCapabilityHelper.getLaser(getLevel(), getBlockPos().relative(facing), opposite);
 
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
                 ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);

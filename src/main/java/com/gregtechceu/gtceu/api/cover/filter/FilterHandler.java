@@ -160,7 +160,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
             if (filter instanceof SmartItemFilter smart &&
                     container instanceof CoverBehavior cover &&
                     cover.coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) {
                     smart.setModeFromMachine(machine.getDefinition().getName());
                 }

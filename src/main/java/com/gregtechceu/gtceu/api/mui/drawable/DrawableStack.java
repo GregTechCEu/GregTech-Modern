@@ -38,14 +38,14 @@ public class DrawableStack implements IDrawable, IJsonSerializable<DrawableStack
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         for (IDrawable drawable : this.drawables) {
-            drawable.draw(context, x, y, width, height, widgetTheme);
+            if (drawable != null) drawable.draw(context, x, y, width, height, widgetTheme);
         }
     }
 
     @Override
     public boolean canApplyTheme() {
         for (IDrawable drawable : this.drawables) {
-            if (drawable.canApplyTheme()) {
+            if (drawable != null && drawable.canApplyTheme()) {
                 return true;
             }
         }

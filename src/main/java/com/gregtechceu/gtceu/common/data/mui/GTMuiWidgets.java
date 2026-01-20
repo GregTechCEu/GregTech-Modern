@@ -122,13 +122,13 @@ public class GTMuiWidgets {
     }
 
     public static ItemSlot createBatterySlot(SimpleTieredMachine tieredMachine, PanelSyncManager syncManager) {
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(tieredMachine.getChargerInventory(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(tieredMachine.getChargerInventory(), 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
 
     public static ItemSlot createBatterySlot(IItemHandler itemHandler, int slot, PanelSyncManager syncManager) {
-        ItemSlotSH battery = new ItemSlotSH(new ModularSlot(itemHandler, slot));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(itemHandler, slot));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
@@ -190,7 +190,8 @@ public class GTMuiWidgets {
             if (circuitGetter.get().isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
-                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v)));
+                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
+                        IntCircuitBehaviour.stack(v, circuitGetter.get().getCount())));
     }
 
     public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {

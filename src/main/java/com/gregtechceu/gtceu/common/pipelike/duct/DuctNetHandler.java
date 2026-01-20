@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -40,11 +39,11 @@ public class DuctNetHandler implements IHazardParticleContainer {
 
     @Nullable
     private IHazardParticleContainer getInnerContainer() {
-        if (net == null || pipe.isInValid() || facing == null || pipe.isBlocked(facing)) {
+        if (net == null || pipe.isRemoved() || facing == null || pipe.isBlocked(facing)) {
             return null;
         }
 
-        final List<DuctRoutePath> data = net.getNetData(pipe.getPipePos(), facing);
+        final List<DuctRoutePath> data = net.getNetData(pipe.getBlockPos(), facing);
         if (data == null) {
             return null;
         }
@@ -66,8 +65,7 @@ public class DuctNetHandler implements IHazardParticleContainer {
                     IHazardParticleContainer handler = path.getHandler(net.getLevel());
                     if (handler == null && path.getTargetPipe().isConnected(path.getTargetFacing())) {
                         if (net.getLevel().getBlockEntity(path.getTargetPipePos()
-                                .relative(path.getTargetFacing())) instanceof IMachineBlockEntity machineBE &&
-                                machineBE.getMetaMachine() instanceof IEnvironmentalHazardCleaner cleaner) {
+                                .relative(path.getTargetFacing())) instanceof IEnvironmentalHazardCleaner cleaner) {
                             cleaner.cleanHazard(condition, differenceAmount);
                             break;
                         }

@@ -92,7 +92,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight 
      */
     @MustBeInvokedByOverriders
     public boolean canAttach() {
-        var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         return machine == null ||
                 (machine.getDefinition().isAllowCoverOnFront() || !machine.hasFrontFacing() ||
                         coverHolder.getFrontFacing() != attachedSide);

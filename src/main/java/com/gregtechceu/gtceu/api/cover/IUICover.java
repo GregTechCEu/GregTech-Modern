@@ -18,7 +18,7 @@ public interface IUICover extends IUIHolder {
 
     @Override
     default boolean isInvalid() {
-        return self().coverHolder.isInValid() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
+        return self().coverHolder.isRemoved() || self().coverHolder.getCoverAtSide(self().attachedSide) != self();
     }
 
     @Override
