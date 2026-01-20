@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class EUToStartCondition extends RecipeCondition {
+public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
-    public static final Codec<EUToStartCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
-                    .apply(instance, EUToStartCondition::new));
-    public static final EUToStartCondition INSTANCE = new EUToStartCondition();
+    // spotless:off
+    public static final Codec<EUToStartCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart)
+    ).apply(instance, EUToStartCondition::new));
+    // spotless:on
 
     private long euToStart;
 
@@ -35,7 +35,7 @@ public class EUToStartCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<EUToStartCondition> getType() {
         return GTRecipeConditions.EU_TO_START;
     }
 
@@ -51,7 +51,7 @@ public class EUToStartCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public EUToStartCondition createTemplate() {
         return new EUToStartCondition();
     }
 }

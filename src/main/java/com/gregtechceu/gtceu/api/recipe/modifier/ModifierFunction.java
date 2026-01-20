@@ -37,7 +37,7 @@ import java.util.Map;
 @FunctionalInterface
 public interface ModifierFunction {
 
-    //TODO: Add reasons for any NULL ModifierFunction (replace them with cancel)
+    // TODO: Add reasons for any NULL ModifierFunction (replace them with cancel)
     /**
      * Use this static to denote that the recipe should be cancelled
      */
@@ -130,11 +130,11 @@ public interface ModifierFunction {
         private ContentModifier outputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickInputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickOutputModifier = ContentModifier.IDENTITY;
-        private final List<RecipeCondition> addedConditions = new ArrayList<>();
+        private final List<RecipeCondition<?>> addedConditions = new ArrayList<>();
 
         public FunctionBuilder() {}
 
-        public FunctionBuilder conditions(RecipeCondition... conditions) {
+        public FunctionBuilder conditions(RecipeCondition<?>... conditions) {
             addedConditions.addAll(Arrays.asList(conditions));
             return this;
         }
