@@ -23,4 +23,8 @@ public class CleanroomRecieverTrait extends MachineTrait {
     public boolean hasActiveCleanroomProvider(CleanroomType type) {
         return cleanroomProvider.isActive() && cleanroomProvider.getProvidedTypes().contains(type);
     }
+
+    public void removeCleanroomProvider() {
+        cleanroomProvider = null;
+    }
 }
