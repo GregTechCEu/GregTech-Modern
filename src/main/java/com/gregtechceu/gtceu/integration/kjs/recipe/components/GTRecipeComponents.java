@@ -175,7 +175,7 @@ public class GTRecipeComponents {
         }
     };
 
-    public static final RecipeComponent<RecipeCondition> RECIPE_CONDITION = new RecipeComponent<>() {
+    public static final RecipeComponent<RecipeCondition<?>> RECIPE_CONDITION = new RecipeComponent<>() {
 
         @Override
         public String componentType() {
@@ -188,15 +188,15 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, RecipeCondition value) {
-            JsonObject object = new JsonObject();
-            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
-            object.add("data", value.serialize());
-            return object;
+        public JsonElement write(RecipeJS recipe, RecipeCondition<?> condition) {
+            var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+            return RecipeCondition.CODEC.encodeStart(ops, condition).getOrThrow(false, error -> {
+                throw new RecipeExceptionJS("Failed to encode: " + error + " " + condition);
+            });
         }
 
         @Override
-        public RecipeCondition read(RecipeJS recipe, Object from) {
+        public RecipeCondition<?> read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
                 var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
