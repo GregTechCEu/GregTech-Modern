@@ -29,7 +29,6 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     ).apply(instance, BiomeCondition::new));
     // spotless:on
 
-    public final static BiomeCondition INSTANCE = new BiomeCondition();
     @Getter
     private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, new ResourceLocation("dummy"));
 

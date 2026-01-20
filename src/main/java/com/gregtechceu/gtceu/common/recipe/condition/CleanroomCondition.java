@@ -30,7 +30,6 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
             CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom)
     ).apply(instance, CleanroomCondition::new));
     // spotless:on
-    public final static CleanroomCondition INSTANCE = new CleanroomCondition();
 
     @Getter
     private CleanroomType cleanroom = CleanroomType.CLEANROOM;

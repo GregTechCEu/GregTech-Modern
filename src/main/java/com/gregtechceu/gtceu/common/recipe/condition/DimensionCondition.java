@@ -36,7 +36,6 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     ).apply(instance, DimensionCondition::new));
     // spotless:on
 
-    public final static DimensionCondition INSTANCE = new DimensionCondition();
     @Getter
     private ResourceKey<Level> dimension;
 

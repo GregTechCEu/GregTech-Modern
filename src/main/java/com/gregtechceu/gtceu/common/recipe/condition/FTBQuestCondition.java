@@ -30,8 +30,6 @@ public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
     ).apply(instance, FTBQuestCondition::new));
     // spotless:on
 
-    public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
-
     private long parsedQuestId;
 
     public FTBQuestCondition(long questId) {

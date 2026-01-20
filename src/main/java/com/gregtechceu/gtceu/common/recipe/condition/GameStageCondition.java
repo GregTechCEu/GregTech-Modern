@@ -29,8 +29,6 @@ public class GameStageCondition extends RecipeCondition<GameStageCondition> {
     @Getter(AccessLevel.PRIVATE)
     private String stageName;
 
-    public final static GameStageCondition INSTANCE = new GameStageCondition();
-
     public GameStageCondition(String stageName) {
         this(false, stageName);
     }

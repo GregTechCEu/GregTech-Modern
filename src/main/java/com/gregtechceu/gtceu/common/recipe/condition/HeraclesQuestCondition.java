@@ -27,8 +27,6 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
     ).apply(instance, HeraclesQuestCondition::new));
     // spotless:on
 
-    public final static HeraclesQuestCondition INSTANCE = new HeraclesQuestCondition();
-
     private String questId;
 
     public HeraclesQuestCondition(String questId) {

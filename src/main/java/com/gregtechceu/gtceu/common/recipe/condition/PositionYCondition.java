@@ -23,7 +23,6 @@ public class PositionYCondition extends RecipeCondition<PositionYCondition> {
     )).apply(instance, PositionYCondition::new));
     // spotless:on
 
-    public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;
     private int max;
 

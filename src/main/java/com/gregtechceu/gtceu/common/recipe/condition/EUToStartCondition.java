@@ -22,7 +22,6 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
             Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart)
     ).apply(instance, EUToStartCondition::new));
     // spotless:on
-    public static final EUToStartCondition INSTANCE = new EUToStartCondition();
 
     private long euToStart;
 

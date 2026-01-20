@@ -23,7 +23,6 @@ public class RainingCondition extends RecipeCondition<RainingCondition> {
     ).apply(instance, RainingCondition::new));
     // spotless:on
 
-    public final static RainingCondition INSTANCE = new RainingCondition();
     private float level;
 
     public RainingCondition(boolean isReverse, float level) {
