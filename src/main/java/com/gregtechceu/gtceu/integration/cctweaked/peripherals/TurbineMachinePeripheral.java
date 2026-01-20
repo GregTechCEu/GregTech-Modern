@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
-import com.gregtechceu.gtceu.api.capability.ITurbineMachine;
-
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
+
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.GenericPeripheral;
