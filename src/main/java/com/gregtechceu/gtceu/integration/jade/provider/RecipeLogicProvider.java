@@ -27,16 +27,13 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"));
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override

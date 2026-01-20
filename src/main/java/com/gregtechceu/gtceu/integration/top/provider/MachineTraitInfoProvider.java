@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
+import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,9 +21,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class MachineTraitInfoProvider<T extends MachineTrait> implements IProbeInfoProvider {
 
+    @Getter
+    private final ResourceLocation ID;
     private final MachineTraitType<T> traitType;
 
-    public MachineTraitInfoProvider(MachineTraitType<T> traitType) {
+    public MachineTraitInfoProvider(ResourceLocation id, MachineTraitType<T> traitType) {
+        this.ID = id;
         this.traitType = traitType;
     }
 

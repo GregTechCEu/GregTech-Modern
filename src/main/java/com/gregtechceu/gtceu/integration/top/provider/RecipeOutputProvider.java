@@ -30,20 +30,15 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
+@ParametersAreNonnullByDefault
+public class RecipeOutputProvider extends MachineTraitInfoProvider<RecipeLogic> {
 
-    @Override
-    public ResourceLocation getID() {
-        return GTCEu.id("recipe_output_info");
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
-        return GTCapabilityHelper.getRecipeLogic(level, blockPos, direction);
+    public RecipeOutputProvider() {
+        super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
     }
 
     @Override

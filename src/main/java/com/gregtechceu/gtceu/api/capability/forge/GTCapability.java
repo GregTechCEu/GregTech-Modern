@@ -20,8 +20,6 @@ public class GTCapability {
     public static final Capability<IWorkable> CAPABILITY_WORKABLE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<RecipeLogic> CAPABILITY_RECIPE_LOGIC = CapabilityManager
-            .get(new CapabilityToken<>() {});
     public static final Capability<IElectricItem> CAPABILITY_ELECTRIC_ITEM = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<ICleanroomReceiver> CAPABILITY_CLEANROOM_RECEIVER = CapabilityManager
@@ -53,7 +51,6 @@ public class GTCapability {
         event.register(IToolable.class);
         event.register(IWorkable.class);
         event.register(IControllable.class);
-        event.register(RecipeLogic.class);
         event.register(IElectricItem.class);
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);

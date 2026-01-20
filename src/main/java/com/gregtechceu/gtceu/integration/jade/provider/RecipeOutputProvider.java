@@ -42,18 +42,15 @@ import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.util.FluidTextHelper;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
+@ParametersAreNonnullByDefault
+public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
 
     public RecipeOutputProvider() {
-        super(GTCEu.id("recipe_output_info"));
-    }
-
-    @Override
-    protected @Nullable RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
     }
 
     @Override

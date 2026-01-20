@@ -28,17 +28,13 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.TextStyleClass;
 import org.jetbrains.annotations.Nullable;
 
-public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic> {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    @Override
-    public ResourceLocation getID() {
-        return GTCEu.id("recipe_logic_provider");
-    }
+@ParametersAreNonnullByDefault
+public class RecipeLogicInfoProvider extends MachineTraitInfoProvider<RecipeLogic> {
 
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+    public RecipeLogicInfoProvider() {
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
