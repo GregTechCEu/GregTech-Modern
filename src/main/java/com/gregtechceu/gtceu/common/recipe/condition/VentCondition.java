@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import net.minecraft.network.chat.Component;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
