@@ -422,7 +422,7 @@ public class BloomUtil {
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             buffer.drawWithShader(poseStack.last().pose(), projectionMatrix,
                     GameRenderer.getRendertypeCutoutShader());
             poseStack.popPose();
