@@ -35,8 +35,6 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<IMonitorComponent> CAPABILITY_MONITOR_COMPONENT = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<ICentralMonitor> CAPABILITY_CENTRAL_MONITOR = CapabilityManager
-            .get(new CapabilityToken<>() {});
 
     public static final Capability<IMedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -51,13 +49,11 @@ public class GTCapability {
         event.register(IElectricItem.class);
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);
-        event.register(ITurbineMachine.class);
         event.register(ILaserContainer.class);
         event.register(IOpticalComputationProvider.class);
         event.register(IDataAccessHatch.class);
         event.register(IMedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);
         event.register(IMonitorComponent.class);
-        event.register(ICentralMonitor.class);
     }
 }
