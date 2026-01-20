@@ -57,7 +57,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
-
+    private static final int MAX_HEIGHT = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
     @DescSynced
@@ -247,7 +247,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         int fDist = 0;
         int hDist = 0;
 
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i <= MAX_HEIGHT; i++) {
             if (lDist != 0 && rDist != 0 && hDist != 0) break;
             if (lDist == 0 && isBlockWall(level, lPos, left)) lDist = i;
             if (rDist == 0 && isBlockWall(level, rPos, right)) rDist = i;

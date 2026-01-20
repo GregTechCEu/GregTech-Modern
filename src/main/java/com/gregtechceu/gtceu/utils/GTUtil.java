@@ -62,6 +62,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class GTUtil {
 
@@ -360,6 +361,40 @@ public class GTUtil {
         return false;
     }
 
+    public static String formatLongNumber(long number, long threshold) {
+        return (number > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
+    }
+
+    public static String formatLongNumber(long number) {
+        return formatLongNumber(number, 10000);
+    }
+
+    public static String getStringRemainTime(long time, long threshold) {
+        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        time /= 60;
+        if (time > 0) {
+            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            time /= 60;
+            if (time > 0) {
+                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                time /= 60;
+                if (time > 0) {
+                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    time /= 24;
+                    if (time > 0) {
+                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                                " " + s;
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    public static String getStringRemainTime(long time) {
+        return getStringRemainTime(time, 10000);
+    }
+
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() &&
                 fluidStack.getAmount() / divisor != 0;
@@ -382,10 +417,10 @@ public class GTUtil {
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
             return FluidType.BUCKET_VOLUME;
-        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidType.BUCKET_VOLUME * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {

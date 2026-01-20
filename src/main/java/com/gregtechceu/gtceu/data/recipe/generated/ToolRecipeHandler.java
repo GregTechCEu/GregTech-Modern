@@ -235,7 +235,9 @@ public final class ToolRecipeHandler {
                         'S', steelPlate,
                         'R', steelRing);
 
-                addElectricToolRecipe(provider, toolPrefix, new GTToolType[] { GTToolType.CHAINSAW_LV }, material);
+                addElectricToolRecipe(provider, toolPrefix,
+                        new GTToolType[] { GTToolType.CHAINSAW_LV, GTToolType.CHAINSAW_HV, GTToolType.CHAINSAW_IV },
+                        material);
             }
 
             // wrench
@@ -300,7 +302,8 @@ public final class ToolRecipeHandler {
         if (property.hasType(GTToolType.SCREWDRIVER_LV)) {
             if (material.hasFlag(GENERATE_LONG_ROD)) {
                 toolPrefix = TagPrefix.toolHeadScrewdriver;
-                addElectricToolRecipe(provider, toolPrefix, new GTToolType[] { GTToolType.SCREWDRIVER_LV }, material);
+                addElectricToolRecipe(provider, toolPrefix, new GTToolType[] { GTToolType.SCREWDRIVER_LV,
+                        GTToolType.SCREWDRIVER_HV, GTToolType.SCREWDRIVER_IV }, material);
 
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                         ChemicalHelper.get(toolPrefix, material),

@@ -1,5 +1,57 @@
 # ChangeLog
 
+## Version [v7.4.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.4.0-1.20.1...v7.4.1-1.20.1)
+### Added
+
+- Improvements to Sodalite and Lazurite by @htmlcsjs in [#4297](https://github.com/GregTechCEu/GregTech-Modern/pull/4297)
+- Allow accessing block nbt from placeholders by @TarLaboratories in [#4161](https://github.com/GregTechCEu/GregTech-Modern/pull/4161)
+- Fix blackstone and tuff ores not dropping dusts by @JuiceyBeans in [#4376](https://github.com/GregTechCEu/GregTech-Modern/pull/4376)
+- Make netherite tools and items fire resistant by @JuiceyBeans in [#4378](https://github.com/GregTechCEu/GregTech-Modern/pull/4378)
+-  Jade support for Long Distance Pipeline Endpoints by @JuiceyBeans in [#4420](https://github.com/GregTechCEu/GregTech-Modern/pull/4420)
+
+### Fixed
+
+- Fix vanilla fuel not working in boilers by @jurrejelle in [#4249](https://github.com/GregTechCEu/GregTech-Modern/pull/4249)
+- Fix manual mode for item/fluid filter covers and conveyors/pumps by @programmer3481 in [#4245](https://github.com/GregTechCEu/GregTech-Modern/pull/4245)
+- no more z fighting by @Spicierspace153 in [#4240](https://github.com/GregTechCEu/GregTech-Modern/pull/4240)
+- Fix #4154 Charcoal Pile Igniter by @zetrock1 in [#4246](https://github.com/GregTechCEu/GregTech-Modern/pull/4246)
+- Add tooltips for link covers by @zetrock1 in [#4265](https://github.com/GregTechCEu/GregTech-Modern/pull/4265)
+- Large Boiler throttle modifies burn time of current fuel by @DilithiumThoride in [#4258](https://github.com/GregTechCEu/GregTech-Modern/pull/4258)
+- Fix scythe not breaking items in an AOE by @Ujhik in [#4207](https://github.com/GregTechCEu/GregTech-Modern/pull/4207)
+- Fix GT Capes not rendering in multiplayer by @DilithiumThoride in [#4271](https://github.com/GregTechCEu/GregTech-Modern/pull/4271)
+- Fix dupes of Carbon dust and Coal dust by @zetrock1 in [#4301](https://github.com/GregTechCEu/GregTech-Modern/pull/4301)
+- rework the check for decomposition amounts by @jonasGajdosikas in [#4298](https://github.com/GregTechCEu/GregTech-Modern/pull/4298)
+- Fix ghost circuit in item detector by @zetrock1 in [#4293](https://github.com/GregTechCEu/GregTech-Modern/pull/4293)
+- Fixes shiny material set double plates. by @Flare32 in [#4213](https://github.com/GregTechCEu/GregTech-Modern/pull/4213)
+- Add directional setting UI and fix Machine UI TitleBar by @remakefactory in [#4238](https://github.com/GregTechCEu/GregTech-Modern/pull/4238)
+- KubeJS Duration Check by @YoungOnionMC in [#4327](https://github.com/GregTechCEu/GregTech-Modern/pull/4327)
+- Fixes some cases where handleRecipe() succeeds when it should fail by @DilithiumThoride in [#4300](https://github.com/GregTechCEu/GregTech-Modern/pull/4300)
+- Allow tags in shaped recipes to get recycle info by @jurrejelle in [#4292](https://github.com/GregTechCEu/GregTech-Modern/pull/4292)
+- Prevent clientside state mutations in QuarkTechSuite helmet by @Mqrius in [#4322](https://github.com/GregTechCEu/GregTech-Modern/pull/4322)
+- (Docs) Fix GTValues.VA being used as a function in material property modification, add reference to coil temps in Material Properties by @carbonatek in [#4338](https://github.com/GregTechCEu/GregTech-Modern/pull/4338)
+- Update spotless to 8.1.0 by @Reabstraction in [#4323](https://github.com/GregTechCEu/GregTech-Modern/pull/4323)
+- PumpBiomeModifier - change priority of tags by @zetrock1 in [#4369](https://github.com/GregTechCEu/GregTech-Modern/pull/4369)
+- Make fuel jetpacks work on servers by @Mqrius in [#4341](https://github.com/GregTechCEu/GregTech-Modern/pull/4341)
+- Fix facade cover json by @jurrejelle in [#4418](https://github.com/GregTechCEu/GregTech-Modern/pull/4418)
+-  Correct Data Stick interaction handling by @remakefactory in [#4409](https://github.com/GregTechCEu/GregTech-Modern/pull/4409)
+- Fixes to overlay textures on some machines. by @Conity723 in [#4403](https://github.com/GregTechCEu/GregTech-Modern/pull/4403)
+- Fix {fromAscii} placeholder by @TarLaboratories in [#4392](https://github.com/GregTechCEu/GregTech-Modern/pull/4392)
+- Fix rotor holder Z-fighting by @zetrock1 in [#4335](https://github.com/GregTechCEu/GregTech-Modern/pull/4335)
+- Refactor naquadah reactor overlays to a workableMultiblockMachineCasing compatible format by @jonasGajdosikas in [#4353](https://github.com/GregTechCEu/GregTech-Modern/pull/4353)
+- Fix ranged output items voiding if there wasn't enough output space by @DilithiumThoride in [#4290](https://github.com/GregTechCEu/GregTech-Modern/pull/4290)
+- Add recipe for Copper Ingot disassembling by @esmenard in [#4399](https://github.com/GregTechCEu/GregTech-Modern/pull/4399)
+- Fix multiblock controller rotation overlay logic by @jkieberking in [#4199](https://github.com/GregTechCEu/GregTech-Modern/pull/4199)
+- Add missing rock types to initializeCobbleReplacements() by @Pyritie in [#4329](https://github.com/GregTechCEu/GregTech-Modern/pull/4329)
+
+### Changed
+
+- Large Boiler throttle modifies burn time of current fuel by @DilithiumThoride in [#4258](https://github.com/GregTechCEu/GregTech-Modern/pull/4258)
+- ja_jp fix by @code-onigiri in [#4319](https://github.com/GregTechCEu/GregTech-Modern/pull/4319)
+- Change out LDLib client side check to GTCEu one by @jurrejelle in [#4365](https://github.com/GregTechCEu/GregTech-Modern/pull/4365)
+- Update uk_ua.json by @StarmanMine142 in [#4411](https://github.com/GregTechCEu/GregTech-Modern/pull/4411)
+- Port existing keybinds to new system by @TechLord22 in [#4069](https://github.com/GregTechCEu/GregTech-Modern/pull/4069)
+
+ 
 ## Version [v7.4.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v7.3.0-1.20.1...v7.4.0-1.20.1)
 ### Added
 
