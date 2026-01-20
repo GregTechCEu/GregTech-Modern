@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -305,5 +307,18 @@ public class GTTransferUtils {
             }
         }
         return stack;
+    }
+
+    public static boolean extractItemsFromPlayerInv(Player player, List<ItemStack> items, boolean simulate) {
+        var inventory = player.getInventory();
+
+        for (var stack : items) {
+            var found = ContainerHelper.clearOrCountMatchingItems(inventory, (s) -> s.is(stack.getItem()),
+                    stack.getCount(), simulate);
+            if (found != stack.getCount()) return false;
+        }
+
+        if (!simulate) player.inventoryMenu.broadcastChanges();
+        return true;
     }
 }
