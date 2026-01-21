@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomRecieverTrait;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
-import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;

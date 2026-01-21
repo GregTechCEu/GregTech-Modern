@@ -489,7 +489,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
 
-            if (cleanroomProviderTrait.isActive()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
+            if (cleanroomProviderTrait.isActive())
+                textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
             textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
@@ -521,7 +522,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             return Collections.singletonList(Component.translatable(
-                    cleanroomProviderTrait.isActive() ? "gtceu.multiblock.cleanroom.clean_state" : "gtceu.multiblock.cleanroom.dirty_state"));
+                    cleanroomProviderTrait.isActive() ? "gtceu.multiblock.cleanroom.clean_state" :
+                            "gtceu.multiblock.cleanroom.dirty_state"));
         }
         return new ArrayList<>();
     }

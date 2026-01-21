@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
@@ -290,7 +289,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      *         animations will be played
      */
     @Override
-    public final Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, ItemStack itemStack,
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, ItemStack itemStack,
                                                                  UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
@@ -303,7 +302,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
-        Pair<GTToolType, InteractionResult> result = null;
+        Pair<@Nullable GTToolType, InteractionResult> result = null;
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
         if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
