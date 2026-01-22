@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.syncsystem;
 
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
+
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
 

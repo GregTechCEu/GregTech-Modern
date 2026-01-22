@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -215,9 +217,9 @@ public final class ValueTransformers {
         //// GT specific classes
 
         registerClassTransformer(GTRecipe.class, new GTRecipeTransformer());
-        registerClassTransformer(GTRecipeType.class, new GTRecipeTypeTransformer());
-        registerClassTransformer(MachineRenderState.class, new MachineRenderStateTransformer());
-        registerClassTransformer(Material.class, new MaterialTransformer());
+        registerClassTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
+        registerClassTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
+        registerClassTransformer(Material.class, new ResourceLocationReferenceTransformer<>(Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
         registerClassTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerClassTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 

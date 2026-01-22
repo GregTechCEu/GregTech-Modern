@@ -79,6 +79,10 @@ public interface IMaterialRegistryManager {
      */
     Material getMaterial(String name);
 
+    default Material getMaterial(ResourceLocation resourceLocation) {
+        return getMaterial(resourceLocation.toString());
+    }
+
     ResourceLocation getKey(Material material);
 
     /**
