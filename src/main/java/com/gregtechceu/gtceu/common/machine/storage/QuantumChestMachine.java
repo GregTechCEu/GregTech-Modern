@@ -442,7 +442,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
-        public static MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
+        public static final MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
 
         @Override
         public MachineTraitType<ItemCache> getTraitType() {

@@ -7,7 +7,9 @@ import net.minecraft.core.Direction;
  */
 public interface IFrontFacingTrait {
 
-    /// Returns if a machine can be rotated to be facing the given direction.
+    /**
+     * Returns if a machine can be rotated to be facing the given direction.
+     */
     default boolean isValidFrontFace(Direction direction) {
         return true;
     }

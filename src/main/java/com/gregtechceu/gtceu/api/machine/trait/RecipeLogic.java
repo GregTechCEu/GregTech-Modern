@@ -45,7 +45,7 @@ import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IWorkable, IFancyTooltip {
 
-    public static MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
+    public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, false);
 
     @Override
     public MachineTraitType<RecipeLogic> getTraitType() {

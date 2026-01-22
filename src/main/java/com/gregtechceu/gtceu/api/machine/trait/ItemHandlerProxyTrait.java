@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -15,16 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
+@MethodsReturnNonnullByDefault
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
-    public static MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(ItemHandlerProxyTrait.class);
+    public static final MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(
+            ItemHandlerProxyTrait.class);
 
     @Override
     public MachineTraitType<ItemHandlerProxyTrait> getTraitType() {
-        return TYPE;
-    }
-
-    public MachineTraitType<ItemHandlerProxyTrait> getType() {
         return TYPE;
     }
 

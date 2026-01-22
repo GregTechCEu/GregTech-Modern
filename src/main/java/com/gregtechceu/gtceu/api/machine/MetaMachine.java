@@ -99,7 +99,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
@@ -179,7 +178,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (this instanceof IMachineLife l) l.onMachineRemoved();
     }
 
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onLoad() {
         getTraitHolder().getAllTraits().forEach(MachineTrait::onMachineLoad);
         coverContainer.onLoad();
@@ -206,7 +205,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         onUnload();
     }
 
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onUnload() {
         getTraitHolder().getAllTraits().forEach(MachineTrait::onMachineUnload);
         coverContainer.onUnload();
@@ -310,8 +309,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (coverBehavior != null) {
                 result = Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             }
-        }
-        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+        } else if (toolType.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
                 result = Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             } else result = Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));

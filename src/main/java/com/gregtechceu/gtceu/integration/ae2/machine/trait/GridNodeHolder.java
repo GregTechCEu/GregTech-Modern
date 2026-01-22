@@ -24,7 +24,7 @@ import java.util.EnumSet;
  */
 public class GridNodeHolder extends MachineTrait {
 
-    public static MachineTraitType<GridNodeHolder> TYPE = new MachineTraitType<>(GridNodeHolder.class);
+    public static final MachineTraitType<GridNodeHolder> TYPE = new MachineTraitType<>(GridNodeHolder.class);
 
     @Override
     public MachineTraitType<GridNodeHolder> getTraitType() {

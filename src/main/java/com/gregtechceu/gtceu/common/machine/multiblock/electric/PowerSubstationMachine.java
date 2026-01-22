@@ -375,7 +375,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
 
-        public static MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
+        public static final MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
                 PowerStationEnergyBank.class);
 
         @Override

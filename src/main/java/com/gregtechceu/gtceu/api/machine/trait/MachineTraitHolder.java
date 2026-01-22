@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +23,8 @@ public final class MachineTraitHolder {
         this.traitsByType = new Object2ObjectOpenHashMap<>();
     }
 
-    public @Unmodifiable List<MachineTrait> getAllTraits() {
-        return Collections.unmodifiableList(traits);
+    public @UnmodifiableView List<MachineTrait> getAllTraits() {
+        return traits;
     }
 
     public void attachTrait(MachineTrait trait) {
@@ -47,7 +47,7 @@ public final class MachineTraitHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends MachineTrait> List<T> getTraitsWithType(MachineTraitType<T> type) {
+    public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(MachineTraitType<T> type) {
         List<T> traitList = (List<T>) traitsByType.get(type);
         if (traitList == null) return List.of();
         return Collections.unmodifiableList(traitList);

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MachineTraitType<T extends MachineTrait> {
+public final class MachineTraitType<T extends MachineTrait> {
 
     private final Class<T> clazz;
     private final boolean allowMultipleInstances;

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 
-    public static MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class);
+    public static final MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class);
 
     @Override
     public MachineTraitType<FluidTankProxyTrait> getTraitType() {

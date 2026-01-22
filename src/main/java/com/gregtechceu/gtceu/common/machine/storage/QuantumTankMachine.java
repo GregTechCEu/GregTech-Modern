@@ -376,7 +376,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     protected class FluidCache extends MachineTrait implements IFluidHandler {
 
-        public static MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
+        public static final MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
 
         @Override
         public MachineTraitType<FluidCache> getTraitType() {

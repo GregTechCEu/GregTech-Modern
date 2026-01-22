@@ -28,7 +28,7 @@ import java.util.List;
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
-    public static MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
+    public static final MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
             NotifiableComputationContainer.class);
 
     @Override
