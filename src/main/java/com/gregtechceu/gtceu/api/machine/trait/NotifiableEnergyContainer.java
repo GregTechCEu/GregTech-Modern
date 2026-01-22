@@ -42,7 +42,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             NotifiableEnergyContainer.class);
 
     @Override
-    public MachineTraitType<NotifiableEnergyContainer> getTraitType() {
+    public MachineTraitType<?> getTraitType() {
         return TYPE;
     }
 

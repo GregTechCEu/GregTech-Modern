@@ -34,6 +34,11 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     }
 
     @Override
+    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
+        return TYPE;
+    }
+
+    @Override
     public void serverTick() {
         amps = 0;
         if (getMachine().getLevel().isClientSide)
