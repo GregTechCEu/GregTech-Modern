@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;

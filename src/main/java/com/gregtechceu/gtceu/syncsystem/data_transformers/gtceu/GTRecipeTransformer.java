@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
