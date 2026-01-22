@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,16 +10,16 @@ import net.minecraft.nbt.Tag;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SetTransformer<T> implements IValueTransformer<Set<T>> {
+public class SetTransformer<T> extends ValueTransformer<Set<T>> {
 
-    private final IValueTransformer<T> elementTransformer;
+    private final ValueTransformer<T> elementTransformer;
 
     @Override
     public boolean mustProvideObject() {
         return true;
     }
 
-    public SetTransformer(IValueTransformer<T> elementTransformer) {
+    public SetTransformer(ValueTransformer<T> elementTransformer) {
         this.elementTransformer = elementTransformer;
     }
 

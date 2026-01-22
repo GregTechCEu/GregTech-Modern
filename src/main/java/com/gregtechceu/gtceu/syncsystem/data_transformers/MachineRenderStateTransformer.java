@@ -3,14 +3,14 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
-public class MachineRenderStateTransformer implements IValueTransformer<MachineRenderState> {
+public class MachineRenderStateTransformer extends ValueTransformer<MachineRenderState> {
 
     @Override
     public Tag serializeNBT(MachineRenderState value, ISyncManaged holder) {

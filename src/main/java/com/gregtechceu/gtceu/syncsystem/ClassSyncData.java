@@ -112,7 +112,7 @@ public final class ClassSyncData {
         public final String fieldName, nbtSaveKey;
         public final VarHandle handle;
         public final boolean triggerClientRerender, isCustomData, isComplex;
-        public final IValueTransformer<?> transformer;
+        public final ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles, nbtSaveModifiers, nbtLoadModifiers;
 
         public FieldSyncData(@NotNull Field field, @NotNull VarHandle handle, MethodInfo appliedMethods) {
@@ -130,7 +130,7 @@ public final class ClassSyncData {
                                 .formatted(field.getClass().getCanonicalName(), fieldName));
 
             if (!isCustomData) {
-                IValueTransformer<?> collectionTransformer = ValueTransformers.getCollectionTransformer(field);
+                ValueTransformer<?> collectionTransformer = ValueTransformers.getCollectionTransformer(field);
                 if (collectionTransformer == null) {
                     transformer = ValueTransformers.get(field.getType());
                 } else {

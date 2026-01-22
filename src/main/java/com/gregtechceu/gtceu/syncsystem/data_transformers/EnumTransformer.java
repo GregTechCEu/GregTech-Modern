@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
-public class EnumTransformer<E extends Enum<E>> implements IValueTransformer<E> {
+public class EnumTransformer<E extends Enum<E>> extends ValueTransformer<E> {
 
     private final Class<E> enumClass;
 

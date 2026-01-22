@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class CoverBehaviorTransformer implements IValueTransformer<CoverBehavior> {
+public class CoverBehaviorTransformer extends ValueTransformer<CoverBehavior> {
 
     @Override
     public boolean mustProvideObject() {

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,11 +10,11 @@ import net.minecraft.nbt.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListTransformer<T> implements IValueTransformer<List<T>> {
+public class ListTransformer<T> extends ValueTransformer<List<T>> {
 
-    private final IValueTransformer<T> elementTransformer;
+    private final ValueTransformer<T> elementTransformer;
 
-    public ListTransformer(IValueTransformer<T> elementTransformer) {
+    public ListTransformer(ValueTransformer<T> elementTransformer) {
         this.elementTransformer = elementTransformer;
     }
 
@@ -37,7 +37,7 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
         else current = new ArrayList<>();
         List<T> finalCurrent = current;
         listTag.forEach(t -> finalCurrent
-                .add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
+                .add(elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(t), null, null)));
 
         return current;
     }

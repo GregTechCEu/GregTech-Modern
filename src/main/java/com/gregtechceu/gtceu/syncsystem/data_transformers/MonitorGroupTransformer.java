@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
-public class MonitorGroupTransformer implements IValueTransformer<MonitorGroup> {
+public class MonitorGroupTransformer extends ValueTransformer<MonitorGroup> {
 
     @Override
     public CompoundTag serializeNBT(MonitorGroup value, ISyncManaged holder) {

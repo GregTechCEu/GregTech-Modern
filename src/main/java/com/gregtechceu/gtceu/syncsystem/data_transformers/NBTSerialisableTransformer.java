@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class NBTSerialisableTransformer implements IValueTransformer<INBTSerializable<Tag>> {
+public class NBTSerialisableTransformer extends ValueTransformer<INBTSerializable<Tag>> {
 
     @Override
     public boolean mustProvideObject() {

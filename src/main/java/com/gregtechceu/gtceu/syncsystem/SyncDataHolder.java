@@ -162,9 +162,9 @@ public class SyncDataHolder {
 
             if (field.transformer != null) {
                 if (writeClientFields) {
-                    return ((IValueTransformer<Object>) field.transformer).serializeClientSyncNBT(currentValue, holder);
+                    return ((ValueTransformer<Object>) field.transformer).serializeClientSyncNBT(currentValue, holder);
                 } else {
-                    return ((IValueTransformer<Object>) field.transformer).serializeNBT(currentValue, holder);
+                    return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue, holder);
                 }
             } else if (field.isComplex && currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
@@ -192,7 +192,7 @@ public class SyncDataHolder {
 
         try {
             if (field.transformer != null) {
-                IValueTransformer<Object> transformer = (IValueTransformer<Object>) field.transformer;
+                ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 try {
                     if (transformer.mustProvideObject()) {
                         if (readingClientFields) {

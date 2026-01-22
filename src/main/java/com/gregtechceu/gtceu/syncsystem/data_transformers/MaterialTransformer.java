@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
-public class MaterialTransformer implements IValueTransformer<Material> {
+public class MaterialTransformer extends ValueTransformer<Material> {
 
     @Override
     public Tag serializeNBT(Material currentValue, ISyncManaged holder) {

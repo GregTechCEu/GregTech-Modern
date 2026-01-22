@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,12 +11,12 @@ import net.minecraft.nbt.Tag;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapTransformer<K, V> implements IValueTransformer<Map<K, V>> {
+public class MapTransformer<K, V> extends ValueTransformer<Map<K, V>> {
 
-    private final IValueTransformer<K> keyTransformer;
-    private final IValueTransformer<V> valueTransformer;
+    private final ValueTransformer<K> keyTransformer;
+    private final ValueTransformer<V> valueTransformer;
 
-    public MapTransformer(IValueTransformer<K> keyTransformer, IValueTransformer<V> valueTransformer) {
+    public MapTransformer(ValueTransformer<K> keyTransformer, ValueTransformer<V> valueTransformer) {
         this.keyTransformer = keyTransformer;
         this.valueTransformer = valueTransformer;
     }

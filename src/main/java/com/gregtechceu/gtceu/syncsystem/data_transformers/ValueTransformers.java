@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 
 import net.minecraft.core.BlockPos;
@@ -34,8 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public final class ValueTransformers {
 
-    private static final Map<Class<?>, IValueTransformer<?>> REGISTERED = new ConcurrentHashMap<>();
-    private static final Map<Class<?>, IValueTransformer<?>> REGISTERED_INTERFACES = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED_INTERFACES = new ConcurrentHashMap<>();
 
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_BOXED = Map.of(
             boolean.class, Boolean.class,
@@ -52,15 +52,15 @@ public final class ValueTransformers {
         return cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
     }
 
-    // Logic for determining which IValueTransformer should be used to serialise a value
-    private static final ClassValue<IValueTransformer<?>> TRANSFORMERS = new ClassValue<>() {
+    // Logic for determining which ValueTransformer should be used to serialise a value
+    private static final ClassValue<ValueTransformer<?>> TRANSFORMERS = new ClassValue<>() {
 
         @Override
-        protected IValueTransformer<?> computeValue(@NotNull Class<?> type) {
+        protected ValueTransformer<?> computeValue(@NotNull Class<?> type) {
             type = boxIfPrimitive(type);
-            IValueTransformer<?> tx = REGISTERED.get(type);
+            ValueTransformer<?> tx = REGISTERED.get(type);
             if (tx != null) return tx;
-            IValueTransformer<?> ifaceTx = REGISTERED_INTERFACES.get(type);
+            ValueTransformer<?> ifaceTx = REGISTERED_INTERFACES.get(type);
             if (ifaceTx != null) return ifaceTx;
 
             if (type.isEnum()) {
@@ -71,7 +71,7 @@ public final class ValueTransformers {
 
             if (type.isArray()) {
                 Class<?> componentType = type.getComponentType();
-                IValueTransformer<?> componentTx = get(componentType);
+                ValueTransformer<?> componentTx = get(componentType);
                 if (componentTx != null) return new ObjectArrayTransformer<>(componentTx);
             }
 
@@ -85,7 +85,7 @@ public final class ValueTransformers {
         }
     };
 
-    public static IValueTransformer<?> getCollectionTransformer(Field type) {
+    public static ValueTransformer<?> getCollectionTransformer(Field type) {
         Class<?> collectionType = type.getType();
         if (!Collection.class.isAssignableFrom(collectionType)) return null;
         if (type.getGenericType() instanceof ParameterizedType ptype) {
@@ -118,20 +118,20 @@ public final class ValueTransformers {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> IValueTransformer<T> get(Class<T> type) {
-        return (IValueTransformer<T>) TRANSFORMERS.get(boxIfPrimitive(type));
+    public static <T> ValueTransformer<T> get(Class<T> type) {
+        return (ValueTransformer<T>) TRANSFORMERS.get(boxIfPrimitive(type));
     }
 
-    public static void registerClassTransformer(Class<?> type, IValueTransformer<?> transformer) {
+    public static void registerClassTransformer(Class<?> type, ValueTransformer<?> transformer) {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
-    public static void registerInterfaceTransformer(Class<?> type, IValueTransformer<?> transformer) {
+    public static void registerInterfaceTransformer(Class<?> type, ValueTransformer<?> transformer) {
         REGISTERED_INTERFACES.put(type, transformer);
     }
 
-    public static <T> IValueTransformer<T> simpleNBT(Function<T, Tag> write, Function<Tag, T> read) {
-        return new IValueTransformer<>() {
+    public static <T> ValueTransformer<T> simpleNBT(Function<T, Tag> write, Function<Tag, T> read) {
+        return new ValueTransformer<>() {
 
             @Override
             public Tag serializeNBT(T value, ISyncManaged holder) {

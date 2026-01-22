@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.*;
 
 public class PrimitiveArrayTransformers {
 
-    public static class IntArrayTransformer implements IValueTransformer<int[]> {
+    public static class IntArrayTransformer extends ValueTransformer<int[]> {
 
         @Override
         public Tag serializeNBT(int[] value, ISyncManaged holder) {
@@ -21,7 +21,7 @@ public class PrimitiveArrayTransformers {
         }
     }
 
-    public static class LongArrayTransformer implements IValueTransformer<long[]> {
+    public static class LongArrayTransformer extends ValueTransformer<long[]> {
 
         @Override
         public Tag serializeNBT(long[] value, ISyncManaged holder) {
@@ -35,7 +35,7 @@ public class PrimitiveArrayTransformers {
         }
     }
 
-    public static class ByteArrayTransformer implements IValueTransformer<byte[]> {
+    public static class ByteArrayTransformer extends ValueTransformer<byte[]> {
 
         @Override
         public Tag serializeNBT(byte[] value, ISyncManaged holder) {

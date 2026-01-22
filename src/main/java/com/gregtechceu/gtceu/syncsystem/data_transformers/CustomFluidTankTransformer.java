@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
-public class CustomFluidTankTransformer implements IValueTransformer<CustomFluidTank> {
+public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank> {
 
     @Override
     public boolean mustProvideObject() {

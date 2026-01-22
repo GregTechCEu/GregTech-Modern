@@ -2,23 +2,23 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.Arrays;
 
-public class ObjectArrayTransformer<T> implements IValueTransformer<T[]> {
+public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
 
-    private final IValueTransformer<T> elementTransformer;
+    private final ValueTransformer<T> elementTransformer;
 
     @Override
     public boolean mustProvideObject() {
         return true;
     }
 
-    public ObjectArrayTransformer(IValueTransformer<T> elementTransformer) {
+    public ObjectArrayTransformer(ValueTransformer<T> elementTransformer) {
         this.elementTransformer = elementTransformer;
     }
 
@@ -43,10 +43,10 @@ public class ObjectArrayTransformer<T> implements IValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             if (elementTransformer.mustProvideObject()) {
-                elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(listTag.get(i)), null,
+                elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null,
                         current[i]);
             } else {
-                current[i] = elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(listTag.get(i)),
+                current[i] = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
                         null, null);
             }
         }

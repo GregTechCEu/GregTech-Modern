@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.IValueTransformer;
+import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class GTRecipeTransformer implements IValueTransformer<GTRecipe> {
+public class GTRecipeTransformer extends ValueTransformer<GTRecipe> {
 
     private static RecipeManager getRecipeManager() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
