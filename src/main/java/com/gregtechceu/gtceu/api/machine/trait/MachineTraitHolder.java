@@ -30,12 +30,12 @@ public final class MachineTraitHolder {
     public void attachTrait(MachineTrait trait) {
         var traitType = trait.getTraitType();
 
-        traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>());
-        if (!traitType.allowsMultipleInstances() && traitsByType.get(traitType).size() == 1) {
+        var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
+        if (!traitType.allowsMultipleInstances() && !list.isEmpty()) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
         }
 
-        traitsByType.get(traitType).add(trait);
+        list.add(trait);
         traits.add(trait);
     }
 
