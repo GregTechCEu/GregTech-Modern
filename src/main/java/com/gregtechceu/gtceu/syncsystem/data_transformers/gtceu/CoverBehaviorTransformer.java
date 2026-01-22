@@ -1,12 +1,12 @@
-package com.gregtechceu.gtceu.syncsystem.data_transformers;
+package com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
+import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

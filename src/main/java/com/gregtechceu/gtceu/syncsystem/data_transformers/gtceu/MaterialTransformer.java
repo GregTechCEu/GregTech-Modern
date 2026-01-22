@@ -1,10 +1,10 @@
-package com.gregtechceu.gtceu.syncsystem.data_transformers;
+package com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 
+import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 

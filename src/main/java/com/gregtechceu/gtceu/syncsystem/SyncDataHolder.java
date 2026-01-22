@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.syncsystem;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 

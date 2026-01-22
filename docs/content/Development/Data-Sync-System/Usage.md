@@ -60,6 +60,9 @@ The following field types are supported by default:
 
 To add support for an additional type, call `ValueTransformers.registerClassTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerInterfaceTransformer(Class<T> cls, ValueTransformer<T> transformer)`
 
+!!! note
+    Registering a transformer as a class transformer will only apply that transformer to objects of the *exact* same type. To also match subclasses or interface implementations, register a transformer as an interface transformer.
+
 The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialised.
 
 ```java

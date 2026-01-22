@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.syncsystem;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.annotations.*;
+import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;

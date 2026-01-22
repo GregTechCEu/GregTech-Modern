@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.gregtechceu.gtceu.syncsystem.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 
+import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -83,6 +83,7 @@ public final class ValueTransformers {
                     "No value transformer for sync object type: %s".formatted(type.getCanonicalName()));
             else return null;
         }
+
     };
 
     public static ValueTransformer<?> getCollectionTransformer(Field type) {
@@ -132,7 +133,6 @@ public final class ValueTransformers {
 
     public static <T> ValueTransformer<T> simpleNBT(Function<T, Tag> write, Function<Tag, T> read) {
         return new ValueTransformer<>() {
-
             @Override
             public Tag serializeNBT(T value, ISyncManaged holder) {
                 return write.apply(value);
@@ -146,6 +146,9 @@ public final class ValueTransformers {
     }
 
     static {
+
+
+        // Primitives
 
         registerClassTransformer(Integer.class,
                 simpleNBT(IntTag::valueOf, t -> (t instanceof IntTag intTag) ? intTag.getAsInt() : 0));
@@ -169,7 +172,7 @@ public final class ValueTransformers {
         registerClassTransformer(long[].class, new PrimitiveArrayTransformers.LongArrayTransformer());
         registerClassTransformer(byte[].class, new PrimitiveArrayTransformers.ByteArrayTransformer());
 
-        // Classes
+        // Java classes and standard minecraft/forge classes
 
         registerClassTransformer(String.class, simpleNBT(StringTag::valueOf,
                 (t) -> (t instanceof StringTag stringTag) ? stringTag.getAsString() : ""));
@@ -184,6 +187,15 @@ public final class ValueTransformers {
         registerClassTransformer(CompoundTag.class, simpleNBT((CompoundTag v) -> v,
                 (t) -> (t instanceof CompoundTag compoundTag) ? compoundTag : new CompoundTag()));
 
+
+        registerInterfaceTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
+        registerInterfaceTransformer(Component.class,
+                simpleNBT((Component c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
+                        t -> (t instanceof StringTag stringTag) ?
+                                Component.Serializer.fromJson(stringTag.getAsString()) : Component.empty()));
+
+        // GT specific classes
+
         registerClassTransformer(GTRecipe.class, new GTRecipeTransformer());
         registerClassTransformer(GTRecipeType.class, new GTRecipeTypeTransformer());
         registerClassTransformer(MachineRenderState.class, new MachineRenderStateTransformer());
@@ -191,14 +203,6 @@ public final class ValueTransformers {
         registerClassTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerClassTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 
-        // Interfaces & abstract classes
-
-        registerInterfaceTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
-        registerInterfaceTransformer(Component.class,
-                simpleNBT((Component c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
-                        t -> (t instanceof StringTag stringTag) ?
-                                Component.Serializer.fromJson(stringTag.getAsString()) : Component.empty()));
         registerInterfaceTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
-
     }
 }
