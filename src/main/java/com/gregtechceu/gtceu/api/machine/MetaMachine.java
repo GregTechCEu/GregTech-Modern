@@ -708,7 +708,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         coverContainer.onNeighborChanged(block, fromPos, isMoving);
-        getTraitHolder().getAllTraits().forEach(t -> t.onMachineNeighborChange(block, fromPos, isMoving));
+        getTraitHolder().getAllTraits().forEach(t -> t.onMachineNeighborChanged(block, fromPos, isMoving));
     }
 
     public void animateTick(RandomSource random) {}

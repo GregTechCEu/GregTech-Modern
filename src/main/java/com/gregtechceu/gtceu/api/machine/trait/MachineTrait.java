@@ -23,7 +23,6 @@ public abstract class MachineTrait implements ISyncManaged {
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    public abstract MachineTraitType<?> getTraitType();
 
     @Getter
     protected final MetaMachine machine;
@@ -37,6 +36,8 @@ public abstract class MachineTrait implements ISyncManaged {
         // recipe search.
         if (machine != null) machine.getTraitHolder().attachTrait(this);
     }
+
+    public abstract MachineTraitType<?> getTraitType();
 
     public Level getLevel() {
         return machine.getLevel();
@@ -67,5 +68,5 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public void onMachineUnload() {}
 
-    public void onMachineNeighborChange(Block block, BlockPos fromPos, boolean isMoving) {}
+    public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 }

@@ -39,13 +39,18 @@ public final class MachineTraitHolder {
         traits.add(trait);
     }
 
-    // Gets the first trait with the specified type.
+    /**
+     * Gets the first trait with the specified type.
+     */
     public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
         List<MachineTrait> traitList = traitsByType.get(type);
         if (traitList == null || traitList.isEmpty()) return null;
         return type.castTrait(traitList.get(0));
     }
 
+    /**
+     * Get all traits with the specified type.
+     */
     @SuppressWarnings("unchecked")
     public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(MachineTraitType<T> type) {
         List<T> traitList = (List<T>) traitsByType.get(type);

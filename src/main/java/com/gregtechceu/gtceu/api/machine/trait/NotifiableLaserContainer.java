@@ -5,9 +5,14 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
 
     public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
