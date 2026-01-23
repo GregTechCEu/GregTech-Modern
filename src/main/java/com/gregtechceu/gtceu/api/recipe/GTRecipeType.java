@@ -38,6 +38,7 @@ import java.util.function.*;
 
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
+
     @Getter
     public final ResourceLocation registryName;
     public final String group;

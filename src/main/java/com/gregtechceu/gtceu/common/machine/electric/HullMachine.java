@@ -80,17 +80,17 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     @FieldDataModifier(fieldName = "gridNodeHost", target = FieldDataModifier.ModifyTarget.SAVE_NBT)
-    private Tag saveGridNodeHost(Tag saved, boolean saveClientFields) {
+    private Tag saveGridNodeHost() {
         if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
             var compound = new CompoundTag();
             connectedBlockEntity.getMainNode().saveToNBT(compound);
             return compound;
         }
-        return saved;
+        return new CompoundTag();
     }
 
     @FieldDataModifier(fieldName = "gridNodeHost", target = FieldDataModifier.ModifyTarget.LOAD_NBT)
-    private void loadGridNodeHost(Tag saved, boolean readClientFields) {
+    private void loadGridNodeHost(Tag saved) {
         if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity &&
                 saved instanceof CompoundTag tag) {
             connectedBlockEntity.getMainNode().loadFromNBT(tag);

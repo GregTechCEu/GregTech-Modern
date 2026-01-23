@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-import com.mojang.serialization.Codec;
+
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 public class CodecTransformer<T> extends ValueTransformer<T> {
+
     private final Codec<T> codec;
 
     public CodecTransformer(Codec<T> codec) {

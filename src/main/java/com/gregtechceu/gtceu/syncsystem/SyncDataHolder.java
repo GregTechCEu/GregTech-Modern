@@ -67,30 +67,8 @@ public class SyncDataHolder {
                     (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) && !fieldEntry.getValue().isComplex))
                 continue;
             var field = fieldEntry.getValue();
-            if (field.isCustomData) {
-                try {
-                    Object result = field.nbtSaveModifiers[0].invoke(holder, new CompoundTag(), writeClientFields);
-                    tag.put(field.nbtSaveKey, (CompoundTag) result);
-                } catch (Throwable e) {
-                    GTCEu.LOGGER.error("Sync: Error while invoking nbtSaveModifier for field {}", field.fieldName);
-                    GTCEu.LOGGER.error(e.getMessage());
-                    return new CompoundTag();
-                }
-                continue;
-            }
 
             Tag nbtValue = serialiseField(holder, field, writeClientFields);
-
-            for (MethodHandle modifier : field.nbtSaveModifiers) {
-                try {
-                    nbtValue = (Tag) modifier.invoke(holder, nbtValue, writeClientFields);
-                } catch (Throwable e) {
-                    GTCEu.LOGGER.error("Sync: Error while invoking nbtSaveModifier for field {}", field.fieldName);
-                    GTCEu.LOGGER.error(e.getMessage());
-                    return new CompoundTag();
-                }
-            }
-
             tag.put(field.nbtSaveKey, nbtValue);
         }
         return tag;
@@ -104,29 +82,8 @@ public class SyncDataHolder {
 
             var field = fieldEntry.getValue();
 
-            if (field.isCustomData) {
-                try {
-                    field.nbtLoadModifiers[0].invoke(holder, tag, readingClientFields);
-                } catch (Throwable e) {
-                    GTCEu.LOGGER.error("Sync: Error while invoking nbtLoadModifier for field {}", field.fieldName);
-                    GTCEu.LOGGER.error(e.getMessage());
-                    return;
-                }
-                continue;
-            }
-
             Tag savedValue = tag.get(field.nbtSaveKey);
             deserialiseField(holder, field, savedValue, readingClientFields);
-
-            for (MethodHandle modifier : field.nbtLoadModifiers) {
-                try {
-                    modifier.invoke(holder, savedValue, readingClientFields);
-                } catch (Throwable e) {
-                    GTCEu.LOGGER.error("Sync: Error while invoking nbtLoadModifier for field {}", field.fieldName);
-                    GTCEu.LOGGER.error(e.getMessage());
-                    return;
-                }
-            }
 
             if (readingClientFields) {
                 try {

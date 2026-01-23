@@ -120,6 +120,15 @@ public final class ValueTransformers {
         return null;
     }
 
+    public static ValueTransformer<?> getForField(Field field) {
+        ValueTransformer<?> collectionTransformer = getCollectionTransformer(field);
+        if (collectionTransformer == null) {
+            return TRANSFORMERS.get(boxIfPrimitive(field.getType()));
+        } else {
+            return collectionTransformer;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> ValueTransformer<T> get(Class<T> type) {
         return (ValueTransformer<T>) TRANSFORMERS.get(boxIfPrimitive(type));
@@ -218,8 +227,10 @@ public final class ValueTransformers {
 
         registerClassTransformer(GTRecipe.class, new GTRecipeTransformer());
         registerClassTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
-        registerClassTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
-        registerClassTransformer(Material.class, new ResourceLocationReferenceTransformer<>(Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
+        registerClassTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
+                GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
+        registerClassTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
+                Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
         registerClassTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerClassTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 

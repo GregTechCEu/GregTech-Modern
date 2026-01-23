@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Instructs the sync system to apply this method when saving or loading a field.
+ * Used to define methods used as serialise/deserialise functions for fields annotated with {@code @CustomDataField}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

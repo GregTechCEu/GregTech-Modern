@@ -5,9 +5,13 @@ import com.gregtechceu.gtceu.syncsystem.annotations.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -44,18 +48,16 @@ public final class ClassSyncData {
             return;
         }
 
-        Map<String, MethodInfo> annotatedMethods = new HashMap<>();
+        Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
+        Map<String, MethodHandle> nbtSaveFuncs = new HashMap<>();
+        Map<String, MethodHandle> nbtLoadFuncs = new HashMap<>();
 
         for (Method method : clazz.getDeclaredMethods()) {
             ClientFieldChangeListener listener = method.getAnnotation(ClientFieldChangeListener.class);
             FieldDataModifier modifier = method.getAnnotation(FieldDataModifier.class);
             if (listener == null && modifier == null) continue;
-            if (listener != null && modifier != null) throw new IllegalArgumentException(
-                    "Methods cannot be annotated with both @ClientFieldChangeListener and @FieldDataModifier: %s.%s"
-                            .formatted(clazz.getCanonicalName(), method.getName()));
-            if (Modifier.isStatic(method.getModifiers()))
-                throw new IllegalArgumentException("Cannot apply syncdata annotation to static method: %s.%s"
-                        .formatted(clazz.getCanonicalName(), method.getName()));
+
+            validateMethodAnnotations(method, clazz);
 
             MethodHandle handle;
             try {
@@ -68,22 +70,37 @@ public final class ClassSyncData {
             }
 
             String fieldName = listener != null ? listener.fieldName() : modifier.fieldName();
-            annotatedMethods.putIfAbsent(fieldName,
-                    new MethodInfo(new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-            if (listener != null) annotatedMethods.get(fieldName).listeners.add(handle);
-            else if (modifier.target() == FieldDataModifier.ModifyTarget.LOAD_NBT)
-                annotatedMethods.get(fieldName).nbtLoaders.add(handle);
-            else if (modifier.target() == FieldDataModifier.ModifyTarget.SAVE_NBT)
-                annotatedMethods.get(fieldName).nbtSavers.add(handle);
+
+            if (listener != null) {
+                changeListeners.computeIfAbsent(fieldName, $ -> new ArrayList<>()).add(handle);
+            } else {
+                if (modifier.target() == FieldDataModifier.ModifyTarget.SAVE_NBT) {
+                    if (nbtSaveFuncs.containsKey(fieldName)) {
+                        throw new IllegalArgumentException(
+                                "Fields marked with @CustomDataField must have one SAVE_NBT FieldDataModifier and one LOAD_NBT FieldDataModifier: %s.%s"
+                                        .formatted(clazz.getCanonicalName(), fieldName));
+                    } else {
+                        nbtSaveFuncs.put(fieldName, handle);
+                    }
+                } else {
+                    if (nbtLoadFuncs.containsKey(fieldName)) {
+                        throw new IllegalArgumentException(
+                                "Fields marked with @CustomDataField must have one SAVE_NBT FieldDataModifier and one LOAD_NBT FieldDataModifier: %s.%s"
+                                        .formatted(clazz.getCanonicalName(), fieldName));
+                    } else {
+                        nbtLoadFuncs.put(fieldName, handle);
+                    }
+                }
+            }
         }
 
         for (Field field : clazz.getDeclaredFields()) {
+
             boolean hasSaveField = field.isAnnotationPresent(SaveField.class);
             boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class);
             if (!hasSaveField && !hasClientSync) continue;
-            if (Modifier.isStatic(field.getModifiers()))
-                throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
-                        .formatted(clazz.getCanonicalName(), field.getName()));
+
+            validateFieldAnnotations(field, clazz);
 
             VarHandle handle;
             try {
@@ -95,7 +112,43 @@ public final class ClassSyncData {
                 continue;
             }
 
-            FieldSyncData syncData = new FieldSyncData(field, handle, annotatedMethods.get(field.getName()));
+            ValueTransformer<?> transformer;
+            if (!nbtSaveFuncs.containsKey(field.getName()) && !nbtLoadFuncs.containsKey(field.getName())) {
+                transformer = ValueTransformers.getForField(field);
+            } else {
+                var nbtSave = nbtSaveFuncs.get(field.getName());
+                var nbtLoad = nbtLoadFuncs.get(field.getName());
+                transformer = new ValueTransformer<>() {
+
+                    @Override
+                    public Tag serializeNBT(Object value, ISyncManaged holder) {
+                        try {
+                            return (Tag) nbtSave.invoke(holder);
+                        } catch (Throwable e) {
+                            GTCEu.LOGGER.error("Sync: Error while invoking nbt save function for field {}",
+                                    field.getName());
+                            GTCEu.LOGGER.error(e.getMessage());
+                            return new CompoundTag();
+                        }
+                    }
+
+                    @Override
+                    public Object deserializeNBT(Tag tag, ISyncManaged holder, @Nullable Object currentVal) {
+                        try {
+                            nbtLoad.invokeWithArguments(holder, tag);
+                            return currentVal;
+                        } catch (Throwable e) {
+                            GTCEu.LOGGER.error("Sync: Error while invoking nbt load function for field {}",
+                                    field.getName());
+                            GTCEu.LOGGER.error(e.getMessage());
+                            return currentVal;
+                        }
+                    }
+                };
+            }
+
+            FieldSyncData syncData = new FieldSyncData(field, handle, transformer,
+                    changeListeners.getOrDefault(field.getName(), List.of()).toArray(MethodHandle[]::new));
             if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
             if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
         }
@@ -108,49 +161,41 @@ public final class ClassSyncData {
         }
     }
 
+    private static void validateMethodAnnotations(Method method, Class<?> clazz) {
+        ClientFieldChangeListener listener = method.getAnnotation(ClientFieldChangeListener.class);
+        FieldDataModifier modifier = method.getAnnotation(FieldDataModifier.class);
+        if (listener != null && modifier != null) throw new IllegalArgumentException(
+                "Methods cannot be annotated with both @ClientFieldChangeListener and @FieldDataModifier: %s.%s"
+                        .formatted(clazz.getCanonicalName(), method.getName()));
+        if (Modifier.isStatic(method.getModifiers()))
+            throw new IllegalArgumentException("Cannot apply syncdata annotation to static method: %s.%s"
+                    .formatted(clazz.getCanonicalName(), method.getName()));
+    }
+
+    private static void validateFieldAnnotations(Field field, Class<?> clazz) {
+        if (Modifier.isStatic(field.getModifiers()))
+            throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
+                    .formatted(field.getDeclaringClass().getCanonicalName(), field.getName()));
+    }
+
     public static final class FieldSyncData {
 
         public final String fieldName, nbtSaveKey;
         public final VarHandle handle;
-        public final boolean triggerClientRerender, isCustomData, isComplex;
+        public final boolean triggerClientRerender, isComplex;
         public final ValueTransformer<?> transformer;
-        public final MethodHandle[] changeListenerHandles, nbtSaveModifiers, nbtLoadModifiers;
+        public final MethodHandle[] changeListenerHandles;
 
-        public FieldSyncData(@NotNull Field field, @NotNull VarHandle handle, MethodInfo appliedMethods) {
-            this.fieldName = field.getName();
+        public FieldSyncData(@NotNull Field field, VarHandle handle, ValueTransformer<?> transformer,
+                             MethodHandle[] changeListenerHandles) {
+            fieldName = field.getName();
+            SaveField saveField = field.getAnnotation(SaveField.class);
+            nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
+            this.isComplex = ISyncManaged.class.isAssignableFrom(field.getType());
             this.handle = handle;
-            SaveField savedField = field.getAnnotation(SaveField.class);
-            this.nbtSaveKey = (savedField != null && !savedField.nbtKey().isBlank()) ? savedField.nbtKey() : fieldName;
-            triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
-            isCustomData = field.isAnnotationPresent(CustomDataField.class);
-            isComplex = ISyncManaged.class.isAssignableFrom(field.getType());
-
-            if (isCustomData && (appliedMethods.nbtSavers.size() != 1 || appliedMethods.nbtLoaders.size() != 1))
-                throw new IllegalArgumentException(
-                        "Fields marked with @CustomDataField must have exactly one SAVE_NBT FieldDataModifier and one LOAD_NBT FieldDataModifier: %s.%s"
-                                .formatted(field.getClass().getCanonicalName(), fieldName));
-
-            if (!isCustomData) {
-                ValueTransformer<?> collectionTransformer = ValueTransformers.getCollectionTransformer(field);
-                if (collectionTransformer == null) {
-                    transformer = ValueTransformers.get(field.getType());
-                } else {
-                    transformer = collectionTransformer;
-                }
-            } else transformer = null;
-
-            if (appliedMethods != null) {
-                changeListenerHandles = appliedMethods.listeners.toArray(MethodHandle[]::new);
-                nbtSaveModifiers = appliedMethods.nbtSavers.toArray(MethodHandle[]::new);
-                nbtLoadModifiers = appliedMethods.nbtLoaders.toArray(MethodHandle[]::new);
-            } else {
-                changeListenerHandles = new MethodHandle[0];
-                nbtSaveModifiers = new MethodHandle[0];
-                nbtLoadModifiers = new MethodHandle[0];
-            }
+            this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
+            this.changeListenerHandles = changeListenerHandles;
+            this.transformer = transformer;
         }
     }
-
-    public record MethodInfo(List<MethodHandle> listeners, List<MethodHandle> nbtLoaders,
-                             List<MethodHandle> nbtSavers) {}
 }
