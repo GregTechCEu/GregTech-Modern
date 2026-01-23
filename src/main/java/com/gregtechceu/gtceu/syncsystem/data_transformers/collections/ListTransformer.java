@@ -4,12 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +36,8 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<List<T>> context) {
-        if (elementTransformer == null) elementTransformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
+        if (elementTransformer == null)
+            elementTransformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
 
         var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {

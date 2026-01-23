@@ -12,9 +12,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -23,7 +20,7 @@ import net.minecraftforge.common.extensions.IForgeItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.ParameterizedType;
@@ -58,9 +55,7 @@ public final class ValueTransformers {
      */
     public static ValueTransformer<?> get(Type type) {
         if (type instanceof Class<?> cls) type = cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
-        TYPE_CACHE.computeIfAbsent(type, ValueTransformers::generateOrGetTransformer);
-        throw new IllegalStateException(
-                "Failed to find value transformer for sync object with type: %s".formatted(type));
+        return TYPE_CACHE.computeIfAbsent(type, ValueTransformers::generateOrGetTransformer);
     }
 
     private static ValueTransformer<?> generateOrGetTransformer(Type type) {

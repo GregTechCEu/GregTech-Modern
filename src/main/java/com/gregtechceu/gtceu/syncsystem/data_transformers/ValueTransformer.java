@@ -30,7 +30,8 @@ public interface ValueTransformer<T> {
      * @param genericArgs  The values of the generic arguments which this field has been declared with, or an empty
      *                     array if the type is not generic.
      * @param currentValue The current value (if any) of the field currently being serialised/deserialised.
-     * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT being
+     * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
+     *                     being
      *                     written to the server save.
      */
     record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type[] genericArgs,

@@ -5,11 +5,10 @@ import com.gregtechceu.gtceu.syncsystem.annotations.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.invoke.MethodHandle;
@@ -24,7 +23,7 @@ import java.util.*;
 public final class ClassSyncData {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-    public static final ClassValue<ClassSyncData> CACHE = new ClassValue<>() {
+    private static final ClassValue<ClassSyncData> CACHE = new ClassValue<>() {
 
         @Override
         protected ClassSyncData computeValue(@NotNull Class<?> type) {
@@ -32,8 +31,19 @@ public final class ClassSyncData {
         }
     };
 
-    public final Object2ObjectMap<String, FieldSyncData> clientSyncFields = new Object2ObjectOpenHashMap<>();
-    public final Object2ObjectMap<String, FieldSyncData> serverSaveFields = new Object2ObjectOpenHashMap<>();
+    /**
+     * Gets the {@link ClassSyncData} object for a specific class
+     */
+    public static ClassSyncData getClassData(Class<?> cls) {
+        return CACHE.get(cls);
+    }
+
+    @Getter
+    private final List<FieldSyncData> managedFields = new ObjectArrayList<>();
+    @Getter
+    private final Object2ReferenceArrayMap<String, FieldSyncData> clientSyncFields = new Object2ReferenceArrayMap<>();
+    @Getter
+    private final Object2ReferenceArrayMap<String, FieldSyncData> serverSaveFields = new Object2ReferenceArrayMap<>();
 
     private ClassSyncData(@NotNull Class<?> clazz) {
         MethodHandles.Lookup privateLookup;
@@ -46,15 +56,14 @@ public final class ClassSyncData {
         }
 
         Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
-        Map<String, MethodHandle> nbtSaveFuncs = new HashMap<>();
-        Map<String, MethodHandle> nbtLoadFuncs = new HashMap<>();
 
         for (Method method : clazz.getDeclaredMethods()) {
             ClientFieldChangeListener listener = method.getAnnotation(ClientFieldChangeListener.class);
-            FieldDataModifier modifier = method.getAnnotation(FieldDataModifier.class);
-            if (listener == null && modifier == null) continue;
+            if (listener == null) continue;
 
-            validateMethodAnnotations(method, clazz);
+            if (Modifier.isStatic(method.getModifiers()))
+                throw new IllegalArgumentException("Cannot apply syncdata annotation to static method: %s.%s"
+                        .formatted(clazz.getCanonicalName(), method.getName()));
 
             MethodHandle handle;
             try {
@@ -66,29 +75,7 @@ public final class ClassSyncData {
                 continue;
             }
 
-            String fieldName = listener != null ? listener.fieldName() : modifier.fieldName();
-
-            if (listener != null) {
-                changeListeners.computeIfAbsent(fieldName, $ -> new ArrayList<>()).add(handle);
-            } else {
-                if (modifier.target() == FieldDataModifier.ModifyTarget.SAVE_NBT) {
-                    if (nbtSaveFuncs.containsKey(fieldName)) {
-                        throw new IllegalArgumentException(
-                                "Fields marked with @CustomDataField must have one SAVE_NBT FieldDataModifier and one LOAD_NBT FieldDataModifier: %s.%s"
-                                        .formatted(clazz.getCanonicalName(), fieldName));
-                    } else {
-                        nbtSaveFuncs.put(fieldName, handle);
-                    }
-                } else {
-                    if (nbtLoadFuncs.containsKey(fieldName)) {
-                        throw new IllegalArgumentException(
-                                "Fields marked with @CustomDataField must have one SAVE_NBT FieldDataModifier and one LOAD_NBT FieldDataModifier: %s.%s"
-                                        .formatted(clazz.getCanonicalName(), fieldName));
-                    } else {
-                        nbtLoadFuncs.put(fieldName, handle);
-                    }
-                }
-            }
+            changeListeners.computeIfAbsent(listener.fieldName(), $ -> new ArrayList<>()).add(handle);
         }
 
         for (Field field : clazz.getDeclaredFields()) {
@@ -97,7 +84,9 @@ public final class ClassSyncData {
             boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class);
             if (!hasSaveField && !hasClientSync) continue;
 
-            validateFieldAnnotations(field, clazz);
+            if (Modifier.isStatic(field.getModifiers()))
+                throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
+                        .formatted(field.getDeclaringClass().getCanonicalName(), field.getName()));
 
             VarHandle handle;
             try {
@@ -110,44 +99,15 @@ public final class ClassSyncData {
             }
 
             ValueTransformer<?> transformer;
-            if (!nbtSaveFuncs.containsKey(field.getName()) && !nbtLoadFuncs.containsKey(field.getName())) {
-                transformer = ValueTransformers.get(field.getGenericType());
+            if (ISyncManaged.class.isAssignableFrom(field.getType())) {
+                transformer = null;
             } else {
-                var nbtSave = nbtSaveFuncs.get(field.getName());
-                var nbtLoad = nbtLoadFuncs.get(field.getName());
-                transformer = new ValueTransformer<>() {
-
-                    @Override
-                    public @NotNull Tag serializeNBT(@NotNull Object value,
-                                                     ValueTransformer.@NotNull TransformerContext<Object> context) {
-                        try {
-                            return (Tag) nbtSave.invoke(context);
-                        } catch (Throwable e) {
-                            GTCEu.LOGGER.error("Sync: Error while invoking nbt save function for field {}",
-                                    field.getName());
-                            GTCEu.LOGGER.error(e.getMessage());
-                            return new CompoundTag();
-                        }
-                    }
-
-                    @Override
-                    public Object deserializeNBT(@NotNull Tag tag,
-                                                 ValueTransformer.@NotNull TransformerContext<Object> context) {
-                        try {
-                            nbtLoad.invokeWithArguments(context, tag);
-                            return context.currentValue();
-                        } catch (Throwable e) {
-                            GTCEu.LOGGER.error("Sync: Error while invoking nbt load function for field {}",
-                                    field.getName());
-                            GTCEu.LOGGER.error(e.getMessage());
-                            return context.currentValue();
-                        }
-                    }
-                };
+                transformer = ValueTransformers.get(field.getGenericType());
             }
 
             FieldSyncData syncData = new FieldSyncData(field, handle, transformer,
                     changeListeners.getOrDefault(field.getName(), List.of()).toArray(MethodHandle[]::new));
+            managedFields.add(syncData);
             if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
             if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
         }
@@ -155,34 +115,36 @@ public final class ClassSyncData {
         Class<?> parent = clazz.getSuperclass();
         if (parent != Object.class) {
             ClassSyncData parentHandles = CACHE.get(parent);
+            managedFields.addAll(parentHandles.managedFields);
             clientSyncFields.putAll(parentHandles.clientSyncFields);
             serverSaveFields.putAll(parentHandles.serverSaveFields);
         }
     }
 
-    private static void validateMethodAnnotations(Method method, Class<?> clazz) {
-        ClientFieldChangeListener listener = method.getAnnotation(ClientFieldChangeListener.class);
-        FieldDataModifier modifier = method.getAnnotation(FieldDataModifier.class);
-        if (listener != null && modifier != null) throw new IllegalArgumentException(
-                "Methods cannot be annotated with both @ClientFieldChangeListener and @FieldDataModifier: %s.%s"
-                        .formatted(clazz.getCanonicalName(), method.getName()));
-        if (Modifier.isStatic(method.getModifiers()))
-            throw new IllegalArgumentException("Cannot apply syncdata annotation to static method: %s.%s"
-                    .formatted(clazz.getCanonicalName(), method.getName()));
+    /**
+     * Allows for a custom value transformer to be used for a specific field on this class, ignoring any other sync
+     * behaviour attached to the field.
+     * 
+     * @param fieldName   The field name
+     * @param transformer The custom value transformer
+     */
+    public void setCustomTransformerForField(String fieldName, ValueTransformer<?> transformer) {
+        Optional<FieldSyncData> fieldData = managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
+                .findFirst();
+        if (fieldData.isEmpty()) return;
+        fieldData.get().setTransformer(transformer);
     }
 
-    private static void validateFieldAnnotations(Field field, Class<?> clazz) {
-        if (Modifier.isStatic(field.getModifiers()))
-            throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
-                    .formatted(field.getDeclaringClass().getCanonicalName(), field.getName()));
-    }
-
+    /**
+     * Information about the sync behaviour of fields with sync annotations in ISyncManaged classes
+     */
     public static final class FieldSyncData {
 
         public final String fieldName, nbtSaveKey;
         public final VarHandle handle;
         public final boolean triggerClientRerender, isSyncManaged;
-        public final ValueTransformer<?> transformer;
+        @Setter
+        public ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles;
         public final Class<?> clazz;
         public final Type[] genericArgs;
