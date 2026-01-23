@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
+import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -19,7 +20,12 @@ public class NBTSerialisableTransformer extends ValueTransformer<INBTSerializabl
     @Override
     public @Nullable INBTSerializable<Tag> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<INBTSerializable<Tag>> context) {
         var currentVal = context.currentValue();
-        if (currentVal == null) return null;
+        try {
+            if (currentVal == null) currentVal = context.clazz().getConstructor().newInstance();
+        } catch (Exception e) {
+            GTCEu.LOGGER.error("Sync: Failed to instantiate INBTSerializable class", e);
+            return null;
+        }
         currentVal.deserializeNBT(tag);
         return currentVal;
     }

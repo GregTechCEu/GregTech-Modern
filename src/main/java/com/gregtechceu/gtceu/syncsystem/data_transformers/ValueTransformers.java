@@ -18,6 +18,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeItemStack;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class ValueTransformers {
 
     private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new Object2ObjectOpenHashMap<>();
-    private static final Map<Class<?>, BiFunction<Class<?>, Type[], ValueTransformer<?>>> REGISTERED_SUPPLIERS = new Object2ObjectOpenHashMap<>();
+    private static final Map<Class<?>, Supplier<ValueTransformer<?>>> REGISTERED_SUPPLIERS = new Object2ObjectOpenHashMap<>();
     private static final Map<Type, Type> PRIMITIVE_TO_BOXED = Map.of(
             boolean.class, Boolean.class,
             byte.class, Byte.class,
@@ -61,10 +61,8 @@ public final class ValueTransformers {
 
     private static ValueTransformer<?> generateOrGetTransformer(Type type) {
         Class<?> clazz;
-        ParameterizedType parameterizedType = null;
         if (type instanceof ParameterizedType pType) {
             clazz = (Class<?>)pType.getRawType();
-            parameterizedType = pType;
         } else {
             clazz = (Class<?>)type;
         }
@@ -84,7 +82,7 @@ public final class ValueTransformers {
         }
 
         for (var entry : REGISTERED_SUPPLIERS.entrySet()) {
-            if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue().apply(clazz, parameterizedType == null ? new Type[0] : parameterizedType.getActualTypeArguments());
+            if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue().get();
         }
 
         for (var entry: REGISTERED.entrySet()) {
@@ -94,7 +92,7 @@ public final class ValueTransformers {
         return null;
     }
 
-    public static <T> void registerClassTransformer(Class<T> type, ValueTransformer<T> transformer) {
+    public static void registerClassTransformer(Class<?> type, ValueTransformer<?> transformer) {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
@@ -121,7 +119,7 @@ public final class ValueTransformers {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
-    public static <T> void registerTransformerSupplier(Class<T> type, BiFunction<Class<?>, Type[], ValueTransformer<?>> func) {
+    public static <T> void registerTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
         REGISTERED_SUPPLIERS.put(type, func);
     }
 
@@ -168,9 +166,15 @@ public final class ValueTransformers {
                 CompoundTag.class, () -> BlockPos.ZERO);
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class, CompoundTag::new);
 
-        //registerClassTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
         registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
                 t -> Component.Serializer.fromJson(t.getAsString()), StringTag.class, Component::empty);
+
+        registerClassTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
+
+        registerTransformerSupplier(List.class, ListTransformer::new);
+        registerTransformerSupplier(Map.class, MapTransformer::new);
+        registerTransformerSupplier(Set.class, SetTransformer::new);
+
 
         //// GT specific classes
 
