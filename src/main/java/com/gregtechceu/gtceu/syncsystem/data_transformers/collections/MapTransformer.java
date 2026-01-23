@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,8 +35,8 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         ListTag entries = new ListTag();
         for (var entry : value.entrySet()) {
             CompoundTag compound = new CompoundTag();
-            compound.put("k", keyTransformer.serializeNBT(entry.getKey(), null));
-            compound.put("v", valueTransformer.serializeNBT(entry.getValue(), null));
+            compound.put("k", keyTransformer.serializeNBT(entry.getKey(), new TransformerContext<>(context.holder(), entry.getKey().getClass(), new Type[0], entry.getKey(), context.isClientSync())));
+            compound.put("v", valueTransformer.serializeNBT(entry.getValue(), new TransformerContext<>(context.holder(), entry.getValue().getClass(), new Type[0], entry.getValue(), context.isClientSync())));
             entries.add(compound);
         }
         return entries;
@@ -58,8 +59,8 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         else current = new Object2ObjectOpenHashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
-            K key = keyTransformer.deserializeNBT(Objects.requireNonNull(compound.get("k")), null);
-            V value = valueTransformer.deserializeNBT(Objects.requireNonNull(compound.get("v")), null);
+            K key = keyTransformer.deserializeNBT(Objects.requireNonNull(compound.get("k")), new TransformerContext<>(context.holder(), current.getClass(), new Type[0], null, context.isClientSync()));
+            V value = valueTransformer.deserializeNBT(Objects.requireNonNull(compound.get("v")), new TransformerContext<>(context.holder(), current.getClass(), new Type[0], null, context.isClientSync()));
             current.put(key, value);
         }
         return current;

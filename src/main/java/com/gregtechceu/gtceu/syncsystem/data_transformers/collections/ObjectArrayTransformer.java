@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +28,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
         for (T element : value) {
-            listTag.add(elementTransformer.serializeNBT(element, null));
+            listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(), element.getClass(), new Type[0], element, context.isClientSync())));
         }
         return listTag;
     }
@@ -45,7 +46,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             var currentV = current[i];
-            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null);
+            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV, context.isClientSync()));
             if (result != currentV) current[i] = currentV;
         }
         return current;

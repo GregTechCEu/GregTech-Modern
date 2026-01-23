@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,7 +29,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
 
         ListTag list = new ListTag();
         for (var obj : value) {
-            list.add(elementTransformer.serializeNBT(obj, null));
+            list.add(elementTransformer.serializeNBT(obj, new TransformerContext<>(context.holder(), obj.getClass(), new Type[0], obj, context.isClientSync())));
         }
         return list;
     }
@@ -48,7 +49,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         else current = new ObjectArrayList<>();
         List<T> finalCurrent = current;
         listTag.forEach(t -> finalCurrent
-                .add(elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(t), null)));
+                .add(elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(t), new TransformerContext<>(context.holder(), finalCurrent.getClass(), new Type[0], null, context.isClientSync()))));
 
         return current;
     }
