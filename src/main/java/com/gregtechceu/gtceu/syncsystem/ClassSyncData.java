@@ -15,9 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -120,7 +118,8 @@ public final class ClassSyncData {
                 transformer = new ValueTransformer<>() {
 
                     @Override
-                    public @NotNull Tag serializeNBT(@NotNull Object value, ValueTransformer.@NotNull TransformerContext<Object> context) {
+                    public @NotNull Tag serializeNBT(@NotNull Object value,
+                                                     ValueTransformer.@NotNull TransformerContext<Object> context) {
                         try {
                             return (Tag) nbtSave.invoke(context);
                         } catch (Throwable e) {
@@ -132,7 +131,8 @@ public final class ClassSyncData {
                     }
 
                     @Override
-                    public Object deserializeNBT(@NotNull Tag tag, ValueTransformer.@NotNull TransformerContext<Object> context) {
+                    public Object deserializeNBT(@NotNull Tag tag,
+                                                 ValueTransformer.@NotNull TransformerContext<Object> context) {
                         try {
                             nbtLoad.invokeWithArguments(context, tag);
                             return context.currentValue();
@@ -184,6 +184,8 @@ public final class ClassSyncData {
         public final boolean triggerClientRerender, isSyncManaged;
         public final ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles;
+        public final Class<?> clazz;
+        public final Type[] genericArgs;
 
         public FieldSyncData(@NotNull Field field, VarHandle handle, ValueTransformer<?> transformer,
                              MethodHandle[] changeListenerHandles) {
@@ -195,6 +197,15 @@ public final class ClassSyncData {
             this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
             this.changeListenerHandles = changeListenerHandles;
             this.transformer = transformer;
+
+            var type = field.getGenericType();
+            if (type instanceof ParameterizedType parameterizedType) {
+                clazz = (Class<?>) parameterizedType.getRawType();
+                genericArgs = parameterizedType.getActualTypeArguments();
+            } else {
+                clazz = (Class<?>) type;
+                genericArgs = new Type[0];
+            }
         }
     }
 }

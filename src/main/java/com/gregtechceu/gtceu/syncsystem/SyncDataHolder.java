@@ -64,7 +64,8 @@ public class SyncDataHolder {
         for (var fieldEntry : fieldsToSerialize.entrySet()) {
 
             if (writeClientFields &&
-                    (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) && !fieldEntry.getValue().isSyncManaged))
+                    (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) &&
+                            !fieldEntry.getValue().isSyncManaged))
                 continue;
             var field = fieldEntry.getValue();
 
@@ -119,7 +120,9 @@ public class SyncDataHolder {
         try {
 
             if (field.transformer != null) {
-                return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue, new ValueTransformer.TransformerContext<>(holder, currentValue, writeClientFields));
+                return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue,
+                        new ValueTransformer.TransformerContext<>(holder, field.clazz, field.genericArgs, currentValue,
+                                writeClientFields));
             } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
             }
@@ -149,7 +152,8 @@ public class SyncDataHolder {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 try {
                     var current = field.handle.get(holder);
-                    Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(holder, current, readingClientFields));
+                    Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(
+                            holder, field.clazz, field.genericArgs, current, readingClientFields));
                     if (result != current) {
                         field.handle.set(result);
                     }

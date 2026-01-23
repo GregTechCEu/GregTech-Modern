@@ -6,14 +6,16 @@ import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
+public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
 
     private final ValueTransformer<T> elementTransformer;
 

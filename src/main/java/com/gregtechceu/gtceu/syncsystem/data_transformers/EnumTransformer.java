@@ -8,7 +8,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnumTransformer<E extends Enum<E>> extends ValueTransformer<E> {
+public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
     private final Class<E> enumClass;
 

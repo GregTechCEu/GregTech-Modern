@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -21,6 +20,7 @@ import net.minecraftforge.common.extensions.IForgeItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.ParameterizedType;
@@ -47,24 +47,24 @@ public final class ValueTransformers {
             double.class, Double.class,
             void.class, Void.class);
 
-    public static Type boxIfPrimitive(Class<?> cls) {
-        return cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
-    }
-
     private static final Map<Type, ValueTransformer<?>> TYPE_CACHE = new Object2ObjectOpenHashMap<>();
 
+    /**
+     * Gets the {@link ValueTransformer} associated with a specific type.
+     */
     public static ValueTransformer<?> get(Type type) {
-        if (type instanceof Class<?> cls) type = boxIfPrimitive(cls);
+        if (type instanceof Class<?> cls) type = cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
         TYPE_CACHE.computeIfAbsent(type, ValueTransformers::generateOrGetTransformer);
-        throw new IllegalStateException("Failed to find value transformer for sync object with type: %s".formatted(type));
+        throw new IllegalStateException(
+                "Failed to find value transformer for sync object with type: %s".formatted(type));
     }
 
     private static ValueTransformer<?> generateOrGetTransformer(Type type) {
         Class<?> clazz;
         if (type instanceof ParameterizedType pType) {
-            clazz = (Class<?>)pType.getRawType();
+            clazz = (Class<?>) pType.getRawType();
         } else {
-            clazz = (Class<?>)type;
+            clazz = (Class<?>) type;
         }
 
         if (REGISTERED.containsKey(clazz)) return REGISTERED.get(clazz);
@@ -85,22 +85,38 @@ public final class ValueTransformers {
             if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue().get();
         }
 
-        for (var entry: REGISTERED.entrySet()) {
+        for (var entry : REGISTERED.entrySet()) {
             if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue();
         }
 
         return null;
     }
 
-    public static void registerClassTransformer(Class<?> type, ValueTransformer<?> transformer) {
+    /**
+     * Registers a {@link ValueTransformer} for the given class or interface.
+     * If registering a type with generic arguments, instead use {@code registerTransformerSupplier} to create a new
+     * transformer instance for each set of generic type arguments.
+     * 
+     * @param type        The class to register this {@link ValueTransformer} for
+     * @param transformer The transformer being registered
+     */
+    public static void registerTransformer(Class<?> type, ValueTransformer<?> transformer) {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
+    /**
+     * Creates and registers a {@link ValueTransformer} for the given class using predefined NBT parsing functions.
+     * 
+     * @param type            The class to register this {@link ValueTransformer} for
+     * @param write           A function that writes the value into a specific tag type
+     * @param read            A function that reads the value from a specific tag type
+     * @param tagClass        The tag type the value is serialized into
+     * @param defaultSupplier A supplier that returns the default value if the tag is of an unexpected type.
+     */
     public static <T,
             TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> write,
                                                                      Function<TagType, T> read, Class<TagType> tagClass,
                                                                      Supplier<T> defaultSupplier) {
-
         ValueTransformer<T> transformer = new ValueTransformer<>() {
 
             @Override
@@ -119,10 +135,17 @@ public final class ValueTransformers {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
+    /**
+     * Registers a supplier that supplies instances of a specific transformer type.
+     * The supplier will be called to create new instances of the transformer for each unique set of generic type
+     * arguments passed to the given class.
+     *
+     * @param type The class to register this {@link ValueTransformer} supplier for
+     * @param func Supplier function
+     */
     public static <T> void registerTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
         REGISTERED_SUPPLIERS.put(type, func);
     }
-
 
     static {
 
@@ -169,24 +192,23 @@ public final class ValueTransformers {
         registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
                 t -> Component.Serializer.fromJson(t.getAsString()), StringTag.class, Component::empty);
 
-        registerClassTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
+        registerTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
 
         registerTransformerSupplier(List.class, ListTransformer::new);
         registerTransformerSupplier(Map.class, MapTransformer::new);
         registerTransformerSupplier(Set.class, SetTransformer::new);
 
-
         //// GT specific classes
 
-        registerClassTransformer(GTRecipe.class, new GTRecipeTransformer());
-        registerClassTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
-        registerClassTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
+        registerTransformer(GTRecipe.class, new GTRecipeTransformer());
+        registerTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
+        registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
                 GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
-        registerClassTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
+        registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
-        registerClassTransformer(MonitorGroup.class, new MonitorGroupTransformer());
-        registerClassTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
+        registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
+        registerTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 
-        registerClassTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
+        registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
     }
 }

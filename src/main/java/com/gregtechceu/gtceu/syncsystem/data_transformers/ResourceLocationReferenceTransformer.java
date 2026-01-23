@@ -4,14 +4,16 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ResourceLocationReferenceTransformer<T> extends ValueTransformer<T> {
+public class ResourceLocationReferenceTransformer<T> implements ValueTransformer<T> {
 
     private final Function<T, ResourceLocation> getResourceLocation;
     private final Function<ResourceLocation, T> loadFromLocation;

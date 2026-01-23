@@ -60,10 +60,6 @@ The following field types are supported by default:
 
 The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialised.
 
-To add support for an additional type, call `ValueTransformers.registerClassTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerInterfaceTransformer(Class<T> cls, ValueTransformer<T> transformer)`
-
-!!! note
-    Registering a transformer as a class transformer will only apply that transformer to objects of the *exact* same type. To also match subclasses or interface implementations, register a transformer as an interface transformer.
-
+To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 
 Some types may be too complex to be processed using this system. For more complex NBT interactions, use the `@FieldDataModifier` and `@CustomDataField` annotations.

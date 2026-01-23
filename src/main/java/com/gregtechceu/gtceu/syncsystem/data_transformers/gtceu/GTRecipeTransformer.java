@@ -19,12 +19,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GTRecipeTransformer extends ValueTransformer<GTRecipe> {
+public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
 
     private static RecipeManager getRecipeManager() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();

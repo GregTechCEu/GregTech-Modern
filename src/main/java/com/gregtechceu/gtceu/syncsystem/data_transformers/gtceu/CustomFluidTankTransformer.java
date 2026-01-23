@@ -6,13 +6,14 @@ import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank> {
+public class CustomFluidTankTransformer implements ValueTransformer<CustomFluidTank> {
 
     @Override
     public Tag serializeNBT(CustomFluidTank value, ValueTransformer.TransformerContext<CustomFluidTank> context) {
@@ -20,7 +21,8 @@ public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank
     }
 
     @Override
-    public @Nullable CustomFluidTank deserializeNBT(Tag tag, ValueTransformer.TransformerContext<CustomFluidTank> context) {
+    public @Nullable CustomFluidTank deserializeNBT(Tag tag,
+                                                    ValueTransformer.TransformerContext<CustomFluidTank> context) {
         var currentVal = context.currentValue();
         if (currentVal == null) return null;
         if (tag instanceof CompoundTag compoundTag) {

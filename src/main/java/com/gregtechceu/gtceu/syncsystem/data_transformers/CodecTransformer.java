@@ -12,7 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CodecTransformer<T> extends ValueTransformer<T> {
+public class CodecTransformer<T> implements ValueTransformer<T> {
 
     private final Codec<T> codec;
 

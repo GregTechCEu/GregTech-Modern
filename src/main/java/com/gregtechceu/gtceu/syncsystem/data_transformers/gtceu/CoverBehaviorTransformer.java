@@ -15,16 +15,18 @@ import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CoverBehaviorTransformer extends ValueTransformer<CoverBehavior> {
+public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior> {
 
     @Override
     public Tag serializeNBT(CoverBehavior value, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        if (context.currentValue() instanceof ICoverable coverable) return serialize(value, coverable, context.isClientSync());
+        if (context.currentValue() instanceof ICoverable coverable)
+            return serialize(value, coverable, context.isClientSync());
         return new CompoundTag();
     }
 
