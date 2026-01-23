@@ -58,44 +58,12 @@ The following field types are supported by default:
 
 ### Adding support for additional types
 
+The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialised.
+
 To add support for an additional type, call `ValueTransformers.registerClassTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerInterfaceTransformer(Class<T> cls, ValueTransformer<T> transformer)`
 
 !!! note
     Registering a transformer as a class transformer will only apply that transformer to objects of the *exact* same type. To also match subclasses or interface implementations, register a transformer as an interface transformer.
 
-The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialised.
-
-```java
-public abstract class ValueTransformer<T> {
-
-    // If this type cannot be instanced purely from a serialised tag.
-    // All complex types typically have mustProvideObject overriden to true 
-    public boolean mustProvideObject() {
-        return false;
-    }
-    
-    // A method for serialising a value into a tag
-    // Called when serialising a value to be sent to the client
-    public Tag serializeClientSyncNBT(@Nullable T value, ISyncManaged holder) {
-      return serializeNBT(value, holder);
-    }
-
-    // A method for deserialising a value from a tag
-    // Called when deserialising a value on the client.
-    // If mustProvideObject == true, currentVal is the currently saved value.
-    public T deserializeClientNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal) {
-      return deserializeNBT(tag, holder, currentVal);
-    }
-
-
-  // A method for serialising a value into a tag.
-  // The holder param is the object this sync value is attached to
-  public abstract Tag serializeNBT(T value, ISyncManaged holder);
-    
-  // A method for deserialising a value from a tag
-  // If mustProvideObject == true, currentVal is the currently saved value.
-  public abstract T deserializeNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal);
-}
-```
 
 Some types may be too complex to be processed using this system. For more complex NBT interactions, use the `@FieldDataModifier` and `@CustomDataField` annotations.

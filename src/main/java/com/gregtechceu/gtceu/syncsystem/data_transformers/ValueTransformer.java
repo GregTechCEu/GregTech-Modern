@@ -27,10 +27,6 @@ public abstract class ValueTransformer<T> {
         return tag;
     }
 
-    public boolean mustProvideObject() {
-        return false;
-    }
-
     public abstract Tag serializeNBT(T value, TransformerContext<T> context);
 
     public abstract T deserializeNBT(Tag tag, TransformerContext<T> context);

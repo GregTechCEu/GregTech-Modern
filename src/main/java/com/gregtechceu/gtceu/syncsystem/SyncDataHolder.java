@@ -148,8 +148,9 @@ public class SyncDataHolder {
             if (field.transformer != null) {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 try {
-                    Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(holder, field.handle.get(holder), readingClientFields));
-                    if (!transformer.mustProvideObject()) {
+                    var current = field.handle.get(holder);
+                    Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(holder, current, readingClientFields));
+                    if (result != current) {
                         field.handle.set(result);
                     }
                 } catch (UnsupportedOperationException e) {

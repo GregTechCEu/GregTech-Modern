@@ -6,11 +6,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class NBTSerialisableTransformer extends ValueTransformer<INBTSerializable<Tag>> {
 
     @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
-
-    @Override
     public Tag serializeNBT(INBTSerializable<Tag> value, ValueTransformer.TransformerContext<INBTSerializable<Tag>> context) {
         return value.serializeNBT();
     }

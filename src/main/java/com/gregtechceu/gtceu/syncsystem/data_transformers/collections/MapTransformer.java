@@ -21,11 +21,6 @@ public class MapTransformer<K, V> extends ValueTransformer<Map<K, V>> {
     }
 
     @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
-
-    @Override
     public Tag serializeNBT(Map<K, V> value, ValueTransformer.TransformerContext<Map<K, V>> context) {
         ListTag entries = new ListTag();
         for (var entry : value.entrySet()) {

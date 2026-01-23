@@ -7,16 +7,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
 
     private final ValueTransformer<T> elementTransformer;
-
-    @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
 
     public ObjectArrayTransformer(ValueTransformer<T> elementTransformer) {
         this.elementTransformer = elementTransformer;
@@ -43,13 +37,9 @@ public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
             current = Arrays.copyOf(current, listTag.size());
         }
         for (int i = 0; i < listTag.size(); i++) {
-            if (elementTransformer.mustProvideObject()) {
-                elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null
-                );
-            } else {
-                current[i] = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                        null);
-            }
+            var currentV = current[i];
+            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null);
+            if (result != currentV) current[i] = currentV;
         }
         return current;
     }

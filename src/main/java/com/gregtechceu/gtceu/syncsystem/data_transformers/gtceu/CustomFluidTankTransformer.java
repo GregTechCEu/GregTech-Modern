@@ -9,11 +9,6 @@ import net.minecraft.nbt.Tag;
 public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank> {
 
     @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
-
-    @Override
     public Tag serializeNBT(CustomFluidTank value, ValueTransformer.TransformerContext<CustomFluidTank> context) {
         return value.serializeNBT();
     }

@@ -13,11 +13,6 @@ public class SetTransformer<T> extends ValueTransformer<Set<T>> {
 
     private final ValueTransformer<T> elementTransformer;
 
-    @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
-
     public SetTransformer(ValueTransformer<T> elementTransformer) {
         this.elementTransformer = elementTransformer;
     }

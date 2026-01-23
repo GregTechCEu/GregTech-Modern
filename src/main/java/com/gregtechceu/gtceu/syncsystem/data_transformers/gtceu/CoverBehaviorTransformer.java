@@ -19,11 +19,6 @@ import java.util.Objects;
 public class CoverBehaviorTransformer extends ValueTransformer<CoverBehavior> {
 
     @Override
-    public boolean mustProvideObject() {
-        return true;
-    }
-
-    @Override
     public Tag serializeNBT(CoverBehavior value, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         if (context.currentValue() instanceof ICoverable coverable) return serialize(value, coverable, context.isClientSync());
         return new CompoundTag();
