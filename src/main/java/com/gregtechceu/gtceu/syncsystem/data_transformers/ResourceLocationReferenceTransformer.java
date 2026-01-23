@@ -1,12 +1,8 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -22,12 +18,12 @@ public class ResourceLocationReferenceTransformer<T> extends ValueTransformer<T>
     }
 
     @Override
-    public Tag serializeNBT(T value, ISyncManaged holder) {
+    public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
         return StringTag.valueOf(getResourceLocation.apply(value).toString());
     }
 
     @Override
-    public T deserializeNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal) {
+    public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
         ResourceLocation location = ResourceLocation.tryParse(tag.getAsString());
         if (location == null) return null;
         return loadFromLocation.apply(ResourceLocation.tryParse(tag.getAsString()));

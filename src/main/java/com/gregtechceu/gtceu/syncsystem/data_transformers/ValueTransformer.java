@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
  * {@link Tag}
  */
 public abstract class ValueTransformer<T> {
+
+    public record TransformerContext<U>(@NotNull ISyncManaged holder, @Nullable U currentValue, boolean isClientSync) { }
 
     public static Tag stripLdlibWrapper(Tag t) {
         if (!(t instanceof CompoundTag tag)) return t;
@@ -28,15 +31,7 @@ public abstract class ValueTransformer<T> {
         return false;
     }
 
-    public Tag serializeClientSyncNBT(@Nullable T value, ISyncManaged holder) {
-        return serializeNBT(value, holder);
-    }
+    public abstract Tag serializeNBT(T value, TransformerContext<T> context);
 
-    public T deserializeClientNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal) {
-        return deserializeNBT(tag, holder, currentVal);
-    }
-
-    public abstract Tag serializeNBT(T value, ISyncManaged holder);
-
-    public abstract T deserializeNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal);
+    public abstract T deserializeNBT(Tag tag, TransformerContext<T> context);
 }

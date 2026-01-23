@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -33,7 +31,7 @@ public class GTRecipeTransformer extends ValueTransformer<GTRecipe> {
     }
 
     @Override
-    public Tag serializeNBT(GTRecipe value, ISyncManaged holder) {
+    public Tag serializeNBT(GTRecipe value, ValueTransformer.TransformerContext<GTRecipe> context) {
         CompoundTag tag = new CompoundTag();
         if (value == null) return tag;
         tag.putString("id", value.id.toString());
@@ -45,7 +43,7 @@ public class GTRecipeTransformer extends ValueTransformer<GTRecipe> {
     }
 
     @Override
-    public GTRecipe deserializeNBT(Tag tag, ISyncManaged holder, @Nullable GTRecipe currentVal) {
+    public GTRecipe deserializeNBT(Tag tag, ValueTransformer.TransformerContext<GTRecipe> context) {
         if (tag instanceof CompoundTag comp && comp.isEmpty()) return null;
         RecipeManager recipeManager = getRecipeManager();
         GTRecipe result = null;

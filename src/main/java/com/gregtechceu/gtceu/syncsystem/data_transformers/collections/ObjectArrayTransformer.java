@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
 
@@ -23,7 +23,7 @@ public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
     }
 
     @Override
-    public Tag serializeNBT(T[] value, ISyncManaged holder) {
+    public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
         for (T element : value) {
             listTag.add(elementTransformer.serializeNBT(element, null));
@@ -32,7 +32,8 @@ public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
     }
 
     @Override
-    public T[] deserializeNBT(Tag tag, ISyncManaged holder, T[] current) {
+    public T[] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
+        T[] current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
             return current;
@@ -43,11 +44,11 @@ public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             if (elementTransformer.mustProvideObject()) {
-                elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null,
-                        current[i]);
+                elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), null
+                );
             } else {
                 current[i] = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                        null, null);
+                        null);
             }
         }
         return current;

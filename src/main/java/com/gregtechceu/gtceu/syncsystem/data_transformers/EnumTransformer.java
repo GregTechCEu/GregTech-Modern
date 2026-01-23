@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
-
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-
-import org.jetbrains.annotations.Nullable;
 
 public class EnumTransformer<E extends Enum<E>> extends ValueTransformer<E> {
 
@@ -17,12 +13,12 @@ public class EnumTransformer<E extends Enum<E>> extends ValueTransformer<E> {
     }
 
     @Override
-    public Tag serializeNBT(E value, ISyncManaged holder) {
+    public Tag serializeNBT(E value, ValueTransformer.TransformerContext<E> context) {
         return StringTag.valueOf(value.name());
     }
 
     @Override
-    public E deserializeNBT(Tag tag, ISyncManaged holder, @Nullable E currentVal) {
+    public E deserializeNBT(Tag tag, ValueTransformer.TransformerContext<E> context) {
         E value = null;
         try {
             value = Enum.valueOf(enumClass, tag.getAsString());

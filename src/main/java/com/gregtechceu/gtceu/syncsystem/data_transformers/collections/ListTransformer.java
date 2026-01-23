@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
@@ -19,7 +18,7 @@ public class ListTransformer<T> extends ValueTransformer<List<T>> {
     }
 
     @Override
-    public Tag serializeNBT(List<T> value, ISyncManaged holder) {
+    public Tag serializeNBT(List<T> value, ValueTransformer.TransformerContext<List<T>> context) {
         ListTag list = new ListTag();
         for (var obj : value) {
             list.add(elementTransformer.serializeNBT(obj, null));
@@ -28,7 +27,8 @@ public class ListTransformer<T> extends ValueTransformer<List<T>> {
     }
 
     @Override
-    public List<T> deserializeNBT(Tag tag, ISyncManaged holder, List<T> current) {
+    public List<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<List<T>> context) {
+        var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
             return current;
@@ -37,7 +37,7 @@ public class ListTransformer<T> extends ValueTransformer<List<T>> {
         else current = new ArrayList<>();
         List<T> finalCurrent = current;
         listTag.forEach(t -> finalCurrent
-                .add(elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(t), null, null)));
+                .add(elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(t), null)));
 
         return current;
     }

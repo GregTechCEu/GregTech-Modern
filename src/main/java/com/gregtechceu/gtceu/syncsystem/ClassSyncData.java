@@ -11,7 +11,6 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -121,9 +120,9 @@ public final class ClassSyncData {
                 transformer = new ValueTransformer<>() {
 
                     @Override
-                    public Tag serializeNBT(Object value, ISyncManaged holder) {
+                    public Tag serializeNBT(Object value, ValueTransformer.TransformerContext<Object> context) {
                         try {
-                            return (Tag) nbtSave.invoke(holder);
+                            return (Tag) nbtSave.invoke(context);
                         } catch (Throwable e) {
                             GTCEu.LOGGER.error("Sync: Error while invoking nbt save function for field {}",
                                     field.getName());
@@ -133,15 +132,15 @@ public final class ClassSyncData {
                     }
 
                     @Override
-                    public Object deserializeNBT(Tag tag, ISyncManaged holder, @Nullable Object currentVal) {
+                    public Object deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Object> context) {
                         try {
-                            nbtLoad.invokeWithArguments(holder, tag);
-                            return currentVal;
+                            nbtLoad.invokeWithArguments(context, tag);
+                            return context.currentValue();
                         } catch (Throwable e) {
                             GTCEu.LOGGER.error("Sync: Error while invoking nbt load function for field {}",
                                     field.getName());
                             GTCEu.LOGGER.error(e.getMessage());
-                            return currentVal;
+                            return context.currentValue();
                         }
                     }
                 };

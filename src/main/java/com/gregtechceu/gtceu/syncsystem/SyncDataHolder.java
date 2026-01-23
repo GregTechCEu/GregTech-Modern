@@ -119,11 +119,7 @@ public class SyncDataHolder {
         try {
 
             if (field.transformer != null) {
-                if (writeClientFields) {
-                    return ((ValueTransformer<Object>) field.transformer).serializeClientSyncNBT(currentValue, holder);
-                } else {
-                    return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue, holder);
-                }
+                return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue, new ValueTransformer.TransformerContext<>(holder, currentValue, writeClientFields));
             } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
             }
@@ -152,20 +148,9 @@ public class SyncDataHolder {
             if (field.transformer != null) {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 try {
-                    if (transformer.mustProvideObject()) {
-                        if (readingClientFields) {
-                            transformer.deserializeClientNBT(savedValue, holder, field.handle.get(holder));
-                        } else {
-                            transformer.deserializeNBT(savedValue, holder, field.handle.get(holder));
-                        }
-                    } else {
-
-                        if (readingClientFields) {
-                            field.handle.set(holder, transformer.deserializeClientNBT(savedValue, holder, null));
-                        } else {
-                            field.handle.set(holder, transformer.deserializeNBT(savedValue, holder, null));
-                        }
-
+                    Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(holder, field.handle.get(holder), readingClientFields));
+                    if (!transformer.mustProvideObject()) {
+                        field.handle.set(result);
                     }
                 } catch (UnsupportedOperationException e) {
                     GTCEu.LOGGER.error("Sync: failed to perform VarHandle set: unsupported op {} {}",

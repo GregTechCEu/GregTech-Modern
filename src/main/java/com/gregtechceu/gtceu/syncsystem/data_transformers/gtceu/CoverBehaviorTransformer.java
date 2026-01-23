@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
@@ -25,28 +24,15 @@ public class CoverBehaviorTransformer extends ValueTransformer<CoverBehavior> {
     }
 
     @Override
-    public Tag serializeClientSyncNBT(CoverBehavior value, ISyncManaged holder) {
-        if (holder instanceof ICoverable coverable) return serialize(value, coverable, true);
+    public Tag serializeNBT(CoverBehavior value, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
+        if (context.currentValue() instanceof ICoverable coverable) return serialize(value, coverable, context.isClientSync());
         return new CompoundTag();
     }
 
     @Override
-    public Tag serializeNBT(CoverBehavior value, ISyncManaged holder) {
-        if (holder instanceof ICoverable coverable) return serialize(value, coverable, false);
-        return new CompoundTag();
-    }
-
-    @Override
-    public CoverBehavior deserializeClientNBT(Tag tag, ISyncManaged holder, @Nullable CoverBehavior currentVal) {
-        if (tag instanceof CompoundTag compoundTag && holder instanceof ICoverable coverable)
-            return deserialize(compoundTag, coverable, currentVal, true);
-        return null;
-    }
-
-    @Override
-    public CoverBehavior deserializeNBT(Tag tag, ISyncManaged holder, @Nullable CoverBehavior currentVal) {
-        if (tag instanceof CompoundTag compoundTag && holder instanceof ICoverable coverable)
-            return deserialize(compoundTag, coverable, currentVal, false);
+    public CoverBehavior deserializeNBT(Tag tag, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
+        if (tag instanceof CompoundTag compoundTag && context.currentValue() instanceof ICoverable coverable)
+            return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
         return null;
     }
 

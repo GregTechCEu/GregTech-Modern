@@ -22,7 +22,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -163,12 +162,12 @@ public final class ValueTransformers {
         return new ValueTransformer<>() {
 
             @Override
-            public Tag serializeNBT(T value, ISyncManaged holder) {
+            public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
                 return write.apply(value);
             }
 
             @Override
-            public T deserializeNBT(Tag tag, ISyncManaged holder, @Nullable T currentVal) {
+            public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
                 if (tagClass.isAssignableFrom(tag.getClass())) {
                     return read.apply(tagClass.cast(tag));
                 }

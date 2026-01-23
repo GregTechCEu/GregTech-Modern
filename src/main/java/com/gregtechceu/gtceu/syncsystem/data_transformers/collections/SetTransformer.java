@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
@@ -24,7 +23,7 @@ public class SetTransformer<T> extends ValueTransformer<Set<T>> {
     }
 
     @Override
-    public Tag serializeNBT(Set<T> value, ISyncManaged holder) {
+    public Tag serializeNBT(Set<T> value, ValueTransformer.TransformerContext<Set<T>> context) {
         ListTag tag = new ListTag();
         for (T element : value) {
             tag.add(elementTransformer.serializeNBT(element, null));
@@ -33,7 +32,8 @@ public class SetTransformer<T> extends ValueTransformer<Set<T>> {
     }
 
     @Override
-    public Set<T> deserializeNBT(Tag tag, ISyncManaged holder, Set<T> current) {
+    public Set<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Set<T>> context) {
+        var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
             return current;
@@ -41,7 +41,7 @@ public class SetTransformer<T> extends ValueTransformer<Set<T>> {
         if (current != null) current.clear();
         else current = new HashSet<>();
         for (Tag elementTag : listTag) {
-            current.add(elementTransformer.deserializeNBT(elementTag, null, null));
+            current.add(elementTransformer.deserializeNBT(elementTag, null));
         }
         return current;
     }

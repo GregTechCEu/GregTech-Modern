@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-
-import org.jetbrains.annotations.Nullable;
 
 public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank> {
 
@@ -17,12 +14,13 @@ public class CustomFluidTankTransformer extends ValueTransformer<CustomFluidTank
     }
 
     @Override
-    public Tag serializeNBT(CustomFluidTank value, ISyncManaged holder) {
+    public Tag serializeNBT(CustomFluidTank value, ValueTransformer.TransformerContext<CustomFluidTank> context) {
         return value.serializeNBT();
     }
 
     @Override
-    public CustomFluidTank deserializeNBT(Tag tag, ISyncManaged holder, @Nullable CustomFluidTank currentVal) {
+    public CustomFluidTank deserializeNBT(Tag tag, ValueTransformer.TransformerContext<CustomFluidTank> context) {
+        var currentVal = context.currentValue();
         if (currentVal == null) return null;
         if (tag instanceof CompoundTag compoundTag) {
 
