@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -44,7 +45,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
             return Set.of();
         }
         if (current != null) current.clear();
-        else current = new HashSet<>();
+        else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
             current.add(elementTransformer.deserializeNBT(elementTag, null));
         }

@@ -12,6 +12,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -34,8 +37,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public final class ValueTransformers {
 
-    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new Object2ObjectOpenHashMap<>();
-    private static final Map<Class<?>, Supplier<ValueTransformer<?>>> REGISTERED_SUPPLIERS = new Object2ObjectOpenHashMap<>();
+    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new Reference2ReferenceOpenHashMap<>();
+    private static final Map<Class<?>, Supplier<ValueTransformer<?>>> REGISTERED_SUPPLIERS = new Reference2ReferenceOpenHashMap<>();
+
     private static final Map<Type, Type> PRIMITIVE_TO_BOXED = Map.of(
             boolean.class, Boolean.class,
             byte.class, Byte.class,
@@ -47,7 +51,7 @@ public final class ValueTransformers {
             double.class, Double.class,
             void.class, Void.class);
 
-    private static final Map<Type, ValueTransformer<?>> TYPE_CACHE = new Object2ObjectOpenHashMap<>();
+    private static final Map<Type, ValueTransformer<?>> TYPE_CACHE = new Reference2ReferenceOpenHashMap<>();
 
     /**
      * Gets the {@link ValueTransformer} associated with a specific type.

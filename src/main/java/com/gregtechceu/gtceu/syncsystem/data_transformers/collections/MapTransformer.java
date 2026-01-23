@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -54,7 +55,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             return Map.of();
         }
         if (current != null) current.clear();
-        else current = new HashMap<>();
+        else current = new Object2ObjectOpenHashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
             K key = keyTransformer.deserializeNBT(Objects.requireNonNull(compound.get("k")), null);
