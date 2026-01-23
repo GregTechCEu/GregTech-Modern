@@ -64,7 +64,7 @@ public class SyncDataHolder {
         for (var fieldEntry : fieldsToSerialize.entrySet()) {
 
             if (writeClientFields &&
-                    (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) && !fieldEntry.getValue().isComplex))
+                    (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) && !fieldEntry.getValue().isSyncManaged))
                 continue;
             var field = fieldEntry.getValue();
 
@@ -110,7 +110,7 @@ public class SyncDataHolder {
                                       boolean writeClientFields) {
         Object currentValue = field.handle.get(holder);
 
-        if (!field.isComplex && currentValue == null) {
+        if (!field.isSyncManaged && currentValue == null) {
             var nullCompound = new CompoundTag();
             nullCompound.putBoolean("null", true);
             return nullCompound;
@@ -124,7 +124,7 @@ public class SyncDataHolder {
                 } else {
                     return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue, holder);
                 }
-            } else if (field.isComplex && currentValue instanceof ISyncManaged syncObj) {
+            } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
             }
 
@@ -171,7 +171,7 @@ public class SyncDataHolder {
                     GTCEu.LOGGER.error("Sync: failed to perform VarHandle set: unsupported op {} {}",
                             field.fieldName, field.handle.toString());
                 }
-            } else if (field.isComplex && savedValue instanceof CompoundTag compound) {
+            } else if (field.isSyncManaged && savedValue instanceof CompoundTag compound) {
                 if (currentVal == null) {
                     GTCEu.LOGGER.error("Sync: ISyncManaged field was null, cannot instantiate {}",
                             field.fieldName);

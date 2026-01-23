@@ -182,7 +182,7 @@ public final class ClassSyncData {
 
         public final String fieldName, nbtSaveKey;
         public final VarHandle handle;
-        public final boolean triggerClientRerender, isComplex;
+        public final boolean triggerClientRerender, isSyncManaged;
         public final ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles;
 
@@ -191,7 +191,7 @@ public final class ClassSyncData {
             fieldName = field.getName();
             SaveField saveField = field.getAnnotation(SaveField.class);
             nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
-            this.isComplex = ISyncManaged.class.isAssignableFrom(field.getType());
+            this.isSyncManaged = ISyncManaged.class.isAssignableFrom(field.getType());
             this.handle = handle;
             this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
             this.changeListenerHandles = changeListenerHandles;
