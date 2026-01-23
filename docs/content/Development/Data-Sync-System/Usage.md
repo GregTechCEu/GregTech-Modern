@@ -62,4 +62,42 @@ The `ValueTransformer<T>` abstract class defines how a value of type `T` should 
 
 To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 
-Some types may be too complex to be processed using this system. For more complex NBT interactions, use the `@FieldDataModifier` and `@CustomDataField` annotations.
+Additionally, fields can be explicitly directed to use a specific value transformer:
+```java
+/**
+ * Example from HullMachine.java. This example shows serialisation of an AE2 class which may or may not be loaded at runtime.
+ */
+
+@SaveField(nbtKey = "grid_node")
+private final Object gridNodeHost;
+
+private static class GridNodeHostTransformer implements ValueTransformer<Object> {
+
+  @Override
+  public Tag serializeNBT(Object value, TransformerContext<Object> context) {
+    if (GTCEu.Mods.isAE2Loaded() &&
+            (context.currentValue()) instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+      var compound = new CompoundTag();
+      connectedBlockEntity.getMainNode().saveToNBT(compound);
+      return compound;
+    }
+    return new CompoundTag();
+  }
+
+  @Override
+  public @Nullable Object deserializeNBT(Tag tag, TransformerContext<Object> context) {
+    if (GTCEu.Mods.isAE2Loaded() &&
+            context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+            tag instanceof CompoundTag c) {
+      connectedBlockEntity.getMainNode().loadFromNBT(c);
+    }
+    return null;
+  }
+}
+
+static {
+  ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+          new GridNodeHostTransformer());
+}
+
+```
