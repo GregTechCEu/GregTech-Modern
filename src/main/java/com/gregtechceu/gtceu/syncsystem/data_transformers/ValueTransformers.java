@@ -9,25 +9,23 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -36,10 +34,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public final class ValueTransformers {
 
-    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new ConcurrentHashMap<>();
-    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED_INTERFACES = new ConcurrentHashMap<>();
-
-    private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_BOXED = Map.of(
+    private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new Object2ObjectOpenHashMap<>();
+    private static final Map<Class<?>, BiFunction<Class<?>, Type[], ValueTransformer<?>>> REGISTERED_SUPPLIERS = new Object2ObjectOpenHashMap<>();
+    private static final Map<Type, Type> PRIMITIVE_TO_BOXED = Map.of(
             boolean.class, Boolean.class,
             byte.class, Byte.class,
             char.class, Character.class,
@@ -50,119 +47,66 @@ public final class ValueTransformers {
             double.class, Double.class,
             void.class, Void.class);
 
-    public static Class<?> boxIfPrimitive(Class<?> cls) {
+    public static Type boxIfPrimitive(Class<?> cls) {
         return cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
     }
 
-    // Logic for determining which ValueTransformer should be used to serialise a value
-    private static final ClassValue<ValueTransformer<?>> TRANSFORMERS = new ClassValue<>() {
+    private static final Map<Type, ValueTransformer<?>> TYPE_CACHE = new Object2ObjectOpenHashMap<>();
 
-        @Override
-        protected ValueTransformer<?> computeValue(@NotNull Class<?> type) {
-            type = boxIfPrimitive(type);
-            ValueTransformer<?> tx = REGISTERED.get(type);
-            if (tx != null) return tx;
-            ValueTransformer<?> ifaceTx = REGISTERED_INTERFACES.get(type);
-            if (ifaceTx != null) return ifaceTx;
-
-            if (type.isEnum()) {
-                @SuppressWarnings("unchecked")
-                Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) type;
-                return new EnumTransformer<>(enumClass);
-            }
-
-            if (type.isArray()) {
-                Class<?> componentType = type.getComponentType();
-                ValueTransformer<?> componentTx = get(componentType);
-                if (componentTx != null) return new ObjectArrayTransformer<>(componentTx);
-            }
-
-            for (var ifaceEntry : REGISTERED_INTERFACES.entrySet()) {
-                if (ifaceEntry.getKey().isAssignableFrom(type)) return ifaceEntry.getValue();
-            }
-
-            if (!ISyncManaged.class.isAssignableFrom(type)) throw new IllegalStateException(
-                    "No value transformer for sync object type: %s".formatted(type.getCanonicalName()));
-            else return null;
-        }
-    };
-
-    public static ValueTransformer<?> getCollectionTransformer(Field type) {
-        Class<?> collectionType = type.getType();
-        if (!Collection.class.isAssignableFrom(collectionType)) return null;
-        if (type.getGenericType() instanceof ParameterizedType ptype) {
-            Type[] actualTypes = ptype.getActualTypeArguments();
-            Type keyType = actualTypes[0];
-            Type valueType = actualTypes.length > 1 ? actualTypes[1] : null;
-            if (List.class.isAssignableFrom(collectionType)) {
-                if (keyType instanceof Class<?> keyClass) {
-                    if (ISyncManaged.class.isAssignableFrom(keyClass))
-                        throw new IllegalArgumentException("Cannot sync collection of ISyncManaged objects");
-                    return new ListTransformer<>(ValueTransformers.get(keyClass));
-                }
-            } else if (Set.class.isAssignableFrom(collectionType)) {
-                if (keyType instanceof Class<?> keyClass) {
-                    if (ISyncManaged.class.isAssignableFrom(keyClass))
-                        throw new IllegalArgumentException("Cannot sync collection of ISyncManaged objects");
-                    return new SetTransformer<>(ValueTransformers.get(keyClass));
-                }
-            } else if (Map.class.isAssignableFrom(collectionType)) {
-                if (keyType instanceof Class<?> keyClass && valueType instanceof Class<?> valueClass) {
-                    if (ISyncManaged.class.isAssignableFrom(keyClass) ||
-                            ISyncManaged.class.isAssignableFrom(valueClass))
-                        throw new IllegalArgumentException("Cannot sync collection of ISyncManaged objects");
-
-                    return new MapTransformer<>(ValueTransformers.get(keyClass), ValueTransformers.get(valueClass));
-                }
-            }
-        }
-        return null;
+    public static ValueTransformer<?> get(Type type) {
+        if (type instanceof Class<?> cls) type = boxIfPrimitive(cls);
+        TYPE_CACHE.computeIfAbsent(type, ValueTransformers::generateOrGetTransformer);
+        throw new IllegalStateException("Failed to find value transformer for sync object with type: %s".formatted(type));
     }
 
-    public static ValueTransformer<?> getForField(Field field) {
-        ValueTransformer<?> collectionTransformer = getCollectionTransformer(field);
-        if (collectionTransformer == null) {
-            return TRANSFORMERS.get(boxIfPrimitive(field.getType()));
+    private static ValueTransformer<?> generateOrGetTransformer(Type type) {
+        Class<?> clazz;
+        ParameterizedType parameterizedType = null;
+        if (type instanceof ParameterizedType pType) {
+            clazz = (Class<?>)pType.getRawType();
+            parameterizedType = pType;
         } else {
-            return collectionTransformer;
+            clazz = (Class<?>)type;
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    public static <T> ValueTransformer<T> get(Class<T> type) {
-        return (ValueTransformer<T>) TRANSFORMERS.get(boxIfPrimitive(type));
+        if (REGISTERED.containsKey(clazz)) return REGISTERED.get(clazz);
+
+        if (clazz.isEnum()) {
+            @SuppressWarnings("unchecked")
+            Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) clazz;
+            return new EnumTransformer<>(enumClass);
+        }
+
+        if (clazz.isArray()) {
+            Class<?> componentType = clazz.getComponentType();
+            ValueTransformer<?> componentTx = get(componentType);
+            if (componentTx != null) return new ObjectArrayTransformer<>(componentTx);
+        }
+
+        for (var entry : REGISTERED_SUPPLIERS.entrySet()) {
+            if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue().apply(clazz, parameterizedType == null ? new Type[0] : parameterizedType.getActualTypeArguments());
+        }
+
+        for (var entry: REGISTERED.entrySet()) {
+            if (entry.getKey().isAssignableFrom(clazz)) return entry.getValue();
+        }
+
+        return null;
     }
 
     public static <T> void registerClassTransformer(Class<T> type, ValueTransformer<T> transformer) {
         REGISTERED.putIfAbsent(type, transformer);
     }
 
-    public static void registerInterfaceTransformer(Class<?> type, ValueTransformer<?> transformer) {
-        REGISTERED_INTERFACES.put(type, transformer);
-    }
-
     public static <T,
             TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> write,
                                                                      Function<TagType, T> read, Class<TagType> tagClass,
                                                                      Supplier<T> defaultSupplier) {
-        REGISTERED.putIfAbsent(type, simpleNBT(write, read, tagClass, defaultSupplier));
-    }
 
-    public static <T, TagType extends Tag> void registerSimpleInterfaceTransformer(Class<T> type,
-                                                                                   Function<T, TagType> write,
-                                                                                   Function<TagType, T> read,
-                                                                                   Class<TagType> tagClass,
-                                                                                   Supplier<T> defaultSupplier) {
-        REGISTERED_INTERFACES.putIfAbsent(type, simpleNBT(write, read, tagClass, defaultSupplier));
-    }
-
-    private static <T,
-            TagType extends Tag> ValueTransformer<T> simpleNBT(Function<T, TagType> write, Function<TagType, T> read,
-                                                               Class<TagType> tagClass, Supplier<T> defaultSupplier) {
-        return new ValueTransformer<>() {
+        ValueTransformer<T> transformer = new ValueTransformer<>() {
 
             @Override
-            public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
+            public @NotNull Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
                 return write.apply(value);
             }
 
@@ -174,7 +118,13 @@ public final class ValueTransformers {
                 return defaultSupplier.get();
             }
         };
+        REGISTERED.putIfAbsent(type, transformer);
     }
+
+    public static <T> void registerTransformerSupplier(Class<T> type, BiFunction<Class<?>, Type[], ValueTransformer<?>> func) {
+        REGISTERED_SUPPLIERS.put(type, func);
+    }
+
 
     static {
 
@@ -218,8 +168,8 @@ public final class ValueTransformers {
                 CompoundTag.class, () -> BlockPos.ZERO);
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class, CompoundTag::new);
 
-        registerInterfaceTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
-        registerSimpleInterfaceTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
+        //registerClassTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
+        registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
                 t -> Component.Serializer.fromJson(t.getAsString()), StringTag.class, Component::empty);
 
         //// GT specific classes
@@ -233,6 +183,6 @@ public final class ValueTransformers {
         registerClassTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerClassTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 
-        registerInterfaceTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
+        registerClassTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
     }
 }

@@ -2,11 +2,16 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
 import com.mojang.serialization.Codec;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CodecTransformer<T> extends ValueTransformer<T> {
 
     private final Codec<T> codec;

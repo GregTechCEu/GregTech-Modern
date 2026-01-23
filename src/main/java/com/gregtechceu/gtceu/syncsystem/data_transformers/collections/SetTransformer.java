@@ -3,12 +3,16 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
 import java.util.Set;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SetTransformer<T> extends ValueTransformer<Set<T>> {
 
     private final ValueTransformer<T> elementTransformer;
@@ -31,7 +35,7 @@ public class SetTransformer<T> extends ValueTransformer<Set<T>> {
         var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return current;
+            return Set.of();
         }
         if (current != null) current.clear();
         else current = new HashSet<>();

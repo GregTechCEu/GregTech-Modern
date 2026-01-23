@@ -4,12 +4,18 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MonitorGroupTransformer extends ValueTransformer<MonitorGroup> {
 
     @Override
@@ -34,7 +40,7 @@ public class MonitorGroupTransformer extends ValueTransformer<MonitorGroup> {
     }
 
     @Override
-    public MonitorGroup deserializeNBT(Tag tag, ValueTransformer.TransformerContext<MonitorGroup> context) {
+    public @Nullable MonitorGroup deserializeNBT(Tag tag, ValueTransformer.TransformerContext<MonitorGroup> context) {
         if (tag instanceof CompoundTag compoundTag) {
             CustomItemStackHandler handler = new CustomItemStackHandler(),
                     placeholderSlotsHandler = new CustomItemStackHandler();

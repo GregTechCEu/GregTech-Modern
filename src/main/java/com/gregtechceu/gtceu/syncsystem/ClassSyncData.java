@@ -113,14 +113,14 @@ public final class ClassSyncData {
 
             ValueTransformer<?> transformer;
             if (!nbtSaveFuncs.containsKey(field.getName()) && !nbtLoadFuncs.containsKey(field.getName())) {
-                transformer = ValueTransformers.getForField(field);
+                transformer = ValueTransformers.get(field.getGenericType());
             } else {
                 var nbtSave = nbtSaveFuncs.get(field.getName());
                 var nbtLoad = nbtLoadFuncs.get(field.getName());
                 transformer = new ValueTransformer<>() {
 
                     @Override
-                    public Tag serializeNBT(Object value, ValueTransformer.TransformerContext<Object> context) {
+                    public @NotNull Tag serializeNBT(@NotNull Object value, ValueTransformer.@NotNull TransformerContext<Object> context) {
                         try {
                             return (Tag) nbtSave.invoke(context);
                         } catch (Throwable e) {
@@ -132,7 +132,7 @@ public final class ClassSyncData {
                     }
 
                     @Override
-                    public Object deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Object> context) {
+                    public Object deserializeNBT(@NotNull Tag tag, ValueTransformer.@NotNull TransformerContext<Object> context) {
                         try {
                             nbtLoad.invokeWithArguments(context, tag);
                             return context.currentValue();

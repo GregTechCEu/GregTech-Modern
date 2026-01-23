@@ -3,11 +3,16 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
 
     private final ValueTransformer<T> elementTransformer;
@@ -26,7 +31,7 @@ public class ObjectArrayTransformer<T> extends ValueTransformer<T[]> {
     }
 
     @Override
-    public T[] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
+    public @Nullable T[] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
         T[] current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());

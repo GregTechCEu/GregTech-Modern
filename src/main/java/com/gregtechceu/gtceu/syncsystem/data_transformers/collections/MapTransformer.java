@@ -3,13 +3,17 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MapTransformer<K, V> extends ValueTransformer<Map<K, V>> {
 
     private final ValueTransformer<K> keyTransformer;
@@ -37,7 +41,7 @@ public class MapTransformer<K, V> extends ValueTransformer<Map<K, V>> {
         var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return current;
+            return Map.of();
         }
         if (current != null) current.clear();
         else current = new HashMap<>();

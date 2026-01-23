@@ -3,12 +3,16 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ListTransformer<T> extends ValueTransformer<List<T>> {
 
     private final ValueTransformer<T> elementTransformer;
