@@ -98,14 +98,7 @@ public final class ClassSyncData {
                 continue;
             }
 
-            ValueTransformer<?> transformer;
-            if (ISyncManaged.class.isAssignableFrom(field.getType())) {
-                transformer = null;
-            } else {
-                transformer = ValueTransformers.get(field.getGenericType());
-            }
-
-            FieldSyncData syncData = new FieldSyncData(field, handle, transformer,
+            FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
                     changeListeners.getOrDefault(field.getName(), List.of()).toArray(MethodHandle[]::new));
             managedFields.add(syncData);
             if (hasClientSync) clientSyncFields.put(field.getName(), syncData);

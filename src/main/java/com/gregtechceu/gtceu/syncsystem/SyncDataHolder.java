@@ -157,7 +157,7 @@ public class SyncDataHolder {
                     Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(
                             holder, field.clazz, field.genericArgs, current, readingClientFields));
                     if (result != current) {
-                        field.handle.set(result);
+                        field.handle.set(holder, result);
                     }
                 } catch (UnsupportedOperationException e) {
                     GTCEu.LOGGER.error("Sync: failed to perform VarHandle set: unsupported op {} {}",
