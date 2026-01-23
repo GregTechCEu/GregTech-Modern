@@ -39,8 +39,9 @@ public final class RecipeModifierList implements RecipeModifier {
             var func = modifier.getModifier(machine, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
             if (runningRecipe == null) {
-                if (machine instanceof IRecipeLogicMachine recipeLogicMachine)
+                if (machine instanceof IRecipeLogicMachine recipeLogicMachine) {
                     recipeLogicMachine.getRecipeLogic().getFailReasonMap().put(recipe, func.getFailReason());
+                }
                 return ModifierFunction.NULL;
             }
             result = func.compose(result);
