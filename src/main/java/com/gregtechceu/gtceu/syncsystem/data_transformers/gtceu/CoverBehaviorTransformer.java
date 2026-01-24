@@ -31,7 +31,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     }
 
     @Override
-    public CoverBehavior deserializeNBT(Tag tag, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
+    public @Nullable CoverBehavior deserializeNBT(Tag tag,
+                                                  CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         if (tag instanceof CompoundTag compoundTag && context.currentValue() instanceof ICoverable coverable)
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
         return null;
@@ -39,7 +40,6 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
     private CompoundTag serialize(CoverBehavior cover, ICoverable holder, boolean isSync) {
         var compound = new CompoundTag();
-        if (cover == null) return compound;
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
@@ -49,8 +49,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         return compound;
     }
 
-    public CoverBehavior deserialize(CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
-                                     boolean isSync) {
+    public @Nullable CoverBehavior deserialize(CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
+                                               boolean isSync) {
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
             tag.putInt("side", tag.getCompound("uid").getInt("side"));
