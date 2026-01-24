@@ -28,7 +28,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
         for (T element : value) {
-            listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(), element.getClass(), new Type[0], element, context.isClientSync())));
+            listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
+                    element.getClass(), new Type[0], element, context.isClientSync())));
         }
         return listTag;
     }
@@ -46,7 +47,9 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             var currentV = current[i];
-            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)), new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV, context.isClientSync()));
+            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
+                    new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV,
+                            context.isClientSync()));
             if (result != currentV) current[i] = currentV;
         }
         return current;
