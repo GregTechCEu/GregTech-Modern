@@ -8,12 +8,14 @@ import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.data.tag.CustomTags;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -22,11 +24,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -106,21 +110,15 @@ public class ToolEventHandlers {
      * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
      */
     public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
-                                                 BlockPos pos, BlockState state, boolean isSilkTouch,
-                                                 int fortuneLevel, List<ItemStack> drops,
-                                                 float dropChance) {
-        if (!(tool.getItem() instanceof IGTTool)) {
-            return drops;
+                                                 BlockPos pos, BlockState state,
+                                                 List<ItemStack> drops, LootParams.Builder lootParams) {
+        if (!EnchantmentHelper.hasTag(tool, CustomTags.PREVENTS_HAMMER_CRUSHING)) {
+            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, lootParams);
         }
-        if (!isSilkTouch) {
-            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
-                    player.getRandom());
-        }
-        if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
-
-        ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
+        ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
-        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
+        if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));
@@ -134,7 +132,9 @@ public class ToolEventHandlers {
                         level.setBlockAndUpdate(pos, newState);
                     }
                 }));
-                ((IGTTool) tool.getItem()).playSound(player);
+                if (tool.getItem() instanceof IGTTool gtTool) {
+                    gtTool.playSound(player);
+                }
             }
         }
         if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {

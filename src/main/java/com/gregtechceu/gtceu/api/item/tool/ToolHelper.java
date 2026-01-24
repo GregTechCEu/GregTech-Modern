@@ -364,9 +364,10 @@ public class ToolHelper {
     /**
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
+    // TODO (low priority): this could be a Global Loot Modifier
     public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
-                                                 List<ItemStack> drops, int fortune, float dropChance,
-                                                 RandomSource random) {
+                                                 List<ItemStack> drops, LootParams.Builder lootParams) {
+        // TODO (low priority): implement the hard hammer enchantment
         // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
         if (!is(tool, GTToolType.HARD_HAMMER)) {
             return;
@@ -432,10 +433,7 @@ public class ToolHelper {
                     fortuneDropMultiplier = getOrInitUniformDropMultiplier(level.registryAccess());
                 }
                 if (lootContext == null) {
-                    // TODO pass params from BlockMixin
-                    lootContext = createBlockLootContext(level, state, new LootParams.Builder(level)
-                            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                            .withParameter(LootContextParams.TOOL, tool));
+                    lootContext = createBlockLootContext(level, state, lootParams);
                 }
                 drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
             }
