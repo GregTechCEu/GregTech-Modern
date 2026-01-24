@@ -379,7 +379,7 @@ public class MultiblockDisplayText {
             if (!reasons.isEmpty()) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
                 for (var reason : reasons) {
-                    textList.add(Component.literal(" - " + reason.getString()));
+                    textList.add(Component.literal(" - ").append(reason));
                 }
             }
             return this;
