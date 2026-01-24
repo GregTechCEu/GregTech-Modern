@@ -34,6 +34,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -223,5 +224,10 @@ public class ToolEventHandlers {
         if (entity instanceof Player player) {
             ToolEventHandlers.onPlayerKilledEntity(player.getMainHandItem(), player, event.getDrops());
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerClosing(ServerStoppingEvent event) {
+        ToolHelper.clearCachedLootModifiers();
     }
 }

@@ -12,13 +12,13 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.LootTableAccessor;
 import com.gregtechceu.gtceu.data.enchantment.GTEnchantmentProviders;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItemAbilities;
@@ -29,11 +29,13 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
+import com.gregtechceu.gtceu.utils.DummyRecipeLogicMachine;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -42,6 +44,8 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -58,11 +62,17 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -75,6 +85,7 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import lombok.experimental.ExtensionMethod;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -88,6 +99,10 @@ public class ToolHelper {
 
     // Crafting Symbols
     private static final Char2ReferenceMap<GTToolType> symbols = new Char2ReferenceOpenHashMap<>();
+
+    // Enchantments aren't reloadable so these are safe to keep around between reloads
+    private static @Nullable LootItemFunction uniformDropMultiplier;
+    private static @Nullable LootItemFunction oreDropMultiplier;
 
     private ToolHelper() {/**/}
 
@@ -349,59 +364,106 @@ public class ToolHelper {
     /**
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
-    public static void applyHammerDropConversion(ServerLevel world, BlockPos pos, ItemStack tool, BlockState state,
+    public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
                                                  List<ItemStack> drops, int fortune, float dropChance,
                                                  RandomSource random) {
         // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
-        if (is(tool, GTToolType.HARD_HAMMER)) {
-            List<ItemStack> silkTouchDrops = getSilkTouchDrop(world, pos, state);
-            for (ItemStack silkTouchDrop : silkTouchDrops) {
-                if (silkTouchDrop.isEmpty()) continue;
-                // Stack lists can be immutable going into Recipe#matches barring no rewrites
-                // Search for forge hammer recipes from all drops individually (only LV or under)
+        if (!is(tool, GTToolType.HARD_HAMMER)) {
+            return;
+        }
+        LootItemFunction fortuneDropMultiplier = null;
+        LootContext lootContext = null;
+        boolean cleared = false;
 
-                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
-                        Collections.emptyList());
-                RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
-                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silkTouchDrop)));
+        List<ItemStack> silkTouchDrops = getSilkTouchDrop(level, pos, state);
+        for (ItemStack silkTouchDrop : silkTouchDrops) {
+            if (silkTouchDrop.isEmpty()) continue;
+            // Stack lists can be immutable going into Recipe#matches barring no rewrites
+            // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
-                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+            DummyMachineBlockEntity dummyBlockEntity = new DummyMachineBlockEntity(GTValues.LV,
+                    GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
+                    Collections.emptyList());
+            DummyRecipeLogicMachine dummyMachine = dummyBlockEntity.getMetaMachine();
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
-                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
-                GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
-                        be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
-                    drops.clear();
-                    TagPrefix prefix = ChemicalHelper.getPrefix(silkTouchDrop.getItem());
-                    if (prefix.isEmpty()) {
-                        for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                            if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(ItemRecipeCapability.CAP.of(output.content).copy().getItems()[0]);
-                            }
-                        }
-                    } else if (TagPrefix.ORES.containsKey(prefix)) {
-                        for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                            if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
-                                // Only apply fortune on ore -> crushed forge hammer recipes
-                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
-                                    output = output.copy();
-                                    if (fortune > 0) output.grow(random.nextInt(fortune));
-                                    drops.add(output);
-                                }
-                            }
-                        }
-                    }
+            RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
+                    new InfiniteEnergyContainer(dummyMachine, GTValues.V[GTValues.LV],
+                            GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
+                    new NotifiableItemStackHandler(dummyMachine, 1, IO.IN, IO.IN,
+                            (slots) -> new CustomItemStackHandler(silkTouchDrop)));
+
+            RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
+                    new NotifiableItemStackHandler(dummyMachine, 2, IO.OUT));
+            dummyMachine.reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+
+            Iterator<GTRecipe> hammerRecipes = dummyMachine.getRecipeLogic().searchRecipe();
+            GTRecipe hammerRecipe = null;
+            // find the first valid recipe
+            while (hammerRecipes.hasNext()) {
+                GTRecipe recipe = hammerRecipes.next();
+                if (recipe != null && dummyMachine.getRecipeLogic().handleRecipeIO(recipe, IO.IN).isSuccess()) {
+                    hammerRecipe = recipe;
+                    break;
                 }
             }
+            if (hammerRecipe == null) {
+                continue;
+            }
+
+            if (!cleared) {
+                drops.clear();
+                cleared = true;
+            }
+            TagPrefix prefix = ChemicalHelper.getPrefix(silkTouchDrop.getItem());
+            boolean isOre = !prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix);
+
+            for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+                // only apply hammer drop conversion to ore blocks
+                if (!isOre) {
+                    drops.add(output);
+                    continue;
+                }
+                // Only apply fortune on ore -> crushed forge hammer recipes
+                if (ChemicalHelper.getPrefix(output.getItem()) != TagPrefix.crushed) {
+                    continue;
+                }
+                if (fortuneDropMultiplier == null) {
+                    fortuneDropMultiplier = getOrInitUniformDropMultiplier(level.registryAccess());
+                }
+                if (lootContext == null) {
+                    // TODO pass params from BlockMixin
+                    lootContext = createBlockLootContext(level, state, new LootParams.Builder(level)
+                            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                            .withParameter(LootContextParams.TOOL, tool));
+                }
+                drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
+            }
         }
+    }
+
+    public static LootItemFunction getOrInitUniformDropMultiplier(HolderLookup.Provider registries) {
+        if (uniformDropMultiplier == null) {
+            var fortuneHolder = registries.holderOrThrow(Enchantments.FORTUNE);
+            uniformDropMultiplier = ApplyBonusCount.addUniformBonusCount(fortuneHolder).build();
+        }
+        return uniformDropMultiplier;
+    }
+
+    public static LootItemFunction getOrInitOreDropMultiplier(HolderLookup.Provider registries) {
+        if (oreDropMultiplier == null) {
+            var fortuneHolder = registries.holderOrThrow(Enchantments.FORTUNE);
+            oreDropMultiplier = ApplyBonusCount.addOreBonusCount(fortuneHolder).build();
+        }
+        return oreDropMultiplier;
+    }
+
+    public static LootContext createBlockLootContext(ServerLevel level, BlockState state,
+                                                     LootParams.Builder lootParams) {
+        LootParams params = lootParams.withParameter(LootContextParams.BLOCK_STATE, state)
+                .create(LootContextParamSets.BLOCK);
+        LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(state.getBlock().getLootTable());
+        return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence());
     }
 
     public static final ThreadLocal<Boolean> DO_BLOCK_BREAK_SOUND_PARTICLES = ThreadLocal.withInitial(() -> true);
@@ -679,23 +741,35 @@ public class ToolHelper {
     public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get()
             .getDefaultInstance();
 
+    private static final DifficultyInstance CONSTANT_DIFFICULTY = new DifficultyInstance(Difficulty.HARD, 0L, 0L, 0.0f);
+
     /**
      * @param state the BlockState of the block
      * @return the silk touch drop
      */
     @NotNull
-    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos origin, @NotNull BlockState state) {
+    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos pos, BlockState state) {
         ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
                 level.registryAccess(),
                 GTEnchantmentProviders.SILK_TOUCH,
-                level.getCurrentDifficultyAt(origin),
+                CONSTANT_DIFFICULTY,
                 level.getRandom());
 
         return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
-                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(origin))
-                .withParameter(LootContextParams.TOOL, tool));
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                .withParameter(LootContextParams.TOOL, tool)
+                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));
+    }
+
+    /**
+     * For internal use only, do not call!
+     */
+    @ApiStatus.Internal
+    public static void clearCachedLootModifiers() {
+        uniformDropMultiplier = null;
+        oreDropMultiplier = null;
     }
 }
