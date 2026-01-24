@@ -44,6 +44,8 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -735,6 +737,8 @@ public class ToolHelper {
     public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get()
             .getDefaultInstance();
 
+    private static final DifficultyInstance CONSTANT_DIFFICULTY = new DifficultyInstance(Difficulty.HARD, 0L, 0L, 0.0f);
+
     /**
      * @param state the BlockState of the block
      * @return the silk touch drop
@@ -747,7 +751,7 @@ public class ToolHelper {
                 tool,
                 level.registryAccess(),
                 GTEnchantmentProviders.SILK_TOUCH,
-                level.getCurrentDifficultyAt(pos),
+                CONSTANT_DIFFICULTY,
                 level.getRandom());
 
         return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
