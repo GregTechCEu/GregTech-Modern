@@ -365,7 +365,8 @@ public class ToolHelper {
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
     public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
-                                                 List<ItemStack> drops, LootParams.Builder lootParams) {
+                                                 List<ItemStack> drops, int fortune, float dropChance,
+                                                 RandomSource random) {
         // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
         if (!is(tool, GTToolType.HARD_HAMMER)) {
             return;
@@ -431,7 +432,10 @@ public class ToolHelper {
                     fortuneDropMultiplier = getOrInitUniformDropMultiplier(level.registryAccess());
                 }
                 if (lootContext == null) {
-                    lootContext = createBlockLootContext(level, state, lootParams);
+                    // TODO pass params from BlockMixin
+                    lootContext = createBlockLootContext(level, state, new LootParams.Builder(level)
+                            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                            .withParameter(LootContextParams.TOOL, tool));
                 }
                 drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
             }
@@ -455,7 +459,7 @@ public class ToolHelper {
     }
 
     public static LootContext createBlockLootContext(ServerLevel level, BlockState state,
-                                                      LootParams.Builder lootParams) {
+                                                     LootParams.Builder lootParams) {
         LootParams params = lootParams.withParameter(LootContextParams.BLOCK_STATE, state)
                 .create(LootContextParamSets.BLOCK);
         LootTable lootTable = level.getServer().reloadableRegistries().getLootTable(state.getBlock().getLootTable());
