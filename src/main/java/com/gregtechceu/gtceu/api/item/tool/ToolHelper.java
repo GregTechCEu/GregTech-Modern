@@ -49,7 +49,6 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -74,7 +73,6 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import lombok.experimental.ExtensionMethod;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -189,7 +187,8 @@ public class ToolHelper {
                     if (user != null) {
                         user.breakItem(stack);
                         user.onEquippedItemBroken(stack.getItem(),
-                                LivingEntity.getSlotForHand(user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
+                                LivingEntity.getSlotForHand(
+                                        user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND));
                     }
                     stack.shrink(1);
                 }
