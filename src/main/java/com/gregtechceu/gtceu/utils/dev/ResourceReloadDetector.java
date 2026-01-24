@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import com.sun.jna.platform.win32.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -18,10 +19,12 @@ import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+@ApiStatus.Internal
 public class ResourceReloadDetector {
 
     private static final Path gradleDir = findGradleDir();
 
+    @ApiStatus.Internal
     public static CompletableFuture<Void> regenerateResourcesOnReload(Supplier<CompletableFuture<Void>> reloadFuture) {
         if (!ConfigHolder.INSTANCE.dev.autoRebuildResources || !GTCEu.isDev() || gradleDir == null) {
             return reloadFuture.get();
