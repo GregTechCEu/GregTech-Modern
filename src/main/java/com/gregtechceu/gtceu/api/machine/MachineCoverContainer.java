@@ -27,7 +27,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     @SyncToClient
     @SaveField
     @RerenderOnChanged
-    private CoverBehavior up, down, north, south, west, east;
+    private @Nullable CoverBehavior up, down, north, south, west, east;
 
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
@@ -67,7 +67,7 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public CoverBehavior getCoverAtSide(Direction side) {
+    public @Nullable CoverBehavior getCoverAtSide(Direction side) {
         return switch (side) {
             case UP -> up;
             case SOUTH -> south;
@@ -92,12 +92,12 @@ public class MachineCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         return machine.getItemHandlerCap(side, useCoverCapability);
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         return machine.getFluidHandlerCap(side, useCoverCapability);
     }
 }
