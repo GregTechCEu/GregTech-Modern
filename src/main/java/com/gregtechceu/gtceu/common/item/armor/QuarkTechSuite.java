@@ -77,7 +77,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 ArmorUtils.NIGHTVISION_DURATION;
         byte runningTimer = data.contains("runningTimer") ? data.getByte("runningTimer") : RUNNING_TIMER;
-        byte boostedJumpTimer = data.contains("boostedJumpTimer") ? data.getByte("boostedJumpTimer") : JUMPING_TIMER;
+        byte toggleBootsTimer = data.contains("toggleBootsTimer") ? data.getByte("toggleBootsTimer") : JUMPING_TIMER;
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
@@ -98,10 +98,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("metaarmor.qts.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
@@ -162,11 +162,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
             boolean boostedJump = data.contains("boostedJump") && data.getBoolean("boostedJump");
-            if (boostedJumpTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
+            if (toggleBootsTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
                 boostedJump = !boostedJump;
-                boostedJumpTimer = JUMPING_TIMER;
+                toggleBootsTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
             }
             if (boostedJump) {
                 if (!world.isClientSide) {
@@ -199,11 +199,19 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     }
                 }
             }
+
+            boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
+            if (toggleBootsTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
+                stepAssist = !stepAssist;
+                toggleBootsTimer = 5;
+                if (world.isClientSide()) player.displayClientMessage(Component
+                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                data.putBoolean("stepAssist", stepAssist);
+            }
+
             data.putBoolean("boostedJump", boostedJump);
-
-            if (boostedJumpTimer > 0) boostedJumpTimer--;
-
-            data.putInt("boostedJumpTimer", boostedJumpTimer);
+            if (toggleBootsTimer > 0) toggleBootsTimer--;
+            data.putInt("toggleBootsTimer", toggleBootsTimer);
         }
 
         if (ret) {
@@ -357,7 +365,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
-            lines.add(Component.translatable("metaarmor.tooltip.stepassist"));
+            CompoundTag nbtData = itemStack.getOrCreateTag();
+            if (nbtData.getBoolean("stepAssist"))
+                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
+            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }

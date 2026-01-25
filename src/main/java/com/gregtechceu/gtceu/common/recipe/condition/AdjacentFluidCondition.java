@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import com.gregtechceu.gtceu.api.codec.GTCodecUtils;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -20,55 +22,46 @@ import net.minecraft.world.level.material.FluidState;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeHolderSets;
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeHolderSets;
+import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class AdjacentFluidCondition extends RecipeCondition {
+public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidCondition> {
 
     // spotless:off
-    public static final Codec<AdjacentFluidCondition> CODEC =
-            RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
-                    Codec.STRING.fieldOf("fluidString").forGetter(AdjacentFluidCondition::getFluidString)
-            ).apply(instance, AdjacentFluidCondition::new));
+    public static final Codec<AdjacentFluidCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            GTCodecUtils.lazyParsingCodec(RegistryCodecs.homogeneousList(Registries.FLUID)).listOf()
+                    .fieldOf("fluids").forGetter(AdjacentFluidCondition::getFluidSuppliers)
+    ).apply(instance, AdjacentFluidCondition::new));
     // spotless:on
 
-    @Getter
-    private @NotNull String fluidString = "";
+    private final List<Supplier<HolderSet<Fluid>>> fluids = new ArrayList<>();
 
-    private @Nullable List<HolderSet<Fluid>> fluids = null;
+    private final List<HolderSet<Fluid>> resolvedFluids = new ArrayList<>();
 
-    public void setFluids(@NotNull List<HolderSet<Fluid>> fluids) {
-        this.fluids = fluids;
-        this.fluidString = encodeHolderSets(fluids);
+    private AdjacentFluidCondition(@NotNull List<Supplier<HolderSet<Fluid>>> fluids) {
+        this(false, fluids);
     }
 
-    public List<HolderSet<Fluid>> getFluids() {
-        if (fluids == null) {
-            fluids = decodeHolderSets(getFluidString(), Registries.FLUID);
-        }
-        return fluids;
-    }
-
-    public AdjacentFluidCondition(@NotNull List<HolderSet<Fluid>> fluids) {
-        this.setFluids(fluids);
-    }
-
-    public AdjacentFluidCondition(boolean isReverse, String fluidString) {
+    private AdjacentFluidCondition(boolean isReverse, @NotNull List<Supplier<HolderSet<Fluid>>> fluids) {
         super(isReverse);
-        this.fluidString = fluidString;
+        this.fluids.addAll(fluids);
     }
 
-    public AdjacentFluidCondition(boolean isReverse, @NotNull List<HolderSet<Fluid>> fluids) {
+    public AdjacentFluidCondition(@NotNull Collection<HolderSet<Fluid>> fluids) {
+        this(false, fluids);
+    }
+
+    public AdjacentFluidCondition(boolean isReverse, @NotNull Collection<HolderSet<Fluid>> fluids) {
         super(isReverse);
-        this.setFluids(fluids);
+        this.resolvedFluids.addAll(fluids);
+        fluids.stream()
+                .<Supplier<HolderSet<Fluid>>>map(holderSet -> () -> holderSet)
+                .forEachOrdered(this.fluids::add);
     }
 
     public static AdjacentFluidCondition fromFluids(Collection<Fluid> fluids) {
@@ -94,7 +87,7 @@ public class AdjacentFluidCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<AdjacentFluidCondition> getType() {
         return GTRecipeConditions.ADJACENT_FLUID;
     }
 
@@ -129,26 +122,46 @@ public class AdjacentFluidCondition extends RecipeCondition {
         return false;
     }
 
-    public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@NotNull GTRecipe recipe) {
-        if (this.getFluids().isEmpty() || (recipe.data.contains("fluidA") && recipe.data.contains("fluidB"))) {
-            List<HolderSet<Fluid>> fluids = new ArrayList<>();
+    public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable GTRecipe recipe) {
+        if (resolvedFluids.isEmpty() && !fluids.isEmpty()) {
+            for (var holderSetSupplier : this.fluids) {
+                this.resolvedFluids.add(holderSetSupplier.get());
+            }
+        }
+        if (!resolvedFluids.isEmpty()) {
+            return resolvedFluids;
+        }
+
+        if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
+            this.resolvedFluids.clear();
 
             Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
             if (!fluidA.defaultFluidState().isEmpty()) {
-                fluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
+                this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
             Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
             if (!fluidB.defaultFluidState().isEmpty()) {
-                fluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
+                this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }
-
-            this.setFluids(fluids);
+            // init the fluid supplier list, just to be safe
+            getFluidSuppliers();
         }
-        return this.getFluids();
+        return this.resolvedFluids;
+    }
+
+    private @NotNull List<Supplier<HolderSet<Fluid>>> getFluidSuppliers() {
+        if (!this.fluids.isEmpty() || this.resolvedFluids.isEmpty()) {
+            return this.fluids;
+        }
+
+        for (var holderSet : this.resolvedFluids) {
+            this.fluids.add(() -> holderSet);
+        }
+        return this.fluids;
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public AdjacentFluidCondition createTemplate() {
         return new AdjacentFluidCondition();
     }
 }

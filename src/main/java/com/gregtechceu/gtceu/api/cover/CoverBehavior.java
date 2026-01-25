@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
@@ -48,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight, ICopyable {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
