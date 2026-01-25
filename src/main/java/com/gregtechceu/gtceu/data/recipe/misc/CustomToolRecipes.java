@@ -130,7 +130,6 @@ public final class CustomToolRecipes {
 
     private static void registerCustomToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {
         registerFlintToolRecipes(provider);
-        registerMortarRecipes(provider);
         registerSoftToolRecipes(provider);
         registerElectricRecipes(provider);
 
@@ -176,20 +175,6 @@ public final class CustomToolRecipes {
                 "I", "S",
                 'I', flint,
                 'S', stick);
-    }
-
-    private static void registerMortarRecipes(@NotNull Consumer<FinishedRecipe> provider) {
-        for (Material material : new Material[] {
-                GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Invar, GTMaterials.Steel,
-                GTMaterials.DamascusSteel, GTMaterials.CobaltBrass, GTMaterials.WroughtIron }) {
-
-            addToolRecipe(provider, material, GTToolType.MORTAR, false,
-                    " I ", "SIS", "SSS",
-                    'I',
-                    new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
-                            material),
-                    'S', new ItemStack(Blocks.STONE));
-        }
     }
 
     private static void registerSoftToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {

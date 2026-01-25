@@ -25,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceArrayMap;
@@ -71,6 +72,11 @@ public final class ToolRecipeHandler {
         MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
         MaterialEntry ingot = new MaterialEntry(
                 material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
+
+        addToolRecipe(provider, material, GTToolType.MORTAR, false,
+                " I ", "SIS", "SSS",
+                'I', ingot,
+                'S', new ItemStack(Blocks.STONE));
 
         if (material.hasFlag(GENERATE_PLATE)) {
             addToolRecipe(provider, material, GTToolType.MINING_HAMMER, true,
