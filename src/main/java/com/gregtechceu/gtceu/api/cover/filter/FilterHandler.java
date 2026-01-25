@@ -133,6 +133,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         return this.filterSlot;
     }
 
+    public void setFilterItem(ItemStack item) {
+        getFilterSlot().setStackInSlot(0, item);
+        updateFilter();
+    }
+
     private void updateFilter() {
         var filterContainer = getFilterSlot();
 

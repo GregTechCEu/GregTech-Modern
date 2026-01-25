@@ -14,16 +14,15 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class PositionYCondition extends RecipeCondition {
+public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
-    public static final Codec<PositionYCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition
-            .isReverse(instance)
-            .and(instance.group(
-                    Codec.INT.fieldOf("min").forGetter(val -> val.min),
-                    Codec.INT.fieldOf("max").forGetter(val -> val.max)))
-            .apply(instance, PositionYCondition::new));
+    // spotless:off
+    public static final Codec<PositionYCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(instance.group(
+            Codec.INT.fieldOf("min").forGetter(val -> val.min),
+            Codec.INT.fieldOf("max").forGetter(val -> val.max)
+    )).apply(instance, PositionYCondition::new));
+    // spotless:on
 
-    public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;
     private int max;
 
@@ -39,7 +38,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<PositionYCondition> getType() {
         return GTRecipeConditions.POSITION_Y;
     }
 
@@ -63,7 +62,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public PositionYCondition createTemplate() {
         return new PositionYCondition();
     }
 }
