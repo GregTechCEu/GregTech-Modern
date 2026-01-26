@@ -30,7 +30,17 @@ public interface ValueTransformer<T> {
      *                     written to the server save.
      */
     record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type[] genericArgs,
-                                 @Nullable U currentValue, boolean isClientSync) {}
+                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
+
+    @SuppressWarnings("unchecked")
+    static <TagType extends Tag> TagType assertTagType(Class<TagType> cls, Tag tag, TransformerContext<?> ctx) {
+        try {
+            return (TagType) (tag);
+        } catch (ClassCastException c) {
+            throw new ClassCastException("Sync: Invalid tag type: expected %s, got %s [%s, field %s]"
+                    .formatted(cls.toString(), tag.getClass().toString(), ctx.holder(), ctx.fieldName));
+        }
+    }
 
     static Tag stripLdlibWrapper(Tag t) {
         if (!(t instanceof CompoundTag tag)) return t;

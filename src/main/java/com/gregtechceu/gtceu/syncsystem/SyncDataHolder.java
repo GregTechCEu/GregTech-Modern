@@ -122,6 +122,7 @@ public class SyncDataHolder {
             if (field.transformer != null) {
                 return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue,
                         new ValueTransformer.TransformerContext<>(holder, field.clazz, field.genericArgs, currentValue,
+                                field.fieldName,
                                 writeClientFields));
             } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
@@ -156,7 +157,7 @@ public class SyncDataHolder {
                 try {
                     var current = field.handle.get(holder);
                     Object result = transformer.deserializeNBT(savedValue, new ValueTransformer.TransformerContext<>(
-                            holder, field.clazz, field.genericArgs, current, readingClientFields));
+                            holder, field.clazz, field.genericArgs, current, field.fieldName, readingClientFields));
                     if (result != current) {
                         field.handle.set(holder, result);
                     }

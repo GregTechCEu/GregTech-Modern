@@ -30,9 +30,12 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     @Override
     public @Nullable CoverBehavior deserializeNBT(Tag tag,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        if (tag instanceof CompoundTag compoundTag && !compoundTag.isEmpty() &&
-                context.holder() instanceof ICoverable coverable)
+        var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+        if (compoundTag.isEmpty()) return null;
+        if (context.holder() instanceof ICoverable coverable) {
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
+        }
+        GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
         return null;
     }
 

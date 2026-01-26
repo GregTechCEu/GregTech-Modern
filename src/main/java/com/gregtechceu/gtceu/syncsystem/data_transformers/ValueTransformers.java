@@ -101,22 +101,25 @@ public final class ValueTransformers {
      * @param transformer The transformer being registered
      */
     public static void registerTransformer(Class<?> type, ValueTransformer<?> transformer) {
+        if (REGISTERED.containsKey(type))
+            throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         REGISTERED.putIfAbsent(type, transformer);
     }
 
     /**
      * Creates and registers a {@link ValueTransformer} for the given class using predefined NBT parsing functions.
-     * 
-     * @param type            The class to register this {@link ValueTransformer} for
-     * @param write           A function that writes the value into a specific tag type
-     * @param read            A function that reads the value from a specific tag type
-     * @param tagClass        The tag type the value is serialized into
-     * @param defaultSupplier A supplier that returns the default value if the tag is of an unexpected type.
+     *
+     * @param type     The class to register this {@link ValueTransformer} for
+     * @param write    A function that writes the value into a specific tag type
+     * @param read     A function that reads the value from a specific tag type
+     * @param tagClass The tag type the value is serialized into
      */
     public static <T,
             TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> write,
-                                                                     Function<TagType, T> read, Class<TagType> tagClass,
-                                                                     Supplier<T> defaultSupplier) {
+                                                                     Function<TagType, T> read,
+                                                                     Class<TagType> tagClass) {
+        if (REGISTERED.containsKey(type))
+            throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         ValueTransformer<T> transformer = new ValueTransformer<>() {
 
             @Override
@@ -126,10 +129,8 @@ public final class ValueTransformers {
 
             @Override
             public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
-                if (tagClass.isAssignableFrom(tag.getClass())) {
-                    return read.apply(tagClass.cast(tag));
-                }
-                return defaultSupplier.get();
+                TagType t = ValueTransformer.assertTagType(tagClass, tag, context);
+                return read.apply(t);
             }
         };
         REGISTERED.putIfAbsent(type, transformer);
@@ -144,6 +145,8 @@ public final class ValueTransformers {
      * @param func Supplier function
      */
     public static <T> void registerTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
+        if (REGISTERED_SUPPLIERS.containsKey(type))
+            throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         REGISTERED_SUPPLIERS.put(type, func);
     }
 
@@ -151,49 +154,43 @@ public final class ValueTransformers {
 
         //// Primitives
 
-        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, IntTag.class, () -> 0);
-        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, LongTag.class, () -> 0L);
-        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FloatTag.class, () -> 0f);
-        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::getAsDouble, DoubleTag.class,
-                () -> 0.0);
-        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::getAsShort, ShortTag.class,
-                () -> (short) 0);
-        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::getAsByte, ByteTag.class, () -> (byte) 0);
+        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, IntTag.class);
+        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, LongTag.class);
+        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FloatTag.class);
+        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::getAsDouble, DoubleTag.class);
+        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::getAsShort, ShortTag.class);
+        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::getAsByte, ByteTag.class);
         registerSimpleClassTransformer(Character.class, (b) -> IntTag.valueOf(b), (t) -> (char) t.getAsInt(),
-                IntTag.class, () -> (char) 0);
-        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.getAsByte() != 0, ByteTag.class,
-                () -> false);
+                IntTag.class);
+        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.getAsByte() != 0, ByteTag.class);
 
         // Primtive arrays
-        registerSimpleClassTransformer(int[].class, IntArrayTag::new, IntArrayTag::getAsIntArray, IntArrayTag.class,
-                () -> new int[0]);
+        registerSimpleClassTransformer(int[].class, IntArrayTag::new, IntArrayTag::getAsIntArray, IntArrayTag.class);
         registerSimpleClassTransformer(long[].class, LongArrayTag::new, LongArrayTag::getAsLongArray,
-                LongArrayTag.class, () -> new long[0]);
+                LongArrayTag.class);
         registerSimpleClassTransformer(byte[].class, ByteArrayTag::new, ByteArrayTag::getAsByteArray,
-                ByteArrayTag.class, () -> new byte[0]);
+                ByteArrayTag.class);
 
         //// Java classes and standard minecraft/forge classes
 
-        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class,
-                () -> "");
-        registerSimpleClassTransformer(ItemStack.class, IForgeItemStack::serializeNBT, ItemStack::of, CompoundTag.class,
-                () -> ItemStack.EMPTY);
+        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class);
+        registerSimpleClassTransformer(ItemStack.class, IForgeItemStack::serializeNBT, ItemStack::of,
+                CompoundTag.class);
         registerSimpleClassTransformer(FluidStack.class, (v) -> v.writeToNBT(new CompoundTag()),
-                FluidStack::loadFluidStackFromNBT, CompoundTag.class, () -> FluidStack.EMPTY);
+                FluidStack::loadFluidStackFromNBT, CompoundTag.class);
 
         // The default value supplier will never be called as NbtUtils::loadUUID will throw if the UUID is invalid.
-        registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class,
-                UUID::randomUUID);
+        registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class);
 
         registerSimpleClassTransformer(BlockPos.class, NbtUtils::writeBlockPos, NbtUtils::readBlockPos,
-                CompoundTag.class, () -> BlockPos.ZERO);
-        registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class, CompoundTag::new);
+                CompoundTag.class);
+        registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
         registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
                 t -> {
                     var comp = Component.Serializer.fromJson(t.getAsString());
                     return comp == null ? Component.empty() : comp;
-                }, StringTag.class, Component::empty);
+                }, StringTag.class);
 
         registerTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
 

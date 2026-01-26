@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
@@ -35,7 +34,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         for (var obj : value) {
             list.add(getElemTransformer(context).serializeNBT(obj,
                     new TransformerContext<>(context.holder(), obj.getClass(),
-                            new Type[0], obj, context.isClientSync())));
+                            new Type[0], obj, null, context.isClientSync())));
         }
         return list;
     }
@@ -43,17 +42,15 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
     @Override
     public @Nullable List<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<List<T>> context) {
         var current = context.currentValue();
-        if (!(tag instanceof ListTag listTag)) {
-            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return current;
-        }
+        ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
         else current = new ObjectArrayList<>();
         List<T> finalCurrent = current;
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),
                     new TransformerContext<>(
-                            context.holder(), finalCurrent.getClass(), new Type[0], null, context.isClientSync()));
+                            context.holder(), finalCurrent.getClass(), new Type[0], null, null,
+                            context.isClientSync()));
             if (val != null) finalCurrent.add(val);
         }
         return current;

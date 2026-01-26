@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
@@ -34,23 +33,20 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         ListTag tag = new ListTag();
         for (T element : value) {
             tag.add(getElemTransformer(context).serializeNBT(element, new TransformerContext<>(context.holder(),
-                    element.getClass(), new Type[0], element, context.isClientSync())));
+                    element.getClass(), new Type[0], element, null, context.isClientSync())));
         }
         return tag;
     }
 
     @Override
     public Set<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Set<T>> context) {
+        ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         var current = context.currentValue();
-        if (!(tag instanceof ListTag listTag)) {
-            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return Set.of();
-        }
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
             T value = getElemTransformer(context).deserializeNBT(elementTag, new TransformerContext<>(context.holder(),
-                    current.getClass(), new Type[0], null, context.isClientSync()));
+                    current.getClass(), new Type[0], null, null, context.isClientSync()));
             if (value != null) current.add(value);
         }
         return current;

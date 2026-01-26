@@ -20,14 +20,13 @@ public class CustomFluidTankTransformer implements ValueTransformer<CustomFluidT
                                                     ValueTransformer.TransformerContext<CustomFluidTank> context) {
         var currentVal = context.currentValue();
         if (currentVal == null) return null;
-        if (tag instanceof CompoundTag compoundTag) {
+        var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
 
-            // LDLib compat
-            if (compoundTag.contains("p") && compoundTag.contains("t")) {
-                currentVal.deserializeNBT(compoundTag.getCompound("p"));
-            } else {
-                currentVal.deserializeNBT(compoundTag);
-            }
+        // LDLib compat
+        if (compoundTag.contains("p") && compoundTag.contains("t")) {
+            currentVal.deserializeNBT(compoundTag.getCompound("p"));
+        } else {
+            currentVal.deserializeNBT(compoundTag);
         }
         return currentVal;
     }

@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -35,27 +32,25 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
     @Override
     public @Nullable MonitorGroup deserializeNBT(Tag tag, ValueTransformer.TransformerContext<MonitorGroup> context) {
-        if (tag instanceof CompoundTag compoundTag) {
-            CustomItemStackHandler handler = new CustomItemStackHandler(),
-                    placeholderSlotsHandler = new CustomItemStackHandler();
-            handler.deserializeNBT(compoundTag.getCompound("items"));
-            placeholderSlotsHandler.deserializeNBT(compoundTag.getCompound("placeholderSlots"));
-            var group = new MonitorGroup(compoundTag.getString("name"), handler, placeholderSlotsHandler);
-            ListTag list = compoundTag.getList("positions", Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) {
-                group.add(NbtUtils.readBlockPos(list.getCompound(i)));
-            }
-            if (compoundTag.contains("targetPos", Tag.TAG_COMPOUND)) {
-                group.setTarget(NbtUtils.readBlockPos(compoundTag.getCompound("targetPos")));
-                if (compoundTag.contains("targetSide", Tag.TAG_STRING)) {
-                    group.setTargetCoverSide(Direction.byName(compoundTag.getString("targetSide")));
-                }
-                if (compoundTag.contains("dataSlot", Tag.TAG_INT)) {
-                    group.setDataSlot(compoundTag.getInt("dataSlot"));
-                }
-            }
-            return group;
+        var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+        CustomItemStackHandler handler = new CustomItemStackHandler(),
+                placeholderSlotsHandler = new CustomItemStackHandler();
+        handler.deserializeNBT(compoundTag.getCompound("items"));
+        placeholderSlotsHandler.deserializeNBT(compoundTag.getCompound("placeholderSlots"));
+        var group = new MonitorGroup(compoundTag.getString("name"), handler, placeholderSlotsHandler);
+        ListTag list = compoundTag.getList("positions", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            group.add(NbtUtils.readBlockPos(list.getCompound(i)));
         }
-        return null;
+        if (compoundTag.contains("targetPos", Tag.TAG_COMPOUND)) {
+            group.setTarget(NbtUtils.readBlockPos(compoundTag.getCompound("targetPos")));
+            if (compoundTag.contains("targetSide", Tag.TAG_STRING)) {
+                group.setTargetCoverSide(Direction.byName(compoundTag.getString("targetSide")));
+            }
+            if (compoundTag.contains("dataSlot", Tag.TAG_INT)) {
+                group.setDataSlot(compoundTag.getInt("dataSlot"));
+            }
+        }
+        return group;
     }
 }

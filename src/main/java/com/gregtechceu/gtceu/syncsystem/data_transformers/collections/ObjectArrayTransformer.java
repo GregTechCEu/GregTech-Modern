@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.ListTag;
@@ -25,7 +24,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         ListTag listTag = new ListTag();
         for (T element : value) {
             listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
-                    element.getClass(), new Type[0], element, context.isClientSync())));
+                    element.getClass(), new Type[0], element, null, context.isClientSync())));
         }
         return listTag;
     }
@@ -34,10 +33,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     @SuppressWarnings("unchecked")
     public @Nullable T @Nullable [] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
         T[] current = context.currentValue();
-        if (!(tag instanceof ListTag listTag)) {
-            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return current;
-        }
+        ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
 
         if (current == null) {
             current = (T[]) Array.newInstance((Class<T>) (context.genericArgs()[0]), listTag.size());
@@ -49,7 +45,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         for (int i = 0; i < listTag.size(); i++) {
             var currentV = current[i];
             T result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                    new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV,
+                    new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV, null,
                             context.isClientSync()));
             if (result == null) return current;
             if (result != currentV) current[i] = result;

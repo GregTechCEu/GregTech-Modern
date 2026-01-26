@@ -48,14 +48,15 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     public Tag serializeNBT(Map<K, V> value, ValueTransformer.TransformerContext<Map<K, V>> context) {
         ListTag entries = new ListTag();
         for (var entry : value.entrySet()) {
+
             CompoundTag compound = new CompoundTag();
             compound.put("k",
                     getKeyTransformer(context).serializeNBT(entry.getKey(), new TransformerContext<>(context.holder(),
-                            entry.getKey().getClass(), new Type[0], entry.getKey(), context.isClientSync())));
+                            entry.getKey().getClass(), new Type[0], entry.getKey(), null, context.isClientSync())));
             compound.put("v",
                     getValueTransformer(context).serializeNBT(entry.getValue(),
                             new TransformerContext<>(context.holder(),
-                                    entry.getValue().getClass(), new Type[0], entry.getValue(),
+                                    entry.getValue().getClass(), new Type[0], entry.getValue(), null,
                                     context.isClientSync())));
             entries.add(compound);
         }
@@ -63,23 +64,25 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<K, V> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Map<K, V>> context) {
         var current = context.currentValue();
-        if (!(tag instanceof ListTag listTag)) {
-            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
-            return Map.of();
-        }
+        ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
         else current = new Object2ObjectOpenHashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
-            K key = getKeyTransformer(context).deserializeNBT(Objects.requireNonNull(compound.get("k")),
-                    new TransformerContext<>(
-                            context.holder(), current.getClass(), new Type[0], null, context.isClientSync()));
-            V value = getValueTransformer(context).deserializeNBT(Objects.requireNonNull(compound.get("v")),
-                    new TransformerContext<>(context.holder(), current.getClass(), new Type[0], null,
-                            context.isClientSync()));
+            var ctx = new TransformerContext<>(
+                    context.holder(), current.getClass(), new Type[0], null, null, context.isClientSync());
+
+            Tag keyTag = compound.get("k");
+            Tag valueTag = compound.get("v");
+            if (keyTag == null || valueTag == null) continue;
+
+            K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>)ctx);
+            V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>)ctx);
             if (key == null || value == null) continue;
+
             current.put(key, value);
         }
         return current;
