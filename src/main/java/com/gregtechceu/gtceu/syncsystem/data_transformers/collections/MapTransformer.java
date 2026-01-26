@@ -63,13 +63,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<K, V> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Map<K, V>> context) {
-        if (keyTransformer == null)
-            keyTransformer = (ValueTransformer<K>) ValueTransformers.get(context.genericArgs()[0]);
-        if (valueTransformer == null)
-            valueTransformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[1]);
-
         var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
