@@ -58,6 +58,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -176,6 +177,28 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             getCoverContainer().removeCover(direction, null);
         }
         if (this instanceof IMachineLife l) l.onMachineRemoved();
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        if (!tag.contains("autoOutput")) {
+            var outputTag = new CompoundTag();
+            Tag itemOutputDirection = tag.get("outputFacingItems");
+            Tag fluidOutputDirection = tag.get("outputFacingFluids");
+            Tag autoOutputItems = tag.get("autoOutputItems");
+            Tag autoOutputFluids = tag.get("autoOutputFluids");
+            Tag allowInputItems = tag.get("allowInputFromOutputSideItems");
+            Tag allowInputFluids = tag.get("allowInputFromOutputSideFluids");
+            if (itemOutputDirection != null) outputTag.put("itemOutputDirection", itemOutputDirection);
+            if (fluidOutputDirection != null) outputTag.put("fluidOutputDirection", fluidOutputDirection);
+            if (autoOutputItems != null) outputTag.put("autoOutputItems", autoOutputItems);
+            if (autoOutputFluids != null) outputTag.put("autoOutputFluids", autoOutputFluids);
+            if (allowInputItems != null) outputTag.put("allowItemInputFromOutputSide", allowInputItems);
+            if (allowInputFluids != null) outputTag.put("allowFluidInputFromOutputSide", allowInputFluids);
+            tag.put("autoOutput", outputTag);
+        }
+
+        super.load(tag);
     }
 
     @MustBeInvokedByOverriders
