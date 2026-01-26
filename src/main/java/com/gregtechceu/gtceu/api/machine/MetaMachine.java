@@ -549,9 +549,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH)) return true;
-        if (toolTypes.contains(GTToolType.SCREWDRIVER) &&
-                (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid))
-            return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, pos, state, held, toolTypes)) return true;
         }
@@ -559,7 +556,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         for (var trait : getTraitHolder().getAllTraits()) {
             if (trait instanceof IRenderingTrait renderingTrait) {
                 var result = renderingTrait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
-                if (result) return result;
+                if (result) return true;
             }
         }
 
@@ -1085,7 +1082,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public static class AE2CallWrapper {
 
         public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
-                                                                Direction side) {
+                                                                @Nullable Direction side) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));

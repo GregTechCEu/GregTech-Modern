@@ -16,6 +16,8 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -43,17 +45,14 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    protected ItemCache createCacheItemHandler() {
-        return new InfiniteCache(this);
+    public void onLoad() {
+        super.onLoad();
+        if (getLevel() instanceof ServerLevel slvl) slvl.getServer().tell(new TickTask(0, () -> autoOutput.setTicksPerCycle(ticksPerCycle)));
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                cache.exportToNearby(getOutputFacingItems());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    protected ItemCache createCacheItemHandler() {
+        return new InfiniteCache(this);
     }
 
     private InteractionResult updateStored(ItemStack item) {
@@ -65,6 +64,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     private void setTicksPerCycle(String value) {
         if (value.isEmpty()) return;
         ticksPerCycle = Integer.parseInt(value);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 

@@ -192,8 +192,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         if (previouslyMuffled != isMuffled) {
             previouslyMuffled = isMuffled;
 
-            if (recipeLogic != null)
-                recipeLogic.updateSound();
+            recipeLogic.updateSound();
         }
     }
 

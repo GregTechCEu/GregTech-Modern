@@ -16,6 +16,8 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -51,13 +53,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return new InfiniteCache(this);
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (getLevel() instanceof ServerLevel slvl) slvl.getServer().tell(new TickTask(0, () -> autoOutput.setTicksPerCycle(ticksPerCycle)));
     }
 
     @Override

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
@@ -27,7 +28,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
     public final IO capabilityIO;
     @Setter
     @Getter
-    public IFluidHandlerModifiable proxy;
+    public @Nullable IFluidHandlerModifiable proxy;
 
     public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);

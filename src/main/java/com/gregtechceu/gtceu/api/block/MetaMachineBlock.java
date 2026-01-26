@@ -322,19 +322,32 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     //////////////////////////////////////
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
-        return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return false;
+        return machine.canConnectRedstone(side);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return MetaMachine.getMachine(level, pos).getOutputSignal(direction);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputSignal(direction);
+    }
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputDirectSignal(direction);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        return MetaMachine.getMachine(level, pos).getAnalogOutputSignal();
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getAnalogOutputSignal();
     }
 
     /////////
