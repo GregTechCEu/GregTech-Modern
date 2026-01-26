@@ -173,7 +173,7 @@ public class SyncDataHolder {
                 if (currentVal instanceof ISyncManaged syncObj)
                     syncObj.getSyncDataHolder().deserializeNBT(compound, readingClientFields);
             } else {
-                GTCEu.LOGGER.error("Sync: Failed to serialise field {}: Missing value transformer", field.fieldName);
+                GTCEu.LOGGER.error("Sync: Failed to deserialise field {}: Missing value transformer", field.fieldName);
             }
         } catch (Exception e) {
             GTCEu.LOGGER.error("Sync: Failed to deserialise field {}", field.fieldName);

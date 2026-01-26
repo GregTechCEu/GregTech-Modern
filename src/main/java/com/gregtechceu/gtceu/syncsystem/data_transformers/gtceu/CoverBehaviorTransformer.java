@@ -19,21 +19,24 @@ import java.util.Objects;
 public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior> {
 
     @Override
-    public Tag serializeNBT(CoverBehavior value, CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        if (context.currentValue() instanceof ICoverable coverable)
-            return serialize(value, coverable, context.isClientSync());
+    public Tag serializeNBT(@Nullable CoverBehavior value,
+                            CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
+        if (value != null) {
+            return serialize(value, context.isClientSync());
+        }
         return new CompoundTag();
     }
 
     @Override
     public @Nullable CoverBehavior deserializeNBT(Tag tag,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        if (tag instanceof CompoundTag compoundTag && context.currentValue() instanceof ICoverable coverable)
+        if (tag instanceof CompoundTag compoundTag && !compoundTag.isEmpty() &&
+                context.holder() instanceof ICoverable coverable)
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
         return null;
     }
 
-    private CompoundTag serialize(CoverBehavior cover, ICoverable holder, boolean isSync) {
+    private CompoundTag serialize(CoverBehavior cover, boolean isSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
