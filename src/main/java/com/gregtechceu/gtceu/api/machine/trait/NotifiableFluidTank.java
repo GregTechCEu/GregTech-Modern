@@ -26,6 +26,13 @@ import java.util.function.Predicate;
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
 
+    public static final MachineTraitType<NotifiableFluidTank> TYPE = new MachineTraitType<>(NotifiableFluidTank.class);
+
+    @Override
+    public MachineTraitType<NotifiableFluidTank> getTraitType() {
+        return TYPE;
+    }
+
     @Getter
     public final IO handlerIO;
     @Getter

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
@@ -22,6 +23,13 @@ import java.util.EnumSet;
  * Because IGridConnectedMachine has already extended IInWorldGridNodeHost.
  */
 public class GridNodeHolder extends MachineTrait {
+
+    public static final MachineTraitType<GridNodeHolder> TYPE = new MachineTraitType<>(GridNodeHolder.class);
+
+    @Override
+    public MachineTraitType<GridNodeHolder> getTraitType() {
+        return TYPE;
+    }
 
     @Getter
     @SaveField
@@ -59,8 +67,8 @@ public class GridNodeHolder extends MachineTrait {
     }
 
     @Override
-    public void onMachineUnLoad() {
-        super.onMachineUnLoad();
+    public void onMachineUnload() {
+        super.onMachineUnload();
         mainNode.destroy();
     }
 }

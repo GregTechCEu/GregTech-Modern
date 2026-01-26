@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 /**
  * A BlockEntity that manages sync and save data via the {@code ISyncManaged} syncdata system.
@@ -44,7 +45,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     @Override
-    public final void load(CompoundTag tag) {
+    @MustBeInvokedByOverriders
+    public void load(CompoundTag tag) {
         super.load(tag);
         getSyncDataHolder().deserializeNBT(tag,
                 (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));

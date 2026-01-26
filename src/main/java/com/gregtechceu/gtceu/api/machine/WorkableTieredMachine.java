@@ -117,7 +117,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
 
-        for (MachineTrait trait : getTraits()) {
+        for (MachineTrait trait : traitHolder.getAllTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
             }

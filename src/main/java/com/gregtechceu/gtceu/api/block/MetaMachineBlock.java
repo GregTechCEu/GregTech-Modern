@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
@@ -246,13 +247,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
-                if (machine instanceof IMachineLife machineLife) {
-                    machineLife.onMachineRemoved();
-                }
                 if (machine != null) {
-                    for (Direction direction : GTUtil.DIRECTIONS) {
-                        machine.getCoverContainer().removeCover(direction, null);
-                    }
+                    machine.onRemoved();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
@@ -274,16 +270,16 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
         var machine = MetaMachine.getMachine(world, pos);
+        if (machine == null) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
 
-        if (machine != null && machine.getOwnerUUID() == null && player instanceof ServerPlayer sPlayer) {
+        if (machine.getOwnerUUID() == null && player instanceof ServerPlayer sPlayer) {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (machine != null &&
-                (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown())) {
+        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
             var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
@@ -301,6 +297,13 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
         if (itemStack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
+        }
+
+        for (var trait : machine.getTraitHolder().getAllTraits()) {
+            if (trait instanceof IInteractionTrait interactionTrait) {
+                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
+                if (result != InteractionResult.PASS) return result;
+            }
         }
 
         if (machine instanceof IInteractedMachine interactedMachine) {
