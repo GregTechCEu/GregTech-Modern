@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Objects;
 
 public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
@@ -79,8 +77,8 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             Tag valueTag = compound.get("v");
             if (keyTag == null || valueTag == null) continue;
 
-            K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>)ctx);
-            V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>)ctx);
+            K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>) ctx);
+            V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>) ctx);
             if (key == null || value == null) continue;
 
             current.put(key, value);
