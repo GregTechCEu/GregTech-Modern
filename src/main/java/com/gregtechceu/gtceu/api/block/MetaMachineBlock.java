@@ -299,12 +299,10 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-
-        for (var trait: machine.getTraitHolder().getAllTraits()) {
+        for (var trait : machine.getTraitHolder().getAllTraits()) {
             if (trait instanceof IInteractionTrait interactionTrait) {
                 InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
-                if (result.consumesAction()) break;
-
+                if (result != InteractionResult.PASS) return result;
             }
         }
 

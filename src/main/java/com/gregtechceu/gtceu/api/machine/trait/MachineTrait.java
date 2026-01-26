@@ -19,8 +19,10 @@ import java.util.function.Predicate;
 
 /**
  * A machine trait represents a generic capability or behaviour that is attached to a machine.
- * For example, machine traits may provide a recipe handler that can handle specific inputs/outputs of a recipe (e.g. {@link NotifiableItemStackHandler for items}).
- * Machine traits can also attach additional behaviours to a machine (e.g. {@link AutoOutputTrait}, {@link CleanroomProviderTrait})
+ * For example, machine traits may provide a recipe handler that can handle specific inputs/outputs of a recipe (e.g.
+ * {@link NotifiableItemStackHandler for items}).
+ * Machine traits can also attach additional behaviours to a machine (e.g. {@link AutoOutputTrait},
+ * {@link CleanroomProviderTrait})
  */
 @MethodsReturnNonnullByDefault
 public abstract class MachineTrait implements ISyncManaged {
