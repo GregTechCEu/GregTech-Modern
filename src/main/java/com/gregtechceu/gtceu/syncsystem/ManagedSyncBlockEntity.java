@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.syncsystem.network.SPacketUpdateBESyncValue;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,15 +14,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A BlockEntity that manages sync and save data via the {@code ISyncManaged} syncdata system.
  * 
  * @see ISyncManaged
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyncManaged {
 
     @Getter

@@ -2,15 +2,11 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class NBTSerialisableTransformer implements ValueTransformer<INBTSerializable<Tag>> {
 
     @Override

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -11,14 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Represents an object that provides a set of methods for encoding/decoding a value of type {@code <T>} into a
  * {@link Tag}
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public interface ValueTransformer<T> {
 
     /**

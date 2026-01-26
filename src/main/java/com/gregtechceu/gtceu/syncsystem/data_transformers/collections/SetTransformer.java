@@ -4,43 +4,43 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
-    private ValueTransformer<T> elementTransformer = null;
+    private @Nullable ValueTransformer<T> elementTransformer = null;
+
+    @SuppressWarnings("unchecked")
+    private ValueTransformer<T> getElemTransformer(ValueTransformer.TransformerContext<Set<T>> context) {
+        if (elementTransformer != null) return elementTransformer;
+        var transformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
+        if (transformer == null) {
+            throw new IllegalStateException("Sync: Failed to serialise set: Missing transformer for inner type: %s"
+                    .formatted(context.genericArgs()[0]));
+        }
+        elementTransformer = transformer;
+        return elementTransformer;
+    }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Tag serializeNBT(Set<T> value, ValueTransformer.TransformerContext<Set<T>> context) {
-        if (elementTransformer == null)
-            elementTransformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
-
         ListTag tag = new ListTag();
         for (T element : value) {
-            tag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
+            tag.add(getElemTransformer(context).serializeNBT(element, new TransformerContext<>(context.holder(),
                     element.getClass(), new Type[0], element, context.isClientSync())));
         }
         return tag;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Set<T> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Set<T>> context) {
-        if (elementTransformer == null)
-            elementTransformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
-
         var current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
@@ -49,8 +49,9 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
-            current.add(elementTransformer.deserializeNBT(elementTag, new TransformerContext<>(context.holder(),
-                    current.getClass(), new Type[0], null, context.isClientSync())));
+            T value = getElemTransformer(context).deserializeNBT(elementTag, new TransformerContext<>(context.holder(),
+                    current.getClass(), new Type[0], null, context.isClientSync()));
+            if (value != null) current.add(value);
         }
         return current;
     }

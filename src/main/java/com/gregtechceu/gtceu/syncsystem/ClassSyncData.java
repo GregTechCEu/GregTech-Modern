@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -26,7 +26,7 @@ public final class ClassSyncData {
     private static final ClassValue<ClassSyncData> CACHE = new ClassValue<>() {
 
         @Override
-        protected ClassSyncData computeValue(@NotNull Class<?> type) {
+        protected ClassSyncData computeValue(Class<?> type) {
             return new ClassSyncData(type);
         }
     };
@@ -45,7 +45,7 @@ public final class ClassSyncData {
     @Getter
     private final Object2ReferenceArrayMap<String, FieldSyncData> serverSaveFields = new Object2ReferenceArrayMap<>();
 
-    private ClassSyncData(@NotNull Class<?> clazz) {
+    private ClassSyncData(Class<?> clazz) {
         MethodHandles.Lookup privateLookup;
         try {
             privateLookup = MethodHandles.privateLookupIn(clazz, LOOKUP);
@@ -137,12 +137,13 @@ public final class ClassSyncData {
         public final VarHandle handle;
         public final boolean triggerClientRerender, isSyncManaged;
         @Setter
+        @Nullable
         public ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles;
         public final Class<?> clazz;
         public final Type[] genericArgs;
 
-        public FieldSyncData(@NotNull Field field, VarHandle handle, ValueTransformer<?> transformer,
+        public FieldSyncData(Field field, VarHandle handle, @Nullable ValueTransformer<?> transformer,
                              MethodHandle[] changeListenerHandles) {
             fieldName = field.getName();
             SaveField saveField = field.getAnnotation(SaveField.class);

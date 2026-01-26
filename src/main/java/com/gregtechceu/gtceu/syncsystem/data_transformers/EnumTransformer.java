@@ -1,13 +1,8 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
     private final Class<E> enumClass;

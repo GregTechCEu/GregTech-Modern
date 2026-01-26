@@ -8,7 +8,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.WrongMethodTypeException;
@@ -25,7 +25,7 @@ public class SyncDataHolder {
     private final ObjectSet<String> dirtySyncFields = new ObjectOpenHashSet<>();
     private boolean resyncAll = false;
 
-    public SyncDataHolder(@NotNull ISyncManaged o) {
+    public SyncDataHolder(ISyncManaged o) {
         holder = o;
         syncData = ClassSyncData.getClassData(o.getClass());
     }
@@ -138,7 +138,8 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static void deserialiseField(ISyncManaged holder, ClassSyncData.FieldSyncData field, Tag savedValue,
+    private static void deserialiseField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
+                                         @Nullable Tag savedValue,
                                          boolean readingClientFields) {
         Object currentVal = field.handle.get(holder);
 

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,10 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior> {
 
     @Override
@@ -78,7 +73,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         Objects.requireNonNull(holder.getCoverAtSide(side)).getSyncDataHolder().deserializeNBT(tag.getCompound("data"),
                 isSync);
 
-        if (!isSync && holder.getCoverAtSide(side).getAttachItem() == ItemStack.EMPTY) {
+        if (!isSync && Objects.requireNonNull(holder.getCoverAtSide(side)).getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");
             holder.setCoverAtSide(null, side);
         }

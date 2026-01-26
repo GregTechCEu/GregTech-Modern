@@ -3,19 +3,15 @@ package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
 
     private final ValueTransformer<T> elementTransformer;
@@ -35,11 +31,16 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     }
 
     @Override
-    public @Nullable T[] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
+    @SuppressWarnings("unchecked")
+    public @Nullable T @Nullable [] deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T[]> context) {
         T[] current = context.currentValue();
         if (!(tag instanceof ListTag listTag)) {
             GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
             return current;
+        }
+
+        if (current == null) {
+            current = (T[]) Array.newInstance((Class<T>) (context.genericArgs()[0]), listTag.size());
         }
 
         if (listTag.size() != current.length) {
@@ -47,10 +48,11 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < listTag.size(); i++) {
             var currentV = current[i];
-            var result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
+            T result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
                     new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV,
                             context.isClientSync()));
-            if (result != currentV) current[i] = currentV;
+            if (result == null) return current;
+            if (result != currentV) current[i] = result;
         }
         return current;
     }

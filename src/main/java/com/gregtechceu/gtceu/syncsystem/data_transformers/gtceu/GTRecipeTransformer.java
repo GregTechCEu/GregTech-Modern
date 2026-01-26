@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,10 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
 
     private static RecipeManager getRecipeManager() {

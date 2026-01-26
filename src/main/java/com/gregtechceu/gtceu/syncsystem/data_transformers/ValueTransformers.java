@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.*;
+import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.ListTransformer;
+import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.MapTransformer;
+import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.ObjectArrayTransformer;
+import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.SetTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
 import net.minecraft.core.BlockPos;
@@ -22,6 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,9 +33,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public final class ValueTransformers {
 
     private static final Map<Class<?>, ValueTransformer<?>> REGISTERED = new Reference2ReferenceOpenHashMap<>();
@@ -53,12 +54,12 @@ public final class ValueTransformers {
     /**
      * Gets the {@link ValueTransformer} associated with a specific type.
      */
-    public static ValueTransformer<?> get(Type type) {
+    public static @Nullable ValueTransformer<?> get(Type type) {
         if (type instanceof Class<?> cls) type = cls.isPrimitive() ? PRIMITIVE_TO_BOXED.get(cls) : cls;
         return TYPE_CACHE.computeIfAbsent(type, ValueTransformers::generateOrGetTransformer);
     }
 
-    private static ValueTransformer<?> generateOrGetTransformer(Type type) {
+    private static @Nullable ValueTransformer<?> generateOrGetTransformer(Type type) {
         Class<?> clazz;
         if (type instanceof ParameterizedType pType) {
             clazz = (Class<?>) pType.getRawType();
@@ -189,7 +190,10 @@ public final class ValueTransformers {
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class, CompoundTag::new);
 
         registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
-                t -> Component.Serializer.fromJson(t.getAsString()), StringTag.class, Component::empty);
+                t -> {
+                    var comp = Component.Serializer.fromJson(t.getAsString());
+                    return comp == null ? Component.empty() : comp;
+                }, StringTag.class, Component::empty);
 
         registerTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
 
