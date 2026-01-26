@@ -1,4 +1,4 @@
-@AllTypesNonNullByDefault
+@NotNullByDefault
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.utils.AllTypesNonNullByDefault;
+import org.jetbrains.annotations.NotNullByDefault;
