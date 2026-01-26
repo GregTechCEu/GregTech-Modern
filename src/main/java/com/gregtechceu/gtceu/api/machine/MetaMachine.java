@@ -289,8 +289,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      *         animations will be played
      */
     @Override
-    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, ItemStack itemStack,
-                                                                 UseOnContext context) {
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType,
+                                                                           ItemStack itemStack,
+                                                                           UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
