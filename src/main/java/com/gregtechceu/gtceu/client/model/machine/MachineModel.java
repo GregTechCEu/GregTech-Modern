@@ -3,10 +3,9 @@ package com.gregtechceu.gtceu.client.model.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
@@ -229,21 +228,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render output overlays
-        if (machine instanceof IAutoOutputItem autoOutputItem) {
-            var itemFace = autoOutputItem.getOutputFacingItems();
+        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
+            var itemFace = outputTrait.getItemOutputDirection();
             if (itemFace != null && side == itemFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputItem.isAutoOutputItems()) {
+                if (outputTrait.isAutoOutputItems()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
                             itemOutputOverlaySprite));
                 }
             }
         }
-        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
-            var fluidFace = autoOutputFluid.getOutputFacingFluids();
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
+            var fluidFace = outputTrait.getFluidOutputDirection();
             if (fluidFace != null && side == fluidFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputFluid.isAutoOutputFluids()) {
+                if (outputTrait.isAutoOutputFluids()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
                             fluidOutputOverlaySprite));
                 }

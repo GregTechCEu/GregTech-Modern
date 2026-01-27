@@ -60,7 +60,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine, IInter
         this.cache = createCacheFluidHandler();
         this.autoOutput = AutoOutputTrait.FLUIDS(this, cache);
         autoOutput.setFluidOutputDirection(Direction.DOWN);
-        autoOutput.setFluidOutputSideValidator(d -> d == Direction.DOWN);
+        autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
         autoOutput.setNeverAllowInputFromOutputSide(ConfigHolder.INSTANCE.machines.allowDrumsInputFluidsFromOutputSide);
     }
 

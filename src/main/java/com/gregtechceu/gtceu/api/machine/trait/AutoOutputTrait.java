@@ -8,22 +8,28 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
+import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +39,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait {
 
@@ -55,31 +63,26 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected boolean autoOutputItems, autoOutputFluids;
+    protected boolean autoOutputItems, autoOutputFluids = false;
     @Setter
     @SaveField
-    protected boolean allowItemInputFromOutputSide, allowFluidInputFromOutputSide;
+    protected boolean allowItemInputFromOutputSide, allowFluidInputFromOutputSide = false;
 
     @Setter
     @Getter
-    protected int ticksPerCycle;
+    protected int ticksPerCycle = 5;
     @Setter
-    protected Predicate<@Nullable Direction> itemOutputSideValidator, fluidOutputSideValidator;
+    protected Predicate<@Nullable Direction> itemOutputDirectionValidator, fluidOutputDirectionValidator = $ -> true;
     @Setter
-    protected boolean neverAllowInputFromOutputSide;
+    protected boolean neverAllowInputFromOutputSide = false;
     protected @Nullable TickableSubscription outputSub;
     protected List<ISubscription> itemSubs, fluidSubs;
 
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers, int ticksPerCycle) {
+    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
         super(machine);
 
         this.itemOutputDirection = machine.hasFrontFacing() ? machine.getFrontFacing().getOpposite() : Direction.UP;
         this.fluidOutputDirection = itemOutputDirection;
-        this.autoOutputItems = false;
-        this.autoOutputFluids = false;
-        this.allowItemInputFromOutputSide = false;
-        this.allowFluidInputFromOutputSide = false;
-        this.neverAllowInputFromOutputSide = false;
 
         this.itemHandlers = itemHandlers.stream().filter(h -> {
             if (h.getSlots() == 0) return false;
@@ -92,13 +95,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
             return true;
         }).toList();
 
-        this.ticksPerCycle = ticksPerCycle;
         itemSubs = new ArrayList<>();
         fluidSubs = new ArrayList<>();
-    }
-
-    public AutoOutputTrait(MetaMachine machine, List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
-        this(machine, itemHandlers, fluidHandlers, 5);
     }
 
     public static AutoOutputTrait ITEMS(MetaMachine machine, IItemHandler... itemHandlers) {
@@ -184,7 +182,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     public void setFluidOutputDirection(@Nullable Direction outputFacing) {
         if (supportsAutoOutputFluids()) {
-            if (!fluidOutputSideValidator.test(outputFacing)) return;
+            if (!fluidOutputDirectionValidator.test(outputFacing) || (machine.hasFrontFacing() && machine.getFrontFacing() == outputFacing)) return;
             this.fluidOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
             updateAutoOutputSubscription();
@@ -193,7 +191,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     public void setItemOutputDirection(@Nullable Direction outputFacing) {
         if (supportsAutoOutputItems()) {
-            if (!itemOutputSideValidator.test(outputFacing)) return;
+            if (!itemOutputDirectionValidator.test(outputFacing) || (machine.hasFrontFacing() && machine.getFrontFacing() == outputFacing)) return;
             this.itemOutputDirection = outputFacing;
             syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
             updateAutoOutputSubscription();
@@ -242,6 +240,11 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     @Override
+    public boolean isValidFrontFace(Direction direction) {
+        return direction != getItemOutputDirection() && direction != getFluidOutputDirection();
+    }
+
+    @Override
     public boolean shouldRenderGridOverlay(Player player, BlockPos pos, BlockState state, ItemStack held, Set<GTToolType> toolTypes) {
         return toolTypes.contains(GTToolType.SCREWDRIVER);
     }
@@ -251,20 +254,82 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!machine.hasFrontFacing() || side != machine.getFrontFacing()) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
+                    var canSwitchItemOutputToSide = supportsAutoOutputItems() && itemOutputDirectionValidator.test(side) && side != getItemOutputDirection();
+                    var canSwitchFluidOutputToSide = supportsAutoOutputFluids() && fluidOutputDirectionValidator.test(side) && side != getFluidOutputDirection();
+                    if (canSwitchItemOutputToSide || canSwitchFluidOutputToSide) return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
         }
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getItemOutputDirection() || side == getFluidOutputDirection()) {
-                return GuiTextures.TOOL_ALLOW_INPUT;
+                if (player.isShiftKeyDown()) return GuiTextures.TOOL_ALLOW_INPUT;
+                return GuiTextures.TOOL_AUTO_OUTPUT;
             }
         }
         return null;
     }
 
     @Override
-    public boolean isValidFrontFace(Direction direction) {
-        return direction != getItemOutputDirection() && direction != getFluidOutputDirection();
+    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolType, Player player, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+
+        if (toolType.contains(GTToolType.WRENCH)) {
+            return Pair.of(GTToolType.WRENCH, onWrenchClick(player, hand, gridSide, hitResult));
+        }
+        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+            return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(player, hand, gridSide, hitResult));
+        }
+
+
+        return IInteractionTrait.super.onToolClick(toolType, player, hand, gridSide, hitResult);
+    }
+
+    private InteractionResult onWrenchClick(Player player, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var itemStack = player.getItemInHand(hand);
+        var tagCompound = getBehaviorsTag(itemStack);
+        ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.values()[tagCompound
+                .getByte("Mode")];
+
+        if (type.isItem()) {
+            if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) && itemOutputDirectionValidator.test(gridSide)) {
+                setItemOutputDirection(gridSide);
+            }
+        }
+        if (type.isFluid()) {
+            if ((!machine.hasFrontFacing() || gridSide != machine.getFrontFacing()) && fluidOutputDirectionValidator.test(gridSide)) {
+                setFluidOutputDirection(gridSide);
+            }
+        }
+        return InteractionResult.sidedSuccess(machine.isRemote());
+    }
+
+
+    private InteractionResult onScrewdriverClick(Player player, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        if (player.isShiftKeyDown()) {
+            if (neverAllowInputFromOutputSide) return InteractionResult.PASS;
+            if (getItemOutputDirection() == gridSide) {
+                setAllowItemInputFromOutputSide(!isAllowItemInputFromOutputSide());
+                player.displayClientMessage(Component
+                        .translatable("gtceu.machine.basic.input_from_output_side." +
+                                (isAllowItemInputFromOutputSide() ? "allow" : "disallow"))
+                        .append(Component.translatable("gtceu.creative.chest.item")), true);
+            }
+
+            if (getFluidOutputDirection() == gridSide) {
+                setAllowFluidInputFromOutputSide(!isAllowFluidInputFromOutputSide());
+                player.displayClientMessage(Component
+                        .translatable("gtceu.machine.basic.input_from_output_side." +
+                                (isAllowFluidInputFromOutputSide() ? "allow" : "disallow"))
+                        .append(Component.translatable("gtceu.creative.tank.fluid")), true);
+            }
+
+        } else {
+            if (getItemOutputDirection() == gridSide) {
+                setAutoOutputItems(!isAutoOutputItems());
+            }
+            if (getFluidOutputDirection() == gridSide) {
+                setAutoOutputFluids(!isAutoOutputFluids());
+            }
+        }
+        return InteractionResult.sidedSuccess(player.level().isClientSide);
     }
 }

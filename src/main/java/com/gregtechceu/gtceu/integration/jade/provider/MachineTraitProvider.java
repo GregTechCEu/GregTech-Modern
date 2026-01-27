@@ -45,11 +45,11 @@ public abstract class MachineTraitProvider<T extends MachineTrait>
         var be = blockAccessor.getBlockEntity();
         if (be instanceof MetaMachine machine) {
             T t = machine.getTraitHolder().getTrait(traitType);
-            if (t != null) write(compoundTag.getCompound(uid.toString()), t);
+            if (t != null) write(compoundTag.getCompound(uid.toString()), blockAccessor, t);
         }
     }
 
-    protected abstract void write(CompoundTag data, T trait);
+    protected abstract void write(CompoundTag data, BlockAccessor blockAccessor, T trait);
 
     protected abstract void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                                        BlockEntity blockEntity, IPluginConfig config);
