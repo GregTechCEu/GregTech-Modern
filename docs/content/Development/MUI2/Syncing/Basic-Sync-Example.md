@@ -24,6 +24,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 }
 ```
 
-Here, we create a basic SyncValue for an integer. This takes a `Supplier<Integer>` and a `Consumer<Integer>`, more commonly known as a getter and a setter. If the value is changed, either on the server or the client, the value gets serialized and sent to the other side, so the other side knows about the value.  
+Here, we create a basic `SyncValue` for an integer. This takes a `Supplier<Integer>` and a `Consumer<Integer>`, more commonly known as a getter and a setter. Generally speaking, `SyncValue`s will take a `Supplier` and `Consumer` of the type of value they are syncing.  
 
-If you try to access values that aren't synced or don't have a SyncValue or SyncHandler, they will be `0` or `null`.  
+If the value returned by the getter changed on the server, the value gets serialized and sent to the client by the `SyncManager`. The `SyncHandler`'s value can always be manually updated, for example to do client-to-server syncing.
+
+If you try to access values on the client that aren't synced or don't have a `SyncValue` or `SyncHandler`, they will have a default value, but they will not reflect the values or changes happening on the server.
