@@ -34,7 +34,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         for (var obj : value) {
             list.add(getElemTransformer(context).serializeNBT(obj,
                     new TransformerContext<>(context.holder(), obj.getClass(),
-                            new Type[0], obj, null, context.isClientSync())));
+                            new Type[0], obj, context.fieldName(), context.isClientSync())));
         }
         return list;
     }
@@ -49,7 +49,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),
                     new TransformerContext<>(
-                            context.holder(), finalCurrent.getClass(), new Type[0], null, null,
+                            context.holder(), finalCurrent.getClass(), new Type[0], null, context.fieldName(),
                             context.isClientSync()));
             if (val != null) finalCurrent.add(val);
         }

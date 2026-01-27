@@ -50,11 +50,11 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             CompoundTag compound = new CompoundTag();
             compound.put("k",
                     getKeyTransformer(context).serializeNBT(entry.getKey(), new TransformerContext<>(context.holder(),
-                            entry.getKey().getClass(), new Type[0], entry.getKey(), null, context.isClientSync())));
+                            entry.getKey().getClass(), new Type[0], entry.getKey(), context.fieldName() + "[key]", context.isClientSync())));
             compound.put("v",
                     getValueTransformer(context).serializeNBT(entry.getValue(),
                             new TransformerContext<>(context.holder(),
-                                    entry.getValue().getClass(), new Type[0], entry.getValue(), null,
+                                    entry.getValue().getClass(), new Type[0], entry.getValue(), context.fieldName() + "[value]",
                                     context.isClientSync())));
             entries.add(compound);
         }
@@ -71,7 +71,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
             var ctx = new TransformerContext<>(
-                    context.holder(), current.getClass(), new Type[0], null, null, context.isClientSync());
+                    context.holder(), current.getClass(), new Type[0], null, context.fieldName(), context.isClientSync());
 
             Tag keyTag = compound.get("k");
             Tag valueTag = compound.get("v");
