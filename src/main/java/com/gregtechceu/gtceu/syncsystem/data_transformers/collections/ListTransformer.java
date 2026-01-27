@@ -49,7 +49,8 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),
                     new TransformerContext<>(
-                            context.holder(), finalCurrent.getClass(), new Type[0], null, context.fieldName() + "[element]",
+                            context.holder(), finalCurrent.getClass(), new Type[0], null,
+                            context.fieldName() + "[element]",
                             context.isClientSync()));
             if (val != null) finalCurrent.add(val);
         }

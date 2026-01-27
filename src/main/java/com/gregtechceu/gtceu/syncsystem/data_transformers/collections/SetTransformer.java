@@ -33,7 +33,8 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         ListTag tag = new ListTag();
         for (T element : value) {
             tag.add(getElemTransformer(context).serializeNBT(element, new TransformerContext<>(context.holder(),
-                    element.getClass(), new Type[0], element, context.fieldName() + "[element]", context.isClientSync())));
+                    element.getClass(), new Type[0], element, context.fieldName() + "[element]",
+                    context.isClientSync())));
         }
         return tag;
     }
