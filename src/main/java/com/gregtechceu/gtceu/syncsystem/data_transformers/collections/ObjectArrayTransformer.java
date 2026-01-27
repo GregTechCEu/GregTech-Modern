@@ -25,6 +25,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         for (T element : value) {
             listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
                     element.getClass(), new Type[0], element, context.fieldName() + "[" + i + "]", context.isClientSync())));
+        }
         return listTag;
     }
 
