@@ -22,7 +22,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     @Override
     public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
-        for (T element : value) {
+        for (int i = 0; i < value.length; i++) {
+            T element = value[i];
             listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
                     element.getClass(), new Type[0], element, context.fieldName() + "[" + i + "]",
                     context.isClientSync())));
