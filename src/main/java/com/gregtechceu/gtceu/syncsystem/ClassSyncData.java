@@ -97,7 +97,7 @@ public final class ClassSyncData {
             }
 
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
-                    changeListeners.getOrDefault(field.getName(), List.of()).toArray(MethodHandle[]::new));
+                    changeListeners.getOrDefault(field.getName(), List.of()));
             managedFields.add(syncData);
             if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
             if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
@@ -124,5 +124,4 @@ public final class ClassSyncData {
                 .findFirst()
                 .ifPresent(fieldData -> fieldData.setTransformer(transformer));
     }
-
 }

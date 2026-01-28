@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 /**
  * Represents an object that provides a set of methods for encoding/decoding a value of type {@code <T>} into a
  * {@link Tag}
+ * 
+ * @param <T> The type which this transformer can encode
  */
 public interface ValueTransformer<T> {
 
@@ -25,12 +27,14 @@ public interface ValueTransformer<T> {
      * @param genericArgs  The values of the generic arguments which this field has been declared with, or an empty
      *                     array if the type is not generic.
      * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
-     * @param fieldName The name of the field being serialized, or a string denoting the current sync context if not being invoked directly on a field.
+     * @param fieldName    The name of the field being serialized, or a string denoting the current sync context if not
+     *                     being invoked directly on a field.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
      *                     being
      *                     written to the server save.
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type @NotNull [] genericArgs,
+    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz,
+                                 @NotNull Type @NotNull [] genericArgs,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
 
     /**

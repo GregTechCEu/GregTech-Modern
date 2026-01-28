@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;

@@ -622,7 +622,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return map;
     }
 
-
     static {
         ValueTransformers.registerTransformer(ChanceCacheMap.class, new ValueTransformer<ChanceCacheMap>() {
 
@@ -654,7 +653,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 if (context.currentValue() != null) {
                     for (String key : chanceCache.getAllKeys()) {
                         RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-                        // Necessary since a RecipeCapability was removed when removing Create support, and for future removals 
+                        // Necessary since a RecipeCapability was removed when removing Create support, and for future
+                        // removals
                         if (cap == null) continue;
                         // noinspection rawtypes
                         Object2IntMap map = context.currentValue().computeIfAbsent(cap,

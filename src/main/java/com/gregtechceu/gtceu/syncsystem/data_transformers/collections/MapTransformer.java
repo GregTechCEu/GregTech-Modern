@@ -33,7 +33,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     @SuppressWarnings("unchecked")
     private ValueTransformer<V> getValueTransformer(ValueTransformer.TransformerContext<Map<K, V>> context) {
         if (valueTransformer != null) return valueTransformer;
-        var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[1]);
+        var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[0]);
         if (transformer == null) {
             throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for value type: %s"
                     .formatted(context.genericArgs()[1]));

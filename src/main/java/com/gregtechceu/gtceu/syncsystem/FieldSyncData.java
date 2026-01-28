@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.syncsystem;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
+
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Information about the sync behaviour of fields with sync annotations in ISyncManaged classes
@@ -22,12 +24,12 @@ public final class FieldSyncData {
     public final boolean triggerClientRerender, isSyncManaged;
     @Setter
     public @Nullable ValueTransformer<?> transformer;
-    public final MethodHandle[] changeListenerHandles;
+    public final List<MethodHandle> changeListenerHandles;
     public final Class<?> clazz;
     public final Type[] genericArgs;
 
     public FieldSyncData(Field field, VarHandle handle, @Nullable ValueTransformer<?> transformer,
-                         MethodHandle[] changeListenerHandles) {
+                         List<MethodHandle> changeListenerHandles) {
         fieldName = field.getName();
         SaveField saveField = field.getAnnotation(SaveField.class);
         nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
