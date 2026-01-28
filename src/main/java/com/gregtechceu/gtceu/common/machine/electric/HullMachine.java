@@ -88,7 +88,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
         @Override
         public Tag serializeNBT(Object value, TransformerContext<Object> context) {
             if (GTCEu.Mods.isAE2Loaded() &&
-                    (context.currentValue()) instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+                    context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity) {
                 var compound = new CompoundTag();
                 connectedBlockEntity.getMainNode().saveToNBT(compound);
                 return compound;
