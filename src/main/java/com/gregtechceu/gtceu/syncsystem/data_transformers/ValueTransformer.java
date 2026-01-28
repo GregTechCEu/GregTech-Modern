@@ -29,7 +29,7 @@ public interface ValueTransformer<T> {
      *                     being
      *                     written to the server save.
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type[] genericArgs,
+    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type @NotNull [] genericArgs,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
 
     @SuppressWarnings("unchecked")
@@ -38,7 +38,7 @@ public interface ValueTransformer<T> {
             return (TagType) (tag);
         } catch (ClassCastException c) {
             throw new ClassCastException("Sync: Invalid tag type: expected %s, got %s [%s, field %s]"
-                    .formatted(cls.toString(), tag.getClass().toString(), ctx.holder(), ctx.fieldName));
+                    .formatted(cls.toString(), tag.getClass().getName(), ctx.holder(), ctx.fieldName));
         }
     }
 

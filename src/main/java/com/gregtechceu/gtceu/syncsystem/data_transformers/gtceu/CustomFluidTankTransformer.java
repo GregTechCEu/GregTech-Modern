@@ -22,12 +22,7 @@ public class CustomFluidTankTransformer implements ValueTransformer<CustomFluidT
         if (currentVal == null) return null;
         var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
 
-        // LDLib compat
-        if (compoundTag.contains("p") && compoundTag.contains("t")) {
-            currentVal.deserializeNBT(compoundTag.getCompound("p"));
-        } else {
-            currentVal.deserializeNBT(compoundTag);
-        }
+        currentVal.deserializeNBT((CompoundTag) ValueTransformer.stripLdlibWrapper(compoundTag));
         return currentVal;
     }
 }

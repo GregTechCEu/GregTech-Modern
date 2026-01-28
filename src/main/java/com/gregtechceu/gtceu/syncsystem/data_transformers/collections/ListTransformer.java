@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListTransformer<T> implements ValueTransformer<List<T>> {
@@ -44,7 +45,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
-        else current = new ObjectArrayList<>();
+        else current = new ArrayList<>();
         List<T> finalCurrent = current;
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),

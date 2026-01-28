@@ -103,7 +103,7 @@ public final class ValueTransformers {
     public static void registerTransformer(Class<?> type, ValueTransformer<?> transformer) {
         if (REGISTERED.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
-        REGISTERED.putIfAbsent(type, transformer);
+        REGISTERED.put(type, transformer);
     }
 
     /**

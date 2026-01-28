@@ -54,6 +54,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return TYPE;
     }
 
+    protected static class ChanceCacheMap extends IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> {}
+
     public enum Status implements StringRepresentable {
 
         IDLE("idle"),
@@ -620,7 +622,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return map;
     }
 
-    public static class ChanceCacheMap extends IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> {}
 
     static {
         ValueTransformers.registerTransformer(ChanceCacheMap.class, new ValueTransformer<ChanceCacheMap>() {

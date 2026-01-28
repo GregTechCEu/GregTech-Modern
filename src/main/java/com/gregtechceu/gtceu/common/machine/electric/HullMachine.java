@@ -88,7 +88,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
         @Override
         public Tag serializeNBT(Object value, TransformerContext<Object> context) {
             if (GTCEu.Mods.isAE2Loaded() &&
-                    context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+                    context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity) {
                 var compound = new CompoundTag();
                 connectedBlockEntity.getMainNode().saveToNBT(compound);
                 return compound;
@@ -99,9 +99,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
         @Override
         public @Nullable Object deserializeNBT(Tag tag, TransformerContext<Object> context) {
             if (GTCEu.Mods.isAE2Loaded() &&
-                    context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+                    context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity &&
                     tag instanceof CompoundTag c) {
                 connectedBlockEntity.getMainNode().loadFromNBT(c);
+                return context.currentValue();
             }
             return null;
         }

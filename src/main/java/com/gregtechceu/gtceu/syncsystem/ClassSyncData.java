@@ -63,14 +63,14 @@ public final class ClassSyncData {
 
             if (Modifier.isStatic(method.getModifiers()))
                 throw new IllegalArgumentException("Cannot apply syncdata annotation to static method: %s.%s"
-                        .formatted(clazz.getCanonicalName(), method.getName()));
+                        .formatted(clazz.getName(), method.getName()));
 
             MethodHandle handle;
             try {
                 handle = privateLookup.unreflect(method);
             } catch (IllegalAccessException e) {
                 GTCEu.LOGGER.error("Sync: Failed to acquire method handle for method {} {}", method.getName(),
-                        clazz.getCanonicalName());
+                        clazz.getName());
                 GTCEu.LOGGER.error(e.getMessage());
                 continue;
             }
@@ -86,14 +86,14 @@ public final class ClassSyncData {
 
             if (Modifier.isStatic(field.getModifiers()))
                 throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
-                        .formatted(field.getDeclaringClass().getCanonicalName(), field.getName()));
+                        .formatted(field.getDeclaringClass().getName(), field.getName()));
 
             VarHandle handle;
             try {
                 handle = privateLookup.unreflectVarHandle(field);
             } catch (IllegalAccessException e) {
                 GTCEu.LOGGER.error("Sync: Failed to acquire variable handle for field {} {}", field.getName(),
-                        clazz.getCanonicalName());
+                        clazz.getName());
                 GTCEu.LOGGER.error(e.getMessage());
                 continue;
             }

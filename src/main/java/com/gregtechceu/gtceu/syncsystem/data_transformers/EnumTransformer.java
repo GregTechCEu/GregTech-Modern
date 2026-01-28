@@ -30,7 +30,7 @@ public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
         }
         if (value == null) {
             throw new IllegalArgumentException(
-                    "Unknown enum constant: %s[%s]".formatted(enumClass.getCanonicalName(), enumString));
+                    "Unknown enum constant: %s[%s]".formatted(enumClass.getName(), enumString));
         }
         return value;
     }
