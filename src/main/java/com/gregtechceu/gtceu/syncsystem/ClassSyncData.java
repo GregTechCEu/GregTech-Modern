@@ -136,8 +136,7 @@ public final class ClassSyncData {
         public final VarHandle handle;
         public final boolean triggerClientRerender, isSyncManaged;
         @Setter
-        @Nullable
-        public ValueTransformer<?> transformer;
+        public @Nullable ValueTransformer<?> transformer;
         public final MethodHandle[] changeListenerHandles;
         public final Class<?> clazz;
         public final Type[] genericArgs;
