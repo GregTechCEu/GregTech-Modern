@@ -23,7 +23,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         if (keyTransformer != null) return keyTransformer;
         var transformer = (ValueTransformer<K>) ValueTransformers.get(context.genericArgs()[0]);
         if (transformer == null) {
-            throw new IllegalStateException("Sync: Failed to serialise map: Missing transformer for key type: %s"
+            throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for key type: %s"
                     .formatted(context.genericArgs()[0]));
         }
         keyTransformer = transformer;
@@ -35,7 +35,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         if (valueTransformer != null) return valueTransformer;
         var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[0]);
         if (transformer == null) {
-            throw new IllegalStateException("Sync: Failed to serialise map: Missing transformer for value type: %s"
+            throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for value type: %s"
                     .formatted(context.genericArgs()[1]));
         }
         valueTransformer = transformer;

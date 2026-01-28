@@ -21,7 +21,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         if (elementTransformer != null) return elementTransformer;
         var transformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
         if (transformer == null) {
-            throw new IllegalStateException("Sync: Failed to serialise set: Missing transformer for inner type: %s"
+            throw new IllegalStateException("Sync: Failed to serialize set: Missing transformer for inner type: %s"
                     .formatted(context.genericArgs()[0]));
         }
         elementTransformer = transformer;

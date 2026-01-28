@@ -21,7 +21,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         if (elementTransformer != null) return elementTransformer;
         var transformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
         if (transformer == null) {
-            throw new IllegalStateException("Sync: Failed to serialise list: Missing transformer for inner type: %s"
+            throw new IllegalStateException("Sync: Failed to serialize list: Missing transformer for inner type: %s"
                     .formatted(context.genericArgs()[0]));
         }
         elementTransformer = transformer;

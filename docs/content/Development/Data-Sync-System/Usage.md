@@ -58,7 +58,7 @@ The following field types are supported by default:
 
 ### Adding support for additional types
 
-The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialised.
+The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialized.
 
 To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 

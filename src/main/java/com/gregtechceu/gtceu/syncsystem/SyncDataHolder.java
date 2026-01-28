@@ -69,7 +69,7 @@ public class SyncDataHolder {
                 continue;
             var field = fieldEntry.getValue();
 
-            Tag nbtValue = serialiseField(holder, field, writeClientFields);
+            Tag nbtValue = serializeField(holder, field, writeClientFields);
             tag.put(field.nbtSaveKey, nbtValue);
         }
         return tag;
@@ -84,7 +84,7 @@ public class SyncDataHolder {
             var field = fieldEntry.getValue();
 
             Tag savedValue = tag.get(field.nbtSaveKey);
-            deserialiseField(holder, field, savedValue, readingClientFields);
+            deserializeField(holder, field, savedValue, readingClientFields);
 
             if (readingClientFields) {
                 try {
@@ -107,7 +107,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static Tag serialiseField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
+    private static Tag serializeField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
                                       boolean writeClientFields) {
         Object currentValue = field.handle.get(holder);
 
@@ -127,11 +127,11 @@ public class SyncDataHolder {
             } else if (currentValue instanceof ISyncManaged syncObj) {
                 return syncObj.getSyncDataHolder().serializeNBT(writeClientFields);
             } else {
-                GTCEu.LOGGER.error("Sync: Failed to serialise field {}: Missing value transformer", field.fieldName);
+                GTCEu.LOGGER.error("Sync: Failed to serialize field {}: Missing value transformer", field.fieldName);
             }
 
         } catch (Exception e) {
-            GTCEu.LOGGER.error("Sync: Failed to serialise field {}", field.fieldName);
+            GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName);
             GTCEu.LOGGER.error(e);
         }
 
@@ -139,7 +139,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static void deserialiseField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
+    private static void deserializeField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
                                          @Nullable Tag savedValue,
                                          boolean readingClientFields) {
         Object currentVal = field.handle.get(holder);
@@ -174,10 +174,10 @@ public class SyncDataHolder {
                 if (currentVal instanceof ISyncManaged syncObj)
                     syncObj.getSyncDataHolder().deserializeNBT(compound, readingClientFields);
             } else {
-                GTCEu.LOGGER.error("Sync: Failed to deserialise field {}: Missing value transformer", field.fieldName);
+                GTCEu.LOGGER.error("Sync: Failed to deserialize field {}: Missing value transformer", field.fieldName);
             }
         } catch (Exception e) {
-            GTCEu.LOGGER.error("Sync: Failed to deserialise field {}", field.fieldName);
+            GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName);
             GTCEu.LOGGER.error(e);
         }
     }

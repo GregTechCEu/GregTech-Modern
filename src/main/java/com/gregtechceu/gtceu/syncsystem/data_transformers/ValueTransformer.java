@@ -20,11 +20,11 @@ public interface ValueTransformer<T> {
      * A record holding information about the context from which this value transformer is currently being invoked.
      * 
      * @param holder       The sync object which holds the specific field being serialized by this transformer.
-     * @param clazz        The actual type of the field currently being serialised/deserialised. (This may be a subtype
+     * @param clazz        The actual type of the field currently being serialized/deserialized. (This may be a subtype
      *                     of the type which this transformer is registered for.)
      * @param genericArgs  The values of the generic arguments which this field has been declared with, or an empty
      *                     array if the type is not generic.
-     * @param currentValue The current value (if any) of the field currently being serialised/deserialised.
+     * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
      *                     being
      *                     written to the server save.
@@ -54,7 +54,7 @@ public interface ValueTransformer<T> {
     }
 
     /**
-     * A method which serialises this value into a tag, based on the current value and provided transformer context.
+     * A method which serializes this value into a tag, based on the current value and provided transformer context.
      */
     Tag serializeNBT(T value, TransformerContext<T> context);
 

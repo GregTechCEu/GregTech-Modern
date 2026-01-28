@@ -44,8 +44,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serialisedCover = cover.getSyncDataHolder().serializeNBT(isSync);
-        compound.put("data", serialisedCover);
+        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync);
+        compound.put("data", serializedCover);
 
         return compound;
     }
