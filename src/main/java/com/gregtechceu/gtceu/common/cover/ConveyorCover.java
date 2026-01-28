@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -36,7 +37,9 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -280,7 +283,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -312,7 +315,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    ItemStack.isSameItemSameTags(resultStack, extractedStack)) {
+                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {
@@ -511,10 +514,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
-                return stack;
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-            if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
+            if (!filterHandler.test(stack)) {
                 return stack;
             }
             return super.insertItem(slot, stack, simulate);
@@ -523,17 +531,39 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
-                return ItemStack.EMPTY;
-            }
-            if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true);
-                if (result.isEmpty() || !filterHandler.test(result)) {
+            if (io == IO.IN) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false);
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.extractItem(slot, amount, simulate);
+                }
             }
-            return super.extractItem(slot, amount, simulate);
+            ItemStack result = super.extractItem(slot, amount, true);
+            if (result.isEmpty() || !filterHandler.test(result)) {
+                return ItemStack.EMPTY;
+            }
+            return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferRate", getTransferRate());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("distributionMode", getDistributionMode().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferRate(tag.getInt("transferRate"));
+        setIo(IO.values()[tag.getInt("io")]);
+        setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        super.pasteConfig(player, tag);
     }
 }

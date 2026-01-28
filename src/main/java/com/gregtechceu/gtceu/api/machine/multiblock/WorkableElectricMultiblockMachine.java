@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -126,8 +127,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addSubtickParallelsLine(subtickParallels)
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
-                .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
-                        recipeLogic.getProgressPercent())
+                .addProgressLine(recipeLogic)
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
@@ -158,6 +158,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IVoidable.attachConfigurators(configuratorPanel, this);
         if (getDefinition().getRecipeModifier() instanceof RecipeModifierList list && Arrays.stream(list.getModifiers())
                 .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
@@ -258,7 +259,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
             } else {
                 return voltage;
             }
@@ -273,6 +274,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 return highestVoltage;
             }
         }
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
+                this.getEnergyContainer().getOutputVoltage());
     }
 
     /**

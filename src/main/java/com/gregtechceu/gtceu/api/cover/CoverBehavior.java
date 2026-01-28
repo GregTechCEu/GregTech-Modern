@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover;
 
+import com.gregtechceu.gtceu.api.blockentity.ICopyable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
@@ -48,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 

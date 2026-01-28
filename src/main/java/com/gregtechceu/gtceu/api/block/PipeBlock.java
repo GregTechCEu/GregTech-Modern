@@ -413,7 +413,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 }
 
                 if ((player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) ||
-                        types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is)) ||
+                        types.stream().anyMatch(type -> type.matchTags.stream().anyMatch(held::is)) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
                                 coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem &&

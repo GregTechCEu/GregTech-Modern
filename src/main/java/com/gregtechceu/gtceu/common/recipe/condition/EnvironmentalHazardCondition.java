@@ -22,13 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnvironmentalHazardCondition extends RecipeCondition {
+public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalHazardCondition> {
 
-    public static final Codec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(
-                            MedicalCondition.CODEC.fieldOf("condition").forGetter(val -> val.condition))
-                    .apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:off
+    public static final Codec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            MedicalCondition.CODEC.fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
+    ).apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:on
 
     @Getter
     private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;
@@ -39,7 +39,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<EnvironmentalHazardCondition> getType() {
         return GTRecipeConditions.ENVIRONMENTAL_HAZARD;
     }
 
@@ -64,7 +64,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public EnvironmentalHazardCondition createTemplate() {
         return new EnvironmentalHazardCondition();
     }
 }

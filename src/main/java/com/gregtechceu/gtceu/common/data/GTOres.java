@@ -387,7 +387,6 @@ public class GTOres {
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(OVERWORLD_RULES)
                             .layer(l -> l.weight(3).mat(Coal).size(2, 4))
-                            .layer(l -> l.weight(3).mat(Coal).size(2, 4))
                             .build()))
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Coal)));
