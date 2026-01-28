@@ -65,7 +65,7 @@ To add support for an additional type, call `ValueTransformers.registerTransform
 Additionally, fields can be explicitly directed to use a specific value transformer:
 ```java
 /**
- * Example from HullMachine.java. This example shows serialisation of an AE2 class which may or may not be loaded at runtime.
+ * Example from HullMachine.java. This example shows serialization of an AE2 class which may or may not be loaded at runtime.
  */
 
 @SaveField(nbtKey = "grid_node")
