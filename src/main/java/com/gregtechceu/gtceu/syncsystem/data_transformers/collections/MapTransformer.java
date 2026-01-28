@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers.collections;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
@@ -109,7 +110,10 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
             K key = getKeyTransformer(context).deserializeNBT(keyTag, getInnerKeyContext(null, context));
             V value = getValueTransformer(context).deserializeNBT(valueTag, getInnerValueContext(null, context));
-            if (key == null || value == null) continue;
+            if (key == null || value == null) {
+                GTCEu.LOGGER.warn("Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]", key, value, keyTag, valueTag);
+                continue;
+            };
             current.put(key, value);
         }
         return current;
