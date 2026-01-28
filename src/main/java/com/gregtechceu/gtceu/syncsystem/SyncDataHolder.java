@@ -53,7 +53,7 @@ public class SyncDataHolder {
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
-        Map<String, ClassSyncData.FieldSyncData> fieldsToSerialize;
+        Map<String, FieldSyncData> fieldsToSerialize;
         if (!writeClientFields) {
             fieldsToSerialize = syncData.getServerSaveFields();
         } else {
@@ -76,7 +76,7 @@ public class SyncDataHolder {
     }
 
     public void deserializeNBT(CompoundTag tag, boolean readingClientFields) {
-        Map<String, ClassSyncData.FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
+        Map<String, FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
                 syncData.getServerSaveFields();
 
         for (var fieldEntry : fieldsToCheck.entrySet()) {
@@ -107,7 +107,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static Tag serializeField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
+    private static Tag serializeField(ISyncManaged holder, FieldSyncData field,
                                       boolean writeClientFields) {
         Object currentValue = field.handle.get(holder);
 
@@ -139,7 +139,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static void deserializeField(ISyncManaged holder, ClassSyncData.FieldSyncData field,
+    private static void deserializeField(ISyncManaged holder, FieldSyncData field,
                                          @Nullable Tag savedValue,
                                          boolean readingClientFields) {
         Object currentVal = field.handle.get(holder);

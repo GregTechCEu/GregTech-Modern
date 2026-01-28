@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -127,39 +125,4 @@ public final class ClassSyncData {
                 .ifPresent(fieldData -> fieldData.setTransformer(transformer));
     }
 
-    /**
-     * Information about the sync behaviour of fields with sync annotations in ISyncManaged classes
-     */
-    public static final class FieldSyncData {
-
-        public final String fieldName, nbtSaveKey;
-        public final VarHandle handle;
-        public final boolean triggerClientRerender, isSyncManaged;
-        @Setter
-        public @Nullable ValueTransformer<?> transformer;
-        public final MethodHandle[] changeListenerHandles;
-        public final Class<?> clazz;
-        public final Type[] genericArgs;
-
-        public FieldSyncData(Field field, VarHandle handle, @Nullable ValueTransformer<?> transformer,
-                             MethodHandle[] changeListenerHandles) {
-            fieldName = field.getName();
-            SaveField saveField = field.getAnnotation(SaveField.class);
-            nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
-            this.isSyncManaged = ISyncManaged.class.isAssignableFrom(field.getType());
-            this.handle = handle;
-            this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
-            this.changeListenerHandles = changeListenerHandles;
-            this.transformer = transformer;
-
-            var type = field.getGenericType();
-            if (type instanceof ParameterizedType parameterizedType) {
-                clazz = (Class<?>) parameterizedType.getRawType();
-                genericArgs = parameterizedType.getActualTypeArguments();
-            } else {
-                clazz = (Class<?>) type;
-                genericArgs = new Type[0];
-            }
-        }
-    }
 }
