@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
@@ -19,14 +20,28 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         this.elementTransformer = elementTransformer;
     }
 
+    private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
+                                                                       ValueTransformer.TransformerContext<T[]> parentContext) {
+        Type[] generics;
+        Class<?> clazz;
+        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
+            generics = parameterizedType.getActualTypeArguments();
+            clazz = (Class<?>) parameterizedType.getRawType();
+        } else {
+            generics = new Type[0];
+            clazz = (Class<?>) parentContext.genericArgs()[0];
+        }
+        if (elem != null) clazz = elem.getClass();
+        return new TransformerContext<>(parentContext.holder(),
+                clazz, generics, elem, parentContext.fieldName() + "[element]",
+                parentContext.isClientSync());
+    }
+
     @Override
     public Tag serializeNBT(T[] value, ValueTransformer.TransformerContext<T[]> context) {
         ListTag listTag = new ListTag();
-        for (int i = 0; i < value.length; i++) {
-            T element = value[i];
-            listTag.add(elementTransformer.serializeNBT(element, new TransformerContext<>(context.holder(),
-                    element.getClass(), new Type[0], element, context.fieldName() + "[" + i + "]",
-                    context.isClientSync())));
+        for (T element : value) {
+            listTag.add(elementTransformer.serializeNBT(element, getInnerElemContext(element, context)));
         }
         return listTag;
     }
@@ -47,9 +62,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         for (int i = 0; i < listTag.size(); i++) {
             var currentV = current[i];
             T result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
-                    new TransformerContext<>(context.holder(), current.getClass(), new Type[0], currentV,
-                            context.fieldName() + "[" + i + "]",
-                            context.isClientSync()));
+                    getInnerElemContext(null, context));
             if (result == null) return current;
             if (result != currentV) current[i] = result;
         }

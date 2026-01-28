@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     @SuppressWarnings("unchecked")
     private ValueTransformer<V> getValueTransformer(ValueTransformer.TransformerContext<Map<K, V>> context) {
         if (valueTransformer != null) return valueTransformer;
-        var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[0]);
+        var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[1]);
         if (transformer == null) {
             throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for value type: %s"
                     .formatted(context.genericArgs()[1]));
@@ -42,29 +43,58 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         return valueTransformer;
     }
 
+    private ValueTransformer.TransformerContext<K> getInnerKeyContext(@Nullable K key,
+                                                                      ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
+        Type[] generics;
+        Class<?> clazz;
+        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
+            generics = parameterizedType.getActualTypeArguments();
+            clazz = (Class<?>) parameterizedType.getRawType();
+        } else {
+            generics = new Type[0];
+            clazz = (Class<?>) parentContext.genericArgs()[0];
+        }
+        if (key != null) clazz = key.getClass();
+        return new TransformerContext<>(parentContext.holder(),
+                clazz, generics, key, parentContext.fieldName() + "[key]",
+                parentContext.isClientSync());
+    }
+
+    private ValueTransformer.TransformerContext<V> getInnerValueContext(@Nullable V value,
+                                                                        ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
+        Type[] generics;
+        Class<?> clazz;
+        if (parentContext.genericArgs()[1] instanceof ParameterizedType parameterizedType) {
+            generics = parameterizedType.getActualTypeArguments();
+            clazz = (Class<?>) parameterizedType.getRawType();
+        } else {
+            generics = new Type[0];
+            clazz = (Class<?>) parentContext.genericArgs()[1];
+        }
+        if (value != null) clazz = value.getClass();
+        return new TransformerContext<>(parentContext.holder(),
+                clazz, generics, value,
+                parentContext.fieldName() + "[value]",
+                parentContext.isClientSync());
+    }
+
     @Override
     public Tag serializeNBT(Map<K, V> value, ValueTransformer.TransformerContext<Map<K, V>> context) {
         ListTag entries = new ListTag();
         for (var entry : value.entrySet()) {
-
             CompoundTag compound = new CompoundTag();
             compound.put("k",
-                    getKeyTransformer(context).serializeNBT(entry.getKey(), new TransformerContext<>(context.holder(),
-                            entry.getKey().getClass(), new Type[0], entry.getKey(), context.fieldName() + "[key]",
-                            context.isClientSync())));
+                    getKeyTransformer(context).serializeNBT(entry.getKey(),
+                            getInnerKeyContext(entry.getKey(), context)));
             compound.put("v",
                     getValueTransformer(context).serializeNBT(entry.getValue(),
-                            new TransformerContext<>(context.holder(),
-                                    entry.getValue().getClass(), new Type[0], entry.getValue(),
-                                    context.fieldName() + "[value]",
-                                    context.isClientSync())));
+                            getInnerValueContext(entry.getValue(), context)));
             entries.add(compound);
         }
         return entries;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<K, V> deserializeNBT(Tag tag, ValueTransformer.TransformerContext<Map<K, V>> context) {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
@@ -72,16 +102,13 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         else current = new Object2ObjectOpenHashMap<>();
         for (Tag entryTag : listTag) {
             CompoundTag compound = (CompoundTag) entryTag;
-            var ctx = new TransformerContext<>(
-                    context.holder(), current.getClass(), new Type[0], null, context.fieldName(),
-                    context.isClientSync());
 
             Tag keyTag = compound.get("k");
             Tag valueTag = compound.get("v");
             if (keyTag == null || valueTag == null) continue;
 
-            K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>) ctx);
-            V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>) ctx);
+            K key = getKeyTransformer(context).deserializeNBT(keyTag, getInnerKeyContext(null, context));
+            V value = getValueTransformer(context).deserializeNBT(valueTag, getInnerValueContext(null, context));
             if (key == null || value == null) continue;
             current.put(key, value);
         }

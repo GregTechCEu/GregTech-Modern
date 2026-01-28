@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,28 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         return elementTransformer;
     }
 
+    private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
+                                                                       ValueTransformer.TransformerContext<List<T>> parentContext) {
+        Type[] generics;
+        Class<?> clazz;
+        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
+            generics = parameterizedType.getActualTypeArguments();
+            clazz = (Class<?>) parameterizedType.getRawType();
+        } else {
+            generics = new Type[0];
+            clazz = (Class<?>) parentContext.genericArgs()[0];
+        }
+        if (elem != null) clazz = elem.getClass();
+        return new TransformerContext<>(parentContext.holder(),
+                clazz, generics, elem, parentContext.fieldName() + "[element]",
+                parentContext.isClientSync());
+    }
+
     @Override
     public Tag serializeNBT(List<T> value, ValueTransformer.TransformerContext<List<T>> context) {
         ListTag list = new ListTag();
         for (var obj : value) {
-            list.add(getElemTransformer(context).serializeNBT(obj,
-                    new TransformerContext<>(context.holder(), obj.getClass(),
-                            new Type[0], obj, context.fieldName() + "[element]", context.isClientSync())));
+            list.add(getElemTransformer(context).serializeNBT(obj, getInnerElemContext(obj, context)));
         }
         return list;
     }
@@ -48,10 +64,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         List<T> finalCurrent = current;
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(ValueTransformer.stripLdlibWrapper(t),
-                    new TransformerContext<>(
-                            context.holder(), finalCurrent.getClass(), new Type[0], null,
-                            context.fieldName() + "[element]",
-                            context.isClientSync()));
+                    getInnerElemContext(null, context));
             if (val != null) finalCurrent.add(val);
         }
         return current;

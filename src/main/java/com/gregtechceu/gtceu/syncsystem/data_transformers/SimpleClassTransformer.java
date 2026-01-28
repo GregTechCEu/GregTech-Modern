@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import net.minecraft.nbt.Tag;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -10,6 +11,7 @@ public class SimpleClassTransformer<T, TagType extends Tag> implements ValueTran
     private final Function<T, TagType> write;
     private final Function<TagType, T> read;
     private final Class<TagType> tagClass;
+
     public SimpleClassTransformer(Function<T, TagType> write,
                                   Function<TagType, T> read,
                                   Class<TagType> tagClass) {
