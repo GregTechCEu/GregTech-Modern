@@ -83,7 +83,6 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             K key = getKeyTransformer(context).deserializeNBT(keyTag, (TransformerContext<K>) ctx);
             V value = getValueTransformer(context).deserializeNBT(valueTag, (TransformerContext<V>) ctx);
             if (key == null || value == null) continue;
-
             current.put(key, value);
         }
         return current;

@@ -53,7 +53,7 @@ public class SyncDataHolder {
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
-        Map<String, FieldSyncData> fieldsToSerialize;
+        Set<FieldSyncData> fieldsToSerialize;
         if (!writeClientFields) {
             fieldsToSerialize = syncData.getServerSaveFields();
         } else {
@@ -61,27 +61,24 @@ public class SyncDataHolder {
         }
 
         CompoundTag tag = new CompoundTag();
-        for (var fieldEntry : fieldsToSerialize.entrySet()) {
-
-            if (writeClientFields &&
-                    (!fullSync && !dirtySyncFields.contains(fieldEntry.getKey()) &&
-                            !fieldEntry.getValue().isSyncManaged))
-                continue;
-            var field = fieldEntry.getValue();
-
-            Tag nbtValue = serializeField(holder, field, writeClientFields);
-            tag.put(field.nbtSaveKey, nbtValue);
+        for (var field : fieldsToSerialize) {
+            if (shouldSerializeField(field, writeClientFields, fullSync)) {
+                Tag nbtValue = serializeField(holder, field, writeClientFields);
+                tag.put(field.nbtSaveKey, nbtValue);
+            }
         }
         return tag;
     }
 
+    private boolean shouldSerializeField(FieldSyncData field, boolean writeClient, boolean fullSync) {
+        return !writeClient || fullSync || (dirtySyncFields.contains(field.fieldName)) || field.isSyncManaged;
+    }
+
     public void deserializeNBT(CompoundTag tag, boolean readingClientFields) {
-        Map<String, FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
+        Set<FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
                 syncData.getServerSaveFields();
 
-        for (var fieldEntry : fieldsToCheck.entrySet()) {
-
-            var field = fieldEntry.getValue();
+        for (var field : fieldsToCheck) {
 
             Tag savedValue = tag.get(field.nbtSaveKey);
             deserializeField(holder, field, savedValue, readingClientFields);

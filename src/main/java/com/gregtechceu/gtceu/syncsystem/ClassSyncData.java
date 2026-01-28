@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.syncsystem.annotations.*;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.ValueTransformers;
 
-import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 
 import java.lang.invoke.MethodHandle;
@@ -39,9 +39,9 @@ public final class ClassSyncData {
     @Getter
     private final List<FieldSyncData> managedFields = new ObjectArrayList<>();
     @Getter
-    private final Object2ReferenceArrayMap<String, FieldSyncData> clientSyncFields = new Object2ReferenceArrayMap<>();
+    private final Set<FieldSyncData> clientSyncFields = new ObjectOpenHashSet<>();
     @Getter
-    private final Object2ReferenceArrayMap<String, FieldSyncData> serverSaveFields = new Object2ReferenceArrayMap<>();
+    private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
 
     private ClassSyncData(Class<?> clazz) {
         MethodHandles.Lookup privateLookup;
@@ -99,16 +99,16 @@ public final class ClassSyncData {
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
                     changeListeners.getOrDefault(field.getName(), List.of()));
             managedFields.add(syncData);
-            if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
-            if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
+            if (hasClientSync) clientSyncFields.add(syncData);
+            if (hasSaveField) serverSaveFields.add(syncData);
         }
 
         Class<?> parent = clazz.getSuperclass();
         if (parent != Object.class) {
             ClassSyncData parentHandles = CACHE.get(parent);
             managedFields.addAll(parentHandles.managedFields);
-            clientSyncFields.putAll(parentHandles.clientSyncFields);
-            serverSaveFields.putAll(parentHandles.serverSaveFields);
+            clientSyncFields.addAll(parentHandles.clientSyncFields);
+            serverSaveFields.addAll(parentHandles.serverSaveFields);
         }
     }
 
