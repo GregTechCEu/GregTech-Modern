@@ -32,7 +32,7 @@ public final class FieldSyncData {
                          List<MethodHandle> changeListenerHandles) {
         fieldName = field.getName();
         SaveField saveField = field.getAnnotation(SaveField.class);
-        nbtSaveKey = (saveField != null && !saveField.nbtKey().isBlank()) ? saveField.nbtKey() : fieldName;
+        nbtSaveKey = (saveField != null) ? saveField.nbtKey() : fieldName;
         this.isSyncManaged = ISyncManaged.class.isAssignableFrom(field.getType());
         this.handle = handle;
         this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);

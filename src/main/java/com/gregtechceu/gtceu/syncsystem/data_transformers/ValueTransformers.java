@@ -120,19 +120,7 @@ public final class ValueTransformers {
                                                                      Class<TagType> tagClass) {
         if (REGISTERED.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
-        ValueTransformer<T> transformer = new ValueTransformer<>() {
-
-            @Override
-            public @NotNull Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
-                return write.apply(value);
-            }
-
-            @Override
-            public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
-                TagType t = ValueTransformer.assertTagType(tagClass, tag, context);
-                return read.apply(t);
-            }
-        };
+        ValueTransformer<T> transformer = new SimpleClassTransformer<>(write, read, tagClass);
         REGISTERED.putIfAbsent(type, transformer);
     }
 
