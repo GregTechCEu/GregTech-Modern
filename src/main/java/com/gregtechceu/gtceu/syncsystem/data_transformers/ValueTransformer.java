@@ -25,6 +25,7 @@ public interface ValueTransformer<T> {
      * @param genericArgs  The values of the generic arguments which this field has been declared with, or an empty
      *                     array if the type is not generic.
      * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
+     * @param fieldName The name of the field being serialized, or a string denoting the current sync context if not being invoked directly on a field.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
      *                     being
      *                     written to the server save.
@@ -32,6 +33,9 @@ public interface ValueTransformer<T> {
     record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz, @NotNull Type @NotNull [] genericArgs,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
 
+    /**
+     * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.
+     */
     @SuppressWarnings("unchecked")
     static <TagType extends Tag> TagType assertTagType(Class<TagType> cls, Tag tag, TransformerContext<?> ctx) {
         try {
@@ -42,6 +46,9 @@ public interface ValueTransformer<T> {
         }
     }
 
+    /**
+     * Extracts the actual data tag from an LDLib tag structure which is present in some serialized objects.
+     */
     static Tag stripLdlibWrapper(Tag t) {
         if (!(t instanceof CompoundTag tag)) return t;
         if (tag.contains("p") && tag.contains("t")) {
