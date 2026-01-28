@@ -134,7 +134,7 @@ public class Predicates {
     }
 
     public static TraceabilityPredicate lampsByColor(DyeColor color) {
-        return LAMPS_BY_COLOR.getOrDefault(color, anyLamp());
+        return LAMPS_BY_COLOR.computeIfAbsent(color, c -> lamps(LAMPS.get(c), BORDERLESS_LAMPS.get(c)));
     }
 
     public static TraceabilityPredicate abilities(PartAbility... abilities) {
