@@ -127,14 +127,8 @@ public class Predicates {
 
     private static final Map<DyeColor, TraceabilityPredicate> LAMPS_BY_COLOR = new EnumMap<>(DyeColor.class);
 
-    static {
-        for (DyeColor color : DyeColor.values()) {
-            LAMPS_BY_COLOR.put(color, lamps(LAMPS.get(color), BORDERLESS_LAMPS.get(color)));
-        }
-    }
-
     public static TraceabilityPredicate lampsByColor(DyeColor color) {
-        return LAMPS_BY_COLOR.getOrDefault(color, anyLamp());
+        return LAMPS_BY_COLOR.computeIfAbsent(color, c -> lamps(LAMPS.get(c), BORDERLESS_LAMPS.get(c)));
     }
 
     public static TraceabilityPredicate abilities(PartAbility... abilities) {
