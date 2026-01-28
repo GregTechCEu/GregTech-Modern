@@ -652,7 +652,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 if (tag instanceof CompoundTag chanceCache && context.currentValue() != null) {
                     for (String key : chanceCache.getAllKeys()) {
                         RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-                        if (cap == null) continue; // Necessary since we removed a RecipeCapability when nuking Create
+                        // Necessary since a RecipeCapability was removed when removing Create support, and for future removals 
+                        if (cap == null) continue;
                         // noinspection rawtypes
                         Object2IntMap map = context.currentValue().computeIfAbsent(cap,
                                 RecipeCapability::makeChanceCache);
