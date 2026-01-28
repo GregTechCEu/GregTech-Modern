@@ -122,10 +122,9 @@ public final class ClassSyncData {
      * @param transformer The custom value transformer
      */
     public void setCustomTransformerForField(String fieldName, ValueTransformer<?> transformer) {
-        Optional<FieldSyncData> fieldData = managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
-                .findFirst();
-        if (fieldData.isEmpty()) return;
-        fieldData.get().setTransformer(transformer);
+        managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
+                .findFirst()
+                .ifPresent(fieldData -> fieldData.setTransformer(transformer));
     }
 
     /**
