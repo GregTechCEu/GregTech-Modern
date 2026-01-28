@@ -31,7 +31,6 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     public @Nullable CoverBehavior deserializeNBT(Tag tag,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
-        if (compoundTag.isEmpty()) return null;
         if (context.holder() instanceof ICoverable coverable) {
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
         }
@@ -76,14 +75,16 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             holder.setCoverAtSide(coverReg.createCoverBehavior(holder, side), side);
         }
 
-        Objects.requireNonNull(holder.getCoverAtSide(side)).getSyncDataHolder().deserializeNBT(tag.getCompound("data"),
+        CoverBehavior newCover = holder.getCoverAtSide(side);
+        if (newCover == null) return null;
+        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"),
                 isSync);
 
-        if (!isSync && Objects.requireNonNull(holder.getCoverAtSide(side)).getAttachItem() == ItemStack.EMPTY) {
+        if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");
             holder.setCoverAtSide(null, side);
         }
 
-        return holder.getCoverAtSide(side);
+        return newCover;
     }
 }

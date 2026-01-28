@@ -650,7 +650,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             @Override
             public @Nullable ChanceCacheMap deserializeNBT(@NotNull Tag tag,
                                                            @NotNull TransformerContext<ChanceCacheMap> context) {
-                if (tag instanceof CompoundTag chanceCache && context.currentValue() != null) {
+                CompoundTag chanceCache = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+                if (context.currentValue() != null) {
                     for (String key : chanceCache.getAllKeys()) {
                         RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
                         // Necessary since a RecipeCapability was removed when removing Create support, and for future removals 
