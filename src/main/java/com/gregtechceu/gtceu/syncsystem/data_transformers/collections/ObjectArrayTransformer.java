@@ -8,8 +8,6 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
@@ -22,18 +20,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
 
     private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<T[]> parentContext) {
-        Type[] generics;
-        Class<?> clazz;
-        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
-            generics = parameterizedType.getActualTypeArguments();
-            clazz = (Class<?>) parameterizedType.getRawType();
-        } else {
-            generics = new Type[0];
-            clazz = (Class<?>) parentContext.genericArgs()[0];
-        }
-        if (elem != null) clazz = elem.getClass();
         return new TransformerContext<>(parentContext.holder(),
-                clazz, generics, elem, parentContext.fieldName() + "[element]",
+                parentContext.type().getArrayComponentType(), elem, parentContext.fieldName() + "[element]",
                 parentContext.isClientSync());
     }
 
@@ -53,7 +41,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
 
         if (current == null) {
-            current = (T[]) Array.newInstance((Class<T>) (context.genericArgs()[0]), listTag.size());
+            current = (T[]) Array.newInstance((Class<T>) (context.type().getArrayComponentType().getRawType()),
+                    listTag.size());
         }
 
         if (listTag.size() != current.length) {

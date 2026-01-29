@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
+import com.gregtechceu.gtceu.syncsystem.TypeDeclaration;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.ListTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.MapTransformer;
 import com.gregtechceu.gtceu.syncsystem.data_transformers.collections.ObjectArrayTransformer;
@@ -26,7 +27,6 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
@@ -59,25 +59,21 @@ public final class ValueTransformers {
     }
 
     private static @Nullable ValueTransformer<?> generateOrGetTransformer(Type type) {
-        Class<?> clazz;
-        if (type instanceof ParameterizedType pType) {
-            clazz = (Class<?>) pType.getRawType();
-        } else {
-            clazz = (Class<?>) type;
-        }
+        TypeDeclaration declaration = new TypeDeclaration(type);
+        Class<?> clazz = declaration.getClassValue();
 
-        if (REGISTERED.containsKey(clazz)) return REGISTERED.get(clazz);
+        if (clazz != null && REGISTERED.containsKey(clazz)) return REGISTERED.get(clazz);
+
+        if (clazz == null || clazz.isArray()) {
+            ValueTransformer<?> componentTx = get(declaration.getArrayComponentType().getRawType());
+            if (componentTx != null) return new ObjectArrayTransformer<>(componentTx);
+            return null;
+        }
 
         if (clazz.isEnum()) {
             @SuppressWarnings("unchecked")
             Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) clazz;
             return new EnumTransformer<>(enumClass);
-        }
-
-        if (clazz.isArray()) {
-            Class<?> componentType = clazz.getComponentType();
-            ValueTransformer<?> componentTx = get(componentType);
-            if (componentTx != null) return new ObjectArrayTransformer<>(componentTx);
         }
 
         for (var entry : REGISTERED_SUPPLIERS.entrySet()) {
@@ -179,7 +175,7 @@ public final class ValueTransformers {
                     return comp == null ? Component.empty() : comp;
                 }, StringTag.class);
 
-        registerTransformer(INBTSerializable.class, new NBTSerialisableTransformer());
+        registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
 
         registerTransformerSupplier(List.class, ListTransformer::new);
         registerTransformerSupplier(Map.class, MapTransformer::new);

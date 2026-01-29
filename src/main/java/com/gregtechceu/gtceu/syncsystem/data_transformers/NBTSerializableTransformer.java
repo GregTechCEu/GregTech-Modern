@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-public class NBTSerialisableTransformer implements ValueTransformer<INBTSerializable<Tag>> {
+public class NBTSerializableTransformer implements ValueTransformer<INBTSerializable<Tag>> {
 
     @Override
     public Tag serializeNBT(INBTSerializable<Tag> value,
@@ -16,14 +16,12 @@ public class NBTSerialisableTransformer implements ValueTransformer<INBTSerializ
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public @Nullable INBTSerializable<Tag> deserializeNBT(Tag tag,
                                                           ValueTransformer.TransformerContext<INBTSerializable<Tag>> context) {
         var currentVal = context.currentValue();
-        try {
-            if (currentVal == null) currentVal = (INBTSerializable<Tag>) context.clazz().getConstructor().newInstance();
-        } catch (Exception e) {
-            GTCEu.LOGGER.error("Sync: Failed to instantiate INBTSerializable class", e);
+        if (currentVal == null) {
+            GTCEu.LOGGER.warn(
+                    "Sync: Deserialization of INBTSerializable objects requires an existing object, they cannot be instantiated purely from saved data.");
             return null;
         }
         currentVal.deserializeNBT(tag);

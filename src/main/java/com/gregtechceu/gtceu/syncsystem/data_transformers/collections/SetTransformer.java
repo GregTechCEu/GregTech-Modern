@@ -9,7 +9,6 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -20,10 +19,11 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
     @SuppressWarnings("unchecked")
     private ValueTransformer<T> getElemTransformer(ValueTransformer.TransformerContext<Set<T>> context) {
         if (elementTransformer != null) return elementTransformer;
-        var transformer = (ValueTransformer<T>) ValueTransformers.get(context.genericArgs()[0]);
+        Type elemType = context.type().getGenericTypeArgs()[0].getRawType();
+        var transformer = (ValueTransformer<T>) ValueTransformers.get(elemType);
         if (transformer == null) {
             throw new IllegalStateException("Sync: Failed to serialize set: Missing transformer for inner type: %s"
-                    .formatted(context.genericArgs()[0]));
+                    .formatted(elemType));
         }
         elementTransformer = transformer;
         return elementTransformer;
@@ -31,18 +31,8 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
     private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<Set<T>> parentContext) {
-        Type[] generics;
-        Class<?> clazz;
-        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
-            generics = parameterizedType.getActualTypeArguments();
-            clazz = (Class<?>) parameterizedType.getRawType();
-        } else {
-            generics = new Type[0];
-            clazz = (Class<?>) parentContext.genericArgs()[0];
-        }
-        if (elem != null) clazz = elem.getClass();
         return new TransformerContext<>(parentContext.holder(),
-                clazz, generics, elem, parentContext.fieldName() + "[element]",
+                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
                 parentContext.isClientSync());
     }
 

@@ -11,8 +11,6 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
@@ -23,10 +21,11 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     @SuppressWarnings("unchecked")
     private ValueTransformer<K> getKeyTransformer(ValueTransformer.TransformerContext<Map<K, V>> context) {
         if (keyTransformer != null) return keyTransformer;
-        var transformer = (ValueTransformer<K>) ValueTransformers.get(context.genericArgs()[0]);
+        var innerType = context.type().getGenericTypeArgs()[0].getRawType();
+        var transformer = (ValueTransformer<K>) ValueTransformers.get(innerType);
         if (transformer == null) {
             throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for key type: %s"
-                    .formatted(context.genericArgs()[0]));
+                    .formatted(innerType));
         }
         keyTransformer = transformer;
         return keyTransformer;
@@ -35,10 +34,11 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
     @SuppressWarnings("unchecked")
     private ValueTransformer<V> getValueTransformer(ValueTransformer.TransformerContext<Map<K, V>> context) {
         if (valueTransformer != null) return valueTransformer;
-        var transformer = (ValueTransformer<V>) ValueTransformers.get(context.genericArgs()[1]);
+        var innerType = context.type().getGenericTypeArgs()[1].getRawType();
+        var transformer = (ValueTransformer<V>) ValueTransformers.get(innerType);
         if (transformer == null) {
             throw new IllegalStateException("Sync: Failed to serialize map: Missing transformer for value type: %s"
-                    .formatted(context.genericArgs()[1]));
+                    .formatted(innerType));
         }
         valueTransformer = transformer;
         return valueTransformer;
@@ -46,35 +46,15 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
     private ValueTransformer.TransformerContext<K> getInnerKeyContext(@Nullable K key,
                                                                       ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        Type[] generics;
-        Class<?> clazz;
-        if (parentContext.genericArgs()[0] instanceof ParameterizedType parameterizedType) {
-            generics = parameterizedType.getActualTypeArguments();
-            clazz = (Class<?>) parameterizedType.getRawType();
-        } else {
-            generics = new Type[0];
-            clazz = (Class<?>) parentContext.genericArgs()[0];
-        }
-        if (key != null) clazz = key.getClass();
         return new TransformerContext<>(parentContext.holder(),
-                clazz, generics, key, parentContext.fieldName() + "[key]",
+                parentContext.type().getGenericTypeArgs()[0], key, parentContext.fieldName() + "[key]",
                 parentContext.isClientSync());
     }
 
     private ValueTransformer.TransformerContext<V> getInnerValueContext(@Nullable V value,
                                                                         ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        Type[] generics;
-        Class<?> clazz;
-        if (parentContext.genericArgs()[1] instanceof ParameterizedType parameterizedType) {
-            generics = parameterizedType.getActualTypeArguments();
-            clazz = (Class<?>) parameterizedType.getRawType();
-        } else {
-            generics = new Type[0];
-            clazz = (Class<?>) parentContext.genericArgs()[1];
-        }
-        if (value != null) clazz = value.getClass();
         return new TransformerContext<>(parentContext.holder(),
-                clazz, generics, value,
+                parentContext.type().getGenericTypeArgs()[1], value,
                 parentContext.fieldName() + "[value]",
                 parentContext.isClientSync());
     }
@@ -111,9 +91,11 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
             K key = getKeyTransformer(context).deserializeNBT(keyTag, getInnerKeyContext(null, context));
             V value = getValueTransformer(context).deserializeNBT(valueTag, getInnerValueContext(null, context));
             if (key == null || value == null) {
-                GTCEu.LOGGER.warn("Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]", key, value, keyTag, valueTag);
+                GTCEu.LOGGER.warn(
+                        "Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]",
+                        key, value, keyTag, valueTag);
                 continue;
-            };
+            } ;
             current.put(key, value);
         }
         return current;

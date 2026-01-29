@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -25,8 +23,7 @@ public final class FieldSyncData {
     @Setter
     public @Nullable ValueTransformer<?> transformer;
     public final List<MethodHandle> changeListenerHandles;
-    public final Class<?> clazz;
-    public final Type[] genericArgs;
+    public final TypeDeclaration type;
 
     public FieldSyncData(Field field, VarHandle handle, @Nullable ValueTransformer<?> transformer,
                          List<MethodHandle> changeListenerHandles) {
@@ -38,14 +35,6 @@ public final class FieldSyncData {
         this.triggerClientRerender = field.isAnnotationPresent(RerenderOnChanged.class);
         this.changeListenerHandles = changeListenerHandles;
         this.transformer = transformer;
-
-        var type = field.getGenericType();
-        if (type instanceof ParameterizedType parameterizedType) {
-            clazz = (Class<?>) parameterizedType.getRawType();
-            genericArgs = parameterizedType.getActualTypeArguments();
-        } else {
-            clazz = (Class<?>) type;
-            genericArgs = new Type[0];
-        }
+        this.type = new TypeDeclaration(field.getGenericType());
     }
 }

@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.syncsystem.data_transformers;
 
 import com.gregtechceu.gtceu.syncsystem.ISyncManaged;
+import com.gregtechceu.gtceu.syncsystem.TypeDeclaration;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Type;
 
 /**
  * Represents an object that provides a set of methods for encoding/decoding a value of type {@code <T>} into a
@@ -22,10 +21,7 @@ public interface ValueTransformer<T> {
      * A record holding information about the context from which this value transformer is currently being invoked.
      * 
      * @param holder       The sync object which holds the specific field being serialized by this transformer.
-     * @param clazz        The actual type of the field currently being serialized/deserialized. (This may be a subtype
-     *                     of the type which this transformer is registered for.)
-     * @param genericArgs  The values of the generic arguments which this field has been declared with, or an empty
-     *                     array if the type is not generic.
+     * @param type         An object describing the type of the field currently being serialized/deserialized.
      * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
      * @param fieldName    The name of the field being serialized, or a string denoting the current sync context if not
      *                     being invoked directly on a field.
@@ -33,8 +29,7 @@ public interface ValueTransformer<T> {
      *                     being
      *                     written to the server save.
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull Class<?> clazz,
-                                 @NotNull Type @NotNull [] genericArgs,
+    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
 
     /**
