@@ -190,7 +190,6 @@ public final class ValueTransformers {
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
-        registerTransformer(CustomFluidTank.class, new CustomFluidTankTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
     }
