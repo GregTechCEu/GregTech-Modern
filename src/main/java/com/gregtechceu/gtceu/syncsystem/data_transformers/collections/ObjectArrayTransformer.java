@@ -49,11 +49,10 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
             current = Arrays.copyOf(current, listTag.size());
         }
         for (int i = 0; i < listTag.size(); i++) {
-            var currentV = current[i];
             T result = elementTransformer.deserializeNBT(ValueTransformer.stripLdlibWrapper(listTag.get(i)),
                     getInnerElemContext(null, context));
             if (result == null) return current;
-            if (result != currentV) current[i] = result;
+            current[i] = result;
         }
         return current;
     }

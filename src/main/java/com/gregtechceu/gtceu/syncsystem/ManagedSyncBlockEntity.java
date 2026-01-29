@@ -90,7 +90,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public final void updateTick() {
         setChanged();
         if (isDirty) {
-            Objects.requireNonNull(getLevel()).sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+            Objects.requireNonNull(getLevel()).sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(),
+                    Block.UPDATE_CLIENTS);
             isDirty = false;
         }
     }
