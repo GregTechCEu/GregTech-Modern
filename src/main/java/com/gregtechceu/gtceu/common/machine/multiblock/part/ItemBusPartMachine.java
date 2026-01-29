@@ -12,10 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
-import com.gregtechceu.gtceu.api.mui.drawable.text.TextRenderer;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
-import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.value.sync.SyncHandlers;
@@ -23,12 +22,12 @@ import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Grid;
-import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuis;
@@ -306,50 +305,17 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
 
-        // inv is 162, 74
-        // 176 = 162 + 7 * 2 padding,
-        int panelWidth = Math.max(176 + 18 + 3, 18 * rowSize + 18 + 14);
-        int panelHeight = 74 + Math.max(30, 9 + rowSize * 18) + 14;
+        int width = Math.max(176, 18 * rowSize + 14);
+        int height = Math.max(168, (18 * rowSize) + 78 + 19);
+        var panel = GTGuis.createPanel(this, width, height);
+        panel.child(GTMuiWidgets.createTitleBar(this.getDefinition(), width));
 
-        var panel = GTGuis.createPanel(this, panelWidth, panelHeight);
-
-        var displayItem = this.getDefinition().asStack();
-        String hatchName = displayItem.getHoverName().getString();
-        hatchName = hatchName.replaceAll("§.", "").trim();
-
-        int borderRadius = 5;
-        int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.8f) - (iconSize + (borderRadius * 2));
-        int textTitleWidth = TextRenderer.getFont().width(hatchName) + iconSize + (borderRadius * 2);
-
-        int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
-        int textHeightPerRow = (int) (IKey.renderer.getFontHeight());
-        int textHeight = textHeightPerRow * textRows + borderRadius;
-
-        panel.child(new Row()
-                .coverChildrenHeight()
-                .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                .widthRel(.8f)
-                .top(-(textHeight + borderRadius))
-                .rightRel(0.5f)
-                .background(GTGuiTextures.BACKGROUND)
-                .child(new ItemDrawable(displayItem)
-                        .asIcon().size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .mainAxisAlignment(Alignment.MainAxis.START)
-                .child(IKey.str(hatchName)
-                        .asWidget()
-                        .paddingTop(1)
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
-                        .size(textTitleWidth, textHeight)));
+        int smallHatchOffset = tier < 2 ? 9 * (3 - rowSize) : 0;
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
-
         panel.child(new Grid()
-                .top(7).height(18 * rowSize)
-                .minElementMargin(0, 0)
-                .minColWidth(18).minRowHeight(18)
+                .coverChildren()
+                .top(10 + smallHatchOffset)
                 .alignX(0.5f)
                 .mapTo(rowSize, rowSize * rowSize, index -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
@@ -363,14 +329,24 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
                 .child(SlotGroupWidget.playerInventory(true)
                         // .alignX(Alignment.CENTER)
-                        .left(18 + 10)
+                        .left(7)
                         .bottom(7));
+
+        var theme = this.getDefinition().getThemeId();
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+                .getBackground();
+        if (backgroundTexture == null) {
+            backgroundTexture = GTGuiTextures.BACKGROUND;
+        }
 
         panel.child(new Column()
                 .coverChildren()
-                .childPadding(3)
-                // .left(7).top(18 * rowSize + 7 + 5)
-                .left(7).bottom(7)
+                .rightRel(1.0f)
+                .reverseLayout(true)
+                .bottom(16)
+                .padding(8, 0, 4, 4)
+                .childPadding(2)
+                .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
                 .child(new ToggleButton()
                         .value(new BoolValue.Dynamic(this::isWorkingEnabled, this::setWorkingEnabled))
                         .selectedBackground(GTGuiTextures.BUTTON_POWER[1])
@@ -379,7 +355,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                         .tooltipBuilder((r) -> r.addLine(IKey.lang(Component.translatable(
                                 isWorkingEnabled() ? "behaviour.soft_hammer.enabled" :
                                         "behaviour.soft_hammer.disabled")))))
-                .childIf(io.support(IO.IN), new ToggleButton()
+                .childIf(isCircuitSlotEnabled(), () -> GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager))
+                .childIf(io.support(IO.IN), () -> new ToggleButton()
                         .value(new BoolValue.Dynamic(this::isDistinct, this::setDistinct))
                         .stateOverlay(GTGuiTextures.BUTTON_DISTINCT)
                         .tooltipAutoUpdate(true)
@@ -387,14 +364,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                                          richTooltip) -> richTooltip
                                                  .add(Component.translatable("gtceu.multiblock.universal.distinct")
                                                          .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
-                                                         .append(Component.translatable(isDistinct() ?
-                                                                 "gtceu.multiblock.universal.distinct.yes" :
-                                                                 "gtceu.multiblock.universal.distinct.no"))))))
-        /*
-         * .childIf(io.support(IO.IN) && hasCircuitSlot && isCircuitSlotEnabled(),
-         * new ItemSlot().slot(new ModularSlot(circuitInventory.storage, 0)))
-         */
-        ;
+                                                         .append(Component
+                                                                 .translatable("gtceu.multiblock.universal.distinct" +
+                                                                         (isDistinct() ? ".yes" : ".no")))))));
 
         return panel;
     }

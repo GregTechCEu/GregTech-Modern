@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
@@ -30,6 +32,7 @@ import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
@@ -302,30 +305,47 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new ModularPanel(getDefinition().getName())
-                .child(GTMuiWidgets.createTitleBar(getDefinition(), 174))
-                .bindPlayerInventory()
+        int width = 176;
+        int height = Math.max(168, (int) (18 * Math.sqrt(slots)) + 78 + 19);
+        var panel = GTGuis.createPanel(this, width, height);
+
+        int rowSize = (int) Math.sqrt(slots);
+
+        var theme = this.getDefinition().getThemeId();
+        var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
+                .getBackground();
+        if (backgroundTexture == null) {
+            backgroundTexture = GTGuiTextures.BACKGROUND;
+        }
+
+        panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 174))
+                .child(SlotGroupWidget.playerInventory(true)
+                        // .alignX(Alignment.CENTER)
+                        .left(7)
+                        .bottom(7))
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
-                        .marginBottom(91)
-                        .center())
+                        .top(10)
+                        .horizontalCenter())
                 .child(new Column()
                         .coverChildren()
-                        .leftRel(1.0f)
+                        .rightRel(1.0f)
                         .reverseLayout(true)
                         .bottom(16)
-                        .padding(0, 8, 4, 4)
+                        .padding(8, 0, 4, 4)
                         .childPadding(2)
+                        .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
                         .excludeAreaInXei()
-                        .background(GTGuiTextures.BACKGROUND.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
                                 syncManager)));
+
+        return panel;
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
         return Flow.row()
                 .coverChildrenHeight()
                 .widthRel(.6f)
-                .background(GTGuiTextures.DISPLAY)
+                .background(GTGuiTextures.MUI_DISPLAY)
                 .padding(5)
                 .childPadding(5)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
@@ -334,11 +354,13 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                         .alignX(1f)
                         .childPadding(2)
                         .coverChildren()
-                        .childIf(io.support(IO.OUT), new FluidSlot()
+                        .reverseLayout(true)
+                        .childIf(io.support(IO.OUT), () -> new FluidSlot()
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid())
                                         .phantom(true)
-                                        .controlsAmount(false)))
-                        .childIf(io.support(IO.OUT), new ToggleButton()
+                                        .controlsAmount(false))
+                                .tooltip(t -> t.addLine("Locked Fluid")))
+                        .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .value(new BooleanSyncValue(tank::isLocked, tank::setLocked))
                                 .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
                                 .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
