@@ -44,3 +44,5 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 Synced actions are useful when you need a client-side input (e.g. a button press) to trigger an action on the server.  
 
 In this case we create a synced action called `randomButtonPressed`, and when the button is pressed on the client, the `randomButtonPressed` signal is sent to the server and the relevant action is executed.
+
+If you need to pass other data with your action, you can pass a `(packet) -> {...}` as second argument to `callSyncedAction` and serialize your data there, and then deserialize it from the `packet` argument in the synced action definition.
