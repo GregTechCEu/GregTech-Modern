@@ -489,9 +489,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
 
-            if (cleanroomProviderTrait.isActive())
+            if (cleanroomProviderTrait.isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
-            else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
+            } else {
+                textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
+            }
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
             textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
             textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,

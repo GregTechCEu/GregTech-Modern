@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class CleanroomProviderTrait extends MachineTrait {
 
-    public static MachineTraitType<CleanroomProviderTrait> TYPE = new MachineTraitType<>(CleanroomProviderTrait.class,
+    public static final MachineTraitType<CleanroomProviderTrait> TYPE = new MachineTraitType<>(CleanroomProviderTrait.class,
             false);
 
     @Override
