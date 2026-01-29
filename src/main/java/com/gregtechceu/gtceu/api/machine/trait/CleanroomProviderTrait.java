@@ -7,14 +7,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class CleanroomProviderTrait extends MachineTrait {
 
-    public static final MachineTraitType<CleanroomProviderTrait> TYPE = new MachineTraitType<>(CleanroomProviderTrait.class,
+    public static final MachineTraitType<CleanroomProviderTrait> TYPE = new MachineTraitType<>(
+            CleanroomProviderTrait.class,
             false);
-
 
     @Getter
     @Setter
