@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.recipe.condition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomRecieverTrait;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -56,9 +56,9 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
         if (!ConfigHolder.INSTANCE.machines.enableCleanroom) return true;
         if (ConfigHolder.INSTANCE.machines.cleanMultiblocks && machine instanceof IMultiController) return true;
 
-        CleanroomRecieverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomRecieverTrait.TYPE);
+        CleanroomReceiverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
 
-        if (recieverTrait != null && this.cleanroom != null) return recieverTrait.hasActiveCleanroomProvider(cleanroom);
+        if (recieverTrait != null && this.cleanroom != null) return recieverTrait.hasActiveCleanroom(cleanroom);
         return true;
     }
 

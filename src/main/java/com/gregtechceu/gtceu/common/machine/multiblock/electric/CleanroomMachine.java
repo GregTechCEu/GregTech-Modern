@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomRecieverTrait;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -94,7 +94,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     private EnergyContainerList inputEnergyContainers;
     @Getter
     @Nullable
-    private Collection<CleanroomRecieverTrait> cleanroomReceivers;
+    private Collection<CleanroomReceiverTrait> cleanroomReceivers;
 
     private final CleanroomProviderTrait cleanroomProviderTrait;
 
@@ -127,10 +127,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         // bind cleanroom
         if (cleanroomReceivers != null) {
-            this.cleanroomReceivers.forEach(CleanroomRecieverTrait::removeCleanroomProvider);
+            this.cleanroomReceivers.forEach(CleanroomReceiverTrait::removeCleanroom);
             this.cleanroomReceivers = null;
         }
-        Set<CleanroomRecieverTrait> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver",
+        Set<CleanroomReceiverTrait> receivers = getMultiblockState().getMatchContext().getOrCreate("cleanroomReceiver",
                 Sets::newHashSet);
         this.cleanroomReceivers = ImmutableSet.copyOf(receivers);
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroomProvider(cleanroomProviderTrait));
@@ -152,7 +152,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         this.cleanAmount = MIN_CLEAN_AMOUNT;
         cleanroomProviderTrait.setActive(false);
         if (cleanroomReceivers != null) {
-            this.cleanroomReceivers.forEach(CleanroomRecieverTrait::removeCleanroomProvider);
+            this.cleanroomReceivers.forEach(CleanroomReceiverTrait::removeCleanroom);
             this.cleanroomReceivers = null;
         }
     }
@@ -413,7 +413,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @NotNull
     protected TraceabilityPredicate innerPredicate() {
         return new TraceabilityPredicate(blockWorldState -> {
-            Set<CleanroomRecieverTrait> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
+            Set<CleanroomReceiverTrait> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getTileEntity();
@@ -421,7 +421,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return false;
                 }
-                CleanroomRecieverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomRecieverTrait.TYPE);
+                CleanroomReceiverTrait recieverTrait = machine.getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
                 if (recieverTrait != null) receivers.add(recieverTrait);
             }
             return true;

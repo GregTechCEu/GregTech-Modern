@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomRecieverTrait;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
@@ -36,15 +36,15 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     @Override
     public void addedToController(IMultiController controller) {
         super.addedToController(controller);
-        CleanroomRecieverTrait recieverTrait = controller.self().getTraitHolder().getTrait(CleanroomRecieverTrait.TYPE);
+        CleanroomReceiverTrait recieverTrait = controller.self().getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
         if (recieverTrait != null) recieverTrait.setCleanroomProvider(cleanroomProvider);
     }
 
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
-        CleanroomRecieverTrait recieverTrait = controller.self().getTraitHolder().getTrait(CleanroomRecieverTrait.TYPE);
-        if (recieverTrait != null) recieverTrait.removeCleanroomProvider();
+        CleanroomReceiverTrait recieverTrait = controller.self().getTraitHolder().getTrait(CleanroomReceiverTrait.TYPE);
+        if (recieverTrait != null) recieverTrait.removeCleanroom();
     }
 
     @Override
