@@ -375,7 +375,7 @@ public class MultiblockDisplayText {
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
-            var reasons = recipeLogic.getFailReasons();
+            var reasons = recipeLogic.getFailureReasons();
             if (!reasons.isEmpty()) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
                 for (var reason : reasons) {

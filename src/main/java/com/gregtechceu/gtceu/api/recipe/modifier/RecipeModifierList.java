@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import lombok.Getter;
@@ -39,9 +39,7 @@ public final class RecipeModifierList implements RecipeModifier {
             var func = modifier.getModifier(machine, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
             if (runningRecipe == null) {
-                if (machine instanceof IRecipeLogicMachine recipeLogicMachine) {
-                    recipeLogicMachine.getRecipeLogic().getFailReasonMap().put(recipe, func.getFailReason());
-                }
+                RecipeLogic.putFailureReason(machine, recipe, func.getFailReason());
                 return ModifierFunction.NULL;
             }
             result = func.compose(result);
