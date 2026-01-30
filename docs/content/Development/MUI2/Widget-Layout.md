@@ -10,8 +10,8 @@ Each widget has several builder setter methods for position and size. They all c
 ## Sizing
 
 - `width(int)` sets the widget width in pixels
-- `widthRel(float)` sets the widget width relative to its parent (f.e. if the parent is 120 wide and we
-  call`widthRel(0.5f)` then our widget will be 60 wide
+- `widthRel(float)` sets the widget width relative to its parent (f.e. if the parent is 120 px wide and we
+  call `widthRel(0.5f)`, our widget will be 60 px wide)
 - `height(int)` and `heightRel(float)` work analogous to previous methods
 - `size(int width, int height)` is equivalent to `.width(width).height(height)`
 - `size(int val)` is equivalent to `.width(val).height(val)`
