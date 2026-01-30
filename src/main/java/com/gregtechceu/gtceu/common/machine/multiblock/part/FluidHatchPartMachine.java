@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
@@ -350,23 +351,20 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                 .child(new Row()
                         .childPadding(2)
                         .coverChildren()
-                        .childIf(io.support(IO.OUT), () -> new FluidSlot()
-                                .name("lockedFluid")
-                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid())
-                                // .phantom(true)
-                                ).alwaysShowFull(true).displayAmount(true)
-                                .tooltip(t -> t.addLine("Locked Fluid")))
-                        .childIf(io.support(IO.OUT), () -> new ButtonWidget<>()
-                                .onMousePressed((x, y, b) -> {
-                                    if (b != 0) {
-                                        return false;
-                                    }
-                                    locked.setBoolValue(!locked.getBoolValue());
-                                    return true;
-
-                                })
-                                .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
-                                .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
+                        .childIf(io.support(IO.OUT), () ->
+                                new FluidSlot()
+                                        .name("lockedFluid")
+                                        .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
+                                        .alwaysShowFull(true)
+                                        .displayAmount(true)
+                                        .tooltip(t -> t.addLine("Locked Fluid")))
+                        .childIf(io.support(IO.OUT), () ->
+                                new ToggleButton()
+                                        .syncHandler("locked")
+                                        .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
+                                        .overlay(GTGuiTextures.BUTTON_LOCK)
+                                        .background(GTGuiTextures.MC_BUTTON)
+                                        .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()
