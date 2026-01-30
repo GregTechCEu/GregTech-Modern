@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.mui.value.sync;
 import com.gregtechceu.gtceu.api.misc.forge.FluidTankHandler;
 import com.gregtechceu.gtceu.api.mui.utils.MouseData;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -16,6 +15,7 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -170,7 +170,8 @@ public class FluidSlotSyncHandler extends ValueSyncHandler<FluidStack> {
             return;
         }
         FluidStack currentFluid = this.fluidTank.getFluid();
-        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_LEFT && this.canDrainSlot && !currentFluid.isEmpty()) {
+        if (mouseData.mouseButton() == InputConstants.MOUSE_BUTTON_LEFT && this.canDrainSlot &&
+                !currentFluid.isEmpty()) {
             boolean performedTransfer = false;
             for (int i = 0; i < maxAttempts; i++) {
                 FluidActionResult result = FluidUtil.tryFillContainer(currentStack, this.fluidHandler,

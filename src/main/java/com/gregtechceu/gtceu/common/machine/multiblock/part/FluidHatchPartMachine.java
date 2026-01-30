@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -17,14 +16,12 @@ import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
-import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
@@ -318,14 +315,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             backgroundTexture = GTGuiTextures.BACKGROUND;
         }
 
-        syncManager.registerServerSyncedAction("toggle_locked", (packet) -> {
-            tank.setLocked(!tank.isLocked());
-        });
-
-
         panel.child(GTMuiWidgets.createTitleBar(getDefinition(), 174))
                 .child(SlotGroupWidget.playerInventory(true)
-                        // .alignX(Alignment.CENTER)
                         .left(7)
                         .bottom(7))
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
@@ -347,12 +338,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
+        BooleanSyncValue locked = new BooleanSyncValue(() -> this.tank.isLocked(), (lock) -> this.tank.setLocked(lock));
+        syncManager.syncValue("locked", locked);
         return new Column()
                 .widthRel(.6f)
                 .height(60)
-                //.background(GTGuiTextures.MUI_DISPLAY)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                //.crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .child(new TextWidget<>(IKey.dynamic(() -> getFluidNameText()))
                         .top(10)
                         .horizontalCenter())
@@ -362,30 +353,27 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()
                                 .name("lockedFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid())
-                                        //.phantom(true)
-                                        ).alwaysShowFull(true).displayAmount(true)
+                                // .phantom(true)
+                                ).alwaysShowFull(true).displayAmount(true)
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ButtonWidget<>()
-                                .onMousePressed((x,y,b) -> {
-                                    if(b == 0){
-                                        syncManager.callSyncedAction("toggle_locked");
-                                        return true;
+                                .onMousePressed((x, y, b) -> {
+                                    if (b != 0) {
+                                        return false;
                                     }
-                                    return false;
+                                    locked.setBoolValue(!locked.getBoolValue());
+                                    return true;
+
                                 })
-                                //.overlay(GTGuiTextures.BUTTON_LOCK)
                                 .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
                                 .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
-                                //.hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
-                                //.selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED, GTGuiTextures.BUTTON_LOCK))
-                                //.selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED,
-                                //        GTGuiTextures.BUTTON_LOCK))
+
                         )
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(true || io.support(IO.IN))
-                                ).displayAmount(true)));
+                                        .canFillSlot(true || io.support(IO.IN)))
+                                .displayAmount(true)));
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
