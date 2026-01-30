@@ -362,7 +362,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                                 new ToggleButton()
                                         .syncHandler("locked")
                                         .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
-                                        .overlay(GTGuiTextures.BUTTON_LOCK)
+                                        .overlay(false,GTGuiTextures.BUTTON_LOCK)
                                         .background(GTGuiTextures.MC_BUTTON)
                                         .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
 
