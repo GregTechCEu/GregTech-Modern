@@ -4,7 +4,7 @@ Each widget has several builder setter methods for position and size. They all c
 
 
 ## Coordinate system
-- Widget coordinates are local to the widget; (0, 0) is the **top-left** corner of the widget.
+- Widget coordinates are local to the widget; (0, 0) is the top-left corner of the widget.
 - Positions are relative to the parent by default.
 
 ## Sizing
@@ -12,14 +12,14 @@ Each widget has several builder setter methods for position and size. They all c
 - `width(int)` sets the widget width in pixels
 - `widthRel(float)` sets the widget width relative to its parent (f.e. if the parent is 120 wide and we
   call`widthRel(0.5f)` then our widget will be 60 wide
-- `height(int)` and `heightRel(float)` work analogue
+- `height(int)` and `heightRel(float)` work analogous to previous methods
 - `size(int width, int height)` is equivalent to `.width(width).height(height)`
 - `size(int val)` is equivalent to `.width(val).height(val)`
-- `sizeRel(float width, float height)` and `sizeRel(float val)` work analogue
+- `sizeRel(float width, float height)` and `sizeRel(float val)` work analogous to previous methods
 - `fullWidth()` and `fullHeight()` are shortcuts for `widthRel(1f)` and `heightRel(1f)` respectively
 - `full()` combines the previous two methods
 - `coverChildrenWidth()` makes the widget width wrapping tightly around its children
-- `coverChildrenHeight()` works analogue
+- `coverChildrenHeight()` works analogous to previous method
 - `coverChildren()` wraps width and height tightly
 - `expanded()` is only useful for children of `Row` and `Column` widgets. It will make the widget expand as much as
   possible in the widgets axis (width in row and height in column)
@@ -117,38 +117,41 @@ The parent of all panels is by default the screen.
     - e.g. `Flow.row().crossAxisAlignment(Alignment.CrossAxis.CENTER)` centers the row's children vertically, given that it has a set height
 - `childPadding(int)` adds fixed spacing *between* children.
 - `coverChildren()` / `coverChildrenWidth()` / `coverChildrenHeight()` sizes the flow to fit its children.
+- `collapseDisabledChild()` does not consider disabled children during position calculations.
+    - This is useful when the enabled state of children changes dynamically.
+- `reverseLayout(bool)` reverses the order that children are drawn.
 
 Notes:
 
 - Centering (main or cross axis) requires the flow to have a known size on that axis. If you want a row to center its children horizontally, give it a width (e.g. `widthRel(1f)` or `width(120)`).  
-- If a flow is set to `coverChildren()` it naturally sizes to its children, so `mainAxisAlignment` behaves like START.  
-- By default, a `Flow` is `sizeRel(1, 1)`, which means they take up as much space as their parents size.
-
-## Centering widgets
-There are two common ways to center things:
-
-1) **Center a widget within its parent** (positioning)
-
-- `widget.center()` or `widget.align(Alignment.Center)`
-- `widget.horizontalCenter()` / `widget.verticalCenter()`
-
-2) **Center children inside a Row/Column** (layout)
-
-- `row.mainAxisAlignment(Alignment.MainAxis.CENTER)` to center along the row direction.
-- `row.crossAxisAlignment(Alignment.CrossAxis.CENTER)` to center across the row direction.
-- Remember to give the row/column a size on that axis (e.g. `widthRel(1f)` for a row).
+- By default, a `Flow` is `full()`, which means they take up as much space as their parents size.
 
 Here is how all the MainAxisAlignments apply to widgets:
 
 ![MainAxisAlignments](./Layout_MainAxisAlignments.png)
 
+
+## Centering widgets
+There are two common ways to center things:
+
+1) Center a widget within its parent (positioning)
+
+- `widget.center()` or `widget.align(Alignment.Center)`
+- `widget.horizontalCenter()` / `widget.verticalCenter()`
+
+2) Center children inside a Row/Column (layout)
+
+- `row.mainAxisAlignment(Alignment.MainAxis.CENTER)` to center along the row direction.
+- `row.crossAxisAlignment(Alignment.CrossAxis.CENTER)` to center across the row direction.
+- Remember to give the row/column a size on that axis (e.g. `widthRel(1f)` for a row).
+
 ## Margin vs padding
 Spacing is handled via two different concepts:
 
-- **Margin**: space **outside** a widget. Layouts (like `Flow`) include margins when positioning children.
+- Margin: space outside a widget. Layouts (like `Flow`) include margins when positioning children.
     - `marginTop(px)`, `marginBottom(px)`, `marginLeft(px)`, `marginRight(px)` set the padding in pixels for the directions
     - `margin(all)`, `margin(horizontal, vertical)`, `margin(left, right, top, bottom)` are shortcuts for the respective methods
-- **Padding**: space **inside** a widget. It reduces the content area and affects how children are placed.
+- Padding: space inside a widget. It reduces the content area and affects how children are placed.
     - `paddingTop(px)`, `paddingBottom(px)`, `paddingLeft(px)`, `paddingRight(px)` sets the margin in pixels for the directions
     - `padding(all)`, `padding(horizontal, vertical)`, `padding(left, right, top, bottom)` are shortcuts for the respective methods
 
