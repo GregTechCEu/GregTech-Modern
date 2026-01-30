@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.mui.drawable.UITexture;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.theme.ThemeAPI;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Column;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Row;
 import com.gregtechceu.gtceu.api.mui.widgets.slot.FluidSlot;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
@@ -273,13 +275,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     private Component getFluidNameText() {
-        Component translation;
-        if (!this.tank.getFluidInTank(0).isEmpty()) {
-            translation = this.tank.getFluidInTank(0).getDisplayName();
-        } else {
-            translation = this.tank.getLockedFluid().getFluid().getDisplayName();
-        }
-        return translation;
+        return this.tank.getFluidInTank(0).isEmpty() ?
+                Component.translatable("gtceu.fluid.empty") :
+                this.tank.getFluidInTank(0).getDisplayName();
     }
 
     private String getFluidAmountText() {
@@ -342,34 +340,38 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
-        return Flow.row()
-                .coverChildrenHeight()
+        return new Column()
                 .widthRel(.6f)
-                .background(GTGuiTextures.MUI_DISPLAY)
-                .padding(5)
-                .childPadding(5)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .child(new TextWidget<>(IKey.dynamic(this::getFluidText)))
-                .child(Flow.column()
-                        .alignX(1f)
+                .height(60)
+                //.background(GTGuiTextures.MUI_DISPLAY)
+                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                //.crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .child(new TextWidget<>(IKey.dynamic(() -> getFluidNameText()))
+                        .top(10)
+                        .horizontalCenter())
+                .child(new Row()
                         .childPadding(2)
                         .coverChildren()
-                        .reverseLayout(true)
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()
+                                .name("lockedFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid())
-                                        .phantom(true)
-                                        .controlsAmount(false))
+                                        //.phantom(true)
+                                        ).alwaysShowFull(true).displayAmount(true)
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
-                                .value(new BooleanSyncValue(tank::isLocked, tank::setLocked))
+                                .value(new BoolValue.Dynamic(tank::isLocked, tank::setLocked))
+                                //.overlay(GTGuiTextures.BUTTON_LOCK)
+                                .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
                                 .background(GTGuiTextures.MC_BUTTON, GTGuiTextures.BUTTON_LOCK)
-                                .hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
-                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED, GTGuiTextures.BUTTON_LOCK)
-                                .selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED,
-                                        GTGuiTextures.BUTTON_LOCK))
+                                //.hoverBackground(GTGuiTextures.MC_BUTTON_HOVERED, GTGuiTextures.BUTTON_LOCK)
+                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED, GTGuiTextures.BUTTON_LOCK))
+                                //.selectedHoverBackground(GTGuiTextures.MC_BUTTON_HOVERED_PRESSED,
+                                //        GTGuiTextures.BUTTON_LOCK))
                         .child(new FluidSlot()
+                                .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(io.support(IO.IN)))));
+                                        .canFillSlot(true || io.support(IO.IN))
+                                ).displayAmount(true)));
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
