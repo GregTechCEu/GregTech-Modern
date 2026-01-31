@@ -53,7 +53,6 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -77,7 +76,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
@@ -294,16 +292,6 @@ public class CommonProxy {
             if (GTCEu.Mods.isCCTweakedLoaded()) {
                 GTCEu.LOGGER.info("CC: Tweaked found. Enabling integration...");
                 CCTweakedPlugin.init();
-            }
-        });
-    }
-
-    @SubscribeEvent
-    public void loadComplete(FMLLoadCompleteEvent e) {
-        e.enqueueWork(() -> {
-            if (GTCEu.isModLoaded(GTValues.MODID_TOP)) {
-                GTCEu.LOGGER.info("TheOneProbe found. Enabling integration...");
-                TheOneProbePluginImpl.init();
             }
         });
     }
