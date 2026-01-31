@@ -9,7 +9,6 @@
 //
 // THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // spotless:on
-
 package com.gregtechceu.gtceu.api.codec;
 
 import com.google.common.collect.ImmutableList;
@@ -25,8 +24,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,16 +38,18 @@ import java.util.stream.Stream;
 
 /**
  * Ops for pure Java types.<br>
- * This class MUST NOT discard any information (other than exact compound types) - there should be no data loss between 'create' and 'get' pairs.
+ * This class MUST NOT discard any information (other than exact compound types) -
+ * there should be no data loss between 'create' and 'get' pairs.
  * <hr>
- * Copied from a newer version of DataFixerUpper under MIT; original source is
- * <a href="https://github.com/Mojang/DataFixerUpper/blob/e5fc24ff5d354cbb3cb63ca2813c09e13188828e/src/main/java/com/mojang/serialization/JavaOps.java">here</a>.
+ * Copied from a newer version of DataFixerUpper under the MIT license. Original source is
+ * <a href=
+ * "https://github.com/Mojang/DataFixerUpper/blob/e5fc24ff5d354cbb3cb63ca2813c09e13188828e/src/main/java/com/mojang/serialization/JavaOps.java">here</a>.
  */
 public class JavaOps implements DynamicOps<Object> {
+
     public static final JavaOps INSTANCE = new JavaOps();
 
-    private JavaOps() {
-    }
+    private JavaOps() {}
 
     @Override
     public Object empty() {
@@ -238,7 +239,8 @@ public class JavaOps implements DynamicOps<Object> {
             if (map.isEmpty()) {
                 return DataResult.success(values);
             }
-            final ImmutableMap.Builder<Object, Object> result = ImmutableMap.builderWithExpectedSize(map.size() + values.size());
+            final ImmutableMap.Builder<Object, Object> result = ImmutableMap
+                    .builderWithExpectedSize(map.size() + values.size());
             result.putAll(map);
             result.putAll(values);
             return DataResult.success(result.buildKeepingLast());
@@ -297,30 +299,30 @@ public class JavaOps implements DynamicOps<Object> {
     public DataResult<MapLike<Object>> getMap(final Object input) {
         if (input instanceof final Map<?, ?> map) {
             return DataResult.success(
-                new MapLike<>() {
-                    @Nullable
-                    @Override
-                    public Object get(final Object key) {
-                        return map.get(key);
-                    }
+                    new MapLike<>() {
 
-                    @Nullable
-                    @Override
-                    public Object get(final String key) {
-                        return map.get(key);
-                    }
+                        @Nullable
+                        @Override
+                        public Object get(final Object key) {
+                            return map.get(key);
+                        }
 
-                    @Override
-                    public Stream<Pair<Object, Object>> entries() {
-                        return getMapEntries(map);
-                    }
+                        @Nullable
+                        @Override
+                        public Object get(final String key) {
+                            return map.get(key);
+                        }
 
-                    @Override
-                    public String toString() {
-                        return "MapLike[" + map + "]";
-                    }
-                }
-            );
+                        @Override
+                        public Stream<Pair<Object, Object>> entries() {
+                            return getMapEntries(map);
+                        }
+
+                        @Override
+                        public String toString() {
+                            return "MapLike[" + map + "]";
+                        }
+                    });
         }
         return DataResult.error(() -> "Not a map: " + input);
     }
@@ -415,7 +417,9 @@ public class JavaOps implements DynamicOps<Object> {
         return "Java";
     }
 
-    private static final class FixedMapBuilder<T> extends RecordBuilder.AbstractUniversalBuilder<T, ImmutableMap.Builder<T, T>> {
+    private static final class FixedMapBuilder<T> extends
+                                              RecordBuilder.AbstractUniversalBuilder<T, ImmutableMap.Builder<T, T>> {
+
         public FixedMapBuilder(final DynamicOps<T> ops) {
             super(ops);
         }
@@ -426,7 +430,8 @@ public class JavaOps implements DynamicOps<Object> {
         }
 
         @Override
-        protected ImmutableMap.Builder<T, T> append(final T key, final T value, final ImmutableMap.Builder<T, T> builder) {
+        protected ImmutableMap.Builder<T, T> append(final T key, final T value,
+                                                    final ImmutableMap.Builder<T, T> builder) {
             return builder.put(key, value);
         }
 

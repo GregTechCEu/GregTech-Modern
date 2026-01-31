@@ -35,7 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OreVeinUtil {
 
-    private static final Codec<HolderSet<Biome>> BIOME_HOLDERSET_CODEC = RegistryCodecs.homogeneousList(Registries.BIOME);
+    private static final Codec<HolderSet<Biome>> BIOME_HOLDERSET_CODEC = RegistryCodecs
+            .homogeneousList(Registries.BIOME);
 
     private OreVeinUtil() {}
 
