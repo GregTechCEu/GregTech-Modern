@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.RegistryUtil;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -27,6 +26,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
@@ -216,8 +216,10 @@ public class BedrockOreDefinition {
             return this;
         }
 
-        public Builder dimensions(String... dimensions) {
-            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
+        public Builder dimensions(ResourceLocation... dimensions) {
+            return this.dimensions(Arrays.stream(dimensions)
+                    .map(id -> ResourceKey.create(Registries.DIMENSION, id))
+                    .collect(Collectors.toSet()));
         }
 
         public BedrockOreDefinition register() {

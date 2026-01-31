@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.RegistryUtil;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -27,6 +26,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class BedrockFluidDefinition {
 
@@ -202,8 +202,10 @@ public class BedrockFluidDefinition {
             return this;
         }
 
-        public Builder dimensions(String... dimensions) {
-            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
+        public Builder dimensions(ResourceLocation... dimensions) {
+            return this.dimensions(Arrays.stream(dimensions)
+                    .map(id -> ResourceKey.create(Registries.DIMENSION, id))
+                    .collect(Collectors.toSet()));
         }
 
         @ApiStatus.Internal
