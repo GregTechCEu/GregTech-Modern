@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.codec.JavaOps;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
@@ -21,7 +20,10 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -34,9 +36,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OreVeinUtil {
-
-    private static final Codec<HolderSet<Biome>> BIOME_HOLDERSET_CODEC = RegistryCodecs
-            .homogeneousList(Registries.BIOME);
 
     private OreVeinUtil() {}
 
@@ -116,25 +115,26 @@ public class OreVeinUtil {
 
     @Nullable
     public static Supplier<HolderSet<Biome>> resolveBiomes(List<String> biomes) {
-        if (biomes.isEmpty()) {
+        if (biomes.isEmpty())
             return null;
-        }
 
-        RegistryOps<Object> registryOps = RegistryOps.create(JavaOps.INSTANCE, GTRegistries.builtinRegistry());
-        Object codecInput = resolveBiomeCodecInput(biomes);
-        return Suppliers.memoize(() -> BIOME_HOLDERSET_CODEC.parse(registryOps, codecInput)
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        JsonElement codecInput = resolveBiomeCodecInput(biomes);
+        return Suppliers.memoize(() -> RegistryCodecs.homogeneousList(Registries.BIOME)
+                .parse(registryOps, codecInput)
                 .getOrThrow(false, GTCEu.LOGGER::error));
     }
 
-    private static Object resolveBiomeCodecInput(List<String> biomes) {
-        if (biomes.size() == 1) {
-            return biomes.get(0);
-        }
+    private static JsonElement resolveBiomeCodecInput(List<String> biomes) {
+        if (biomes.size() == 1)
+            return new JsonPrimitive(biomes.get(0));
 
-        if (biomes.stream().anyMatch(value -> value.indexOf('#') >= 0)) {
+        if (biomes.stream().anyMatch(filter -> filter.startsWith("#")))
             throw new IllegalStateException(
                     "Cannot resolve biomes: You may use either a single tag or multiple individual biomes.");
-        }
-        return biomes;
+
+        var jsonArray = new JsonArray();
+        biomes.forEach(jsonArray::add);
+        return jsonArray;
     }
 }
