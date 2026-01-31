@@ -26,6 +26,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
@@ -303,8 +304,8 @@ public class GTOreDefinition {
     }
 
     @Tolerate
-    @Nullable
-    public VeinGenerator veinGenerator(ResourceLocation id) {
+    @RemapForJS("customVeinGenerator")
+    public @Nullable VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
             veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
                     WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
