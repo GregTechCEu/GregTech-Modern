@@ -27,11 +27,13 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapForJS;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -46,6 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("unused")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class GTOreDefinition {
 
@@ -179,33 +182,44 @@ public class GTOreDefinition {
     public GTOreDefinition layer(IWorldGenLayer layer) {
         this.layer = layer;
         if (this.dimensionFilter == null || this.dimensionFilter.isEmpty()) {
-            dimensions(layer.getLevels().toArray(ResourceLocation[]::new));
+            dimensions(layer.getLevels().stream()
+                    .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                    .collect(Collectors.toSet()));
         }
         return this;
     }
 
-    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
-        this.dimensionFilter = Arrays.stream(dimensions)
-                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
-                .collect(Collectors.toSet());
+    @HideFromJS
+    public final GTOreDefinition dimensions(Set<ResourceKey<Level>> dimensions) {
+        this.dimensionFilter = dimensions;
         return this;
     }
 
-    public GTOreDefinition biomes(String first, String... biomes) {
+    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
+        return this.dimensions(Arrays.stream(dimensions)
+                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                .collect(Collectors.toSet()));
+    }
+
+    /// This method should <b>only</b> be used in KubeJS.
+    @SuppressWarnings("unused")
+    @ApiStatus.Internal
+    public GTOreDefinition kjs$biomes(String first, String... biomes) {
         // The first param is separate to avoid method confusion with the Lombok-generated fluent getter
-        List<String> biomeList = Stream.of(Stream.of(first), Arrays.stream(biomes))
-                .flatMap(Function.identity())
+        List<String> biomeList = Stream.concat(Stream.of(first), Arrays.stream(biomes))
                 .toList();
 
         this.biomes = OreVeinUtil.resolveBiomes(biomeList);
         return this;
     }
 
+    @HideFromJS
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         this.biomes = () -> GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
         return this;
     }
 
+    @HideFromJS
     public GTOreDefinition biomes(Supplier<HolderSet<Biome>> biomes) {
         this.biomes = biomes;
         return this;
