@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
-import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
