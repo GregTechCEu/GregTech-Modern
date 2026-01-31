@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
@@ -20,35 +20,28 @@ import java.util.Set;
 
 public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
 
-    STONE(
-            "stone", new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
-            Set.of(Level.OVERWORLD.location())),
-    DEEPSLATE(
-            "deepslate", new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
-            Set.of(Level.OVERWORLD.location())),
-    NETHERRACK(
-            "netherrack", new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
-            Set.of(Level.NETHER.location())),
-    ENDSTONE(
-            "endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES,
-            Set.of(Level.END.location()));
+    STONE("stone", new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Level.OVERWORLD),
+    DEEPSLATE("deepslate", new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), Level.OVERWORLD),
+    NETHERRACK("netherrack", new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES), Level.NETHER),
+    ENDSTONE("endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES, Level.END);
 
     private final String name;
 
     @SuppressWarnings("NonFinalFieldInEnum")
     @Getter
     @Setter
-    private Set<ResourceLocation> levels;
+    private Set<ResourceKey<Level>> dimensions;
 
     @SuppressWarnings("NonFinalFieldInEnum")
     @Getter
     @Setter
     private RuleTest target;
 
-    WorldGenLayers(String name, RuleTest target, Set<ResourceLocation> levels) {
+    @SafeVarargs
+    WorldGenLayers(String name, RuleTest target, ResourceKey<Level>... dimensions) {
         this.name = name;
         this.target = target;
-        this.levels = levels;
+        this.dimensions = Set.of(dimensions);
         WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
     }
 
@@ -66,11 +59,11 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
     @Override
     @NotNull
     public String getSerializedName() {
-        return name;
+        return this.name;
     }
 
     @Override
-    public boolean isApplicableForLevel(ResourceLocation level) {
-        return levels.contains(level);
+    public boolean isApplicableForLevel(ResourceKey<Level> dimension) {
+        return this.dimensions.contains(dimension);
     }
 }

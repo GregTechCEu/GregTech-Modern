@@ -1,29 +1,34 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
 
     private final String name;
     private final IWorldGenLayer.RuleTestSupplier target;
     @Getter
-    private final Set<ResourceLocation> levels;
+    private final Set<ResourceKey<Level>> dimensions;
 
-    public SimpleWorldGenLayer(String name, IWorldGenLayer.RuleTestSupplier target, Set<ResourceLocation> levels) {
+    public SimpleWorldGenLayer(String name, IWorldGenLayer.RuleTestSupplier target,
+                               Set<ResourceKey<Level>> dimensions) {
         this.name = name;
         this.target = target;
-        this.levels = levels;
+        this.dimensions = dimensions;
         WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
     }
 
     @Override
-    public String getSerializedName() {
+    public @NotNull String getSerializedName() {
         return name;
     }
 
@@ -48,11 +53,11 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     }
 
     public RuleTest getTarget() {
-        return target.get();
+        return this.target.get();
     }
 
     @Override
-    public boolean isApplicableForLevel(ResourceLocation level) {
-        return levels.contains(level);
+    public boolean isApplicableForLevel(ResourceKey<Level> dimension) {
+        return this.dimensions.contains(dimension);
     }
 }

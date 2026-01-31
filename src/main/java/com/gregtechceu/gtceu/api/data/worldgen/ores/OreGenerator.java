@@ -133,7 +133,7 @@ public class OreGenerator {
 
     private Stream<GTOreDefinition> getEntries(WorldGenLevel level, BlockPos veinCenter, XoroshiroRandomSource random) {
         return WorldGeneratorUtils.WORLD_GEN_LAYERS.values().stream()
-                .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension().location()))
+                .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension()))
                 .map(layer -> getEntry(level, level.getBiome(veinCenter), random, layer))
                 .filter(Objects::nonNull);
     }

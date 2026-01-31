@@ -31,6 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -178,16 +179,24 @@ public class GTOreDefinition {
     public GTOreDefinition layer(IWorldGenLayer layer) {
         this.layer = layer;
         if (this.dimensionFilter == null || this.dimensionFilter.isEmpty()) {
-            dimensions(layer.getLevels().toArray(ResourceLocation[]::new));
+            dimensions(layer.getDimensions());
         }
         return this;
     }
 
-    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
-        this.dimensionFilter = Arrays.stream(dimensions)
-                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
-                .collect(Collectors.toSet());
+    @HideFromJS
+    public final GTOreDefinition dimensions(Set<ResourceKey<Level>> dimensions) {
+        this.dimensionFilter = dimensions;
         return this;
+    }
+
+    /// This method should <b>only</b> be used in KubeJS.
+    @ApiStatus.Internal
+    @SuppressWarnings("unused")
+    public GTOreDefinition kjs$dimensions(ResourceLocation... dimensions) {
+        return this.dimensions(Arrays.stream(dimensions)
+                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                .collect(Collectors.toSet()));
     }
 
     public GTOreDefinition biomes(String first, String... biomes) {
