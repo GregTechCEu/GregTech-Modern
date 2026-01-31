@@ -195,6 +195,16 @@ public class GTOreDefinition {
         return this;
     }
 
+    /**
+     * @deprecated Use {@link #dimensions(Set) dimensions(Set&lt;ResourceKey&lt;Level&gt;&gt;)} instead.
+     * @param dimensions
+     * @return this builder.
+     */
+    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
+    @Deprecated(since = "7.4.1", forRemoval = true)
+    @ApiStatus.Internal
+    @SuppressWarnings("unused")
+    // TODO(8.0.0): rename to `kjs$dimensions`
     public GTOreDefinition dimensions(ResourceLocation... dimensions) {
         return this.dimensions(Arrays.stream(dimensions)
                 .map(location -> ResourceKey.create(Registries.DIMENSION, location))
