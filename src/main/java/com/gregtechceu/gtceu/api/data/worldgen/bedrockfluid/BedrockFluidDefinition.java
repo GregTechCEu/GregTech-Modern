@@ -19,6 +19,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -139,6 +140,7 @@ public class BedrockFluidDefinition {
         return new Builder(name);
     }
 
+    @RemapPrefixForJS("kjs$")
     @Accessors(chain = true, fluent = true)
     public static class Builder {
 
@@ -178,12 +180,14 @@ public class BedrockFluidDefinition {
             return minimumYield(min).maximumYield(max);
         }
 
+        @HideFromJS
         public Builder biomes(int weight, TagKey<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> GTRegistries.builtinRegistry()
                     .registryOrThrow(Registries.BIOME).getOrCreateTag(biomes), weight));
             return this;
         }
 
+        @HideFromJS
         @SafeVarargs
         public final Builder biomes(int weight, ResourceKey<Biome>... biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> HolderSet.direct(GTRegistries.builtinRegistry()
@@ -191,6 +195,7 @@ public class BedrockFluidDefinition {
             return this;
         }
 
+        @HideFromJS
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> biomes, weight));
             return this;
@@ -202,11 +207,36 @@ public class BedrockFluidDefinition {
             return this;
         }
 
-        public Builder dimensions(ResourceLocation... dimensions) {
+        // region KubeJS versions of the above methods
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings("unused")
+        @ApiStatus.Internal
+        public Builder kjs$biomeTag(int weight, ResourceLocation biomeTag) {
+            return this.biomes(weight, TagKey.create(Registries.BIOME, biomeTag));
+        }
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings({ "unused", "unchecked" })
+        @ApiStatus.Internal
+        public Builder kjs$biomes(int weight, ResourceLocation... biomes) {
+            ResourceKey<Biome>[] resourceKeys = new ResourceKey[biomes.length];
+            for (int i = 0; i < biomes.length; i++) {
+                resourceKeys[i] = ResourceKey.create(Registries.BIOME, biomes[i]);
+            }
+            return this.biomes(weight, resourceKeys);
+        }
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings("unused")
+        @ApiStatus.Internal
+        public Builder kjs$dimensions(ResourceLocation... dimensions) {
             return this.dimensions(Arrays.stream(dimensions)
                     .map(id -> ResourceKey.create(Registries.DIMENSION, id))
                     .collect(Collectors.toSet()));
         }
+
+        // endregion
 
         @ApiStatus.Internal
         public BedrockFluidDefinition build() {
