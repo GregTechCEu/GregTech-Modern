@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.GTRecipeTra
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.MonitorGroupTransformer;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.syncsystem.data_transformers.gtceu.*;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
