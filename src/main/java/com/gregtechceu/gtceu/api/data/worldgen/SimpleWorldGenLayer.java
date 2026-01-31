@@ -32,11 +32,20 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
         return name;
     }
 
+    private @Nullable String cachedToString;
+
     @Override
     public String toString() {
-        return getSerializedName() + "[" +
-                RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]" +
-                ",dimensions=" + levels.toString();
+        if (this.cachedToString == null) {
+            String serializedTarget = String.valueOf(RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null));
+            String dimensionsString = this.dimensions.stream()
+                    .map(key -> key.location().toString())
+                    .collect(Collectors.joining(", ", "[", "]"));
+
+            this.cachedToString = getSerializedName() + "[" + serializedTarget + "]" +
+                    ",dimensions=" + dimensionsString;
+        }
+        return this.cachedToString;
     }
 
     @Override
