@@ -152,9 +152,7 @@ public class OreGenerator {
     private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos pos,
                                                         RandomSource random, BlockPos veinCenter,
                                                         GTOreDefinition entry) {
-        int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.layer())
-                .map(String::hashCode)
-                .orElse(0);
+        int layerSeed = entry.layer().getSerializedName().hashCode();
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
         veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);
