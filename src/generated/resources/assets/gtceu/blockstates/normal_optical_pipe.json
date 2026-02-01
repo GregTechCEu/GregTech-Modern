@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/normal_optical_pipe"
+    },
+    "active=true": {
+      "model": "gtceu:block/normal_optical_pipe_active"
+    }
+  }
+}

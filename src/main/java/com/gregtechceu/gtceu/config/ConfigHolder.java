@@ -739,6 +739,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import com.gregtechceu.gtceu.api.codec.GTCodecUtils;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -20,55 +22,43 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.decodeHolderSets;
-import static com.gregtechceu.gtceu.api.recipe.condition.ConditionSerializeUtils.encodeHolderSets;
+import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class AdjacentBlockCondition extends RecipeCondition {
+public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockCondition> {
 
     // spotless:off
-    public static final Codec<AdjacentBlockCondition> CODEC =
-            RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
-                    Codec.STRING.fieldOf("blockString").forGetter(AdjacentBlockCondition::getBlockString)
-            ).apply(instance, AdjacentBlockCondition::new));
+    public static final Codec<AdjacentBlockCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            GTCodecUtils.lazyParsingCodec(RegistryCodecs.homogeneousList(Registries.BLOCK)).listOf()
+                    .fieldOf("blocks").forGetter(AdjacentBlockCondition::getBlockSuppliers)
+    ).apply(instance, AdjacentBlockCondition::new));
     // spotless:on
 
-    @Getter
-    private @NotNull String blockString = "";
+    private final List<Supplier<HolderSet<Block>>> blocks = new ArrayList<>();
 
-    private @Nullable List<HolderSet<Block>> blocks = null;
+    private final List<HolderSet<Block>> resolvedBlocks = new ArrayList<>();
 
-    public void setBlocks(@NotNull List<HolderSet<Block>> blocks) {
-        this.blocks = blocks;
-        this.blockString = encodeHolderSets(blocks);
+    private AdjacentBlockCondition(@NotNull List<Supplier<HolderSet<Block>>> blocks) {
+        this(false, blocks);
     }
 
-    public List<HolderSet<Block>> getBlocks() {
-        if (blocks == null) {
-            blocks = decodeHolderSets(getBlockString(), Registries.BLOCK);
-        }
-        return blocks;
-    }
-
-    public AdjacentBlockCondition(@NotNull List<HolderSet<Block>> blocks) {
-        setBlocks(blocks);
-    }
-
-    public AdjacentBlockCondition(boolean isReverse, @NotNull List<HolderSet<Block>> blocks) {
+    private AdjacentBlockCondition(boolean isReverse, @NotNull List<Supplier<HolderSet<Block>>> blocks) {
         super(isReverse);
-        setBlocks(blocks);
+        this.blocks.addAll(blocks);
     }
 
-    public AdjacentBlockCondition(boolean isReverse, String blockString) {
+    public AdjacentBlockCondition(@NotNull Collection<HolderSet<Block>> blocks) {
+        this(false, blocks);
+    }
+
+    public AdjacentBlockCondition(boolean isReverse, @NotNull Collection<HolderSet<Block>> blocks) {
         super(isReverse);
-        this.blockString = blockString;
+        this.resolvedBlocks.addAll(blocks);
     }
 
     public static AdjacentBlockCondition fromBlocks(Collection<Block> blocks) {
@@ -94,7 +84,7 @@ public class AdjacentBlockCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<AdjacentBlockCondition> getType() {
         return GTRecipeConditions.ADJACENT_BLOCK;
     }
 
@@ -128,25 +118,46 @@ public class AdjacentBlockCondition extends RecipeCondition {
         return false;
     }
 
-    public @NotNull List<HolderSet<Block>> getOrInitBlocks(@NotNull GTRecipe recipe) {
-        if (getBlocks().isEmpty() || (recipe.data.contains("blockA") && recipe.data.contains("blockB"))) {
-            List<HolderSet<Block>> blocks = new ArrayList<>();
+    public @NotNull List<HolderSet<Block>> getOrInitBlocks(@Nullable GTRecipe recipe) {
+        if (resolvedBlocks.isEmpty() && !blocks.isEmpty()) {
+            for (var holderSetSupplier : this.blocks) {
+                this.resolvedBlocks.add(holderSetSupplier.get());
+            }
+        }
+        if (!resolvedBlocks.isEmpty()) {
+            return resolvedBlocks;
+        }
+
+        if (recipe != null && recipe.data.contains("blockA") && recipe.data.contains("blockB")) {
+            this.resolvedBlocks.clear();
 
             Block blockA = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockA")));
             if (!blockA.defaultBlockState().isAir()) {
-                blocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
+                this.resolvedBlocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
             }
             Block blockB = BuiltInRegistries.BLOCK.get(new ResourceLocation(recipe.data.getString("blockB")));
             if (!blockB.defaultBlockState().isAir()) {
-                blocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
+                this.resolvedBlocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
             }
-            setBlocks(blocks);
+            // init the block supplier list, just to be safe
+            getBlockSuppliers();
         }
-        return getBlocks();
+        return this.resolvedBlocks;
+    }
+
+    private @NotNull List<Supplier<HolderSet<Block>>> getBlockSuppliers() {
+        if (!this.blocks.isEmpty() || this.resolvedBlocks.isEmpty()) {
+            return this.blocks;
+        }
+
+        for (var holderSet : this.resolvedBlocks) {
+            this.blocks.add(() -> holderSet);
+        }
+        return this.blocks;
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public AdjacentBlockCondition createTemplate() {
         return new AdjacentBlockCondition();
     }
 }

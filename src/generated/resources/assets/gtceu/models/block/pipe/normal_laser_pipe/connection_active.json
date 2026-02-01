@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/pipe/normal_laser_pipe/connection",
+  "textures": {
+    "side_overlay": "gtceu:block/pipe/pipe_laser_side_overlay_emissive"
+  }
+}

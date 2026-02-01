@@ -711,10 +711,11 @@ public class GTPlaceholders {
                         1000000000L, "B",
                         1000000000000L, "T");
                 long max = 1;
-                for (Long i : suffixes.keySet()) {
+                for (long i : suffixes.keySet()) {
                     if (n >= i && max < i) max = i;
                 }
-                return MultiLineComponent.literal("%.2f%s".formatted(((double) n) / max, suffixes.get(max)));
+                return MultiLineComponent.literal(String.format(Locale.ROOT, "%.2f%s",
+                        ((double) n) / max, suffixes.get(max)));
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("click") {

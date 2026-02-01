@@ -1,10 +1,13 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    // force gradle to download FastUtil from the central maven so we can get source artifacts
+    // force gradle to download FastUtil & LWJGL from the central maven so we can get source artifacts
     exclusiveContent { // Force
         forRepository { mavenCentral() }
-        filter { includeGroup("it.unimi.dsi") }
+        filter {
+            includeGroup("it.unimi.dsi")
+            includeGroup("org.lwjgl")
+        }
     }
 
     maven { // JEI
