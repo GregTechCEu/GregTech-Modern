@@ -15,7 +15,6 @@ import java.util.Set;
 
 public class MaterialBlockRenderer {
 
-    public static final String LAYER_2_SUFFIX = "_layer2";
     private static final Set<MaterialBlockRenderer> MODELS = new HashSet<>();
 
     public static void create(Block block, MaterialIconType type, MaterialIconSet iconSet) {
