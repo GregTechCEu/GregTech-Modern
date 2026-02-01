@@ -158,7 +158,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      */
     public PipeModelBuilder<T> connectionModels(ResourceLocation... connectionModels) {
         return connectionModels(Arrays.stream(connectionModels)
-                .map(ModelFile.UncheckedModelFile::new)
+                .map(loc -> new ModelFile.ExistingModelFile(loc, this.existingFileHelper))
                 .toArray(ModelFile[]::new));
     }
 
@@ -263,7 +263,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     public PipeModelBuilder<T> modelsForDirection(@Nullable Direction direction, ResourceLocation... models) {
         return modelsForDirection(direction, Arrays.stream(models)
                 .map(model -> ConfiguredModel.builder()
-                        .modelFile(new ModelFile.UncheckedModelFile(model))
+                        .modelFile(new ModelFile.ExistingModelFile(model, this.existingFileHelper))
                         .buildLast())
                 .toArray(ConfiguredModel[]::new));
     }
