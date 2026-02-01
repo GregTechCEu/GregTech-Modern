@@ -12,6 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.FileNotFoundException;
 import java.util.Collections;
@@ -44,15 +45,11 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
     public static final RuntimeExistingFileHelper INSTANCE = new RuntimeExistingFileHelper(HashMultimap.create());
 
     protected final Multimap<PackType, ResourceLocation> generated;
-    protected final Active activeHelper;
+    protected @Nullable Active activeHelper;
 
     protected RuntimeExistingFileHelper(Multimap<PackType, ResourceLocation> generated) {
         super(Collections.emptySet(), Collections.emptySet(), false, null, null);
         this.generated = generated;
-
-        // pass the same generated resources map into the subclass
-        // so any resources added/checked by it are automatically updated here
-        this.activeHelper = new Active(this.generated);
     }
 
     public static ResourceManager getManager(PackType packType) {
@@ -73,6 +70,11 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
     }
 
     public RuntimeExistingFileHelper.Active activeHelper() {
+        if (this.activeHelper == null) {
+            // pass the same generated resources map into the subclass
+            // so any resources added/checked by it are automatically updated here
+            this.activeHelper = new Active(this.generated);
+        }
         return this.activeHelper;
     }
 
