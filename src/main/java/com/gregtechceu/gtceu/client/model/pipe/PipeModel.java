@@ -174,8 +174,7 @@ public class PipeModel {
         return this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
                 // make the "default" model be based on the center part's model
                 .parent(this.getOrCreateCenterElement())
-                .customLoader(PipeModelBuilder::begin)
-                    .thickness(this.thickness).provider(this.provider)
+                .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
                     .centerModels(this.getOrCreateCenterElement().getLocation())
                     .connectionModels(this.getOrCreateConnectionElement().getLocation())
                 .end();

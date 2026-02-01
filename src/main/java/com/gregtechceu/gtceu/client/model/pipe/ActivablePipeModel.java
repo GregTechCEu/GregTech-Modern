@@ -70,8 +70,7 @@ public class ActivablePipeModel extends PipeModel {
         // spotless:off
         return this.activeBlockModel = this.provider.models().getBuilder(this.blockId.withSuffix("_active").toString())
                 .parent(this.getOrCreateActiveCenterElement())
-                .customLoader(PipeModelBuilder::begin)
-                    .thickness(this.thickness).provider(this.provider)
+                .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
                     .centerModels(this.getOrCreateActiveCenterElement().getLocation())
                     .connectionModels(this.getOrCreateActiveConnectionElement().getLocation())
                 .end();

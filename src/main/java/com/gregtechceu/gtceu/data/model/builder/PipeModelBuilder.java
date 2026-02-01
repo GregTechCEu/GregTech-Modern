@@ -23,15 +23,14 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelListToJSON;
 import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelToJSON;
@@ -40,23 +39,28 @@ import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.confi
 @SuppressWarnings("UnusedReturnValue")
 public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
-    public static <T extends ModelBuilder<T>> PipeModelBuilder<T> begin(T parent,
-                                                                        ExistingFileHelper existingFileHelper) {
-        return new PipeModelBuilder<>(parent, existingFileHelper);
+    // spotless:off
+    public static <T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, PipeModelBuilder<T>> begin(@Range(from = 0, to = 16) float thickness,
+                                                                                                           GTBlockstateProvider provider) {
+        return (parent, existingFileHelper) -> new PipeModelBuilder<>(parent, existingFileHelper, thickness, provider);
     }
+    // spotless:on
 
     @Accessors(fluent = false)
     @Getter
-    private final Map<Direction, ConfiguredModelList> parts = new IdentityHashMap<>();
-    @Setter
-    @Range(from = 0, to = 16)
-    private float thickness = Float.MIN_VALUE;
-    @Setter
-    private @NotNull GTBlockstateProvider provider;
-    private BlockModelBuilder[] restrictors = null;
+    private final Map<@Nullable Direction, ConfiguredModelList> parts = new IdentityHashMap<>();
+    private final float thickness;
+    private final GTBlockstateProvider provider;
+    private BlockModelBuilder @Nullable [] restrictors = null;
 
-    protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper) {
+    protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper,
+                               float thickness, GTBlockstateProvider provider) {
         super(PipeModelLoader.ID, parent, existingFileHelper);
+
+        Preconditions.checkArgument(thickness > 0.0f && thickness <= 16.0f,
+                "Thickness must be between 0 (exclusive) and 16 (inclusive). It is %s", thickness);
+        this.thickness = thickness;
+        this.provider = provider;
     }
 
     /**
@@ -289,12 +293,6 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
 
     @Override
     public JsonObject toJson(JsonObject json) {
-        Preconditions.checkState(thickness != Float.MIN_VALUE, "A thickness value must be set!");
-        Preconditions.checkState(thickness > 0.0f || thickness <= 16.0f,
-                "Thickness must be between 0 (exclusive) and 16 (inclusive). is %s", thickness);
-        // noinspection ConstantValue
-        Preconditions.checkState(provider != null, "You must pass in a GTBlockStateProvider!");
-
         json = super.toJson(json);
 
         if (!getParts().isEmpty()) {
@@ -368,7 +366,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         return RESTRICTOR_MODEL_CACHE.apply(provider, thickness);
     }
 
-    private static final MemoizedBiFunction<BlockModelProvider, @NotNull Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
+    private static final MemoizedBiFunction<BlockModelProvider, Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
 
     private static BlockModelBuilder[] makeRestrictorModels(BlockModelProvider provider, float thickness) {
