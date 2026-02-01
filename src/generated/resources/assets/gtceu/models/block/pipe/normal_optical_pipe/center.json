@@ -79,7 +79,6 @@
     }
   ],
   "textures": {
-    "end": "gtceu:block/pipe/pipe_optical_in",
     "side": "gtceu:block/pipe/pipe_optical_side",
     "side_overlay": "gtceu:block/pipe/pipe_optical_side_overlay"
   }

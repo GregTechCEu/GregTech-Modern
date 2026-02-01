@@ -1,5 +1,37 @@
 {
-  "parent": "gtceu:block/pipe/normal_laser_pipe/connection",
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "east": {
+          "texture": "#side_overlay",
+          "tintindex": 2
+        },
+        "north": {
+          "texture": "#side_overlay",
+          "tintindex": 2
+        },
+        "south": {
+          "texture": "#side_overlay",
+          "tintindex": 2
+        },
+        "west": {
+          "texture": "#side_overlay",
+          "tintindex": 2
+        }
+      },
+      "from": [
+        4.998,
+        -0.002,
+        4.998
+      ],
+      "to": [
+        11.002,
+        5.002,
+        11.002
+      ]
+    }
+  ],
   "textures": {
     "side_overlay": "gtceu:block/pipe/pipe_laser_side_overlay_emissive"
   }
