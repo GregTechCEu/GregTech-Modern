@@ -5,10 +5,13 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
+import net.minecraftforge.client.model.generators.ModelFile;
 
+import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -87,7 +90,9 @@ public class ActivablePipeModel extends PipeModel {
         if (this.activeCenterElement != null) {
             return this.activeCenterElement;
         }
-        return this.activeCenterElement = makeActiveVariant(this.getOrCreateCenterElement());
+        return this.activeCenterElement = makeActiveElementModel(
+                this.blockId.withPath(path -> "block/pipe/" + path + "/center_active"),
+                null, minCoord, minCoord, minCoord, maxCoord, maxCoord, maxCoord);
     }
 
     /**
@@ -105,21 +110,40 @@ public class ActivablePipeModel extends PipeModel {
         if (this.activeConnectionElement != null) {
             return this.activeConnectionElement;
         }
-        return this.activeConnectionElement = makeActiveVariant(this.getOrCreateConnectionElement());
+        return this.activeConnectionElement = makeActiveElementModel(
+                this.blockId.withPath(path -> "block/pipe/" + path + "/connection_active"),
+                Direction.DOWN, minCoord, 0, minCoord, maxCoord, minCoord, maxCoord);
     }
 
-    protected BlockModelBuilder makeActiveVariant(BlockModelBuilder parentModel) {
-        BlockModelBuilder model = this.provider.models()
-                .getBuilder(parentModel.getLocation().withSuffix("_active").toString())
-                .parent(parentModel);
-        // override non-null textures, leave unset ones as is
-        if (this.sideActive != null) model.texture("side", this.sideActive);
-        if (this.endActive != null) model.texture("end", this.endActive);
-        if (this.sideSecondaryActive != null) model.texture("side_secondary", this.sideSecondaryActive);
-        if (this.endSecondaryActive != null) model.texture("end_secondary", this.endSecondaryActive);
-        if (this.sideOverlayActive != null) model.texture("side_overlay", this.sideOverlayActive);
-        if (this.endOverlayActive != null) model.texture("end_overlay", this.endOverlayActive);
+    /**
+     * Fills out a model builder with applicable pipe model elements and returns it for further use
+     * <hr>
+     * This method is a copy of {@linkplain #makeElementModel} with the texture references changed for active variants.
+     *
+     * @param name    the resulting model's path
+     * @param endFace the model face that's being created
+     * @param x1      min X coordinate in the range [-16,32]
+     * @param y1      min Y coordinate in the range [-16,32]
+     * @param z1      min Z coordinate in the range [-16,32]
+     * @param x2      max X coordinate in the range [-16,32]
+     * @param y2      max Y coordinate in the range [-16,32]
+     * @param z2      max Z coordinate in the range [-16,32]
+     * @implNote The coordinates must be in the correct order or the resulting model's cubes will be inside out!
+     * @see #makeElementModel
+     */
+    protected BlockModelBuilder makeActiveElementModel(ResourceLocation name, @Nullable Direction endFace,
+                                                       final float x1, final float y1, final float z1,
+                                                       final float x2, final float y2, final float z2) {
+        Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
 
+        BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
+                .parent(new ModelFile.UncheckedModelFile("block/block"));
+        makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
+                x1, y1, z1, x2, y2, z2, this.sideActive, this.endActive, "side", "end");
+        makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
+                x1, y1, z1, x2, y2, z2, this.sideSecondaryActive, this.endSecondaryActive, "side_secondary", "end_secondary");
+        makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
+                x1, y1, z1, x2, y2, z2, this.sideOverlayActive, this.endOverlayActive, "side_overlay", "end_overlay");
         return model;
     }
 

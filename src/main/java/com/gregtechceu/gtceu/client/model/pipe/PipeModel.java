@@ -295,18 +295,7 @@ public class PipeModel {
     protected BlockModelBuilder makeElementModel(ResourceLocation name, @Nullable Direction endFace,
                                                  final float x1, final float y1, final float z1,
                                                  final float x2, final float y2, final float z2) {
-        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
-        faceEndpoints.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
-        for (Direction dir : GTUtil.DIRECTIONS) {
-            faceEndpoints.put(dir, switch (dir) {
-                case DOWN -> Math.min(y1, y2);
-                case UP -> Math.max(y1, y2);
-                case NORTH -> Math.min(z1, z2);
-                case SOUTH -> Math.max(z1, z2);
-                case WEST -> Math.min(x1, x2);
-                case EAST -> Math.max(x1, x2);
-            });
-        }
+        Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
 
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"));
@@ -356,6 +345,23 @@ public class PipeModel {
                 face.cullface(dir);
             }
         }
+    }
+
+    protected final Reference2FloatMap<Direction> makeFaceEndpointMap(final float x1, final float y1, final float z1,
+                                                                      final float x2, final float y2, final float z2) {
+        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
+        faceEndpoints.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            faceEndpoints.put(dir, switch (dir) {
+                case DOWN -> Math.min(y1, y2);
+                case UP -> Math.max(y1, y2);
+                case NORTH -> Math.min(z1, z2);
+                case SOUTH -> Math.max(z1, z2);
+                case WEST -> Math.min(x1, x2);
+                case EAST -> Math.max(x1, x2);
+            });
+        }
+        return faceEndpoints;
     }
 
     @Override
