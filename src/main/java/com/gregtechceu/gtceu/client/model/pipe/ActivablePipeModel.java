@@ -137,13 +137,20 @@ public class ActivablePipeModel extends PipeModel {
 
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"));
+
+        ResourceLocation side = this.sideActive != null ? this.sideActive : this.side;
+        ResourceLocation end = this.endActive != null ? this.endActive : this.end;
+        ResourceLocation sideSecondary = this.sideSecondaryActive != null ? this.sideSecondaryActive : this.sideSecondary;
+        ResourceLocation endSecondary = this.endSecondaryActive != null ? this.endSecondaryActive : this.endSecondary;
+        ResourceLocation sideOverlay = this.sideOverlayActive != null ? this.sideOverlayActive : this.sideOverlay;
+        ResourceLocation endOverlay = this.endOverlayActive != null ? this.endOverlayActive : this.endOverlay;
+
         makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
-                x1, y1, z1, x2, y2, z2, this.sideActive, this.endActive, "side", "end");
+                x1, y1, z1, x2, y2, z2, side, end, "side", "end");
         makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
-                x1, y1, z1, x2, y2, z2, this.sideSecondaryActive, this.endSecondaryActive, "side_secondary",
-                "end_secondary");
+                x1, y1, z1, x2, y2, z2, sideSecondary, endSecondary, "side_secondary", "end_secondary");
         makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
-                x1, y1, z1, x2, y2, z2, this.sideOverlayActive, this.endOverlayActive, "side_overlay", "end_overlay");
+                x1, y1, z1, x2, y2, z2, sideOverlay, endOverlay, "side_overlay", "end_overlay");
         return model;
     }
 

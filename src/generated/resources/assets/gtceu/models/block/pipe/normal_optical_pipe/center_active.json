@@ -4,6 +4,44 @@
     {
       "faces": {
         "down": {
+          "texture": "#side",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#side",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#side",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#side",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#side",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#side",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        5,
+        5,
+        5
+      ],
+      "to": [
+        11,
+        11,
+        11
+      ]
+    },
+    {
+      "faces": {
+        "down": {
           "texture": "#side_overlay",
           "tintindex": 2
         },
@@ -41,6 +79,7 @@
     }
   ],
   "textures": {
+    "side": "gtceu:block/pipe/pipe_optical_side",
     "side_overlay": "gtceu:block/pipe/pipe_optical_side_overlay_active"
   }
 }
