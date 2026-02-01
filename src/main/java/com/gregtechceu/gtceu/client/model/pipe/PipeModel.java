@@ -328,11 +328,11 @@ public class PipeModel {
                                                                     @Nullable ResourceLocation sideTexture,
                                                                     @Nullable ResourceLocation endTexture,
                                                                     String sideKey, String endKey) {
-        if (sideTexture == null && endTexture == null) {
+        if (sideTexture == null && (endFace == null || endTexture == null)) {
             return;
         }
         if (sideTexture != null) model.texture(sideKey, sideTexture);
-        if (endTexture != null) model.texture(endKey, endTexture);
+        if (endFace != null && endTexture != null) model.texture(endKey, endTexture);
 
         boolean fullCube = !useEndWithFullCube &&
                 (x1 == y1 && x1 == z1 && x1 <= 0.0f) &&
@@ -344,7 +344,7 @@ public class PipeModel {
 
         for (Direction dir : GTUtil.DIRECTIONS) {
             ModelBuilder<T>.ElementBuilder.FaceBuilder face = null;
-            boolean isEnd = (endFace == dir || endFace == dir.getOpposite()) && !fullCube;
+            boolean isEnd = !fullCube && endFace != null && (endFace == dir || endFace == dir.getOpposite());
             if (isEnd && endTexture != null) {
                 face = element.face(dir).texture("#" + endKey).tintindex(endTintIndex);
             } else if (!isEnd && sideTexture != null) {
