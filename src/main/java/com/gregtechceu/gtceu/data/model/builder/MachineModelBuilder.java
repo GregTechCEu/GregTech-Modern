@@ -298,7 +298,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      * @see MachineModelBuilder#part(ModelFile)
      */
     public PartBuilder part(ResourceLocation model) {
-        return part(new ModelFile.ExistingModelFile(model, existingFileHelper));
+        return part(new ModelFile.UncheckedModelFile(model));
     }
 
     public MachineModelBuilder<T> forAllStatesModels(Function<MachineRenderState, ModelFile> mapper) {
