@@ -140,7 +140,8 @@ public class ActivablePipeModel extends PipeModel {
         makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.sideActive, this.endActive, "side", "end");
         makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
-                x1, y1, z1, x2, y2, z2, this.sideSecondaryActive, this.endSecondaryActive, "side_secondary", "end_secondary");
+                x1, y1, z1, x2, y2, z2, this.sideSecondaryActive, this.endSecondaryActive, "side_secondary",
+                "end_secondary");
         makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
                 x1, y1, z1, x2, y2, z2, this.sideOverlayActive, this.endOverlayActive, "side_overlay", "end_overlay");
         return model;

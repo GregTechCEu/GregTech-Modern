@@ -25,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * By default, this class assumes all resources exist and does not check any references' validity.
  * To enable actual checking, you may use a try-with-resources statement like this:
+ * 
  * <pre>{@code
  * try (var helper = RuntimeExistingFileHelper.INSTANCE.activeHelper()) {
  *     // If you don't use a try-with-resources or try-finally block to
@@ -116,7 +117,7 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
      * This class implements {@link AutoCloseable} for ease of enabling actual checking when it is required.
      * <p>
      * Note that it's safe to ignore "unclosed AutoCloseable"/{@code resource} warnings on this class, as is done in
-     * {@linkplain com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays#get(ResourceLocation, ExistingFileHelper) WorkableOverlays#get}.
+     * {@linkplain com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays#get WorkableOverlays#get}.
      * </p>
      */
     public static class Active extends RuntimeExistingFileHelper implements AutoCloseable {
