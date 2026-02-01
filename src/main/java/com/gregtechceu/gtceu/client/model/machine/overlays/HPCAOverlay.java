@@ -29,7 +29,7 @@ public class HPCAOverlay {
             // the AutoCloseable warning is suppressed here because there's no clean way to
             // use a try-with-resources statement in this.
             //noinspection resource
-            fileHelper = runtimeFileHelper.enableChecks();
+            fileHelper = runtimeFileHelper.activeHelper();
         }
 
         try {

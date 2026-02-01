@@ -30,8 +30,8 @@ public class WorkableOverlays {
             // if fileHelper is an instance of RuntimeExistingFileHelper, we have to enable its existence checking.
             // the AutoCloseable warning is suppressed here because there's no clean way to
             // use a try-with-resources statement in this.
-            //noinspection resource
-            fileHelper = runtimeFileHelper.enableChecks();
+            // noinspection resource
+            fileHelper = runtimeFileHelper.activeHelper();
         }
 
         WorkableOverlays model = new WorkableOverlays(textureDir);

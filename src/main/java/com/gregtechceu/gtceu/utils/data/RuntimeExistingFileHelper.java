@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * By default, this class assumes all resources exist and does not check any references' validity.
  * To enable actual checking, you may use a try-with-resources statement like this:
  * <pre>{@code
- * try (var helper = RuntimeExistingFileHelper.INSTANCE.enableChecks()) {
+ * try (var helper = RuntimeExistingFileHelper.INSTANCE.activeHelper()) {
  *     // If you don't use a try-with-resources or try-finally block to
  *     // enable checking, calling `exists` will always return true.
  *     if (helper.exists(texture, GTBlockstateProvider.TEXTURE)) {
@@ -43,10 +43,15 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
     public static final RuntimeExistingFileHelper INSTANCE = new RuntimeExistingFileHelper(HashMultimap.create());
 
     protected final Multimap<PackType, ResourceLocation> generated;
+    protected final Active activeHelper;
 
     protected RuntimeExistingFileHelper(Multimap<PackType, ResourceLocation> generated) {
         super(Collections.emptySet(), Collections.emptySet(), false, null, null);
         this.generated = generated;
+
+        // pass the same generated resources map into the subclass
+        // so any resources added/checked by it are automatically updated here
+        this.activeHelper = new Active(this.generated);
     }
 
     public static ResourceManager getManager(PackType packType) {
@@ -66,15 +71,13 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
         return base.withPath(path -> prefix + "/" + path + suffix);
     }
 
-    public RuntimeExistingFileHelper.Active enableChecks() {
-        // pass the same generated resources map into the subclass
-        // so any resources added/checked by it are automatically updated here
-        return new Active(this.generated);
+    public RuntimeExistingFileHelper.Active activeHelper() {
+        return this.activeHelper;
     }
 
     /**
      * Bypass the normal {@code exists} function so missing/invalid references etc. don't cause runtime errors.<br>
-     * A toggle for enabling proper functionality is implemented in the form of {@link #enableChecks()}-
+     * A toggle for enabling proper functionality is implemented in the form of {@link #activeHelper()}-
      */
     @Override
     public boolean exists(ResourceLocation loc, PackType packType) {
@@ -123,7 +126,7 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
         }
 
         @Override
-        public Active enableChecks() {
+        public Active activeHelper() {
             return this;
         }
 
