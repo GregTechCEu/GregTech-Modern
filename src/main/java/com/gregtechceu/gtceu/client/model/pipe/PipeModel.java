@@ -414,16 +414,19 @@ public class PipeModel {
     }
 
     @FunctionalInterface
-    public interface FaceConfigurator<T extends ModelBuilder<T>>  {
+    public interface FaceConfigurator<T extends ModelBuilder<T>> {
 
         /**
          * This is a callback for modifying a block element face builder in ways not supported by "basic" API.<br>
          * For example, you can make faces emissive, like {@link ActivablePipeModel#makePartModelElement}.
+         * 
          * @param face    The normal direction of this face.
          * @param texture The texture of the face, usually in {@code #reference} format.
          *                <b>Note that the String does NOT begin with {@code #}</b>.
          * @param builder The face builder.
-         * @see ActivablePipeModel#makePartModelElement(ModelBuilder, Direction, boolean, Reference2FloatMap, float, int, int, float, float, float, float, float, float, ResourceLocation, ResourceLocation, String, String, boolean, boolean) ActivablePipeModel.makePartModelElement
+         * @see ActivablePipeModel#makePartModelElement(ModelBuilder, Direction, boolean, Reference2FloatMap, float,
+         *      int, int, float, float, float, float, float, float, ResourceLocation, ResourceLocation, String, String,
+         *      boolean, boolean) ActivablePipeModel.makePartModelElement
          */
         void accept(Direction face, String texture, ModelBuilder<T>.ElementBuilder.FaceBuilder builder);
     }
