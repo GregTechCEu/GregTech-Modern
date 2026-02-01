@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
@@ -26,6 +27,8 @@ public class ActivablePipeModel extends PipeModel {
     public @Nullable ResourceLocation sideSecondaryActive, endSecondaryActive;
     @Setter
     public @Nullable ResourceLocation sideOverlayActive, endOverlayActive;
+    @Setter
+    public int activeEmissivity = 15;
 
     /// Use {@link #getOrCreateActiveBlockModel()} instead of referencing this field directly.
     private BlockModelBuilder activeBlockModel;
@@ -140,18 +143,49 @@ public class ActivablePipeModel extends PipeModel {
 
         ResourceLocation side = this.sideActive != null ? this.sideActive : this.side;
         ResourceLocation end = this.endActive != null ? this.endActive : this.end;
-        ResourceLocation sideSecondary = this.sideSecondaryActive != null ? this.sideSecondaryActive : this.sideSecondary;
+        ResourceLocation sideSecondary = this.sideSecondaryActive != null ? this.sideSecondaryActive :
+                this.sideSecondary;
         ResourceLocation endSecondary = this.endSecondaryActive != null ? this.endSecondaryActive : this.endSecondary;
         ResourceLocation sideOverlay = this.sideOverlayActive != null ? this.sideOverlayActive : this.sideOverlay;
         ResourceLocation endOverlay = this.endOverlayActive != null ? this.endOverlayActive : this.endOverlay;
 
         makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
-                x1, y1, z1, x2, y2, z2, side, end, "side", "end");
+                x1, y1, z1, x2, y2, z2, side, end, SIDE_KEY, END_KEY,
+                this.sideActive != null, this.endActive != null);
+
         makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
-                x1, y1, z1, x2, y2, z2, sideSecondary, endSecondary, "side_secondary", "end_secondary");
+                x1, y1, z1, x2, y2, z2, sideSecondary, endSecondary, SIDE_SECONDARY_KEY, END_SECONDARY_KEY,
+                this.sideSecondaryActive != null, this.endSecondaryActive != null);
+
         makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
-                x1, y1, z1, x2, y2, z2, sideOverlay, endOverlay, "side_overlay", "end_overlay");
+                x1, y1, z1, x2, y2, z2, sideOverlay, endOverlay, SIDE_OVERLAY_KEY, END_OVERLAY_KEY,
+                this.sideOverlayActive != null, this.endOverlayActive != null);
+
         return model;
+    }
+
+    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
+                                                                    boolean useEndWithFullCube,
+                                                                    Reference2FloatMap<Direction> faceEndpoints,
+                                                                    float offset, int sideTintIndex, int endTintIndex,
+                                                                    final float x1, final float y1, final float z1,
+                                                                    final float x2, final float y2, final float z2,
+                                                                    @Nullable ResourceLocation sideTexture,
+                                                                    @Nullable ResourceLocation endTexture,
+                                                                    String sideKey, String endKey,
+                                                                    boolean sideEmissive, boolean endEmissive) {
+        this.makePartModelElement(model, endFace, useEndWithFullCube, faceEndpoints, offset,
+                sideTintIndex, endTintIndex, x1, y1, z1, x2, y2, z2, sideTexture, endTexture, sideKey, endKey,
+                (face, textureKey, builder) -> {
+                    if (activeEmissivity == 0) {
+                        return;
+                    }
+                    if (sideEmissive && textureKey.equals(sideKey)) {
+                        builder.emissivity(activeEmissivity, activeEmissivity).ao(false);
+                    } else if (endEmissive && textureKey.equals(endKey)) {
+                        builder.emissivity(activeEmissivity, activeEmissivity).ao(false);
+                    }
+                });
     }
 
     @Override
