@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -149,6 +150,7 @@ public class PipeModel {
      * @see #getOrCreateCenterElement()
      * @see #getOrCreateConnectionElement()
      */
+    @MustBeInvokedByOverriders
     public void initModels() {
         getOrCreateCenterElement();
         getOrCreateConnectionElement();
@@ -226,7 +228,10 @@ public class PipeModel {
      */
     @ApiStatus.OverrideOnly
     protected ItemModelBuilder getOrCreateItemModel() {
-        return createItemModel(this.blockId, this.minCoord, this.maxCoord);
+        if (this.itemModel != null) {
+            return this.itemModel;
+        }
+        return this.itemModel = createItemModel(this.blockId, this.minCoord, this.maxCoord);
     }
 
     /**
