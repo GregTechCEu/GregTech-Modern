@@ -190,7 +190,8 @@ public class GTMuiWidgets {
             if (circuitGetter.get().isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
-                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY : IntCircuitBehaviour.stack(v)));
+                (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
+                        IntCircuitBehaviour.stack(v, circuitGetter.get().getCount())));
     }
 
     public static ModularPanel createCircuitSlotPanel(IntSyncValue circuitSyncValue, PanelSyncManager syncManager) {

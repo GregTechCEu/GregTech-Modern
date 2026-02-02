@@ -4,20 +4,32 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
+import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.BoolValue;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.ModularSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.PhantomItemSlot;
+import com.gregtechceu.gtceu.api.mui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
+import com.gregtechceu.gtceu.client.mui.screen.UISettings;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
@@ -26,9 +38,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.editor.Icons;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
@@ -66,7 +75,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IInteractedMachine, IControllable,
-                                 IDropSaveMachine, IFancyUIMachine {
+                                 IDropSaveMachine, IMuiMachine {
 
     /**
      * Sourced from FunctionalStorage's
@@ -358,49 +367,106 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     // *********** GUI ***********//
     //////////////////////////////////////
 
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 109, 63);
-        var importItems = createImportItems();
-        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
-                .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
-                .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
-                        .setTextColor(-1)
-                        .setDropShadow(true))
-                .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
-                        .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
-                .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
-                        .setItemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
-                        .setBackgroundTexture(GuiTextures.SLOT))
-                .addWidget(new ButtonWidget(87, 42, 18, 18,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
-                            if (!cd.isRemote) {
-                                if (!stored.isEmpty()) {
-                                    var extracted = cache.extractItem(0,
-                                            (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
-                                    if (!group.getGui().entityPlayer.addItem(extracted)) {
-                                        Block.popResource(group.getGui().entityPlayer.level(),
-                                                group.getGui().entityPlayer.getOnPos(), extracted);
-                                    }
-                                }
-                            }
-                        }))
-                .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
-                        stack -> stored.isEmpty() || GTUtil.isSameItemSameTags(stack, stored))
-                        .setMaxStackSize(1))
-                .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
-                        GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_auto_output.tooltip"))
-                .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
-                        GuiTextures.BUTTON_LOCK, this::isLocked, this::setLocked)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_lock.tooltip"))
-                .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
-                        GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
-                        .setShouldUseBaseBackground()
-                        .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        LongSyncValue itemSyncer = new LongSyncValue(this::getStoredAmount, (ignored) -> {});
+        syncManager.syncValue("item_amount", itemSyncer);
+        // SlotGroup group = new SlotGroup("item_inv", 1, 0, true);
+
+        return new ModularPanel(this.getDefinition().getName())
+                .child(
+                        // Top half of the screen
+                        new ParentWidget<>()
+                                .widthRel(1)
+                                .height(20 + 60)
+                                // Box that has the display texture BG +
+                                // the buttons / text / etc
+                                .child(new ParentWidget<>()
+                                        .background(GTGuiTextures.DISPLAY)
+                                        .size(90, 63)
+                                        .align(Alignment.CENTER)
+                                        .child(IKey.lang("gtceu.machine.quantum_chest.items_stored").asWidget()
+                                                .color(0xffffff)
+                                                .margin(8, 0, 8, 0))
+                                        .child(IKey.dynamic(
+                                                () -> Component.literal(
+                                                        FormattingUtil.formatNumbers(itemSyncer.getLongValue())))
+                                                .asWidget()
+                                                .color(0xffffff)
+                                                .margin(8, 0, 18, 0))
+                                        .child(Flow.row()
+                                                .margin(4, 0, 41, 0)
+                                                .coverChildren()
+                                                .child(createAutoOutputItemButton(syncManager))
+                                                .child(createItemLockButton(syncManager))
+                                                .child(createVoidButton(syncManager)))
+                                        .child(Flow.column()
+                                                .margin(68, 0, 15, 0)
+                                                .coverChildren()
+                                                .child(createItemSlot(syncManager))
+                                                .child(createPhantomLockeditemSlot(syncManager))))
+
+                )
+                .child(GTMuiWidgets.createTitleBar(getDefinition(), 176, GTGuiTextures.BACKGROUND))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
+    private ToggleButton createAutoOutputItemButton(PanelSyncManager syncManager) {
+        BooleanSyncValue itemOutputs = new BooleanSyncValue(this::isAutoOutputItems,
+                this::setAutoOutputItems);
+        syncManager.syncValue("auto_output_items", itemOutputs);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(itemOutputs::getBoolValue, itemOutputs::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder(
+                        (r) -> r.addLine(IKey.lang(Component.translatable("gtceu.machine.quantum_chest.items_stored",
+                                Component.translatable(itemOutputs.getBoolValue() ? "cover.voiding.label.enabled" :
+                                        "cover.voiding.label.disabled")))));
+    }
+
+    private ToggleButton createItemLockButton(PanelSyncManager syncManager) {
+        BooleanSyncValue itemLocked = new BooleanSyncValue(this::isLocked,
+                this::setLocked);
+        syncManager.syncValue("item_locked", itemLocked);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(itemLocked::getBoolValue, itemLocked::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_LOCK)
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder((r) -> r.addLine(IKey.lang(itemLocked.getBoolValue() ?
+                        "gtceu.gui.item_lock.tooltip.enabled" :
+                        "gtceu.gui.item_lock.tooltip.disabled")));
+    }
+
+    private ToggleButton createVoidButton(PanelSyncManager syncManager) {
+        BooleanSyncValue voiding = new BooleanSyncValue(() -> this.isVoiding,
+                (voidingBool) -> { this.isVoiding = voidingBool; });
+        syncManager.syncValue("is_voiding", voiding);
+        return new ToggleButton()
+                .value(new BoolValue.Dynamic(voiding::getBoolValue, voiding::setBoolValue))
+                .overlay(GTGuiTextures.BUTTON_VOID)
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder((r) -> r.addLine(IKey.lang(voiding.getBoolValue() ?
+                        "gtceu.gui.item_voiding_partial.tooltip.enabled" :
+                        "gtceu.gui.item_voiding_partial.tooltip.disabled")));
+    }
+
+    private IWidget createItemSlot(PanelSyncManager syncManager) {
+        ItemSlotSyncHandler slot = new ItemSlotSyncHandler(new ModularSlot(cache, 0)
+                .ignoreMaxStackSize(true)
+                .slotGroup(new SlotGroup("stored", 1, true)));
+        syncManager.syncValue("stored", 1, slot);
+
+        return new ItemSlot().syncHandler("stored", 1);
+    }
+
+    private IWidget createPhantomLockeditemSlot(PanelSyncManager syncManager) {
+        lockedItem.setOnContentsChanged(() -> lockedItem.getStackInSlot(0).setCount(1));
+        PhantomItemSlotSyncHandler lockSlot = new PhantomItemSlotSyncHandler(new ModularSlot(lockedItem, 0).filter(
+                stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored)));
+
+        syncManager.syncValue("lock", lockSlot);
+        return new PhantomItemSlot().syncHandler("lock");
     }
 
     private @NotNull CustomItemStackHandler createImportItems() {
