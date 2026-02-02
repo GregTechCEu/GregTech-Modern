@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
+import com.gregtechceu.gtceu.common.mui.factory.CentralMonitorUIFactory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -1158,6 +1159,7 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/central_monitor"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
             .hasBER(true)
+            .UI(CentralMonitorUIFactory.INSTANCE)
             .register();
 
     public static void init() {}
