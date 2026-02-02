@@ -107,31 +107,31 @@ public class PlaceholderHandler {
         int symbol = 1;
         Stack<List<MultiLineComponent>> stack = new Stack<>();
         stack.push(GTUtil.list(MultiLineComponent.empty()));
-        for (char c : s.toCharArray()) {
-            if (escape || (literalEscape && c != LITERAL_ESCAPE)) {
-                if (c == ESCAPED_NEWLINE && !literalEscape) {
-                    GTUtil.getLast(stack.peek()).appendNewline();
-                    line++;
-                    symbol = 0;
-                } else if (c == NEWLINE) continue;
-                else GTUtil.getLast(stack.peek()).append(c);
-            } else {
-                switch (c) {
-                    case ESCAPE -> escapeNext = true;
-                    case LITERAL_ESCAPE -> literalEscape = !literalEscape;
-                    case NEWLINE -> {
+        try {
+            for (char c : s.toCharArray()) {
+                if (escape || (literalEscape && c != LITERAL_ESCAPE)) {
+                    if (c == ESCAPED_NEWLINE && !literalEscape) {
                         GTUtil.getLast(stack.peek()).appendNewline();
                         line++;
                         symbol = 0;
-                    }
-                    case ARG_SEPARATOR -> {
-                        if (stack.size() == 1) GTUtil.getLast(stack.peek()).append(c);
-                        else stack.peek().add(MultiLineComponent.empty());
-                    }
-                    case PLACEHOLDER_BEGIN -> stack.push(GTUtil.list(MultiLineComponent.empty()));
-                    case PLACEHOLDER_END -> {
-                        List<MultiLineComponent> placeholder = stack.pop();
-                        try {
+                    } else if (c == NEWLINE) continue;
+                    else GTUtil.getLast(stack.peek()).append(c);
+                } else {
+                    switch (c) {
+                        case ESCAPE -> escapeNext = true;
+                        case LITERAL_ESCAPE -> literalEscape = !literalEscape;
+                        case NEWLINE -> {
+                            GTUtil.getLast(stack.peek()).appendNewline();
+                            line++;
+                            symbol = 0;
+                        }
+                        case ARG_SEPARATOR -> {
+                            if (stack.size() == 1) GTUtil.getLast(stack.peek()).append(c);
+                            else stack.peek().add(MultiLineComponent.empty());
+                        }
+                        case PLACEHOLDER_BEGIN -> stack.push(GTUtil.list(MultiLineComponent.empty()));
+                        case PLACEHOLDER_END -> {
+                            List<MultiLineComponent> placeholder = stack.pop();
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
                             MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
@@ -157,19 +157,19 @@ public class PlaceholderHandler {
                                     if (i != result.size() - 1) GTUtil.getLast(stack.peek()).appendNewline();
                                 }
                             }
-                        } catch (PlaceholderException e) {
-                            e.setLineInfo(line, symbol);
-                            exceptions.add(e);
-                        } catch (RuntimeException e) {
-                            exceptions.add(e);
                         }
+                        default -> GTUtil.getLast(stack.peek()).append(c);
                     }
-                    default -> GTUtil.getLast(stack.peek()).append(c);
                 }
+                escape = escapeNext;
+                escapeNext = false;
+                symbol++;
             }
-            escape = escapeNext;
-            escapeNext = false;
-            symbol++;
+        } catch (PlaceholderException e) {
+            e.setLineInfo(line, symbol);
+            exceptions.add(e);
+        } catch (RuntimeException e) {
+            exceptions.add(e);
         }
         if (stack.size() > 1) {
             PlaceholderException exception = new UnclosedBracketException();

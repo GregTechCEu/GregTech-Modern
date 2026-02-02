@@ -15,35 +15,50 @@ They are registered using
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
     
-    public ExampleMod(FMLJavaModLoadingContext context) {
-        var bus = context.getModEventBus();
-        bus.addGenericListener(RecipeConditionType.class, this::registerConditions);
-    }
-
+    // in 1.20.1
     public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
+
+    public ExampleMod() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addGenericListener(RecipeConditionType.class, this::registerConditions);
+    }
+    
+    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
+        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition", // (1)
+                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
+    }
+    // end 1.20.1
+    
+    // in 1.21.1
+    public static final RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
+            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (2)
+            new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
+
+    public ExampleMod(IEventBus modBus, FMLModContainer container) {
+        modBus.addListener(CommonInit::onRegister);
+        bus.addListener(RecipeConditionType.class, this::registerConditions);
+    }
     
     public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
         EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition",
-                new RecipeConditionType<>(
-                        ExampleCondition::new, 
-                        ExampleCondition.CODEC
-                )
-        );
+                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
+    // end 1.21.1
 }
 ```
 
+1. The 1.20.1 version doesn't require a namespace, so make sure you don't use the same ID as someone else!  
+2. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
+
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java
-public class ExampleCondition extends RecipeCondition {
+public class ExampleCondition extends RecipeCondition<ExampleCondition> {
+
+    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+            .and(Codec.INT.fieldOf("height").forGetter(val -> val.height)
+    ).apply(instance, ExampleCondition::new));
 
     public int height;
-
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.INT.fieldOf("height").forGetter(val -> val.height))
-                    .apply(instance, ExampleCondition::new));
-
 
     public ExampleCondition(boolean isReverse, int height) {
         this.isReverse = isReverse;
@@ -52,14 +67,14 @@ public class ExampleCondition extends RecipeCondition {
 
     public ExampleCondition(int height) {
         this(false, height);
-    }    
+    }
     
     public ExampleCondition() {
         this(false, 0);
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<ExampleCondition> getType() {
         return ExampleMod.EXAMPLE_CONDITION;
     }
 
@@ -74,7 +89,7 @@ public class ExampleCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public ExampleCondition createTemplate() {
         return new ExampleCondition(0);
     }
 }
@@ -85,7 +100,7 @@ Lets step through this example. This will not be in order as it is in the file, 
 Starting with:
 ```java
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<ExampleCondition> getType() {
         return ExampleMod.EXAMPLE_CONDITION;
     }
 
@@ -105,16 +120,12 @@ This part is quite simple, and just returns the type and tooltip for the conditi
     public ExampleCondition(int height) {
         this(false, height);
     }
-
-    public ExampleCondition() {
-        this(false, 0);
-    }
 ```
-These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run. Furthermore, a no-arg constructor is required for (de)serialization.
+These are the constructors. We need the `isReverse`, as it is part of the overarching `RecipeCondition` type. `isReverse` means that if the condition is met, your recipe won't be run. Furthermore, a constructor with all arguments is required for (de)serialization.
 
 ```java
     @Override
-    public RecipeCondition createTemplate() {
+    public ExampleCondition createTemplate() {
         return new ExampleCondition(0);
     }
 ```
@@ -131,12 +142,11 @@ This creates the basic "template" that might be used for serialization. This sho
 This is the actual condition.
 
 ```java
+    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.INT.fieldOf("height").forGetter(val -> val.height)
+    ).apply(instance, ExampleCondition::new));
+                    
     public int height;
-
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.INT.fieldOf("height").forGetter(val -> val.height))
-                    .apply(instance, ExampleCondition::new));
 ```
 
 The CODEC is how java knows how to serialize/deserialize your condition. This is needed for syncing between client/server, and storing it to json to load when the world loads.
@@ -144,8 +154,8 @@ It consists of a few parts:
 
 - `RecordCodecBuilder.create(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.
 - `RecipeCondition.isReverse(instance)` is a helper codec that serializes the isReverse boolean of your codec.
-- `.and(` means this is the next field in the record.
-- `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an INT, we want to call it "height" in the json, and to get the value you call `.height`.
+- `.and(` allows adding additional fields to the codec.
+- `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an integer, we want to call it "height" in the JSON, and to get the value to serialize you use `ExampleCondition#height`.
 - `.apply(instance, ExampleCondition::new)` means when deserializing back to an object, you apply these steps to get the values (in this case `bool isReverse, int height`) and call the constructor with those arguments.  
     In this case, this would call our `new ExampleCondition(isReverse, height)` constructor we have defined earlier.
 

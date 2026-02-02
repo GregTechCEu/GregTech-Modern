@@ -314,9 +314,9 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
-        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
-            if (modelWithBER.getBlockEntityType() == this.getType()) {
-                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER)
+        if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
+            if (berModel.getBlockEntityType() != null && berModel.getBlockEntityType() == this.getType()) {
+                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) berModel)
                         .getRenderBoundingBox(this);
             }
         }
