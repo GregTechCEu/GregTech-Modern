@@ -144,7 +144,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {
@@ -197,7 +197,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
     private int getInputSignal() {
         Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
+        BlockPos sourcePos = coverHolder.getBlockPos().relative(attachedSide);
 
         return level.getSignal(sourcePos, attachedSide);
     }

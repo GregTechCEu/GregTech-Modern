@@ -644,7 +644,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @return the position to start mining from
      */
     public BlockPos getMiningPos() {
-        return getMachine().getPos();
+        return getMachine().getBlockPos();
     }
 
     public void onRemove() {

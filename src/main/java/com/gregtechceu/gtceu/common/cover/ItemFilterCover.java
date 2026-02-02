@@ -55,7 +55,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         if (itemFilter == null) {
             itemFilter = ItemFilter.loadFilter(attachItem);
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
             }
         }

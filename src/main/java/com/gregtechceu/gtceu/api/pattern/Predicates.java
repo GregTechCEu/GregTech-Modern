@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -61,19 +61,19 @@ public class Predicates {
         return new TraceabilityPredicate(new PredicateBlocks(blocks));
     }
 
-    public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
+    public static TraceabilityPredicate blocks(MetaMachineBlock... blocks) {
         return new TraceabilityPredicate(
-                new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+                new PredicateBlocks(Arrays.stream(blocks).toArray(Block[]::new)));
     }
 
     public static TraceabilityPredicate machines(MachineDefinition... definitions) {
-        ArrayList<IMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
+        ArrayList<MetaMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
         for (var definition : definitions) {
             if (definition != null) {
                 machineBlocks.add(definition.get());
             }
         }
-        return blocks(machineBlocks.toArray(IMachineBlock[]::new));
+        return blocks(machineBlocks.toArray(MetaMachineBlock[]::new));
     }
 
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {

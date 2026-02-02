@@ -50,6 +50,7 @@ public class EnergyDetectorCover extends DetectorCover {
 
     @Nullable
     protected IEnergyInfoProvider getEnergyInfoProvider() {
-        return GTCapabilityHelper.getEnergyInfoProvider(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return GTCapabilityHelper.getEnergyInfoProvider(coverHolder.getLevel(), coverHolder.getBlockPos(),
+                attachedSide);
     }
 }

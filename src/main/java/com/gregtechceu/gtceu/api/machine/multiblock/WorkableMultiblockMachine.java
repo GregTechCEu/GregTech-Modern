@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -78,14 +79,19 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @SyncToClient
     protected VoidingMode voidingMode = VoidingMode.VOID_NONE;
 
-    public WorkableMultiblockMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder);
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info,
+                                     Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
+        super(info);
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
-        this.recipeLogic = createRecipeLogic(args);
+        this.recipeLogic = recipeLogicSupplier.apply(this);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
+    }
+
+    public WorkableMultiblockMachine(BlockEntityCreationInfo info) {
+        this(info, RecipeLogic::new);
     }
 
     public void setMuffled(boolean muffled) {
@@ -105,10 +111,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         recipeLogic.inValid();
     }
 
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new RecipeLogic(this);
-    }
-
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
@@ -124,7 +126,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();

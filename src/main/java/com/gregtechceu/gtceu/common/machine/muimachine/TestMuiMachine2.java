@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.muimachine;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -29,8 +29,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     private TickableSubscription sub;
 
-    public TestMuiMachine2(IMachineBlockEntity holder) {
-        super(holder);
+    public TestMuiMachine2(BlockEntityCreationInfo info) {
+        super(info);
         sub = subscribeServerTick(this::tick);
     }
 

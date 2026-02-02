@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -100,8 +100,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(IMachineBlockEntity holder, boolean isConfigurable) {
-        super(holder, isConfigurable ? GTValues.HV : GTValues.LV);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
+        super(info, isConfigurable ? GTValues.HV : GTValues.LV);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = createInventory();
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));

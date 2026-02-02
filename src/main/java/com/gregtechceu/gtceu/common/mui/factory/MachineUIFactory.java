@@ -15,6 +15,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,13 +35,13 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     public void open(ServerPlayer player, IMuiMachine machine) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(machine);
-        if (machine.self().isInValid()) {
+        if (machine.self().isRemoved()) {
             throw new IllegalArgumentException("Can't open invalid MetaMachine GUI!");
         }
         if (player.level() != machine.self().getLevel()) {
             throw new IllegalArgumentException("MetaMachine must be in same dimension as the player!");
         }
-        BlockPos pos = machine.self().getPos();
+        BlockPos pos = machine.self().getBlockPos();
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, player);
     }
@@ -81,6 +83,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public ModularScreen createScreen(PosGuiData data, ModularPanel mainPanel) {
         return new GTGuiScreen(MOD_ID, mainPanel, getThemeId(data));
     }

@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -63,8 +63,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @SaveField
     public final NotifiableItemStackHandler importItems;
 
-    public DataAccessHatchMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {
-        super(holder, tier);
+    public DataAccessHatchMachine(BlockEntityCreationInfo info, int tier, boolean isCreative) {
+        super(info, tier);
         this.isCreative = isCreative;
         this.recipes = isCreative ? Collections.emptySet() : new ObjectOpenHashSet<>();
         this.importItems = createImportItemHandler();
@@ -114,24 +114,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                         .verticalCenter())))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
-    /*
-     * @Override
-     * public Widget createUIWidget() {
-     * int rowSize = (int) Math.sqrt(getInventorySize());
-     * int xOffset = 18 * rowSize / 2;
-     * WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
-     *
-     * for (int y = 0; y < rowSize; y++) {
-     * for (int x = 0; x < rowSize; x++) {
-     * int index = y * rowSize + x;
-     * group.addWidget(new SlotWidget(importItems, index,
-     * rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-     * .setBackgroundTexture(GuiTextures.SLOT));
-     * }
-     * }
-     * return group;
-     * }
-     */
 
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

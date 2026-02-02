@@ -64,7 +64,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     @Override
     public boolean canAttach() {
-        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide).isPresent();
     }
 
     @Override

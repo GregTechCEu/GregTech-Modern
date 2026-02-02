@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -17,8 +18,8 @@ import org.joml.Vector2d;
 
 public class MonitorPartMachine extends MonitorComponentPartMachine {
 
-    public MonitorPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MonitorPartMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
