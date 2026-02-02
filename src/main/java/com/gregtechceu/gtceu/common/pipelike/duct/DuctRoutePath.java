@@ -36,7 +36,7 @@ public class DuctRoutePath implements IRoutePath<IHazardParticleContainer> {
 
     @Override
     public @NotNull BlockPos getTargetPipePos() {
-        return targetPipe.getPipePos();
+        return targetPipe.getBlockPos();
     }
 
     @Override

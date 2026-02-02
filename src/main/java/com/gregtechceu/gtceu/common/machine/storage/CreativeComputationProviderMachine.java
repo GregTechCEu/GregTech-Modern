@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -46,8 +46,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
     @Nullable
     private TickableSubscription computationSubs;
 
-    public CreativeComputationProviderMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public CreativeComputationProviderMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override

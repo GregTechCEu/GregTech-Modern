@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
@@ -127,8 +127,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @RerenderOnChanged
     private boolean active = false;
 
-    public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
-        super(holder, tier);
+    public ItemCollectorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
         this.output = createOutputItemHandler();
@@ -233,8 +233,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         if (drainEnergy(false)) {
             if (aabb == null || rangeDirty) {
                 rangeDirty = false;
-                BlockPos pos1 = getPos().offset(-range, 0, -range);
-                BlockPos pos2 = getPos().offset(range, 2, range);
+                BlockPos pos1 = getBlockPos().offset(-range, 0, -range);
+                BlockPos pos2 = getBlockPos().offset(range, 2, range);
                 this.aabb = AABB.of(BoundingBox.fromCorners(pos1, pos2));
             }
             moveItemsInRange();
@@ -246,7 +246,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         ItemFilter filter = null;
         if (!filterInventory.getStackInSlot(0).isEmpty())
             filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
-        BlockPos centerPos = self().getPos().above();
+        BlockPos centerPos = self().getBlockPos().above();
 
         List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, aabb);
         for (ItemEntity itemEntity : itemEntities) {
@@ -340,7 +340,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
         if ((isAutoOutputItems() && !output.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacing))
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacing))
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -452,7 +452,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                   BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), gridSide);
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());

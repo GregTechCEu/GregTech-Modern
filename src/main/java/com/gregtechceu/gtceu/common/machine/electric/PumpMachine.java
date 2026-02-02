@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -86,18 +86,15 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @SaveField
     protected final NotifiableFluidTank cache;
 
-    public PumpMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
-        this.cache = createCacheFluidHandler(args);
+    public PumpMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
+        this.cache = new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE,
+                IO.OUT);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME * Math.max(1, getTier()), IO.NONE, IO.OUT);
-    }
 
     @Override
     public boolean isAllowInputFromOutputSideFluids() {
@@ -118,7 +115,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     @Override
-    public void setOutputFacingFluids(Direction outputFacing) {
+    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
         setFrontFacing(outputFacing);
     }
 
@@ -262,7 +259,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
             return;
         }
 
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         BlockPos downPos = headPos.below(1);
         var downBlock = getLevel().getBlockState(downPos);
@@ -396,7 +393,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
      */
     private boolean canAdvancePumpHead() {
         // position of the pump head, i.e. the position of the lowest mining pipe
-        BlockPos headPos = getPos().below(pumpHeadY);
+        BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
@@ -420,7 +417,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Override
     public void onMachineRemoved() {
         if (getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getPos().relative(Direction.DOWN);
+            var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
                 pos = pos.relative(Direction.DOWN);

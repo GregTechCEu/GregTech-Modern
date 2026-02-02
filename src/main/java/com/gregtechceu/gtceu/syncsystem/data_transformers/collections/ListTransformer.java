@@ -21,7 +21,6 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
     @Override
     public Tag serializeNBT(List<T> value, ISyncManaged holder) {
         ListTag list = new ListTag();
-        if (elementTransformer == null) return list;
         for (var obj : value) {
             list.add(elementTransformer.serializeNBT(obj, null));
         }
@@ -30,17 +29,15 @@ public class ListTransformer<T> implements IValueTransformer<List<T>> {
 
     @Override
     public List<T> deserializeNBT(Tag tag, ISyncManaged holder, List<T> current) {
-        if (!(tag instanceof ListTag listTag) || elementTransformer == null) return List.of();
-
-        try {
-            if (current != null) current.clear();
-            else current = new ArrayList<>();
-            List<T> finalCurrent = current;
-            listTag.forEach(t -> finalCurrent
-                    .add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
-        } catch (UnsupportedOperationException e) {
-            GTCEu.LOGGER.error("Sync: Cannot sync an immutable list: {} {}", holder, e);
+        if (!(tag instanceof ListTag listTag)) {
+            GTCEu.LOGGER.error("Tag is of type {}, not ListTag", tag.getType());
+            return current;
         }
+        if (current != null) current.clear();
+        else current = new ArrayList<>();
+        List<T> finalCurrent = current;
+        listTag.forEach(t -> finalCurrent
+                .add(elementTransformer.deserializeNBT(IValueTransformer.stripLdlibWrapper(t), null, null)));
 
         return current;
     }

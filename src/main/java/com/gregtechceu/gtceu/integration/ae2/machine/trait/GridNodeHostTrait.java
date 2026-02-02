@@ -23,7 +23,7 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
     }
 
     public void init() {
-        this.proxy.create(machine.getLevel(), machine.getPos());
+        this.proxy.create(machine.getLevel(), machine.getBlockPos());
     }
 
     @Override

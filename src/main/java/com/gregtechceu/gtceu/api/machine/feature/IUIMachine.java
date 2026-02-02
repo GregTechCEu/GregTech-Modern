@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
@@ -33,13 +32,12 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
 
     @Override
     default boolean isInvalid() {
-        return self().isInValid();
+        return self().isRemoved();
     }
 
     @Override
     default boolean isRemote() {
-        var level = self().getLevel();
-        return level == null ? GTCEu.isClientThread() : level.isClientSide;
+        return self().isRemote();
     }
 
     @Override

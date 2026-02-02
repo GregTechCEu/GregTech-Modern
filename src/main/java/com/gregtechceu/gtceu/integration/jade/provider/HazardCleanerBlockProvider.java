@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 
 import net.minecraft.core.BlockPos;
@@ -25,8 +24,7 @@ public class HazardCleanerBlockProvider extends CapabilityBlockProvider<IEnviron
 
     @Override
     protected @Nullable IEnvironmentalHazardCleaner getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getBlockEntity(pos) instanceof MetaMachineBlockEntity mte &&
-                mte.getMetaMachine() instanceof IEnvironmentalHazardCleaner cleaner ? cleaner : null;
+        return level.getBlockEntity(pos) instanceof IEnvironmentalHazardCleaner cleaner ? cleaner : null;
     }
 
     @Override

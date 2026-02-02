@@ -142,7 +142,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     default boolean isFrontFaceFree() {
         final var facing = self().getFrontFacing();
         final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
-        final var pos = self().getPos();
+        final var pos = self().getBlockPos();
         final var level = self().getLevel();
         for (int dLeft = -1; dLeft < 2; dLeft++) {
             for (int dUp = -1; dUp < 2; dUp++) {

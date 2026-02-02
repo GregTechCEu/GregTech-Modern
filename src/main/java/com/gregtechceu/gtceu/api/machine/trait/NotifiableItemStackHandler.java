@@ -247,7 +247,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
@@ -257,7 +257,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
-        var pos = getMachine().getPos();
+        var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.IN);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)

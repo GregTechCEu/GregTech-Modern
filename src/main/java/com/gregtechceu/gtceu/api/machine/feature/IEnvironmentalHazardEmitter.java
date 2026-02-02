@@ -34,7 +34,7 @@ public interface IEnvironmentalHazardEmitter extends IMachineFeature {
 
         if (self().getLevel() instanceof ServerLevel serverLevel) {
             IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(serverLevel,
-                    self().getPos().relative(self().getFrontFacing()), self().getFrontFacing().getOpposite());
+                    self().getBlockPos().relative(self().getFrontFacing()), self().getFrontFacing().getOpposite());
             if (container != null &&
                     container.getHazardCanBeInserted(getConditionToEmit()) > getHazardStrengthPerOperation()) {
                 container.addHazard(getConditionToEmit(), getHazardStrengthPerOperation());
@@ -42,7 +42,7 @@ public interface IEnvironmentalHazardEmitter extends IMachineFeature {
             }
 
             var savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-            savedData.addZone(self().getPos(), getHazardStrengthPerOperation(), true,
+            savedData.addZone(self().getBlockPos(), getHazardStrengthPerOperation(), true,
                     HazardProperty.HazardTrigger.INHALATION, getConditionToEmit());
         }
     }

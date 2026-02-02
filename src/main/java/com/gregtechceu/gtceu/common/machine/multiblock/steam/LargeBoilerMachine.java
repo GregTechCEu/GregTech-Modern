@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
@@ -58,8 +58,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     protected TickableSubscription temperatureSubs;
     private int steamGenerated;
 
-    public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
-        super(holder, args);
+    public LargeBoilerMachine(BlockEntityCreationInfo info, int maxTemperature, int heatSpeed) {
+        super(info, LargeBoilerRecipeLogic::new);
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;
         this.throttle = 100;
@@ -68,11 +68,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     //////////////////////////////////////
     // ****** Recipe Logic ******//
     //////////////////////////////////////
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new LargeBoilerMachine.LargeBoilerRecipeLogic(this);
-    }
 
     @Override
     public LargeBoilerMachine.LargeBoilerRecipeLogic getRecipeLogic() {
@@ -161,7 +156,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 // check explosion
                 if (drained < maxDrain) {
                     doExplosion(2f);
-                    var center = getPos().below().relative(getFrontFacing().getOpposite());
+                    var center = getBlockPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
                         doExplosion(center, 2f);
                     }

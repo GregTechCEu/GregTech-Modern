@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
@@ -17,6 +18,8 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
+import java.util.function.Function;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -28,23 +31,28 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     public final NotifiableEnergyContainer energyContainer;
     protected TickableSubscription explosionSub;
 
-    public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
-        energyContainer = createEnergyContainer(args);
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
+                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
+        super(info, tier);
+        energyContainer = energyContainerSupplier.apply(this);
+    }
+
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier);
+
+        long tierVoltage = GTValues.V[tier];
+        if (isEnergyEmitter()) {
+            energyContainer = NotifiableEnergyContainer.emitterContainer(this,
+                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+        } else {
+            energyContainer = NotifiableEnergyContainer.receiverContainer(this,
+                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+        }
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        long tierVoltage = GTValues.V[tier];
-        if (isEnergyEmitter()) {
-            return NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-        } else return NotifiableEnergyContainer.receiverContainer(this,
-                tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-    }
 
     @Override
     public void onLoad() {
@@ -115,9 +123,7 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
             progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
             progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
             return progressBar;
-        }, (progressBar, machine) -> {
-            progressBar.setProgressSupplier(
-                    () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity());
-        });
+        }, (progressBar, machine) -> progressBar.setProgressSupplier(
+                () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity()));
     }
 }

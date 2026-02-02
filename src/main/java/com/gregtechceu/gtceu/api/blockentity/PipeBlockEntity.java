@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.syncsystem.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.syncsystem.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
@@ -27,7 +26,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -99,10 +97,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        IPipeNode.super.scheduleRenderUpdate();
-    }
-
     @Override
     public long getOffsetTimer() {
         return level == null ? offset : (level.getServer().getTickCount() + offset);
@@ -283,7 +277,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     private void updateNetworkConnection(Direction side, boolean connected) {
         LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) getLevel());
-        worldPipeNet.updateBlockedConnections(getPipePos(), side, !connected);
+        worldPipeNet.updateBlockedConnections(this.getBlockPos(), side, !connected);
     }
 
     protected int withSideConnection(int blockedConnections, Direction side, boolean connected) {
@@ -398,7 +392,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 }
             } else {
                 if (!frameMaterial.isNull()) {
-                    Block.popResource(getLevel(), getPipePos(),
+                    Block.popResource(getLevel(), this.getBlockPos(),
                             GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = GTMaterials.NULL;
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
@@ -420,13 +414,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public void doExplosion(float explosionPower) {
-        getLevel().removeBlock(getPipePos(), false);
+        getLevel().removeBlock(this.getBlockPos(), false);
         if (!getLevel().isClientSide) {
-            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, getPipePos().getX() + 0.5,
-                    getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
+            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, this.getBlockPos().getX() + 0.5,
+                    this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5,
                     10, 0.2, 0.2, 0.2, 0.0);
         }
-        getLevel().explode(null, getPipePos().getX() + 0.5, getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
+        getLevel().explode(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5,
+                this.getBlockPos().getZ() + 0.5,
                 explosionPower, Level.ExplosionInteraction.NONE);
     }
 
@@ -436,11 +431,5 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     public static boolean isConnected(int connections, Direction side) {
         return (connections & (1 << side.ordinal())) > 0;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        TagFixer.fixFluidTags(tag);
-        super.load(tag);
     }
 }

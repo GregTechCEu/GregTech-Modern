@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
@@ -50,8 +50,8 @@ public class GTJadePlugin implements IWailaPlugin {
             registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
         }
 
-        registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachineBlockEntity.class);
-        registration.registerFluidStorage(GTFluidStorageProvider.INSTANCE, MetaMachineBlockEntity.class);
+        registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachine.class);
+        registration.registerFluidStorage(GTFluidStorageProvider.INSTANCE, MetaMachine.class);
         registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }
 

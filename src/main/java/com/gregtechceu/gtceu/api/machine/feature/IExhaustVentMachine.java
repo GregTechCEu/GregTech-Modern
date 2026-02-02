@@ -62,7 +62,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
      */
     default boolean checkVenting() {
         if (isNeedsVenting()) {
-            tryDoVenting(self().getLevel(), self().getPos());
+            tryDoVenting(self().getLevel(), self().getBlockPos());
         }
         return !isNeedsVenting();
     }
@@ -73,7 +73,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
     default boolean isVentingBlocked() {
         Level level = self().getLevel();
         Direction ventingSide = getVentingDirection();
-        BlockPos ventingBlockPos = self().getPos().relative(ventingSide);
+        BlockPos ventingBlockPos = self().getBlockPos().relative(ventingSide);
         BlockState state = level.getBlockState(ventingBlockPos);
 
         return state.canOcclude() || Shapes.blockOccudes(state.getCollisionShape(level, ventingBlockPos),

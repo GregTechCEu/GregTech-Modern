@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -10,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSave
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
@@ -197,8 +195,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             }
         }
 
-        if (tileEntity instanceof IMachineBlockEntity machineBlockEntity) {
-            MetaMachine machine = machineBlockEntity.getMetaMachine();
+        if (tileEntity instanceof MetaMachine machine) {
 
             list.add(Component.translatable(state.getBlock().getDescriptionId()).withStyle(ChatFormatting.BLUE));
 
@@ -214,7 +211,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",
                             machine.getFrontFacing().getSerializedName()));
                     list.add(Component.translatable("behavior.portable_scanner.machine_upwards_facing",
-                            machineBlockEntity.self().getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING)
+                            machine.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING)
                                     .getSerializedName()));
                 }
 
@@ -452,11 +449,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
         if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO &&
                 tileEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
-            MetaMachineBlockEntity mmbe = (syncBlockEntity instanceof MetaMachineBlockEntity m) ? m : null;
+            MetaMachine machine = (syncBlockEntity instanceof MetaMachine m) ? m : null;
             PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?, ?> p) ? p : null;
 
             list.add(Component.literal(syncBlockEntity.toString()));
-            if (mmbe != null) list.add(Component.literal(mmbe.getMetaMachine().toString()));
             if (pipe != null) {
                 var net = pipe.getPipeNet();
                 list.add(Component.literal(net == null ? "null" : net.toString()));
@@ -464,7 +460,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             list.add(Component.translatable("behavior.portable_scanner.divider"));
 
             list.add(Component.literal("Covers"));
-            ICoverable coverable = mmbe != null ? mmbe.getMetaMachine().getCoverContainer() :
+            ICoverable coverable = machine != null ? machine.getCoverContainer() :
                     (pipe != null ? pipe.getCoverContainer() : null);
             if (coverable != null) {
                 for (var dir : GTUtil.DIRECTIONS) {

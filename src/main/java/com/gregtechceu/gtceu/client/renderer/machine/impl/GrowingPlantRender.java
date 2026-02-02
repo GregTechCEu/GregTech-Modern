@@ -92,7 +92,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
     @Override
     public AABB getRenderBoundingBox(IRecipeLogicMachine machine) {
-        final BlockPos pos = machine.self().getPos();
+        final BlockPos pos = machine.self().getBlockPos();
 
         List<BlockPos> positions = new ArrayList<>();
         Collections.addAll(positions, pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
@@ -143,7 +143,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         MetaMachine machine = rlm.self();
         Level level = machine.getLevel();
         assert level != null;
-        BlockPos machinePos = machine.getPos();
+        BlockPos machinePos = machine.getBlockPos();
 
         var statesToDraw = mode.renderFunction().configureState(level, state, progress);
 

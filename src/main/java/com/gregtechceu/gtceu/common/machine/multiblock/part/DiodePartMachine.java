@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.syncsystem.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
 
@@ -75,8 +76,8 @@ public class DiodePartMachine extends TieredIOPartMachine {
     @SaveField(nbtKey = "amp_mode")
     private int amps;
 
-    public DiodePartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, IO.BOTH);
+    public DiodePartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, IO.BOTH);
         long tierVoltage = GTValues.V[getTier()];
 
         this.amps = 1;
@@ -139,17 +140,10 @@ public class DiodePartMachine extends TieredIOPartMachine {
         return InteractionResult.CONSUME;
     }
 
-    @SuppressWarnings("unused")
-    public void onAmpUpdated(int newValue, int oldValue) {
-        this.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        if (!isRemote()) {
-            setRenderState(getRenderState()
-                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
-            super.scheduleRenderUpdate();
-        }
+    @ClientFieldChangeListener(fieldName = "amps")
+    public void onAmpUpdated() {
+        setRenderState(
+                getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+        scheduleRenderUpdate();
     }
 }

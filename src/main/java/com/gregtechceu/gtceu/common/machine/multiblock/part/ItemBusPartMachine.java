@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -89,9 +89,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SyncToClient
     private boolean isDistinct = false;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
-        super(holder, tier, io);
-        this.inventory = createInventory(args);
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
+        this.inventory = createInventory();
         this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
@@ -105,12 +105,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return sizeRoot * sizeRoot;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, getInventorySize(), io, IO.BOTH);
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -229,7 +229,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -274,7 +274,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     public boolean swapIO() {
-        BlockPos blockPos = getHolder().pos();
+        BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
@@ -287,16 +287,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
-            if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
-                // We don't set the circuit or distinct busses, since
-                // that doesn't make sense on an output bus.
-                // Furthermore, existing inventory items
-                // and conveyors will drop to the floor on block override.
-                newMachine.setFrontFacing(this.getFrontFacing());
-                newMachine.setUpwardsFacing(this.getUpwardsFacing());
-                newMachine.setPaintingColor(this.getPaintingColor());
-            }
+        if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
+            // We don't set the circuit or distinct busses, since
+            // that doesn't make sense on an output bus.
+            // Furthermore, existing inventory items
+            // and conveyors will drop to the floor on block override.
+            newMachine.setFrontFacing(this.getFrontFacing());
+            newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            newMachine.setPaintingColor(this.getPaintingColor());
         }
         return true;
     }

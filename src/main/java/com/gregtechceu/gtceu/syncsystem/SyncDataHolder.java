@@ -193,23 +193,25 @@ public class SyncDataHolder {
         try {
             if (field.transformer != null) {
                 IValueTransformer<Object> transformer = (IValueTransformer<Object>) field.transformer;
-                if (transformer.mustProvideObject()) {
-                    if (readingClientFields) {
-                        transformer.deserializeClientNBT(savedValue, holder, field.handle.get(holder));
+                try {
+                    if (transformer.mustProvideObject()) {
+                        if (readingClientFields) {
+                            transformer.deserializeClientNBT(savedValue, holder, field.handle.get(holder));
+                        } else {
+                            transformer.deserializeNBT(savedValue, holder, field.handle.get(holder));
+                        }
                     } else {
-                        transformer.deserializeNBT(savedValue, holder, field.handle.get(holder));
-                    }
-                } else {
-                    try {
+
                         if (readingClientFields) {
                             field.handle.set(holder, transformer.deserializeClientNBT(savedValue, holder, null));
                         } else {
                             field.handle.set(holder, transformer.deserializeNBT(savedValue, holder, null));
                         }
-                    } catch (UnsupportedOperationException e) {
-                        GTCEu.LOGGER.error("Sync: failed to perform VarHandle set: unsupported op {} {}",
-                                field.fieldName, field.handle.toString());
+
                     }
+                } catch (UnsupportedOperationException e) {
+                    GTCEu.LOGGER.error("Sync: failed to perform VarHandle set: unsupported op {} {}",
+                            field.fieldName, field.handle.toString());
                 }
             } else if (field.isComplex && savedValue instanceof CompoundTag compound) {
                 if (currentVal == null) {
