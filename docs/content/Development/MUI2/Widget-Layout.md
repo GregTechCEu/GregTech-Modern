@@ -10,7 +10,7 @@ Each widget has several builder setter methods for position and size. They all c
 ## Sizing
 
 - `width(int)` sets the widget width in pixels
-- `widthRel(float)` sets the widget width relative to its parent (f.e. if the parent is 120 px wide and we
+- `widthRel(float)` sets the widget width relative to its parent (e.g. if the parent is 120 px wide and we
   call `widthRel(0.5f)`, our widget will be 60 px wide)
 - `height(int)` and `heightRel(float)` work analogous to previous methods
 - `size(int width, int height)` is equivalent to `.width(width).height(height)`
@@ -18,7 +18,7 @@ Each widget has several builder setter methods for position and size. They all c
 - `sizeRel(float width, float height)` and `sizeRel(float val)` work analogous to previous methods
 - `fullWidth()` and `fullHeight()` are shortcuts for `widthRel(1f)` and `heightRel(1f)` respectively
 - `full()` combines the previous two methods
-- `coverChildrenWidth()` makes the widget width wrapping tightly around its children
+- `coverChildrenWidth()` makes the widget width wrap tightly around its children
 - `coverChildrenHeight()` works analogous to previous method
 - `coverChildren()` wraps width and height tightly
 - `expanded()` is only useful for children of `Row` and `Column` widgets. It will make the widget expand as much as
@@ -26,7 +26,7 @@ Each widget has several builder setter methods for position and size. They all c
 
 ## Positioning
 
-We can set position on four different points. Two for each axis. `left()`, `right()`, `top()` and `bottom()`.
+We can set position on four different points, two for each axis. `left()`, `right()`, `top()` and `bottom()`.
 To understand what they are doing take a look at the following picture:
 
 ![grafik](https://github.com/CleanroomMC/ModularUI/assets/45517902/ab173431-1509-414c-8db4-4545c985a9bd)
@@ -34,19 +34,14 @@ To understand what they are doing take a look at the following picture:
 As you can see the methods are fairly self-explanatory. Each of those methods has multiple variants much like `width()`
 and `widthRel()`. Only methods for `left()` will be listed here.
 
-- `left(int)` sets the x position in pixels relative to its parent
-- `leftRel(float)` sets the relative x position relative to its parent (f.e. 0.5f will center the widget) (it might not
-  be too easy to fully understand how this works right now
-- `leftRelOffset(float val, int offset)` is the same as `leftRel()`, but also adds an `offset` in pixels after the
-  calculation
-- `leftRelAnchor(float val, float anchor)` is the same as `leftRel()`, but with a different anchor
+- `left(int x)` sets the x position in pixels relative to its parent
+- `leftRel(float x)` sets the x position relative to its parent (f.e. 0.5f will center the widget) 
+- `leftRelOffset(float val, int offset)` is the same as `leftRel(float x)`, but also adds an `offset` in pixels after the calculation
+- `leftRelAnchor(float val, float anchor)` is the same as `leftRel(float x)`, but with a different anchor
   (see [Anchor](#anchor))
 - `leftRel(float val, int offset, float anchor)` combines `leftRelOffset()` and `leftRelAnchor()`
-- `left(float val, int offset, float anchor, Measure measure)` is `leftRel(float val, int offset, float anchor)`, but
-  you can define the measure (pixels or relative yourself) (this method is mostly useless since offset and anchor are
-  only effective with relative measure)
 - `left(DoubleSupplier val, Measure measure)` is like `left()` and `leftRel()`, but with a dynamic value. Note that the
-  supplier is only evaluated during resizing. You can't use for animating widgets.
+  supplier is only evaluated during resizing. You can't use it for animating widgets.
 - `leftRelOffset(DoubleSupplier val, int offset)` is like `leftRelOffset(float val, int offset)` with a dynamic value
 - `leftRelAnchor(DoubleSupplier val, float anchor)` is like `leftRelAnchor(float val, float anchor)` with a dynamic
   value
@@ -61,7 +56,6 @@ Additionally, there is
 - `alignY(float y)` is short for `topRelAnchor(y, y)`
 - `align(Alignment a)` combines `alignX(float x)` and `alignY(float y)`
 - `center()` is short for `align(Alignment.Center)`
-- various setters for margin and padding (margin puts space inside itself, padding puts space outside itself)
 
 ## Anchor
 
@@ -79,23 +73,23 @@ and relative position calculation.
 
 ## Combining Size and Position
 
-Of course, you can call multiple position and size methods, but you should be aware of its effects and limitations.
+You can call multiple different position and size methods, but you should be aware of its effects and limitations.
 
-Each axis (x and y) has 3 setters (x has `left()`, `right()` and `width()`, y has `top()`, `bottom()` and `height()`)
+Each axis (x and y) has three setters (x has `left()`, `right()` and `width()`, y has `top()`, `bottom()` and `height()`)
 without including all the variations.
 
 !!! Note
-    You can call at most 2 setters for each axis, since with two properties set the last one can always be calculated!
+    You can call at most two setters for each axis, since with two properties set the last one can always be calculated.
 
 For example of you call `left()` and `right()` then the width can be calculated with `right - left`.
 Setting all three properties for an axis will remove one of the other properties and log an info message.
 
 !!! Note 
-    You don't need to call any setters. The position defaults to (0|0) and the size defaults to 18 by 18 (for most widgets).
+    By default, the position is (0, 0) and the size is 18x18 in pixels for most widgets.
 
 ## Changing the relative Parent
 
-By default, the size and position are calculated relative to the direct widgets parent. But that can be changed with
+By default, the size and position are calculated relative to the widget's parent, but that can be changed with
 `relative(Area)`, `relative(IGuiElement)` and `relativeToScreen()`.
 The parent of all panels is by default the screen.
 
@@ -112,10 +106,10 @@ The parent of all panels is by default the screen.
 - `mainAxisAlignment(...)` controls how children are distributed on the main axis:
     - `START`, `CENTER`, `END`, `SPACE_BETWEEN`, `SPACE_AROUND`
     - e.g. `Flow.row().mainAxisAlignment(Alignment.MainAxis.CENTER)` centers the row's children horizontally, given that it has a set width
-- `crossAxisAlignment(...)` controls alignment on the cross axis:
+- `crossAxisAlignment(...)` controls alignment on the perpendicular axis:
     - `START`, `CENTER`, `END`
     - e.g. `Flow.row().crossAxisAlignment(Alignment.CrossAxis.CENTER)` centers the row's children vertically, given that it has a set height
-- `childPadding(int)` adds fixed spacing *between* children.
+- `childPadding(int)` adds fixed spacing between children.
 - `coverChildren()` / `coverChildrenWidth()` / `coverChildrenHeight()` sizes the flow to fit its children.
 - `collapseDisabledChild()` does not consider disabled children during position calculations.
     - This is useful when the enabled state of children changes dynamically.
@@ -137,12 +131,12 @@ There are two common ways to center things:
 1) Center a widget within its parent (positioning)
 
 - `widget.center()` or `widget.align(Alignment.Center)`
-- `widget.horizontalCenter()` / `widget.verticalCenter()`
+- `widget.horizontalCenter()` or `widget.verticalCenter()`
 
 2) Center children inside a Row/Column (layout)
 
-- `row.mainAxisAlignment(Alignment.MainAxis.CENTER)` to center along the row direction.
-- `row.crossAxisAlignment(Alignment.CrossAxis.CENTER)` to center across the row direction.
+- `Flow.row().mainAxisAlignment(Alignment.MainAxis.CENTER)` centers children along the flow's direction.
+- `Flow.column().crossAxisAlignment(Alignment.CrossAxis.CENTER)` centers children perpendicular to the flow's direction.
 - Remember to give the row/column a size on that axis (e.g. `widthRel(1f)` for a row).
 
 ## Margin vs padding
