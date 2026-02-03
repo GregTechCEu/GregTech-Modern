@@ -1,13 +1,7 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
@@ -16,26 +10,19 @@ import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 public class GTMultiblockTextUtil {
 
-    public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine, PanelSyncManager syncManager) {
-
+    public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
+                                                   PanelSyncManager syncManager) {
         LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
                 () -> new LongSyncValue(() -> {
                     var energyList = weMachine.getEnergyContainer();
@@ -47,18 +34,19 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(() -> weMachine.getRecipeLogic().isActive()));
 
         return IKey.dynamic(() -> {
-                    String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
+            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
-                    byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
-                    Component voltageName = Component.literal(
-                            GTValues.VNF[voltageTier]);
+            byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
+            Component voltageName = Component.literal(
+                    GTValues.VNF[voltageTier]);
 
-                    MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                            energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-                    Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
-                            .withStyle(ChatFormatting.GRAY);
-                    return bodyText.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
-                })
+            MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
+                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
+            Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                    .withStyle(ChatFormatting.GRAY);
+            return bodyText
+                    .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
+        })
                 .color(Color.WHITE.main)
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
@@ -92,18 +80,19 @@ public class GTMultiblockTextUtil {
                 () -> new DoubleSyncValue(() -> rlMachine.getRecipeLogic().getProgressPercent()));
 
         return IKey.dynamic(() -> {
-                    int progress = (int) (progressPercent.getDoubleValue() * 100.f);
-                    float current = (float) currentProgress.getDoubleValue() / 20.f;
-                    float max = (float) maxProgress.getDoubleValue() / 20.f;
-                    return Component.translatable("gtceu.multiblock.progress",
-                            String.format("%.2f", current), String.format("%.2f", max), progress);
-                })
+            int progress = (int) (progressPercent.getDoubleValue() * 100.f);
+            float current = (float) currentProgress.getDoubleValue() / 20.f;
+            float max = (float) maxProgress.getDoubleValue() / 20.f;
+            return Component.translatable("gtceu.multiblock.progress",
+                    String.format("%.2f", current), String.format("%.2f", max), progress);
+        })
                 .color(Color.WHITE.main)
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
-    public static TextWidget<?> addEnergyTierLine(WorkableElectricMultiblockMachine rlMachine, PanelSyncManager syncManager) {
+    public static TextWidget<?> addEnergyTierLine(WorkableElectricMultiblockMachine rlMachine,
+                                                  PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
 
@@ -120,33 +109,30 @@ public class GTMultiblockTextUtil {
                 .tooltip(new RichTooltip().add(Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
                         .withStyle(ChatFormatting.GRAY)))
                 .setEnabledIf(widget -> isFormed.getBoolValue());
-
     }
 
     public static TextWidget<?> addParallelLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
-
-        IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class, () ->
-                new IntSyncValue(() -> {
+        IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
                     return rlMachine.getRecipeLogic().getLastRecipe().parallels;
                 }));
 
         return IKey.dynamic(() -> {
-                    Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
-                            .withStyle(ChatFormatting.DARK_PURPLE);
-                    String key = "gtceu.multiblock.parallel";
-                    return Component.translatable(key, runs)
-                            .withStyle(ChatFormatting.GRAY);
-                }).asWidget()
+            Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
+                    .withStyle(ChatFormatting.DARK_PURPLE);
+            String key = "gtceu.multiblock.parallel";
+            return Component.translatable(key, runs)
+                    .withStyle(ChatFormatting.GRAY);
+        }).asWidget()
                 .setEnabledIf(widget -> parallelAmount.getIntValue() != 0);
     }
 
     public static TextWidget<?> addBatchModeLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
-
-        BooleanSyncValue batchEnabled = syncManager.getOrCreateSyncHandler("batchEnabled", BooleanSyncValue.class, () ->
-                new BooleanSyncValue(rlMachine::isBatchEnabled));
-        IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class, () ->
-                new IntSyncValue(() -> {
+        BooleanSyncValue batchEnabled = syncManager.getOrCreateSyncHandler("batchEnabled", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
+        IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
                     return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
                 }));
@@ -161,45 +147,45 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() != 0);
     }
 
-    public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
-
-        IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class, () ->
-                new IntSyncValue(() -> {
+    public static TextWidget<?> addSubtickParallelsLine(IWorkableMultiController rlMachine,
+                                                        PanelSyncManager syncManager) {
+        IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
                     return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
                 }));
 
         return IKey.dynamic(() -> {
-                    Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
-                            .withStyle(ChatFormatting.DARK_PURPLE);
-                    String key = "gtceu.multiblock.subtick_parallels";
-                    return Component.translatable(key, runs)
-                            .withStyle(ChatFormatting.GRAY);
-                }).asWidget()
+            Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
+                    .withStyle(ChatFormatting.DARK_PURPLE);
+            String key = "gtceu.multiblock.subtick_parallels";
+            return Component.translatable(key, runs)
+                    .withStyle(ChatFormatting.GRAY);
+        }).asWidget()
                 .setEnabledIf(widget -> subtickAmount.getIntValue() != 0);
     }
 
     public static TextWidget<?> addTotalRunsLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager) {
-
-        IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class, () ->
-                new IntSyncValue(() -> {
+        IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
+                () -> new IntSyncValue(() -> {
                     if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
                     return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
                 }));
 
         return IKey.dynamic(() -> {
-                    Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
-                            .withStyle(ChatFormatting.DARK_PURPLE);
-                    String key = "gtceu.multiblock.total_runs";
-                    return Component.translatable(key, runs)
-                            .withStyle(ChatFormatting.GRAY);
-                }).asWidget()
+            Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
+                    .withStyle(ChatFormatting.DARK_PURPLE);
+            String key = "gtceu.multiblock.total_runs";
+            return Component.translatable(key, runs)
+                    .withStyle(ChatFormatting.GRAY);
+        }).asWidget()
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
     }
 
-    public static ParentWidget<?> addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager, ListWidget<IWidget, ?> listWidget) {
-        BooleanSyncValue hasOutputs = syncManager.getOrCreateSyncHandler("hasRecipeOutputs", BooleanSyncValue.class, () ->
-                new BooleanSyncValue(() -> {
+    public static ParentWidget<?> addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager,
+                                                 ListWidget<IWidget, ?> listWidget) {
+        BooleanSyncValue hasOutputs = syncManager.getOrCreateSyncHandler("hasRecipeOutputs", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> {
                     if (rlmachine.getRecipeLogic().getLastRecipe() == null) return false;
                     return !rlmachine.getRecipeLogic().getLastRecipe().outputs.isEmpty() ||
                             !rlmachine.getRecipeLogic().getLastRecipe().tickOutputs.isEmpty();
@@ -207,8 +193,10 @@ public class GTMultiblockTextUtil {
 
         return null;
 
-        /*return IKey.dynamic(() -> {
-            return Component.translatable("");
-        });*/
+        /*
+         * return IKey.dynamic(() -> {
+         * return Component.translatable("");
+         * });
+         */
     }
 }
