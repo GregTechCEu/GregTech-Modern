@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.mui.widget.sizer.Area;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.client.mui.screen.event.RichTooltipEvent;
 import com.gregtechceu.gtceu.client.mui.screen.viewport.GuiContext;
+import com.gregtechceu.gtceu.client.mui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -634,7 +635,8 @@ public class GuiDraw {
 
     public static void drawStandardSlotAmountText(GuiContext context, int amount, String format, Area area,
                                                   float z) {
-        drawAmountText(context, amount, format, 0, 0, area.width, area.height, Alignment.BottomRight, z);
+        drawAmountText(context.getMuiContext(), amount, format, 0, 0, area.width, area.height, Alignment.BottomRight,
+                z);
     }
 
     public static void drawAmountText(ModularGuiContext context, int amount, String format,
