@@ -8,13 +8,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
 import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
-import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.DoubleSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
-import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
+import com.gregtechceu.gtceu.api.mui.value.sync.*;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
@@ -36,24 +34,34 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class GTMultiblockTextUtil {
 
-    public static IKey addEnergyUsageLine(boolean formed, IEnergyContainer energyContainer) {
-        if (formed && energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
-            long maxVoltage = Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage());
+    public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine, PanelSyncManager syncManager) {
 
-            String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
-            // wrap in text component to keep it from being formatted
-            byte voltageTier = GTUtil.getFloorTierByVoltage(maxVoltage);
-            Component voltageName = Component.literal(
-                    GTValues.VNF[voltageTier]);
+        LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    var energyList = weMachine.getEnergyContainer();
+                    return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
+                }));
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> weMachine.getRecipeLogic().isActive()));
 
-            MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-            Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
-                    .withStyle(ChatFormatting.GRAY);
-            return IKey.dynamic(() -> bodyText.withStyle(
-                    style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
-        }
-        return IKey.EMPTY;
+        return IKey.dynamic(() -> {
+                    String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
+
+                    byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
+                    Component voltageName = Component.literal(
+                            GTValues.VNF[voltageTier]);
+
+                    MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
+                            energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
+                    Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                            .withStyle(ChatFormatting.GRAY);
+                    return bodyText.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
+                })
+                .color(Color.WHITE.main)
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
     public static IKey addEnergyTierLine(boolean formed, int tier) {
@@ -95,12 +103,15 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
     }
 
-    public static TextWidget<?> addEnergyTierLine(IWorkableMultiController rlMachine, PanelSyncManager syncManager, int tier) {
+    public static TextWidget<?> addEnergyTierLine(WorkableElectricMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
 
+        IntSyncValue tier = syncManager.getOrCreateSyncHandler("energyTier", IntSyncValue.class,
+                () -> new IntSyncValue(rlMachine::getTier));
+
         return IKey.dynamic(() -> {
-            Component voltageName = Component.literal(GTValues.VNF[tier]);
+            Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
             return Component.translatable(
                     "gtceu.multiblock.max_recipe_tier",
                     voltageName).withStyle(ChatFormatting.GRAY);

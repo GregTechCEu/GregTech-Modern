@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.mui.drawable.*;
 import com.gregtechceu.gtceu.api.mui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.mui.utils.Alignment;
+import com.gregtechceu.gtceu.api.mui.value.sync.IntSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
@@ -60,7 +61,10 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         // IntSyncValue coilTierSV = new IntSyncValue(() -> this.coilTier);
         // syncManager.syncValue("coil", coilTierSV);
 
-        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[5].getTexture())
+        IntSyncValue coilTier = syncManager.getOrCreateSyncHandler("coilTier", IntSyncValue.class,
+                () -> new IntSyncValue(this::getCoilTier));
+
+        UITexture coilTexture = new UITexture.Builder().location(CoilBlock.CoilType.values()[coilTier.getIntValue()].getTexture())
                 .imageSize(16, 16).colorType(ColorType.DEFAULT).tiled().build();
 
         // var coilWidget = coilTexture.asWidget().size(4, 16).heightRel(1.0f);

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
@@ -46,10 +47,12 @@ public class GTMultiblockPanelUtil {
             listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager)
                     .alignX(Alignment.CenterLeft));
 
-            if (rlMachine instanceof ITieredMachine tieredMachine) {
-                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(rlMachine, syncManager, tieredMachine.getTier())
+            if (rlMachine instanceof WorkableElectricMultiblockMachine workableElectricMachine) {
+                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager)
                         .alignX(Alignment.CenterLeft));
+                listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(workableElectricMachine, syncManager));
             }
+
 
             listWidget.child(GTMultiblockTextUtil.addParallelLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addBatchModeLine(rlMachine, syncManager));
