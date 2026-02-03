@@ -1,15 +1,25 @@
 package com.gregtechceu.gtceu.common.data.mui;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
+import com.gregtechceu.gtceu.api.mui.drawable.FluidDrawable;
+import com.gregtechceu.gtceu.api.mui.drawable.ItemDrawable;
+import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
+import com.gregtechceu.gtceu.api.mui.widget.Widget;
 import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -19,6 +29,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Optional;
 
 public class GTMultiblockTextUtil {
 
@@ -202,22 +216,23 @@ public class GTMultiblockTextUtil {
                 .widgetProvider((syncManager1, recipeSyncHandler) -> {
                     var list = Flow.column()
                             .widthRel(1)
-                            .coverChildrenHeight();
+                            .coverChildrenHeight()
+                            .crossAxisAlignment(Alignment.CrossAxis.START);
                     GTRecipe recipe = recipeSyncHandler.getValue();
                     if (recipe == null) return list;
-                    for (var outputCap : recipe.outputs.keySet()) {
-                        // Maybe do checking per output capability?
-                        // Render items and fluids some way?
-                        for (var output : recipe.outputs.get(outputCap)) {
-                            list.child(IKey.str(output.toString()).asWidget().width(187 - 3 - 3 - 2 - 2));
-                        }
+
+                    for (var output : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                        var widget = createItemLineForOutput(output, recipe);
+                        if (widget.isEmpty()) continue;
+                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
                     }
 
-                    for (var outputCap : recipe.tickOutputs.keySet()) {
-                        for (var output : recipe.tickOutputs.get(outputCap)) {
-                            list.child(IKey.str(output.toString()).asWidget());
-                        }
+                    for (var output : recipe.getOutputContents(FluidRecipeCapability.CAP)) {
+                        var widget = createFluidLineForOutput(output, recipe);
+                        if (widget.isEmpty()) continue;
+                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
                     }
+
                     return list;
                 });
 
@@ -225,5 +240,141 @@ public class GTMultiblockTextUtil {
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler);
+    }
+
+    public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
+        int runs = recipe.getTotalRuns();
+        var function = recipe.getType().getChanceFunction();
+
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int chanceTier = recipeTier + recipe.ocLevel;
+        double maxDurationSec = (double) recipe.duration / 20.0;
+
+        boolean rounded = false;
+        ItemStack stack;
+        // number of items output by a non-ranged ingredient
+        int count = 0;
+        // number of items output, but stored as a double. Used for accurate items/second display.
+        double countD = 1;
+        // number of items output which is actually displayed. Can be either a number, or a range.
+        Component displaycount;
+        if (itemOutput.content instanceof IntProviderIngredient provider) {
+            rounded = true;
+            stack = provider.getMaxSizeStack();
+            displaycount = Component.translatable("gtceu.gui.content.range",
+                    provider.getCountProvider().getMinValue(),
+                    provider.getCountProvider().getMaxValue());
+            if (itemOutput.chance < itemOutput.maxChance) {
+                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
+                        itemOutput.maxChance;
+            }
+            countD = countD * provider.getMidRoll();
+        } else {
+            var stacks = ItemRecipeCapability.CAP.of(itemOutput.content).getItems();
+            if (stacks.length == 0) return Optional.empty();
+            stack = stacks[0];
+            count = stack.getCount();
+            countD *= count;
+            if (itemOutput.chance < itemOutput.maxChance) {
+                rounded = true;
+                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
+                        itemOutput.maxChance;
+            }
+            count = Math.max(1, (int) Math.round(countD));
+            displaycount = Component.literal(String.valueOf(count));
+        }
+        if (countD < maxDurationSec) {
+            String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
+            return Optional.of(
+                    Flow.row()
+                            .coverChildren()
+                            .childPadding(2)
+                            .child(new ItemDrawable(stack).asWidget())
+                            .child(
+                                    IKey.lang(
+                                            Component.translatable(key, stack.getHoverName(), displaycount,
+                                                    FormattingUtil.formatNumber2Places(maxDurationSec / countD)))
+                                            .asWidget()));
+        } else {
+            String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
+            return Optional.of(
+                    Flow.row()
+                            .coverChildren()
+                            .childPadding(2)
+                            .child(new ItemDrawable(stack).asWidget())
+                            .child(
+                                    IKey.lang(
+                                            Component.translatable(key, stack.getHoverName(), displaycount,
+                                                    FormattingUtil.formatNumber2Places(countD / maxDurationSec)))
+                                            .asWidget()));
+        }
+    }
+
+    public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
+        int runs = recipe.getTotalRuns();
+        var function = recipe.getType().getChanceFunction();
+
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int chanceTier = recipeTier + recipe.ocLevel;
+        double maxDurationSec = (double) recipe.duration / 20.0;
+
+        boolean rounded = false;
+        FluidStack stack;
+        // amount of fluid output by a non-ranged ingredient
+        int amount = 0;
+        // amount of fluid output, but stored as a double. Used for accurate fluid/second display.
+        double amountD = 1;
+        // amount of fluid output which is actually displayed. Can be either a number, or a range.
+        Component displaycount;
+        if (fluidOutput.content instanceof IntProviderFluidIngredient provider) {
+            rounded = true;
+            stack = provider.getMaxSizeStack();
+            displaycount = Component.translatable("gtceu.gui.content.range",
+                    provider.getCountProvider().getMinValue(),
+                    provider.getCountProvider().getMaxValue());
+            if (fluidOutput.chance < fluidOutput.maxChance) {
+                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
+                        fluidOutput.maxChance;
+            }
+            amountD = amountD * provider.getMidRoll();
+        } else {
+            var stacks = FluidRecipeCapability.CAP.of(fluidOutput.content).getStacks();
+            if (stacks.length == 0) return Optional.empty();
+            stack = stacks[0];
+            amount = stack.getAmount();
+            amountD *= amount;
+            if (fluidOutput.chance < fluidOutput.maxChance) {
+                rounded = true;
+                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
+                        fluidOutput.maxChance;
+            }
+            amount = Math.max(1, (int) Math.round(amountD));
+            displaycount = Component.literal(String.valueOf(amount));
+        }
+        if (amountD < maxDurationSec) {
+            String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
+            return Optional.of(
+                    Flow.row()
+                            .coverChildren()
+                            .childPadding(2)
+                            .child(new FluidDrawable(stack).asWidget())
+                            .child(
+                                    IKey.lang(
+                                            Component.translatable(key, stack.getDisplayName(), displaycount,
+                                                    FormattingUtil.formatNumber2Places(maxDurationSec / amountD)))
+                                            .asWidget()));
+        } else {
+            String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
+            return Optional.of(
+                    Flow.row()
+                            .coverChildren()
+                            .childPadding(2)
+                            .child(new FluidDrawable(stack).asWidget())
+                            .child(
+                                    IKey.lang(
+                                            Component.translatable(key, stack.getDisplayName(), displaycount,
+                                                    FormattingUtil.formatNumber2Places(amountD / maxDurationSec)))
+                                            .asWidget()));
+        }
     }
 }
