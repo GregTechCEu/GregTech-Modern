@@ -167,3 +167,66 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 ```
 
 Note that in this case, the ToggleButton takes care of registering the SyncValue for us, so we do not register it to the syncManager ourselves. This method is great for simple functions using widgets that support it.
+
+## Method 4: Manually notifying DynamicSyncHandlers
+This method is useful when your custom widget needs complex data coming in, like through multiple sync handlers.
+
+```java
+public class MuiTestMachine extends MetaMachine implements IMuiMachine {
+
+    public int rows = 0;
+    public int columns = 0;
+    public int counter = 0;
+
+    public MuiTestMachine(BlockEntityCreationInfo info) {
+        super(info);
+        this.subscribeServerTick(() -> {
+            counter += 1;
+            if (counter % 20 == 0) {
+                rows = (rows + 1) % 10;
+            }
+            if (counter % 15 == 0) {
+                columns = (columns + 1) % 10;
+            }
+        });
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = GTGuis.createPanel(this, 200, 200);
+
+        var rowsSyncValue = new IntSyncValue(() -> this.rows, (newValue) -> this.rows = newValue);
+        syncManager.syncValue("rows", rowsSyncValue);
+
+        var columnsSyncValue = new IntSyncValue(() -> this.columns, (newValue) -> this.columns = newValue);
+        syncManager.syncValue("columns", columnsSyncValue);
+
+        DynamicSyncHandler gridWidgetHandler = new DynamicSyncHandler().widgetProvider((slotsSyncManger, buffer) -> {
+
+            Flow grid = Flow.column().width(200);
+            for (int rowNr = 0; rowNr < this.rows; rowNr++) {
+                Flow row = Flow.row();
+                for (int columnNr = 0; columnNr < this.columns; columnNr++) {
+                    row.child(IKey.str(rowNr + ", " + columnNr).asWidget().width(20));
+                }
+                grid.child(row);
+            }
+            return grid;
+        });
+
+        rowsSyncValue.setChangeListener(() -> {
+            gridWidgetHandler.notifyUpdate(buffer -> {});
+        });
+        columnsSyncValue.setChangeListener(() -> {
+            gridWidgetHandler.notifyUpdate(buffer -> {});
+        });
+
+        panel.child(new DynamicSyncedWidget<>().syncHandler(gridWidgetHandler));
+        return panel;
+    }
+}
+```
+
+This is very similar to method nr 2, but instead of a `DynamicLinkedSyncHandler` we use a normal `DynamicSyncHandler` where we have to manually let it know when to update. We do this in the change listener of our two `SyncValue`s by calling notifyUpdate. 
+
+Do note there's also a buffer where you can serialize data to, to be consumed in the `.widgetProvider` in the spot where in a `DynamicLinkedSyncHandler` our syncValue would be.
