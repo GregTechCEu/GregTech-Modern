@@ -127,7 +127,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 .with(GTModelProperties.LEVEL, level)
                 .with(GTModelProperties.POS, pos);
 
-        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> blockEntity)) {
+        if (!(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> blockEntity)) {
             return builder.build();
         }
         return builder.with(GTModelProperties.PIPE_CONNECTION_MASK, blockEntity.getVisualConnections())
