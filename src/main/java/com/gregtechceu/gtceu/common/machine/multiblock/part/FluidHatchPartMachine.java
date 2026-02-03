@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.mui.utils.Alignment;
 import com.gregtechceu.gtceu.api.mui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.api.mui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.mui.value.sync.PanelSyncManager;
-import com.gregtechceu.gtceu.api.mui.widgets.ButtonWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.ToggleButton;
@@ -38,6 +37,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuis;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.syncsystem.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -280,17 +280,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                 this.tank.getFluidInTank(0).getDisplayName();
     }
 
-    private String getFluidAmountText() {
-        String fluidAmount = "";
-        if (!tank.getFluidInTank(0).isEmpty()) {
-            fluidAmount = getFormattedFluidAmount(tank.getFluidInTank(0));
-        } else {
-            // Display Zero to show information about the locked fluid
-            if (!this.tank.getLockedFluid().getFluid().isEmpty()) {
-                fluidAmount = "0";
-            }
-        }
-        return fluidAmount;
+    private Component getFluidAmountText() {
+        return Component.literal(FormattingUtil.formatBuckets(this.tank.getFluidInTank(0).getAmount()));
     }
 
     private Component getFluidText() {
@@ -307,7 +298,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         int height = Math.max(168, (int) (18 * Math.sqrt(slots)) + 78 + 19);
         var panel = GTGuis.createPanel(this, width, height);
 
-        int rowSize = (int) Math.sqrt(slots);
+        // magic numbers are me favorite :3
+        int topOffset = slots == 1 ? 10 : slots == 9 ? 16 : 20;
 
         var theme = this.getDefinition().getThemeId();
         var backgroundTexture = (UITexture) ThemeAPI.INSTANCE.getTheme(theme).getPanelTheme().getTheme()
@@ -321,7 +313,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                         .left(7)
                         .bottom(7))
                 .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager))
-                        .top(10)
+                        .top(topOffset)
                         .horizontalCenter())
                 .child(new Column()
                         .coverChildren()
@@ -333,44 +325,47 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                         .background(backgroundTexture.getSubArea(0.0f, 0f, 0.75f, 1.0f))
                         .excludeAreaInXei()
                         .child(GTMuiWidgets.createPowerButton(this::isWorkingEnabled, this::setWorkingEnabled,
-                                syncManager)));
+                                syncManager))
+                        .childIf(this.isCircuitSlotEnabled(),
+                                () -> GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager)));
 
         return panel;
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
-        BooleanSyncValue locked = new BooleanSyncValue(() -> this.tank.isLocked(), (lock) -> this.tank.setLocked(lock));
+        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
         syncManager.syncValue("locked", locked);
         return new Column()
                 .widthRel(.6f)
                 .height(60)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                .child(new TextWidget<>(IKey.dynamic(() -> getFluidNameText()))
-                        .top(10)
+                .childPadding(4)
+                .child(new TextWidget<>(IKey.dynamic(this::getFluidNameText))
+                        .horizontalCenter())
+                .child(new TextWidget<>(IKey.dynamic(this::getFluidAmountText))
                         .horizontalCenter())
                 .child(new Row()
                         .childPadding(2)
                         .coverChildren()
-                        .childIf(io.support(IO.OUT), () ->
-                                new FluidSlot()
-                                        .name("lockedFluid")
-                                        .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
-                                        .alwaysShowFull(true)
-                                        .displayAmount(true)
-                                        .tooltip(t -> t.addLine("Locked Fluid")))
-                        .childIf(io.support(IO.OUT), () ->
-                                new ToggleButton()
-                                        .syncHandler("locked")
-                                        .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
-                                        .overlay(false,GTGuiTextures.BUTTON_LOCK)
-                                        .background(GTGuiTextures.MC_BUTTON)
-                                        .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
+                        .childIf(io.support(IO.OUT), () -> new FluidSlot()
+                                .name("lockedFluid")
+                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
+                                .alwaysShowFull(true)
+                                .displayAmount(true)
+                                .tooltip(t -> t.addLine("Locked Fluid")))
+                        .childIf(io.support(IO.OUT), () -> new ToggleButton()
+                                .syncHandler("locked")
+                                .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
+                                .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                                .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                                .background(GTGuiTextures.MC_BUTTON)
+                                .selectedBackground(GTGuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(true || io.support(IO.IN)))
+                                        .canFillSlot(io.support(IO.IN)))
                                 .displayAmount(true)));
     }
 

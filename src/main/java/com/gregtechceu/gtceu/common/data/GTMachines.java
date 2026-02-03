@@ -892,6 +892,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Input Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -905,6 +906,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .modelProperty(IS_FORMED, false)
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Output Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -918,6 +920,7 @@ public class GTMachines {
             .abilities(PartAbility.STEAM)
             .modelProperty(IS_FORMED, false)
             .overlaySteamHullModel("steam_hatch")
+            .themeId(GTGuiTheme.BRONZE.getId())
             .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                     SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
                     Component.translatable("gtceu.machine.steam.steam_hatch.tooltip"))
@@ -929,6 +932,7 @@ public class GTMachines {
             .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
@@ -936,6 +940,7 @@ public class GTMachines {
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .modelProperty(IS_FORMED, false)
             .model(createBasicReplaceableTextureMachineModel(GTCEu.id("block/machine/part/pump_hatch")))
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE
