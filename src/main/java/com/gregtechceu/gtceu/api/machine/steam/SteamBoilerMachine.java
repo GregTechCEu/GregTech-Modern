@@ -334,6 +334,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(waterTank.getStorages()[0]))
                         .size(14, 54)
+                        .alwaysShowFull(true)
                         .displayAmount(false))
                 .child(new FluidSlot()
                         .syncHandler(new FluidSlotSyncHandler(steamTank.getStorages()[0])

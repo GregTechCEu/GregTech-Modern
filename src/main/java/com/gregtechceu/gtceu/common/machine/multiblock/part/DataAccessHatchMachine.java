@@ -22,9 +22,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.client.mui.screen.ModularPanel;
 import com.gregtechceu.gtceu.client.mui.screen.UISettings;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.data.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.syncsystem.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -49,8 +51,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.gregtechceu.gtceu.common.data.mui.GTMuiMachineUtil.createSquareSlotGroupFromInventory;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -98,6 +98,10 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                          @NotNull UISettings settings) {
         int size = (int) Math.sqrt(getInventorySize());
 
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+                i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
+                GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
+
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
                 .child(GTMuiWidgets.createTitleBar(this.getDefinition(), 176))
@@ -108,7 +112,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .align(Alignment.CENTER)
                                 .coverChildren()
-                                .child(createSquareSlotGroupFromInventory(importItems, "data_inventory", syncManager)
+                                .child(grid
                                         .marginLeft(30)
                                         .marginRight(30)
                                         .verticalCenter())))

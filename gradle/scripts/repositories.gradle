@@ -1,6 +1,15 @@
 repositories {
     mavenLocal()
     mavenCentral()
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
+    exclusiveContent { // Force
+        forRepository { mavenCentral() }
+        filter {
+            includeGroup("it.unimi.dsi")
+            includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
+        }
+    }
 
     maven { // JEI
         name = "Jared's Maven"
