@@ -168,6 +168,13 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 
 Note that in this case, the ToggleButton takes care of registering the SyncValue for us, so we do not register it to the syncManager ourselves. This method is great for simple functions using widgets that support it.
 
+A few examples of this would be:
+
+- `new ToggleButton().value(BooleanSyncValue)` - A ToggleButton that affects the Boolean sync value
+- `new TextFieldWidget().value(StringSyncValue)` - A TextField that updates the String sync value
+- `new ProgressWidget().value(DoubleSyncValue)` - A ProgressWidget (e.g. bar) that shows progress, can also be constructed with `new ProgressWidget().progress(() -> this.progress)`
+- `new SliderWidget().value(DoubleSyncValue)` - A SliderWidget that updates the Double sync value
+
 ## Method 4: Manually notifying DynamicSyncHandlers
 This method is useful when your custom widget needs complex data coming in, like through multiple sync handlers.
 
