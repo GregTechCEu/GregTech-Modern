@@ -803,9 +803,9 @@ public class ModularScreen implements GuiEventListener, Renderable, LayoutElemen
 
     @Override
     public void visitWidgets(@NotNull Consumer<AbstractWidget> consumer) {
-        for (WidgetWrapper wrapper : panelManager.getReverseOpenPanelsWrappers()) {
+        /*for (WidgetWrapper wrapper : panelManager.getReverseOpenPanelsWrappers()) {
             consumer.accept(wrapper);
-        }
+        }*/
     }
 
     private static final Component USAGE_NARRATION = Component.translatable("narrator.screen.usage");

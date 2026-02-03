@@ -32,6 +32,7 @@ public class GTMultiblockPanelUtil {
                 .width(187 - 3 - 3)
                 .height(90 - 3 - 3)
                 .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
                 .alignX(Alignment.CenterLeft);
         parentWidget.size(187, 90)
                 .background(GTGuiTextures.MUI_DISPLAY);
@@ -41,8 +42,7 @@ public class GTMultiblockPanelUtil {
                     .alignX(Alignment.CenterLeft));
 
             if (rlMachine instanceof WorkableElectricMultiblockMachine workableElectricMachine) {
-                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager)
-                        .alignX(Alignment.CenterLeft));
+                listWidget.child(GTMultiblockTextUtil.addEnergyTierLine(workableElectricMachine, syncManager));
                 listWidget.child(GTMultiblockTextUtil.addEnergyUsageLine(workableElectricMachine, syncManager));
             }
 
