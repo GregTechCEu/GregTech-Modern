@@ -62,6 +62,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @ApiStatus.Internal
@@ -306,6 +307,11 @@ public class ClientScreenHandler {
 
     private static boolean doAction(@Nullable ModularScreen muiScreen, Predicate<ModularScreen> action) {
         return OverlayStack.interact(action, true) || (muiScreen != null && action.test(muiScreen));
+    }
+
+    private static void foreach(@Nullable ModularScreen muiScreen, Consumer<ModularScreen> action) {
+        OverlayStack.foreach(action, true);
+        if (muiScreen != null) action.accept(muiScreen);
     }
 
     /**
