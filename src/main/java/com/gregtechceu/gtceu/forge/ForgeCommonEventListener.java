@@ -58,6 +58,7 @@ import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
