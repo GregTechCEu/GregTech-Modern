@@ -223,6 +223,7 @@ public class GTMultiblockTextUtil {
 
         return new DynamicSyncedWidget<>()
                 .widthRel(1)
+                .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler);
     }
 }
