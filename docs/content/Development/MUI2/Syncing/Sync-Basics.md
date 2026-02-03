@@ -234,6 +234,6 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 }
 ```
 
-This is very similar to method nr 2, but instead of a `DynamicLinkedSyncHandler` we use a normal `DynamicSyncHandler` where we have to manually let it know when to update. We do this in the change listener of our two `SyncValue`s by calling notifyUpdate. 
+This is very similar to method 2, but instead of a `DynamicLinkedSyncHandler` we use a normal `DynamicSyncHandler` where we have to manually let it know when to update. We do this in the change listener of our two `SyncValue`s by calling notifyUpdate. 
 
 Do note there's also a buffer where you can serialize data to, to be consumed in the `.widgetProvider` in the spot where in a `DynamicLinkedSyncHandler` our syncValue would be.
