@@ -1,0 +1,55 @@
+{
+  "parent": "gtceu:block/pipe/normal_optical_pipe/center",
+  "loader": "gtceu:pipe",
+  "parts": {
+    "center": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/center"
+    },
+    "down": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection"
+    },
+    "east": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection",
+      "x": 90,
+      "y": 270
+    },
+    "north": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection",
+      "x": 90,
+      "y": 180
+    },
+    "south": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection",
+      "x": 90
+    },
+    "up": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection",
+      "x": 180
+    },
+    "west": {
+      "model": "gtceu:block/pipe/normal_optical_pipe/connection",
+      "x": 90,
+      "y": 90
+    }
+  },
+  "restrictors": {
+    "down": {
+      "model": "gtceu:block/pipe/restrictor/down/thickness_6.0"
+    },
+    "east": {
+      "model": "gtceu:block/pipe/restrictor/east/thickness_6.0"
+    },
+    "north": {
+      "model": "gtceu:block/pipe/restrictor/north/thickness_6.0"
+    },
+    "south": {
+      "model": "gtceu:block/pipe/restrictor/south/thickness_6.0"
+    },
+    "up": {
+      "model": "gtceu:block/pipe/restrictor/up/thickness_6.0"
+    },
+    "west": {
+      "model": "gtceu:block/pipe/restrictor/west/thickness_6.0"
+    }
+  }
+}
