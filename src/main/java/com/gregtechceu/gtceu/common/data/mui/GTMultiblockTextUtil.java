@@ -4,15 +4,16 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.mui.base.drawable.IKey;
-import com.gregtechceu.gtceu.api.mui.base.widget.IWidget;
 import com.gregtechceu.gtceu.api.mui.utils.Color;
 import com.gregtechceu.gtceu.api.mui.value.sync.*;
-import com.gregtechceu.gtceu.api.mui.widget.ParentWidget;
-import com.gregtechceu.gtceu.api.mui.widgets.ListWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.DynamicSyncedWidget;
 import com.gregtechceu.gtceu.api.mui.widgets.TextWidget;
+import com.gregtechceu.gtceu.api.mui.widgets.layout.Flow;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.client.mui.screen.RichTooltip;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.serialization.network.ByteBufAdapters;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -182,21 +183,46 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() != 0);
     }
 
-    public static ParentWidget<?> addOutputLines(IWorkableMultiController rlmachine, PanelSyncManager syncManager,
-                                                 ListWidget<IWidget, ?> listWidget) {
-        BooleanSyncValue hasOutputs = syncManager.getOrCreateSyncHandler("hasRecipeOutputs", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(() -> {
-                    if (rlmachine.getRecipeLogic().getLastRecipe() == null) return false;
-                    return !rlmachine.getRecipeLogic().getLastRecipe().outputs.isEmpty() ||
-                            !rlmachine.getRecipeLogic().getLastRecipe().tickOutputs.isEmpty();
-                }));
+    public static DynamicSyncedWidget<?> addOutputLines(IWorkableMultiController rlmachine,
+                                                        PanelSyncManager syncManager) {
+        GenericSyncValue<GTRecipe> recipeSyncValue = syncManager.getOrCreateSyncHandler("GTRecipe",
+                GenericSyncValue.class,
+                () -> new GenericSyncValue.Builder<>(GTRecipe.class)
+                        .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
+                        .setter((newRecipe) -> {})
+                        .adapter(ByteBufAdapters.GTRECIPE)
+                        .copy((toCopy) -> {
+                            if (toCopy == null) return null;
+                            return toCopy.copy();
+                        })
+                        .build());
 
-        return null;
+        DynamicLinkedSyncHandler<GenericSyncValue<GTRecipe>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                recipeSyncValue)
+                .widgetProvider((syncManager1, recipeSyncHandler) -> {
+                    var list = Flow.column()
+                            .widthRel(1)
+                            .coverChildrenHeight();
+                    GTRecipe recipe = recipeSyncHandler.getValue();
+                    if (recipe == null) return list;
+                    for (var outputCap : recipe.outputs.keySet()) {
+                        // Maybe do checking per output capability?
+                        // Render items and fluids some way?
+                        for (var output : recipe.outputs.get(outputCap)) {
+                            list.child(IKey.str(output.toString()).asWidget().width(187 - 3 - 3 - 2 - 2));
+                        }
+                    }
 
-        /*
-         * return IKey.dynamic(() -> {
-         * return Component.translatable("");
-         * });
-         */
+                    for (var outputCap : recipe.tickOutputs.keySet()) {
+                        for (var output : recipe.tickOutputs.get(outputCap)) {
+                            list.child(IKey.str(output.toString()).asWidget());
+                        }
+                    }
+                    return list;
+                });
+
+        return new DynamicSyncedWidget<>()
+                .widthRel(1)
+                .syncHandler(dynamicLinkedSyncHandler);
     }
 }

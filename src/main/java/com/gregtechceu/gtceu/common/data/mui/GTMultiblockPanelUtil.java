@@ -30,12 +30,12 @@ public class GTMultiblockPanelUtil {
 
         var parentWidget = new ParentWidget<>();
         var listWidget = new ListWidget<>()
-                .widthRel(1f)
-                .heightRel(1f)
+                .width(187 - 3 - 3)
+                .height(90 - 3 - 3)
                 .childSeparator(Icon.EMPTY_2PX)
                 .alignX(Alignment.CenterLeft);
         parentWidget.size(187, 90)
-                .child(new IDrawable.DrawableWidget(GTGuiTextures.MUI_DISPLAY).widthRel(1.0f).heightRel(1.0f));
+                .background(GTGuiTextures.MUI_DISPLAY);
 
         if (controller instanceof IWorkableMultiController rlMachine) {
             listWidget.child(GTMultiblockTextUtil.addProgressLine(rlMachine, syncManager)
@@ -51,6 +51,7 @@ public class GTMultiblockPanelUtil {
             listWidget.child(GTMultiblockTextUtil.addBatchModeLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addSubtickParallelsLine(rlMachine, syncManager));
             listWidget.child(GTMultiblockTextUtil.addTotalRunsLine(rlMachine, syncManager));
+            listWidget.child(GTMultiblockTextUtil.addOutputLines(rlMachine, syncManager));
         }
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;
