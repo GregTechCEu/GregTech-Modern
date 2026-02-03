@@ -34,14 +34,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class MiscRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        BLAST_RECIPES.recipeBuilder("test_MUI")
-                .notConsumable(new ItemStack(Items.COBBLESTONE, 1))
-                .outputFluids(new FluidStack(Fluids.WATER, 69))
-                .outputItems(new ItemStack(Items.FEATHER, 1))
-                .blastFurnaceTemp(100)
-                .duration(60)
-                .EUt(512)
-                .save(provider);
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
                 "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
