@@ -99,10 +99,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
         int size = (int) Math.sqrt(getInventorySize());
 
         var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
-                i -> {
-                    i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY);
-                    return i;
-                }, syncManager, GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
+                i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
+                GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 
         return new ModularPanel(this.getDefinition().getName())
                 .size(176, 100 + (18 * size))
